@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './employeepage.styles.module.css'
 import eventData from '../../eventdata/demoEvent.json'
 import YourEventCard from './YourEventCard.js'
