@@ -1,66 +1,17 @@
 .eventsBody{
     background-color: #0c0c0c;
     padding: 94px 132px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .blur{
     filter: blur(2px);
     height: 100vh;
     overflow: hidden;
 }
-.container{
-    display: flex;
-    justify-content: space-between;
-}
-.navbar{
-    display: flex;
-    justify-content: space-between;
-    background-color: #1A1A1A;
-    padding: 18px;
-    margin-bottom: 65px;
-}
-.navbar .heading{
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
-}
-.navbar .heading img{
-    margin-right: 5px;
-}
-.navbar .btns{
-    color: white;
-    display: flex;
-    align-items: center;
-}
-.navbar .btns .settings{
-    margin-right: 12px;
-}
-.navbar .btns .sort{
-    border: 1px solid #808081;
-    border-radius: 12px;
-    padding: 5px 24px;
-    margin-right: 12px;
-}
-.navbar .btns .add{
-    border-radius: 12px;
-    padding: 8px 15px;
-    display: flex;
-    background-color: #6750A4;
-    cursor: pointer;
-}
-.timelineContainer{
-    width: 65%;
-}
-.timeline{
-    display: flex;
-}
-.filterContainer{
-    width: 30%;
-}
 .modal{
-    /* width: 100vw;
-    height: 100vh; */
     position: absolute;
     top: 50%;
     left:50%;

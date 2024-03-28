@@ -115,6 +115,6 @@
 .eventDetails .detailContainer div{
     font-size: 12px;
 }
-.cardImg img{
-    border-radius: 0px 10.71px 10.71px 0px;
+.cardImg{
+    border-radius: 12px 0px 0px 12px;
 }

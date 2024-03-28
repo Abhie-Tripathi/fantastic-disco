@@ -1,0 +1,11 @@
+.container{
+    /* display: flex;
+    justify-content: space-between; */
+    width: 70%;
+}
+.timeline{
+    display: flex;
+}
+.filterContainer{
+    width: 30%;
+}
