@@ -1,29 +1,34 @@
 import React from 'react'
 import WidgetCard from './WidgetCard'
-import More from './img/widgets/more_horiz.svg'
-import data from './widgetsData.json'
-import Add from './img/widgets/add.svg'
-import './Widgets.css'
+import More from '../../icons/more_horiz.svg'
+import Styles from './widget.style.module.css'
+import data from '../../widgetsData/data.json'
+import Add from '../../icons/add.svg'
+
 const Widget = () => {
+  // console.log(data[0]);
   return (
-    <div className='outerContainer'>
-      <div className='containerOne'>
-        <div className='c1-left'>Widgets</div>
-        <div className='c1-right'>
-            <div className='threeDots'><img src={More} alt="more"/></div>
-            <div className='addBtn'>
+    <div className={Styles.outerContainer}>
+      <div className={Styles.containerOne}>
+        <div className={Styles.c1left}>Widgets</div>
+        <div className={Styles.c1right}>
+            <div className={Styles.threeDots}><img src={More} alt="more"/></div>
+            <div className={Styles.addBtn}>
                 <div><img src={Add} alt="add"/></div>
                 <div>Widget</div>
             </div>
         </div>
       </div>
-      <div className='containerTwo'>
-        <WidgetCard data={data[0]}/>
+      {data.map(item => (
+      <div className={Styles.containerTwo}>
+        
+          <WidgetCard key={item.id} data={item} />
+       
       </div>
-
-      <div className='containerTwo'>
-        <WidgetCard/>
-      </div>
+       ))}
+      {/* <div className={Styles.containerTwo}>
+        <WidgetCard />
+      </div> */}
     </div>
   )
 }
