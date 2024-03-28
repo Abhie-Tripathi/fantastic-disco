@@ -4,6 +4,7 @@ import locationIcon from '../../icons/location.svg'
 import speakerIcon from '../../icons/speaker.svg'
 import rightArrowIcon from '../../icons/rightbigarrow.svg'
 import calendarIcon from '../../icons/calendar.svg'
+import ChatHeads from './ChatHeads'
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -16,6 +17,7 @@ const YourEventCard = ({ eventName, eventLocation, eventImage, eventDate }) => {
   const formattedDate = formatDate(eventDate);
   return (
     <div className={styles.card}>
+      <img src={eventImage} width={300} height={238} className={styles.cardImg} />
       <div className={styles.cardDetails}>
         <div className={styles.eventName}>{eventName}</div>
         <div className={styles.locationAndDateContainer}>
@@ -28,22 +30,13 @@ const YourEventCard = ({ eventName, eventLocation, eventImage, eventDate }) => {
             <div>{formattedDate}</div>
           </div>
         </div>
-        <div className={styles.eventSpeakers}>
-          <div className={styles.heading}>Speakers :</div>
-          <div className={styles.speakerContainer}>
-            <img src={speakerIcon} width={24} height={24} />
-            <div>Speaker 1, Speaker 2</div>
-          </div>
-        </div>
+         <ChatHeads data={["A","B","C"]}/> 
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
             <div>View Details</div>
-            <img src={rightArrowIcon} width={50} height={24}/>
+            <img src={rightArrowIcon} width={50} height={24} />
           </div>
         </div>
-      </div>
-      <div className={styles.cardImg}>
-        <img src={eventImage} width={300} height={240} />
       </div>
     </div>
   )
