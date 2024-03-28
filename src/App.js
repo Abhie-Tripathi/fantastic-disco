@@ -7,6 +7,7 @@ import CalendarModal from './components/calendar';
 import AddEvent from './components/AddEvent';
 import Widgets from './components/widgets/Widget';
 import EmployeePage from './components/employeepage/EmployeePage';
+import Configuration from './components/configuration/Configuration';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/addevent' element={<AddEvent/>} />
         <Route path='/employee' element={<EmployeePage/>}/>
         <Route path='/widgets' element={<Widgets/>}/>
+        <Route path='/configuration' element={<Configuration/>}/>
       </Routes>
     </div>
   )
