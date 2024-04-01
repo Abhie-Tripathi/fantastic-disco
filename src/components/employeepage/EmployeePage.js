@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import styles from './employeepage.styles.module.css'
 import AddEventModal from '../AddEventModal.js'
 import EmployeeNavbar from './EmployeeNavbar.js'
-import MonthCalendar from './calendarview/MonthCalendar.js'
 import Navbar from '../Navbar.js'
 import ListView from './listview/ListView.js'
 import ViewBtns from './viewbtns/ViewBtns.js'
+import Map from './mapview/Map.js'
+import CalendarContainer from './calendarcontainer/CalendarContainer.js'
 
 const EmployeePage = () => {
 
@@ -27,7 +28,8 @@ const EmployeePage = () => {
                 <EmployeeNavbar handleAddEvent={handleAddEvent}/>
                 <ViewBtns handleSelectedData = {handleSelectedData} />
                 {selectedView === 'list' && <ListView/>}
-                {selectedView === 'calendar' && <MonthCalendar/>}
+                {selectedView === 'map' && <Map/>}
+                {selectedView === 'calendar' && <CalendarContainer/>}
             </div>
             {isAddeventOpen &&
                 <div className={styles.modal}>
