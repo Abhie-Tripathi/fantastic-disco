@@ -1,0 +1,14 @@
+.container{
+    height: 100%;
+    width: 100%;
+}
+.heading{
+    font-size: 18px;
+    margin-bottom: 24px;
+}
+.screen{
+    height: 50vh;
+    border-radius: 20px;
+    border: 1px solid rgba(103,80,164,0.2) ;
+    background: linear-gradient(180deg, rgba(103,80,164,0.2) 0%, rgba(103,80,164,0) 100%);
+}

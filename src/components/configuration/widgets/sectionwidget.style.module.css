@@ -1,0 +1,28 @@
+.form{
+    margin-top: 40px;
+}
+.heading{
+    color: #999999;
+    margin-bottom: 12px;
+}
+.searchInput {
+    border: 1px solid #666666;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.searchInput input {
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+}
+
+.searchInput input:focus {
+    outline: none;
+}
