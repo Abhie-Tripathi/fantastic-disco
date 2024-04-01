@@ -1,0 +1,25 @@
+.container{
+    margin-bottom: 10px;
+}
+.monthCal{
+    display: flex;
+    justify-content: center;
+}
+.calendarBtns button{
+    color: white;
+    font-size: 14px;
+    background:none;
+    border: none;
+    border: 1px solid rgb(223, 223, 223);
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.calendarBtns button:hover{
+    transition-duration: .2s;
+    background-color: #9281be;
+}
+.calendarBtns button.activeCalendarBtn{
+    background-color: #6750A4;
+}
