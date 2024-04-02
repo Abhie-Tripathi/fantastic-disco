@@ -36,6 +36,7 @@
     margin-right: 10px;
 }
 .dropdown {
+
     max-height: 200px;
     overflow: auto;
     position: absolute;
