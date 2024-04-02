@@ -22,7 +22,6 @@ const SectionWidget = () => {
     const [eventTags, setEventTags] = useState([])
     const [isEventDropdownOpen, setIsEventDropdownOpen] = useState(false)
 
-
     const [modeTags, setModeTags] = useState([])
     const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false)
 
@@ -188,8 +187,6 @@ const SectionWidget = () => {
                     <img src={SearchIcon} alt='search' />
                     <input
                         type='text'
-                        onChange={(e) => setGeoInput(e.target.value)}
-                        value={geoInput}
                         placeholder="Search Events"
                         required
                     />
@@ -205,5 +202,4 @@ const SectionWidget = () => {
         </form>
     )
 }
-
 export default SectionWidget

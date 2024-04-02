@@ -4,7 +4,8 @@
 }
 
 .container {
-  margin-top: 130px;
+  margin-top: 100px;
+  min-height: 70vh;
   display: flex;
   justify-content: space-evenly;
   color: white;
@@ -19,4 +20,9 @@
 
 .previewSection {
   width: 40%;
+}
+.fullPreview{
+  padding-left: 100px;
+  padding-right: 100px;
+  width: 100%;
 }
