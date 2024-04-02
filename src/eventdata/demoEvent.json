@@ -15,6 +15,9 @@
             "horn",
             "fest"
         ],
+        "venue":[
+            { "lat": 40.7128, "lng": -74.0060 }
+        ],
         "ctas":["Sponsoring", "Speaking"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg"
@@ -34,6 +37,9 @@
             "great indian food festival",
             "fest"
         ],
+        "venue":[
+            { "lat": 34.0522, "lng": -118.2437 }
+        ],
         "ctas":["Speaking"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"
@@ -52,6 +58,9 @@
             "color",
             "fest"
         ],
+        "venue":[
+            { "lat": 51.5074, "lng": -0.1278 }
+        ],
         "ctas":["Sponsoring"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"
@@ -69,6 +78,9 @@
             "holi",
             "gathering",
             "fight"
+        ],
+        "venue":[
+            { "lat": 48.8566, "lng": 2.3522 }
         ],
         "ctas":["Sponsoring", "Exhibiting"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
@@ -90,6 +102,9 @@
             "acting",
             "direction",
             "film"
+        ],
+        "venue":[
+            { "lat": 48.8566, "lng": 2.3522 }
         ],
         "ctas":["Exhibiting"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
