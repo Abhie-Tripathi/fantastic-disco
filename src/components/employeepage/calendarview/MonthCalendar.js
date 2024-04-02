@@ -197,7 +197,8 @@ const MonthCalendar = () => {
                         style={{
                           width: `${width}`,
                           top: `${38 + count * 20}%`,
-                          backgroundColor: "pink",
+                          backgroundColor: "#6750A4",
+                          color:"white"
                         }}
                       >
                         {event.name}

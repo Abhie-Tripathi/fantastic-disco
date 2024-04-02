@@ -15,6 +15,7 @@
             "horn",
             "fest"
         ],
+        "ctas":["Sponsoring", "Speaking"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg"
     },
@@ -33,6 +34,7 @@
             "great indian food festival",
             "fest"
         ],
+        "ctas":["Speaking"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"
     },
@@ -50,6 +52,7 @@
             "color",
             "fest"
         ],
+        "ctas":["Sponsoring"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"
     },
@@ -67,6 +70,7 @@
             "gathering",
             "fight"
         ],
+        "ctas":["Sponsoring", "Exhibiting"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1"
     },
@@ -87,6 +91,7 @@
             "direction",
             "film"
         ],
+        "ctas":["Exhibiting"],
         "logo": "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
         "imageUrl": "https://cdn.choosechicago.com/uploads/2019/06/chicago-film-festival-1800x900.jpg"
     }

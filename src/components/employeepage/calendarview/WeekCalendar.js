@@ -124,7 +124,7 @@ const EventCards = () => {
           className={styles.eventCard}
           style={{
             width: `calc((((100% - 90px) / 7) * ${event.durationDays}) + (${event.durationDays} - 1) * 15px)`,
-            backgroundColor: event.backgroundColor,
+            backgroundColor: "#1A1A1A",
             color: event.color,
           }}
         >
