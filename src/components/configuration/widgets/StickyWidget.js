@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Down from '../../../icons/downArrow.svg'
 import SearchIcon from '../../../icons/search.svg'
 import Styles from './stickywidget.style.module.css'
-import DropDown from "../../refs/DropdownRef";
 import EventData from '../../../eventdata/demoEvent.json'
 
 
@@ -11,15 +10,6 @@ const StickyWidget = ({ demoEvent, buyerTags, setBuyerTags }) => {
   const [searchInput, setSearchInput] = useState("")
   const [matchingEvents, setMatchingEvents] = useState([]); // All events that macthes ther search
   const [selectedEvent, setSelectedEvent] = useState(null); // Event that we are selecting and sending to form
-  const evenetFilter = DropDown();
-  const fontFilter = DropDown();
-  const [inputHeight, setInputHeight] = useState();
-  const [inputFontSize, setInputFontSize] = useState();
-  const [showBuyerDropdown, setShowBuyerDropdown] = useState(false);
-  const heights = ['px', '%', 'vh', 'em']
-  const fontSizes = ['px', '%', 'pt', 'em']
-  const [fontValue, setFontValue] = useState("px");
-  const [heightValue, setHeightValue] = useState("px");
   const [bgcolor, setBgColor] = useState('#000000');
   const [fcolor, setFColor] = useState('#4ca9c8');
   const handleColorChange = (event) => {
@@ -28,24 +18,6 @@ const StickyWidget = ({ demoEvent, buyerTags, setBuyerTags }) => {
   const handlefColorChange = (event) => {
     setFColor(event.target.value);
   };
-  const setHeightSticky = (item) => {
-    console.log(1);
-    setHeightValue(item);
-    evenetFilter.setIsOpen(!evenetFilter.isOpen);
-  }
-  const setFontSticky = (item) => {
-    setFontValue(item);
-    fontFilter.setIsOpen(!fontFilter.isOpen);
-  }
-  const handleSubmit = () => {
-    const allFilters = {
-      eventName: buyerTags[0],
-      height: inputHeight + heightValue,
-      fontSizes: inputFontSize + fontValue,
-      bgcolor: bgcolor,
-      fgcolor: fcolor
-    }
-  }
   // Will filter the events according to the search event input
   const filterEvents = (event) => {
     return event.tags.includes(searchInput.toLowerCase());
@@ -61,7 +33,7 @@ const StickyWidget = ({ demoEvent, buyerTags, setBuyerTags }) => {
   }
 
   return (
-    <form className={Styles.form} onSubmit={handleSubmit}>
+    <form className={Styles.form}>
       <div className={Styles.eventNameContainer}>
         <div className={Styles.heading}>Event Name</div>
         <div className={Styles.eventNameInput}>

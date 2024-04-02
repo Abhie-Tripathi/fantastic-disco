@@ -5,16 +5,46 @@
     color: #999999;
     margin-bottom: 12px;
 }
-.searchInput {
+.eventFormatInput{
     border: 1px solid #666666;
-    padding: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+}
+.eventFormatInput input{
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+}
+.eventFormatInput input:focus{
+    outline: none;
+}
+.dateContainer{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 48px;
+}
+.datePickerContainer{
+    border: 1px solid #666666;
+    padding: 10px;
+    border-radius: 10px;
+}
+.geoInput {
+    border: 1px solid #666666;
+    padding: 10px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     margin-bottom: 48px;
 }
 
-.searchInput input {
+.geoInput input {
     font-size: 16px;
     border: none;
     width: 100%;
@@ -23,6 +53,58 @@
     color: rgb(233, 233, 233);
 }
 
-.searchInput input:focus {
+.geoInput input:focus {
     outline: none;
+}
+.categoryInput {
+    border: 1px solid #666666;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.categoryInput input {
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+}
+
+.categoryInput input:focus {
+    outline: none;
+}
+.eventCategoryContainer{
+    position: relative;
+}
+.dropdown {
+    max-height: 200px;
+    overflow: auto;
+    position: absolute;
+    top: 100%;
+    left: 0%;
+    z-index: 1;
+    width: 100%;
+}
+
+.dropdownItem {
+    border-bottom: 1px solid rgb(134, 134, 134);
+    font-size: 20px;
+    padding: 10px;
+    background-color: rgba(29, 29, 29);
+    cursor: pointer;
+    color: white;
+}
+
+.dropdownItem:hover {
+    background-color: rgba(29, 29, 29, 0.911);
+}
+.categoryTags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 48px;
 }

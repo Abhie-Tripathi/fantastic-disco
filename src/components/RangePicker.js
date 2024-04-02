@@ -39,7 +39,7 @@ const RangePicker = ({ startDate, endDate, disabled }) => {
             <Label></Label>
             <Group className={styles.reactAriaGroup}>
                 <DateInput className={styles.reactAriaDateInput} slot="start">
-                    {(segment) => <DateSegment segment={segment} />}
+                    {(segment) => <DateSegment segment={segment} />}    
                 </DateInput>
                 <span aria-hidden="true">–</span>
                 <DateInput className={styles.reactAriaDateInput} slot="end">
