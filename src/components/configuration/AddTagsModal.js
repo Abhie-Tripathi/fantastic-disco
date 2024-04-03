@@ -32,9 +32,6 @@ const AddTagsModal = ({ isOpen, onClose, tagList, onSave }) => {
             onChange={(e) => setTagInput(e.target.value)}
             value={tagInput}
           />
-          {/* {errors.password && (
-              <div className={styles.error}>{errors.password}</div>
-            )} */}
           <div
             className={Styles.add_button}
             onClick={() => {
