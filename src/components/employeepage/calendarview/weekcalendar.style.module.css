@@ -12,7 +12,9 @@
   }
   
   .dayCard {
-    background-color: #fbf8ff;
+    /* background-color: #fbf8ff; */
+    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+  background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
     border-radius: 12px 12px 0px 0px;
     padding: 12px 0px;
     width: 100%;
@@ -34,14 +36,15 @@
   }
   
   .day_title {
-    color: #6750a4;
+    color: white;
     font-weight: 500;
     font-size: 12px;
   }
   
   .date {
-    background-color: #eadbff;
-    color: #6750a4;
+    /* background-color: #eadbff;
+    color: #6750a4; */
+    color: white;
     font-size: 14px;
     font-weight: 600;
     padding: 8px 12px;

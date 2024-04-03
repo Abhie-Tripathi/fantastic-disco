@@ -12,14 +12,23 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard = ({ eventName, eventLocation, eventImage, eventDate }) => {
+const YourEventCard = ({ eventName, eventCtas, eventLocation, eventImage, eventDate }) => {
 
   const formattedDate = formatDate(eventDate);
   return (
     <div className={styles.card}>
       <img src={eventImage} width={300} height={238} className={styles.cardImg} />
       <div className={styles.cardDetails}>
+        <div style={{position:"relative"}}>
         <div className={styles.eventName}>{eventName}</div>
+        <div className={styles.pills}>
+          {eventCtas.map((item)=>(
+            <div className={styles.pill}>{item}</div>
+          ))
+
+          }
+        </div>
+        </div>
         <div className={styles.locationAndDateContainer}>
           <div className={styles.eventLocation}>
             <img src={locationIcon} width={24} height={24} />
