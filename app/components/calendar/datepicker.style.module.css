@@ -1,0 +1,152 @@
+.reactAriaGroup {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    min-width: 220px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    position: relative;
+    padding: 4px 4px 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  
+  .reactAriaGroup[data-pressed] {
+    box-shadow: none;
+    background: rgb(159, 76, 236);
+  }
+  
+  .reactAriaGroup[data-focus-within] {
+    outline-offset: -1px;
+  }
+  
+  /* Styles for the Button */
+  .reactAriaButton {
+    background: rgb(10, 10, 10);
+    color: white;
+    border: 2px solid black;
+    forced-color-adjust: none;
+    border-radius: 4px;
+    border: none;
+    margin-left: auto;
+    width: 1.429rem;
+    height: 1.429rem;
+    padding: 0;
+    font-size: 0.857rem;
+    box-sizing: content-box;
+    flex-shrink: 0;
+    position: sticky;
+    right: 0;
+  }
+  
+  .reactAriaButton[data-focus-visible] {
+    outline: 2px solid black;
+    outline-offset: 2px;
+  }
+  
+  /* Styles for the DateInput */
+  .reactAriaDateInput {
+      display: flex;
+    width: unset;
+    min-width: unset;
+    padding: unset;
+    border: unset;
+    outline: unset;
+  }
+  
+  /* Styles for the Popover */
+  .reactAriaPopover[data-trigger=DateRangePicker] {
+    max-width: unset;
+  }
+  
+  /* Styles for RangeCalendar */
+  .reactAriaCalendar {
+      width: fit-content;
+      max-width: 100%;
+      color: white;
+      background-color: rgb(20, 20, 20);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    
+    .reactAriaCalendar header {
+      display: flex;
+      align-items: center;
+      margin: 0 4px .5rem 4px;
+    }
+    
+    .reactAriaCalendar header .reactAriaHeading {
+      flex: 1;
+      margin: 0;
+      text-align: center;
+      font-size: 1.375rem;
+    }
+    
+    /* .react-aria-Button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+    } */
+    
+    /* Styles for table */
+    .reactAriaCalendar table {
+      border-collapse: collapse;
+    }
+    
+    .reactAriaCalendar table td {
+      padding: 2px 0;
+    }
+    
+    /* Styles for CalendarCell */
+    .reactAriaCalendar .reactAriaCalendarCell {
+      width: 2.286rem;
+      line-height: 2.286rem;
+      text-align: center;
+      border-radius: 6px;
+      cursor: default;
+      outline: none;
+      forced-color-adjust: none;
+    }
+    
+    /* Styles for CalendarCell with data-outside-month */
+    .reactAriaCalendar .reactAriaCalendarCell[data-outside-month] {
+      display: none;
+    }
+    
+    /* Styles for CalendarCell with data-pressed */
+    .reactAriaCalendar .reactAriaCalendarCell[data-pressed] {
+      background: black;
+    }
+    
+    /* Styles for CalendarCell with data-focus-visible */
+    .reactAriaCalendar .reactAriaCalendarCell[data-focus-visible] {
+      outline: 2px solid rgb(159, 76, 236);
+      outline-offset: -2px;
+    }
+    
+    /* Styles for selected CalendarCell */
+    .reactAriaCalendar .reactAriaCalendarCell[data-selected] {
+      background: rgb(159, 76, 236);
+      color:white;
+      border-radius: 0;
+    }
+    
+    /* Styles for selected CalendarCell with data-focus-visible */
+    .reactAriaCalendar .reactAriaCalendarCell[data-selected][data-focus-visible] {
+      outline-color: black;
+      outline-offset: -3px;
+    }
+    
+    /* Styles for CalendarCell with data-selection-start */
+    .reactAriaCalendar .reactAriaCalendarCell[data-selection-start] {
+      border-start-start-radius: 6px;
+      border-end-start-radius: 6px;
+    }
+    
+    /* Styles for CalendarCell with data-selection-end */
+    .reactAriaCalendar .reactAriaCalendarCell[data-selection-end] {
+      border-start-end-radius: 6px;
+      border-end-end-radius: 6px;
+    }
+    
