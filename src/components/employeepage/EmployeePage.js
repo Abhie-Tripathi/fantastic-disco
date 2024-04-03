@@ -5,7 +5,7 @@ import EmployeeNavbar from './EmployeeNavbar.js'
 import Navbar from '../Navbar.js'
 import ListView from './listview/ListView.js'
 import ViewBtns from './viewbtns/ViewBtns.js'
-import MyMap from './mapview/MyMap.js'
+import Map from './mapview/Map.js'
 import CalendarContainer from './calendarcontainer/CalendarContainer.js'
 
 const EmployeePage = () => {
@@ -28,7 +28,7 @@ const EmployeePage = () => {
                 <EmployeeNavbar handleAddEvent={handleAddEvent}/>
                 <ViewBtns handleSelectedData = {handleSelectedData} />
                 {selectedView === 'list' && <ListView/>}
-                {selectedView === 'map' && <MyMap/>}
+                {selectedView === 'map' && <Map/>}
                 {selectedView === 'calendar' && <CalendarContainer/>}
             </div>
             {isAddeventOpen &&
