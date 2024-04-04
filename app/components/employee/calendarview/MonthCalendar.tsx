@@ -176,54 +176,61 @@ const MonthCalendar: React.FC = () => {
     
     return (
         <div className={styles.container}>
-            <div className={styles.dayCards_container}>
-                {days.map((day) => (
-                    <div key={day} className={styles.dayCard}>
-                        <div className={styles.day_title}>{day}</div>
-                    </div>
-                ))}
-            </div>
+      <div className={styles.dayCards_container}>
+        {days.map((day) => (
+          <div key={day} className={styles.dayCard}>
+            <div className={styles.day_title}>{day}</div>
+          </div>
+        ))}
+      </div>
 
-            <div className={styles.monthCards_container}>
-                {datesWithEvents.map((dateWithEvent) => {
-                    if (!dateWithEvent.date) {
-                        return <div className={styles.emptyCard}></div>;
-                    } else {
-                        let count = dateWithEvent.events.length;
-                        return (
-                            <div className={styles.monthCard}>
-                                <div className={styles.monthCard_dayno}>
-                                    {dateWithEvent.date.getDate()}
-                                </div>
-                                {dateWithEvent.events.map((event) => {
-                                    if (event.startDate === dateWithEvent.date.toLocaleDateString()) {
-                                        count = count - 1;
-                                        let width = "85%";
-                                        if (event.duration > 0) {
-                                            width = event.duration === 2 ? "200%" : event.duration === 3 ? "310%" : "85%";
-                                        }
-                                        return (
-                                            <div
-                                                className={styles.event}
-                                                style={{
-                                                    width: `${width}`,
-                                                    top: `${38 + count * 20}%`,
-                                                    backgroundColor: "#6750A4",
-                                                    color: "white"
-                                                }}
-                                            >
-                                                {event.name}
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </div>
-                        );
+      <div className={styles.monthCards_container}>
+        {datesWithEvents.map((dateWithEvent, index) => {
+          if (dateWithEvent == "") {
+            return <div className={styles.emptyCard} key={index}></div>;
+          } else {
+            let count = dateWithEvent.events.length;
+            return (
+              <div className={styles.monthCard} key={index}>
+                <div className={styles.monthCard_dayno}>
+                  {dateWithEvent.date.getDate()}
+                </div>
+                {dateWithEvent.events.map((event) => {
+                  if (
+                    event.startDate ==
+                    dateWithEvent.date.toLocaleDateString()
+                  ) {
+                    count = count - 1;
+                    let width = "85%";
+                    if (event.duration > 0) {
+                      event.duration == 2
+                        ? (width = "200%")
+                        : event.duration == 3
+                        ? (width = "310%")
+                        : "85%";
                     }
+                    console.log(dateWithEvent.date.getDate(), count);
+
+                    return (
+                      <div
+                        key={index}
+                        className={styles.event}
+                        style={{
+                          width: `${width}`,
+                          top: `${38 + count * 20}%`,
+                        }}
+                      >
+                        {event.name}
+                      </div>
+                    );
+                  }
                 })}
-            </div>
-        </div>
+              </div>
+            );
+          }
+        })}
+      </div>
+    </div>
     );
 };
 

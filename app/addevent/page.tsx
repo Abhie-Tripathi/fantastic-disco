@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './page.style.module.css'
 import AddEventModal from '../components/AddEventModal'
 
-const page = () => {
+const Page = () => {
   console.log()
   return (
     <div className={styles.bodyContainer}>
@@ -11,4 +11,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

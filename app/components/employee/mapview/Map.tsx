@@ -1,3 +1,4 @@
+
 import React, { useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -61,7 +62,7 @@ const Map: React.FC = () => {
             >
               <div className={styles.event_details_popup}>
                 <Link
-                  href={event.eventUrl}
+                  href={event.imageUrl}
                   className={styles.event_details_popup_link}
                 >
                   {event.name}
@@ -76,7 +77,7 @@ const Map: React.FC = () => {
               <div className={styles.event_details_action}>
                 <Link
                   className={styles.event_view_details}
-                  href={event.eventUrl}
+                  href={event.imageUrl}
                 >
                   View Full Details
                 </Link>
@@ -98,4 +99,3 @@ const Map: React.FC = () => {
 };
 
 export default Map;
-
