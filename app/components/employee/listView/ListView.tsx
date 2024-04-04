@@ -5,7 +5,7 @@ import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
 import DropDownIcon from '/public/dropDown.svg'
 import Image from 'next/image'
-import eventData from '/public/data/demoEvent.json'
+import eventData from '../../../../public/data/demoEvent.json'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")

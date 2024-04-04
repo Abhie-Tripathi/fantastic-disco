@@ -20,8 +20,8 @@ const Widget = () => {
             </div>
         </div>
       </div>
-      {data.map(item => (
-      <div className={Styles.containerTwo}>
+      {data.map((item,index) => (
+      <div key={index} className={Styles.containerTwo}>
         
           <WidgetCard key={item.id} data={item} />
        

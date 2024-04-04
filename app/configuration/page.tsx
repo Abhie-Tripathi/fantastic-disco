@@ -7,8 +7,7 @@ import StickyWidget from '../components/widgetconfigurations/StickyWidget'
 import SectionWidget from '../components/widgetconfigurations/SectionWidget'
 import Preview from '../components/widgetconfigurations/Preview'
 
-const page = () => {
-    const [focus, setFocus] = useState<string>("");
+const Page = () => {
     const [type, setType] = useState<string>("Sticky");
     const [previewState, setPreviewState] = useState<string>("Side Preview");
 
@@ -41,4 +40,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

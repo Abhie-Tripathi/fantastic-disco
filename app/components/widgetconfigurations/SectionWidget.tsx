@@ -126,8 +126,8 @@ const SectionWidget = () => {
                         </div>
                     )}
                 </div>
-                <div className={styles.tags}>{categoryTags.map(tag => (
-                    <Tag name={tag} onRemove={() => handleRemoveCategoryTag(tag)} />
+                <div className={styles.tags}>{categoryTags.map((tag,index) => (
+                    <Tag key={index} name={tag} onRemove={() => handleRemoveCategoryTag(tag)} />
                 ))}</div>
 
                 <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
@@ -151,8 +151,8 @@ const SectionWidget = () => {
                         </div>
                     )}
                 </div>
-                <div className={styles.tags}>{eventTags.map(tag => (
-                    <Tag name={tag} onRemove={() => handleRemoveEventTypeTag(tag)} />
+                <div className={styles.tags}>{eventTags.map((tag,index) => (
+                    <Tag key={index} name={tag} onRemove={() => handleRemoveEventTypeTag(tag)} />
                 ))}</div>
 
                 <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
@@ -177,8 +177,8 @@ const SectionWidget = () => {
                         </div>
                     )}
                 </div>
-                <div className={styles.tags}>{modeTags.map(tag => (
-                    <Tag name={tag} onRemove={() => handleRemoveModeTag(tag)} />
+                <div className={styles.tags}>{modeTags.map((tag,index) => (
+                    <Tag key={index} name={tag} onRemove={() => handleRemoveModeTag(tag)} />
                 ))}</div>
 
                 <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
