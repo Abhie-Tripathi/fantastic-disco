@@ -46,6 +46,10 @@
     border-radius: 12px;
     padding: 8px 15px;
     display: flex;
+    align-items: center;
     background-color: #6750A4;
     cursor: pointer;
+}
+.navbar .btns .add img{
+    margin-right: 10px;
 }

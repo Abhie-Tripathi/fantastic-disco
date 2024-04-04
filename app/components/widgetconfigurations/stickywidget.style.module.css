@@ -1,0 +1,138 @@
+.form{
+    margin-top: 40px;
+}
+.eventNameContainer{
+    position: relative;
+}
+.heading{
+    color: #999999;
+    margin-bottom: 12px;
+}
+.eventNameInput {
+    border: 1px solid #666666;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 48px;
+}
+
+.eventNameInput input {
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+}
+
+.eventNameInput input:focus {
+    outline: none;
+}
+.dropdownIconValue{
+    display: flex;
+}
+.dropdownIconValue div{
+    margin-right: 10px;
+}
+.dropdown {
+
+    max-height: 200px;
+    overflow: auto;
+    position: absolute;
+    top: 100%;
+    left: 0%;
+    z-index: 1;
+    width: 100%;
+}
+
+.dropdownItem {
+    border-bottom: 1px solid rgb(134, 134, 134);
+    font-size: 20px;
+    padding: 10px;
+    background-color: rgba(29, 29, 29);
+    cursor: pointer;
+    color: white;
+}
+
+.dropdownItem:hover {
+    background-color: rgba(29, 29, 29, 0.911);
+}
+
+.heightInput{
+    padding: 12px;
+    border: 1px solid #666666;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+}
+.heightInput input{
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+}
+.heightInput input:focus {
+    outline: none;
+}
+.fontInput{
+    padding: 12px;
+    border: 1px solid #666666;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+}
+.fontInput input{
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    margin-left: 10px;
+    background: none;
+    color: rgb(233, 233, 233);
+    
+}
+.fontInput input:focus {
+    outline: none;
+}
+.colorOptions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+}
+.colorOptions div{
+    display: flex;
+    align-items: center;
+}
+.colorInput {
+    margin-left: 20px;
+    border: none;
+    border-radius: 8px; 
+    padding: 0; 
+    background-color: transparent; 
+    cursor: pointer;
+  }
+  
+.btns{
+    display: flex;
+    justify-content: space-between;
+}
+.submitBtn{
+    background-color: #6650a483;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 24px;
+    color: white;
+}
+.cancelBtn{
+    background: none;
+    border: none;
+    color: white;
+}
