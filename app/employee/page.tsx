@@ -6,6 +6,7 @@ import ListView from '../components/employee/listView/ListView'
 import ViewBtns from '../components/employee/viewBtns/ViewBtns';
 import Map from '../components/employee/mapview/Map';
 import CalendarContainer from '../components/employee/calendarcontainer/CalendarContainer';
+import AddEventModal from '../components/AddEventModal';
 
 const EmployeePage: React.FC = () => {
     const [selectedView, setSelectedView] = useState<string>('list');
@@ -28,7 +29,7 @@ const EmployeePage: React.FC = () => {
                 {selectedView === 'map' && <Map />}
                 {selectedView === 'calendar' && <CalendarContainer />}
             </div>
-            {isAddeventOpen && <div className={styles.modal}>{/* <AddEventModal /> */}</div>}
+            {isAddeventOpen && <div className={styles.modal}><AddEventModal /></div>}
         </div>
     );
 };

@@ -1,10 +1,9 @@
-
 import React, { useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './map.module.css'
 import { useState } from 'react';
-import eventData from '/public/data/demoEvent.json'
+import eventData from '../../../../public/data/demoEvent.json'
 import MapPointer from '/public/Marker.svg'
 import ReactMapGL, {Marker, Popup} from 'react-map-gl'
 interface Event {

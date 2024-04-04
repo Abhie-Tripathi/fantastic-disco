@@ -230,7 +230,7 @@ const AddEventModal = () => {
                             </div>
                         ) : (
                             <div className={styles.imageBox}>
-                                <Image src={image.placeHolder} alt="" />
+                                <Image src={image.placeHolder} alt="" width={400} height={400} />
                                 <div className={styles.imageLocation}>{location}</div>
                                 {/* <Image src={logoUrl} alt='logo' className={styles.logo} width={40} height={40}></Image> */}
                             </div>
