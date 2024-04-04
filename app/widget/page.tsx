@@ -21,7 +21,7 @@ const Widget = () => {
         </div>
       </div>
       {data.map(item => (
-      <div className={Styles.containerTwo}>
+      <div key={item.id} className={Styles.containerTwo}>
         
           <WidgetCard key={item.id} data={item} />
        

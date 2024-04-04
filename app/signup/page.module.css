@@ -1,5 +1,6 @@
 .container {
     height: 100vh;
+    background: linear-gradient(270deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
     width: 100vw;
     position: relative;
     display: flex;
@@ -64,7 +65,7 @@
   }
   
   .form_heading {
-    color: #242424;
+    /* color: #242424; */
     font-weight: 700;
     font-size: 24px;
     margin-bottom: 20px;
@@ -83,7 +84,8 @@
   }
   
   .input_title {
-    color: #424242df;
+    /* color: #424242df; */
+    color: white;
     margin-bottom: 2px;
   }
   

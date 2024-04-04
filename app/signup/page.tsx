@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 // import { SignUpFormSchema } from "@/types/signup";
 // import { ZodError } from "zod";
-// import Visibility from "/public/visibility.svg";
+import Visibility from "../../public/visibility.svg";
 
 const SignIn = () => {
   const [showVerification, setShowVerification] = useState(false);
@@ -80,9 +80,9 @@ const SignIn = () => {
           {/* <Image src={EventeliLogo} alt="logo" width={65} />
           <Image src={EventeliText} alt="text" /> */}
         </div>
-        <div className={styles.heroTitle}>
+        {/* <div className={styles.heroTitle}>
           Elevate your event planning with intelligence
-        </div>
+        </div> */}
       </div>
 
       <Image
@@ -152,12 +152,12 @@ const SignIn = () => {
                 type={passwordVisibility ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {/* <Image
+              <Image
                 src={Visibility}
                 alt="visibility"
                 className={styles.visibility_Icon}
                 onClick={() => setPasswordVisibility(!passwordVisibility)}
-              /> */}
+              />
               {errors.password && (
                 <div className={styles.error}>{errors.password}</div>
               )}

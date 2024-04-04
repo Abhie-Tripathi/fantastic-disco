@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './map.module.css'
 import { useState } from 'react';
-import eventData from '/public/data/demoEvent.json'
+import eventData from '../../../../public/data/demoEvent.json'
 import MapPointer from '/public/Marker.svg'
 import ReactMapGL, {Marker, Popup} from 'react-map-gl'
 interface Event {
@@ -62,7 +62,7 @@ const Map: React.FC = () => {
             >
               <div className={styles.event_details_popup}>
                 <Link
-                  href={event.eventUrl}
+                  href={event.imageUrl}
                   className={styles.event_details_popup_link}
                 >
                   {event.name}
@@ -77,7 +77,7 @@ const Map: React.FC = () => {
               <div className={styles.event_details_action}>
                 <Link
                   className={styles.event_view_details}
-                  href={event.eventUrl}
+                  href={event.imageUrl}
                 >
                   View Full Details
                 </Link>
