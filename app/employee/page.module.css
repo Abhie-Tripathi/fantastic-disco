@@ -1,0 +1,19 @@
+.eventsBody{
+    background-color: #0c0c0c;
+    padding: 94px 132px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.blur{
+    filter: blur(2px);
+    height: 100vh;
+    overflow: hidden;
+}
+.modal{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+}
