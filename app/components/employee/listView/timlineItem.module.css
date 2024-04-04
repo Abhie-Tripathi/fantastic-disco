@@ -1,0 +1,25 @@
+.timelineItem{
+    color: white;
+    position: relative;
+    width: 150px;
+    font-size: 18px;
+}
+.timelineItem.showCircle::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 15px;
+    width: 13px; 
+    height: 13px; 
+    border-radius: 50%;
+    background-color: #6750A4; 
+}
+.timelineItem::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 20px;
+    width: 1px;
+    height: 100%;
+    border-left: 1px dashed #6750A4;
+} 

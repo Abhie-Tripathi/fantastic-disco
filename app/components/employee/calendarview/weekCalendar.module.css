@@ -1,0 +1,98 @@
+.container {
+    padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .dayCards_container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .dayCard {
+    /* background-color: #fbf8ff; */
+    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+  background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    border-radius: 12px 12px 0px 0px;
+    padding: 12px 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  
+  .dayCard::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    height: 4px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: #6750a4;
+  }
+  
+  .day_title {
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  
+  .date {
+    /* background-color: #eadbff;
+    color: #6750a4; */
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 11px;
+  }
+  
+  .eventCards_container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .eventCard {
+    height: 68px;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+  
+  .eventCard::before{
+    content: "";
+    width: 3px;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    border-radius: 12px;
+    background-color: #F59E0B;
+    position: absolute;
+  }
+  
+  
+  .emptyCard {
+    height: 68px;
+    width: calc((100% - 90px) / 7);
+    background-color: transparent;
+  }
+  
+  .event_date {
+    /* color: #6d28d9; */
+    font-size: 12px;
+  }
+  
+  .event_title {
+    /* color: #6d28d9; */
+    font-weight: 500;
+    font-size: 14px;
+  }

@@ -1,0 +1,20 @@
+.btns{
+    border-radius: 50px;
+    background-color: #1A1A1A;
+    margin-bottom: 40px;
+}
+.btns button{
+    color: white;
+    font-weight: 500;
+    padding: 12px 48px;
+    font-size: 14px;
+    background:none;
+    border: none;
+    cursor: pointer;
+}
+.btns button.activeBtn{
+    border: 1px solid grey;
+    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    border-radius: 50px;
+}

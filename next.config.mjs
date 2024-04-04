@@ -1,11 +1,18 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {    
-    images: {
-    domains: ['14068d66ba387efac9ce5e4b1741bcf2.r2.cloudflarestorage.com'],
-  }
-};
-
 // next.config.js
 
+const config = {
+    images: {
+        domains: ['14068d66ba387efac9ce5e4b1741bcf2.r2.cloudflarestorage.com',
+            'i.pinimg.com',
+            'miro.medium.com',
+            'palmbeach.floridaweekly.com',
+            'images.ladepeche.fr',
+            'cdn.choosechicago.com'
+          ],
+    },
+    reactStrictMode: false,
 
-export default nextConfig;
+  };
+  
+  export default config;
