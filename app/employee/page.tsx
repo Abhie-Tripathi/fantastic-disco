@@ -7,6 +7,7 @@ import ViewBtns from '../components/employee/viewBtns/ViewBtns';
 import Map from '../components/employee/mapview/Map';
 import CalendarContainer from '../components/employee/calendarcontainer/CalendarContainer';
 import AddEventModal from '../components/AddEventModal';
+import Navbar from '../components/Navbar'
 
 const EmployeePage: React.FC = () => {
     const [selectedView, setSelectedView] = useState<string>('list');
@@ -22,6 +23,7 @@ const EmployeePage: React.FC = () => {
 
     return (
         <div className={styles.body}>
+            <Navbar/>
             <div className={`${styles.eventsBody}`}>
                 <EmployeeNavbar handleAddEvent={handleAddEvent} />
                 <ViewBtns handleSelectedData={handleSelectedData} />
