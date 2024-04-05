@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './page.style.module.css'
-import Navbar from '../components/Navbar'
 import WidgetBtns from '../components/widgetconfigurations/WidgetBtns'
 import StickyWidget from '../components/widgetconfigurations/StickyWidget'
 import SectionWidget from '../components/widgetconfigurations/SectionWidget'
@@ -19,7 +18,6 @@ const Page = () => {
 
     return (
         <div className={styles.body}>
-            {/* <Navbar /> */}
             <div className={styles.container} >
                 {previewState === "Side Preview" && <div className={styles.configurationForm}>
                     <WidgetBtns
@@ -29,11 +27,11 @@ const Page = () => {
                     <div className={styles.dropdown_container}>
                         {type === "Sticky" && <StickyWidget />}
                         {type === "Section" && <SectionWidget />}
-                        {type === "Full Width" && <SectionWidget />}
+                        {type === "Page" && <SectionWidget />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>
-                    <Preview toggle={handlePreviewToggle} />
+                    <Preview toggle={handlePreviewToggle} type={type} />
                 </div>
             </div>
         </div>

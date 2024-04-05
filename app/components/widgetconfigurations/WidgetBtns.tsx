@@ -17,8 +17,8 @@ const WidgetBtns: React.FC<WidgetBtnsProps> = ({ type, setType }) => {
                     onClick={() => setType("Section")}>
                     <div>Section</div>
                 </div>
-                <div className={`${styles.button} ${type === "Full Width" ? styles.active : ""}`}
-                    onClick={() => setType("Full Width")}>
+                <div className={`${styles.button} ${type === "Page" ? styles.active : ""}`}
+                    onClick={() => setType("Page")}>
                     <div>Page</div>
                 </div>
             </div>
