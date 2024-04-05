@@ -1,0 +1,92 @@
+.container {
+    display: flex;
+    gap: 140px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .verification_visuals {
+    align-self: flex-end;
+  }
+  
+  .form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    max-width: 450px;
+  }
+  
+  .message {
+    color: #6750a4;
+    background-color: #eeeaf9;
+    padding: 16px 0px;
+    text-align: center;
+    border-radius: 10px;
+  }
+  
+  .message_highlighted {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .archive_icon {
+    vertical-align: middle;
+  }
+  
+  .heading {
+    font-weight: 700;
+    /* color: #242424; */
+    font-size: 24px;
+  }
+  
+  .sub_heading {
+    color: #424242;
+  }
+  
+  .input_container {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    gap: 14px;
+  }
+  
+  .input {
+    outline: none;
+    font-family: inherit;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #e4daffcc;
+    border-radius: 12px;
+    padding: 8px;
+    width: 80px;
+    height: 80px;
+  }
+  
+  .input::-webkit-outer-spin-button,
+  .input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .input[type="number"]{
+    -moz-appearance: textfield;
+  }
+  
+  .button {
+    background-color: #6750a4;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .resend_button {
+    font-weight: 500;
+    color: #6750a4;
+    cursor: pointer;
+  }
+  
+  .resendButton_container {
+    text-align: center;
+  }

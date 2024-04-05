@@ -23,7 +23,6 @@ const EmployeePage: React.FC = () => {
 
     return (
         <div className={styles.body}>
-            <Navbar/>
             <div className={`${styles.eventsBody}`}>
                 <EmployeeNavbar handleAddEvent={handleAddEvent} />
                 <ViewBtns handleSelectedData={handleSelectedData} />
