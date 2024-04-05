@@ -8,11 +8,11 @@ import LeftBackground from "../../public/leftBackground.svg";
 import TopRightBackground from "../../public/topRightBackground.svg";
 import BottomRightBackground from "../../public/bottomRightBackground.svg";
 import LoginVisuals from "../../public/loginVisuals.png";
-// import { useAuthContext } from "@/context";
+import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-// import { SignInFormSchema } from "@/types/signin";
-// import { ZodError } from "zod";
+import { SignInFormSchema } from "@/app/components/types/";
+import { ZodError } from "zod";
 import Visibility from "../../public/visibility.svg";
 
 const SignIn = () => {
@@ -21,31 +21,32 @@ const SignIn = () => {
   const [visible, setVisible] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
-//   const { signin } = useAuthContext();
+  const { signin } = useAuthContext();
 
   const signinHandler = async () => {
-    // try {
-    //   SignInFormSchema.parse({ email, password });
-    //   setErrors({});
-    //   const response = await signin({ email, password });
-    //   if (response?.error) {
-    //     setErrors({ password: response.error });
-    //   } else {
-    //     router.push("/");
-    //   }
-    // } catch (error) {
-    //   if (error instanceof ZodError) {
-    //     const validationErrors: Record<string, string> = {};
-    //     error.errors.forEach((err) => {
-    //       if (err.path) {
-    //         validationErrors[err.path.join(".")] = err.message;
-    //       }
-    //     });
-    //     setErrors(validationErrors);
-    //   } else {
-    //     console.error("An unexpected error occurred:", error);
-    //   }
-    // }
+    try {
+      SignInFormSchema.parse({ email, password });
+      setErrors({});
+      const response = await signin({ email, password });
+      console.log(response);
+      if (response?.error) {
+        setErrors({ password: response.error });
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            validationErrors[err.path.join(".")] = err.message;
+          }
+        });
+        setErrors(validationErrors);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   return (
