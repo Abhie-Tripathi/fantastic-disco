@@ -8,17 +8,17 @@ import LeftBackground from "../../public/leftBackground.svg";
 import TopRightBackground from "../../public/topRightBackground.svg";
 import BottomRightBackground from "../../public/bottomRightBackground.svg";
 import SignUpVisuals from "../../public/signupVisuals.svg";
-//import Verification from "@/components/SignUp/Verification";
-//import { useAuthContext } from "@/context/auth";
+import Verification from "../components/signup/verification/page";
+import { useAuthContext } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-// import { SignUpFormSchema } from "@/types/signup";
-// import { ZodError } from "zod";
-// import Visibility from "/public/visibility.svg";
+import { SignUpFormSchema } from "@/app/components/types/signup";
+import { ZodError } from "zod";
+import Visibility from "../../public/visibility.svg";
 
 const SignIn = () => {
   const [showVerification, setShowVerification] = useState(false);
-//   const { signup } = useAuthContext();
+  const { signup } = useAuthContext();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -32,45 +32,47 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async () => {
-    // try {
-    //   SignUpFormSchema.parse({
-    //     name,
-    //     email,
-    //     mobileNo,
-    //     password,
-    //     confirmPassword,
-    //   });
-    //   setErrors({});
-    //   if (password !== confirmPassword) {
-    //     setErrors({ confirmPassword: "Passwords do not match. Try again" });
-    //     return;
-    //   }
-    //   setIsLoading(true);
-    //   const response = await signup({
-    //     firstname: name.split(" ")[0],
-    //     lastname: name.split(" ")[1],
-    //     email,
-    //     password,
-    //   });
-    //   setIsLoading(false);
-    //   if (!response?.error) {
-    //     setShowVerification(true);
-    //   } else {
-    //     setErrors({ confirmPassword: response.error });
-    //   }
-    // } catch (error) {
-    //   if (error instanceof ZodError) {
-    //     const validationErrors: Record<string, string> = {};
-    //     error.errors.forEach((err) => {
-    //       if (err.path) {
-    //         validationErrors[err.path.join(".")] = err.message;
-    //       }
-    //     });
-    //     setErrors(validationErrors);
-    //   } else {
-    //     console.error("An unexpected error occurred:", error);
-    //   }
-    // }
+    try {
+       SignUpFormSchema.parse({
+        name,
+        email,
+        mobileNo,
+        password,
+        confirmPassword,
+      });
+      setErrors({});
+      if (password !== confirmPassword) {
+        setErrors({ confirmPassword: "Passwords do not match. Try again" });
+        return;
+      }
+      
+      setIsLoading(true);
+      const response = await signup({
+        firstname: name.split(" ")[0],
+        lastname: name.split(" ")[1],
+        email,
+        password,
+      });
+      setIsLoading(false);
+      if (!response?.error) {
+        // console.log(response)
+        setShowVerification(true);
+      } else {
+        setErrors({ confirmPassword: response.error });
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            validationErrors[err.path.join(".")] = err.message;
+          }
+        });
+        setErrors(validationErrors);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   return (
@@ -80,9 +82,9 @@ const SignIn = () => {
           {/* <Image src={EventeliLogo} alt="logo" width={65} />
           <Image src={EventeliText} alt="text" /> */}
         </div>
-        <div className={styles.heroTitle}>
+        {/* <div className={styles.heroTitle}>
           Elevate your event planning with intelligence
-        </div>
+        </div> */}
       </div>
 
       <Image
@@ -152,12 +154,12 @@ const SignIn = () => {
                 type={passwordVisibility ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {/* <Image
+              <Image
                 src={Visibility}
                 alt="visibility"
                 className={styles.visibility_Icon}
                 onClick={() => setPasswordVisibility(!passwordVisibility)}
-              /> */}
+              />
               {errors.password && (
                 <div className={styles.error}>{errors.password}</div>
               )}
@@ -209,7 +211,7 @@ const SignIn = () => {
         </div>
       )}
 
-      {/* {showVerification && <Verification />} */}
+      {showVerification && <Verification />}
     </div>
   );
 };
