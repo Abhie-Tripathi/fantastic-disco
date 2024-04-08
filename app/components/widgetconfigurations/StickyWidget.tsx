@@ -33,6 +33,7 @@ const StickyWidget = () => {
         setMatchingEvents(matches);
         setIsEventDropdownOpen(true)
     }, [searchInput])
+    
     const handleEventClick = (event: any) => {
         setIsEventDropdownOpen(false)
         setSelectedEvent(event);

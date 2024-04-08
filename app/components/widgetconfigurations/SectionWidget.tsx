@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import styles from './sectionwidget.style.module.css'
 import EventCategoryData from '../../../public/data/categoryTags.json'
 import EventTypeData from '../../../public/data/eventTypeTags.json'
@@ -11,6 +11,7 @@ import DatePickerComp from "../calendar/DatePickerComp";
 import Tags from "./Tags";
 import Image from "next/image";
 import Tag from "./Tag";
+import EventData from '../../../public/data/demoEvent.json'
 
 const SectionWidget = () => {
     const [tagList, setTagList] = useState<string[]>([]);
@@ -34,6 +35,12 @@ const SectionWidget = () => {
     const [modeTags, setModeTags] = useState<string[]>([]);
     const [isModeDropdownOpen, setIsModeDropdownOpen] = useState<boolean>(false);
 
+    const [showPromotedInput, setShowPromotedInput] = useState<boolean>(false);
+    const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] = useState<boolean>(false);
+    const [promotedInput, setPromotedInput] = useState<string>("");
+    const [matchingPromotedEvents, setMatchingPromotedEvents] = useState<any[]>([]);
+    const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
+
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -45,15 +52,15 @@ const SectionWidget = () => {
         }
     }, [categoryInput]);
 
-    const handleEventFormatClick = (type : string)=>{
+    const handleEventFormatClick = (type: string) => {
         setEventFormat(type)
         setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)
     }
 
-    const handleStartDate = (startDate : any)=>{
+    const handleStartDate = (startDate: any) => {
         setStartDate(startDate)
     }
-    const handleEndDate = (endDate : any)=>{
+    const handleEndDate = (endDate: any) => {
         setEndDate(endDate)
     }
 
@@ -89,14 +96,35 @@ const SectionWidget = () => {
     const handleRemoveModeTag = (tagToRemove: string) => {
         setModeTags(modeTags.filter(tag => tag !== tagToRemove));
     };
-    
-    const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
+    const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setShowPromotedInput(e.target.checked);
+    };
+
+    const filterEvents = (event: any) => {
+        return event.tags.includes(promotedInput.toLowerCase());
+    };
+    useEffect(() => {
+        const matches = EventData.filter(filterEvents);
+        setMatchingPromotedEvents(matches);
+        setIsPromotedDropdownOpen(true)
+    }, [promotedInput])
+    const handlePromotedEventClick = (event: any) => {
+        setPromotedEventTags([...promotedEventTags, event.name])
+        setIsPromotedDropdownOpen(false)
+    }
+
+    const handleRemovePromotedEventsTag = (tagToRemove: string)=>{
+        setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
+    }
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = {
-            modeTags: modeTags.join(','), // Convert array to comma-separated string
+            eventFormat,
             startDate: startDate, // Convert date to ISO string
             endDate: endDate, // Convert date to ISO string
-            eventFormat,
+            categoryTags: categoryTags.join(','),
+            modeTags: modeTags.join(','), // Convert array to comma-separated string
             eventTypeTags: eventTypeTags.join(',') // Convert array to comma-separated string
         };
         const params = new URLSearchParams(formData);
@@ -110,7 +138,7 @@ const SectionWidget = () => {
                 <div className={styles.heading}>Event Format</div>
                 <div className={styles.eventFormatInput}>
                     <input disabled value={eventFormat} />
-                    <Image src={ArrowDownIcon} alt="dropdown" onClick={()=>setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)}/>
+                    <Image src={ArrowDownIcon} alt="dropdown" onClick={() => setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)} />
                 </div>
                 {isEventFormatDropdownOpen && (
                     <div className={styles.dropdown}>
@@ -125,12 +153,12 @@ const SectionWidget = () => {
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate = {handleStartDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} /></div>
 
                 </div>
                 <div className={styles.endDate}>
                     <div className={styles.heading}>End Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate = {handleEndDate}/></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} /></div>
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
@@ -155,7 +183,6 @@ const SectionWidget = () => {
                         onChange={(e) => setCategoryInput(e.target.value)}
                         value={categoryInput}
                         placeholder="For ex : Texttile"
-                        required
                     />
                 </div>
                 {isCategoryDropdownOpen && (
@@ -226,16 +253,31 @@ const SectionWidget = () => {
             <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.promotedHeading}>
                     <div className={styles.heading}>Do you want to show promoted events?</div>
-                    <input type="checkbox" id="check" className={styles.checkboxInput} />
+                    <input type="checkbox" id="check" className={styles.checkboxInput} onChange={handleCheckboxChange} />
                     <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
-                <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
+                {promotedEventTags.length <= 2 && <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
                         type='text'
+                        onChange={(e) => setPromotedInput(e.target.value)}
                         placeholder="Search Events"
+                        value={promotedInput}
+                        disabled={!showPromotedInput}
                     />
-                </div>
+                </div>}
+                {isPromotedDropdownOpen && (
+                    <div className={styles.dropdown}>
+                        {matchingPromotedEvents.map((event, index) => (
+                            <div key={index} className={styles.dropdownItem} onClick={() => handlePromotedEventClick(event)}>
+                                {event.name}
+                            </div>
+                        ))}
+                    </div>
+                )}
+                <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
+                    <Tag key={index} name={tag} onRemove={() => handleRemovePromotedEventsTag(tag)} />
+                ))}</div>
             </div>
             <div className={styles.tagsContainer}>
                 <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
