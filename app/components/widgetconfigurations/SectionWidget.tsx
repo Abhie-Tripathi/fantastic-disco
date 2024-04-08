@@ -1,8 +1,9 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import styles from './sectionwidget.style.module.css'
 import EventCategoryData from '../../../public/data/categoryTags.json'
 import EventTypeData from '../../../public/data/eventTypeTags.json'
+import EventFormatData from '../../../public/data/eventFormat.json'
 import ModeData from '../../../public/data/mode.json'
 import ArrowDownIcon from '/public/downArrow.svg'
 import SearchIcon from '/public/search.svg'
@@ -16,13 +17,19 @@ const SectionWidget = () => {
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
+    const [eventFormat, setEventFormat] = useState<string>("Online")
+    const [isEventFormatDropdownOpen, setIsEventFormatDropdownOpen] = useState<boolean>(false);
+
+    const [startDate, setStartDate] = useState<any>()
+    const [endDate, setEndDate] = useState<any>()
+
     const [categoryTags, setCategoryTags] = useState<string[]>([]);
     const [categoryInput, setCategoryInput] = useState<string>("");
     const [matchingCategories, setMatchingCategories] = useState<string[]>([]);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState<boolean>(false);
 
-    const [eventTags, setEventTags] = useState<string[]>([]);
-    const [isEventDropdownOpen, setIsEventDropdownOpen] = useState<boolean>(false)
+    const [eventTypeTags, setEventTypeTags] = useState<string[]>([]);
+    const [isEventTypeDropdownOpen, setIsEventTypeDropdownOpen] = useState<boolean>(false)
 
     const [modeTags, setModeTags] = useState<string[]>([]);
     const [isModeDropdownOpen, setIsModeDropdownOpen] = useState<boolean>(false);
@@ -38,6 +45,18 @@ const SectionWidget = () => {
         }
     }, [categoryInput]);
 
+    const handleEventFormatClick = (type : string)=>{
+        setEventFormat(type)
+        setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)
+    }
+
+    const handleStartDate = (startDate : any)=>{
+        setStartDate(startDate)
+    }
+    const handleEndDate = (endDate : any)=>{
+        setEndDate(endDate)
+    }
+
     const handleCategoryClick = (category: string) => {
         if (!categoryTags.includes(category)) {
             setCategoryTags([...categoryTags, category]);
@@ -50,14 +69,14 @@ const SectionWidget = () => {
     };
 
     const handleEventTypeClick = (type: string) => {
-        if (!eventTags.includes(type)) {
-            setEventTags([...eventTags, type]);
+        if (!eventTypeTags.includes(type)) {
+            setEventTypeTags([...eventTypeTags, type]);
         }
-        setIsEventDropdownOpen(false);
+        setIsEventTypeDropdownOpen(false);
     };
 
     const handleRemoveEventTypeTag = (tagToRemove: string) => {
-        setEventTags(eventTags.filter(tag => tag !== tagToRemove));
+        setEventTypeTags(eventTypeTags.filter(tag => tag !== tagToRemove));
     };
 
     const handleModeClick = (mode: string) => {
@@ -70,142 +89,162 @@ const SectionWidget = () => {
     const handleRemoveModeTag = (tagToRemove: string) => {
         setModeTags(modeTags.filter(tag => tag !== tagToRemove));
     };
+    
+    const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
+        e.preventDefault()
+        const formData = {
+            modeTags: modeTags.join(','), // Convert array to comma-separated string
+            startDate: startDate, // Convert date to ISO string
+            endDate: endDate, // Convert date to ISO string
+            eventFormat,
+            eventTypeTags: eventTypeTags.join(',') // Convert array to comma-separated string
+        };
+        const params = new URLSearchParams(formData);
+        const queryString = params.toString();
+        console.log(queryString);
+    }
+
     return (
-        <div>
-            <form className={styles.form}>
-                <div className={styles.eventFormatContainer}>
-                    <div className={styles.heading}>Event Format</div>
-                    <div className={styles.eventFormatInput}>
-                        <input disabled placeholder="Online" />
-                        <Image src={ArrowDownIcon} alt="dropdown" />
-                    </div>
+        <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.eventFormatContainer}>
+                <div className={styles.heading}>Event Format</div>
+                <div className={styles.eventFormatInput}>
+                    <input disabled value={eventFormat} />
+                    <Image src={ArrowDownIcon} alt="dropdown" onClick={()=>setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)}/>
                 </div>
-                <div className={styles.dateContainer}>
-                    <div className={styles.startDate}>
-                        <div className={styles.heading}>Start Date</div>
-                        <div className={styles.datePickerContainer}><DatePickerComp /></div>
+                {isEventFormatDropdownOpen && (
+                    <div className={styles.dropdown}>
+                        {EventFormatData.map((event, index) => (
+                            <div key={index} className={styles.dropdownItem} onClick={() => handleEventFormatClick(event)}>
+                                {event}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className={styles.dateContainer}>
+                <div className={styles.startDate}>
+                    <div className={styles.heading}>Start Date</div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate = {handleStartDate} /></div>
+
+                </div>
+                <div className={styles.endDate}>
+                    <div className={styles.heading}>End Date</div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate = {handleEndDate}/></div>
+                </div>
+            </div>
+            <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
+                <div className={styles.heading}>Event Geography</div>
+                <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
+                    <Image src={SearchIcon} alt='search' />
+                    <input
+                        type='text'
+                        onChange={(e) => setGeoInput(e.target.value)}
+                        value={geoInput}
+                        placeholder="Geography"
+                        required
+                    />
+                </div>
+            </div>
+            <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
+                <div className={styles.heading}>Event Category</div>
+                <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
+                    <Image src={SearchIcon} alt='search' />
+                    <input
+                        type='text'
+                        onChange={(e) => setCategoryInput(e.target.value)}
+                        value={categoryInput}
+                        placeholder="For ex : Texttile"
+                        required
+                    />
+                </div>
+                {isCategoryDropdownOpen && (
+                    <div className={styles.dropdown}>
+                        {matchingCategories.map((event, index) => (
+                            <div key={index} className={styles.dropdownItem} onClick={() => handleCategoryClick(event)}>
+                                {event}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className={styles.tags}>{categoryTags.map((tag, index) => (
+                <Tag key={index} name={tag} onRemove={() => handleRemoveCategoryTag(tag)} />
+            ))}</div>
+
+            <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
+                <div className={styles.heading}>Event Type</div>
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
+                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)} />
+                    <input
+                        type='text'
+                        disabled
+                        placeholder="For ex : Expo"
+                        required
+                    />
+                </div>
+                {isEventTypeDropdownOpen && (
+                    <div className={styles.dropdown}>
+                        {EventTypeData.map((type, index) => (
+                            <div key={index} className={styles.dropdownItem} onClick={() => handleEventTypeClick(type)}>
+                                {type}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div className={styles.tags}>{eventTypeTags.map((tag, index) => (
+                <Tag key={index} name={tag} onRemove={() => handleRemoveEventTypeTag(tag)} />
+            ))}</div>
+
+            <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
+                <div className={styles.heading}>Mode of Participation</div>
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
+                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
+                    <input
+                        type='text'
+                        disabled
+                        placeholder="For ex : Speaker"
+                        required
+                    />
+                </div>
+                {isModeDropdownOpen && (
+                    <div className={styles.dropdown}>
+                        {ModeData.map((mode, index) => (
+                            <div key={index} className={styles.dropdownItem} onClick={() => handleModeClick(mode)}>
+                                {mode}
+                            </div>
+                        ))}
 
                     </div>
-                    <div className={styles.endDate}>
-                        <div className={styles.heading}>End Date</div>
-                        <div className={styles.datePickerContainer}><DatePickerComp /></div>
-                    </div>
-                </div>
-                <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
-                    <div className={styles.heading}>Event Geography</div>
-                    <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
-                        <Image src={SearchIcon} alt='search' />
-                        <input
-                            type='text'
-                            onChange={(e) => setGeoInput(e.target.value)}
-                            value={geoInput}
-                            placeholder="Geography"
-                            required
-                        />
-                    </div>
-                </div>
-                <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
-                    <div className={styles.heading}>Event Category</div>
-                    <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
-                        <Image src={SearchIcon} alt='search' />
-                        <input
-                            type='text'
-                            onChange={(e) => setCategoryInput(e.target.value)}
-                            value={categoryInput}
-                            placeholder="For ex : Texttile"
-                            required
-                        />
-                    </div>
-                    {isCategoryDropdownOpen && (
-                        <div className={styles.dropdown}>
-                            {matchingCategories.map((event,index) => (
-                                <div key={index} className={styles.dropdownItem} onClick={() => handleCategoryClick(event)}>
-                                    {event}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-                <div className={styles.tags}>{categoryTags.map((tag,index) => (
-                    <Tag key={index} name={tag} onRemove={() => handleRemoveCategoryTag(tag)} />
-                ))}</div>
+                )}
+            </div>
+            <div className={styles.tags}>{modeTags.map((tag, index) => (
+                <Tag key={index} name={tag} onRemove={() => handleRemoveModeTag(tag)} />
+            ))}</div>
 
-                <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
-                    <div className={styles.heading}>Event Type</div>
-                    <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                        <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventDropdownOpen(!isEventDropdownOpen)} />
-                        <input
-                            type='text'
-                            disabled
-                            placeholder="For ex : Expo"
-                            required
-                        />
-                    </div>
-                    {isEventDropdownOpen && (
-                        <div className={styles.dropdown}>
-                            {EventTypeData.map((type,index) => (
-                                <div key={index} className={styles.dropdownItem} onClick={() => handleEventTypeClick(type)}>
-                                    {type}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+            <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
+                <div className={styles.promotedHeading}>
+                    <div className={styles.heading}>Do you want to show promoted events?</div>
+                    <input type="checkbox" id="check" className={styles.checkboxInput} />
+                    <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
-                <div className={styles.tags}>{eventTags.map((tag,index) => (
-                    <Tag key={index} name={tag} onRemove={() => handleRemoveEventTypeTag(tag)} />
-                ))}</div>
-
-                <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
-                    <div className={styles.heading}>Mode of Participation</div>
-                    <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                        <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
-                        <input
-                            type='text'
-                            disabled
-                            placeholder="For ex : Speaker"
-                            required
-                        />
-                    </div>
-                    {isModeDropdownOpen && (
-                        <div className={styles.dropdown}>
-                            {ModeData.map((mode, index) => (
-                                <div key={index} className={styles.dropdownItem} onClick={() => handleModeClick(mode)}>
-                                    {mode}
-                                </div>
-                            ))}
-
-                        </div>
-                    )}
+                <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
+                    <Image src={SearchIcon} alt='search' />
+                    <input
+                        type='text'
+                        placeholder="Search Events"
+                    />
                 </div>
-                <div className={styles.tags}>{modeTags.map((tag,index) => (
-                    <Tag key={index} name={tag} onRemove={() => handleRemoveModeTag(tag)} />
-                ))}</div>
-
-                <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
-                    <div className={styles.promotedHeading}>
-                        <div className={styles.heading}>Do you want to show promoted events?</div>
-                        <input type="checkbox" id="check" className={styles.checkboxInput} />
-                        <label htmlFor="check" className={styles.checkBox}></label>
-                    </div>
-                    <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
-                        <Image src={SearchIcon} alt='search' />
-                        <input
-                            type='text'
-                            placeholder="Search Events"
-                            required
-                        />
-                    </div>
-                </div>
-                <div className={styles.tagsContainer}>
-                    <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
-                </div>
-                <div className={styles.btns}>
-                    <button className={styles.submitBtn}>Submit</button>
-                    <button className={styles.cancelBtn} type="button">Cancel</button>
-                </div>
-            </form>
-        </div>
-
+            </div>
+            <div className={styles.tagsContainer}>
+                <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
+            </div>
+            <div className={styles.btns}>
+                <button className={styles.submitBtn}>Submit</button>
+                <button className={styles.cancelBtn} type="button">Cancel</button>
+            </div>
+        </form>
     )
 }
 
