@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './page.style.module.css'
-import Navbar from '../components/Navbar'
-import WidgetBtns from '../components/widgetconfigurations/WidgetBtns'
-import StickyWidget from '../components/widgetconfigurations/StickyWidget'
-import SectionWidget from '../components/widgetconfigurations/SectionWidget'
-import Preview from '../components/widgetconfigurations/Preview'
+import Navbar from '../../components/Navbar'
+import WidgetBtns from '../../components/widgetconfigurations/WidgetBtns'
+import StickyWidget from '../../components/widgetconfigurations/StickyWidget'
+import SectionWidget from '../../components/widgetconfigurations/SectionWidget'
+import Preview from '../../components/widgetconfigurations/Preview'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");

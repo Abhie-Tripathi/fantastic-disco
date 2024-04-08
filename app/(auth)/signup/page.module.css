@@ -128,6 +128,8 @@
     text-align: center;
     padding: 10px;
     cursor: pointer;
+    width: 100%;
+    border: none;
   }
   
   .new_account {
