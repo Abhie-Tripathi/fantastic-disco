@@ -5,6 +5,7 @@ import EventData from '../../../public/data/demoEvent.json'
 import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
+import Script from 'next/script';
 
 const StickyWidget = () => {
 

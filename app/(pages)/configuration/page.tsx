@@ -29,11 +29,11 @@ const Page = () => {
                     <div className={styles.dropdown_container}>
                         {type === "Sticky" && <StickyWidget />}
                         {type === "Section" && <SectionWidget />}
-                        {type === "Full Width" && <SectionWidget />}
+                        {type === "Page" && <SectionWidget />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>
-                    <Preview toggle={handlePreviewToggle} />
+                    <Preview type={type} toggle={handlePreviewToggle} />
                 </div>
             </div>
         </div>

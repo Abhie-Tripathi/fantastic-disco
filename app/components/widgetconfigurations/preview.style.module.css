@@ -11,8 +11,15 @@
     cursor: pointer;
     margin-bottom: 24px;
 }
-.screen{
-    height: 90%;
+.sidescreen{
+    max-height: 70vh;
+    overflow: auto;
+    border-radius: 20px;
+    border: 1px solid rgba(103,80,164,0.2) ;
+    background: linear-gradient(180deg, rgba(103,80,164,0.2) 0%, rgba(103,80,164,0) 100%);
+}
+.fullscreen{
+    max-height: 90%;
     border-radius: 20px;
     border: 1px solid rgba(103,80,164,0.2) ;
     background: linear-gradient(180deg, rgba(103,80,164,0.2) 0%, rgba(103,80,164,0) 100%);

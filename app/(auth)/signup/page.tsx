@@ -16,9 +16,6 @@ import { SignUpFormSchema } from "@/app/components/types/signup";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 
-
-
-
 const SignIn = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { signup } = useAuthContext();
