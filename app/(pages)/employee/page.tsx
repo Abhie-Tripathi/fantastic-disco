@@ -1,13 +1,12 @@
 "use client"
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import EmployeeNavbar from '../components/employee/EmployeeNavbar';
-import ListView from '../components/employee/listView/ListView'
-import ViewBtns from '../components/employee/viewBtns/ViewBtns';
-import Map from '../components/employee/mapview/Map';
-import CalendarContainer from '../components/employee/calendarcontainer/CalendarContainer';
-import AddEventModal from '../components/AddEventModal';
-import Navbar from '../components/Navbar'
+import EmployeeNavbar from '../../components/employee/EmployeeNavbar';
+import ListView from '../../components/employee/listView/ListView'
+import ViewBtns from '../../components/employee/viewBtns/ViewBtns';
+import Map from '../../components/employee/mapview/Map';
+import CalendarContainer from '../../components/employee/calendarcontainer/CalendarContainer';
+import AddEventModal from '../../components/AddEventModal';
 
 const EmployeePage: React.FC = () => {
     const [selectedView, setSelectedView] = useState<string>('list');
@@ -22,7 +21,7 @@ const EmployeePage: React.FC = () => {
     };
 
     return (
-        <div className={styles.body}>
+        <div className={isAddeventOpen ? styles.body : ''}>
             <div className={`${styles.eventsBody}`}>
                 <EmployeeNavbar handleAddEvent={handleAddEvent} />
                 <ViewBtns handleSelectedData={handleSelectedData} />
@@ -30,7 +29,15 @@ const EmployeePage: React.FC = () => {
                 {selectedView === 'map' && <Map />}
                 {selectedView === 'calendar' && <CalendarContainer />}
             </div>
-            {isAddeventOpen && <div className={styles.modal}><AddEventModal /></div>}
+            {isAddeventOpen && 
+    <div className={styles.modal} onClick={(e) => { 
+        console.log(e);
+        const targetElement = e.target as HTMLElement;
+        if (targetElement.classList.contains(styles.modal)||targetElement.classList.contains(styles.bodyContainer)) handleAddEvent();
+    }}>
+        <AddEventModal />
+    </div>
+}
         </div>
     );
 };

@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import WidgetCard from '../components/widgets/WidgetCard'
+import WidgetCard from '../../components/widgets/WidgetCard'
 import More from '/public/more_horiz.svg'
 import Styles from './page.module.css'
 import data from '@/public/data/data.json'

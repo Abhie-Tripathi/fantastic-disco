@@ -6,38 +6,38 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
-import { SignInResponse, SignUpResponse } from "../app/components/types";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
 import { UserResponse } from "../app/components/types/user"
+import { SignUpResponse, SignInResponse } from "../app/components/types";
 import { TSignInFormSchema, SignUpDTO } from "../app/components/types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname } from "next/navigation";
 
 type authContextType = {
-  user: UserResponse | null;
-  signup: (user: SignUpDTO) => Promise<any>;
-  signin: (user: TSignInFormSchema) => Promise<any>;
-  signOut: () => void;
-};
-
-const authContextDefaultValues: authContextType = {
-  user: null,
-  signup: () => Promise.resolve(null),
-  signin: () => Promise.resolve(null),
-  signOut: () => {},
-};
+    user: UserResponse | null;
+    signup: (user: SignUpDTO) => Promise<any>;
+    signin: (user: TSignInFormSchema) => Promise<any>;
+    signOut: () => void;
+  };
+  
+  const authContextDefaultValues: authContextType = {
+    user: null,
+    signup: () => Promise.resolve(null),
+    signin: () => Promise.resolve(null),
+    signOut: () => {},
+  };
 
 export const AuthContext = createContext<authContextType>(
   authContextDefaultValues
 );
 
 export const AuthContextProvider = ({ children }: any) => {
-    
   const pathName = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false)
   const [user, setUser] = useState<UserResponse | null>(null);
-  const [loginError, setLoginError] = useState<string>("");
-  const router = useRouter();
+    const [loginError, setLoginError] = useState<string>("");
+    const router = useRouter();
   interface SignUp {
     data?: SignUpResponse;
     error?: any;
@@ -89,9 +89,9 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     }
     return;
-  };
+};
 
-  const signOut = () => {
+const signOut = () => {
     setUser(null);
     deleteLocalStorage();
     router.push("/signin");

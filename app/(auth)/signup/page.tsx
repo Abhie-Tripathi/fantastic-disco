@@ -1,20 +1,20 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
 // import EventeliText from "/public/assets/eventeli_text.svg";
 // import EventeliLogo from "/public/assets/heroLogo.png";
-import LeftBackground from "../../public/leftBackground.svg";
-import TopRightBackground from "../../public/topRightBackground.svg";
-import BottomRightBackground from "../../public/bottomRightBackground.svg";
-import SignUpVisuals from "../../public/signupVisuals.svg";
-import Verification from "../components/signup/verification/page";
+import LeftBackground from "../../../public/leftBackground.svg";
+import TopRightBackground from "../../../public/topRightBackground.svg";
+import BottomRightBackground from "../../../public/bottomRightBackground.svg";
+import SignUpVisuals from "../../../public/signupVisuals.svg";
+import Verification from "../verification/page";
 import { useAuthContext } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignUpFormSchema } from "@/app/components/types/signup";
 import { ZodError } from "zod";
-import Visibility from "../../public/visibility.svg";
+import Visibility from "../../../public/visibility.svg";
 
 const SignIn = () => {
   const [showVerification, setShowVerification] = useState(false);
@@ -31,7 +31,8 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (event:FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     try {
        SignUpFormSchema.parse({
         name,
@@ -106,7 +107,7 @@ const SignIn = () => {
       {!showVerification && (
         <div className={styles.sub_container}>
           <Image src={SignUpVisuals} alt="loginvisuals" width={400} />
-
+        <form onSubmit={handleSignUp}>
           <div className={styles.form_container}>
             <div className={styles.form_heading}>Create your account</div>
 
@@ -187,9 +188,9 @@ const SignIn = () => {
             </div>
 
             <div className={styles.actions_container}>
-              <div className={styles.button} onClick={handleSignUp}>
+              <button className={styles.button} type="submit">
                 {`${isLoading ? "Loading..." : "Sign Up"} `}
-              </div>
+              </button>
               <div className={styles.new_account}>
                 Already have an account?
                 <Link href="/signin" className={styles.createNew_link}>
@@ -208,6 +209,7 @@ const SignIn = () => {
               </span>
             </div>
           </div>
+          </form>
         </div>
       )}
 
