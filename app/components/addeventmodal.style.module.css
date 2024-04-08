@@ -4,8 +4,12 @@
     border-radius: 10px;
     display: flex;
     padding: 20px;
+    
 }
-
+.bodyContainer{
+    /* position: absolute;
+    z-index: 2; */
+}
 .formFieldsContainer {
     width: 50%;
 }
@@ -361,9 +365,7 @@
 
 @media screen and (max-width: 1511px) {
     .form{
-        margin: 50px;
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;align-items: center;width: 100%;display: flex;gap: 10px;
     }
     .formFieldsContainer {
         width: 100%;

@@ -10,6 +10,9 @@
     outline: 0.47px solid transparent;
 }
 .lineChart{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding-left: 10px;
     margin-top: 60px;
     width: 50%;

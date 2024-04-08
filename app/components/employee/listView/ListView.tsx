@@ -9,15 +9,11 @@ import eventData from '../../../../public/data/demoEvent.json'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
-    const [selectedRoles,setSelectedRoles]=useState(["sponsoring"]);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
     const [teamSelection,setTeamSelection]=useState('Total Events')
     // Sponsoring/Exhibiting/Speaking/Attending
     const personalize=DropDown();
-    const handleCalendar = (value:string) => {
-        if(selectedRoles.indexOf(value)===-1) setSelectedRoles([...selectedRoles,value]);
-        else setSelectedRoles(selectedRoles.filter(role => role !== value));
-        setSelectedRole(value)
-    }
+    
 
     let prevDate :any = null;
     const convertToDateObject = (dateString:string) => {
@@ -36,6 +32,14 @@ const ListView = () => {
         const dateB = convertToDateObject(b.startDate);
         return dateA.getTime() - dateB.getTime(); // Sort in ascending order (earliest date first)
       });
+      const handleCalendar = (value:string) => {
+        if(selectedRoles?.indexOf(value)===-1) {
+            setSelectedRoles([...selectedRoles,value]);
+        }
+        else setSelectedRoles(selectedRoles?.filter(role => role !== value));
+        setSelectedRole(value)
+
+    }
     const toggleDropdown=()=>{
         personalize.setIsOpen(!personalize.isOpen);
     }
@@ -43,14 +47,20 @@ const ListView = () => {
         setTeamSelection(val);
         toggleDropdown();
     }
+    var filteredEventData = sortedEventData.filter((item) => {
+        return selectedRoles.some((role) => item.ctas.includes(role));
+      });
+   if(filteredEventData.length===0 || selectedRole==="Attending") filteredEventData=sortedEventData;
+    console.log(filteredEventData);
+    
     console.log(selectedRoles)
     return (
         <div className={styles.container}>
             <div className={styles.calendarBtns}>
-                <button onClick={() => handleCalendar("sponsoring")} className={`${styles.weekBtn} ${selectedRoles.includes("sponsoring") ? styles.activeCalendarBtn : ''}`}>Sponsoring</button>
-                <button onClick={() => handleCalendar("exhibiting")} className={`${styles.monthBtn} ${selectedRoles.includes("exhibiting") ? styles.activeCalendarBtn : ''}`}>Exhibiting</button>
-                <button onClick={() => handleCalendar("speaking")} className={`${styles.yearBtn} ${selectedRoles.includes('speaking') ? styles.activeCalendarBtn : ''}`}>Speaking</button>
-                <button onClick={() => handleCalendar("attending")} className={`${styles.yearBtn} ${selectedRoles.includes('attending') ? styles.activeCalendarBtn : ''}`}>Attending</button>
+                <button onClick={() => handleCalendar("Sponsoring")} className={`${styles.weekBtn} ${selectedRoles.includes("Sponsoring") ? styles.activeCalendarBtn : ''}`}>Sponsoring</button>
+                <button onClick={() => handleCalendar("Exhibiting")} className={`${styles.monthBtn} ${selectedRoles.includes("Exhibiting") ? styles.activeCalendarBtn : ''}`}>Exhibiting</button>
+                <button onClick={() => handleCalendar("Speaking")} className={`${styles.yearBtn} ${selectedRoles.includes('Speaking') ? styles.activeCalendarBtn : ''}`}>Speaking</button>
+                <button onClick={() => handleCalendar("Attending")} className={`${styles.yearBtn} ${selectedRoles.includes('Attending') ? styles.activeCalendarBtn : ''}`}>Attending</button>
                 <div className={styles.userEvents}>
                 <div style={{position:"relative"}} ref={personalize.dropdownRef}>
                 <div className={styles.allEvents} onClick={toggleDropdown}>
@@ -69,7 +79,7 @@ const ListView = () => {
                 </div>
             </div>
             <div className={styles.timelineContainer}>
-                {sortedEventData.map((item, index) => {
+                {filteredEventData.map((item, index) => {
                     // Check if current event's date is different from previous event's date
                     const showDate = item.startDate !== prevDate;
                     // Update previous date

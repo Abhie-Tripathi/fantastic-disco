@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './page.style.module.css'
-import AddEventModal from '../components/AddEventModal'
+import AddEventModal from '../../components/AddEventModal'
 
 const Page = () => {
   console.log()
