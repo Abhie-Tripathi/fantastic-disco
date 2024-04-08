@@ -40,6 +40,7 @@ const SectionWidget = () => {
     const [promotedInput, setPromotedInput] = useState<string>("");
     const [matchingPromotedEvents, setMatchingPromotedEvents] = useState<any[]>([]);
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
+    const [promotedEvents, setPromotedEvents] = useState<number[]>([]) // Will store id of promoted events
 
     useEffect(() => {
         if (categoryInput.trim() === '') {
@@ -110,6 +111,7 @@ const SectionWidget = () => {
     }, [promotedInput])
     const handlePromotedEventClick = (event: any) => {
         setPromotedEventTags([...promotedEventTags, event.name])
+        setPromotedEvents([...promotedEvents, event.id])
         setIsPromotedDropdownOpen(false)
     }
 
@@ -125,7 +127,8 @@ const SectionWidget = () => {
             endDate: endDate, // Convert date to ISO string
             categoryTags: categoryTags.join(','),
             modeTags: modeTags.join(','), // Convert array to comma-separated string
-            eventTypeTags: eventTypeTags.join(',') // Convert array to comma-separated string
+            eventTypeTags: eventTypeTags.join(','),
+            promotedEvents : promotedEvents.join(',')
         };
         const params = new URLSearchParams(formData);
         const queryString = params.toString();
