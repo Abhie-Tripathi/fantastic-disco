@@ -19,7 +19,6 @@ const Page = () => {
 
     return (
         <div className={styles.body}>
-            {/* <Navbar /> */}
             <div className={styles.container} >
                 {previewState === "Side Preview" && <div className={styles.configurationForm}>
                     <WidgetBtns
