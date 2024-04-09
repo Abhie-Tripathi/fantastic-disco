@@ -22,7 +22,9 @@ const ScheduleMeetings = () => {
         </div>
       </div>
       <div className={styles.container2}>
-        
+        <div className={styles.mainCard}>
+            <div className={styles.card1}></div>
+        </div>
       </div>
     </div>
   )
