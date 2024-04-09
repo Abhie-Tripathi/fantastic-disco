@@ -5,8 +5,9 @@ import rightArrowIcon from '/public/rightbigarrow.svg';
 import calendarIcon from '/public/calendar.svg';
 import ChatHeads from './ChatHeads';
 import Image from 'next/image';
-
+import Link from 'next/link';
 interface YourEventCardProps {
+  eventId:number;
   eventName: string;
   eventCtas: string[];
   eventLocation: string;
@@ -20,7 +21,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventName, eventCtas, eventLocation, eventImage, eventDate }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate }) => {
   const formattedDate = formatDate(eventDate);
 
   return (
@@ -48,7 +49,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventName, eventCtas, eve
         <ChatHeads data={["A", "B", "C"]} />
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
-            <div>View Details</div>
+            <Link href={`/employee/${eventId}`}><div>View Details</div></Link>
             <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
           </div>
         </div>

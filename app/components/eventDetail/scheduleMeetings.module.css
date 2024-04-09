@@ -1,0 +1,54 @@
+.circles{
+    display: flex;
+    gap: 10px;
+}
+.circle{
+    margin-right: -18px;
+    background-color: #3a3e42;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    flex-shrink: 0;
+}
+.innerContainer1{
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.innerContainer2{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 10px;
+    background-color: black;
+    border-radius: 30px;
+}
+.container1{
+    padding: 10px;
+    background-color: #201F24;
+    display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 12px;
+}
+.container2{
+    background-color: red;
+    border-radius: 12px;
+    height: 100%;
+}
+.search{
+    border: none;
+  outline: none;
+  height: 100%;
+  background: transparent;
+}
+.meetingContainer{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 10px;   
+}
