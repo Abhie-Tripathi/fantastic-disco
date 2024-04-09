@@ -88,6 +88,7 @@ const ListView = () => {
                         <div key={index} className={styles.timeline}>
                             <TimelineItem eventDate={showDate ? item.startDate : null} />
                             <YourEventCard
+                                eventId={item.id}
                                 eventName={item.name}
                                 eventCtas={item.ctas}
                                 eventLocation={item.location}
