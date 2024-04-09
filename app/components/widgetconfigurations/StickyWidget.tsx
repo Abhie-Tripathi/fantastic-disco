@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import styles from './stickywidget.style.module.css'
 import EventData from '../../../public/data/demoEvent.json'
 import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
-import Script from 'next/script';
 
 const StickyWidget = () => {
 
@@ -15,6 +14,9 @@ const StickyWidget = () => {
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null); // You might want to replace 'Event' with the actual type of an event
     const [bgcolor, setBgColor] = useState<string>('#000000');
     const [fcolor, setFColor] = useState<string>('#4ca9c8');
+    const [height, setHeight] = useState<string>('50');
+    const [fontSize, setFontSize] = useState<string>('16')
+    
 
     const handleColorChange = (event: any) => {
         setBgColor(event.target.value);
@@ -31,13 +33,31 @@ const StickyWidget = () => {
         setMatchingEvents(matches);
         setIsEventDropdownOpen(true)
     }, [searchInput])
+    
     const handleEventClick = (event: any) => {
         setIsEventDropdownOpen(false)
         setSelectedEvent(event);
     }
+    useEffect(() => {
+        setSearchInput(selectedEvent?.name || '');
+    }, [selectedEvent]);
+
+    const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
+        e.preventDefault()
+        const formData = {
+            eventId: selectedEvent.id,
+            height,
+            fontSize,
+            bgcolor,
+            fcolor
+        };
+        const params = new URLSearchParams(formData);
+        const queryString = params.toString();
+        console.log(queryString);
+    }
 
     return (
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.eventNameContainer}>
                 <div className={styles.heading}>Event Name</div>
                 <div className={styles.eventNameInput}>
@@ -63,7 +83,7 @@ const StickyWidget = () => {
             <div className={styles.heightContainer}>
                 <div className={styles.heading}>Height</div>
                 <div className={styles.heightInput}>
-                    <input />
+                    <input onChange={(e)=>setHeight(e.target.value)} value={height} type='number'/>
                     <div className={styles.dropdownIconValue}>
                         <div>px</div>
                         <Image src={Down} alt="dropdown"></Image>
@@ -73,7 +93,7 @@ const StickyWidget = () => {
             <div className={styles.fontContainer}>
                 <div className={styles.heading}>Font Size</div>
                 <div className={styles.fontInput}>
-                    <input />
+                <input onChange={(e)=>setFontSize(e.target.value)} value={fontSize} type='number'/>
                     <div className={styles.dropdownIconValue}>
                         <div>px</div>
                         <Image src={Down} alt="dropdown"></Image>

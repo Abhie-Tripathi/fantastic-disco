@@ -36,7 +36,7 @@
     margin-right: 10px;
 }
 .dropdown {
-
+    background-color: #0F0F0F;
     max-height: 200px;
     overflow: auto;
     position: absolute;
@@ -47,10 +47,10 @@
 }
 
 .dropdownItem {
-    border-bottom: 1px solid rgb(134, 134, 134);
+    margin: 12px;
+    border-radius: 12px;
     font-size: 20px;
     padding: 10px;
-    background-color: rgba(29, 29, 29);
     cursor: pointer;
     color: white;
 }
