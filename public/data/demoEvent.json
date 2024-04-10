@@ -2,7 +2,7 @@
     {
         "id": 1,
         "name": "HORN Ok Food Festival",
-        "description": "A food fest including a variety of drinks and food that you will savour for your entire life",
+        "description": "Embark on a culinary journey at the HORN Ok Food Festival, nestled in the heart of Delhi. This gastronomic extravaganza promises an unforgettable experience, showcasing an eclectic array of cuisines from around the world. From mouthwatering street food to gourmet delicacies, the festival offers something to tantalize every palate. Savor delectable dishes crafted by renowned chefs and sample exotic drinks that will leave you craving for more. Immerse yourself in the vibrant atmosphere filled with live music, cultural performances, and culinary workshops. Whether you're a food enthusiast, a connoisseur, or simply looking for a fun-filled day out, the HORN Ok Food Festival is a must-visit destination for all food lovers.",
         "location": "Delhi",
         "startDate": "10/20/2024",
         "endDate": "10/21/2024",
@@ -25,7 +25,7 @@
     {
         "id": 2,
         "name": "Great Indian Food Festival",
-        "description": "A food fest including a variety of drinks and food that you will savour for your entire life",
+        "description": "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
         "location": "Gurgaon",
         "startDate": "06/14/2024",
         "endDate": "06/17/2024",
@@ -47,7 +47,7 @@
     {
         "id": 3,
         "name": "Painting Fest",
-        "description": "A area filled with people and canvas boards to paint on. Come and paint your imagination",
+        "description": "Unleash your creativity and immerse yourself in the world of art at the Painting Fest in New York. This vibrant celebration brings together artists, painters, and art enthusiasts from all walks of life to celebrate the joy of creation. Whether you're a seasoned artist or a novice, the festival offers a welcoming space to express yourself and explore new artistic horizons. From live painting demonstrations to interactive workshops, there's something for everyone to enjoy. Join us for a weekend filled with color, inspiration, and community as we come together to paint the town red, blue, and every color of the rainbow.",
         "location": "New York",
         "startDate": "04/10/2024",
         "endDate": "04/12/2024",
@@ -68,7 +68,7 @@
     {
         "id": 4,
         "name": "Tomartina Tomato Fest",
-        "description": "A annual tomato fest in which streets get filled with tomatoes and people throw tomatoes at each other for fun",
+        "description": "Get ready for a tomato-filled adventure at the annual Tomartina Tomato Fest in Italy. This lively celebration brings together locals and visitors alike for a fun-filled day of festivities centered around everyone's favorite red fruit. From tomato-themed games and competitions to juicy tomato tastings and street parades, there's no shortage of excitement at this one-of-a-kind event. Whether you're dodging tomatoes in the streets or indulging in tomato-inspired delicacies, the Tomartina Tomato Fest is an experience not to be missed.",
         "location": "Italy",
         "startDate": "09/20/2024",
         "endDate": "09/21/2024",
@@ -89,7 +89,7 @@
     {
         "id": 5,
         "name": "Film Festival",
-        "description": "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
+        "description": "Step into the magical world of cinema at the Film Festival in Gurgaon, where storytelling comes to life on the big screen. This annual event celebrates the art of filmmaking and showcases a diverse selection of films from around the globe. From gripping dramas to heartwarming comedies, the festival offers something for every film enthusiast. Immerse yourself in the captivating narratives, stunning visuals, and thought-provoking themes that define the cinematic experience. Join us for an unforgettable journey through the world of cinema, where dreams are realized, emotions are stirred, and stories are shared.",
         "location": "Gurgaon",
         "startDate": "08/20/2024",
         "endDate": "08/22/2024",

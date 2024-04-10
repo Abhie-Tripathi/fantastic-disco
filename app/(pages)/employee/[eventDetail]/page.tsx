@@ -12,6 +12,7 @@ interface EventData {
     id: number;
     imageUrl: string;
     name: string;
+    description:string;
     // Define other properties as needed
 }
 
@@ -45,6 +46,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                     </div>
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
+                    <div style={{height:"100%", display:"flex",flexDirection:"column", gap:"10px"}}>
                     <div className={styles.containerTopRight}>
                         {/* Add onClick handlers to update userCta state */}
                         <div className={userCta === "Notes" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Notes")}>Notes</div>
@@ -57,6 +59,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                         {/* Render component based on userCta state */}
                         {userCta === "Notes" && <Notes />}
                         {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
+                    </div>
                     </div>
                 </div>
             </div>

@@ -1,12 +1,14 @@
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    height: 90%;
-    background: #1D1D1D;
-    border-radius: 18px;
-    padding: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+  border: 1px solid #262626;
+  border-radius: 18px;
+  padding: 20px;
+  overflow-y: scroll;
   }
   
   .container h2 {
@@ -105,7 +107,10 @@
   .replyContainer:hover .replyDots {
     display: block;
   }
-  
+  .commentText{
+    font-size: 12px;
+    text-align: justify;
+  }
   .viewMoreReplies {
     margin: 2.5rem 3.6rem;
     color: #696b83;
@@ -344,6 +349,18 @@
     height: 1rem;
     transform: scale(0.9);
   }
+  .upvoteBtn, .replyBtn{
+    outline:none;
+    border:none;
+  }
+  .container::-webkit-scrollbar{
+    width: 2px; 
+    
+  }
+  /* .container::-webkit-scrollbar-thumb{
+    background:#2B233D;
+    border-radius: 12px;
+  }  */
   /* @media (prefers-color-scheme: dark) {
     .comments > li::before {
       background-color: rgb(125, 125, 125);

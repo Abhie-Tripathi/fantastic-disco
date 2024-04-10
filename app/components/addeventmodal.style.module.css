@@ -378,3 +378,8 @@
         height: 100vh;
     }
 }
+@media screen and (max-width: 1400px) {
+    .form{
+     margin-bottom: 80px;
+    }
+  }
