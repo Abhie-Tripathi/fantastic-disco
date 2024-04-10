@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
 import Background from '@/public/background.png';
 import Image from 'next/image';
-import Notes from '@/app/components/eventDetail/Notes';
+import {Notes} from '@/app/components/eventDetail/Notes';
 import SingleEvent from '@/app/components/eventDetail/SingleEvent';
 import ScheduleMeetings from '@/app/components/eventDetail/ScheduleMeetings';
 import eventData from '@/public/data/demoEvent.json';
