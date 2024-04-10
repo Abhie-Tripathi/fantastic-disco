@@ -7,9 +7,10 @@ import lorem from '../../../public/data/lorem.json'
 interface PreviewProps {
     toggle: () => void;
     type : string;
+    stickyId : string;
   }
 
-const Preview = ({ toggle, type } : PreviewProps) => {
+const Preview = ({ toggle, type, stickyId } : PreviewProps) => {
     const [toggleState, setToggleState] = useState<string>("Side Preview")
 
     const handleToggleState = () => {
@@ -25,7 +26,7 @@ const Preview = ({ toggle, type } : PreviewProps) => {
             <div className={`${toggleState === "Side Preview" ? styles.sidescreen : styles.fullscreen}`}>
             {type === "Sticky" ?   
             <div className={styles.stickywidget}>
-                <sticky-widget/> 
+                  <sticky-widget sticky-id={stickyId}/> 
                 <div>{lorem[0]}</div>
             </div>
             : type === "Page" ? <page-widget/> : <section-widget/>} 

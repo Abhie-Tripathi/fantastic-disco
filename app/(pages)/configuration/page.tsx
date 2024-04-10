@@ -1,15 +1,16 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
-import Navbar from '../../components/Navbar'
 import WidgetBtns from '../../components/widgetconfigurations/WidgetBtns'
 import StickyWidget from '../../components/widgetconfigurations/StickyWidget'
 import SectionWidget from '../../components/widgetconfigurations/SectionWidget'
 import Preview from '../../components/widgetconfigurations/Preview'
+import PageWidget from '@/app/components/widgetconfigurations/PageWidget'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");
     const [previewState, setPreviewState] = useState<string>("Side Preview");
+    const [stickyId, setStickyId] = useState<string>("")
 
   const handlePreviewToggle = ()=>{
     if(previewState === "Side Preview"){
@@ -26,13 +27,13 @@ const Page = () => {
                         setType={setType}
                     />
                     <div className={styles.dropdown_container}>
-                        {type === "Sticky" && <StickyWidget />}
+                        {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
                         {type === "Section" && <SectionWidget />}
-                        {type === "Page" && <SectionWidget />}
+                        {type === "Page" && <PageWidget />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>
-                    <Preview type={type} toggle={handlePreviewToggle} />
+                    <Preview type={type} toggle={handlePreviewToggle} stickyId = {stickyId} />
                 </div>
             </div>
         </div>
