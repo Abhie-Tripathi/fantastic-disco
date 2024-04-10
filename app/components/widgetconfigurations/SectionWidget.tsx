@@ -3,7 +3,7 @@ import CommonWidget from './CommonWidget'
 
 const SectionWidget = () => {
   return (
-    <div><CommonWidget/></div>
+    <div><CommonWidget widgetType='section'/></div>
   )
 }
 

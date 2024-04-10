@@ -11,9 +11,14 @@ import DatePickerComp from "../calendar/DatePickerComp";
 import Tags from "./Tags";
 import Image from "next/image";
 import Tag from "./Tag";
-import EventData from '../../../public/data/demoEvent.json'
+import useFetch from "@/hooks/useFetch";
+// import EventData from '../../../public/data/demoEvent.json'
 
-const CommonWidget = () => {
+interface CommonWidgetProps{
+    widgetType : string
+}
+
+const CommonWidget = ({widgetType} : CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
@@ -42,6 +47,8 @@ const CommonWidget = () => {
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
     const [promotedEvents, setPromotedEvents] = useState<number[]>([]) // Will store id of promoted events
 
+    const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
+    
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -101,17 +108,19 @@ const CommonWidget = () => {
         setShowPromotedInput(e.target.checked);
     };
 
-    const filterEvents = (event: any) => {
-        return event.tags.includes(promotedInput.toLowerCase());
-    };
     useEffect(() => {
-        const matches = EventData.filter(filterEvents);
-        setMatchingPromotedEvents(matches);
-        setIsPromotedDropdownOpen(true)
-    }, [promotedInput])
+        if (data) {
+            const eventData = data.eventData || []; // Ensure eventData is available, default to an empty array if not present
+            const matches = promotedInput.trim() === '' ? [] : eventData.filter((event: any) => event._source.name.toLowerCase().includes(promotedInput.toLowerCase()));
+            setMatchingPromotedEvents(matches);
+            setIsPromotedDropdownOpen(promotedInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
+        }
+    }, [promotedInput]);
+    
+
     const handlePromotedEventClick = (event: any) => {
-        setPromotedEventTags([...promotedEventTags, event.name])
-        setPromotedEvents([...promotedEvents, event.id])
+        setPromotedEventTags([...promotedEventTags,event._source.name])
+        setPromotedEvents([...promotedEvents, event._id])
         setIsPromotedDropdownOpen(false)
     }
 
@@ -273,7 +282,7 @@ const CommonWidget = () => {
                     <div className={styles.dropdown}>
                         {matchingPromotedEvents.map((event, index) => (
                             <div key={index} className={styles.dropdownItem} onClick={() => handlePromotedEventClick(event)}>
-                                {event.name}
+                                {event._source.name}
                             </div>
                         ))}
                     </div>

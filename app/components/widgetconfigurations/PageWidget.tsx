@@ -4,7 +4,7 @@ import CommonWidget from './CommonWidget'
 
 const PageWidget = () => {
   return (
-    <div><CommonWidget/></div>
+    <div><CommonWidget widgetType='page'/></div>
   )
 }
 

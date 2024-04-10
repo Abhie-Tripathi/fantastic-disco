@@ -1,11 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import WidgetBtns from '../../components/widgetconfigurations/WidgetBtns'
 import StickyWidget from '../../components/widgetconfigurations/StickyWidget'
 import SectionWidget from '../../components/widgetconfigurations/SectionWidget'
 import Preview from '../../components/widgetconfigurations/Preview'
 import PageWidget from '@/app/components/widgetconfigurations/PageWidget'
+import CodeWindow from '@/app/components/widgetconfigurations/CodeWindow'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");
@@ -30,6 +31,7 @@ const Page = () => {
                         {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
                         {type === "Section" && <SectionWidget />}
                         {type === "Page" && <PageWidget />}
+                        {type === "Code" && <CodeWindow stickyId = {stickyId} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>

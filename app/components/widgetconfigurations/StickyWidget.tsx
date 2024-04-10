@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect, FormEvent } from 'react'
 import styles from './stickywidget.style.module.css'
-import EventData from '../../../public/data/demoEvent.json'
 import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
