@@ -41,7 +41,7 @@ background-blend-mode: overlay;
     border: 1px solid #201F24;
     gap: 30px;
     align-items: center;
-    height: 10%;
+    height: 9%;
     justify-content: center;
 }
 .containerBottomRight{
@@ -71,4 +71,9 @@ background-blend-mode: overlay;
 }
 .active{
     background-color: #2B233D;
+}
+.fullHeight{
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }

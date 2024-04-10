@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
 import Background from '@/public/background.png';
 import Image from 'next/image';
@@ -17,18 +17,34 @@ interface EventData {
 
 const Page = ({ params }: { params: { eventDetail: string } }) => {
     const [userCta, setUserCta] = useState<string>("Notes");
-    const [single,setSingle]=useState<EventData>();
-    const singledata:EventData|undefined = eventData.find((item: EventData) => parseInt(params?.eventDetail) === item.id);
+    const [meet,setMeet]=useState(false);
+    const [single, setSingle] = useState<EventData>();
+    const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
+    const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
+
+    const singledata: EventData | undefined = eventData.find((item: EventData) => parseInt(params?.eventDetail) === item.id);
+
+    useEffect(() => {
+        if (leftContainerRef.current && rightContainerRef.current) {
+            const leftContainerHeight = leftContainerRef.current.clientHeight;
+            rightContainerRef.current.style.height = leftContainerHeight + 'px';
+            console.log(leftContainerHeight);
+        }
+       
+    }, [singledata]); 
+    const meetings=()=>{
+        setMeet(!meet);
+    }
     return (
-        <div className={styles.container}>
+        <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
             <div className={styles.innerContainer}>
-                <div className={styles.containerLeft}>
+                <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={styles.containerOne}>
                         {/* Pass data as a prop to SingleEvent component */}
                         {singledata && <SingleEvent data={singledata} />}
                     </div>
                 </div>
-                <div className={styles.containerRight}>
+                <div className={styles.containerRight} ref={rightContainerRef}>
                     <div className={styles.containerTopRight}>
                         {/* Add onClick handlers to update userCta state */}
                         <div className={userCta === "Notes" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Notes")}>Notes</div>
@@ -40,7 +56,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                     <div className={styles.containerBottomRight}>
                         {/* Render component based on userCta state */}
                         {userCta === "Notes" && <Notes />}
-                        {userCta === "Schedule Meetings" && <ScheduleMeetings />}
+                        {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
                     </div>
                 </div>
             </div>
@@ -49,3 +65,4 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
 }
 
 export default Page;
+
