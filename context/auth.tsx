@@ -8,25 +8,26 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
-import { UserResponse } from "../app/components/types/user"
-import { SignUpResponse, SignInResponse } from "../app/components/types";
-import { TSignInFormSchema, SignUpDTO } from "../app/components/types";
+import { UserResponse } from "../types/user"
+import { SignUpResponse, SignInResponse } from "../types";
+import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname } from "next/navigation";
 
 type authContextType = {
-    user: UserResponse | null;
-    signup: (user: SignUpDTO) => Promise<any>;
-    signin: (user: TSignInFormSchema) => Promise<any>;
-    signOut: () => void;
-  };
+  user: UserResponse | null;
+  signup: (user: SignUpDTO) => Promise<any>;
+  signin: (user: TSignInFormSchema) => Promise<any>;
+  signOut: () => void;
   
-  const authContextDefaultValues: authContextType = {
-    user: null,
-    signup: () => Promise.resolve(null),
-    signin: () => Promise.resolve(null),
-    signOut: () => {},
-  };
+};
+
+const authContextDefaultValues: authContextType = {
+  user: null,
+  signup: () => Promise.resolve(null),
+  signin: () => Promise.resolve(null),
+  signOut: () => { },
+};
 
 export const AuthContext = createContext<authContextType>(
   authContextDefaultValues
@@ -36,33 +37,33 @@ export const AuthContextProvider = ({ children }: any) => {
   const pathName = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false)
   const [user, setUser] = useState<UserResponse | null>(null);
-    const [loginError, setLoginError] = useState<string>("");
-    const router = useRouter();
+  const [loginError, setLoginError] = useState<string>("");
+  const router = useRouter();
   interface SignUp {
     data?: SignUpResponse;
     error?: any;
   }
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto)
-        const url = baseUrl + authEndpoints.signup;
-        
-        const { error, data }: SignUp = await myFetch(url, {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(userDto),
-        });
-        if (data && !error) {
-            setLocalStorage(data);
-            setUser(data);
-        } else if (
-            error &&
-            error.status === 401 &&
-            error.message === "Credentials incorrect"
-        ) {
-            setLoginError("Credentials incorrect");
-        } else {
-            setLoginError("Something went wrong");
-        }
+    const url = baseUrl + authEndpoints.signup;
+
+    const { error, data }: SignUp = await myFetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(userDto),
+    });
+    if (data && !error) {
+      setLocalStorage(data);
+      setUser(data);
+    } else if (
+      error &&
+      error.status === 401 &&
+      error.message === "Credentials incorrect"
+    ) {
+      setLoginError("Credentials incorrect");
+    } else {
+      setLoginError("Something went wrong");
+    }
   };
   interface SignIn {
     data?: SignInResponse;
@@ -89,9 +90,9 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     }
     return;
-};
+  };
 
-const signOut = () => {
+  const signOut = () => {
     setUser(null);
     deleteLocalStorage();
     router.push("/signin");

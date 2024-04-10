@@ -12,7 +12,7 @@ import LoginVisuals from "../../../public/loginVisuals.png";
 import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SignInFormSchema } from "@/app/components/types/";
+import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 

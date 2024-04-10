@@ -12,7 +12,7 @@ import Verification from "../verification/page";
 import { useAuthContext } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SignUpFormSchema } from "@/app/components/types/signup";
+import { SignUpFormSchema } from "@/types/signup";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 
