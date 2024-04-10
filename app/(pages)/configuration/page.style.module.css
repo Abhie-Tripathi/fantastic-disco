@@ -26,3 +26,16 @@
     padding-right: 100px;
     width: 100%;
   }
+  @media screen and (max-width: 1360px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+    }
+    .configurationForm {
+      width: 90%;
+    }
+    .previewSection {
+      margin-top: 30px;
+      width: 90%;
+    }
+  }

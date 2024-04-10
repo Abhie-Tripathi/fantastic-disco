@@ -47,12 +47,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
         <ChatHeads data={["A", "B", "C"]} />
-        <div className={styles.eventDetails}>
+        <Link href={`/employee/${eventId}`} className={styles.eventDetails}>
           <div className={styles.detailContainer}>
-            <Link href={`/employee/${eventId}`}><div>View Details</div></Link>
+            <div>View Details</div>
             <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );
