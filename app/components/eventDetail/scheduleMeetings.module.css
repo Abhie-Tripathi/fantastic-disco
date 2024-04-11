@@ -178,7 +178,10 @@
     align-items: center;
     justify-content: center;
     width: 40px;
-    height: 30px;
+    height: 40px;
+}
+.tableRow td{
+    cursor: pointer;
 }
 .cardDetail{
     padding: 10px;
@@ -279,4 +282,17 @@
   border-radius: 30px;
   box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
   outline: 0.97px solid transparent;
+}
+.circle2{
+    position: absolute;
+  bottom: 10%;
+  left: 45%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #0E9B1C;
+}
+.selectedDay{
+    background-color: #0c0c0c;
+    border-radius: 50%;
 }

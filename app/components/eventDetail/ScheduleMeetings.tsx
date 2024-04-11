@@ -13,7 +13,15 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
 
     // const [meet,setMeet]=useState(false);
     const [start,setStart]=useState<number>();
-    const timeSlots=["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"]
+    const [selectedDate,setSelectedDay]=useState<string>(new Date().getDate().toString());
+    const val=new Date().getDate().toString();
+    const times={
+        [val]:["9:00 AM - 9:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"],
+        "12":["9:00 AM - 9:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"],
+        "14":["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM"],
+        "18":["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"]
+    }
+    const [timeSlots,setTimeSlots]=useState<string[]>(["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"])
     const [end,setEnd]=useState<number>();
     const [month,setMonth]=useState(new Date().getMonth());
     const [year,setYear]=useState(new Date().getFullYear())
@@ -77,6 +85,13 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
             setMonth(11);
         }
       }
+      const getSlotData=(date:string)=>{
+        setSelectedDay(date)
+        if (times.hasOwnProperty(date)) {
+            setTimeSlots(times[parseInt(date)]);
+        }
+      }
+      console.log(times);
   const meetingCards = new Array(15).fill(null).map((_, index) => (
     <div className={styles.card1} key={index}>
       <div className={styles.card1top}>
@@ -156,7 +171,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
               {weeks.map((week, index) => (
                 <tr key={index} className={styles.tableRow}>
                   {week.map((date, index) => (
-                    <td key={index}>{date !== ' ' ? date : ''}</td>
+                    date !== ' '?<td onClick={()=>getSlotData(date)} style={{position:"relative"}} className={date === selectedDate ? styles.selectedDay : ''}>{date}{times.hasOwnProperty(date)&& <span className={styles.circle2}></span>}</td>:<td></td>
                   ))}
                 </tr>
               ))}
