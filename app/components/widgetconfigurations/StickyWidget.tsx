@@ -1,22 +1,27 @@
 'use client'
 import React, { useState, useEffect, FormEvent } from 'react'
 import styles from './stickywidget.style.module.css'
-import EventData from '../../../public/data/demoEvent.json'
 import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
+import useFetch from '@/hooks/useFetch'
 
-const StickyWidget = () => {
+interface StickyWidgetProps {
+    setStickyId: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const StickyWidget = (props: StickyWidgetProps) => {
 
     const [isEventDropdownOpen, setIsEventDropdownOpen] = useState<boolean>(false);
     const [searchInput, setSearchInput] = useState<string>("");
     const [matchingEvents, setMatchingEvents] = useState<any[]>([]); // You might want to replace 'Event' with the actual type of events
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null); // You might want to replace 'Event' with the actual type of an event
-    const [bgcolor, setBgColor] = useState<string>('#000000');
-    const [fcolor, setFColor] = useState<string>('#4ca9c8');
+    const [bgColor, setBgColor] = useState<string>('#000000');
+    const [fgColor, setFColor] = useState<string>('#4ca9c8');
     const [height, setHeight] = useState<string>('50');
     const [fontSize, setFontSize] = useState<string>('16')
-    
+    const [stickyId, setStickyId] = useState<string>("")
+    const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
 
     const handleColorChange = (event: any) => {
         setBgColor(event.target.value);
@@ -24,38 +29,62 @@ const StickyWidget = () => {
     const handlefColorChange = (event: any) => {
         setFColor(event.target.value);
     };
-    // Will filter the events according to the search event input
-    const filterEvents = (event: any) => {
-        return event.tags.includes(searchInput.toLowerCase());
-    };
+
     useEffect(() => {
-        const matches = EventData.filter(filterEvents);
-        setMatchingEvents(matches);
-        setIsEventDropdownOpen(true)
-    }, [searchInput])
+        if (data) {
+            const eventData = data.eventData || []; // Ensure eventData is available, default to an empty array if not present
+            const matches = searchInput.trim() === '' ? [] : eventData.filter((event: any) => event._source.name.toLowerCase().includes(searchInput.toLowerCase()));
+            setMatchingEvents(matches);
+            setIsEventDropdownOpen(searchInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
+        }
+    }, [searchInput, data]);
     
+
     const handleEventClick = (event: any) => {
         setIsEventDropdownOpen(false)
         setSelectedEvent(event);
     }
     useEffect(() => {
-        setSearchInput(selectedEvent?.name || '');
+        setSearchInput(selectedEvent?._source.name || '');
     }, [selectedEvent]);
 
-    const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
-        e.preventDefault()
-        const formData = {
-            eventId: selectedEvent.id,
-            height,
-            fontSize,
-            bgcolor,
-            fcolor
-        };
-        const params = new URLSearchParams(formData);
-        const queryString = params.toString();
-        console.log(queryString);
-    }
-
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
+        // Endpoint for the POST request
+        const endpoint = "stickey"; // Check if this is the correct endpoint
+        const body = JSON.stringify({
+            companyId: "283102bd-a5b4-43ee-b1c6-cd8fb0ed02a0",
+            event: selectedEvent._source.name,
+            height: height,
+            fontSize: fontSize,
+            bgColor,
+            fgColor
+        });
+        try {
+            // Make the POST request
+            const response = await fetch(`${baseURL}/${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body
+            });
+            if (!response.ok) {
+                console.error('Failed to submit the form:', response.status, response.statusText);
+                return;
+            }
+            const responseData = await response.json();
+            const { id } = responseData;
+            setStickyId(id);
+            console.log('Form submitted successfully:', responseData);
+        } catch (error) {
+            console.error('An error occurred while submitting the form:', error);
+        }
+    };
+    useEffect(() => {
+        props.setStickyId(stickyId)
+    }, [stickyId])
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.eventNameContainer}>
@@ -73,8 +102,8 @@ const StickyWidget = () => {
                 {isEventDropdownOpen && (
                     <div className={styles.dropdown}>
                         {matchingEvents.map(event => (
-                            <div key={event.id} className={styles.dropdownItem} onClick={() => handleEventClick(event)}>
-                                {event.name}
+                            <div key={event._id} className={styles.dropdownItem} onClick={() => handleEventClick(event)}>
+                                {event._source.name}
                             </div>
                         ))}
                     </div>
@@ -83,7 +112,7 @@ const StickyWidget = () => {
             <div className={styles.heightContainer}>
                 <div className={styles.heading}>Height</div>
                 <div className={styles.heightInput}>
-                    <input onChange={(e)=>setHeight(e.target.value)} value={height} type='number'/>
+                    <input onChange={(e) => setHeight(e.target.value)} value={height} type='number' />
                     <div className={styles.dropdownIconValue}>
                         <div>px</div>
                         <Image src={Down} alt="dropdown"></Image>
@@ -93,7 +122,7 @@ const StickyWidget = () => {
             <div className={styles.fontContainer}>
                 <div className={styles.heading}>Font Size</div>
                 <div className={styles.fontInput}>
-                <input onChange={(e)=>setFontSize(e.target.value)} value={fontSize} type='number'/>
+                    <input onChange={(e) => setFontSize(e.target.value)} value={fontSize} type='number' />
                     <div className={styles.dropdownIconValue}>
                         <div>px</div>
                         <Image src={Down} alt="dropdown"></Image>
@@ -105,12 +134,12 @@ const StickyWidget = () => {
                 <div className={styles.colorOptions}>
                     <div>
                         Background Color
-                        <input type="color" className={styles.colorInput} value={bgcolor}
+                        <input type="color" className={styles.colorInput} value={bgColor}
                             onChange={handleColorChange} />
                     </div>
                     <div>
                         Foreground Color
-                        <input type="color" className={styles.colorInput} value={fcolor}
+                        <input type="color" className={styles.colorInput} value={fgColor}
                             onChange={handlefColorChange} />
                     </div>
                 </div>
