@@ -120,10 +120,13 @@ const CommonWidget = ({widgetType, setPageQuery} : CommonWidgetProps) => {
     
 
     const handlePromotedEventClick = (event: any) => {
-        setPromotedEventTags([...promotedEventTags,event._source.name])
-        setPromotedEvents([...promotedEvents, event._id])
-        setIsPromotedDropdownOpen(false)
-    }
+        if (!promotedEventTags.includes(event._source.name)) {
+            setPromotedEventTags([...promotedEventTags, event._source.name]);
+            setPromotedEvents([...promotedEvents, event._id]);
+        }
+        setIsPromotedDropdownOpen(false);
+    };
+    
 
     const handleRemovePromotedEventsTag = (tagToRemove: string)=>{
         setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
