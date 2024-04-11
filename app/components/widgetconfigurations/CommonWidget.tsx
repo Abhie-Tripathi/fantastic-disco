@@ -15,10 +15,11 @@ import useFetch from "@/hooks/useFetch";
 // import EventData from '../../../public/data/demoEvent.json'
 
 interface CommonWidgetProps{
-    widgetType : string
+    widgetType : string;
+    setPageQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommonWidget = ({widgetType} : CommonWidgetProps) => {
+const CommonWidget = ({widgetType, setPageQuery} : CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
@@ -45,7 +46,7 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
     const [promotedInput, setPromotedInput] = useState<string>("");
     const [matchingPromotedEvents, setMatchingPromotedEvents] = useState<any[]>([]);
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
-    const [promotedEvents, setPromotedEvents] = useState<number[]>([]) // Will store id of promoted events
+    const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
     const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
     
@@ -129,21 +130,30 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const formData = {
-            eventFormat,
-            startDate: startDate, // Convert date to ISO string
-            endDate: endDate, // Convert date to ISO string
-            categoryTags: categoryTags.join(','),
-            modeTags: modeTags.join(','), // Convert array to comma-separated string
-            eventTypeTags: eventTypeTags.join(','),
-            promotedEvents : promotedEvents.join(',')
-        };
+        e.preventDefault();
+    
+        // Initialize formData object
+        const formData: Record<string, string> = {};
+        if (startDate) {
+            formData.startDate = startDate
+        }
+        if (endDate) {
+            formData.endDate = endDate
+        }
+        if (categoryTags.length > 0) {
+            formData.categoryTags = categoryTags.join(',');
+        }
+        if (eventTypeTags.length > 0) {
+            formData.eventTypeTags = eventTypeTags.join(',');
+        }
+        if (promotedEvents.length > 0) {
+            formData.promotedEvents = promotedEvents.join(',');
+        } 
         const params = new URLSearchParams(formData);
         const queryString = params.toString();
-        console.log(queryString);
-    }
-
+        setPageQuery(queryString)
+    };
+    
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.eventFormatContainer}>
@@ -182,7 +192,6 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
                         onChange={(e) => setGeoInput(e.target.value)}
                         value={geoInput}
                         placeholder="Geography"
-                        required
                     />
                 </div>
             </div>
@@ -219,7 +228,6 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
                         type='text'
                         disabled
                         placeholder="For ex : Expo"
-                        required
                     />
                 </div>
                 {isEventTypeDropdownOpen && (
@@ -244,7 +252,6 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
                         type='text'
                         disabled
                         placeholder="For ex : Speaker"
-                        required
                     />
                 </div>
                 {isModeDropdownOpen && (

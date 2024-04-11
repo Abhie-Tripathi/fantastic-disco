@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './preview.style.module.css'
 import Script from 'next/script'
 import lorem from '../../../public/data/lorem.json'
@@ -8,9 +8,10 @@ interface PreviewProps {
     toggle: () => void;
     type: string;
     stickyId: string;
+    pageQuery : string;
 }
 
-const Preview = ({ toggle, type, stickyId }: PreviewProps) => {
+const Preview = ({ toggle, type, stickyId, pageQuery }: PreviewProps) => {
     const [toggleState, setToggleState] = useState<string>("Side Preview")
 
     const handleToggleState = () => {
@@ -29,7 +30,7 @@ const Preview = ({ toggle, type, stickyId }: PreviewProps) => {
                         <sticky-widget sticky-id={stickyId} />
                         <div>{lorem[0]}</div>
                     </div>
-                    : type === "Page" ? <page-widget /> : <section-widget />}
+                    : type === "Page" ? <page-widget page-query={pageQuery}/> : <section-widget />}
             </div>
         </div>
     )
