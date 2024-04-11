@@ -9,6 +9,7 @@ import rightArrowIcon from '/public/rightbigarrow.svg';
 interface Data {
     imageUrl: string;
     name: string;
+    description: string;
 }
 
 const SingleEvent = (params: { data: Data }) => {
@@ -50,7 +51,7 @@ const SingleEvent = (params: { data: Data }) => {
                 <div className={styles.description}>
                     <div>Description</div>
                     <div style={{ textAlign: "justify" }}>
-                        Lorem ipsum dolor sit amet consectetur. In sit eget non aliquet nisi. Eu dictum sit fermentum lectus. Nunc hac tortor elit vestibulum lorem auctor. Risus interdum sagittis pulvinar at.Lorem ipsum dolor sit amet consectetur. In sit eget non aliquet nisiLorem ipsum dolor sit amet consectetur. In sit eget non aliquet nisi. Eu dictum sit fermentum lectus. Nunc hac tortor elit vestibulum lorem auctor. Risus interdum sagittis .
+                        {params.data.description}
                     </div>
                 </div>
                 <div className={styles.line}></div>
