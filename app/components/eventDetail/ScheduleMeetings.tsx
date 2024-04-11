@@ -171,7 +171,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
               {weeks.map((week, index) => (
                 <tr key={index} className={styles.tableRow}>
                   {week.map((date, index) => (
-                    date !== ' '?<td onClick={()=>getSlotData(date)} style={{position:"relative"}} className={date === selectedDate ? styles.selectedDay : ''}>{date}{times.hasOwnProperty(date)&& <span className={styles.circle2}></span>}</td>:<td></td>
+                    date !== ' '?<td key={index} onClick={()=>getSlotData(date)} style={{position:"relative"}} className={date === selectedDate ? styles.selectedDay : ''}>{date}{times.hasOwnProperty(date)&& <span className={styles.circle2}></span>}</td>:<td key={index}></td>
                   ))}
                 </tr>
               ))}
