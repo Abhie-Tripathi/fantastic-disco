@@ -1,0 +1,14 @@
+.container{
+    margin-top: 30px;
+}
+.code{
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-top: 30px;
+}
+.code div{
+    background-color: black;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+}

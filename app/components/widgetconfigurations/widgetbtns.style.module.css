@@ -1,11 +1,6 @@
-.focus_type_container {
-    display: flex;
-    gap: 100px;
-}
-
 .button_container {
     display: flex;
-    gap: 64px;
+    justify-content: space-evenly;
 }
 .button {
     border-radius: 12px;
