@@ -1,0 +1,87 @@
+[
+    {
+      "name": "John Doe",
+      "nick":"@Maverick",
+      "designation": "Marketing Manager",
+      "description": "Lead innovative marketing campaigns to boost brand visibility."
+    },
+    {
+      "name": "Jane Smith",
+      "nick":"@Ace",
+      "designation": "Sales Executive",
+      "description": "Implement effective sales strategies to drive revenue growth."
+    },
+    {
+      "name": "Michael Johnson",
+      "nick":"@Spark",
+      "designation": "Product Specialist",
+      "description": "Provide expert product knowledge and support to clients."
+    },
+    {
+      "name": "Emily Brown",
+      "nick":"@Charm",
+      "designation": "Brand Ambassador",
+      "description": "Promote brand values through engaging social media content."
+    },
+    {
+      "name": "David Wilson",
+      "nick":"@Guru",
+      "designation": "Account Manager",
+      "description": "Maintain strong client relationships and exceed sales targets."
+    },
+    {
+      "name": "Sarah Lee",
+      "nick":"@Radar",
+      "designation": "Marketing Coordinator",
+      "description": "Coordinate marketing campaigns and analyze performance metrics."
+    },
+    {
+      "name": "Daniel Taylor",
+      "nick":"@Whiz",
+      "designation": "Sales Manager",
+      "description": "Lead sales team to achieve quarterly revenue objectives."
+    },
+    {
+      "name": "Olivia Martinez",
+      "nick":"@Zen",
+      "designation": "Customer Success Specialist",
+      "description": "Ensure customer satisfaction through proactive support solutions."
+    },
+    {
+      "name": "Ethan Garcia",
+      "nick":"@Byte",
+      "designation": "Digital Marketing Analyst",
+      "description": "Analyze digital marketing data to optimize campaign performance."
+    },
+    {
+      "name": "Ava Rodriguez",
+      "nick":"@Echo",
+      "designation": "Sales Representative",
+      "description": "Build strong client relationships and drive sales growth."
+    },
+    {
+      "name": "Noah Hernandez",
+      "nick":"@Swift",
+      "designation": "Marketing Director",
+      "description": "Develop and execute comprehensive marketing strategies."
+    },
+    {
+      "name": "Sophia Lopez",
+      "nick":"@Nova",
+      "designation": "Brand Manager",
+      "description": "Oversee brand development initiatives and maintain brand integrity."
+    },
+    {
+      "name": "Mason Gonzales",
+      "nick":"@Sage",
+      "designation": "Account Executive",
+      "description": "Manage client accounts and provide strategic solutions."
+    },
+    {
+      "name": "Isabella Perez",
+      "nick":"@Quest",
+      "designation": "Sales Coordinator",
+      "description": "Support sales team with administrative tasks and customer inquiries."
+    }
+  ]
+  

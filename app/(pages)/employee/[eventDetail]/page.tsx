@@ -13,7 +13,6 @@ interface EventData {
     imageUrl: string;
     name: string;
     description:string;
-    // Define other properties as needed
 }
 
 const Page = ({ params }: { params: { eventDetail: string } }) => {
