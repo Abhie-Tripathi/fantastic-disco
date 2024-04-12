@@ -1,9 +1,13 @@
 import React from 'react'
 import CommonWidget from './CommonWidget'
 
-const SectionWidget = () => {
+interface SectionWidgetProps {
+  setSectionQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const SectionWidget = ({setSectionQuery} : SectionWidgetProps) => {
   return (
-    <div><CommonWidget widgetType='section'/></div>
+    <div><CommonWidget setQuery={setSectionQuery} widgetType='section'/></div>
   )
 }
 

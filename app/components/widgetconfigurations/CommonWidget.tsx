@@ -16,10 +16,10 @@ import useFetch from "@/hooks/useFetch";
 
 interface CommonWidgetProps{
     widgetType : string;
-    setPageQuery: React.Dispatch<React.SetStateAction<string>>;
+    setQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommonWidget = ({widgetType, setPageQuery} : CommonWidgetProps) => {
+const CommonWidget = ({widgetType, setQuery} : CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
@@ -154,7 +154,7 @@ const CommonWidget = ({widgetType, setPageQuery} : CommonWidgetProps) => {
         } 
         const params = new URLSearchParams(formData);
         const queryString = params.toString();
-        setPageQuery(queryString)
+        setQuery(queryString)
     };
     
     return (

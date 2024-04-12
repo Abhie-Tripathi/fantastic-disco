@@ -7,7 +7,7 @@ interface PageWidgetProps {
 
 const PageWidget = ({setPageQuery}:PageWidgetProps) => {
   return (
-    <div><CommonWidget widgetType='page' setPageQuery = {setPageQuery}/></div>
+    <div><CommonWidget widgetType='page' setQuery = {setPageQuery}/></div>
   )
 }
 
