@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import styles from './scheduleMeetings.module.css';
 import Search from '@/public/search.svg';
+import profile from "@/public/data/profile.json"
 import Script from 'next/script';
 import Image from 'next/image';
 import Close from '/public/close.svg';
@@ -13,11 +14,12 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
 
     // const [meet,setMeet]=useState(false);
     const [start,setStart]=useState<number>();
+    const [nickName,setNickName]=useState();
     const [selectedDate,setSelectedDay]=useState<string>(new Date().getDate().toString());
     const val=new Date().getDate().toString();
     const times={
         [val]:["9:00 AM - 9:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"],
-        "12":["9:00 AM - 9:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"],
+        "24":["9:00 AM - 9:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"],
         "14":["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM"],
         "18":["9:00 AM - 9:30 AM", "10:00 AM - 10:30 AM", "8:00 AM - 8:30 AM", "7:00 PM - 7:30 PM", "9:00 PM - 9:30 PM"]
     }
@@ -92,28 +94,28 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
         }
       }
       console.log(times);
-  const meetingCards = new Array(15).fill(null).map((_, index) => (
-    <div className={styles.card1} key={index}>
-      <div className={styles.card1top}>
-        <div className={styles.profileDetail}>
-          <div className={styles.profilePic}>A</div>
-          <div>
-            <div style={{ fontSize: "12px" }}>Rob Slate @Robstatexy</div>
-            <div style={{ fontSize: "10px" }}>Marketing / Sales Strategy</div>
+      const meetingCards = profile.map((item, index) => (
+        <div className={styles.card1} key={index}>
+          <div className={styles.card1top}>
+            <div className={styles.profileDetail}>
+              <div className={styles.profilePic}>A</div>
+              <div>
+                <div style={{ fontSize: "12px" }}>{item.name} <span style={{color:"#8C8EA4"}}>{item.nick}</span></div>
+                <div style={{ fontSize: "10px" }}>{item.designation}</div>
+              </div>
+            </div>
+            <div className={styles.eventDetails} onClick={meets}>
+              <div className={styles.detailContainer}>
+                <div>Meet</div>
+                <Image src={rightArrowIcon} alt="rightArrowIcon" width={30} height={20} />
+              </div>
+            </div>
+          </div>
+          <div className={styles.card1bottom}>
+            {item.description}
           </div>
         </div>
-        <div className={styles.eventDetails} onClick={meets}>
-          <div className={styles.detailContainer}>
-            <div>Meet</div>
-            <Image src={rightArrowIcon} alt="rightArrowIcon" width={30} height={20} />
-          </div>
-        </div>
-      </div>
-      <div className={styles.card1bottom}>
-        Lorem ipsum dolor sit amet consectetur. In sit eget non aliquet nisi. Eu dictum sit fermentum lectus. Nunc hac tortor elit vestibulum lorem auctor.
-      </div>
-    </div>
-  ));
+      ));      
   return (
     <div className={styles.meetingContainer}>
 
@@ -149,12 +151,12 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
             </div>
             <div className={styles.btn}><span className={styles.circle1}></span>Availabe</div>
         </div>
-        <div style={{display:"flex", gap:"20px"}}>
+        <div style={{display:"flex", gap:"20px"}} className={styles.allDetail}>
         <div style={{display:"flex", gap:"10px", flexDirection:"column"}}>
             <div className={styles.buttons} style={{ fontSize: "10px" }}>
             <div className={styles.monthyear}>
             <div onClick={prevMonth} className={styles.changeBtn}>{"<"}</div>
-            <div style={{width: "50px", textAlign:"center"}}>{monthAbb[month]}, {year}</div>
+            <div style={{width: "55px", textAlign:"center"}}>{monthAbb[month]}, {year}</div>
             <div onClick={nextMonth} className={styles.changeBtn}>{">"}</div>
             </div>
             <div>Timezone : Calcutta</div>
@@ -171,8 +173,18 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
               {weeks.map((week, index) => (
                 <tr key={index} className={styles.tableRow}>
                   {week.map((date, index) => (
-                    date !== ' '?<td key={index} onClick={()=>getSlotData(date)} style={{position:"relative"}} className={date === selectedDate ? styles.selectedDay : ''}>{date}{times.hasOwnProperty(date)&& <span className={styles.circle2}></span>}</td>:<td key={index}></td>
-                  ))}
+  
+    date !== ' ' ? (
+      times.hasOwnProperty(date) ? (
+        <td key={index} style={{ position: "relative", cursor:"pointer" }} className={date === selectedDate ? styles.selectedDay : ''}>
+        <button style={{outline: "none",border: "none",background: "transparent",cursor:"pointer"}}onClick={() => getSlotData(date)}>{date}<span className={styles.circle2}></span></button></td>
+      ) : (
+        <td style={{cursor:"default"}}><span style={{color:"#666666"}} >{date}</span></td>
+      )
+    ) : (
+      <td key={index}>&nbsp;</td>
+    )
+))}
                 </tr>
               ))}
             </tbody>

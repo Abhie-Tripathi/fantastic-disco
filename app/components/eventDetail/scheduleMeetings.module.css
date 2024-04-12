@@ -228,11 +228,11 @@
 .monthyear{
     display: flex;
     align-items: center;
-    gap:20px;
+    gap:5px;
 }
 .changeBtn{
    cursor: pointer;
-   padding-bottom: 2px;
+   /* padding-bottom: 2px; */
 }
 .line{
     border: 2px solid #FDEFF6;
@@ -250,6 +250,7 @@
     gap:20px;
 }
 .meetDiv{
+    cursor: pointer;
     margin-bottom: 10px;
     display: flex;
     width: 100%;
@@ -296,3 +297,38 @@
     background-color: #0c0c0c;
     border-radius: 50%;
 }
+@media screen and (max-width: 1326px) {
+    .allDetail{
+        flex-direction: column;
+    }
+    .allDetail table{
+        display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+    .line{
+        display: none;
+    }
+    .timeDetail{
+        gap:20px;
+    }
+  }
+  @media screen and (max-width:863px){
+    .tableRow th,.tableRow td{
+        width: 30px;
+        height: 30px;
+    }
+    
+  }
+  @media screen and (max-width:730px){
+    .meetPop{
+        width: 86%;
+    }
+    
+  }
+  @media screen and (max-width:484px){
+    .buttons{
+        padding: 0;
+    }
+    
+  }
