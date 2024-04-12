@@ -1,8 +1,9 @@
-.circles{
+.circles {
     display: flex;
     gap: 10px;
 }
-.circle{
+
+.circle {
     margin-right: -18px;
     background-color: #3a3e42;
     width: 40px;
@@ -14,12 +15,14 @@
     color: white;
     flex-shrink: 0;
 }
-.innerContainer1{
+
+.innerContainer1 {
     display: flex;
     align-items: center;
     gap: 25px;
 }
-.innerContainer2{
+
+.innerContainer2 {
     display: flex;
     gap: 5px;
     align-items: center;
@@ -27,39 +30,45 @@
     background-color: black;
     border-radius: 30px;
 }
-.container1{
+
+.container1 {
     padding: 10px;
     margin-bottom: 10px;
     background-color: #201F24;
     display: flex;
-  align-items: center;
-  justify-content: space-around;
-  border-radius: 12px;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 12px;
 }
-.container2{
+
+.container2 {
     border-radius: 12px;
     overflow-y: scroll;
     /* max-height: 677px; */
 }
-.search{
+
+.search {
     border: none;
-  outline: none;
-  height: 100%;
-  background: transparent;
+    outline: none;
+    height: 100%;
+    background: transparent;
 }
-.meetingContainer{
+
+.meetingContainer {
     display: flex;
     height: 100%;
     flex-direction: column;
-    gap: 10px;   
+    gap: 10px;
 }
-.mainCard{
+
+.mainCard {
     display: grid;
     gap: 10px;
     padding-right: 10px;
     grid-template-columns: repeat(2, 1fr);
 }
-.card1{
+
+.card1 {
     display: flex;
     border-radius: 12px;
     flex-direction: column;
@@ -68,22 +77,26 @@
     background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
     border: 1px solid #262626
 }
-.card1top{
+
+.card1top {
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: space-between;
 }
-.card1bottom{
+
+.card1bottom {
     font-size: 10px;
     text-align: justify;
 }
-.profileDetail{
+
+.profileDetail {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 10px;
 }
-.profilePic{
+
+.profilePic {
     width: 40px;
     height: 40px;
     align-items: center;
@@ -92,12 +105,14 @@
     border-radius: 20%;
     background-color: #3a3e42;
 }
+
 .eventDetails {
     color: white;
     right: 0;
     bottom: 0;
 }
-.eventDetails .detailContainer{
+
+.eventDetails .detailContainer {
     border-radius: 40px;
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
@@ -107,6 +122,7 @@
     position: relative;
     background: #0c0c0c;
 }
+
 .eventDetails .detailContainer::after {
     content: '';
     position: absolute;
@@ -115,42 +131,48 @@
     height: 105%;
     border-radius: 40px;
     background: linear-gradient(118deg, rgba(103, 80, 164, 1) 0%, rgba(133, 133, 133, 1) 100%);
-  	z-index:-1;
+    z-index: -1;
 }
-.eventDetails .detailContainer img{
+
+.eventDetails .detailContainer img {
     background-color: #6650a452;
     padding: 4px 10px 4px 10px;
     border-radius: 30px;
     margin-left: 7px;
 }
-.eventDetails .detailContainer div{
+
+.eventDetails .detailContainer div {
     font-size: 12px;
-    
+
 }
-.container2::-webkit-scrollbar{
-    width: 2px; 
+
+.container2::-webkit-scrollbar {
+    width: 2px;
     margin-top: 10px;
     /* background:black; */
-  }
-  .container2::-webkit-scrollbar-thumb{
-    background:#2B233D;
+}
+
+.container2::-webkit-scrollbar-thumb {
+    background: #2B233D;
     border-radius: 12px;
-  }
-  .meetPop{
+}
+
+.meetPop {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     /* backdrop-filter: blur(0.5px); */
     width: 55%;
-   
+
 }
-.modal{
+
+.modal {
     z-index: 1;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -159,7 +181,8 @@
     backdrop-filter: blur(5px);
     height: 100%;
 }
-.singleMeet{
+
+.singleMeet {
     background-color: #1D1D1D;
     border-radius: 12px;
     padding: 30px;
@@ -169,21 +192,26 @@
     flex-direction: column;
     gap: 20px;
 }
-.tableRow{
+
+.tableRow {
     display: flex;
-    gap:20px;
+    gap: 20px;
 }
-.tableRow th,.tableRow td{
+
+.tableRow th,
+.tableRow td {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
 }
-.tableRow td{
+
+.tableRow td {
     cursor: pointer;
 }
-.cardDetail{
+
+.cardDetail {
     padding: 10px;
     border-radius: 12px;
     display: flex;
@@ -192,12 +220,14 @@
     background: #201F24;
 
 }
-.personDetail{
+
+.personDetail {
     display: flex;
     align-items: center;
     gap: 20px;
 }
-.btn{
+
+.btn {
     align-items: center;
     height: 25px;
     padding: 0px 20px;
@@ -211,45 +241,53 @@
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
 }
-.circle1{
+
+.circle1 {
     width: 8px;
     background-color: #0E9B1C;
     height: 8px;
     margin-right: 4px;
     border-radius: 50%;
 }
-.buttons{
+
+.buttons {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0px 10px;
     gap: 10px;
 }
-.monthyear{
+
+.monthyear {
     display: flex;
     align-items: center;
-    gap:20px;
+    gap: 20px;
 }
-.changeBtn{
-   cursor: pointer;
-   padding-bottom: 2px;
+
+.changeBtn {
+    cursor: pointer;
+    padding-bottom: 2px;
 }
-.line{
+
+.line {
     border: 2px solid #FDEFF6;
     margin: 5px;
 }
-.timeDetail{
+
+.timeDetail {
     display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
 }
-.slotsInfo{
+
+.slotsInfo {
     display: flex;
     flex-direction: column;
-    gap:20px;
+    gap: 20px;
 }
-.meetDiv{
+
+.meetDiv {
     margin-bottom: 10px;
     display: flex;
     width: 100%;
@@ -257,42 +295,47 @@
     justify-content: center;
     background-color: #2B233D;
     padding: 10px 0px;
-    border-radius:12px;
+    border-radius: 12px;
 }
-.slot{
+
+.slot {
     display: grid;
     font-size: 10px;
     grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+    gap: 10px;
 }
-.crossImage{
+
+.crossImage {
     color: transparent;
     position: absolute;
     top: 5px;
     cursor: pointer;
     right: 5px;
 }
-.time{
-  align-items: center;
-  padding: 5px;
-    font-size: 9px;
-  background-color: #1A1A1A;
-  display: flex;
-  justify-content: center;
-  border-radius: 30px;
-  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
-  outline: 0.97px solid transparent;
+
+.time {
+    align-items: center;
+    padding: 5px;
+    font-size: 16px;
+    background-color: #1A1A1A;
+    display: flex;
+    justify-content: center;
+    border-radius: 30px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.97px solid transparent;
 }
-.circle2{
+
+.circle2 {
     position: absolute;
-  bottom: 10%;
-  left: 45%;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: #0E9B1C;
+    bottom: 10%;
+    left: 45%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #0E9B1C;
 }
-.selectedDay{
+
+.selectedDay {
     background-color: #0c0c0c;
     border-radius: 50%;
 }

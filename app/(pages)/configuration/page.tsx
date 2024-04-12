@@ -12,6 +12,8 @@ const Page = () => {
     const [type, setType] = useState<string>("Sticky");
     const [previewState, setPreviewState] = useState<string>("Side Preview");
     const [stickyId, setStickyId] = useState<string>("")
+    const [pageQuery, setPageQuery] = useState<string>("")
+    const [sectionQuery, setSectionQuery] = useState<string>("")
 
   const handlePreviewToggle = ()=>{
     if(previewState === "Side Preview"){
@@ -29,13 +31,13 @@ const Page = () => {
                     />
                     <div className={styles.dropdown_container}>
                         {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
-                        {type === "Section" && <SectionWidget />}
-                        {type === "Page" && <PageWidget />}
+                        {type === "Section" && <SectionWidget setSectionQuery = {setSectionQuery} />}
+                        {type === "Page" && <PageWidget setPageQuery = {setPageQuery} />}
                         {type === "Code" && <CodeWindow stickyId = {stickyId} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>
-                    <Preview type={type} toggle={handlePreviewToggle} stickyId = {stickyId} />
+                    <Preview type={type} toggle={handlePreviewToggle} stickyId = {stickyId} pageQuery = {pageQuery} />
                 </div>
             </div>
         </div>
