@@ -1,12 +1,12 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './page.style.module.css'
-import WidgetBtns from '../../components/widgetconfigurations/WidgetBtns'
-import StickyWidget from '../../components/widgetconfigurations/StickyWidget'
-import SectionWidget from '../../components/widgetconfigurations/SectionWidget'
-import Preview from '../../components/widgetconfigurations/Preview'
-import PageWidget from '@/app/components/widgetconfigurations/PageWidget'
-import CodeWindow from '@/app/components/widgetconfigurations/CodeWindow'
+import WidgetBtns from '../../../components/widgetadd/WidgetBtns'
+import StickyWidget from '../../../components/widgetadd/StickyWidget'
+import SectionWidget from '../../../components/widgetadd/SectionWidget'
+import Preview from '../../../components/widgetadd/Preview'
+import PageWidget from '@/app/components/widgetadd/PageWidget'
+import CodeWindow from '@/app/components/widgetadd/CodeWindow'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");

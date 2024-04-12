@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from './preview.style.module.css'
 import Script from 'next/script'
-import lorem from '../../../public/data/lorem.json'
 
 interface PreviewProps {
     toggle: () => void;
@@ -28,7 +27,7 @@ const Preview = ({ toggle, type, stickyId, pageQuery }: PreviewProps) => {
                 {type === "Sticky" ?
                     <div className={styles.stickywidget}>
                         <sticky-widget sticky-id={stickyId} />
-                        <div>{lorem[0]}</div>
+                        <iframe src="https://10times.com/" width={"100%"} height={"100%"}></iframe>
                     </div>
                     : type === "Page" ? <page-widget page-query={pageQuery}/> : <section-widget />}
             </div>

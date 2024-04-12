@@ -1,35 +1,40 @@
 "use client"
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import WidgetCard from '../../components/widgets/WidgetCard'
 import More from '/public/more_horiz.svg'
 import Styles from './page.module.css'
-import data from '@/public/data/data.json'
 import Add from '/public/add.svg'
 import Image from 'next/image';
+import Link from 'next/link'
+
 const Widget = () => {
-  // console.log(data[0]);
+
+  const [widgets, setWidgets] = useState([]);
+
+  useEffect(() => {
+    const storedWidgets = localStorage.getItem('widgets');
+    if (storedWidgets) {
+      setWidgets(JSON.parse(storedWidgets));
+    }
+  }, []);
+
   return (
     <div className={Styles.outerContainer}>
       <div className={Styles.containerOne}>
         <div className={Styles.c1left}>Widgets</div>
         <div className={Styles.c1right}>
             <div className={Styles.threeDots}><Image src={More} alt="more"/></div>
-            <div className={Styles.addBtn}>
+            <Link className={Styles.addBtn} href={"/widget/add"}>
                 <div><Image src={Add} alt="add"/></div>
                 <div>Widget</div>
-            </div>
+            </Link>
         </div>
       </div>
-      {data.map((item,index) => (
+      {widgets.map((item,index) => (
       <div key={index} className={Styles.containerTwo}>
-        
-          <WidgetCard key={item.id} data={item} />
-       
+          <WidgetCard data={item} />
       </div>
        ))}
-      {/* <div className={Styles.containerTwo}>
-        <WidgetCard />
-      </div> */}
     </div>
   )
 }

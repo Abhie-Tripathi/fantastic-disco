@@ -19,17 +19,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
+
   return (
     <html lang="en" className={sora.className}>
       <body>
-      <AuthContextProvider>
-      <Navbar />
-      <div style={{paddingTop:"70px"}}>
-        {children}
-        </div>
+        <AuthContextProvider>
+          <Navbar />
+          <div style={{ paddingTop: "70px" }}>
+            {children}
+          </div>
         </AuthContextProvider>
-        </body>
+      </body>
     </html>
   );
 }
