@@ -6,7 +6,6 @@ import StickyWidget from '../../../components/widgetadd/StickyWidget'
 import SectionWidget from '../../../components/widgetadd/SectionWidget'
 import Preview from '../../../components/widgetadd/Preview'
 import PageWidget from '@/app/components/widgetadd/PageWidget'
-import CodeWindow from '@/app/components/widgetadd/CodeWindow'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");
@@ -33,7 +32,6 @@ const Page = () => {
                         {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
                         {type === "Section" && <SectionWidget setSectionQuery = {setSectionQuery} />}
                         {type === "Page" && <PageWidget setPageQuery = {setPageQuery} />}
-                        {type === "Code" && <CodeWindow stickyId = {stickyId} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>

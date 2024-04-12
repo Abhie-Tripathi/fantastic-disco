@@ -6,6 +6,7 @@ import Down from '/public/downArrow.svg'
 import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
 
+
 interface StickyWidgetProps {
     stickyId: string;
 }
@@ -63,6 +64,9 @@ const StickyWidget = (props: StickyWidgetProps) => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.header}>
+                <div className={styles.widgetName}>Sticky Widget</div>
+            </div>
             <div className={styles.eventNameContainer}>
                 <div className={styles.heading}>Event</div>
                 <div className={styles.eventNameInput}>
@@ -111,7 +115,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
                 </div>
             </div>
             <div className={styles.btns}>
-                <button className={styles.submitBtn}>Submit</button>
+                <button className={styles.submitBtn}>Update</button>
                 <button className={styles.cancelBtn} type="button">Cancel</button>
             </div>
         </form>
