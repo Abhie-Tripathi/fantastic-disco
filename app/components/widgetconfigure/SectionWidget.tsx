@@ -7,7 +7,7 @@ interface SectionWidgetProps {
 
 const SectionWidget = ({sectionId}:SectionWidgetProps) => {
   return (
-    <div><CommonWidget widgetType='Page' widgetId={sectionId}/></div>
+    <div><CommonWidget widgetType='Section' widgetId={sectionId}/></div>
   )
 }
 

@@ -50,6 +50,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
     const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
 
+    const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
+
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -334,7 +336,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     <input type="checkbox" id="check" className={styles.checkboxInput} onChange={handleCheckboxChange} />
                     <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
-                {promotedEventTags.length <= 2 && <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
+                {promotedEventTags.length < promotedEventsLimit && <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
                         type='text'
