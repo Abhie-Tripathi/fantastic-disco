@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-   
+ 
+    
     return (
       <html lang="en" className={sora.className}>
         <body>
