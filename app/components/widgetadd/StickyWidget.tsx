@@ -51,8 +51,9 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const endpoint = "stickey"; // Check if this is the correct endpoint
+        const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
+            type : "stickey",
             companyId: "0feddb96-a398-4d0f-ae56-1331f08647b7",
             event: selectedEvent._source.name,
             height: height,
