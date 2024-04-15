@@ -38,6 +38,8 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
     }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
+            {/* <script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>
+<page-widget page-id={"dbed6f5e-9898-4e7a-9ef8-bba38fba740c"}></page-widget> */}
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={styles.containerOne}>
