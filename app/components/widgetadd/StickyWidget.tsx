@@ -7,7 +7,7 @@ import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
 
 interface StickyWidgetProps {
-    setStickyId: React.Dispatch<React.SetStateAction<string>>;
+    setWidgetId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const StickyWidget = (props: StickyWidgetProps) => {
@@ -51,8 +51,9 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const endpoint = "stickey"; // Check if this is the correct endpoint
+        const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
+            type : "stickey",
             companyId: "0feddb96-a398-4d0f-ae56-1331f08647b7",
             event: selectedEvent._source.name,
             height: height,
@@ -78,7 +79,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             setStickyId(id);
 
             const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            storedWidgets.push({ id, name : "sticky" });
+            storedWidgets.push({ id, name : "Sticky" });
             const updatedWidgetsJSON = JSON.stringify(storedWidgets);
             localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
@@ -86,7 +87,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
         }
     };
     useEffect(() => {
-        props.setStickyId(stickyId)
+        props.setWidgetId(stickyId)
     }, [stickyId])
     return (
         <form className={styles.form} onSubmit={handleSubmit}>

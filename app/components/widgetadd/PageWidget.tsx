@@ -2,12 +2,12 @@ import React from 'react'
 import CommonWidget from './CommonWidget'
 
 interface PageWidgetProps {
-  setPageQuery: React.Dispatch<React.SetStateAction<string>>;
+  setWidgetId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const PageWidget = ({setPageQuery}:PageWidgetProps) => {
+const PageWidget = ({setWidgetId}:PageWidgetProps) => {
   return (
-    <div><CommonWidget widgetType='page' setQuery = {setPageQuery}/></div>
+    <div><CommonWidget widgetType='Page' setId = {setWidgetId}/></div>
   )
 }
 
