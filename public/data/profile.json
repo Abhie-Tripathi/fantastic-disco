@@ -82,6 +82,12 @@
       "nick":"@Quest",
       "designation": "Sales Coordinator",
       "description": "Support sales team with administrative tasks and customer inquiries."
+    },
+    {
+      "name": "Jack Thompson",
+      "nick": "@Maverick",
+      "designation": "Marketing Specialist",
+      "description": "Assist in developing and executing marketing strategies for brand promotion."
     }
   ]
   

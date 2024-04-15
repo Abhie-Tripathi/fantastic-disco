@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import WidgetBtns from '../../../components/widgetadd/WidgetBtns'
 import StickyWidget from '../../../components/widgetadd/StickyWidget'
@@ -10,15 +10,14 @@ import PageWidget from '@/app/components/widgetadd/PageWidget'
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");
     const [previewState, setPreviewState] = useState<string>("Side Preview");
-    const [stickyId, setStickyId] = useState<string>("")
-    const [pageQuery, setPageQuery] = useState<string>("")
-    const [sectionQuery, setSectionQuery] = useState<string>("")
+    const [widgetId, setWidgetId] =useState<string>("")
 
   const handlePreviewToggle = ()=>{
     if(previewState === "Side Preview"){
       setPreviewState("Full Preview")
     }else setPreviewState("Side Preview")
   }
+
 
     return (
         <div className={styles.body}>
@@ -29,13 +28,13 @@ const Page = () => {
                         setType={setType}
                     />
                     <div className={styles.dropdown_container}>
-                        {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
-                        {type === "Section" && <SectionWidget setSectionQuery = {setSectionQuery} />}
-                        {type === "Page" && <PageWidget setPageQuery = {setPageQuery} />}
+                        {type === "Sticky" && <StickyWidget setWidgetId = {setWidgetId} />}
+                        {type === "Section" && <SectionWidget setWidgetId = {setWidgetId} />}
+                        {type === "Page" && <PageWidget setWidgetId = {setWidgetId} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>
-                    <Preview type={type} toggle={handlePreviewToggle} stickyId = {stickyId} pageQuery = {pageQuery} />
+                    <Preview type={type} toggle={handlePreviewToggle} widgetId={widgetId} />
                 </div>
             </div>
         </div>

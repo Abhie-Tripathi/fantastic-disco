@@ -41,8 +41,10 @@ export const Notes = ({ comments, productId }: Props) => {
         )
           : null
       }
+      <div className={styles.notesAdd}>
       <AddComment productId={productId} />
-      <ButtonView view={"sortByButton"} />
+      {/* <ButtonView view={"sortByButton"} /> */}
+      </div>
     </div>
   );
 };

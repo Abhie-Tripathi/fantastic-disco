@@ -14,6 +14,7 @@ import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname } from "next/navigation";
 
+
 type authContextType = {
   user: UserResponse | null;
   signup: (user: SignUpDTO) => Promise<any>;
@@ -72,6 +73,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
     const url = baseUrl + authEndpoints.signin;
+    console.log(url);
     const { error, data }: SignIn = await myFetch(url, {
       method: "POST",
       headers: headers,

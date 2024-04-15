@@ -13,7 +13,7 @@ interface StickyWidgetProps {
 
 const StickyWidget = (props: StickyWidgetProps) => {
     const baseUrl = process.env.NEXT_PUBLIC_EVENTGENI_URL
-    const {data} = useFetch(`${baseUrl}/stickey/${props.stickyId}`)
+    const {data} = useFetch(`${baseUrl}/widgets/${props.stickyId}?type=stickey`)
     
     const [bgColor, setBgColor] = useState<string>("");
     const [fgColor, setFColor] = useState<string>("");
@@ -36,8 +36,9 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const endpoint = `stickey/${props.stickyId}`; 
+        const endpoint = `widgets/${props.stickyId}`; 
         const body = JSON.stringify({
+            type:"stickey",
             bgColor,
             fgColor,
             height,

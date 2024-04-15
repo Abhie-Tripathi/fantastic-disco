@@ -51,6 +51,7 @@ const SignIn = () => {
       const response = await signup({
         firstname: name.split(" ")[0],
         lastname: name.split(" ")[1],
+        phoneNumber:mobileNo,
         email,
         password,
       });
