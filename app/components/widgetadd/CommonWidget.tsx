@@ -132,6 +132,59 @@ const CommonWidget = ({widgetType, setQuery} : CommonWidgetProps) => {
         setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
     }
 
+    // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     // Generate query string
+    //     const queryString = generateQueryString();  
+    //     const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
+    //     // Prepare request body
+    //     const body = {
+    //         query: queryString,
+    //         companyId: "0feddb96-a398-4d0f-ae56-1331f08647b7" // Replace "your_company_id" with your actual company ID
+    //     };
+    //     try {
+    //         const responseData = await postData(`${baseURL}/page`, body);
+    //         console.log("Response data:", responseData);
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //     }
+    // };
+    // const generateQueryString = () => {
+    //     const formData: Record<string, string> = {};
+    //     if (startDate) {
+    //         formData.startDate = startDate
+    //     }
+    //     if (endDate) {
+    //         formData.endDate = endDate
+    //     }
+    //     if (categoryTags.length > 0) {
+    //         formData.categoryTags = categoryTags.join(',');
+    //     }
+    //     if (eventTypeTags.length > 0) {
+    //         formData.eventTypeTags = eventTypeTags.join(',');
+    //     }
+    //     if (promotedEvents.length > 0) {
+    //         formData.promotedEvents = promotedEvents.join(',');
+    //     }
+    
+    //     const params = new URLSearchParams(formData);
+    //     return params.toString();
+    // };
+    // const postData = async (url: string, body: any) => {
+    //     const response = await fetch(url, {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify(body)
+    //     });
+    
+    //     if (!response.ok) {
+    //         throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+    
+    //     return response.json();
+    // };
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     
@@ -156,6 +209,7 @@ const CommonWidget = ({widgetType, setQuery} : CommonWidgetProps) => {
         const queryString = params.toString();
         setQuery(queryString)
     };
+    
     
     return (
         <form className={styles.form} onSubmit={handleSubmit}>

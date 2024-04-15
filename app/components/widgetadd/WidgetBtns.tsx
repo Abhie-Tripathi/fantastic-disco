@@ -4,6 +4,7 @@ import styles from './widgetbtns.style.module.css'
 interface WidgetBtnsProps {
     type: string;
     setType: React.Dispatch<React.SetStateAction<string>>;
+    
 }
 const WidgetBtns: React.FC<WidgetBtnsProps> = ({ type, setType }) => {
     return (

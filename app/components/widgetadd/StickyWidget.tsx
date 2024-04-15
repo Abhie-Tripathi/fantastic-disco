@@ -51,10 +51,9 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        // Endpoint for the POST request
         const endpoint = "stickey"; // Check if this is the correct endpoint
         const body = JSON.stringify({
-            companyId: "283102bd-a5b4-43ee-b1c6-cd8fb0ed02a0",
+            companyId: "0feddb96-a398-4d0f-ae56-1331f08647b7",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,
@@ -77,7 +76,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
             const responseData = await response.json();
             const { id } = responseData;
             setStickyId(id);
-            console.log('Form submitted successfully:', responseData);
+
+            const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
+            storedWidgets.push({ id, name : "sticky" });
+            const updatedWidgetsJSON = JSON.stringify(storedWidgets);
+            localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
             console.error('An error occurred while submitting the form:', error);
         }

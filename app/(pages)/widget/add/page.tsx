@@ -1,12 +1,11 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './page.style.module.css'
-import WidgetBtns from '../../components/widgetconfigurations/WidgetBtns'
-import StickyWidget from '../../components/widgetconfigurations/StickyWidget'
-import SectionWidget from '../../components/widgetconfigurations/SectionWidget'
-import Preview from '../../components/widgetconfigurations/Preview'
-import PageWidget from '@/app/components/widgetconfigurations/PageWidget'
-import CodeWindow from '@/app/components/widgetconfigurations/CodeWindow'
+import WidgetBtns from '../../../components/widgetadd/WidgetBtns'
+import StickyWidget from '../../../components/widgetadd/StickyWidget'
+import SectionWidget from '../../../components/widgetadd/SectionWidget'
+import Preview from '../../../components/widgetadd/Preview'
+import PageWidget from '@/app/components/widgetadd/PageWidget'
 
 const Page = () => {
     const [type, setType] = useState<string>("Sticky");
@@ -33,7 +32,6 @@ const Page = () => {
                         {type === "Sticky" && <StickyWidget setStickyId = {setStickyId} />}
                         {type === "Section" && <SectionWidget setSectionQuery = {setSectionQuery} />}
                         {type === "Page" && <PageWidget setPageQuery = {setPageQuery} />}
-                        {type === "Code" && <CodeWindow stickyId = {stickyId} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>

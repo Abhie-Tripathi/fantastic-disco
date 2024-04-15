@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './scheduleMeetings.module.css';
 import Search from '@/public/search.svg';
 import profile from "@/public/data/profile.json"
-import Script from 'next/script';
 import Image from 'next/image';
 import Close from '/public/close.svg';
 import rightArrowIcon from '/public/rightbigarrow.svg';
