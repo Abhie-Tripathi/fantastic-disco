@@ -7,7 +7,7 @@ interface PageWidgetProps {
 
 const PageWidget = ({setWidgetId}:PageWidgetProps) => {
   return (
-    <div><CommonWidget widgetType='page' setId = {setWidgetId}/></div>
+    <div><CommonWidget widgetType='Page' setId = {setWidgetId}/></div>
   )
 }
 

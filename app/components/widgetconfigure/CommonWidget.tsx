@@ -14,12 +14,12 @@ import Tag from "../widgetadd/Tag";
 import useFetch from "@/hooks/useFetch";
 // import EventData from '../../../public/data/demoEvent.json'
 
-interface CommonWidgetProps{
-    widgetType : string;
-    widgetId : string;
+interface CommonWidgetProps {
+    widgetType: string;
+    widgetId: string;
 }
 
-const CommonWidget = ({widgetType} : CommonWidgetProps) => {
+const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
@@ -48,8 +48,8 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
-    const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
-    
+    const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
+
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -117,7 +117,7 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
             setIsPromotedDropdownOpen(promotedInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
         }
     }, [promotedInput]);
-    
+
 
     const handlePromotedEventClick = (event: any) => {
         if (!promotedEventTags.includes(event._source.name)) {
@@ -126,34 +126,24 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
         }
         setIsPromotedDropdownOpen(false);
     };
-    
 
-    const handleRemovePromotedEventsTag = (tagToRemove: string)=>{
+
+    const handleRemovePromotedEventsTag = (tagToRemove: string) => {
         setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Generate query string
-        const queryString = generateQueryString();  
+        const queryString = generateQueryString();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        // Prepare request body
         const body = {
-            type:"page",
+            type: "page",
             query: queryString,
-            companyId: "682e4653-7a55-4fcd-a555-0f7794ec496b" // Replace "your_company_id" with your actual company ID
         };
         try {
-            const responseData = await postData(`${baseURL}/widgets`, body);
-            console.log("Response data:", responseData);  
-            const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            if(widgetType ==="Page"){
-                storedWidgets.push({ id:responseData.id, name : "Page" });
-            }else{
-                storedWidgets.push({ id:responseData.id, name : "Section" });
-            }
-            const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-            localStorage.setItem('widgets', updatedWidgetsJSON);
+            const responseData = await postData(`${baseURL}/widgets/${widgetId}`, body);
+            console.log("Response data:", responseData);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -175,28 +165,28 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
         if (promotedEvents.length > 0) {
             formData.promotedEvents = promotedEvents.join(',');
         }
-    
+
         const params = new URLSearchParams(formData);
         return params.toString();
     };
     const postData = async (url: string, body: any) => {
         const response = await fetch(url, {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
         });
-    
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    
+
         return response.json();
     };
     // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     //     e.preventDefault();
-    
+
     //     // Initialize formData object
     //     const formData: Record<string, string> = {};
     //     if (startDate) {
@@ -218,10 +208,13 @@ const CommonWidget = ({widgetType} : CommonWidgetProps) => {
     //     const queryString = params.toString();
     //     setQuery(queryString)
     // };
-    
-    
+
+
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.header}>
+                <div className={styles.widgetName}>{widgetType} Widget</div>
+            </div>
             <div className={styles.eventFormatContainer}>
                 <div className={styles.heading}>Event Format</div>
                 <div className={styles.eventFormatInput}>

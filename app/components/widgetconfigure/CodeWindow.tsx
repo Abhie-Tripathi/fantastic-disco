@@ -16,6 +16,8 @@ const CodeWindow = ({ widgetId, type }: CodeProps) => {
             setCode(`<sticky-widget sticky-id={"${widgetId}"}></sticky-widget>`)
         }else if(type === "Page"){
             setCode(`<page-widget page-id={"${widgetId}"}></page-widget>`)
+        }else{
+            setCode(`<section-widget page-id={"${widgetId}"}></section-widget>`)
         }
     },[])
   return (

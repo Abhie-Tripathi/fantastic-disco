@@ -28,7 +28,7 @@ const Preview = ({ toggle, type, widgetId }: PreviewProps) => {
                         <sticky-widget sticky-id={widgetId} />
                         <iframe src="https://10times.com/" width={"100%"} height={"100%"}></iframe>
                     </div>
-                    : type === "Page" ? <page-widget page-id={widgetId}/> : <section-widget />}
+                    : type === "Page" ? <page-widget page-id={widgetId}/> : <section-widget section-id={widgetId} />}
             </div>
         </div>
     )

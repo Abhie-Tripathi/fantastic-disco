@@ -8,6 +8,7 @@ import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import CodeIcon from '/public/code.svg'
 import Image from 'next/image'
 import PageWidget from '@/app/components/widgetconfigure/PageWidget'
+import SectionWidget from '@/app/components/widgetconfigure/SectionWidget'
 
 interface Widget {
     id: string;
@@ -51,7 +52,7 @@ const Page = ({ params }: Props) => {
                         {!codeWindow && (
                             <>
                                 {type === "Sticky" && <StickyWidget stickyId={widgetId} />}
-                                {/* {type === "Section" && <SectionWidget setSectionId={widg} />} */}
+                                {type === "Section" && <SectionWidget sectionId={widgetId} />}
                                 {type === "Page" && <PageWidget pageId={widgetId} />}
                             </>
                         )}
