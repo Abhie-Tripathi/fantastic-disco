@@ -6,6 +6,6 @@ export const headers = {
   };
 
 export const authEndpoints = {
-    signup: "/auth/customer/signUp",
+    signup: "/auth/customer/signup",
     signin: "/auth/customer/signin",
   };

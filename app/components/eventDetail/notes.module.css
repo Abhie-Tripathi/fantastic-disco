@@ -7,7 +7,6 @@
   background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
   border: 1px solid #262626;
   border-radius: 18px;
-  padding: 20px;
   overflow-y: scroll;
   }
   
@@ -61,7 +60,7 @@
     /* height: 50%; */
     height: fit-content;
     /* overflow: auto; */
-    padding: 20px 0;
+    padding: 20px;
   }
   
   .comments li {
@@ -356,6 +355,13 @@
   .container::-webkit-scrollbar{
     width: 2px; 
     
+  }
+  .notesAdd{
+    padding: 20px;
+    width: 100%;
+    margin: 0;
+    border-radius: 12px;
+    background: #1A1A1A;
   }
   /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;

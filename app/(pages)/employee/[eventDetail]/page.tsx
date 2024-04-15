@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
+import MyMeetings from '@/app/components/eventDetail/MyMeetings';
 import Background from '@/public/background.png';
 import Image from 'next/image';
 import {Notes} from '@/app/components/eventDetail/Notes';
@@ -58,6 +59,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                         {/* Render component based on userCta state */}
                         {userCta === "Notes" && <Notes />}
                         {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
+                        {userCta === "My Meetings" && <MyMeetings/>}
                     </div>
                     </div>
                 </div>

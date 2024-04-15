@@ -14,6 +14,7 @@ import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname } from "next/navigation";
 
+
 type authContextType = {
   user: UserResponse | null;
   signup: (user: SignUpDTO) => Promise<any>;
