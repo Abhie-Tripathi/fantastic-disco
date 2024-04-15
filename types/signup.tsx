@@ -25,6 +25,7 @@ export type TSignUpFormSchema = z.infer<typeof SignUpFormSchema>;
 export interface SignUpDTO {
   firstname: string;
   lastname: string;
+  phoneNumber:string,
   email: string;
   password: string;
 }
