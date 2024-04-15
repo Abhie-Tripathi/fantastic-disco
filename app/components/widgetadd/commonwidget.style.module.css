@@ -1,6 +1,13 @@
 .form{
     margin-top: 40px;
 }
+.header{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .heading{
     color: #999999;
     margin-bottom: 12px;

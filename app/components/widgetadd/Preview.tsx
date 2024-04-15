@@ -1,16 +1,15 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import styles from './preview.style.module.css'
 import Script from 'next/script'
 
 interface PreviewProps {
     toggle: () => void;
     type: string;
-    stickyId: string;
-    pageQuery : string;
+    widgetId: string;
 }
 
-const Preview = ({ toggle, type, stickyId, pageQuery }: PreviewProps) => {
+const Preview = ({ toggle, type, widgetId }: PreviewProps) => {
     const [toggleState, setToggleState] = useState<string>("Side Preview")
 
     const handleToggleState = () => {
@@ -26,10 +25,10 @@ const Preview = ({ toggle, type, stickyId, pageQuery }: PreviewProps) => {
             <div className={`${toggleState === "Side Preview" ? styles.sidescreen : styles.fullscreen}`}>
                 {type === "Sticky" ?
                     <div className={styles.stickywidget}>
-                        <sticky-widget sticky-id={stickyId} />
+                        <sticky-widget sticky-id={widgetId} />
                         <iframe src="https://10times.com/" width={"100%"} height={"100%"}></iframe>
                     </div>
-                    : type === "Page" ? <page-widget page-query={pageQuery}/> : <section-widget />}
+                    : type === "Page" ? <page-widget page-id={widgetId}/> : <section-widget section-id={widgetId} />}
             </div>
         </div>
     )
