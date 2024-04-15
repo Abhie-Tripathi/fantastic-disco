@@ -1,0 +1,96 @@
+.container{
+    width: 100%;
+    gap: 20px;
+    display: flex;
+}
+.leftContainer{
+    width:60%;
+    display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.card{
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+  border: 1px solid #262626;
+  border-radius: 18px;
+  display: flex;
+  gap:10px;
+}
+.todayCard{
+    width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+}
+.meetDetail{
+    display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+.timeSlot{
+    font-size: 10px;
+  color: rgb(161, 161, 170);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.upcomming{
+    background-color: #2B233D;
+    display: flex;
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 6px;
+}
+.timings{
+    display: flex;
+  gap: 10px;
+}
+.circle{
+    width: 12px;
+    height: 12px;
+    background-color: #6750A4;
+    border-radius: 50%;
+    margin-top: 5px;
+}
+.line{
+    border: 1px solid #1F1F1F;
+}
+.rightContainer{
+    display: flex;
+    width: 40%;
+    flex-direction: column;
+    gap:10px;
+}
+.table{
+    display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 10px;
+}
+.tableBody{
+    gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.tableRow {
+    display: flex;
+    gap: 20px;
+}
+
+.tableRow th,
+.tableRow td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.tableRow td {
+    cursor: pointer;
+}
