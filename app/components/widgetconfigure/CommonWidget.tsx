@@ -47,6 +47,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
+    const [deactivated, setDeactivated] = useState<boolean>(false)
+
     const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
 
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
@@ -360,6 +362,11 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             </div>
             <div className={styles.tagsContainer}>
                 <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
+            </div>
+            <div className={styles.activateBtn}>
+                <div className={styles.heading}>Deactivated</div>
+                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} />
+                <label htmlFor="activate" className={styles.checkBox}></label>
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Submit</button>

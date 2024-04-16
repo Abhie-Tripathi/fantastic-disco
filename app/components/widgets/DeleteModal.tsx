@@ -1,7 +1,5 @@
-'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './deletemodal.style.module.css'
-import useFetch from '@/hooks/useFetch'
 
 interface DeleteProps {
     type: string
@@ -11,17 +9,9 @@ interface DeleteProps {
 
 const DeleteModal = ({ type, id, handleModal}: DeleteProps) => {
 
-    const [widgetType, setWidgetType] = useState("")
-
-    useEffect(()=>{
-        if(type === "sticky"){
-            setWidgetType("stickey")
-        }else setWidgetType("page")
-    },[])
-
     const handleDelete = async () => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const url = `${baseURL}/widgets/${id}?type=${widgetType}`;
+        const url = `${baseURL}/widgets/${id}?type=${type}`;
         try {
             const response = await fetch(url, {
                 method: 'DELETE',

@@ -5,6 +5,8 @@ import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 interface StickyWidgetProps {
@@ -13,7 +15,7 @@ interface StickyWidgetProps {
 
 const StickyWidget = (props: StickyWidgetProps) => {
     const baseUrl = process.env.NEXT_PUBLIC_EVENTGENI_URL
-    const {data} = useFetch(`${baseUrl}/widgets/${props.stickyId}?type=stickey`)
+    const {data} = useFetch(`${baseUrl}/widgets/${props.stickyId}?type=sticky`)
     
     const [bgColor, setBgColor] = useState<string>("");
     const [fgColor, setFColor] = useState<string>("");
@@ -38,7 +40,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
         const endpoint = `widgets/${props.stickyId}`; 
         const body = JSON.stringify({
-            type:"stickey",
+            type:"sticky",
             bgColor,
             fgColor,
             height,
@@ -56,8 +58,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
                 console.error('Failed to update the resource:', response.status, response.statusText);
                 return;
             }
-    
-            console.log('Resource updated successfully');
+            toast.success('Updated successfully. Please reload the page to preview the changes.');
         } catch (error) {
             console.error('An error occurred while updating the resource:', error);
         }
@@ -65,6 +66,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
+            <ToastContainer/>
             <div className={styles.header}>
                 <div className={styles.widgetName}>Sticky Widget</div>
             </div>
