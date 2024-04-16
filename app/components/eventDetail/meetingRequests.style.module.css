@@ -1,0 +1,120 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: scroll;
+  height: 100%;
+  border-radius: 18px;
+  padding: 10px 10px 0px 0px;
+}
+.container::-webkit-scrollbar {
+  width: 2px;
+  margin-top: 10px;
+  /* background:black; */
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #2B233D;
+  border-radius: 12px;
+}
+.req{
+    display: flex;
+  justify-content: space-between;
+}
+.newReq{
+    background-color: #1A1A1A;
+    color: #9B75FF;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    border-radius: 12px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent
+}
+.circles{
+  display: flex;
+}
+.circle1{
+background-color: #3a3e42;
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+color: white;
+}
+.cards{
+  background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+  border: 1px solid #262626;
+  border-radius: 18px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+}
+.cardContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.allEventDetail{
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+.card3{
+  font-size: 12px;
+
+  display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+padding: 5px;
+background-color: #313131;
+border-radius: 10px;
+}
+.linkTime{
+  display: flex;
+  font-size: 10px;
+  align-items: center;
+  gap:10px;
+}
+.card4{
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+.hostBtn{
+  font-size: 10px;
+  color: #AC8DFF;
+  background-color: #1A1A1A;
+  padding: 5px;
+  border-radius: 40px;
+box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+outline: 0.97px solid transparent;
+}
+.allCta{
+  display:flex;
+  gap: 40px;
+}
+.incorrectDiv,.correctDiv{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.incorrectDiv div{
+   color: #B53A3A;
+}
+.correctDiv div{
+  color: #238A3B;
+}
+.line{
+  border: 1px solid #262626
+}
+.decAcc{
+  font-size: 12px;
+}

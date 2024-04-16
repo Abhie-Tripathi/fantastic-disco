@@ -84,16 +84,20 @@ const MyCalendar = () => {
                         <div className={styles.meetDetail}>
                             <div className={styles.upcomming}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>
-                                <div className={styles.circle}></div>
+                                <div>
+                                    <div className={styles.circle}></div>
+                                </div>
                                 <div className={styles.eventNameTime}>
-                                <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video"/></div>
+                                    <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video" /></div>
                                     <div style={{ fontSize: "12px" }}>Event Connect - Discussion with Alexia</div>
                                 </div>
                             </div>
                             <div className={styles.timings}>
-                                <div className={styles.circle}></div>
+                                <div>
+                                    <div className={styles.circle}></div>
+                                </div>
                                 <div className={styles.eventNameTime}>
-                                <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video"/></div>
+                                    <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video" /></div>
                                     <div style={{ fontSize: "12px" }}>Event Discussion with Max glam</div>
                                 </div>
                             </div>
@@ -105,16 +109,20 @@ const MyCalendar = () => {
                         <div className={styles.meetDetail}>
                             <div className={styles.upcomming}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>
-                                <div className={styles.circle}></div>
+                                <div>
+                                    <div className={styles.circle} style={{backgroundColor:"#2DD4BF"}}></div>
+                                </div>
                                 <div className={styles.eventNameTime}>
-                                <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video"/></div>
+                                    <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video" /></div>
                                     <div style={{ fontSize: "12px" }}>Event Connect - Discussion with Alexia</div>
                                 </div>
                             </div>
                             <div className={styles.timings}>
-                                <div className={styles.circle}></div>
+                                <div>
+                                    <div className={styles.circle} style={{backgroundColor:"#2DD4BF"}}></div>
+                                </div>
                                 <div className={styles.eventNameTime}>
-                                    <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video"/></div>
+                                    <div className={styles.timeSlot}>2:30 - 3:30 PM <Image src={Video} alt="Video" /></div>
                                     <div style={{ fontSize: "12px" }}>Event Discussion with Max glam</div>
                                 </div>
                             </div>
@@ -134,7 +142,7 @@ const MyCalendar = () => {
                     <thead>
                         <tr className={styles.tableRow}>
                             {days.map((day, ind) => (
-                                <td key={ind} style={{color: "#666666"}}>{day}</td>
+                                <td key={ind} style={{ color: "#666666" }}>{day}</td>
                             ))}
                         </tr>
                     </thead>
@@ -144,7 +152,7 @@ const MyCalendar = () => {
                                 {week.map((date, index) => (
 
                                     date !== ' ' ? (
-                                        <td key={index} style={{ cursor: "default" }}><span style={{  }} >{date}</span></td>
+                                        <td key={index} style={{ cursor: "default" }}><span style={{}} >{date}</span></td>
                                     ) : (
                                         <td key={index}>&nbsp;</td>
                                     )
