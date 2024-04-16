@@ -1,0 +1,36 @@
+.container{
+    width: 400px;
+    height: 150px;
+    border-radius: 10px;
+    background-color: #313131;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.btns{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.btns button{
+    padding: 5px 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+.delete{
+    background-color: rgb(218, 99, 99);
+}
+.delete:hover{
+    transition-duration: .1s;
+    background-color:rgb(223, 76, 76) ;
+}
+.cancel{
+    background-color: #6750A4;
+}
+.cancel:hover{
+    transition-duration: .1s;
+    background-color:#6548b6;
+}

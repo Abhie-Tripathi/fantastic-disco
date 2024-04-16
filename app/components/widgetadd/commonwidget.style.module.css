@@ -116,6 +116,10 @@
 .promotedHeading{
     display: flex;
 }
+.activateBtn{
+    display: flex;
+    margin-bottom: 30px;
+}
 .btns{
     display: flex;
     justify-content: space-between;

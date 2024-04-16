@@ -1,10 +1,21 @@
+.container{
+    position: relative;
+}
+.blur{
+    filter: blur(2px);
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 .cardSec1,
 .cardSec3 {
     margin: 0px 18px;
     position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .iconCircle {
@@ -53,6 +64,23 @@
 .configure:hover{
     transition-duration: .2s;
     background-color: #6750A4;
+}
+.delete{
+    margin-left: 20px;
+    padding: 3px;
+    border-radius: 8px;
+    background-color: #313131;
+    cursor: pointer;
+}
+.delete:hover{
+    transition-duration: .2s;
+    background-color: rgb(218, 99, 99);
+}
+.deleteModal{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }
 .statusBtn {
     position: absolute;
