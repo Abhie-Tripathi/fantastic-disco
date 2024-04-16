@@ -5,6 +5,9 @@ import SearchIcon from '/public/search.svg'
 import Down from '/public/downArrow.svg'
 import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface StickyWidgetProps {
     setWidgetId: React.Dispatch<React.SetStateAction<string>>;
@@ -53,8 +56,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
         const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
-            type : "stickey",
-            companyId: "0feddb96-a398-4d0f-ae56-1331f08647b7",
+            type : "sticky",
+            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,

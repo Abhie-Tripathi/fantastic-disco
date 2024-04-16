@@ -143,7 +143,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         const body = {
             type:"page",
             query: queryString,
-            companyId: "682e4653-7a55-4fcd-a555-0f7794ec496b" // Replace "your_company_id" with your actual company ID
+            companyId: "d586146b-7845-46f9-bea9-6db19995449a" // Replace "your_company_id" with your actual company ID
         };
         try {
             const responseData = await postData(`${baseURL}/widgets`, body);
