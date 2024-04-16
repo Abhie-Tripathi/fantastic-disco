@@ -53,6 +53,26 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
 
+    // This will run as soon as the form opens, So that it can be prefilled with the data
+    useEffect(()=>{
+        const fetchWidgetData = async () => {
+            try {
+                const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=${widgetType.toLowerCase()}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch widget data');
+                }
+                const widgetData = await response.json();
+                // console.log(JSON.parse(widgetData.body))
+                const formBody = JSON.parse(widgetData.body)
+                const currentPromotedTags = formBody.promotedEventTags
+                setPromotedEventTags(currentPromotedTags)
+            } catch (error) {
+                console.error('Error fetching widget data:', error);
+            }
+        };
+        fetchWidgetData();
+    },[])
+
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -187,31 +207,6 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
         return response.json();
     };
-    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-
-    //     // Initialize formData object
-    //     const formData: Record<string, string> = {};
-    //     if (startDate) {
-    //         formData.startDate = startDate
-    //     }
-    //     if (endDate) {
-    //         formData.endDate = endDate
-    //     }
-    //     if (categoryTags.length > 0) {
-    //         formData.categoryTags = categoryTags.join(',');
-    //     }
-    //     if (eventTypeTags.length > 0) {
-    //         formData.eventTypeTags = eventTypeTags.join(',');
-    //     }
-    //     if (promotedEvents.length > 0) {
-    //         formData.promotedEvents = promotedEvents.join(',');
-    //     } 
-    //     const params = new URLSearchParams(formData);
-    //     const queryString = params.toString();
-    //     setQuery(queryString)
-    // };
-
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>

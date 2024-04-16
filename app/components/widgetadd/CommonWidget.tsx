@@ -139,14 +139,23 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         // Generate query string
         const queryString = generateQueryString();  
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
+        const bodyData = {
+            promotedEventTags,
+            startDate,
+            endDate,
+            eventTypeTags,
+            categoryTags,
+            eventFormat
+        };
         // Prepare request body
-        const body = {
+        const formBody = {
             type:"page",
             query: queryString,
-            companyId: "d586146b-7845-46f9-bea9-6db19995449a" // Replace "your_company_id" with your actual company ID
+            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
+            body : JSON.stringify(bodyData)
         };
         try {
-            const responseData = await postData(`${baseURL}/widgets`, body);
+            const responseData = await postData(`${baseURL}/widgets`, formBody);
             console.log("Response data:", responseData);
             setId(responseData.id)
             
