@@ -91,6 +91,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
     };
     useEffect(() => {
         props.setWidgetId(stickyId)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stickyId])
     return (
         <form className={styles.form} onSubmit={handleSubmit}>

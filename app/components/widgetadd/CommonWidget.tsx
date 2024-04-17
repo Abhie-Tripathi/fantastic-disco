@@ -50,7 +50,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
 
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
 
-    const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
+    const {data} = useFetch('https://api.eventgeni.com/es/find?company=104');
     
     useEffect(() => {
         if (categoryInput.trim() === '') {
@@ -118,6 +118,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             setMatchingPromotedEvents(matches);
             setIsPromotedDropdownOpen(promotedInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
     
 
@@ -131,6 +132,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
     
 
     const handleRemovePromotedEventsTag = (tagToRemove: string)=>{
+        
         setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
     }
 

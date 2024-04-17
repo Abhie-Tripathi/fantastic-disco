@@ -59,7 +59,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     useEffect(()=>{
         const fetchWidgetData = async () => {
             try {
-                const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=${widgetType.toLowerCase()}`);
+                const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=page`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch widget data');
                 }
@@ -78,6 +78,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             }
         };
         fetchWidgetData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     // To add the promotedEvents in promotedEvents state, so that they are there in configuration form query
@@ -156,6 +157,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             setMatchingPromotedEvents(matches);
             setIsPromotedDropdownOpen(promotedInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
 
 
