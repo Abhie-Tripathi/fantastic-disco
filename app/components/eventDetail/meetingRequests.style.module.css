@@ -75,7 +75,8 @@ box-shadow: -4px 8px 8px rgba(0, 0, 0, 0.4);
 }
 .card3{
   font-size: 12px;
-
+  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
   display: flex;
 align-items: center;
 justify-content: center;
