@@ -4,6 +4,7 @@ import styles from './page.module.css';
 import MyMeetings from '@/app/components/eventDetail/MyMeetings';
 import Background from '@/public/background.png';
 import Image from 'next/image';
+import Script from 'next/script';
 import {Notes} from '@/app/components/eventDetail/Notes';
 import SingleEvent from '@/app/components/eventDetail/SingleEvent';
 import ScheduleMeetings from '@/app/components/eventDetail/ScheduleMeetings';
@@ -38,8 +39,8 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
     }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {/* <script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>
-<page-widget page-id={"dbed6f5e-9898-4e7a-9ef8-bba38fba740c"}></page-widget> */}
+            {/* <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
+<page-widget page-id={"07cfbe59-a5d6-4142-8d6f-157297b9dff8"}></page-widget> */}
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={styles.containerOne}>

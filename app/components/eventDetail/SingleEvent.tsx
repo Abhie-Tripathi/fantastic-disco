@@ -59,8 +59,8 @@ const SingleEvent = (params: { data: Data }) => {
                     <div>Speakers</div>
                     <div className={styles.circles}>
                         <div className={styles.circle}>A</div>
-                        <div className={styles.circle}>B</div>
-                        <div className={styles.circle}>C</div>
+                        <div className={styles.circle} style={{marginLeft:"-15px"}}>B</div>
+                        <div className={styles.circle} style={{marginLeft:"-15px"}}>C</div>
                     </div>
                 </div>
             </div>

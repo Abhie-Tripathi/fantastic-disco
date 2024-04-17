@@ -14,6 +14,7 @@
     border-radius: 50%;
     color: white;
     flex-shrink: 0;
+    box-shadow: -4px -3px 7px rgba(0, 0, 0, 0.4);
 }
 
 .innerContainer1 {
@@ -37,7 +38,7 @@
     background-color: #201F24;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     border-radius: 12px;
 }
 
@@ -97,6 +98,7 @@
 }
 
 .profilePic {
+    
     width: 40px;
     height: 40px;
     align-items: center;
@@ -354,11 +356,6 @@
         gap:20px;
     }
   }
-  /* @media screen and (max-width: 1500px) {
-    .time{
-        font-size: 9px;
-    }
-  } */
   @media screen and (max-width:863px){
     .tableRow th,.tableRow td{
         width: 30px;
