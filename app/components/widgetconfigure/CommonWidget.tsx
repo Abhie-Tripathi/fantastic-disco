@@ -12,6 +12,8 @@ import Tags from "../widgetadd/Tags";
 import Image from "next/image";
 import Tag from "../widgetadd/Tag";
 import useFetch from "@/hooks/useFetch";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface CommonWidgetProps {
     widgetType: string;
@@ -62,6 +64,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     throw new Error('Failed to fetch widget data');
                 }
                 const widgetData = await response.json();
+                parseQueryString(widgetData.query);
                 const formBody = JSON.parse(widgetData.body)
                 setPromotedEventTags(formBody.promotedEventTags)
                 setEventTypeTags(formBody.eventTypeTags)
@@ -76,6 +79,16 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         };
         fetchWidgetData();
     },[])
+
+    // To add the promotedEvents in promotedEvents state, so that they are there in configuration form query
+    const parseQueryString = (queryString : string) => {
+        const params = new URLSearchParams(queryString);
+        const parsedPromotedEvents = params.get('promotedEvents');
+        if (parsedPromotedEvents) {
+            const promotedEventsArray = parsedPromotedEvents.split(',');
+            setPromotedEvents(promotedEventsArray);
+        }
+    };
 
     useEffect(() => {
         if (categoryInput.trim() === '') {
@@ -182,7 +195,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         };
         try {
             const responseData = await postData(`${baseURL}/widgets/${widgetId}`, formBody);
-            console.log("Response data:", responseData);
+            toast.success('Updated successfully. Please reload the page to preview the changes.');
         } catch (error) {
             console.error("Error:", error);
         }
@@ -226,6 +239,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
+              <ToastContainer/>
             <div className={styles.header}>
                 <div className={styles.widgetName}>{widgetType} Widget</div>
             </div>
