@@ -22,6 +22,7 @@ export const Notes = ({ comments, productId }: Props) => {
     <div className={styles.container}>
       {
         comments ? (
+          <div className={styles.commentDiv}>
           <ul className={styles.comments}>
             {comments.map((comment) => (
               <li
@@ -38,6 +39,7 @@ export const Notes = ({ comments, productId }: Props) => {
               </li>
             ))}
           </ul>
+          </div>
         )
           : null
       }

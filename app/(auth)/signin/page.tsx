@@ -33,6 +33,7 @@ const SignIn = () => {
       SignInFormSchema.parse({ email, password });
       setErrors({});
       const response = await signin({ email, password });
+      console.log(response)
       if (response?.error) {
         setErrors({ password: response.error });
       } else {

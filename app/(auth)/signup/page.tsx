@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, FormEvent } from "react";
 import styles from "./page.module.css";
+import Script from "next/script";
 import Image from "next/image";
-// import EventeliText from "/public/assets/eventeli_text.svg";
-// import EventeliLogo from "/public/assets/heroLogo.png";
 import LeftBackground from "../../../public/leftBackground.svg";
 import TopRightBackground from "../../../public/topRightBackground.svg";
 import BottomRightBackground from "../../../public/bottomRightBackground.svg";
@@ -33,14 +32,17 @@ const SignIn = () => {
 
   const handleSignUp = async (event:FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData: any = {
+      name,
+      email,
+      password,
+      confirmPassword,
+    };
+    if (mobileNo.length > 0) {
+      formData.mobileNo = mobileNo;
+    }
     try {
-       SignUpFormSchema.parse({
-        name,
-        email,
-        mobileNo,
-        password,
-        confirmPassword,
-      });
+       SignUpFormSchema.parse(formData);
       setErrors({});
       if (password !== confirmPassword) {
         setErrors({ confirmPassword: "Passwords do not match. Try again" });
@@ -48,14 +50,17 @@ const SignIn = () => {
       }
       
       setIsLoading(true);
+      
       const response = await signup({
         firstname: name.split(" ")[0],
         lastname: name.split(" ")[1],
-        phoneNumber:mobileNo,
         email,
         password,
+        ...(mobileNo.length > 0 ? { phoneNumber: mobileNo } : {})
       });
       setIsLoading(false);
+      console.log(response);
+      
       if (!response?.error) {
         // console.log(response)
         setShowVerification(true);
@@ -76,7 +81,7 @@ const SignIn = () => {
       }
     }
   };
-
+console.log(errors);
   return (
     <div className={styles.container}>
       <div className={styles.hero_container}>

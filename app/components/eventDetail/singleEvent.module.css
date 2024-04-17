@@ -129,10 +129,9 @@ text-align: left;
 .circles{
     padding-top: 20px;
     display: flex;
-    gap: 10px;
 }
 .circle{
-    margin-right: -18px;
+    /* margin-right: -18px; */
     background-color: #3a3e42;
     width: 40px;
     height: 40px;
@@ -142,4 +141,5 @@ text-align: left;
     border-radius: 50%;
     color: white;
     flex-shrink: 0;
+    box-shadow: -4px -3px 7px rgba(0, 0, 0, 0.4);
 }
