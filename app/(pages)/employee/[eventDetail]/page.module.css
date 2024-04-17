@@ -90,6 +90,11 @@
     }
 
 }
+@media screen and (max-width: 1608px) {
+.fullHeight{
+    height: 120vh;
+}
+}
 @media screen and (max-width: 1400px) {
     .containerTopRight{
       gap: 20px;

@@ -47,7 +47,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto)
     const url = baseUrl + authEndpoints.signup;
-
+    console.log(url);
     const { error, data }: SignUp = await myFetch(url, {
       method: "POST",
       headers: headers,

@@ -9,7 +9,7 @@ import eventData from '../../../../public/data/demoEvent.json'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
-    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>(["Sponsoring","Exhibiting","Speaking", "Attending"]);
     const [teamSelection,setTeamSelection]=useState('Total Events')
     // Sponsoring/Exhibiting/Speaking/Attending
     const personalize=DropDown();

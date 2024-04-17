@@ -9,7 +9,10 @@
   border-radius: 18px;
   overflow-y: scroll;
   }
-  
+  .commentDiv{
+    height: 82%;
+    overflow-y: scroll;
+  }
   .container h2 {
     font-size: 1.3rem;
   }
@@ -362,6 +365,16 @@
     margin: 0;
     border-radius: 12px;
     background: #1A1A1A;
+  }
+  .commentDiv::-webkit-scrollbar {
+    width: 2px;
+    margin-top: 10px;
+    /* background:black; */
+  }
+  
+  .commentDiv::-webkit-scrollbar-thumb {
+    background: #2B233D;
+    border-radius: 12px;
   }
   /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;

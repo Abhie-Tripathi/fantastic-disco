@@ -34,8 +34,11 @@ text-align: left;
     padding: 10px;
 }
 .calendar{
-    padding: 3px;
+    padding: 5px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
   border-radius: 8px;
+  font-size: 12px;
   display: flex;
   gap: 5px;
   justify-content: center;
@@ -43,8 +46,6 @@ text-align: left;
   background-color: #313131;
 }
 .date{
-    font-family: Sora;
-font-size: 14px;
 font-weight: 400;
 line-height: 21px;
 text-align: left;
@@ -129,10 +130,9 @@ text-align: left;
 .circles{
     padding-top: 20px;
     display: flex;
-    gap: 10px;
 }
 .circle{
-    margin-right: -18px;
+    /* margin-right: -18px; */
     background-color: #3a3e42;
     width: 40px;
     height: 40px;
@@ -142,4 +142,5 @@ text-align: left;
     border-radius: 50%;
     color: white;
     flex-shrink: 0;
+    box-shadow: -4px -3px 7px rgba(0, 0, 0, 0.4);
 }

@@ -8,18 +8,29 @@ import meetings from '@/public/data/meetings.json'
 import DeclineNote from './DeclineNote'
 const MeetingRequest = () => {
   const [decline, setDecline] = useState(false);
+  const [acceptedEvent,setAcceptedEvent]=useState({});
   const [id,setId]=useState(-1);
-  console.log(decline);
   const declineFun=(val:number)=>{
-    setDecline(!decline);
+    setDecline(true);
     setId(val);
+    console.log(decline);
+    
+    // if(!decline) setId(-1);
+  }
+  const acceptFun=(val:number)=>{
+    const data=meetings.find((item)=>item.id===val)
+    console.log(data);
+    
   }
   return (
-    <div className={styles.container}>
-      <div className={styles.req}>
+    <>
+     <div className={styles.req}>
         <div>Meeting Requests</div>
-        <div className={styles.newReq}>3 New Requests</div>
+        <div className={styles.newReq}>{meetings.length} New Requests</div>
       </div>
+   
+    <div className={styles.container}>
+     
       <div className={styles.cards}>
         {meetings.map((item, ind) => (
           <>
@@ -51,10 +62,13 @@ const MeetingRequest = () => {
                     Decline
                   </div>
                 </div>
-                <div className={styles.correctDiv}>
-                  <Image src={Correct} alt="correct" />
-                  <div className={styles.decAcc}>Accept</div>
-                </div>
+                {item.id!==id &&
+                <div className={styles.correctDiv} onClick={()=>acceptFun(item.id)}>
+                <Image src={Correct} alt="correct" />
+                <div className={styles.decAcc}>Accept</div>
+              </div>
+                }
+                
               </div>
             </div>
             {decline && item.id === id && <DeclineNote />}
@@ -66,6 +80,7 @@ const MeetingRequest = () => {
         {/* <div className={styles.line}></div> */}
       </div>
     </div>
+    </>
   )
 }
 
