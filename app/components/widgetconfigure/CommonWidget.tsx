@@ -26,8 +26,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [eventFormat, setEventFormat] = useState<string>("Online")
     const [isEventFormatDropdownOpen, setIsEventFormatDropdownOpen] = useState<boolean>(false);
 
-    const [startDate, setStartDate] = useState<any>()
-    const [endDate, setEndDate] = useState<any>()
+    const [startDate, setStartDate] = useState<string>('')
+    const [endDate, setEndDate] = useState<string>('')
 
     const [categoryTags, setCategoryTags] = useState<string[]>([]);
     const [categoryInput, setCategoryInput] = useState<string>("");
@@ -62,10 +62,14 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     throw new Error('Failed to fetch widget data');
                 }
                 const widgetData = await response.json();
-                // console.log(JSON.parse(widgetData.body))
                 const formBody = JSON.parse(widgetData.body)
-                const currentPromotedTags = formBody.promotedEventTags
-                setPromotedEventTags(currentPromotedTags)
+                setPromotedEventTags(formBody.promotedEventTags)
+                setEventTypeTags(formBody.eventTypeTags)
+                setEventFormat(formBody.eventFormat)
+                setCategoryTags(formBody.categoryTags)
+                setStartDate(formBody.startDate)
+                setEndDate(formBody.endDate)
+                setDeactivated(!formBody.active)
             } catch (error) {
                 console.error('Error fetching widget data:', error);
             }
@@ -160,12 +164,24 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         // Generate query string
         const queryString = generateQueryString();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const body = {
-            type: "page",
+        const bodyData = {
+            promotedEventTags,
+            startDate,
+            endDate,
+            eventTypeTags,
+            categoryTags,
+            eventFormat,
+            active : !deactivated
+        };
+        // Prepare request body
+        const formBody = {
+            type:"page",
             query: queryString,
+            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
+            body : JSON.stringify(bodyData)
         };
         try {
-            const responseData = await postData(`${baseURL}/widgets/${widgetId}`, body);
+            const responseData = await postData(`${baseURL}/widgets/${widgetId}`, formBody);
             console.log("Response data:", responseData);
         } catch (error) {
             console.error("Error:", error);
@@ -232,12 +248,12 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date = {startDate} /></div>
 
                 </div>
                 <div className={styles.endDate}>
                     <div className={styles.heading}>End Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} date = {endDate} /></div>
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
@@ -360,11 +376,11 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             </div>
             <div className={styles.activateBtn}>
                 <div className={styles.heading}>Deactivated</div>
-                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} />
+                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={()=>setDeactivated(!deactivated)} />
                 <label htmlFor="activate" className={styles.checkBox}></label>
             </div>
             <div className={styles.btns}>
-                <button className={styles.submitBtn}>Submit</button>
+                <button className={styles.submitBtn}>Update</button>
                 <button className={styles.cancelBtn} type="button">Cancel</button>
             </div>
         </form>
