@@ -8,13 +8,12 @@ import Spinner from '/public/Icon.svg'
 import Link from 'next/link'
 import Delete from '/public/delete.svg'
 import DeleteModal from './DeleteModal'
-import useFetch from '@/hooks/useFetch'
 
 const WidgetCard = (props: any) => {
 
   const data = props.data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
-  const [activeState, setActiveState] = useState("")
+  const [activeState, setActiveState] = useState("Active")
 
   const handleModal = () => {
     setDeleteModal(!deleteModal)
