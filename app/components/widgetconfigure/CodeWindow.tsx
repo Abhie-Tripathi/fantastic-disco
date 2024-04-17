@@ -19,6 +19,7 @@ const CodeWindow = ({ widgetId, type }: CodeProps) => {
         }else{
             setCode(`<section-widget page-id={"${widgetId}"}></section-widget>`)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
   return (
       <div className={styles.container}>
