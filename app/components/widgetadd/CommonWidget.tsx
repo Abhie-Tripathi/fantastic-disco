@@ -27,8 +27,8 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
     const [eventFormat, setEventFormat] = useState<string>("Online")
     const [isEventFormatDropdownOpen, setIsEventFormatDropdownOpen] = useState<boolean>(false);
 
-    const [startDate, setStartDate] = useState<any>()
-    const [endDate, setEndDate] = useState<any>()
+    const [startDate, setStartDate] = useState<string>()
+    const [endDate, setEndDate] = useState<string>()
 
     const [categoryTags, setCategoryTags] = useState<string[]>([]);
     const [categoryInput, setCategoryInput] = useState<string>("");
@@ -139,14 +139,24 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         // Generate query string
         const queryString = generateQueryString();  
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
+        const bodyData = {
+            promotedEventTags,
+            startDate,
+            endDate,
+            eventTypeTags,
+            categoryTags,
+            eventFormat,
+            active : true
+        };
         // Prepare request body
-        const body = {
+        const formBody = {
             type:"page",
             query: queryString,
-            companyId: "d586146b-7845-46f9-bea9-6db19995449a" // Replace "your_company_id" with your actual company ID
+            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
+            body : JSON.stringify(bodyData)
         };
         try {
-            const responseData = await postData(`${baseURL}/widgets`, body);
+            const responseData = await postData(`${baseURL}/widgets`, formBody);
             console.log("Response data:", responseData);
             setId(responseData.id)
             
@@ -197,32 +207,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         }
     
         return response.json();
-    };
-    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    
-    //     // Initialize formData object
-    //     const formData: Record<string, string> = {};
-    //     if (startDate) {
-    //         formData.startDate = startDate
-    //     }
-    //     if (endDate) {
-    //         formData.endDate = endDate
-    //     }
-    //     if (categoryTags.length > 0) {
-    //         formData.categoryTags = categoryTags.join(',');
-    //     }
-    //     if (eventTypeTags.length > 0) {
-    //         formData.eventTypeTags = eventTypeTags.join(',');
-    //     }
-    //     if (promotedEvents.length > 0) {
-    //         formData.promotedEvents = promotedEvents.join(',');
-    //     } 
-    //     const params = new URLSearchParams(formData);
-    //     const queryString = params.toString();
-    //     setQuery(queryString)
-    // };
-    
+    };    
     
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -245,12 +230,12 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date="" /></div>
 
                 </div>
                 <div className={styles.endDate}>
                     <div className={styles.heading}>End Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} date="" /></div>
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
