@@ -59,7 +59,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     useEffect(()=>{
         const fetchWidgetData = async () => {
             try {
-                const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=${widgetType.toLowerCase()}`);
+                const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=page`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch widget data');
                 }

@@ -12,7 +12,8 @@ const DeleteModal = ({ type, id, handleModal}: DeleteProps) => {
 
     const handleDelete = async () => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const url = `${baseURL}/widgets/${id}?type=${type}`;
+        const widgetType = type === "sticky" ? "sticky" :"page"
+        const url = `${baseURL}/widgets/${id}?type=${widgetType}`;
         try {
             const response = await fetch(url, {
                 method: 'DELETE',
