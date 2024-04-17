@@ -94,7 +94,6 @@
     box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.47px solid transparent;
 }
-
 .activeFlag {
     background-color: #19922C;
     width: 10px;
@@ -103,13 +102,25 @@
 }
 
 .status {
-    /* font-family: Sora; */
     font-size: 13.25px;
     font-weight: 400;
     line-height: 19.87px;
     text-align: left;
-
     color: #0E9B1C;
+}
+.inactiveFlag {
+    background-color: #d83147;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.inactiveStatus {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #d83147;
 }
 
 .cardSec2 {

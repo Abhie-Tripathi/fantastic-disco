@@ -1,5 +1,5 @@
-'use cleint'
-import React, { useState } from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Styles from './widgetCard.module.css'
 import Analytics from './Analytics'
 import Calendar from '/public/vector.svg'
@@ -8,16 +8,42 @@ import Spinner from '/public/Icon.svg'
 import Link from 'next/link'
 import Delete from '/public/delete.svg'
 import DeleteModal from './DeleteModal'
+import useFetch from '@/hooks/useFetch'
 
 const WidgetCard = (props: any) => {
 
+  const data = props.data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [activeState, setActiveState] = useState("")
 
-  const handleModal = ()=>{
+  const handleModal = () => {
     setDeleteModal(!deleteModal)
   }
 
-  const data = props.data;
+  useEffect(() => {
+    const fetchWidgetData = async () => {
+      try {
+        const response = await fetch(`https://api.eventgeni.com/widgets/${data.id}?type=page`);
+        const widgetData = await response.json();
+        const formBody = JSON.parse(widgetData.body)
+
+        if (formBody.active) {
+          setActiveState("Active")
+        } else {
+          setActiveState("Inactive")
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch widget data');
+        }
+      } catch (error) {
+        console.error('Error fetching widget data:', error);
+      }
+    };
+    fetchWidgetData();
+  }, [])
+
+
   return (
     <div className={Styles.container}>
       <div className={`${Styles.card} ${deleteModal ? Styles.blur : ''}`}>
@@ -32,8 +58,8 @@ const WidgetCard = (props: any) => {
           <Link className={Styles.configure} href={`/widget/${data.id}`}>Configure</Link>
           <Image src={Delete} alt='delete' className={Styles.delete} onClick={handleModal} />
           <div className={Styles.statusBtn}>
-            <div className={Styles.activeFlag}></div>
-            <div className={Styles.status}>Active</div>
+            <div className={`${Styles.activeFlag} ${activeState === "Inactive" ? Styles.inactiveFlag : ''}`}></div>
+            <div className={`${Styles.status} ${activeState === "Inactive" ? Styles.inactiveStatus : ''}`}>{activeState}</div>
           </div>
         </div>
         <div className={Styles.cardSec2}>
@@ -81,7 +107,7 @@ const WidgetCard = (props: any) => {
         </div>
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={data.name.toLowerCase()} id={data.id} handleModal = {handleModal} />}
+        {deleteModal && <DeleteModal type={data.name.toLowerCase()} id={data.id} handleModal={handleModal} />}
       </div>
     </div>
   )
