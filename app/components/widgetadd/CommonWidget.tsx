@@ -48,9 +48,21 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
+    const [currDate, setCurrDate] = useState<string>("")
+
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
 
     const {data} = useFetch('https://api.eventgeni.com/es/find?company=104');
+
+    // To get the todays date to send in date picker comp.
+    useEffect(()=>{
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        setCurrDate(formattedDate);
+    },[])
     
     useEffect(() => {
         if (categoryInput.trim() === '') {
@@ -190,6 +202,9 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         if (promotedEvents.length > 0) {
             formData.promotedEvents = promotedEvents.join(',');
         }
+        if (eventFormat){
+            formData.eventFormat = eventFormat
+        }
     
         const params = new URLSearchParams(formData);
         return params.toString();
@@ -231,7 +246,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date="" /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date={currDate} /></div>
 
                 </div>
                 <div className={styles.endDate}>
