@@ -127,7 +127,7 @@
 }
 .btns{
     display: flex;
-    gap: 100px;
+    gap: 30px;
 }
 .submitBtn{
     cursor: pointer;

@@ -12,7 +12,6 @@ import Tags from "./Tags";
 import Image from "next/image";
 import Tag from "./Tag";
 import useFetch from "@/hooks/useFetch";
-// import EventData from '../../../public/data/demoEvent.json'
 
 interface CommonWidgetProps {
     widgetType: string;

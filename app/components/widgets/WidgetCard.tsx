@@ -35,14 +35,14 @@ const WidgetCard = (props: any) => {
         const type = propsData.name === "Page" ? "page" : "sticky"
         const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${type}`);
         const widgetData = await response.json();
-        if(type === "sticky"){
+        if (type === "sticky") {
           const active = widgetData.active
-          if(active === "true"){
+          if (active === "true") {
             setActiveState("Active")
-          }else{
+          } else {
             setActiveState("Inactive")
           }
-        }else{
+        } else {
           const formBody = JSON.parse(widgetData.body)
           const query = widgetData.query
           if (formBody.active) {
@@ -57,7 +57,7 @@ const WidgetCard = (props: any) => {
           const additionalData = await additionalDataResponse.json();
           handleAdditionalData(additionalData);
         }
-  
+
       } catch (error) {
         console.error('Error fetching widget data:', error);
       }
@@ -104,15 +104,15 @@ const WidgetCard = (props: any) => {
 
     const extractPromotedEvents = (data: any) => {
       return data.reduce((acc: any, item: any) => {
-          const event = {
-              name: item._source.name,
-              startDate: item._source.start_date, // Assuming the field name is start_date
-              endDate: item._source.end_date, // Assuming the field name is end_date
-          };
-          acc.push(event);
-          return acc;
+        const event = {
+          name: item._source.name,
+          startDate: item._source.start_date, // Assuming the field name is start_date
+          endDate: item._source.end_date, // Assuming the field name is end_date
+        };
+        acc.push(event);
+        return acc;
       }, []);
-  };
+    };
     // Extract categories and event types from eventData and top_3 arrays
     const categoriesFromEventData = extractCategories(additionalData.eventData);
     const categoriesFromTop3 = additionalData.top_3 ? extractCategories(additionalData.top_3) : [];
@@ -120,7 +120,7 @@ const WidgetCard = (props: any) => {
     const eventTypesFromTop3 = additionalData.top_3 ? extractEventTypes(additionalData.top_3) : [];
     const countriesFromEventData = extractCountries(additionalData.eventData);
     const countriesFromTop3 = additionalData.top_3 ? extractCountries(additionalData.top_3) : [];
-    const highlightedEvents = additionalData.top_3?extractPromotedEvents(additionalData.top_3) : [];
+    const highlightedEvents = additionalData.top_3 ? extractPromotedEvents(additionalData.top_3) : [];
 
     // Combine categories and event types from both arrays and remove duplicates
     const allCategories = [...categoriesFromEventData, ...categoriesFromTop3].reduce((acc, category) => {
@@ -177,10 +177,10 @@ const WidgetCard = (props: any) => {
           <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Geography</div>
-            {countries?.map((item)=>(
-         <div className={Styles.typeBtn}>{item}</div>
+            {countries?.map((item) => (
+              <div className={Styles.typeBtn}>{item}</div>
             ))}
-   
+
           </div>
           <div className={Styles.line}></div>
           <div className={Styles.type}>
@@ -189,7 +189,6 @@ const WidgetCard = (props: any) => {
               {categories?.map((item) => (
                 <div className={Styles.typeBtn}>{item}</div>
               ))}
-
             </div>
           </div>
           <div className={Styles.line}></div>

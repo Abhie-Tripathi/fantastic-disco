@@ -67,6 +67,10 @@
 .dropdownItem:hover {
     background-color: rgba(29, 29, 29, 0.911);
 }
+.heightAndFont {
+    display: flex;
+    justify-content: space-between;
+}
 
 .heightInput{
     padding: 12px;
@@ -116,22 +120,40 @@
     justify-content: space-between;
     margin-bottom: 48px;
 }
-.colorOptions div{
+
+.colorOptions div {
     display: flex;
     align-items: center;
 }
-.colorInput {
+
+.colorInputWrapper {
     margin-left: 20px;
-    border: none;
-    border-radius: 8px; 
-    padding: 0; 
-    background-color: transparent; 
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.colorInputWrapper input[type=color] {
     cursor: pointer;
-  }
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
   
 .btns{
     display: flex;
-    justify-content: space-between;
+    gap: 30px;
 }
 .activateBtn{
     display: flex;

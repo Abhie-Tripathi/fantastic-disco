@@ -25,7 +25,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
   const formattedDate = formatDate(eventDate);
 
   return (
-    <div className={styles.card}>
+    <Link  href={`/employee/${eventId}`} className={styles.card}>
       <Image src={eventImage} alt="eventImage" width={300} height={238} className={styles.cardImg} />
       <div className={styles.cardDetails}>
         <div style={{ position: "relative" }}>
@@ -47,14 +47,14 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
         <ChatHeads data={["A", "B", "C"]} />
-        <Link href={`/employee/${eventId}`} className={styles.eventDetails}>
+        <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
             <div>View Details</div>
             <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
           </div>
-        </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

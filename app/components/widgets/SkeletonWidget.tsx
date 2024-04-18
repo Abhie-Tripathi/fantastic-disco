@@ -7,8 +7,7 @@ import Add from '/public/add.svg'
 const SkeletonWidget = () => {
     return (
         <div className={styles.container}>
-            <div className={styles.heading}>Looks like you don't have any Widget set up yet.</div>
-            <div className={styles.heading}>Let's Fix that</div>
+            <div className={styles.heading}>Looks like you don't have any widget set up yet. Let's fix that.</div>
             <Link className={styles.addBtn} href={"/widget/add"}>
                 <div><Image src={Add} alt="add" /></div>
                 <div>Add Widget</div>

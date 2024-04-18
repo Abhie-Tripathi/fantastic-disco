@@ -24,7 +24,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const [height, setHeight] = useState<string>('50');
     const [fontSize, setFontSize] = useState<string>('16')
     const [stickyId, setStickyId] = useState<string>("")
-    const { data} = useFetch('https://api.eventgeni.com/es/find?company=104');
+    const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
 
     const handleColorChange = (event: any) => {
         setBgColor(event.target.value);
@@ -41,7 +41,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             setIsEventDropdownOpen(searchInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
         }
     }, [searchInput, data]);
-    
+
     const handleEventClick = (event: any) => {
         setIsEventDropdownOpen(false)
         setSelectedEvent(event);
@@ -55,14 +55,14 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
         const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
-            type : "sticky",
+            type: "sticky",
             companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,
             bgColor,
             fgColor,
-            active : "true"
+            active: "true"
         });
         try {
             // Make the POST request
@@ -82,7 +82,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             setStickyId(id);
 
             const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            storedWidgets.push({ id, name : "Sticky" });
+            storedWidgets.push({ id, name: "Sticky" });
             const updatedWidgetsJSON = JSON.stringify(storedWidgets);
             localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
@@ -117,38 +117,44 @@ const StickyWidget = (props: StickyWidgetProps) => {
                     </div>
                 )}
             </div>
-            <div className={styles.heightContainer}>
-                <div className={styles.heading}>Height</div>
-                <div className={styles.heightInput}>
-                    <input onChange={(e) => setHeight(e.target.value)} value={height} type='number' />
-                    <div className={styles.dropdownIconValue}>
-                        <div>px</div>
-                        <Image src={Down} alt="dropdown"></Image>
+            <div className={styles.heightAndFont}>
+                <div className={styles.heightContainer}>
+                    <div className={styles.heading}>Height</div>
+                    <div className={styles.heightInput}>
+                        <input onChange={(e) => setHeight(e.target.value)} value={height} type='number' />
+                        <div className={styles.dropdownIconValue}>
+                            <div>px</div>
+                            <Image src={Down} alt="dropdown"></Image>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className={styles.fontContainer}>
-                <div className={styles.heading}>Font Size</div>
-                <div className={styles.fontInput}>
-                    <input onChange={(e) => setFontSize(e.target.value)} value={fontSize} type='number' />
-                    <div className={styles.dropdownIconValue}>
-                        <div>px</div>
-                        <Image src={Down} alt="dropdown"></Image>
+                <div className={styles.fontContainer}>
+                    <div className={styles.heading}>Font Size</div>
+                    <div className={styles.fontInput}>
+                        <input onChange={(e) => setFontSize(e.target.value)} value={fontSize} type='number' />
+                        <div className={styles.dropdownIconValue}>
+                            <div>px</div>
+                            <Image src={Down} alt="dropdown"></Image>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className={styles.colorContainer}>
                 <div className={styles.heading}>Color</div>
                 <div className={styles.colorOptions}>
-                    <div>
+                    <div >
                         Background Color
-                        <input type="color" className={styles.colorInput} value={bgColor}
-                            onChange={handleColorChange} />
+                        <div className={styles.colorInputWrapper}>
+                            <input type="color" className={styles.colorInput} value={bgColor}
+                                onChange={handleColorChange} />
+                        </div>
                     </div>
                     <div>
                         Foreground Color
-                        <input type="color" className={styles.colorInput} value={fgColor}
-                            onChange={handlefColorChange} />
+                        <div className={styles.colorInputWrapper}>
+                            <input type="color" className={styles.colorInput} value={fgColor}
+                                onChange={handlefColorChange} />
+                        </div>
                     </div>
                 </div>
             </div>
