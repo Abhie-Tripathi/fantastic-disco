@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 .form{
     margin-top: 40px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
 }
 .eventNameContainer{
     position: relative;
@@ -49,7 +52,8 @@
 .dropdownItem {
     margin: 12px;
     border-radius: 12px;
-    font-size: 20px;
+    font-size: 14px;
+    font-weight: 600;
     padding: 10px;
     cursor: pointer;
     color: white;
@@ -57,6 +61,7 @@
 
 .dropdownItem:hover {
     background-color: rgba(29, 29, 29, 0.911);
+    font-weight: 700;
 }
 
 .heightInput{
@@ -122,13 +127,13 @@
   
 .btns{
     display: flex;
-    justify-content: space-between;
+    gap: 100px;
 }
 .submitBtn{
     cursor: pointer;
     background-color: #6650a483;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px 24px;
     color: white;
 }

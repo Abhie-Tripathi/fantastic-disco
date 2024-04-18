@@ -243,7 +243,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         <form className={styles.form} onSubmit={handleSubmit}>
               <ToastContainer/>
             <div className={styles.header}>
-                <div className={styles.widgetName}>{widgetType} Widget</div>
+                <div className={styles.widgetName}>{widgetType}Widget</div>
             </div>
             <div className={styles.eventFormatContainer}>
                 <div className={styles.heading}>Event Format</div>
@@ -273,7 +273,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Geography</div>
+                <div className={styles.heading}>Regions</div>
                 <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -285,7 +285,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 </div>
             </div>
             <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Category</div>
+                <div className={styles.heading}>Event Categories</div>
                 <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -310,7 +310,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Type</div>
+                <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
                     <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)} />
                     <input
@@ -334,7 +334,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Mode of Participation</div>
+                <div className={styles.heading}>Modes of Participation</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
                     <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
                     <input

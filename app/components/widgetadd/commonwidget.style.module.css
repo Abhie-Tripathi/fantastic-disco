@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 .form{
     margin-top: 40px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
 }
 .header{
     margin-bottom: 20px;
@@ -7,31 +10,26 @@
     justify-content: space-between;
     align-items: center;
 }
-
 .heading{
     color: #999999;
     margin-bottom: 12px;
     margin-right: 10px;
 }
-.eventFormatInput{
-    border: 1px solid #666666;
-    padding: 10px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.eventFormatContainer{
     margin-bottom: 48px;
 }
-.eventFormatInput input{
-    font-size: 16px;
-    border: none;
-    width: 100%;
-    margin-left: 10px;
-    background: none;
-    color: rgb(233, 233, 233);
+.eventFormats{
+    display: flex;
+    gap: 30px;
 }
-.eventFormatInput input:focus{
-    outline: none;
+.eventFormatChip{
+    border:1px solid #6650a483;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.eventFormatActiveChip{
+    background-color: #6650a483;
 }
 .dateContainer{
     display: flex;
@@ -63,9 +61,12 @@
 .inputInnerContainer input:focus {
     outline: none;
 }
-.eventFormatContainer{
-    position: relative;
+.placeholder{
+    color: #ffffff5b;
+    margin-left: 10px;
+    font-weight: 300;
 }
+
 .eventGeoContainer{
     margin-bottom: 48px;
 }
@@ -74,9 +75,11 @@
 }
 .eventTypeContainer{
     position: relative;
+    cursor: pointer;
 }
 .eventModeContainer{
     position: relative;
+    cursor: pointer;
 }
 .promotedEventsContainer{
     position: relative;
@@ -95,13 +98,15 @@
 .dropdownItem{
     margin: 12px;
     border-radius: 12px;
-    font-size: 20px;
+    font-size: 14px;
     padding: 10px;
     cursor: pointer;
     color: white;
+    font-weight: 600;
 }
 .dropdownItem:hover {
     background-color:#d9d9d949;
+    font-weight: 700;
 }
 .tags{
     margin-top: 10px;
@@ -122,13 +127,13 @@
 }
 .btns{
     display: flex;
-    justify-content: space-between;
+    gap: 100px;
 }
 .submitBtn{
     cursor: pointer;
     background-color: #6650a483;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px 24px;
     color: white;
 }

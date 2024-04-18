@@ -9,6 +9,12 @@ import Link from 'next/link'
 import Delete from '/public/delete.svg'
 import DeleteModal from './DeleteModal'
 
+type PromotedEvent = {
+  name: string;
+  startDate: string; // You may want to use Date type if the dates are parsed as Date objects
+  endDate: string; // You may want to use Date type if the dates are parsed as Date objects
+};
+
 const WidgetCard = (props: any) => {
 
   const propsData = props.data;
@@ -17,6 +23,7 @@ const WidgetCard = (props: any) => {
   const [categories, setCategories] = useState<string[]>()
   const [eventTypes, setEventTypes] = useState<string[]>()
   const [countries, setCountries] = useState<string[]>()
+  const [promotedEvents, setPromotedEvents] = useState<PromotedEvent[]>([]);
 
   const handleModal = () => {
     setDeleteModal(!deleteModal)
@@ -95,6 +102,17 @@ const WidgetCard = (props: any) => {
       }, []);
     };
 
+    const extractPromotedEvents = (data: any) => {
+      return data.reduce((acc: any, item: any) => {
+          const event = {
+              name: item._source.name,
+              startDate: item._source.start_date, // Assuming the field name is start_date
+              endDate: item._source.end_date, // Assuming the field name is end_date
+          };
+          acc.push(event);
+          return acc;
+      }, []);
+  };
     // Extract categories and event types from eventData and top_3 arrays
     const categoriesFromEventData = extractCategories(additionalData.eventData);
     const categoriesFromTop3 = additionalData.top_3 ? extractCategories(additionalData.top_3) : [];
@@ -102,6 +120,7 @@ const WidgetCard = (props: any) => {
     const eventTypesFromTop3 = additionalData.top_3 ? extractEventTypes(additionalData.top_3) : [];
     const countriesFromEventData = extractCountries(additionalData.eventData);
     const countriesFromTop3 = additionalData.top_3 ? extractCountries(additionalData.top_3) : [];
+    const highlightedEvents = additionalData.top_3?extractPromotedEvents(additionalData.top_3) : [];
 
     // Combine categories and event types from both arrays and remove duplicates
     const allCategories = [...categoriesFromEventData, ...categoriesFromTop3].reduce((acc, category) => {
@@ -127,6 +146,7 @@ const WidgetCard = (props: any) => {
     setCategories(allCategories);
     setEventTypes(allEventTypes);
     setCountries(allCountries);
+    setPromotedEvents(highlightedEvents)
   };
 
 
@@ -198,7 +218,7 @@ const WidgetCard = (props: any) => {
           </div>
         </div>
         <div className={Styles.cardSec3}>
-          <Analytics />
+          <Analytics promotedEvents={promotedEvents} />
         </div>
       </div>
       <div className={Styles.deleteModal}>

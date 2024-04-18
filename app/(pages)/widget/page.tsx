@@ -27,7 +27,7 @@ const Widget = () => {
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
             <div><Image src={Add} alt="add" /></div>
-            <div>Widget</div>
+            <div>Add Widget</div>
           </Link>
         </div>
       </div>

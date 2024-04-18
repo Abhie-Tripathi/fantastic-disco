@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+.form{
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+}
 .header{
     margin-bottom: 20px;
     display: flex;
