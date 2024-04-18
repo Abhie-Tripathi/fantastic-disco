@@ -62,6 +62,7 @@ const usePosterGenerator = () => {
 
   useEffect(() => {
     generatePoster();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt]);
 
   return { prompt, isLoading, imageUrl, generatePrompt, generatePoster };

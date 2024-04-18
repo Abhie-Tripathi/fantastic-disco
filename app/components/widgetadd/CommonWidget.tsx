@@ -130,6 +130,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             setMatchingPromotedEvents(matches);
             setIsPromotedDropdownOpen(promotedInput.trim() !== ''); // Set dropdown open only if searchInput is not empty
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
     
 

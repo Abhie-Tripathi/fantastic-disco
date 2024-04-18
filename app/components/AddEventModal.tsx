@@ -51,6 +51,7 @@ const AddEventModal = () => {
         const matches = EventData.filter(filterEvents);
         setMatchingEvents(matches);
         setIsEventDropdownOpen(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchInput])
 
 
@@ -80,6 +81,7 @@ const AddEventModal = () => {
         } else {
             setMatchingEmployees([]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employeeMail])
     const handleEmployeeClick = (employee: any) => {
         setIsEmployeeDropdownOpen(false)
@@ -148,6 +150,7 @@ const AddEventModal = () => {
         if (location && description) {
             generatePrompt(location, description)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [description, location])
     return (
         <div className={styles.bodyContainer}>
