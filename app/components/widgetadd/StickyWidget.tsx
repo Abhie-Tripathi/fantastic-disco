@@ -42,7 +42,6 @@ const StickyWidget = (props: StickyWidgetProps) => {
         }
     }, [searchInput, data]);
     
-
     const handleEventClick = (event: any) => {
         setIsEventDropdownOpen(false)
         setSelectedEvent(event);
@@ -57,12 +56,13 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
             type : "sticky",
-            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
+            companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,
             bgColor,
-            fgColor
+            fgColor,
+            active : "true"
         });
         try {
             // Make the POST request

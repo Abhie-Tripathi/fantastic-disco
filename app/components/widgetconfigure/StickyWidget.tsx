@@ -22,11 +22,19 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const [height, setHeight] = useState<string>("");
     const [fontSize, setFontSize] = useState<string>("")
 
+    const [deactivated, setDeactivated] = useState<boolean>(false)
+
     useEffect(()=>{
         setBgColor(data?.bgColor)
         setFColor(data?.fgColor)
         setHeight(data?.height)
         setFontSize(data?.fontSize)
+        const active = data?.active
+        if(active === "false"){
+            setDeactivated(true)
+        }else{
+            setDeactivated(false)
+        }
     },[data])
     const handleColorChange = (event: any) => {
         setBgColor(event.target.value);
@@ -44,7 +52,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
             bgColor,
             fgColor,
             height,
-            fontSize
+            fontSize,
+            active : !deactivated ? "true" : "false"
         });
         try {
             const response = await fetch(`${baseURL}/${endpoint}`, {
@@ -116,6 +125,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
                             onChange={handlefColorChange} />
                     </div>
                 </div>
+            </div>
+            <div className={styles.activateBtn}>
+                <div className={styles.heading}>Deactivated</div>
+                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={()=>setDeactivated(!deactivated)} />
+                <label htmlFor="activate" className={styles.checkBox}></label>
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>

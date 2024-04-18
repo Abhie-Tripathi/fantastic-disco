@@ -11,9 +11,12 @@ import DeleteModal from './DeleteModal'
 
 const WidgetCard = (props: any) => {
 
-  const data = props.data;
+  const propsData = props.data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [activeState, setActiveState] = useState("Active")
+  const [categories, setCategories] = useState<string[]>()
+  const [eventTypes, setEventTypes] = useState<string[]>()
+  const [countries, setCountries] = useState<string[]>()
 
   const handleModal = () => {
     setDeleteModal(!deleteModal)
@@ -22,19 +25,32 @@ const WidgetCard = (props: any) => {
   useEffect(() => {
     const fetchWidgetData = async () => {
       try {
-        const response = await fetch(`https://api.eventgeni.com/widgets/${data.id}?type=page`);
+        const type = propsData.name === "Page" ? "page" : "sticky"
+        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${type}`);
         const widgetData = await response.json();
-        const formBody = JSON.parse(widgetData.body)
-
-        if (formBody.active) {
-          setActiveState("Active")
-        } else {
-          setActiveState("Inactive")
+        if(type === "sticky"){
+          const active = widgetData.active
+          if(active === "true"){
+            setActiveState("Active")
+          }else{
+            setActiveState("Inactive")
+          }
+        }else{
+          const formBody = JSON.parse(widgetData.body)
+          const query = widgetData.query
+          if (formBody.active) {
+            setActiveState("Active")
+          } else {
+            setActiveState("Inactive")
+          }
+          if (!response.ok) {
+            throw new Error('Failed to fetch widget data');
+          }
+          const additionalDataResponse = await fetch(`https://api.eventgeni.com/es/find?company=104&${query}`);
+          const additionalData = await additionalDataResponse.json();
+          handleAdditionalData(additionalData);
         }
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch widget data');
-        }
+  
       } catch (error) {
         console.error('Error fetching widget data:', error);
       }
@@ -42,6 +58,77 @@ const WidgetCard = (props: any) => {
     fetchWidgetData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // This function is to extract the categroies, types of the events to show it on the widget card
+  const handleAdditionalData = (additionalData: any) => {
+    // Function to extract categories and remove duplicates
+    const extractCategories = (data: any) => {
+      return data.reduce((acc: any, item: any) => {
+        const eventCategories = item._source.category_name || [];
+        eventCategories.forEach((category: any) => {
+          if (!acc.includes(category)) {
+            acc.push(category);
+          }
+        });
+        return acc;
+      }, []);
+    };
+
+    // Function to extract event types and remove duplicates
+    const extractEventTypes = (data: any) => {
+      return data.reduce((acc: any, item: any) => {
+        const eventType = item._source.event_type;
+        if (eventType && !acc.includes(eventType)) {
+          acc.push(eventType);
+        }
+        return acc;
+      }, []);
+    };
+
+    const extractCountries = (data: any) => {
+      return data.reduce((acc: any, item: any) => {
+        const country = item._source.country_name;
+        if (country && !acc.includes(country)) {
+          acc.push(country);
+        }
+        return acc;
+      }, []);
+    };
+
+    // Extract categories and event types from eventData and top_3 arrays
+    const categoriesFromEventData = extractCategories(additionalData.eventData);
+    const categoriesFromTop3 = additionalData.top_3 ? extractCategories(additionalData.top_3) : [];
+    const eventTypesFromEventData = extractEventTypes(additionalData.eventData);
+    const eventTypesFromTop3 = additionalData.top_3 ? extractEventTypes(additionalData.top_3) : [];
+    const countriesFromEventData = extractCountries(additionalData.eventData);
+    const countriesFromTop3 = additionalData.top_3 ? extractCountries(additionalData.top_3) : [];
+
+    // Combine categories and event types from both arrays and remove duplicates
+    const allCategories = [...categoriesFromEventData, ...categoriesFromTop3].reduce((acc, category) => {
+      if (!acc.includes(category)) {
+        acc.push(category);
+      }
+      return acc;
+    }, []);
+    const allEventTypes = [...eventTypesFromEventData, ...eventTypesFromTop3].reduce((acc, eventType) => {
+      if (!acc.includes(eventType)) {
+        acc.push(eventType);
+      }
+      return acc;
+    }, []);
+    const allCountries = [...countriesFromEventData, ...countriesFromTop3].reduce((acc, country) => {
+      if (!acc.includes(country)) {
+        acc.push(country);
+      }
+      return acc;
+    }, []);
+
+    // Update state with unique categories and event types
+    setCategories(allCategories);
+    setEventTypes(allEventTypes);
+    setCountries(allCountries);
+  };
+
 
 
   return (
@@ -55,7 +142,7 @@ const WidgetCard = (props: any) => {
             <div>-</div>
             <div className={Styles.date}>30th Apr 2024</div>
           </div>
-          <Link className={Styles.configure} href={`/widget/${data.id}`}>Configure</Link>
+          <Link className={Styles.configure} href={`/widget/${propsData.id}`}>Configure</Link>
           <Image src={Delete} alt='delete' className={Styles.delete} onClick={handleModal} />
           <div className={Styles.statusBtn}>
             <div className={`${Styles.activeFlag} ${activeState === "Inactive" ? Styles.inactiveFlag : ''}`}></div>
@@ -65,26 +152,34 @@ const WidgetCard = (props: any) => {
         <div className={Styles.cardSec2}>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Widget Type</div>
-            <div className={Styles.typeBtn}>{data.name.toUpperCase()}</div>
+            <div className={Styles.typeBtn}>{propsData.name.toUpperCase()}</div>
           </div>
           <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Geography</div>
-            <div className={Styles.typeBtn}>India</div>
+            {countries?.map((item)=>(
+         <div className={Styles.typeBtn}>{item}</div>
+            ))}
+   
           </div>
           <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Event Category</div>
             <div className={Styles.allTypeBtn}>
-              <div className={Styles.typeBtn}>Hospitality</div>
-              <div className={Styles.typeBtn}>Festivals</div>
+              {categories?.map((item) => (
+                <div className={Styles.typeBtn}>{item}</div>
+              ))}
+
             </div>
           </div>
           <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Event Type</div>
             <div className={Styles.allTypeBtn}>
-              <div className={Styles.typeBtn}>Seminar</div>
+              {eventTypes?.map((item) => (
+                <div className={Styles.typeBtn}>{item}</div>
+              ))}
+
             </div>
           </div>
           <div className={Styles.line}></div>
@@ -107,7 +202,7 @@ const WidgetCard = (props: any) => {
         </div>
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={data.name.toLowerCase()} id={data.id} handleModal={handleModal} />}
+        {deleteModal && <DeleteModal type={propsData.name.toLowerCase()} id={propsData.id} handleModal={handleModal} />}
       </div>
     </div>
   )
