@@ -67,7 +67,7 @@ const SingleEvent = (params: { data: Data }) => {
       <Image className={styles.image} src={person2} alt="person2" />
     </div>
     <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Custom Name">
-      C
+      CN
     </div>
   </div>
 </div>

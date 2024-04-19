@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './map.module.css'
@@ -77,15 +76,11 @@ const Map: React.FC = () => {
                 <div className={styles.event_details_action}>
                   <Link
                     className={styles.event_view_details}
-                    // href={event.imageUrl}
-                    href={`/employee/${event.id}`}
+                    href={event.imageUrl}
                   >
-
                     View Full Details
-
                   </Link>
                   <div className={styles.event_details_category}>
-                    {/* {event.category.name} */}
                     Textile Industry
                   </div>
                 </div>
@@ -93,7 +88,6 @@ const Map: React.FC = () => {
             ) : null}
           </div>
         ))}
-
       </ReactMapGL>
 
     </div>

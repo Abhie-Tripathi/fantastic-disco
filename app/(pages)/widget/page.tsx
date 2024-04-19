@@ -10,13 +10,24 @@ import SkeletonWidget from '@/app/components/widgets/SkeletonWidget'
 
 const Widget = () => {
 
-  const [widgets, setWidgets] = useState([]);
+  const [widgets, setWidgets] = useState<any>();
 
+  
   useEffect(() => {
-    const storedWidgets = localStorage.getItem('widgets');
-    if (storedWidgets) {
-      setWidgets(JSON.parse(storedWidgets));
-    }
+    const fetchData = async () => {
+      try {
+        const responsePage = await fetch('https://api.eventgeni.com/widgets?type=page');
+        const responseSticky = await fetch('https://api.eventgeni.com/widgets?type=sticky');
+        const dataPage = await responsePage.json();
+        const dataSticky = await responseSticky.json();
+        const allWidgets = [...dataPage, ...dataSticky];
+        setWidgets(allWidgets);
+      } catch (error) {
+        console.error('Error fetching widgets:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -27,12 +38,12 @@ const Widget = () => {
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
             <div><Image src={Add} alt="add" /></div>
-            <div>Widget</div>
+            <div>Add Widget</div>
           </Link>
         </div>
       </div>
-      {widgets.length > 0 ? (
-        widgets.map((item, index) => (
+      {widgets?.length > 0 ? (
+        widgets.map((item : any, index : number) => (
           <div key={index} className={Styles.containerTwo}>
             <WidgetCard data={item} />
           </div>

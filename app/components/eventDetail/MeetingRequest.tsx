@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import styles from './meetingRequests.style.module.css'
 import Image from 'next/image'
+import person1 from '@/public/person1.svg'
+import person2 from '@/public/person2.svg'
 import Incorrect from '@/public/incorrect.svg'
 import Correct from '@/public/correct.svg'
 import Calendar from '@/public/vector.svg'
@@ -37,8 +39,19 @@ const MeetingRequest = () => {
             <div className={styles.cardContainer}>
               <div>
                 <div className={styles.circles}>
-                  <div className={styles.circle1}>A</div>
-                  <div className={styles.circle1} style={{ marginLeft: "-15px" }}>B</div>
+                  {ind%2==0 ? (<><div className={styles.circle} data-name="John Doe">
+                                <Image className={styles.image} src={person1} alt="person1" />
+                            </div>
+                            <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Akash Jindal">
+                                AJ
+                            </div></>):(<>
+                              <div className={styles.circle} style={{width: "45px", height: "45px" }} data-name="Emily Brown">
+                                EB
+                            </div>
+                            <div className={styles.circle} data-name="Jane Smith" style={{ marginLeft: "-15px", }}>
+                                <Image className={styles.image} src={person2} alt="person1" />
+                            </div>
+                            </>)}
                 </div>
               </div>
               <div className={styles.allEventDetail}>
