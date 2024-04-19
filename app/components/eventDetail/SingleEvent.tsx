@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './singleEvent.module.css'
 import Image from 'next/image';
+import person1 from '@/public/person1.svg'
+import person2 from '@/public/person2.svg'
 import Calendar from '@/public/vector.svg'
 import Location from '@/public/location.svg'
 import Speaker1 from '@/public/speaker1.jpeg'
@@ -29,7 +31,7 @@ const SingleEvent = (params: { data: Data }) => {
                         <div className={styles.date}>30th Apr 2024</div>
                     </div>
                     <div className={styles.ctas}>
-                        <div>Participation</div>
+                        <div style={{color:"#808080"}}>Participation</div>
                         <div className={styles.pill}>Attending</div>
                     </div>
                 </div>
@@ -49,20 +51,27 @@ const SingleEvent = (params: { data: Data }) => {
                     </div>
                 </div>
                 <div className={styles.description}>
-                    <div>Description</div>
-                    <div style={{ textAlign: "justify" }}>
+                    <div style={{color:"#CDCDCD" }}>Description</div>
+                    <div style={{ textAlign: "justify", color:"#ACACAC", fontFamily:"var(--font-inter)" }}>
                         {params.data.description}
                     </div>
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.speakers}>
-                    <div>Speakers</div>
-                    <div className={styles.circles}>
-                        <div className={styles.circle}>A</div>
-                        <div className={styles.circle} style={{marginLeft:"-15px"}}>B</div>
-                        <div className={styles.circle} style={{marginLeft:"-15px"}}>C</div>
-                    </div>
-                </div>
+  <div>Speakers</div>
+  <div className={styles.circles}>
+    <div className={styles.circle} data-name="John Doe">
+      <Image className={styles.image} src={person1} alt="person1" />
+    </div>
+    <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
+      <Image className={styles.image} src={person2} alt="person2" />
+    </div>
+    <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Custom Name">
+      C
+    </div>
+  </div>
+</div>
+
             </div>
         </div>
     )

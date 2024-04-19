@@ -149,4 +149,8 @@
       border-start-end-radius: 6px;
       border-end-end-radius: 6px;
     }
-    
+    @media screen and (max-width:1440px){
+      .reactAriaGroup{
+        width: 100%;
+      }
+    }

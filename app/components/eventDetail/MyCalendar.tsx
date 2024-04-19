@@ -11,7 +11,7 @@ const MyCalendar = () => {
     const [selectedDate, setSelectedDay] = useState<string>(new Date().getDate().toString());
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear())
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const monthAbb = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -77,10 +77,10 @@ const MyCalendar = () => {
     return (
         <div className={styles.container}>
             <div className={styles.leftContainer}>
-                My Calendar
+                <div style={{fontWeight:"600"}}>My Calendar</div>
                 <div className={styles.card}>
                     <div className={styles.todayCard}>
-                        <div>TODAY <span style={{ color: "#6750A4" }}>27/04/2024</span></div>
+                        <div className={styles.conatinerHead}><span style={{fontWeight:"700"}}>TODAY</span> <span style={{ color: "#6750A4", paddingLeft:"4px" }}>27/04/2024</span></div>
                         <div className={styles.meetDetail}>
                             <div className={styles.upcomming}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>
@@ -105,7 +105,7 @@ const MyCalendar = () => {
                     </div>
                     <div className={styles.line}></div>
                     <div className={styles.todayCard}>
-                        <div>TODAY <span style={{ color: "#6750A4" }}>27/04/2024</span></div>
+                    <div className={styles.conatinerHead}><span style={{fontWeight:"700"}}>TODAY</span>  <span style={{ color: "#6750A4", paddingLeft:"4px" }}>27/04/2024</span></div>
                         <div className={styles.meetDetail}>
                             <div className={styles.upcomming}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>

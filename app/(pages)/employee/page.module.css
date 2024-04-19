@@ -3,7 +3,8 @@
     padding: 94px 132px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    height: 92vh;
+    /* justify-content: center; */
     align-items: center;
 }
 .blur{

@@ -28,7 +28,7 @@ const UpcomingEvents = () => {
                     </div>
                     <div className={styles.card4}>
                         <div className={styles.hostBtn}>HOST</div>
-                        <div style={{color:"#8C8EA4", fontSize:"12px"}}>@Robslatexv,@alexia_cohade_1</div>
+                        <div style={{color:"#8C8EA4", fontSize:"14px"}}>@Robslatexv,@alexia_cohade_1</div>
                     </div>
                     <div className={styles.card5}>
                     <div style={{fontSize:"10px",color:"#999999"}}>https:/eventgeni.com/event-dicussion14367a2e/joinmeet</div>
@@ -54,7 +54,7 @@ const UpcomingEvents = () => {
                     </div>
                     <div className={styles.card4}>
                         <div className={styles.hostBtn}>HOST</div>
-                        <div style={{color:"#8C8EA4", fontSize:"12px"}}>@Robslatexv,@alexia_cohade_1</div>
+                        <div style={{color:"#8C8EA4", fontSize:"14px"}}>@Robslatexv,@alexia_cohade_1</div>
                     </div>
                     <div className={styles.card5}>
                     <div style={{fontSize:"10px",color:"#999999"}}>https:/eventgeni.com/event-dicussion14367a2e/joinmeet</div>

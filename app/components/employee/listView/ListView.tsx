@@ -3,6 +3,7 @@ import styles from './listView.module.css'
 import YourEventCard from './YourEventCard'
 import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
+import Script from 'next/script'
 import DropDownIcon from '/public/dropDown.svg'
 import Image from 'next/image'
 import eventData from '../../../../public/data/demoEvent.json'
@@ -50,12 +51,15 @@ const ListView = () => {
     var filteredEventData = sortedEventData.filter((item) => {
         return selectedRoles.some((role) => item.ctas.includes(role));
       });
-   if(filteredEventData.length===0 || selectedRole==="Attending") filteredEventData=sortedEventData;
+//    if(selectedRole==="Attending") filteredEventData=sortedEventData;
+   if (selectedRoles.includes("Attending")) filteredEventData=sortedEventData
     console.log(filteredEventData);
     
     console.log(selectedRoles)
     return (
         <div className={styles.container}>
+            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
+<sticky-widget sticky-id={"4e830d26-de56-425d-bc96-8227eb385bcb"}></sticky-widget>
             <div className={styles.calendarBtns}>
                 <button onClick={() => handleCalendar("Sponsoring")} className={`${styles.weekBtn} ${selectedRoles.includes("Sponsoring") ? styles.activeCalendarBtn : ''}`}>Sponsoring</button>
                 <button onClick={() => handleCalendar("Exhibiting")} className={`${styles.monthBtn} ${selectedRoles.includes("Exhibiting") ? styles.activeCalendarBtn : ''}`}>Exhibiting</button>
@@ -78,6 +82,7 @@ const ListView = () => {
                 </div>
                 </div>
             </div>
+            {selectedRoles.length===0&& <div className={styles.notSelected}>Please select the filters</div>}
             <div className={styles.timelineContainer}>
                 {filteredEventData.map((item, index) => {
                     // Check if current event's date is different from previous event's date
