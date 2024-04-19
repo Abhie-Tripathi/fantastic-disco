@@ -17,6 +17,10 @@ interface CommonWidgetProps {
     widgetType: string;
     setId: React.Dispatch<React.SetStateAction<string>>;
 }
+interface PromotedEvent {
+    id: string;
+    name: string;
+}
 
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
@@ -43,8 +47,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] = useState<boolean>(false);
     const [promotedInput, setPromotedInput] = useState<string>("");
     const [matchingPromotedEvents, setMatchingPromotedEvents] = useState<any[]>([]);
-    const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
-    const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
+    const [promotedEventTags, setPromotedEventTags] = useState<PromotedEvent[]>([])
+    const [promotedEvents, setPromotedEvents] = useState<string[]>([]) 
 
     const [currDate, setCurrDate] = useState<string>("")
 
@@ -139,17 +143,19 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
 
     const handlePromotedEventClick = (event: any) => {
+        const id  = event._id
+        const name = event._source.name
         if (!promotedEventTags.includes(event._source.name)) {
-            setPromotedEventTags([...promotedEventTags, event._source.name]);
-            setPromotedEvents([...promotedEvents, event._id]);
+            setPromotedEventTags([...promotedEventTags, {id, name }]);
+            setPromotedEvents([...promotedEvents, id]);
         }
         setIsPromotedDropdownOpen(false);
     };
 
 
-    const handleRemovePromotedEventsTag = (tagToRemove: string) => {
-
-        setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
+    const handleRemovePromotedEventsTag = (tagToRemove: string, id : string) => {
+        setPromotedEventTags(promotedEventTags.filter(tag => tag.name !== tagToRemove));
+        setPromotedEvents(promotedEvents.filter(tagId=> tagId !== id))
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -179,14 +185,6 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
             console.log("Response data:", responseData);
             setId(responseData.id)
 
-            // const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            // if (widgetType === "Page") {
-            //     storedWidgets.push({ id: responseData.id, name: "Page" });
-            // } else {
-            //     storedWidgets.push({ id: responseData.id, name: "Section" });
-            // }
-            // const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-            // localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -358,7 +356,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
                     </div>
                 )}
                 <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
-                    <Tag key={index} name={tag} onRemove={() => handleRemovePromotedEventsTag(tag)} />
+                    <Tag key={index} name={tag.name} onRemove={() => handleRemovePromotedEventsTag(tag.name, tag.id)} />
                 ))}</div>
             </div>
             <div className={styles.tagsContainer}>
