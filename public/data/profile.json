@@ -1,93 +1,92 @@
 [
-    {
+  {
       "name": "John Doe",
-      "nick":"@Maverick",
+      "nick": "@Maverick",
       "designation": "Marketing Manager",
-      "description": "Lead innovative marketing campaigns to boost brand visibility."
-    },
-    {
+      "description": "Lead innovative marketing campaigns to boost brand visibility. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor urna in tortor pharetra, sit amet efficitur lacus pulvinar. Morbi vulputate urna vitae urna feugiat, ut tempor est vestibulum."
+  },
+  {
       "name": "Jane Smith",
-      "nick":"@Ace",
+      "nick": "@Ace",
       "designation": "Sales Executive",
-      "description": "Implement effective sales strategies to drive revenue growth."
-    },
-    {
+      "description": "Implement effective sales strategies to drive revenue growth. Duis pulvinar arcu vel tortor facilisis, a blandit nisi vehicula. Quisque aliquam arcu nec volutpat lobortis. Maecenas dapibus ultricies risus, sit amet scelerisque nulla aliquet ut."
+  },
+  {
       "name": "Michael Johnson",
-      "nick":"@Spark",
+      "nick": "@Spark",
       "designation": "Product Specialist",
-      "description": "Provide expert product knowledge and support to clients."
-    },
-    {
+      "description": "Provide expert product knowledge and support to clients. Sed commodo sapien a nulla placerat condimentum. Suspendisse potenti. Nunc ut posuere arcu. Fusce feugiat metus a nulla rutrum, sed tempus ligula posuere."
+  },
+  {
       "name": "Emily Brown",
-      "nick":"@Charm",
+      "nick": "@Charm",
       "designation": "Brand Ambassador",
-      "description": "Promote brand values through engaging social media content."
-    },
-    {
+      "description": "Promote brand values through engaging social media content. Ut eu posuere lacus, vitae vestibulum dolor. Mauris tincidunt mattis ipsum at vehicula. Nulla et sapien risus. Phasellus interdum lacus nec malesuada consectetur. Integer dictum dolor nec ex tincidunt vehicula. Curabitur et purus orci. Nulla facilisi."
+  },
+  {
       "name": "David Wilson",
-      "nick":"@Guru",
+      "nick": "@Guru",
       "designation": "Account Manager",
-      "description": "Maintain strong client relationships and exceed sales targets."
-    },
-    {
+      "description": "Maintain strong client relationships and exceed sales targets. Proin sagittis aliquet nunc, sed consectetur leo. Nam molestie libero ac velit gravida dictum. Duis id lacus leo. Maecenas vel lacus at nisi consectetur hendrerit. Sed ac velit eu leo lacinia commodo. Curabitur gravida felis ut felis fermentum, in tincidunt libero aliquet. Sed dapibus arcu libero, vitae pharetra sapien consectetur id."
+  },
+  {
       "name": "Sarah Lee",
-      "nick":"@Radar",
+      "nick": "@Radar",
       "designation": "Marketing Coordinator",
-      "description": "Coordinate marketing campaigns and analyze performance metrics."
-    },
-    {
+      "description": "Coordinate marketing campaigns and analyze performance metrics. In hac habitasse platea dictumst. Etiam vestibulum purus eget tellus ultricies, non fermentum eros mattis. Fusce ut luctus lacus. Fusce dignissim suscipit enim, vitae consequat lectus fermentum nec. Maecenas eu lectus arcu. Integer nec consectetur purus."
+  },
+  {
       "name": "Daniel Taylor",
-      "nick":"@Whiz",
+      "nick": "@Whiz",
       "designation": "Sales Manager",
-      "description": "Lead sales team to achieve quarterly revenue objectives."
-    },
-    {
+      "description": "Lead sales team to achieve quarterly revenue objectives. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum vel sodales lacus, et ultricies tortor. Proin fringilla risus eget sollicitudin placerat. Maecenas efficitur lectus nec tempor fringilla. Duis vestibulum vulputate felis, ut vehicula velit varius nec. Fusce eget aliquet nulla."
+  },
+  {
       "name": "Olivia Martinez",
-      "nick":"@Zen",
+      "nick": "@Zen",
       "designation": "Customer Success Specialist",
-      "description": "Ensure customer satisfaction through proactive support solutions."
-    },
-    {
+      "description": "Ensure customer satisfaction through proactive support solutions. Integer nec vestibulum dolor. Nullam sit amet elit eu magna posuere pharetra. Integer quis felis arcu. Vivamus at augue magna. Maecenas vel tempus ipsum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed sit amet eros vel magna efficitur facilisis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae."
+  },
+  {
       "name": "Ethan Garcia",
-      "nick":"@Byte",
+      "nick": "@Byte",
       "designation": "Digital Marketing Analyst",
-      "description": "Analyze digital marketing data to optimize campaign performance."
-    },
-    {
+      "description": "Analyze digital marketing data to optimize campaign performance. Fusce eu risus nec sem convallis condimentum. Duis eleifend lacus non nibh fermentum ultricies. Nullam nec justo lobortis, iaculis arcu eu, efficitur neque. Vivamus non sapien ac sapien semper ultricies. Fusce ullamcorper dui eget purus vestibulum, ac vehicula ligula scelerisque. Mauris in arcu vestibulum, faucibus urna sed, tincidunt quam. Integer auctor velit non mauris fermentum, quis vestibulum orci facilisis. Pellentesque sit amet vulputate nisi."
+  },
+  {
       "name": "Ava Rodriguez",
-      "nick":"@Echo",
+      "nick": "@Echo",
       "designation": "Sales Representative",
-      "description": "Build strong client relationships and drive sales growth."
-    },
-    {
+      "description": "Build strong client relationships and drive sales growth. Sed tristique magna eget lorem ullamcorper, in viverra nunc cursus. Mauris auctor felis a orci pharetra, non fermentum justo pellentesque. Vestibulum vel dui ut lorem gravida convallis vitae vel ipsum. Nulla facilisi. In eu scelerisque libero, vel molestie nisl. Maecenas in nulla sit amet dolor hendrerit bibendum. Ut sit amet metus erat."
+  },
+  {
       "name": "Noah Hernandez",
-      "nick":"@Swift",
+      "nick": "@Swift",
       "designation": "Marketing Director",
-      "description": "Develop and execute comprehensive marketing strategies."
-    },
-    {
+      "description": "Develop and execute comprehensive marketing strategies. Cras in eros in ligula vehicula fermentum. Praesent et ullamcorper leo. Ut eget eros nec lacus dignissim vehicula ut vitae urna. Nullam eget fringilla est. Aliquam vel neque nec risus sodales feugiat vel a mi. Aliquam condimentum eu nulla id venenatis. Morbi eget ex nulla. Morbi vestibulum, mauris non commodo laoreet, velit neque facilisis nibh, nec vulputate nisl ipsum eget eros."
+  },
+  {
       "name": "Sophia Lopez",
-      "nick":"@Nova",
+      "nick": "@Nova",
       "designation": "Brand Manager",
-      "description": "Oversee brand development initiatives and maintain brand integrity."
-    },
-    {
+      "description": "Oversee brand development initiatives and maintain brand integrity. Morbi eleifend nisl a consequat euismod. Fusce id felis sed turpis ultrices venenatis. Duis eget ante pretium, commodo leo non, consectetur sem. Maecenas varius mi at arcu malesuada, nec volutpat turpis aliquam. Vestibulum at consequat enim. Duis vitae lacinia sem. Vivamus pulvinar dui id leo tincidunt, at malesuada ipsum dictum. Morbi sed vestibulum arcu."
+  },
+  {
       "name": "Mason Gonzales",
-      "nick":"@Sage",
+      "nick": "@Sage",
       "designation": "Account Executive",
-      "description": "Manage client accounts and provide strategic solutions."
-    },
-    {
+      "description": "Manage client accounts and provide strategic solutions. Donec in sapien semper, tempus dolor vel, fermentum nulla. Donec in lorem ut eros efficitur venenatis. Vivamus sollicitudin urna vitae sapien volutpat, id laoreet arcu vulputate. Nullam vitae risus ut libero ullamcorper placerat. Mauris id velit a purus consequat laoreet et ut nisl. Sed id accumsan arcu. Integer nec lobortis ligula, at dictum justo. Ut nec eleifend nisl."
+  },
+  {
       "name": "Isabella Perez",
-      "nick":"@Quest",
+      "nick": "@Quest",
       "designation": "Sales Coordinator",
-      "description": "Support sales team with administrative tasks and customer inquiries."
-    },
-    {
+      "description": "Support sales team with administrative tasks and customer inquiries. Duis auctor, neque ac facilisis laoreet, nisi ipsum venenatis sapien, sed pharetra nisi leo a ex. Nam vehicula, tortor sit amet suscipit fermentum, turpis felis laoreet ipsum, eu auctor arcu nisi in libero. Nam ac massa id eros aliquam pharetra nec sed erat. Fusce a consequat eros, sit amet lobortis leo. Morbi condimentum malesuada lectus, vel posuere magna venenatis non."
+  },
+  {
       "name": "Jack Thompson",
       "nick": "@Maverick",
       "designation": "Marketing Specialist",
-      "description": "Assist in developing and executing marketing strategies for brand promotion."
-    }
-  ]
-  
+      "description": "Assist in developing and executing marketing strategies for brand promotion. Quisque sed nibh et elit tempor vulputate. Nam interdum diam a lectus efficitur, quis efficitur nisi consequat. Morbi tempus velit ac nulla interdum, nec tempus nisi egestas. Nam ut rutrum quam, vitae posuere eros. Vestibulum sit amet quam justo. Cras nec ipsum eu mauris egestas fermentum. Cras vel massa a justo luctus euismod."
+  }
+]

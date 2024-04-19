@@ -94,6 +94,7 @@ border-radius: 10px;
 .card4{
   display: flex;
   align-items: center;
+  font-family: var(--font-inter);
   gap: 10px
 }
 .hostBtn{
@@ -129,4 +130,50 @@ outline: 0.97px solid transparent;
 }
 .decAcc{
   font-size: 12px;
+}
+.circles{
+  padding-top: 20px;
+  display: flex;
+}
+.circle:hover{
+  transform: scale(1.05);
+  z-index: 1;
+}
+.circle {
+  position: relative;
+  cursor: pointer;
+  width: 45px;
+  display: flex;
+  color: black;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: none;
+  box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s ease; 
+}
+
+.circle::before {
+  content: attr(data-name);
+  position: absolute;
+  bottom: 120%; 
+  left: 85%; 
+  white-space: nowrap; 
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff; 
+  padding: 5px 10px; 
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.circle:hover::before {
+  opacity: 1;
+  
 }

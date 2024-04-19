@@ -144,3 +144,9 @@
     cursor: pointer;
     font-size: 14px;
   }
+  @media screen and (max-width: 1000px) {
+    .container{
+      flex-direction: column-reverse;
+      gap:35px;
+    }
+  }

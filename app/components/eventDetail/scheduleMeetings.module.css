@@ -26,14 +26,16 @@
 .innerContainer2 {
     display: flex;
     gap: 5px;
+    width: 38%;
     align-items: center;
-    padding: 10px;
+    padding: 0px 10px;
+    height: 50px;
     background-color: black;
     border-radius: 30px;
 }
 
 .container1 {
-    padding: 10px;
+    padding: 30px 50px;
     margin-bottom: 10px;
     background-color: #201F24;
     display: flex;
@@ -41,7 +43,6 @@
     justify-content: space-between;
     border-radius: 12px;
 }
-
 .container2 {
     border-radius: 12px;
     overflow-y: scroll;
@@ -74,7 +75,7 @@
     border-radius: 12px;
     flex-direction: column;
     gap: 20px;
-    padding: 20px 10px;
+    padding:39.3px;
     background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
     border: 1px solid #262626
 }
@@ -88,24 +89,38 @@
 
 .card1bottom {
     font-size: 10px;
+    font-family: var(--font-inter);
+font-size: 14px;
+font-weight: 400;
+line-height: 21px;
+/* text-align: left; */
+
     text-align: justify;
 }
 
 .profileDetail {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 25px;
 }
 
 .profilePic {
     
-    width: 40px;
-    height: 40px;
+    width: 80.13px;
+height: 80.13px;
+
+border-radius: 12px;
+
     align-items: center;
     justify-content: center;
     display: flex;
     border-radius: 20%;
     background-color: #3a3e42;
+}
+.profileName{
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
 }
 
 .eventDetails {
@@ -118,7 +133,7 @@
     border-radius: 40px;
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
-    padding: 4px;
+    padding: 5.49px 5.49px 5.49px 13.18px;
     display: flex;
     align-items: center;
     position: relative;

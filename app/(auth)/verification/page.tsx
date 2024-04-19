@@ -49,7 +49,7 @@ const Verification = () => {
           numInputs={4}
           inputType="number"
           renderSeparator={<span style={{ width: "20px" }}></span>}
-          renderInput={(props) => <input {...props} />}
+          renderInput={(props) => <input {...props} className={styles.input}/>}
           shouldAutoFocus={true}
           inputStyle={{
             fontSize: "24px",

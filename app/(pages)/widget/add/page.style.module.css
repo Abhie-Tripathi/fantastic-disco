@@ -1,6 +1,7 @@
 .body {
     background: #0F0F0F;
     min-height: 100vh;
+    font-family: var(--font-inter);
   }
   
   .container {

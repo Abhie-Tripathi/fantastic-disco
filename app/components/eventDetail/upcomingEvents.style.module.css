@@ -1,7 +1,7 @@
 .container{
     display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 .cards{
     display: flex;
@@ -11,7 +11,7 @@
     background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
     border: 1px solid #262626;
     border-radius: 18px;
-    padding: 10px 20px;
+    padding: 20px 30px;
     width: 50%;
     gap: 10px;
     display: flex;
@@ -41,12 +41,14 @@
     right: 0;
     bottom: 0;
 }
-
+.card2{
+    font-weight: 600;
+}
 .eventDetails .detailContainer {
     border-radius: 40px;
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
-    padding: 4px;
+    padding: 5.49px 5.49px 5.49px 13.18px;
     display: flex;
     align-items: center;
     position: relative;
@@ -91,6 +93,7 @@
 .card4{
     display: flex;
     align-items: center;
+    font-family: var(--font-inter);
     gap: 10px
 }
 .hostBtn{
@@ -101,4 +104,49 @@
     border-radius: 40px;
   box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
   outline: 0.97px solid transparent;
+}
+.circles{
+  display: flex;
+}
+.circle:hover{
+  transform: scale(1.05);
+  z-index: 1;
+}
+.circle {
+  position: relative;
+  cursor: pointer;
+  width: 45px;
+  display: flex;
+  color: black;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: none;
+  box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s ease; 
+}
+
+.circle::before {
+  content: attr(data-name);
+  position: absolute;
+  bottom: 120%; 
+  left: 50%; 
+  white-space: nowrap; 
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff; 
+  padding: 5px 10px; 
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.circle:hover::before {
+  opacity: 1;
+  
 }

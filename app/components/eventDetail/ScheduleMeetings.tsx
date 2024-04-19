@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styles from './scheduleMeetings.module.css';
 import Search from '@/public/search.svg';
+import person3 from '@/public/person3.svg'
+import person1 from '@/public/person1.svg'
+import person2 from '@/public/person2.svg'
 import profile from "@/public/data/profile.json"
 import Image from 'next/image';
 import Close from '/public/close.svg';
@@ -97,8 +100,8 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
     <div className={styles.card1} key={index}>
       <div className={styles.card1top}>
         <div className={styles.profileDetail}>
-          <div className={styles.profilePic}>A</div>
-          <div>
+          <div className={styles.profilePic}><Image src={person3} alt=""/></div>
+          <div className={styles.profileName}>
             <div style={{ fontSize: "12px" }}>{item.name} <span style={{ color: "#8C8EA4" }}>{item.nick}</span></div>
             <div style={{ fontSize: "10px" }}>{item.designation}</div>
           </div>
@@ -121,11 +124,12 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
       <div className={styles.container1} >
         <div className={styles.innerContainer1}>
           <div className={styles.circles}>
-            <div className={styles.circle}>A</div>
-            <div className={styles.circle}>B</div>
-            <div className={styles.circle}>C</div>
+          <div className={styles.circle} style={{width:"45px", height:"45px"}}>CT</div>
+            <div className={styles.circle}><Image src={person1} alt="person1"/></div>
+            <div className={styles.circle}><Image src={person2} alt="person2"/></div>
+           
           </div>
-          <div style={{ fontSize: "10px" }}>224 people have shown interest to participate in the event</div>
+          <div style={{ fontSize: "10px" }} className={styles.number}>224 people have shown interest to participate in the event</div>
         </div>
         <div className={styles.innerContainer2}>
           <Image src={Search} alt="Search" />

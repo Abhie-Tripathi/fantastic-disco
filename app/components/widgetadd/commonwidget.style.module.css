@@ -176,3 +176,9 @@
 .checkboxInput:checked+.checkBox {
     background-color: #6650a483;
 }
+@media screen and (max-width:1440px){
+    .dateContainer{
+        flex-direction: column;
+        gap: 48px;
+    }
+}

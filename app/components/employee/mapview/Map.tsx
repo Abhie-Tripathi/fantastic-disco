@@ -6,7 +6,6 @@ import { useState } from 'react';
 import eventData from '../../../../public/data/demoEvent.json'
 import MapPointer from '/public/Marker.svg'
 import ReactMapGL, { Marker, Popup } from 'react-map-gl'
-
 interface Event {
   id: number;
   venue: { lat: number; lng: number }[];
