@@ -15,19 +15,27 @@ interface StickyWidgetProps {
 
 const StickyWidget = (props: StickyWidgetProps) => {
     const baseUrl = process.env.NEXT_PUBLIC_EVENTGENI_URL
-    const {data} = useFetch(`${baseUrl}/widgets/${props.stickyId}?type=sticky`)
-    
+    const { data } = useFetch(`${baseUrl}/widgets/${props.stickyId}?type=sticky`)
+
     const [bgColor, setBgColor] = useState<string>("");
     const [fgColor, setFColor] = useState<string>("");
     const [height, setHeight] = useState<string>("");
     const [fontSize, setFontSize] = useState<string>("")
 
-    useEffect(()=>{
+    const [deactivated, setDeactivated] = useState<boolean>(false)
+
+    useEffect(() => {
         setBgColor(data?.bgColor)
         setFColor(data?.fgColor)
         setHeight(data?.height)
         setFontSize(data?.fontSize)
-    },[data])
+        const active = data?.active
+        if (active === "false") {
+            setDeactivated(true)
+        } else {
+            setDeactivated(false)
+        }
+    }, [data])
     const handleColorChange = (event: any) => {
         setBgColor(event.target.value);
     };
@@ -38,13 +46,14 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-        const endpoint = `widgets/${props.stickyId}`; 
+        const endpoint = `widgets/${props.stickyId}`;
         const body = JSON.stringify({
-            type:"sticky",
+            type: "sticky",
             bgColor,
             fgColor,
             height,
-            fontSize
+            fontSize,
+            active: !deactivated ? "true" : "false"
         });
         try {
             const response = await fetch(`${baseURL}/${endpoint}`, {
@@ -66,7 +75,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
-            <ToastContainer/>
+            <ToastContainer />
             <div className={styles.header}>
                 <div className={styles.widgetName}>Sticky Widget</div>
             </div>
@@ -82,40 +91,51 @@ const StickyWidget = (props: StickyWidgetProps) => {
                     />
                 </div>
             </div>
-            <div className={styles.heightContainer}>
-                <div className={styles.heading}>Height</div>
-                <div className={styles.heightInput}>
-                    <input onChange={(e) => setHeight(e.target.value)} value={height} type='number' />
-                    <div className={styles.dropdownIconValue}>
-                        <div>px</div>
-                        <Image src={Down} alt="dropdown"></Image>
+            <div className={styles.heightAndFont}>
+                <div className={styles.heightContainer}>
+                    <div className={styles.heading}>Height</div>
+                    <div className={styles.heightInput}>
+                        <input onChange={(e) => setHeight(e.target.value)} value={height} type='number' />
+                        <div className={styles.dropdownIconValue}>
+                            <div>px</div>
+                            <Image src={Down} alt="dropdown"></Image>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className={styles.fontContainer}>
-                <div className={styles.heading}>Font Size</div>
-                <div className={styles.fontInput}>
-                    <input onChange={(e) => setFontSize(e.target.value)} value={fontSize} type='number' />
-                    <div className={styles.dropdownIconValue}>
-                        <div>px</div>
-                        <Image src={Down} alt="dropdown"></Image>
+                <div className={styles.fontContainer}>
+                    <div className={styles.heading}>Font Size</div>
+                    <div className={styles.fontInput}>
+                        <input onChange={(e) => setFontSize(e.target.value)} value={fontSize} type='number' />
+                        <div className={styles.dropdownIconValue}>
+                            <div>px</div>
+                            <Image src={Down} alt="dropdown"></Image>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className={styles.colorContainer}>
                 <div className={styles.heading}>Color</div>
                 <div className={styles.colorOptions}>
-                    <div>
+                    <div >
                         Background Color
-                        <input type="color" className={styles.colorInput} value={bgColor}
-                            onChange={handleColorChange} />
+                        <div className={styles.colorInputWrapper}>
+                            <input type="color" className={styles.colorInput} value={bgColor}
+                                onChange={handleColorChange} />
+                        </div>
                     </div>
                     <div>
                         Foreground Color
-                        <input type="color" className={styles.colorInput} value={fgColor}
-                            onChange={handlefColorChange} />
+                        <div className={styles.colorInputWrapper}>
+                            <input type="color" className={styles.colorInput} value={fgColor}
+                                onChange={handlefColorChange} />
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div className={styles.activateBtn}>
+                <div className={styles.heading}>Deactivated</div>
+                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={() => setDeactivated(!deactivated)} />
+                <label htmlFor="activate" className={styles.checkBox}></label>
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>

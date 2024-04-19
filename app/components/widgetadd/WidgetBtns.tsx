@@ -21,10 +21,6 @@ const WidgetBtns: React.FC<WidgetBtnsProps> = ({ type, setType }) => {
                 onClick={() => setType("Page")}>
                 <div>Page</div>
             </div>
-            {/* <div className={`${styles.button} ${type === "Code" ? styles.active : ""}`}
-                onClick={() => setType("Code")}>
-                <div>Code</div>
-            </div> */}
         </div>
     )
 }

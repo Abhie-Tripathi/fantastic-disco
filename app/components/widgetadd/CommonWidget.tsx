@@ -12,20 +12,18 @@ import Tags from "./Tags";
 import Image from "next/image";
 import Tag from "./Tag";
 import useFetch from "@/hooks/useFetch";
-// import EventData from '../../../public/data/demoEvent.json'
 
-interface CommonWidgetProps{
-    widgetType : string;
+interface CommonWidgetProps {
+    widgetType: string;
     setId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
+const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
-    const [eventFormat, setEventFormat] = useState<string>("Online")
-    const [isEventFormatDropdownOpen, setIsEventFormatDropdownOpen] = useState<boolean>(false);
+    const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
 
     const [startDate, setStartDate] = useState<string>()
     const [endDate, setEndDate] = useState<string>()
@@ -48,10 +46,22 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
     const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
+    const [currDate, setCurrDate] = useState<string>("")
+
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
 
-    const {data} = useFetch('https://api.eventgeni.com/es/find?company=104');
-    
+    const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
+
+    // To get the todays date to send in date picker comp.
+    useEffect(() => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        setCurrDate(formattedDate);
+    }, [])
+
     useEffect(() => {
         if (categoryInput.trim() === '') {
             setMatchingCategories([]);
@@ -63,10 +73,16 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         }
     }, [categoryInput]);
 
-    const handleEventFormatClick = (type: string) => {
-        setEventFormat(type)
-        setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)
-    }
+    const toggleChipSelection = (format: string) => {
+        const isSelected = eventFormat.includes(format);
+        if (isSelected) {
+            // Deselect the chip
+            setEventFormat(prevFormats => prevFormats.filter(item => item !== format));
+        } else {
+            // Select the chip
+            setEventFormat(prevFormats => [...prevFormats, format]);
+        }
+    };
 
     const handleStartDate = (startDate: any) => {
         setStartDate(startDate)
@@ -120,7 +136,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
-    
+
 
     const handlePromotedEventClick = (event: any) => {
         if (!promotedEventTags.includes(event._source.name)) {
@@ -129,17 +145,17 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         }
         setIsPromotedDropdownOpen(false);
     };
-    
 
-    const handleRemovePromotedEventsTag = (tagToRemove: string)=>{
-        
+
+    const handleRemovePromotedEventsTag = (tagToRemove: string) => {
+
         setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Generate query string
-        const queryString = generateQueryString();  
+        const queryString = generateQueryString();
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
         const bodyData = {
             promotedEventTags,
@@ -148,28 +164,29 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             eventTypeTags,
             categoryTags,
             eventFormat,
-            active : true
+            active: true,
+            widgetType : widgetType
         };
         // Prepare request body
         const formBody = {
-            type:"page",
+            type: "page",
             query: queryString,
-            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
-            body : JSON.stringify(bodyData)
+            // companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",  
+            body: JSON.stringify(bodyData)
         };
         try {
             const responseData = await postData(`${baseURL}/widgets`, formBody);
             console.log("Response data:", responseData);
             setId(responseData.id)
-            
-            const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            if(widgetType ==="Page"){
-                storedWidgets.push({ id:responseData.id, name : "Page" });
-            }else{
-                storedWidgets.push({ id:responseData.id, name : "Section" });
-            }
-            const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-            localStorage.setItem('widgets', updatedWidgetsJSON);
+
+            // const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
+            // if (widgetType === "Page") {
+            //     storedWidgets.push({ id: responseData.id, name: "Page" });
+            // } else {
+            //     storedWidgets.push({ id: responseData.id, name: "Section" });
+            // }
+            // const updatedWidgetsJSON = JSON.stringify(storedWidgets);
+            // localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -191,7 +208,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
         if (promotedEvents.length > 0) {
             formData.promotedEvents = promotedEvents.join(',');
         }
-    
+
         const params = new URLSearchParams(formData);
         return params.toString();
     };
@@ -203,36 +220,33 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             },
             body: JSON.stringify(body)
         });
-    
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    
+
         return response.json();
-    };    
-    
+    };
+
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.eventFormatContainer}>
                 <div className={styles.heading}>Event Format</div>
-                <div className={styles.eventFormatInput}>
-                    <input disabled value={eventFormat} />
-                    <Image src={ArrowDownIcon} alt="dropdown" onClick={() => setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)} />
+                <div className={styles.eventFormats}>
+                    {EventFormatData.map((format, index) => (
+                        <div
+                            key={format}
+                            className={`${styles.eventFormatChip} ${eventFormat.includes(format) ? styles.eventFormatActiveChip : ''}`}
+                            onClick={() => toggleChipSelection(format)}>
+                            {format}
+                        </div>
+                    ))}
                 </div>
-                {isEventFormatDropdownOpen && (
-                    <div className={styles.dropdown}>
-                        {EventFormatData.map((event, index) => (
-                            <div key={index} className={styles.dropdownItem} onClick={() => handleEventFormatClick(event)}>
-                                {event}
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date="" /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date={currDate} /></div>
 
                 </div>
                 <div className={styles.endDate}>
@@ -241,7 +255,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Geography</div>
+                <div className={styles.heading}>Regions</div>
                 <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -253,7 +267,7 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
                 </div>
             </div>
             <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Category</div>
+                <div className={styles.heading}>Event Categories</div>
                 <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -278,14 +292,10 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Type</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)} />
-                    <input
-                        type='text'
-                        disabled
-                        placeholder="For ex : Expo"
-                    />
+                <div className={styles.heading}>Event Types</div>
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
+                    <Image src={ArrowDownIcon} alt='dropdown' />
+                    <div className={styles.placeholder}>For ex : Expo</div>
                 </div>
                 {isEventTypeDropdownOpen && (
                     <div className={styles.dropdown}>
@@ -302,14 +312,10 @@ const CommonWidget = ({widgetType, setId} : CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Mode of Participation</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
-                    <input
-                        type='text'
-                        disabled
-                        placeholder="For ex : Speaker"
-                    />
+                <div className={styles.heading}>Modes of Participation</div>
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}>
+                    <Image src={ArrowDownIcon} alt='dropdown' />
+                    <div className={styles.placeholder}>For ex : Speaker</div>
                 </div>
                 {isModeDropdownOpen && (
                     <div className={styles.dropdown}>

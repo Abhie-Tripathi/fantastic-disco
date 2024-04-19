@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 .button_container {
     display: flex;
-    justify-content: space-evenly;
+    gap: 80px;
 }
 .button {
+    font-family: "Inter", sans-serif;
     border-radius: 12px;
     display: flex;
     padding: 8px 24px;
@@ -15,17 +17,4 @@
     border: none;
     background: #6750A4;
     color: white;
-}
-
-@media only screen and (max-width: 599px) {
-    .button {
-        border-radius: 20px;
-        background: #d9d9d9;
-        display: flex;
-        padding: 5px 10px;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-    }
 }

@@ -25,8 +25,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
-    const [eventFormat, setEventFormat] = useState<string>("Online")
-    const [isEventFormatDropdownOpen, setIsEventFormatDropdownOpen] = useState<boolean>(false);
+    const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
 
     const [startDate, setStartDate] = useState<string>('')
     const [endDate, setEndDate] = useState<string>('')
@@ -80,6 +79,16 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         fetchWidgetData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+    const toggleChipSelection = (format: string) => {
+        const isSelected = eventFormat.includes(format);
+        if (isSelected) {
+            // Deselect the chip
+            setEventFormat(prevFormats => prevFormats.filter(item => item !== format));
+        } else {
+            // Select the chip
+            setEventFormat(prevFormats => [...prevFormats, format]);
+        }
+    };
 
     // To add the promotedEvents in promotedEvents state, so that they are there in configuration form query
     const parseQueryString = (queryString : string) => {
@@ -101,11 +110,6 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             setIsCategoryDropdownOpen(true);
         }
     }, [categoryInput]);
-
-    const handleEventFormatClick = (type: string) => {
-        setEventFormat(type)
-        setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)
-    }
 
     const handleStartDate = (startDate: any) => {
         setStartDate(startDate)
@@ -243,23 +247,20 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         <form className={styles.form} onSubmit={handleSubmit}>
               <ToastContainer/>
             <div className={styles.header}>
-                <div className={styles.widgetName}>{widgetType} Widget</div>
+                <div className={styles.widgetName}>{widgetType}Widget</div>
             </div>
             <div className={styles.eventFormatContainer}>
                 <div className={styles.heading}>Event Format</div>
-                <div className={styles.eventFormatInput}>
-                    <input disabled value={eventFormat} />
-                    <Image src={ArrowDownIcon} alt="dropdown" onClick={() => setIsEventFormatDropdownOpen(!isEventFormatDropdownOpen)} />
+                <div className={styles.eventFormats}>
+                    {EventFormatData.map((format, index) => (
+                        <div
+                            key={format}
+                            className={`${styles.eventFormatChip} ${eventFormat.includes(format) ? styles.eventFormatActiveChip : ''}`}
+                            onClick={() => toggleChipSelection(format)}>
+                            {format}
+                        </div>
+                    ))}
                 </div>
-                {isEventFormatDropdownOpen && (
-                    <div className={styles.dropdown}>
-                        {EventFormatData.map((event, index) => (
-                            <div key={index} className={styles.dropdownItem} onClick={() => handleEventFormatClick(event)}>
-                                {event}
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
@@ -273,7 +274,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Geography</div>
+                <div className={styles.heading}>Regions</div>
                 <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -285,7 +286,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 </div>
             </div>
             <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Category</div>
+                <div className={styles.heading}>Event Categories</div>
                 <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
                     <Image src={SearchIcon} alt='search' />
                     <input
@@ -310,7 +311,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Event Type</div>
+                <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
                     <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)} />
                     <input
@@ -334,7 +335,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             ))}</div>
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
-                <div className={styles.heading}>Mode of Participation</div>
+                <div className={styles.heading}>Modes of Participation</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
                     <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
                     <input

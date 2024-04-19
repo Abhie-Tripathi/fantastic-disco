@@ -20,6 +20,7 @@
 
 .rightContent {
     height: 230px;
+    padding: 30px;
     width: 100%;
     border-radius: 19px;
     background-color: #0F0F0F;
@@ -33,12 +34,14 @@
     font-weight: 600;
     line-height: 19.08px;
     text-align: left;
-
 }
 
 .rightFirst {
     padding: 9px;
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
 }
 
 .rtitle {
@@ -49,20 +52,7 @@
     text-align: left;
 }
 
-.rsubTitle {
-    font-size: 13.26px;
-    font-weight: 500;
-    line-height: 20.49px;
-    letter-spacing: -0.02em;
-    text-align: left;
-
-}
-
 .eventAnalytics {
-    position: absolute;
-    top: 30px;
-    right: 18px;
-    margin-left: 20px;
     padding: 3px;
     border-radius: 8px;
     display: flex;
@@ -70,7 +60,6 @@
     justify-content: center;
     align-items: center;
     background-color: #313131;
-
 }
 
 .date {
@@ -81,7 +70,6 @@
 }
 
 .analyticLine {
-    margin-top: 15px;
     display: flex;
     align-items: center;
     justify-content: center;

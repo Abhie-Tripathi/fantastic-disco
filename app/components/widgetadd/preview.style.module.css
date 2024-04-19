@@ -1,5 +1,4 @@
 .container{
-    height: 100%;
     width: 100%;
 }
 .toggleHeading{
@@ -25,7 +24,7 @@
     background: linear-gradient(180deg, rgba(103,80,164,0.2) 0%, rgba(103,80,164,0) 100%);
 }
 .stickywidget{
-    height: 60vh;
+    height: 50vh;
 }
 .stickywidget div{
     padding: 20px;
