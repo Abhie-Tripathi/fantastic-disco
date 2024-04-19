@@ -164,6 +164,7 @@ const WidgetCard = ({ data }: any) => {
     <div className={Styles.container}>
       <div className={`${Styles.card} ${deleteModal ? Styles.blur : ''}`}>
         <div className={Styles.cardSec1}>
+          
           <div className={Styles.iconCircle}><Image src={Spinner} alt="icon" /></div>
           <div className={Styles.eventDetail}>
             <div style={{ display: "flex" }}><Image src={Calendar} alt="calendar" /></div>
@@ -184,11 +185,11 @@ const WidgetCard = ({ data }: any) => {
           </div>
         </div>
         <div className={Styles.cardSec2}>
-          <div className={Styles.type}>
+          {/* <div className={Styles.type}>
             <div className={Styles.typeHead}>Widget Type</div>
-            <div className={Styles.typeBtn}>{widgetType.toUpperCase()}</div>
-          </div>
-          <div className={Styles.line}></div>
+            <div className={Styles.typeBtn}>{widgetType}</div>
+          </div> */}
+          {/* <div className={Styles.line}></div> */}
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Geography</div>
             {countries?.map((item, key) => (

@@ -1,6 +1,6 @@
 
 .card{
-    width: 95%;
+    width: 80%;
     height: 240px;
     border: 1px solid #6650a465;
     background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
@@ -8,6 +8,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 25px;
+    margin-top: 30px;
 }
 .cardDetails{
     width: 100%;

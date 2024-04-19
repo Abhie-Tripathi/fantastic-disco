@@ -29,15 +29,15 @@ const EmployeePage: React.FC = () => {
                 {selectedView === 'map' && <Map />}
                 {selectedView === 'calendar' && <CalendarContainer />}
             </div>
-            {isAddeventOpen && 
-    <div className={styles.modal} onClick={(e) => { 
-        console.log(e);
-        const targetElement = e.target as HTMLElement;
-        if (targetElement.classList.contains(styles.modal)||targetElement.classList.contains(styles.bodyContainer)) handleAddEvent();
-    }}>
-        <AddEventModal />
-    </div>
-}
+            {isAddeventOpen &&
+                <div className={styles.modal} onClick={(e) => {
+                    console.log(e);
+                    const targetElement = e.target as HTMLElement;
+                    if (targetElement.classList.contains(styles.modal) || targetElement.classList.contains(styles.bodyContainer)) handleAddEvent();
+                }}>
+                    <AddEventModal />
+                </div>
+            }
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import styles from './listView.module.css'
 import YourEventCard from './YourEventCard'
 import TimelineItem from './TimelineItem'
@@ -10,14 +10,14 @@ import eventData from '../../../../public/data/demoEvent.json'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
-    const [selectedRoles, setSelectedRoles] = useState<string[]>(["Sponsoring","Exhibiting","Speaking", "Attending"]);
-    const [teamSelection,setTeamSelection]=useState('Total Events')
+    const [selectedRoles, setSelectedRoles] = useState<string[]>(["Sponsoring", "Exhibiting", "Speaking", "Attending"]);
+    const [teamSelection, setTeamSelection] = useState('Total Events')
     // Sponsoring/Exhibiting/Speaking/Attending
-    const personalize=DropDown();
-    
+    const personalize = DropDown();
 
-    let prevDate :any = null;
-    const convertToDateObject = (dateString:string) => {
+
+    let prevDate: any = null;
+    const convertToDateObject = (dateString: string) => {
         const [month, day, year] = dateString.split('/');
         return new Date(`${year}-${month}-${day}`);
     };
@@ -27,62 +27,57 @@ const ListView = () => {
         id: number;
         startDate: string;
         // Define other properties here
-      }
-      const sortedEventData = eventData.slice().sort((a: EventData, b: EventData) => {
+    }
+    const sortedEventData = eventData.slice().sort((a: EventData, b: EventData) => {
         const dateA = convertToDateObject(a.startDate);
         const dateB = convertToDateObject(b.startDate);
         return dateA.getTime() - dateB.getTime(); // Sort in ascending order (earliest date first)
-      });
-      const handleCalendar = (value:string) => {
-        if(selectedRoles?.indexOf(value)===-1) {
-            setSelectedRoles([...selectedRoles,value]);
+    });
+    const handleCalendar = (value: string) => {
+        if (selectedRoles?.indexOf(value) === -1) {
+            setSelectedRoles([...selectedRoles, value]);
         }
         else setSelectedRoles(selectedRoles?.filter(role => role !== value));
         setSelectedRole(value)
 
     }
-    const toggleDropdown=()=>{
+    const toggleDropdown = () => {
         personalize.setIsOpen(!personalize.isOpen);
     }
-    const selectedTeam=(val:string)=>{
+    const selectedTeam = (val: string) => {
         setTeamSelection(val);
         toggleDropdown();
     }
     var filteredEventData = sortedEventData.filter((item) => {
         return selectedRoles.some((role) => item.ctas.includes(role));
-      });
-//    if(selectedRole==="Attending") filteredEventData=sortedEventData;
-   if (selectedRoles.includes("Attending")) filteredEventData=sortedEventData
-    console.log(filteredEventData);
-    
-    console.log(selectedRoles)
+    });
+    if (selectedRoles.includes("Attending")) filteredEventData = sortedEventData
+
     return (
         <div className={styles.container}>
-            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
-<sticky-widget sticky-id={"4e830d26-de56-425d-bc96-8227eb385bcb"}></sticky-widget>
             <div className={styles.calendarBtns}>
                 <button onClick={() => handleCalendar("Sponsoring")} className={`${styles.weekBtn} ${selectedRoles.includes("Sponsoring") ? styles.activeCalendarBtn : ''}`}>Sponsoring</button>
                 <button onClick={() => handleCalendar("Exhibiting")} className={`${styles.monthBtn} ${selectedRoles.includes("Exhibiting") ? styles.activeCalendarBtn : ''}`}>Exhibiting</button>
                 <button onClick={() => handleCalendar("Speaking")} className={`${styles.yearBtn} ${selectedRoles.includes('Speaking') ? styles.activeCalendarBtn : ''}`}>Speaking</button>
                 <button onClick={() => handleCalendar("Attending")} className={`${styles.yearBtn} ${selectedRoles.includes('Attending') ? styles.activeCalendarBtn : ''}`}>Attending</button>
                 <div className={styles.userEvents}>
-                <div style={{position:"relative"}} ref={personalize.dropdownRef}>
-                <div className={styles.allEvents} onClick={toggleDropdown}>
-                    <div>{teamSelection}</div>
-                    <Image src={DropDownIcon} style={{position:"absolute", right:"5px"}} alt="downArrow"/>
-                </div>
-                {personalize.isOpen&&
-                 <div className={styles.dropDown}>
-                 <div className={styles.singleSelect} onClick={()=>selectedTeam('Total Events')}>Total Events</div>
-                 <div className={styles.singleSelect} onClick={()=>selectedTeam('Team Events')}>Team Events</div>
-                 <div className={styles.singleSelect} onClick={()=>selectedTeam('My Events')}>My Events</div>
+                    <div style={{ position: "relative" }} ref={personalize.dropdownRef}>
+                        <div className={styles.allEvents} onClick={toggleDropdown}>
+                            <div>{teamSelection}</div>
+                            <Image src={DropDownIcon} style={{ position: "absolute", right: "5px" }} alt="downArrow" />
+                        </div>
+                        {personalize.isOpen &&
+                            <div className={styles.dropDown}>
+                                <div className={styles.singleSelect} onClick={() => selectedTeam('Total Events')}>Total Events</div>
+                                <div className={styles.singleSelect} onClick={() => selectedTeam('Team Events')}>Team Events</div>
+                                <div className={styles.singleSelect} onClick={() => selectedTeam('My Events')}>My Events</div>
+                            </div>
+                        }
+
                     </div>
-                }
-               
-                </div>
                 </div>
             </div>
-            {selectedRoles.length===0&& <div className={styles.notSelected}>Please select the filters</div>}
+            {selectedRoles.length === 0 && <div className={styles.notSelected}>Please select the filters</div>}
             <div className={styles.timelineContainer}>
                 {filteredEventData.map((item, index) => {
                     // Check if current event's date is different from previous event's date
@@ -104,9 +99,6 @@ const ListView = () => {
                     );
                 })}
             </div>
-            {/* <div className={styles.filterContainer}>
-                <Filter />
-            </div> */}
         </div>
     )
 }

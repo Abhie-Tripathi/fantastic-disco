@@ -1,11 +1,13 @@
 .container{
-    /* display: flex;
-    justify-content: space-between; */
     width: 95%;
 }
+
 .timeline{
     display: flex;
+    align-items: center;
+    flex-direction: column;
 }
+
 .filterContainer{
     width: 30%;
 }
