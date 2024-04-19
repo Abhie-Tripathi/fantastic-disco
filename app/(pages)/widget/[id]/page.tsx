@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import StickyWidget from '../../../components/widgetconfigure/StickyWidget'
 import Preview from '../../../components/widgetadd/Preview'
@@ -9,20 +9,17 @@ import CodeIcon from '/public/code.svg'
 import Image from 'next/image'
 import PageWidget from '@/app/components/widgetconfigure/PageWidget'
 import SectionWidget from '@/app/components/widgetconfigure/SectionWidget'
-
-interface Widget {
-    id: string;
-    name: string;
-}
+import { useSearchParams } from "next/navigation";
 
 interface Props {
     params: ParsedUrlQuery;
 }
 
 const Page = ({ params }: Props) => {
-    const [type, setType] = useState<string>("");
+    const searchParams = useSearchParams()
+    const [type, setType] = useState<string>(searchParams?.get('widgetType')?.toString() || '');
     const [previewState, setPreviewState] = useState<string>("Side Preview");
-    const [widgetId, setWidgetIt] = useState<string>(params.id?.toString() || '')
+    const [widgetId, setWidgetId] = useState<string>(params.id?.toString() || '')
     const [codeWindow, setCodeWindow] = useState<boolean>(false)
 
     const handlePreviewToggle = () => {
@@ -30,16 +27,6 @@ const Page = ({ params }: Props) => {
             setPreviewState("Full Preview")
         } else setPreviewState("Side Preview")
     }
-    useEffect(() => {
-        const widgetsStr = localStorage.getItem('widgets');
-        if (widgetsStr) {
-            const widgets: Widget[] = JSON.parse(widgetsStr);
-            const widget = widgets.find(widget => widget.id === params.id);
-            if (widget) {
-                setType(widget.name);
-            }
-        }
-    }, [params.id]);
 
     return (
         <div className={styles.body}>
@@ -56,7 +43,7 @@ const Page = ({ params }: Props) => {
                                 {type === "Page" && <PageWidget pageId={widgetId} />}
                             </>
                         )}
-                        {codeWindow && <CodeWindow widgetId={widgetId} type = {type} />}
+                        {codeWindow && <CodeWindow widgetId={widgetId} type={type} />}
                     </div>
                 </div>}
                 <div className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""}`}>

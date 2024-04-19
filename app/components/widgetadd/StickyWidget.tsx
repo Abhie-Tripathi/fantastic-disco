@@ -56,7 +56,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
             type: "sticky",
-            companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",
+            // companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,
@@ -81,10 +81,10 @@ const StickyWidget = (props: StickyWidgetProps) => {
             const { id } = responseData;
             setStickyId(id);
 
-            const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-            storedWidgets.push({ id, name: "Sticky" });
-            const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-            localStorage.setItem('widgets', updatedWidgetsJSON);
+            // const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
+            // storedWidgets.push({ id, name: "Sticky" });
+            // const updatedWidgetsJSON = JSON.stringify(storedWidgets);
+            // localStorage.setItem('widgets', updatedWidgetsJSON);
         } catch (error) {
             console.error('An error occurred while submitting the form:', error);
         }

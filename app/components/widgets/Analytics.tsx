@@ -24,7 +24,7 @@ const Analytics = ({ promotedEvents }: AnalyticsProps) => {
       <div className={Styles.analyticsRight}>
         <div style={{ paddingLeft: "20px" }} className={Styles.eventType}>Promoted events</div>
         {promotedEvents.map((event, key) => (
-          <div className={Styles.rightContent}>
+          <div className={Styles.rightContent} key={key}>
             <div className={Styles.rightFirst}>
               <div className={Styles.rtitle}>{event.name}</div>
               <div className={Styles.eventAnalytics}>

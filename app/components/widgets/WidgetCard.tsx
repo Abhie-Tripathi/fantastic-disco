@@ -15,27 +15,37 @@ type PromotedEvent = {
   endDate: string; // You may want to use Date type if the dates are parsed as Date objects
 };
 
-const WidgetCard = (props: any) => {
+const WidgetCard = ({ data }: any) => {
 
-  const propsData = props.data;
+  const propsData = data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [activeState, setActiveState] = useState("Active")
   const [categories, setCategories] = useState<string[]>()
   const [eventTypes, setEventTypes] = useState<string[]>()
   const [countries, setCountries] = useState<string[]>()
   const [promotedEvents, setPromotedEvents] = useState<PromotedEvent[]>([]);
+  const [widgetType, setWidgetType] = useState<string>('')
 
   const handleModal = () => {
     setDeleteModal(!deleteModal)
   }
 
   useEffect(() => {
+    if (propsData.body) {
+      const body = JSON.parse(propsData.body)
+      setWidgetType(body.widgetType)
+    } else {
+      setWidgetType("Sticky")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     const fetchWidgetData = async () => {
       try {
-        const type = propsData.name === "Page" ? "page" : "sticky"
-        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${type}`);
+        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType.toLowerCase()}`);
         const widgetData = await response.json();
-        if (type === "sticky") {
+        if (widgetType === "Sticky") {
           const active = widgetData.active
           if (active === "true") {
             setActiveState("Active")
@@ -57,14 +67,13 @@ const WidgetCard = (props: any) => {
           const additionalData = await additionalDataResponse.json();
           handleAdditionalData(additionalData);
         }
-
       } catch (error) {
         console.error('Error fetching widget data:', error);
       }
     };
     fetchWidgetData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [widgetType])
 
   // This function is to extract the categroies, types of the events to show it on the widget card
   const handleAdditionalData = (additionalData: any) => {
@@ -162,7 +171,12 @@ const WidgetCard = (props: any) => {
             <div>-</div>
             <div className={Styles.date}>30th Apr 2024</div>
           </div>
-          <Link className={Styles.configure} href={`/widget/${propsData.id}`}>Configure</Link>
+          <Link
+            className={Styles.configure}
+            href={`/widget/${propsData.id}?widgetType=${widgetType}`}
+          >
+            Configure
+          </Link>
           <Image src={Delete} alt='delete' className={Styles.delete} onClick={handleModal} />
           <div className={Styles.statusBtn}>
             <div className={`${Styles.activeFlag} ${activeState === "Inactive" ? Styles.inactiveFlag : ''}`}></div>
@@ -172,13 +186,13 @@ const WidgetCard = (props: any) => {
         <div className={Styles.cardSec2}>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Widget Type</div>
-            <div className={Styles.typeBtn}>{propsData.name.toUpperCase()}</div>
+            <div className={Styles.typeBtn}>{widgetType.toUpperCase()}</div>
           </div>
           <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Geography</div>
-            {countries?.map((item) => (
-              <div className={Styles.typeBtn}>{item}</div>
+            {countries?.map((item, key) => (
+              <div key={key} className={Styles.typeBtn}>{item}</div>
             ))}
 
           </div>
@@ -186,8 +200,8 @@ const WidgetCard = (props: any) => {
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Event Category</div>
             <div className={Styles.allTypeBtn}>
-              {categories?.map((item) => (
-                <div className={Styles.typeBtn}>{item}</div>
+              {categories?.map((item, key) => (
+                <div key={key} className={Styles.typeBtn}>{item}</div>
               ))}
             </div>
           </div>
@@ -195,8 +209,8 @@ const WidgetCard = (props: any) => {
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Event Type</div>
             <div className={Styles.allTypeBtn}>
-              {eventTypes?.map((item) => (
-                <div className={Styles.typeBtn}>{item}</div>
+              {eventTypes?.map((item, key) => (
+                <div key={key} className={Styles.typeBtn}>{item}</div>
               ))}
 
             </div>
@@ -221,7 +235,7 @@ const WidgetCard = (props: any) => {
         </div>
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={propsData.name.toLowerCase()} id={propsData.id} handleModal={handleModal} />}
+        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} />}
       </div>
     </div>
   )
