@@ -3,15 +3,12 @@ import styles from './listView.module.css'
 import YourEventCard from './YourEventCard'
 import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
-import Script from 'next/script'
-import DropDownIcon from '/public/dropDown.svg'
-import Image from 'next/image'
 import eventData from '../../../../public/data/demoEvent.json'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
     const [selectedRoles, setSelectedRoles] = useState<string[]>(["Sponsoring", "Exhibiting", "Speaking", "Attending"]);
-    const [teamSelection, setTeamSelection] = useState('Total Events')
+    const [teamSelection, setTeamSelection] = useState('All Events')
     // Sponsoring/Exhibiting/Speaking/Attending
     const personalize = DropDown();
 
@@ -33,7 +30,7 @@ const ListView = () => {
         const dateB = convertToDateObject(b.startDate);
         return dateA.getTime() - dateB.getTime(); // Sort in ascending order (earliest date first)
     });
-    const handleCalendar = (value: string) => {
+    const handleFilter = (value: string) => {
         if (selectedRoles?.indexOf(value) === -1) {
             setSelectedRoles([...selectedRoles, value]);
         }
@@ -41,12 +38,8 @@ const ListView = () => {
         setSelectedRole(value)
 
     }
-    const toggleDropdown = () => {
-        personalize.setIsOpen(!personalize.isOpen);
-    }
     const selectedTeam = (val: string) => {
         setTeamSelection(val);
-        toggleDropdown();
     }
     var filteredEventData = sortedEventData.filter((item) => {
         return selectedRoles.some((role) => item.ctas.includes(role));
@@ -55,28 +48,20 @@ const ListView = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.calendarBtns}>
-                <button onClick={() => handleCalendar("Sponsoring")} className={`${styles.weekBtn} ${selectedRoles.includes("Sponsoring") ? styles.activeCalendarBtn : ''}`}>Sponsoring</button>
-                <button onClick={() => handleCalendar("Exhibiting")} className={`${styles.monthBtn} ${selectedRoles.includes("Exhibiting") ? styles.activeCalendarBtn : ''}`}>Exhibiting</button>
-                <button onClick={() => handleCalendar("Speaking")} className={`${styles.yearBtn} ${selectedRoles.includes('Speaking') ? styles.activeCalendarBtn : ''}`}>Speaking</button>
-                <button onClick={() => handleCalendar("Attending")} className={`${styles.yearBtn} ${selectedRoles.includes('Attending') ? styles.activeCalendarBtn : ''}`}>Attending</button>
-                <div className={styles.userEvents}>
-                    <div style={{ position: "relative" }} ref={personalize.dropdownRef}>
-                        <div className={styles.allEvents} onClick={toggleDropdown}>
-                            <div>{teamSelection}</div>
-                            <Image src={DropDownIcon} style={{ position: "absolute", right: "5px" }} alt="downArrow" />
-                        </div>
-                        {personalize.isOpen &&
-                            <div className={styles.dropDown}>
-                                <div className={styles.singleSelect} onClick={() => selectedTeam('Total Events')}>Total Events</div>
-                                <div className={styles.singleSelect} onClick={() => selectedTeam('Team Events')}>Team Events</div>
-                                <div className={styles.singleSelect} onClick={() => selectedTeam('My Events')}>My Events</div>
-                            </div>
-                        }
-
-                    </div>
+            <div className={styles.buttons}>
+                <div className={styles.filterBtns}>
+                    <button onClick={() => handleFilter("Sponsoring")} className={`${selectedRoles.includes("Sponsoring") ? styles.activeFilterBtn : ''}`}>Sponsoring</button>
+                    <button onClick={() => handleFilter("Exhibiting")} className={`${selectedRoles.includes("Exhibiting") ? styles.activeFilterBtn : ''}`}>Exhibiting</button>
+                    <button onClick={() => handleFilter("Speaking")} className={` ${selectedRoles.includes('Speaking') ? styles.activeFilterBtn : ''}`}>Speaking</button>
+                    <button onClick={() => handleFilter("Attending")} className={` ${selectedRoles.includes('Attending') ? styles.activeFilterBtn : ''}`}>Attending</button>
+                </div>
+                <div className={styles.eventsBtns}>
+                    <button onClick={() => selectedTeam('All Events')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
+                    <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
+                    <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
                 </div>
             </div>
+
             {selectedRoles.length === 0 && <div className={styles.notSelected}>Please select the filters</div>}
             <div className={styles.timelineContainer}>
                 {filteredEventData.map((item, index) => {
