@@ -19,6 +19,10 @@ interface CommonWidgetProps {
     widgetType: string;
     widgetId: string;
 }
+interface PromotedEvent {
+    id: string;
+    name: string;
+}
 
 const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [tagList, setTagList] = useState<string[]>([]);
@@ -45,7 +49,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] = useState<boolean>(false);
     const [promotedInput, setPromotedInput] = useState<string>("");
     const [matchingPromotedEvents, setMatchingPromotedEvents] = useState<any[]>([]);
-    const [promotedEventTags, setPromotedEventTags] = useState<string[]>([])
+
+    const [promotedEventTags, setPromotedEventTags] = useState<PromotedEvent[]>([])
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]) // Will store id of promoted events
 
     const [deactivated, setDeactivated] = useState<boolean>(false)
@@ -65,6 +70,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 const widgetData = await response.json();
                 parseQueryString(widgetData.query);
                 const formBody = JSON.parse(widgetData.body)
+                console.log(formBody)
                 setPromotedEventTags(formBody.promotedEventTags)
                 setEventTypeTags(formBody.eventTypeTags)
                 setEventFormat(formBody.eventFormat)
@@ -154,6 +160,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         setShowPromotedInput(e.target.checked);
     };
 
+    // FOr promoted Events dropdown
     useEffect(() => {
         if (data) {
             const eventData = data.eventData || []; // Ensure eventData is available, default to an empty array if not present
@@ -166,16 +173,19 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
 
     const handlePromotedEventClick = (event: any) => {
+        const id  = event._id
+        const name = event._source.name
         if (!promotedEventTags.includes(event._source.name)) {
-            setPromotedEventTags([...promotedEventTags, event._source.name]);
-            setPromotedEvents([...promotedEvents, event._id]);
+            setPromotedEventTags([...promotedEventTags, {id, name }]);
+            setPromotedEvents([...promotedEvents, id]);
         }
         setIsPromotedDropdownOpen(false);
     };
 
 
-    const handleRemovePromotedEventsTag = (tagToRemove: string) => {
-        setPromotedEventTags(promotedEventTags.filter(tag => tag !== tagToRemove));
+    const handleRemovePromotedEventsTag = (tagToRemove: string, id : string) => {
+        setPromotedEventTags(promotedEventTags.filter(tag => tag.name !== tagToRemove));
+        setPromotedEvents(promotedEvents.filter(tagId=> tagId !== id))
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -190,13 +200,13 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             eventTypeTags,
             categoryTags,
             eventFormat,
-            active : !deactivated
+            active : !deactivated,
+            widgetType : widgetType
         };
         // Prepare request body
         const formBody = {
             type:"page",
             query: queryString,
-            companyId: "d586146b-7845-46f9-bea9-6db19995449a",
             body : JSON.stringify(bodyData)
         };
         try {
@@ -384,8 +394,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                         ))}
                     </div>
                 )}
-                <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
-                    <Tag key={index} name={tag} onRemove={() => handleRemovePromotedEventsTag(tag)} />
+                 <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
+                    <Tag key={index} name={tag.name} onRemove={() => handleRemovePromotedEventsTag(tag.name, tag.id)} />
                 ))}</div>
             </div>
             <div className={styles.tagsContainer}>
