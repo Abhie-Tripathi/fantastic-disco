@@ -185,17 +185,6 @@
     width: 3px;
     content: "";
     display: flex;
-    background-color: #e9e8ff; /* Fallback color */
-    background-image: linear-gradient(
-      90deg,
-      #e9e8ff 0%,
-      rgba(233, 232, 255, 0.8335) 20.63%,
-      rgba(233, 232, 255, 0.6668) 40.63%,
-      rgba(233, 232, 255, 0.5001) 60.63%,
-      rgba(233, 232, 255, 0.3334) 80.13%,
-      rgba(213, 213, 213, 0.2) 99.99%,
-      rgba(233, 232, 255, 0.1667) 100%
-    );
   }
   
   .comment {
@@ -279,7 +268,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     row-gap: 20px;
-    width: 100%;
+    /* width: 100%; */
     height: fit-content;
   }
   
