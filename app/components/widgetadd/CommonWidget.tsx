@@ -23,8 +23,8 @@ interface PromotedEvent {
 }
 
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
-    const [tagList, setTagList] = useState<string[]>([]);
-    const isAdd: boolean = true;
+    // const [tagList, setTagList] = useState<string[]>([]);
+    // const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
     const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
@@ -40,8 +40,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     const [eventTypeTags, setEventTypeTags] = useState<string[]>([]);
     const [isEventTypeDropdownOpen, setIsEventTypeDropdownOpen] = useState<boolean>(false)
 
-    const [modeTags, setModeTags] = useState<string[]>([]);
-    const [isModeDropdownOpen, setIsModeDropdownOpen] = useState<boolean>(false);
+    const [modeTags, setModeTags] = useState<string[]>(ModeData);
 
     const [showPromotedInput, setShowPromotedInput] = useState<boolean>(false);
     const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] = useState<boolean>(false);
@@ -77,13 +76,12 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         }
     }, [categoryInput]);
 
-    const toggleChipSelection = (format: string) => {
+    // To handle Event Format
+    const toggleFormatChipSelection = (format: string) => {
         const isSelected = eventFormat.includes(format);
         if (isSelected) {
-            // Deselect the chip
             setEventFormat(prevFormats => prevFormats.filter(item => item !== format));
         } else {
-            // Select the chip
             setEventFormat(prevFormats => [...prevFormats, format]);
         }
     };
@@ -117,16 +115,6 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         setEventTypeTags(eventTypeTags.filter(tag => tag !== tagToRemove));
     };
 
-    const handleModeClick = (mode: string) => {
-        if (!modeTags.includes(mode)) {
-            setModeTags([...modeTags, mode]);
-        }
-        setIsModeDropdownOpen(false);
-    };
-
-    const handleRemoveModeTag = (tagToRemove: string) => {
-        setModeTags(modeTags.filter(tag => tag !== tagToRemove));
-    };
     const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
         setShowPromotedInput(e.target.checked);
     };
@@ -141,6 +129,15 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
 
+     // To handle Event Mode iof Participation
+     const toggleModeChipSelection = (mode: string) => {
+        const isSelected = modeTags.includes(mode);
+        if (isSelected) {
+            setModeTags(prevModes => prevModes.filter(item => item !== mode));
+        } else {
+            setModeTags(prevModes => [...prevModes, mode]);
+        }
+    };
 
     const handlePromotedEventClick = (event: any) => {
         const id  = event._id
@@ -234,8 +231,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
                     {EventFormatData.map((format, index) => (
                         <div
                             key={format}
-                            className={`${styles.eventFormatChip} ${eventFormat.includes(format) ? styles.eventFormatActiveChip : ''}`}
-                            onClick={() => toggleChipSelection(format)}>
+                            className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ''}`}
+                            onClick={() => toggleFormatChipSelection(format)}>
                             {format}
                         </div>
                     ))}
@@ -311,24 +308,17 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Modes of Participation</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}>
-                    <Image src={ArrowDownIcon} alt='dropdown' />
-                    <div className={styles.placeholder}>For ex : Speaker</div>
+                <div className={styles.eventModes}>
+                    {ModeData.map((mode, index) => (
+                        <div
+                            key={mode}
+                            className={`${styles.eventChip} ${modeTags.includes(mode) ? styles.eventActiveChip : ''}`}
+                            onClick={() => toggleModeChipSelection(mode)}>
+                            {mode}
+                        </div>
+                    ))}
                 </div>
-                {isModeDropdownOpen && (
-                    <div className={styles.dropdown}>
-                        {ModeData.map((mode, index) => (
-                            <div key={index} className={styles.dropdownItem} onClick={() => handleModeClick(mode)}>
-                                {mode}
-                            </div>
-                        ))}
-
-                    </div>
-                )}
             </div>
-            <div className={styles.tags}>{modeTags.map((tag, index) => (
-                <Tag key={index} name={tag} onRemove={() => handleRemoveModeTag(tag)} />
-            ))}</div>
 
             <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.promotedHeading}>
@@ -360,7 +350,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
                 ))}</div>
             </div>
             <div className={styles.tagsContainer}>
-                <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
+                <Tags />
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Submit</button>
