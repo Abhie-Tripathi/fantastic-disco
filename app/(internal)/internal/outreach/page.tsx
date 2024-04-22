@@ -1,88 +1,101 @@
-'use client';
-import { useEffect, useState } from "react";
-import styles from "./page.style.module.css";
-import ShortListedItem from "@/app/components/outreach/ShortListedItem";
-import PocModal from "@/app/components/outreach/PocModal.";
-// import DetailModal from "@/components/coordinate/notes/detailModal";
-import { enquiryType } from '@/types/outreachEnquiryTypes'
+'use client'
+import React, { useEffect, useState } from 'react';
+import styles from './page.style.module.css';
+import CardTask from '@/app/components/outreach/CardTask';
+import NotesModal from '@/app/components/outreach/NotesModal';
 
-export default function Page() {
-    const customStyle = {
-        s1: {
-          marginBottom: "0.75rem",
-          padding: "1.4rem",
-          fontWeight: "400",
-        },
-        s2: {
-            height: "calc(70vh - 60px)",
-            overflowY: "auto",
-        },
-        s3: {
-            marginBottom: "1rem",
+const Page: React.FC = () => {
+    const [shortlistedTasks, setShortlistedTasks] = useState<string[]>(['How to Practice as an International Doctor in Australia?', 'How to Practice as an International Doctor in Usa?', 'How to Practice as an International Doctor in India?', 'How to Practice as an International Doctor in Canada?']);
+    const [inProgressTasks, setInProgressTasks] = useState<string[]>([]);
+    const [finalisedTasks, setFinalisedTasks] = useState<string[]>([]);
+    const [modalOpen, setModalOpen] = useState(false)
+
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>, taskName: string) => {
+        event.dataTransfer.setData('taskName', taskName);
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+    };
+
+    const handleDragContainerStart = (event: React.DragEvent<HTMLDivElement>, source: string) => {
+        event.dataTransfer.setData('source_container', source);
+    }
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: string) => {
+        event.preventDefault()
+        const taskName = event.dataTransfer.getData('taskName');
+        const source = event.dataTransfer.getData('source_container')
+        if (source === 'shortlisted') {
+            setShortlistedTasks(shortlistedTasks.filter(task => task !== taskName));
+        } else if (source === 'inProgress') {
+            setInProgressTasks(inProgressTasks.filter(task => task !== taskName));
+        } else if (source === 'finalised') {
+            setFinalisedTasks(finalisedTasks.filter(task => task !== taskName));
         }
+
+        if (target === 'shortlisted') {
+            setShortlistedTasks([...shortlistedTasks, taskName])
+        } else if (target === 'inProgress') {
+            setInProgressTasks([...inProgressTasks, taskName])
+        } else if (target === 'finalised') {
+            setFinalisedTasks([...finalisedTasks, taskName])
+        }
+
     };
 
-    const [enquiryCount, setEnquiryCount] = useState({
-        shortlist:0,
-        process:0,
-        final:0,
-    });
-
-    const [statusChange, setStatusChange] = useState<boolean>(false);
-
-    const dataCount = [
-        { name: 'SHORTLISTED', value: 0, intentStatus:1 },
-        { name: 'IN PROCESS', value: 0, intentStatus:2 },
-        { name: 'FINALIZED', value: 0, intentStatus:10 }
-    ];
-
-    const [pocModalContent, setPocModalContent] = useState<{
-        isPocModalOpen: boolean;
-        eventTitle: string;
-        eventId: string | number;
-    }>({
-        isPocModalOpen: false,
-        eventTitle: '',
-        eventId: '',
-    });
-
-    const openPocModal = (id: string | number, name: string) =>{
-        setPocModalContent({...pocModalContent, 'isPocModalOpen':true, 'eventTitle':name, eventId: id});
+    const handleModal = () => {
+        setModalOpen(!modalOpen)
     }
-
-    const handleStatusChange = () =>{
-        setStatusChange(!statusChange);
-    }
-
-    // notes modal
-    const [notesModalContent, setNotesModalContent] = useState<{
-        isModalOpen: boolean;
-        eventTitle: string;
-        eventId: string | number;
-        eventDetail: enquiryType| null;
-        enquiryStatus: null | string;
-    }>({
-        isModalOpen: false,
-        eventTitle: '',
-        eventId: '',
-        eventDetail: null,
-        enquiryStatus: null,
-    });
-
-    const openNotesModal = (id: number, name: string, enquiryStatus: string, item: enquiryType) => {
-        setNotesModalContent({...notesModalContent, 'eventTitle':name, eventId: id, eventDetail: item , 'isModalOpen':true, 'enquiryStatus':enquiryStatus });
-    };
-    // notes modal
 
     return (
-        <div className={styles.main}>
-            <div className={styles.grid}>
-                {dataCount.map((item) => (
-                    <ShortListedItem key={item.name} listType={item.name} intentStatus={item.intentStatus} statusChange={statusChange} openNotesModal={openNotesModal} />
-                ))}
+        <div className={styles.body}>
+            <div className={`${styles.taskBody} ${modalOpen ? styles.bodyBlur : ""}`}>
+                <div className={styles.shortListedBody}>
+                    <div className={styles.heading}>Shortlisted</div>
+                    <div className={`${styles.shortListedContainer} ${styles.cardsContainer}`}
+                        onDragOver={(event) => handleDragOver(event)}
+                        onDragStart={(event) => handleDragContainerStart(event, "shortlisted")}
+                        onDrop={(event) => handleDrop(event, 'shortlisted')}>
+                        {shortlistedTasks.map((task, index) => (
+                            <div className={styles.cards} key={index}>
+                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.inProgressBody}>
+                    <div className={styles.heading}>In Progress</div>
+                    <div className={`${styles.inProgressContainer} ${styles.cardsContainer}`}
+                        onDragOver={(event) => handleDragOver(event)}
+                        onDragStart={(event) => handleDragContainerStart(event, "inProgress")}
+                        onDrop={(event) => handleDrop(event, 'inProgress')}>
+                        {inProgressTasks.map((task, index) => (
+                            <div className={styles.cards} key={index}>
+                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.finalisedBody}>
+                    <div className={styles.heading}>Finalised</div>
+                    <div className={`${styles.finalisedContainer} ${styles.cardsContainer}`}
+                        onDragOver={(event) => handleDragOver(event)}
+                        onDragStart={(event) => handleDragContainerStart(event, "finalised")}
+                        onDrop={(event) => handleDrop(event, 'finalised')}>
+                        {finalisedTasks.map((task, index) => (
+                            <div className={styles.cards} key={index}>
+                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-            <PocModal visible={pocModalContent.isPocModalOpen} setVisible={setPocModalContent} eventTitle={pocModalContent.eventTitle} eventId={pocModalContent.eventId} pocModalContent={pocModalContent} />
-            {/* <DetailModal setNotesModalContent={setNotesModalContent} notesModalContent={notesModalContent} openPocModal={openPocModal} statusChange={statusChange} handleStatusChange={handleStatusChange} /> */}
+            <div className={styles.modal}>
+                {modalOpen && <NotesModal handleModal = {handleModal} />}
+            </div>
         </div>
     );
-}
+};
+
+export default Page;
