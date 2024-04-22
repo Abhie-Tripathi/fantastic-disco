@@ -1,0 +1,80 @@
+"use client";
+import React, { useState } from "react";
+import styles from "./sidebar.style.module.css";
+import Link from "next/link";
+import Image from "next/image";
+import AddIcon from "/public/add.svg";
+// import ResearchIcon from "/public/research.svg";
+// import HeroLogo from "/public/heroLogo.png";
+// import HeroText from "/public/heroText.png";
+// import TrackerIcon from "/public/Trackers.svg";
+import { usePathname } from "next/navigation";
+// import ExhibitIcon from "/public/exhibit.svg";
+// import TrendIcon from "/public/icons/trend.svg";
+
+const Sidebar = () => {
+  const pathname = usePathname();
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  return (
+    <div
+      className={`${styles.container} ${showSidebar ? styles.open : ""}`}
+      onMouseEnter={() => setShowSidebar(true)}
+      onMouseLeave={() => setShowSidebar(false)}
+    >
+      <div className={styles.links}>
+        <div className={styles.homebtn}>
+          <Image src={AddIcon} alt="herologo" width={45} />
+          <Image src={AddIcon} alt="herotext" width={144} />
+        </div>
+        <Link
+          href="/"
+          className={`${styles.link} ${
+            pathname === "/dashboard" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={AddIcon} alt="dashboard" className={styles.icons} />
+          <div className={styles.linkName}>Dashboard</div>
+        </Link>
+        <Link
+          href="/research"
+          className={`${styles.link} ${
+            pathname === "/research" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={AddIcon} alt="location" className={styles.icons} />
+          <div className={styles.linkName}>Research</div>
+        </Link>
+        <Link
+          href="/trackers"
+          className={`${styles.link} ${
+            pathname === "/trackers" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={AddIcon} alt="location" className={styles.icons} />
+          <div className={styles.linkName}>Trackers</div>
+        </Link>
+        <Link
+          href="/coordinate/outreach"
+          className={`${styles.link} ${
+            pathname === "/coordinate/outreach" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={AddIcon} alt="location" className={styles.icons} />
+          <div className={styles.linkName}>Outreach</div>
+        </Link>
+        <Link
+          href="/event-trends"
+          className={`${styles.link} ${
+            pathname === "/event-trends" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={AddIcon} alt="trends" className={styles.icons} />
+          <div className={styles.linkName}>Event Trends</div>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;

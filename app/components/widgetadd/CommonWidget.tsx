@@ -23,8 +23,6 @@ interface PromotedEvent {
 }
 
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
-    // const [tagList, setTagList] = useState<string[]>([]);
-    // const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
     const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
