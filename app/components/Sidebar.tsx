@@ -4,6 +4,10 @@ import styles from "./sidebar.style.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import AddIcon from "/public/add.svg";
+import Dashboard from '/public/internal/dashboard.svg'
+import Trend from '/public/internal/trend.svg'
+import Research from '/public/internal/research.svg'
+import Exhibit from '/public/internal/exhibit.svg'
 // import ResearchIcon from "/public/research.svg";
 // import HeroLogo from "/public/heroLogo.png";
 // import HeroText from "/public/heroText.png";
@@ -23,17 +27,17 @@ const Sidebar = () => {
       onMouseLeave={() => setShowSidebar(false)}
     >
       <div className={styles.links}>
-        <div className={styles.homebtn}>
+        {/* <div className={styles.homebtn}>
           <Image src={AddIcon} alt="herologo" width={45} />
           <Image src={AddIcon} alt="herotext" width={144} />
-        </div>
+        </div> */}
         <Link
           href="/"
           className={`${styles.link} ${
             pathname === "/dashboard" ? styles.activeLink : ""
           }`}
         >
-          <Image src={AddIcon} alt="dashboard" className={styles.icons} />
+          <Image src={Dashboard} alt="dashboard" className={styles.icons} />
           <div className={styles.linkName}>Dashboard</div>
         </Link>
         <Link
@@ -42,7 +46,7 @@ const Sidebar = () => {
             pathname === "/research" ? styles.activeLink : ""
           }`}
         >
-          <Image src={AddIcon} alt="location" className={styles.icons} />
+          <Image src={Research} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Research</div>
         </Link>
         <Link
@@ -51,8 +55,8 @@ const Sidebar = () => {
             pathname === "/trackers" ? styles.activeLink : ""
           }`}
         >
-          <Image src={AddIcon} alt="location" className={styles.icons} />
-          <div className={styles.linkName}>Trackers</div>
+          <Image src={Trend} alt="location" className={styles.icons} />
+          <div className={styles.linkName}>Coordinate</div>
         </Link>
         <Link
           href="/coordinate/outreach"
@@ -60,17 +64,8 @@ const Sidebar = () => {
             pathname === "/coordinate/outreach" ? styles.activeLink : ""
           }`}
         >
-          <Image src={AddIcon} alt="location" className={styles.icons} />
+          <Image src={Exhibit} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Outreach</div>
-        </Link>
-        <Link
-          href="/event-trends"
-          className={`${styles.link} ${
-            pathname === "/event-trends" ? styles.activeLink : ""
-          }`}
-        >
-          <Image src={AddIcon} alt="trends" className={styles.icons} />
-          <div className={styles.linkName}>Event Trends</div>
         </Link>
       </div>
     </div>
