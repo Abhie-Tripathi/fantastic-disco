@@ -1,12 +1,14 @@
 .container {
   position: fixed;
+  color: white;
   z-index: 2;
   top: 0px;
   left: 0px;
   height: 100vh;
   width: 80px;
+  margin-top: 80px;
   padding: 15px 0px;
-  background-color: white;
+  background-color: #1A1A1A;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -62,7 +64,7 @@
   font-size: 17px;
   overflow: hidden;
   text-decoration: none;
-  color: black;
+  /* color: black; */
 }
 .linkName {
   margin-left: 12px;
