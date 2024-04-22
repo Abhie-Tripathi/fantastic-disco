@@ -4,6 +4,21 @@
     width: 380px;
     border: 1px solid #6666667c;
     height: 150px;
-    text-align: center;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     cursor: pointer;
+}
+.date{
+    display: flex;
+
+    font-size: 10px;
+    align-items: center;
+    background-color: #313131;
+    width: fit-content;
+    padding: 2px 5px;
+    gap: 5px;
+    border-radius: 6px;   
+    border: 1px solid #6750A4;
 }

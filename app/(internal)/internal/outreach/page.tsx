@@ -4,7 +4,7 @@ import styles from './page.style.module.css';
 import CardTask from '@/app/components/outreach/CardTask';
 
 const Page: React.FC = () => {
-    const [shortlistedTasks, setShortlistedTasks] = useState<string[]>(['Wolverine', 'Deadpool', 'Joker', 'Walter White', 'Walter White']);
+    const [shortlistedTasks, setShortlistedTasks] = useState<string[]>(['How to Practice as an International Doctor in Australia?', 'How to Practice as an International Doctor in Usa?', 'How to Practice as an International Doctor in India?', 'How to Practice as an International Doctor in Canada?']);
     const [inProgressTasks, setInProgressTasks] = useState<string[]>([]);
     const [finalisedTasks, setFinalisedTasks] = useState<string[]>([]);
 
@@ -19,6 +19,7 @@ const Page: React.FC = () => {
     const handleDragContainerStart = (event: React.DragEvent<HTMLDivElement>, source: string) => {
         event.dataTransfer.setData('source_container', source);
     }
+
     const handleDrop = (event: React.DragEvent<HTMLDivElement>, target: string) => {
         event.preventDefault()
         const taskName = event.dataTransfer.getData('taskName');
