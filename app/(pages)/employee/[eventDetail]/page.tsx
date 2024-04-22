@@ -58,11 +58,13 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                         <div className={styles.line}></div>
                         <div className={userCta === "My Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("My Meetings")}>My Meetings</div>
                     </div>
+                    
                     <div className={styles.containerBottomRight}>
                         {/* Render component based on userCta state */}
                         {userCta === "Notes" && <Notes />}
                         {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
                         {userCta === "My Meetings" && <MyMeetings/>}
+                   
                     </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import styles from './notes.module.css';
 import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
 import Image from "next/image";
+import person1 from '@/public/person2.svg'
 import profileImage from "@/public/profile_Image.jpg";
 import CommentProfileImage from "@/public/profile_Image.jpg";
 import { EditComment } from "./EditComment";
@@ -69,7 +70,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName }: 
               width={50}
               height={50}
               className={styles.userImage}
-              src={CommentProfileImage}
+              src={person1}
               alt=""
             />
           </span>
