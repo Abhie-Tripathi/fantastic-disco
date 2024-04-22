@@ -7,11 +7,12 @@ interface CardTaskProps {
     name: string;
     draggable: boolean;
     onDragStart: (event: React.DragEvent<HTMLDivElement>, taskName: string) => void;
+    handleModal : ()=>void
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart }) => {
+const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handleModal }) => {
     return (
-        <div className={styles.card} draggable={draggable} onDragStart={(event) => onDragStart(event, name)}>
+        <div className={styles.card} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={handleModal}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>10Times</div>
             <div className={styles.date}>
