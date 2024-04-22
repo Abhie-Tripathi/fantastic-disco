@@ -57,7 +57,7 @@
 }
 .configure{
     margin-left: 20px;
-    padding: 3px;
+    padding: 5px 10px;
     border-radius: 8px;
     background-color: #313131;
 }
@@ -132,7 +132,6 @@
     border-radius: 12px;
 
 }
-
 .type {
     padding: 8px;
 }
@@ -160,6 +159,7 @@
     border-radius: 19px;
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
+    margin-top: 5px;
     /* font-family: Sora; */
     font-size: 13.25px;
     font-weight: 400;

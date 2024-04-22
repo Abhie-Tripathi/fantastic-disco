@@ -8,18 +8,15 @@ const formatDate = (dateString: string | null): string => {
     return date.toLocaleDateString('en-GB', options);
 };
 interface Props {
-    eventDate: string | null; 
+    eventDate: string | null;
 }
-const TimelineItem: React.FC<Props> = ({ eventDate })=> {
+const TimelineItem: React.FC<Props> = ({ eventDate }) => {
 
     let formattedDate = "";
-    
-    // If eventdate is null we dont want to format it
     if (eventDate !== null) {
         formattedDate = formatDate(eventDate);
     }
 
-    // We will not show the circle if date is empty
     const showCircle = formattedDate !== "";
 
     return (

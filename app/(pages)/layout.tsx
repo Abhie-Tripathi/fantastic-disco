@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import "./../globals.css";
 import { AuthContextProvider } from '@/context'
 import Navbar from "../components/Navbar";
-import Script from "next/script";
-// const inter = Inter({ subsets: ["latin"] });
 import { Sora } from "next/font/google";
 
 const sora = Sora({
