@@ -322,11 +322,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
                     <Image src={ArrowDownIcon} alt='dropdown' />
-                    <input
-                        type='text'
-                        disabled
-                        placeholder="For ex : Expo"
-                    />
+                    <div className={styles.placeholder}>For ex : Expo</div>
                 </div>
                 {isEventTypeDropdownOpen && (
                     <div className={styles.dropdown}>

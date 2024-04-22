@@ -86,14 +86,13 @@
 }
 .promotedEventsContainer{
     position: relative;
-    margin-bottom: 48px;
 }
 .dropdown {
     background-color: #0F0F0F;
     max-height: 200px;
     overflow: auto;
     position: absolute;
-    top: 100%;
+    /* top: 100%; */
     left: 0%;
     z-index: 1;
     width: 100%;

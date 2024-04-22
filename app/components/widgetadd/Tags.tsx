@@ -4,13 +4,15 @@ import TagIcon from '/public/tag.svg'
 import Image from 'next/image'
 import styles from './tags.style.module.css'
 import Tag from './Tag'
+import AddIcon from '/public/add.svg'
 
 const Tags = () => {
     const [tagsList, setTagsList] = useState<string[]>([])
-    const [inputTag, setInputSet] = useState<string>("")
+    const [inputTag, setInputTag] = useState<string>("")
 
     const handleAddTag = () => {
         setTagsList([...tagsList, inputTag])
+        setInputTag("")
     }
 
     const handleRemoveTag = (tagToRemove: string) => {
@@ -23,14 +25,16 @@ const Tags = () => {
                 <div>Tags</div>
                 <Image src={TagIcon} alt="tagIcon" />
             </div>
-            <div className={styles.border_container}>
+            <div className={styles.innerContainer}>
+                <div className={styles.inputContainer}>
+                    <input type="text" placeholder='Enter Tag' className={styles.tagInput} value={inputTag} onChange={(e) => setInputTag(e.target.value)} />
+                    <button className={styles.addBtn} type='button' onClick={handleAddTag}><Image src={AddIcon} alt='add'/></button>
+                </div>
                 <div className={styles.tagsList}>
                     {tagsList.map((tag, key) => (
-                        <Tag name={tag} onRemove={()=>handleRemoveTag(tag)}  />
+                        <Tag key={key} name={tag} onRemove={() => handleRemoveTag(tag)} />
                     ))}
                 </div>
-                <input type="text" placeholder='Enter Tag' className={styles.tagInput} value={inputTag} onChange={(e) => setInputSet(e.target.value)} />
-                <button className={styles.addBtn} type='button' onClick={handleAddTag}>+ Add</button>
             </div>
         </div>
     )
