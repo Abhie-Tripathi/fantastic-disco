@@ -1,3 +1,6 @@
+.container{
+    margin-left: 74px;
+}
 .innerContainer{
     display: flex;
     align-items: center;
@@ -6,11 +9,11 @@
 }
 .container1{
     display: flex;
+    
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width:200px;
-    height: 200px;
+    padding: 25px 50px;
     background: linear-gradient(180deg, rgba(103, 80, 164, 0.3) 0%, rgba(102, 102, 102, 0) 100%);
     border: 0.8px solid;
     border-radius: 40px;
@@ -18,6 +21,12 @@
     outline: 0.97px solid transparent;
 }
 .number{
+    background: linear-gradient(180deg, rgba(247, 247, 247, 0.3) 0%, rgb(195, 194, 194) 100%);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+    /* background-color: rgb(195, 194, 194); */
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;

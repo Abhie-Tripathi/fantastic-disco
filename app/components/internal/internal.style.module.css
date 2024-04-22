@@ -1,7 +1,7 @@
 .container{
-    width: 95%;
-    padding-left: 132px;
-    padding-right: 132px;
+    width: 100%;
+    padding-left: 100px;
+    padding-right: 50px;
     padding-bottom: 94px;
 }
 .timelineContainer{
