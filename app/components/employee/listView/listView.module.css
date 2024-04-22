@@ -1,19 +1,24 @@
 .container{
-    /* display: flex;
-    justify-content: space-between; */
     width: 95%;
+}
+.timelineContainer{
+    margin-top: 30px;
 }
 .timeline{
     display: flex;
+    align-items: center;
+    flex-direction: column;
 }
-.filterContainer{
-    width: 30%;
+
+.buttons{
+    display: flex;
+    justify-content: space-between;
 }
-.calendarBtns{
+.filterBtns{
     margin: 0px 0px 30px 0px;
     position: relative;
 }
-.calendarBtns button{
+.filterBtns button{
     color: white;
     font-size: 14px;
     background:none;
@@ -24,12 +29,26 @@
     margin-left: 10px;
     cursor: pointer;
 }
-.calendarBtns button:hover{
+.filterBtns button:hover{
     transition-duration: .2s;
     background-color: #9281be;
 }
-.calendarBtns button.activeCalendarBtn{
+.filterBtns button.activeFilterBtn{
     background-color: #6750A4;
+}
+.eventsBtns button{
+    color: white;
+    font-size: 14px;
+    background:none;
+    border: none;
+    border: 1px solid #507ba4;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.eventsBtns .activeTeamBtn{
+    background-color: #507ba4;
 }
 .userEvents{
     position: absolute;
