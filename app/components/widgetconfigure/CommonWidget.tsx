@@ -322,8 +322,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Types</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)} />
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
+                    <Image src={ArrowDownIcon} alt='dropdown'  />
                     <input
                         type='text'
                         disabled
@@ -346,8 +346,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Modes of Participation</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`}>
-                    <Image src={ArrowDownIcon} alt='dropdown' onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)} />
+                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}>
+                    <Image src={ArrowDownIcon} alt='dropdown'  />
                     <input
                         type='text'
                         disabled

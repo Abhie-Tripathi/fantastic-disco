@@ -185,11 +185,11 @@ const WidgetCard = ({ data }: any) => {
           </div>
         </div>
         <div className={Styles.cardSec2}>
-          {/* <div className={Styles.type}>
+          <div className={Styles.type}>
             <div className={Styles.typeHead}>Widget Type</div>
             <div className={Styles.typeBtn}>{widgetType}</div>
-          </div> */}
-          {/* <div className={Styles.line}></div> */}
+          </div>
+          <div className={Styles.line}></div>
           <div className={Styles.type}>
             <div className={Styles.typeHead}>Geography</div>
             {countries?.map((item, key) => (
