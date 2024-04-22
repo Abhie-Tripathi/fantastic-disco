@@ -22,13 +22,13 @@
     display: flex;
     gap: 30px;
 }
-.eventFormatChip{
+.eventChip{
     border:1px solid #6650a483;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
 }
-.eventFormatActiveChip{
+.eventActiveChip{
     background-color: #6650a483;
 }
 .dateContainer{
@@ -78,19 +78,21 @@
     cursor: pointer;
 }
 .eventModeContainer{
-    position: relative;
-    cursor: pointer;
+    margin-bottom: 48px;
+}
+.eventModes{
+    display: flex;
+    gap: 30px;
 }
 .promotedEventsContainer{
     position: relative;
-    margin-bottom: 48px;
 }
 .dropdown {
     background-color: #0F0F0F;
     max-height: 200px;
     overflow: auto;
     position: absolute;
-    top: 100%;
+    /* top: 100%; */
     left: 0%;
     z-index: 1;
     width: 100%;
