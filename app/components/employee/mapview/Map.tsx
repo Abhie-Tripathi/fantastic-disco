@@ -20,8 +20,8 @@ const Map: React.FC = () => {
     latitude: 51.50853,
     longitude: -0.076132,
     width: '100%',
-    height: '350px',
-    zoom: 12,
+    height: '500px',
+    zoom: 2,
   });
   return (
     <div className={styles.map}>
