@@ -25,8 +25,8 @@ interface PromotedEvent {
 }
 
 const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
-    const [tagList, setTagList] = useState<string[]>([]);
-    const isAdd: boolean = true;
+    // const [tagList, setTagList] = useState<string[]>([]);
+    // const isAdd: boolean = true;
     const [geoInput, setGeoInput] = useState<string>("");
 
     const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
@@ -42,8 +42,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const [eventTypeTags, setEventTypeTags] = useState<string[]>([]);
     const [isEventTypeDropdownOpen, setIsEventTypeDropdownOpen] = useState<boolean>(false)
 
-    const [modeTags, setModeTags] = useState<string[]>([]);
-    const [isModeDropdownOpen, setIsModeDropdownOpen] = useState<boolean>(false);
+    const [modeTags, setModeTags] = useState<string[]>(ModeData);
 
     const [showPromotedInput, setShowPromotedInput] = useState<boolean>(false);
     const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] = useState<boolean>(false);
@@ -60,7 +59,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
 
     // This will run as soon as the form opens, So that it can be prefilled with the data
-    useEffect(()=>{
+    useEffect(() => {
         const fetchWidgetData = async () => {
             try {
                 const response = await fetch(`https://api.eventgeni.com/widgets/${widgetId}?type=page`);
@@ -84,8 +83,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         };
         fetchWidgetData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
-    const toggleChipSelection = (format: string) => {
+    }, [])
+    const toggleFormatChipSelection = (format: string) => {
         const isSelected = eventFormat.includes(format);
         if (isSelected) {
             // Deselect the chip
@@ -97,7 +96,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     };
 
     // To add the promotedEvents in promotedEvents state, so that they are there in configuration form query
-    const parseQueryString = (queryString : string) => {
+    const parseQueryString = (queryString: string) => {
         const params = new URLSearchParams(queryString);
         const parsedPromotedEvents = params.get('promotedEvents');
         if (parsedPromotedEvents) {
@@ -146,16 +145,6 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         setEventTypeTags(eventTypeTags.filter(tag => tag !== tagToRemove));
     };
 
-    const handleModeClick = (mode: string) => {
-        if (!modeTags.includes(mode)) {
-            setModeTags([...modeTags, mode]);
-        }
-        setIsModeDropdownOpen(false);
-    };
-
-    const handleRemoveModeTag = (tagToRemove: string) => {
-        setModeTags(modeTags.filter(tag => tag !== tagToRemove));
-    };
     const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
         setShowPromotedInput(e.target.checked);
     };
@@ -171,21 +160,30 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotedInput]);
 
+    // To handle Event Mode iof Participation
+    const toggleModeChipSelection = (mode: string) => {
+        const isSelected = modeTags.includes(mode);
+        if (isSelected) {
+            setModeTags(prevModes => prevModes.filter(item => item !== mode));
+        } else {
+            setModeTags(prevModes => [...prevModes, mode]);
+        }
+    };
 
     const handlePromotedEventClick = (event: any) => {
-        const id  = event._id
+        const id = event._id
         const name = event._source.name
         if (!promotedEventTags.includes(event._source.name)) {
-            setPromotedEventTags([...promotedEventTags, {id, name }]);
+            setPromotedEventTags([...promotedEventTags, { id, name }]);
             setPromotedEvents([...promotedEvents, id]);
         }
         setIsPromotedDropdownOpen(false);
     };
 
 
-    const handleRemovePromotedEventsTag = (tagToRemove: string, id : string) => {
+    const handleRemovePromotedEventsTag = (tagToRemove: string, id: string) => {
         setPromotedEventTags(promotedEventTags.filter(tag => tag.name !== tagToRemove));
-        setPromotedEvents(promotedEvents.filter(tagId=> tagId !== id))
+        setPromotedEvents(promotedEvents.filter(tagId => tagId !== id))
     }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -200,14 +198,14 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             eventTypeTags,
             categoryTags,
             eventFormat,
-            active : !deactivated,
-            widgetType : widgetType
+            active: !deactivated,
+            widgetType: widgetType
         };
         // Prepare request body
         const formBody = {
-            type:"page",
+            type: "page",
             query: queryString,
-            body : JSON.stringify(bodyData)
+            body: JSON.stringify(bodyData)
         };
         try {
             const responseData = await postData(`${baseURL}/widgets/${widgetId}`, formBody);
@@ -255,7 +253,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
-              <ToastContainer/>
+            <ToastContainer />
             <div className={styles.header}>
                 <div className={styles.widgetName}>{widgetType}Widget</div>
             </div>
@@ -265,8 +263,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     {EventFormatData.map((format, index) => (
                         <div
                             key={format}
-                            className={`${styles.eventFormatChip} ${eventFormat.includes(format) ? styles.eventFormatActiveChip : ''}`}
-                            onClick={() => toggleChipSelection(format)}>
+                            className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ''}`}
+                            onClick={() => toggleFormatChipSelection(format)}>
                             {format}
                         </div>
                     ))}
@@ -275,12 +273,12 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={styles.dateContainer}>
                 <div className={styles.startDate}>
                     <div className={styles.heading}>Start Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date = {startDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleStartDate} date={startDate} /></div>
 
                 </div>
                 <div className={styles.endDate}>
                     <div className={styles.heading}>End Date</div>
-                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} date = {endDate} /></div>
+                    <div className={styles.datePickerContainer}><DatePickerComp handleDate={handleEndDate} date={endDate} /></div>
                 </div>
             </div>
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
@@ -323,7 +321,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
-                    <Image src={ArrowDownIcon} alt='dropdown'  />
+                    <Image src={ArrowDownIcon} alt='dropdown' />
                     <input
                         type='text'
                         disabled
@@ -346,28 +344,17 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
             <div className={` ${styles.eventModeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Modes of Participation</div>
-                <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}>
-                    <Image src={ArrowDownIcon} alt='dropdown'  />
-                    <input
-                        type='text'
-                        disabled
-                        placeholder="For ex : Speaker"
-                    />
+                <div className={styles.eventModes}>
+                    {ModeData.map((mode, index) => (
+                        <div
+                            key={mode}
+                            className={`${styles.eventChip} ${modeTags.includes(mode) ? styles.eventActiveChip : ''}`}
+                            onClick={() => toggleModeChipSelection(mode)}>
+                            {mode}
+                        </div>
+                    ))}
                 </div>
-                {isModeDropdownOpen && (
-                    <div className={styles.dropdown}>
-                        {ModeData.map((mode, index) => (
-                            <div key={index} className={styles.dropdownItem} onClick={() => handleModeClick(mode)}>
-                                {mode}
-                            </div>
-                        ))}
-
-                    </div>
-                )}
             </div>
-            <div className={styles.tags}>{modeTags.map((tag, index) => (
-                <Tag key={index} name={tag} onRemove={() => handleRemoveModeTag(tag)} />
-            ))}</div>
 
             <div className={`${styles.promotedEventsContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.promotedHeading}>
@@ -394,16 +381,16 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                         ))}
                     </div>
                 )}
-                 <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
+                <div className={styles.tags}>{promotedEventTags.map((tag, index) => (
                     <Tag key={index} name={tag.name} onRemove={() => handleRemovePromotedEventsTag(tag.name, tag.id)} />
                 ))}</div>
             </div>
             <div className={styles.tagsContainer}>
-                <Tags tagList={tagList} setTagList={setTagList} isAdd={isAdd} />
+                <Tags />
             </div>
             <div className={styles.activateBtn}>
                 <div className={styles.heading}>Deactivated</div>
-                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={()=>setDeactivated(!deactivated)} />
+                <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={() => setDeactivated(!deactivated)} />
                 <label htmlFor="activate" className={styles.checkBox}></label>
             </div>
             <div className={styles.btns}>

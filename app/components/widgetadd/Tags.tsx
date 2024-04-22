@@ -1,80 +1,39 @@
 'use client'
 import React, { useState } from 'react'
+import TagIcon from '/public/tag.svg'
+import Image from 'next/image'
 import styles from './tags.style.module.css'
-import AddTagsModal from './AddTagsModal';
-import TagIcon from "/public/tag.svg";
-import Cross from "/public/cross.svg";
-import Add from "/public/plus.svg";
-import Image from 'next/image';
+import Tag from './Tag'
 
-interface TagProps {
-    name: string;
-    setState: React.Dispatch<React.SetStateAction<string[]>>;
-    state: string[];
-}
-const Tag: React.FC<TagProps> = ({ name, setState, state }) => {
-    return (
-        <div
-            className={styles.tag}
-            onClick={() => setState(state.filter((tag) => tag !== name))}
-        >
-            <Image src={Cross} alt="Cross" />
-            <div>{name}</div>
-        </div>
-    );
-};
+const Tags = () => {
+    const [tagsList, setTagsList] = useState<string[]>([])
+    const [inputTag, setInputSet] = useState<string>("")
 
-interface TagsProps {
-    tagList: string[];
-    setTagList: React.Dispatch<React.SetStateAction<string[]>>;
-    isAdd: boolean;
-}
+    const handleAddTag = () => {
+        setTagsList([...tagsList, inputTag])
+    }
 
-const Tags: React.FC<TagsProps> = ({ tagList, setTagList, isAdd }) => {
-    const [savedData, setSavedData] = useState<string[]>([]);
-    const [showAddTagsModal, setShowAddTagsModal] = useState<boolean>(false);
-    const handleCloseAddTagsModal = () => {
-        setShowAddTagsModal(false);
+    const handleRemoveTag = (tagToRemove: string) => {
+        setTagsList(tagsList.filter(tag => tag !== tagToRemove));
     };
 
-    const handleSaveData = (data: string[]) => {
-        setTagList([...savedData, ...data]);
-    };
     return (
-        <div className={styles.tag_container}>
+        <div className={styles.tagsContainer}>
             <div className={styles.tag_title}>
                 <div>Tags</div>
                 <Image src={TagIcon} alt="tagIcon" />
             </div>
             <div className={styles.border_container}>
-                <div className={styles.tagButtons_container}>
-                    {tagList?.map((tag) => (
-                        <Tag key={tag} name={tag} setState={setTagList} state={tagList} />
+                <div className={styles.tagsList}>
+                    {tagsList.map((tag, key) => (
+                        <Tag name={tag} onRemove={()=>handleRemoveTag(tag)}  />
                     ))}
-
-                    {isAdd && (
-                        <div
-                            className={styles.small_Button}
-                            onClick={() => {
-                                setShowAddTagsModal(true);
-                            }}
-                        >
-                            <Image src={Add} alt="add" />
-                        </div>
-                    )}
                 </div>
-
-                {showAddTagsModal && (
-                    <AddTagsModal
-                        onClose={handleCloseAddTagsModal}
-                        isOpen={showAddTagsModal}
-                        tagList={tagList}
-                        onSave={handleSaveData}
-                    />
-                )}
+                <input type="text" placeholder='Enter Tag' className={styles.tagInput} value={inputTag} onChange={(e) => setInputSet(e.target.value)} />
+                <button className={styles.addBtn} type='button' onClick={handleAddTag}>+ Add</button>
             </div>
         </div>
-    );
+    )
 }
 
 export default Tags
