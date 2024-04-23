@@ -1,0 +1,178 @@
+.container{
+    position: relative;
+}
+.blur{
+    filter: blur(2px);
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.cardSec1,
+.cardSec3 {
+    margin: 0px 18px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.iconCircle {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(137.25deg, #000000 -17.15%, rgba(231, 231, 231, 0.6875) 17.46%, rgba(255, 255, 255, 0.34139) 44.62%, rgba(255, 255, 255, 0.222774) 61.76%, #666666 117.91%);
+    box-shadow: 0px 0px 4.942586421966553px 8.031702995300293px #2B2B2B40 inset;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+}
+
+.heading {
+    /* font-family: Sora; */
+    font-weight: 600;
+    text-align: left;
+}
+.eventDetail {
+    outline: 1px solid transparent;
+    margin-left: 20px;
+    padding: 3px;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: #313131;
+
+}
+
+.date {
+    /* font-family: Sora; */
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+
+}
+.configure{
+    margin-left: 20px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background-color: #313131;
+}
+.configure:hover{
+    transition-duration: .2s;
+    background-color: #6750A4;
+}
+.delete{
+    margin-left: 20px;
+    padding: 3px;
+    border-radius: 8px;
+    background-color: #313131;
+    cursor: pointer;
+}
+.delete:hover{
+    transition-duration: .2s;
+    background-color: rgb(218, 99, 99);
+}
+.deleteModal{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.statusBtn {
+    position: absolute;
+    right: 0px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+.activeFlag {
+    background-color: #19922C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #0E9B1C;
+}
+.inactiveFlag {
+    background-color: #d83147;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.inactiveStatus {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #d83147;
+}
+
+.cardSec2 {
+    margin: 0px 18px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #1F1F1F;
+    border-radius: 12px;
+
+}
+.type {
+    padding: 8px;
+}
+
+.typeHead {
+    /* font-family: Sora; */
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 25.55px;
+    text-align: left;
+    color: #808080;
+}
+
+.allTypeBtn {
+    display: flex;
+    gap: 5px;
+}
+
+.typeBtn {
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1A1A1A;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.97px solid transparent;
+    margin-top: 5px;
+    /* font-family: Sora; */
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+
+}
+
+.line {
+    width: 50px;
+    margin: 10px;
+    height: 0px;
+    gap: 0px;
+    transform: rotate(-90deg);
+    border: 0.95px solid #1F1F1F;
+}

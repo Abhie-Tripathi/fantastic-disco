@@ -1,0 +1,14 @@
+.inputBox{
+    display: flex;
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 20px;
+    justify-content: space-between;
+}
+.box{
+    background-color: transparent;
+  border: none;
+  outline: none;
+  color:#606060;
+  width: 80%;
+}

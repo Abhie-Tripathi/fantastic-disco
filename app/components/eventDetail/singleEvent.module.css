@@ -1,0 +1,195 @@
+.card{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    gap:20px;
+}
+.topView{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+}
+.downView{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+.eventHeading{
+font-size: 24px;
+font-weight: 400;
+line-height: 33.6px;
+letter-spacing: -0.02em;
+text-align: left;
+
+}
+.datecta{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.calendar{
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 4.31px 12.92px 4.31px 12.92px;
+  background-color: #313131;
+}
+.date{
+font-weight: 400;
+line-height: 21px;
+text-align: left;
+
+}
+.ctas{
+    display: flex;
+  gap: 10px;
+  font-size: 14px;
+}
+.pill{
+    background-color: #6650a452;
+  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
+  padding:4.23px 12.68px;
+  border-radius: 40px;
+  font-size: 10px;
+}
+.locationInfo{
+    display: flex;
+    display: flex;
+  justify-content: space-between;
+  background-color: black;
+  padding: 20px 30px;
+  border-radius: 12px;
+    justify-content: space-between;
+}
+.locationDetail{
+    display: flex;
+    gap:10px;
+  align-items: center;
+}
+.eventDetails {
+    color: white;
+    right: 0;
+    bottom: 0;
+}
+.eventDetails .detailContainer{
+    border-radius: 40px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.97px solid transparent;
+   padding: 5.59px 5.59px 5.59px 13.41px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: #0c0c0c;
+}
+.eventDetails .detailContainer::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    width: 101.5%;
+    height: 105%;
+    border-radius: 40px;
+    background: linear-gradient(118deg, rgba(103, 80, 164, 1) 0%, rgba(133, 133, 133, 1) 100%);
+  	z-index:-1;
+}
+.eventDetails .detailContainer img{
+    background-color: #6650a452;
+    padding: 4px 10px 4px 10px;
+    border-radius: 40px;
+    margin-left: 7px;
+}
+.eventDetails .detailContainer div{
+    font-size: 12px;
+}
+.cardImg{
+    border-radius: 12px 0px 0px 12px;
+}
+.des{
+    font-weight: 600;
+}
+.description{
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+font-size: 14px;
+font-weight: 400;
+line-height: 21px;
+text-align: left;
+}
+.line{
+    border: 0.95px solid #3A3152
+}
+.speakers{
+    padding: 10px 0;
+}
+.circles{
+    padding-top: 20px;
+    display: flex;
+}
+/* .circle{
+    margin-right: -18px;
+    background-color: #3a3e42;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+} */
+.circle:hover{
+    transform: scale(1.05);
+    z-index: 1;
+}
+.circle {
+    position: relative;
+    cursor: pointer;
+    width: 45px;
+    display: flex;
+    color: black;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: none;
+    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+    transition: transform 0.2s ease; 
+}
+  
+  .circle::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%; 
+    left: 50%; 
+    white-space: nowrap; 
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff; 
+    padding: 5px 10px; 
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  
+  .circle:hover::before {
+    opacity: 1;
+    
+  }
+  

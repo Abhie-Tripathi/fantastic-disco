@@ -1,0 +1,158 @@
+.container {
+    height: 100vh;
+    background: linear-gradient(270deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    width: 100vw;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .hero_container {
+    position: absolute;
+    top: 30px;
+    left: 35px;
+  }
+  
+  .heroImage {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .heroTitle {
+    color: #303030;
+    font-size: 11px;
+    text-align: center;
+  }
+  
+  .leftBackground_image {
+    position: absolute;
+    bottom: 120px;
+    left: -245px;
+    height: 435px;
+    z-index: -1;
+  }
+  
+  .topRightBackground_image {
+    position: absolute;
+    top: -80px;
+    right: -22px;
+    height: 310px;
+    z-index: -1;
+  }
+  
+  .bottomRightBackground {
+    position: absolute;
+    bottom: -320px;
+    right: -90px;
+    z-index: -1;
+  }
+  
+  .sub_container {
+    display: flex;
+    gap: 140px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 350px;
+  }
+  
+  .form_heading {
+    /* color: #242424; */
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .input_container{
+    position: relative;
+  }
+  
+  .error {
+    position: absolute;
+    top: 70px;
+    left: 5px;
+    font-size: 12px;
+    color: #f15050;
+  }
+  
+  .input_title {
+    /* color: #424242df; */
+    color: white;
+    margin-bottom: 2px;
+  }
+  
+  .input {
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    width: 100%;
+  }
+  
+  .visibility_Icon {
+    cursor: pointer;
+    position: absolute;
+    top: 33px;
+    right: 13px;
+  }
+  
+  .checkbox_container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .checkbox_input {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .checkbox_title {
+    color: #424242;
+  }
+  
+  .button {
+    background-color: #6750a4;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+  }
+  
+  .new_account {
+    text-align: center;
+    padding: 20px 0px;
+    border-bottom: 0.5px solid #e6e6e6;
+    font-size: 14px;
+  }
+  
+  .createNew_link {
+    color: #6750a4;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .privacyPolicy {
+    text-align: center;
+    color: #808080;
+    font-size: 12px;
+  }
+  
+  .privacyPolicy_hightlighted {
+    color: #6750a4;
+    font-weight: 600;
+    margin-left: 2px;
+  }

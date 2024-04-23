@@ -1,0 +1,55 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    background-color: #1A1A1A;
+    padding: 18px;
+    margin-bottom: 65px;
+    width: 100%;
+}
+.navbar .heading{
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+}
+.navbar .heading img{
+    margin-right: 5px;
+}
+
+.navbar .btns{
+    color: white;
+    display: flex;
+    align-items: center;
+}
+.navbar .btns .calendar{
+    border: 1px solid #808081;
+    border-radius: 12px;
+    padding: 5px 24px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+.navbar .btns .calendar:hover{
+    transition-duration: .2s;
+    background-color: #808081;
+}
+.navbar .btns .settings{
+    margin-right: 12px;
+}
+.navbar .btns .sort{
+    border: 1px solid #808081;
+    border-radius: 12px;
+    padding: 5px 24px;
+    margin-right: 12px;
+}
+.navbar .btns .add{
+    border-radius: 12px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    background-color: #6750A4;
+    cursor: pointer;
+}
+.navbar .btns .add img{
+    margin-right: 10px;
+}
