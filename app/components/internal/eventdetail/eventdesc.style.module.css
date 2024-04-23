@@ -1,0 +1,152 @@
+.container{
+    border-radius: 20px;
+    border: 1px solid #1a1a1a;
+    padding: 27px 36px;
+    background: linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(26,26,26,0) 100%);
+}
+.header{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+}
+.accordian{
+    border-top: 1px solid #2d2741;
+    margin-top: 20px;
+    padding-top: 20px;
+}
+.statusDateContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dateContainer{
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+    gap: 9px;
+    background-color: #313131;
+    padding: 3px 6px;
+    border-radius: 8px;
+    border: 1px solid #6750A4;
+}
+.statusContainer{
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+.statusHeading{
+    color: #808080;
+    font-size: 12px;
+}
+.statusValue{
+    background-color: #1a1a1a;
+    border: 1px solid #6750A4;
+    border-radius: 40px;
+    padding: 5px 10px;
+    font-size: 10px;
+}
+.locationContainer{
+    margin-top: 18px;
+    background-color: #202020;
+    padding: 16px 24px;
+    border-radius: 16px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.descContainer{
+    margin-top: 20px;
+    color: #ACACAC;
+}
+.descHeading{
+    font-size: 11px;
+}
+.description{
+    margin-top: 18px;
+    font-size: 12px;
+}
+.speakersContainer{
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #2d2741;
+}
+.speakerHeading{
+    color: #ACACAC;
+    font-size: 11px;
+}
+.circles {
+    padding-top: 20px;
+    display: flex;
+}
+
+.circle:hover {
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.circle {
+    position: relative;
+    cursor: pointer;
+    width: 45px;
+    display: flex;
+    color: black;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: none;
+    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+    transition: transform 0.2s ease;
+}
+
+.circle::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.circle:hover::before {
+    opacity: 1;
+}
+.organiserContainer{
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.orgLogo{
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+}
+.eventStats{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    justify-content: space-between;
+}
+.upcomingEvent{
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+.eventsHosted{
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}

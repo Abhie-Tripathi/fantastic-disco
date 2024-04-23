@@ -29,7 +29,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
   const formattedDate = formatDate(eventDate);
 
   return (
-    <Link href={`/employee/${eventId}`} className={styles.card}>
+    <Link href={`/internal/${eventId}`} className={styles.card}>
       <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
       <div className={styles.cardDetails}>
         <div className={styles.eventNameComp}>
@@ -38,7 +38,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div className={styles.company}>{eventCompany}</div>
           </div>
           <div className={styles.tag}>
-            <Image src={ClockIcon} alt="clock" width={16} height={16}/>
+            <Image src={ClockIcon} alt="clock" width={16} height={16} />
             <div>Pending</div>
           </div>
         </div>
@@ -66,7 +66,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
             <Image className={styles.image} src={person2} alt="person2" />
           </div>
-
         </div>
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
