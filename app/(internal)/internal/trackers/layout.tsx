@@ -18,7 +18,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     Trackers
                 </Link>
                 <Link
-                    href="trackers/savedevents"
+                    href="/internal/trackers/savedevents"
                     className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
                         }`}
                 >

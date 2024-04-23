@@ -2,10 +2,10 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./page.style.module.css";
-// import MoreIcon from "/public/MoreIcon.svg";
-// import DropdownArrow from "/public/Dropdown_Arrow.svg";
-// import ChipCircle from "/public/ChipCircle.svg";
-// import ActiveChipCircle from "/public/ActiveChipCircle.svg";
+import MoreIcon from "/public/dots.svg";
+import DropdownArrow from "/public/downArrow.svg";
+import ChipCircle from "/public/ChipCircle.svg";
+import ActiveChipCircle from "/public/ActiveChipCircle.svg";
 import Slider from "@/app/components/internal/trackers/Slider";
 import { useSearchParams } from "next/navigation";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
@@ -34,11 +34,11 @@ const Chip = ({ state, setState, value }: ChipProps) => {
       className={`${styles.chip} ${state.includes(value) ? styles.active : ""}`}
       onClick={onClickHandler}
     >
-      {/* {state.includes(value) ? (
+      {state.includes(value) ? (
         <Image src={ActiveChipCircle} alt="chipcircle" />
       ) : (
         <Image src={ChipCircle} alt="chipcircle" />
-      )} */}
+      )}
       <div>{value}</div>
     </div>
   );
@@ -122,7 +122,7 @@ const CreateTracker = () => {
             placeholder="Tracker Name"
           />
           <div className={styles.trackers_header_more_button}>
-            {/* <Image src={MoreIcon} alt="moreicon" /> */}
+            <Image src={MoreIcon} alt="moreicon" />
           </div>
           <button
             onClick={saveTrackerHandler}
@@ -152,7 +152,7 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              {/* <Image src={DropdownArrow} alt="dropdownarrow" /> */}
+              <Image src={DropdownArrow} alt="dropdownarrow" />
             </div>
             {openDropdown == "Category" && (
               <CategoryDropdown
@@ -198,7 +198,7 @@ const CreateTracker = () => {
               </div>
               <div className={styles.dropdown_choosebutton}>
                 <div>Choose</div>
-                {/* <Image src={DropdownArrow} alt="dropdownarrow" /> */}
+                <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
             </div>
             {openDropdown == "Labels" && (
@@ -231,7 +231,7 @@ const CreateTracker = () => {
               </div>
               <div className={styles.dropdown_choosebutton}>
                 <div>Choose</div>
-                {/* <Image src={DropdownArrow} alt="dropdownarrow" /> */}
+                <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
             </div>
             {openDropdown == "Date Range" && (
@@ -260,7 +260,7 @@ const CreateTracker = () => {
               )}
               <div className={styles.dropdown_choosebutton}>
                 <div>Choose</div>
-                {/* <Image src={DropdownArrow} alt="dropdownarrow" /> */}
+                <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
             </div>
             {openDropdown == "Attendance" && (

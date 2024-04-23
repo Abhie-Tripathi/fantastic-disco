@@ -18,7 +18,7 @@
   margin: 0;
   text-align: center;
   font-size: 1rem;
-  color: #222;
+  color: white;
   font-weight: 400;
   outline: none;
 }
@@ -36,7 +36,7 @@
 }
 
 .ariaRangeCalendar table th {
-  color: #222;
+  color: white;
   font-weight: 500;
 }
 
@@ -63,7 +63,7 @@
 
 .ariaRangeCalendar .ariaCalendarCell[data-selected] {
   cursor: pointer;
-  background: var(--primary-color);
+  background: #8470c9;
   color: white;
   border-radius: 0;
 }

@@ -31,12 +31,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #f7f7f9;
+    background-color: #1a1a1a;
   }
   
   .trackers_header_title {
     flex: 1;
-    color: #242424;
+    color: white;
     font-weight: 500;
     font-size: 20px;
   }
@@ -45,6 +45,7 @@
     cursor: pointer;
     border: 1px solid #e0e1e4;
     padding: 8px 24px;
+    height: 39px;
     border-radius: 12px;
     display: flex;
     align-items: center;

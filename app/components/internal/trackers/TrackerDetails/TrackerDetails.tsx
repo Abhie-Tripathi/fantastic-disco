@@ -83,7 +83,7 @@ const TrackerDetails = () => {
 
   const [startLocalRank, setStartLocalRank] = useState(35);
   const [endLocalRank, setEndLocalRank] = useState(67);
-  
+
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -224,8 +224,8 @@ const TrackerDetails = () => {
           <div className={styles.slider_container}>
             <div className={styles.slider_header}>Scores and Ranks</div>
             <div className={styles.sliderinput_container}>
-            <Slider
-            disabled
+              <Slider
+                disabled
                 StatsName="Eventeli Ranking"
                 startValue={startEventeliRank}
                 endValue={endEventeliRank}
@@ -234,7 +234,7 @@ const TrackerDetails = () => {
                 Range="0-100"
               />
               <Slider
-              disabled
+                disabled
                 StatsName="Local Ranking"
                 startValue={startLocalRank}
                 endValue={endLocalRank}
@@ -243,7 +243,7 @@ const TrackerDetails = () => {
                 Range="0-100"
               />
               <Slider
-              disabled
+                disabled
                 StatsName="Prediction Score"
                 startValue={startPredictedRank}
                 endValue={endPredictedRank}

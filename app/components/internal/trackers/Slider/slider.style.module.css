@@ -27,7 +27,7 @@
   }
   
   .stats_no {
-    color: #242424;
+    color: grey;
     font-weight: 600;
     font-size: 24px;
     text-align: center;
@@ -35,7 +35,7 @@
   
   .stats_name {
     padding-top: 5px;
-    color: #242424;
+    color: grey;
     font-size: 12px;
     font-weight: 500;
   }

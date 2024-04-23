@@ -2,13 +2,13 @@
   font-weight: 500;
 }
 .options {
-  filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+  filter: drop-shadow(1px 1px 5px rgb(59, 59, 59));
   gap: 20px;
   position: absolute;
   height: 250px;
   overflow: auto;
   z-index: 1;
-  background-color: white;
+  background-color: #1a1a1a;
   border-top: none;
   border-radius: 10px;
   padding: 15px;
@@ -19,7 +19,8 @@
   color: grey;
   margin-top: 10px;
   height: 40px;
-  background-color: var(--background);
+  border: 1px solid #4F378B;
+  /* background-color: #c6bae2; */
   display: flex;
   border-radius: 40px;
   align-items: center;

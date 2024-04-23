@@ -5,7 +5,7 @@
   
   .detailsCard {
     flex: 1;
-    border: 1px solid #ececf9;
+    border: 1px solid #424242;
     padding: 20px;
     border-radius: 12px;
     display: flex;
@@ -21,7 +21,7 @@
   
   .thresholdCard {
     flex: 1;
-    border: 1px solid #ececf9;
+    border: 1px solid #424242;
     padding: 20px;
     border-radius: 12px;
     display: flex;
@@ -38,7 +38,7 @@
   }
   
   .slider_header {
-    color: #424242;
+    color: white;
     font-size: 20px;
     font-weight: 600;
   }
@@ -57,13 +57,13 @@
   }
   
   .tracker_name {
-    color: #242424;
+    color: white;
     font-weight: 600;
     font-size: 20px;
   }
   
   .tracker_location {
-    color: #424242;
+    color: grey;
   }
   
   .tag_container {
@@ -81,7 +81,7 @@
   }
   
   .label_title {
-    color: #242424;
+    color: grey;
     font-weight: 500;
   }
   
@@ -98,7 +98,7 @@
   }
   
   .subcontainer_detail__title {
-    color: #242424;
+    color: grey;
     font-weight: 500;
   }
   
@@ -116,8 +116,8 @@
   }
   
   .overview_container {
-    border: 1px solid #ececf9;
-    background-color: #fdfcff;
+    border: 1px solid #424242;
+    background-color: #1a1a1a;
     padding: 20px;
     border-radius: 12px;
     margin-top: 30px;
@@ -137,18 +137,18 @@
   }
   
   .overview_title {
-    color: #242424;
+    color: white;
     font-weight: 600;
     font-size: 20px;
   }
   
   .overview_description {
-    color: #696b83;
+    color: grey;
     font-size: 14px;
   }
   
   .eventStats_title {
-    color: #242424;
+    color: white;
     font-weight: 500;
   }
   

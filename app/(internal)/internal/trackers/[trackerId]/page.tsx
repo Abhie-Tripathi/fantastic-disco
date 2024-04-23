@@ -15,7 +15,7 @@ const TrackerPage = () => {
     params.set("categories", "festivals");
     params.set("location", "chicago");
     params.set("status", "ACTIVE");
-    router.push(`/trackers/create?${params.toString()}`);
+    router.push(`/internal/trackers/create?${params.toString()}`);
   };
 
   return (
@@ -30,8 +30,7 @@ const TrackerPage = () => {
           </div>
           <button
             onClick={editTrackerHandler}
-            className={styles.trackers_header_newtracker_button}
-          >
+            className={styles.trackers_header_newtracker_button}>
             <div>Edit Tracker</div>
           </button>
         </div>
