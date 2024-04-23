@@ -1,14 +1,14 @@
 import React from 'react';
 import styles from './yourEventCard.style.module.css'
-import locationIcon from '/public/location.svg';
-import rightArrowIcon from '/public/rightbigarrow.svg';
+import UserIcon from '/public/user.svg';
 import calendarIcon from '/public/calendar.svg';
 import person1 from '@/public/person1.svg'
 import place from '@/public/internal/place.svg'
 import person2 from '@/public/person2.svg'
-// import ChatHeads from './ChatHeads';
 import Image from 'next/image';
 import Link from 'next/link';
+import ClockIcon from '/public/clock.svg'
+
 interface YourEventCardProps {
   eventId: number;
   eventName: string;
@@ -16,7 +16,7 @@ interface YourEventCardProps {
   eventLocation: string;
   eventImage: string
   eventDate: string;
-  eventCompany:string;
+  eventCompany: string;
 }
 
 const formatDate = (dateString: string): string => {
@@ -25,22 +25,21 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany}) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany }) => {
   const formattedDate = formatDate(eventDate);
 
   return (
     <Link href={`/employee/${eventId}`} className={styles.card}>
-      <Image src={eventImage} alt="eventImage" width={300} height={238} className={styles.cardImg} />
+      <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
       <div className={styles.cardDetails}>
         <div className={styles.eventNameComp}>
-            <div>
-          <div className={styles.eventName}>{eventName}</div>
-          <div className={styles.company}>{eventCompany}</div>
+          <div>
+            <div className={styles.eventName}>{eventName}</div>
+            <div className={styles.company}>{eventCompany}</div>
           </div>
-          <div className={styles.pills}>
-            {eventCtas.map((item, index) => (
-              <div key={index} className={styles.pill}>{item}</div>
-            ))}
+          <div className={styles.tag}>
+            <Image src={ClockIcon} alt="clock" width={16} height={16}/>
+            <div>Pending</div>
           </div>
         </div>
         <div className={styles.locationAndDateContainer}>
@@ -48,9 +47,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <Image src={place} alt="locationIcon" width={24} height={24} />
             <div>{eventLocation}</div>
           </div>
-          <div className={styles.eventLocation} style={{display:"flex", gap:"5px"}}>
-           <div className={styles.circle1}>7</div>
-            <div>Days Left</div>
+          <div className={styles.eventLocation} style={{ display: "flex", gap: "5px" }}>
+            <div className={styles.circle1}>7</div>
+            <div>Days Event</div>
           </div>
           <div className={styles.eventDate}>
             <Image src={calendarIcon} alt="calendarIcon" width={14} height={14} />
@@ -67,12 +66,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
             <Image className={styles.image} src={person2} alt="person2" />
           </div>
-          
+
         </div>
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
-            <div>View Details</div>
-            <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
+            <Image src={UserIcon} alt="user" width={50} height={24} />
+            <div>I&apos;m Interested</div>
           </div>
         </div>
       </div>
