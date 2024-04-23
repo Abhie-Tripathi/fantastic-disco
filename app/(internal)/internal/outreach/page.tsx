@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './page.style.module.css';
 import CardTask from '@/app/components/outreach/CardTask';
 import NotesModal from '@/app/components/outreach/NotesModal';
@@ -26,20 +26,24 @@ const Page: React.FC = () => {
         event.preventDefault()
         const taskName = event.dataTransfer.getData('taskName');
         const source = event.dataTransfer.getData('source_container')
-        if (source === 'shortlisted') {
-            setShortlistedTasks(shortlistedTasks.filter(task => task !== taskName));
-        } else if (source === 'inProgress') {
-            setInProgressTasks(inProgressTasks.filter(task => task !== taskName));
-        } else if (source === 'finalised') {
-            setFinalisedTasks(finalisedTasks.filter(task => task !== taskName));
-        }
+        
+        // To prevent adding the task into the same container
+        if (target !== source) {
+            if (source === 'shortlisted') {
+                setShortlistedTasks(shortlistedTasks.filter(task => task !== taskName));
+            } else if (source === 'inProgress') {
+                setInProgressTasks(inProgressTasks.filter(task => task !== taskName));
+            } else if (source === 'finalised') {
+                setFinalisedTasks(finalisedTasks.filter(task => task !== taskName));
+            }
 
-        if (target === 'shortlisted') {
-            setShortlistedTasks([...shortlistedTasks, taskName])
-        } else if (target === 'inProgress') {
-            setInProgressTasks([...inProgressTasks, taskName])
-        } else if (target === 'finalised') {
-            setFinalisedTasks([...finalisedTasks, taskName])
+            if (target === 'shortlisted') {
+                setShortlistedTasks([...shortlistedTasks, taskName])
+            } else if (target === 'inProgress') {
+                setInProgressTasks([...inProgressTasks, taskName])
+            } else if (target === 'finalised') {
+                setFinalisedTasks([...finalisedTasks, taskName])
+            }
         }
 
     };
@@ -55,7 +59,7 @@ const Page: React.FC = () => {
                     <div className={styles.heading}>Shortlisted</div>
                     <div className={`${styles.shortListedContainer} ${styles.cardsContainer}`}
                         onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, "shortlisted")}
+                        onDragStart={(event) => handleDragContainerStart(event, 'shortlisted')}
                         onDrop={(event) => handleDrop(event, 'shortlisted')}>
                         {shortlistedTasks.map((task, index) => (
                             <div className={styles.cards} key={index}>
@@ -68,7 +72,7 @@ const Page: React.FC = () => {
                     <div className={styles.heading}>In Progress</div>
                     <div className={`${styles.inProgressContainer} ${styles.cardsContainer}`}
                         onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, "inProgress")}
+                        onDragStart={(event) => handleDragContainerStart(event, 'inProgress')}
                         onDrop={(event) => handleDrop(event, 'inProgress')}>
                         {inProgressTasks.map((task, index) => (
                             <div className={styles.cards} key={index}>
@@ -81,7 +85,7 @@ const Page: React.FC = () => {
                     <div className={styles.heading}>Finalised</div>
                     <div className={`${styles.finalisedContainer} ${styles.cardsContainer}`}
                         onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, "finalised")}
+                        onDragStart={(event) => handleDragContainerStart(event, 'finalised')}
                         onDrop={(event) => handleDrop(event, 'finalised')}>
                         {finalisedTasks.map((task, index) => (
                             <div className={styles.cards} key={index}>
@@ -92,7 +96,7 @@ const Page: React.FC = () => {
                 </div>
             </div>
             <div className={styles.modal}>
-                {modalOpen && <NotesModal handleModal = {handleModal} />}
+                {modalOpen && <NotesModal handleModal={handleModal} />}
             </div>
         </div>
     );

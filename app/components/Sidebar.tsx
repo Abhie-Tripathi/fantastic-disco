@@ -3,19 +3,11 @@ import React, { useState } from "react";
 import styles from "./sidebar.style.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import AddIcon from "/public/add.svg";
 import Dashboard from '/public/internal/dashboard.svg'
 import Trend from '/public/internal/trend.svg'
 import Research from '/public/internal/research.svg'
 import Exhibit from '/public/internal/exhibit.svg'
-// import ResearchIcon from "/public/research.svg";
-// import HeroLogo from "/public/heroLogo.png";
-// import HeroText from "/public/heroText.png";
-// import TrackerIcon from "/public/Trackers.svg";
 import { usePathname } from "next/navigation";
-// import ExhibitIcon from "/public/exhibit.svg";
-// import TrendIcon from "/public/icons/trend.svg";
-
 const Sidebar = () => {
   const pathname = usePathname();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -59,7 +51,7 @@ const Sidebar = () => {
           <div className={styles.linkName}>Coordinate</div>
         </Link>
         <Link
-          href="/coordinate/outreach"
+          href="/internal/outreach"
           className={`${styles.link} ${
             pathname === "/coordinate/outreach" ? styles.activeLink : ""
           }`}
