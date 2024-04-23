@@ -42,13 +42,13 @@ const Sidebar = () => {
           <div className={styles.linkName}>Research</div>
         </Link>
         <Link
-          href="/trackers"
+          href="/internal/trackers"
           className={`${styles.link} ${
-            pathname === "/trackers" ? styles.activeLink : ""
+            pathname === "/internal/trackers" ? styles.activeLink : ""
           }`}
         >
           <Image src={Trend} alt="location" className={styles.icons} />
-          <div className={styles.linkName}>Coordinate</div>
+          <div className={styles.linkName}>Trackers</div>
         </Link>
         <Link
           href="/internal/outreach"

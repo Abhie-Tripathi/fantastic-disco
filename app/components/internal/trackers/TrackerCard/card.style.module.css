@@ -1,0 +1,134 @@
+.tracker_card {
+    background-color: #1A1A1A;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 100px;
+  }
+  
+  .first_container {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+  }
+  
+  .trackerinfo_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .tracker_title {
+    color: white;
+    font-weight: 500;
+  }
+  
+  .tracker_description {
+    color: white;
+  }
+  
+  .tags_container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .tag {
+    background-color: #eaddff;
+    padding: 8px 24px;
+    border-radius: 12px;
+    color: #59478c;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .linegraph_title {
+    color: grey;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .linegraph_subtitle {
+    padding-top: 10px;
+    color: #ababab;
+    font-size: 12px;
+  }
+  
+  .lineGraphLoading {
+    width: 300px;
+    height: 150px;
+  }
+  
+  .second_container {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+  }
+  
+  .dateRange_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .dateRange_title {
+    color: grey;
+    font-weight: 500;
+  }
+  
+  .dateRange {
+    color: #6750a4;
+    font-weight: 500;
+  }
+  
+  .eventstatus_title {
+    color: grey;
+    font-weight: 500;
+  }
+  
+  .eventstatus {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6750a4;
+  }
+  
+  .highlighted_stats_container {
+    box-shadow: 0px 2.555555582046509px 5.111111164093018px 0px #0000000a;
+    border: 1.28px solid #f9f9f9;
+    background-color: #ffffff;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: fit-content;
+    border-radius: 10px;
+  }
+  
+  .highlighted_stats_title {
+    color: #7a7a7a;
+    font-size: 10px;
+  }
+  
+  .highlighted_stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .highlighted_stats_eventNo {
+    color: #242424;
+  }
+  
+  .highlighted_stats_increase {
+    background-color: #eaddff;
+    border-radius: 5px;
+    color: #6750a4;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px;
+  }
+  
+  .polarGraphLoading{
+    width: 210px;
+    height: 210px;
+  }
