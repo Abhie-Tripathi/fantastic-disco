@@ -71,7 +71,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
             <Image src={UserIcon} alt="user" width={50} height={24} />
-            <div>I'm Interested</div>
+            <div>I&apos;m Interested</div>
           </div>
         </div>
       </div>
