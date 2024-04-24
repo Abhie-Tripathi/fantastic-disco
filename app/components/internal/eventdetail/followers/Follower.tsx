@@ -20,7 +20,7 @@ const Follower = () => {
                     <Image src={PlaceHolder} alt='banner' width={80} height={80} className={styles.profilePhoto} />
                     <div className={styles.details}>
                         <div className={styles.name}>{item.name} <span className={styles.username}>{item.username}</span></div>
-                        <div className={styles.position}>{item.username}</div>
+                        <div className={styles.position}>{item.position}</div>
                     </div>
                 </div>
             ))}
