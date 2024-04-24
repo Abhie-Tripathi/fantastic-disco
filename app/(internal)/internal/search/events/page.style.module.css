@@ -239,3 +239,17 @@
   .exportButtonTitle {
     color: #4d1bf3;
   }
+  .listBtn{
+    color: white;
+    font-size: 14px;
+    background: none;
+    border: none;
+    border: 1px solid #6750A4;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .active{
+    background-color: #6750A4;
+  }
