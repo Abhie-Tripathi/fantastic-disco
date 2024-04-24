@@ -9,8 +9,7 @@
 .closeIcon {
     position: absolute;
     cursor: pointer;
-    left: 5px;
-    top: 10px;
+    right: 5%;
 }
 
 .innerContainer {
@@ -34,7 +33,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 60%;
+    width: 70%;
     height: 100%;
 }
 
@@ -85,7 +84,6 @@
     .time {
         padding: 12px 24px;
     }
-
 }
 
 @media screen and (max-width: 1600px) {
@@ -93,7 +91,6 @@
         flex-direction: column;
         align-items: center;
     }
-
     .containerLeft,
     .containerRight {
         width: 90%;
