@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import TagIcon from '/public/tag.svg'
 import Image from 'next/image'
 import styles from './tags.style.module.css'
@@ -10,7 +10,7 @@ const Tags = () => {
     const [tagsList, setTagsList] = useState<string[]>([])
     const [inputTag, setInputTag] = useState<string>("")
 
-    const handleAddTag = () => {
+    const handleTagsSubmit = () => {
         setTagsList([...tagsList, inputTag])
         setInputTag("")
     }
@@ -28,7 +28,7 @@ const Tags = () => {
             <div className={styles.innerContainer}>
                 <div className={styles.inputContainer}>
                     <input type="text" placeholder='Enter Tag' className={styles.tagInput} value={inputTag} onChange={(e) => setInputTag(e.target.value)} />
-                    <button className={styles.addBtn} type='button' onClick={handleAddTag}><Image src={AddIcon} alt='add'/></button>
+                    <button type='button' onClick={handleTagsSubmit} className={styles.addBtn}><Image src={AddIcon} alt='add'/></button>
                 </div>
                 <div className={styles.tagsList}>
                     {tagsList.map((tag, key) => (

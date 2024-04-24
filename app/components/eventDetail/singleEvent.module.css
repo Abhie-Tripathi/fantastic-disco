@@ -192,4 +192,8 @@ text-align: left;
     opacity: 1;
     
   }
-  
+  @media screen and (max-width: 1050px) {
+    .topView{
+        width: 400px;
+    }
+  }

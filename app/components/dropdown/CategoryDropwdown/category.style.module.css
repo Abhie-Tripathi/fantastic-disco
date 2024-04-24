@@ -1,0 +1,81 @@
+.accordian {
+  display: flex;
+}
+
+.heading {
+  white-space: nowrap;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 1.4545454545;
+  font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: white;
+}
+
+.options {
+  display: flex;
+  filter: drop-shadow(1px 1px 5px rgb(59, 59, 59));
+  color: white;
+  position: absolute;
+  justify-content: space-between;
+  z-index: 1;
+  background-color: #1a1a1a;
+  border-top: none;
+  border-radius: 10px;
+  padding: 24px;
+  max-width: 664px;
+  width: 80vw;
+  top: 45px;
+  left: 0px;
+}
+
+
+.list {
+  margin-top: 9px;
+}
+
+.list li {
+  margin-bottom: 6px;
+  list-style: none;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.done_button {
+  cursor: pointer;
+  color: #4d1bf3;
+  white-space: nowrap;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 1.4545454545;
+  font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.selectionNo {
+  height: 20px;
+  min-width: 20px;
+  background-color: #4f378b;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  border-radius: 50%;
+}
+
+.selectionName {
+  color: #4f378b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dropdown_title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import styles from "./monthCalendar.module.css";
+<<<<<<< HEAD
 import { log } from "console";
 import EmptyCard from "@/app/components/EmptyCard";
 import EventCard from "@/app/components/EventCard";
 
+=======
+>>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 interface Event {
   id: number;
   name: string;
@@ -18,10 +21,17 @@ interface Event {
   background: string;
 }
 
+<<<<<<< HEAD
 interface DateWithEvent {
   date: Date;
   events: Event[];
 }
+=======
+// interface DateWithEvent {
+//     date: Date;
+//     events: Event[];
+// }
+>>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 const days = [
   "SUNDAY",
   "MONDAY",
@@ -148,6 +158,7 @@ function generateMonthArray(year: number, month: number) {
       monthArray.push("");
     }
   }
+<<<<<<< HEAD
 
   for (let day = 1; day <= daysInMonth; day++) {
     monthArray.push(new Date(year, month - 1, day));
@@ -216,6 +227,31 @@ const MonthCalendar: React.FC = () => {
 
   return (
     <div className={styles.container}>
+=======
+  
+  const year = 2024;
+  const month = 3;
+  const monthDatesArray = generateMonthArray(year, month);
+  
+  const datesWithEvents = monthDatesArray.map((date: any) => {
+    if (date === "") return "";
+    else {
+      const filteredEvents = events.filter((event) => {
+        const eventStartDate = new Date(event.startDate);
+        const eventEndDate = new Date(event.endDate);
+        return eventStartDate <= date && date <= eventEndDate;
+      });
+     
+      
+      return { date: date, events: filteredEvents };
+    }
+  });
+
+const MonthCalendar: React.FC = () => {
+    
+    return (
+        <div className={styles.container}>
+>>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
       <div className={styles.dayCards_container}>
         {days.map((day) => (
           <div key={day} className={styles.dayCard}>
@@ -275,8 +311,11 @@ const MonthCalendar: React.FC = () => {
                       //   console.log("farh")
                       // }
                     }
+<<<<<<< HEAD
 
                     // console.log("RESULT", dateWithEvent.date.getDate(), count);
+=======
+>>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 
                     return (
                       <div

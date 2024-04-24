@@ -1,0 +1,32 @@
+.container{
+    border: 1px solid #201F24;
+    border-radius: 12px;
+    padding: 30px 50px;
+    display: flex;
+    justify-content: space-evenly;
+}
+.btn{
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 40px;
+    color: white;
+    border: 1px solid #6750A4;
+    background: none;
+    width: 200px;
+}
+.activeBtn{
+    background-color: #2B233D;
+}
+.owner{
+    display: flex;
+    gap: 10px;
+}
+.circle {
+    border-radius: 50%;
+    display: flex;
+    background-color: #313131;
+    width: 35px;
+    height: 35px;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,99 @@
+.container{
+    width: 100%;
+    padding-left: 100px;
+    padding-right: 50px;
+    padding-bottom: 94px;
+}
+.timelineContainer{
+    margin-top: 30px;
+}
+.timeline{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-between;
+}
+.filterBtns{
+    margin: 0px 0px 30px 0px;
+    position: relative;
+}
+.filterBtns button{
+    color: white;
+    font-size: 14px;
+    background:none;
+    border: none;
+    border: 1px solid #6750A4;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.filterBtns button:hover{
+    transition-duration: .2s;
+    background-color: #9281be;
+}
+.filterBtns button.activeFilterBtn{
+    background-color: #6750A4;
+}
+.eventsBtns button{
+    color: white;
+    font-size: 14px;
+    background:none;
+    border: none;
+    border: 1px solid #507ba4;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.eventsBtns .activeTeamBtn{
+    background-color: #507ba4;
+}
+.userEvents{
+    position: absolute;
+    top:0;
+    right: 0;
+}
+.allEvents{
+    width: 141px;
+    height: 29px;
+    color: white;
+    font-size: 14px;
+    background: none;
+    border: 1px solid #6750A4;
+    padding: 5px 15px;
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.dropDown{
+    position: absolute;
+    position: absolute;
+    left: 12%;
+    top: 30px;
+    z-index: 11;
+    background: black;
+    color: white;
+    width: 125px;
+    text-align: center;
+}
+.singleSelect{
+    padding: 10px 5px;
+}
+.singleSelect:hover{
+    background-color: #6750A4;
+    cursor: pointer;
+}
+.notSelected{
+    width: 100%;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+}

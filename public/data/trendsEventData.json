@@ -1,0 +1,74 @@
+[
+    {
+      "date": "01 Mar 2024",
+      "total": 236,
+      "community": 45,
+      "concerts": 23,
+      "conferences": 167,
+      "expos": 98,
+      "festivals": 54,
+      "performance": 32,
+      "sports": 18,
+      "events": "View All"
+    },
+    {
+      "date": "02 Mar 2024",
+      "total": 189,
+      "community": 32,
+      "concerts": 17,
+      "conferences": 143,
+      "expos": 72,
+      "festivals": 39,
+      "performance": 28,
+      "sports": 13,
+      "events": "View All"
+    },
+    {
+      "date": "03 Mar 2024",
+      "total": 278,
+      "community": 51,
+      "concerts": 27,
+      "conferences": 198,
+      "expos": 112,
+      "festivals": 63,
+      "performance": 36,
+      "sports": 21,
+      "events": "View All"
+    },
+    {
+      "date": "04 Mar 2024",
+      "total": 315,
+      "community": 58,
+      "concerts": 31,
+      "conferences": 225,
+      "expos": 126,
+      "festivals": 69,
+      "performance": 40,
+      "sports": 24,
+      "events": "View All"
+    },
+    {
+      "date": "05 Mar 2024",
+      "total": 200,
+      "community": 40,
+      "concerts": 20,
+      "conferences": 150,
+      "expos": 90,
+      "festivals": 50,
+      "performance": 30,
+      "sports": 15,
+      "events": "View All"
+    },
+    {
+      "date": "06 Mar 2024",
+      "total": 315,
+      "community": 55,
+      "concerts": 25,
+      "conferences": 180,
+      "expos": 100,
+      "festivals": 60,
+      "performance": 35,
+      "sports": 20,
+      "events": "View All"
+    }
+  ]

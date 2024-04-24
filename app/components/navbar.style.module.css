@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     background-color: #1A1A1A;
     padding: 12px 28px 12px 28px;
     display: flex;
@@ -8,38 +8,40 @@
     width: 100%;
     z-index: 111;
 }
-.settings{
+
+.settings {
     display: flex;
     align-items: center;
-    gap:10px;
+    gap: 10px;
 }
-.circle{
+
+.circle {
     border-radius: 50%;
     display: flex;
-  background-color: #313131;
-  width: 35px;
-  height: 35px;
-  align-items: center;
-  justify-content: center;
+    background-color: #313131;
+    width: 35px;
+    height: 35px;
+    align-items: center;
+    justify-content: center;
 }
-.userDetails{
-    
-}
-.userDropdown{
+
+.userDetails {}
+
+.userDropdown {
     position: absolute;
     top: 56px;
-  z-index: 11;
-  background: black;
-  color: white;
-  width: 100%;
-  text-align: center;
+    z-index: 11;
+    background: black;
+    color: white;
+    width: 100%;
+    text-align: center;
 }
-.btns{
+
+.btns {
     padding: 10px 5px;
     cursor: pointer;
 }
-.btns:hover{
+
+.btns:hover {
     background-color: #6750A4;
 }
-
-
