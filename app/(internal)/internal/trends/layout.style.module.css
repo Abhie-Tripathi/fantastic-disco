@@ -1,0 +1,23 @@
+.container {
+    padding: 30px 40px;
+  }
+  
+  .tab_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #333333;
+  }
+  
+  .tab {
+    padding: 12px;
+    color: #b096f5;
+    font-weight: 500;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .tab.active {
+    border-bottom: 3px solid #6750a4;
+    color: white;
+  }
