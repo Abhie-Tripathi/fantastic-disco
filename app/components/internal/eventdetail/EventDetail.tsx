@@ -6,6 +6,8 @@ import SingleEvent from './SingleEvent';
 import EventDescription from './EventDescription';
 import Organiser from './Organiser';
 import EventPoc from './EventPoc';
+import Image from 'next/image';
+import CloseIcon from '/public/close.svg'
 
 interface EventData {
     id: number;
@@ -17,9 +19,11 @@ interface Props {
     openEventDetails : boolean
     openOrganiserDetails : boolean
     openPocDetails : boolean
+    closeBtn : boolean;
+    handleModal ? : ()=>void
 }
 
-const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails} : Props) => {
+const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal} : Props) => {
     const [userCta, setUserCta] = useState<string>("Notes");
     const [meet, setMeet] = useState(false);
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
@@ -36,12 +40,14 @@ const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails} : 
 
     }, [singledata]);
 
-    // const handleCloseModal = () => {
-    //     handleModal()
-    // }
+    const handleCloseModal = () => {
+        if(handleModal){
+            handleModal()
+        }
+    }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {/* <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} /> */}
+            {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     {singledata && <SingleEvent {...singledata} />}

@@ -30,7 +30,7 @@ export default function RootLayout({
         <AuthContextProvider>
           <Sidebar/>
           <Navbar />
-          <div style={{ paddingTop: "70px" }}>
+          <div style={{ paddingTop: "70px", paddingLeft : "74px" }}>
             {children}
           </div>
         </AuthContextProvider>
