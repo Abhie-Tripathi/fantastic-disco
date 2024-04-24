@@ -5,7 +5,8 @@ import Image from "next/image";
 import styles from "./page.style.module.css";
 import { myFetch } from "@/utils/myFetch";
 import { EventDataType } from "@/app/components/types/allevents";
-
+import Table from "@/app/components/Table";
+import similarEventData from '@/public/data/similarEventData.json';
 import SearchIcon from "/public/internal/SearchInput.svg";
 import DropIcon from "/public/internal/arrow_drop_down.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
@@ -36,7 +37,7 @@ const Search = () => {
   const dateDropdownRef = useRef(null);
   const eventStatusDropdownRef = useRef(null);
   const eventAttendanceDropdownRef = useRef(null);
-
+  const [listView,setListView]=useState("card");
   const [selectedView, setSelectedView] = useState("list");
   const [searchInput, setSearchInput] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -376,9 +377,18 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView === "list" && (
+            {selectedView==="list" &&
+            <div>
+              <button  className={`${styles.listBtn} ${listView === "card" ? styles.active: ""}`}  onClick={()=>setListView("card")}>Card</button>
+              <button className={`${styles.listBtn} ${listView === "table" ? styles.active: ""}`}  onClick={()=>setListView("table")}>Table</button>
+              </div>}
+            {selectedView === "list" && listView==="card"&&(
               <List />
             )}
+            {selectedView === "list" && listView==="table" &&(
+              <Table eventData={similarEventData} />
+            )}
+            
             {selectedView === "calendar" && (
                  <div style={{padding:"32px"}}>
               <Suspense fallback={<Loading />}>
