@@ -14,7 +14,7 @@ import DateRangeInput from "@/app/components/dropdown/DateRangeInput"
 import EventAttendance from "@/app/components/dropdown/EventAttendance";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { createTracker } from "@/app/service/trackerService";
-
+                                                            
 interface ChipProps {
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
@@ -72,8 +72,6 @@ const CreateTracker = () => {
 
   const [startLocalRank, setStartLocalRank] = useState(35);
   const [endLocalRank, setEndLocalRank] = useState(67);
-
-  console.log(dateRange);
 
   const categoryDropdownRef = useRef(null);
   const labelDropdownRef = useRef(null);
