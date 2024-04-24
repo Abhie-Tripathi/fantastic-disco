@@ -9,6 +9,7 @@ import EventPoc from './EventPoc';
 import Image from 'next/image';
 import CloseIcon from '/public/close.svg'
 import Navbar from '@/app/components/internal/eventdetail/navbar/Navbar'
+import Follower from './followers/Follower';
 
 interface EventData {
     id: number;
@@ -25,7 +26,7 @@ interface Props {
 }
 
 const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal }: Props) => {
-    const [userCta, setUserCta] = useState<string>("Notes");
+    const [activeState, setActiveState] = useState<string>("Notes");
     const [meet, setMeet] = useState(false);
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
     const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
@@ -57,8 +58,9 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
                     <EventPoc open={openPocDetails} />
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
-                    <Navbar/>
-                    {userCta === "Notes" && <Notes />}
+                    <Navbar setActiveState = {setActiveState}/>
+                    {activeState === "Notes" && <Notes />}
+                    {activeState === "Followers" && <Follower/>}
                 </div>
             </div>
         </div>

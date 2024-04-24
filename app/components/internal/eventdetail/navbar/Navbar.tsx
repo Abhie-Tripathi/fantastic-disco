@@ -1,10 +1,17 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './navbar.style.module.css'
 
-const Navbar = () => {
+interface NavbarProps{
+    setActiveState: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Navbar = ({setActiveState} : NavbarProps) => {
 
     const [activeBtn, setActiveBtn] = useState("Notes")
+    useEffect(()=>{
+        setActiveState(activeBtn)
+    },[activeBtn])
     return (
         <div className={styles.container}>
             <button className={`${styles.btn} ${activeBtn === "Notes" ? styles.activeBtn : ""}`} onClick={() => (setActiveBtn("Notes"))}>Notes</button>

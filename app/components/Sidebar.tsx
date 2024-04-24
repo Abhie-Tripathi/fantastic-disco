@@ -35,7 +35,7 @@ const Sidebar = () => {
           <div className={styles.linkName}>Dashboard</div>
         </Link>
         <Link
-          href="/research"
+          href="/internal/search/events"
           className={`${styles.link} ${
             pathname === "/research" ? styles.activeLink : ""
           }`}
