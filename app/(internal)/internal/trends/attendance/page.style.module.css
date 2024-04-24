@@ -1,0 +1,103 @@
+.predictedAttendence_container {
+    padding: 30px 0px;
+  }
+  
+  .filter_dropdowns_container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .filter {
+    flex: 1;
+    position: relative;
+  }
+  
+  .dropdown_title {
+    color: #79747e;
+  }
+  
+  .dropdown_container {
+    cursor: pointer;
+    margin-top: 8px;
+    border: 1px solid #cac4d0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+  }
+  
+  .dropdown_value {
+    color: #6750a4;
+    font-weight: 500;
+    line-height: 20px;
+  }
+  
+  .dropdown_value_stats {
+    background-color: #6750a4;
+    color: white;
+    width: 18px;
+    height: 18px;
+    padding: 4px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  
+  .filter_buttons_container {
+    padding: 25px 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  
+  .apply_button {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 100px;
+    padding: 12px 25px;
+    font-weight: 500;
+    background-color: #6750a4;
+    color: white;
+  }
+  
+  .clearfilters_button {
+    cursor: pointer;
+    border: 1px solid #79747e;
+    border-radius: 100px;
+    font-weight: 500;
+    padding: 12px 20px;
+    color: #6750a4;
+    background-color: white;
+  }
+  
+  /* .inner_container {
+    padding: 10px 52px 32px 52px;
+    margin-top: 15px;
+    background-color: #ffffff;
+  } */
+  
+  .tab_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ececf9;
+  }
+  
+  .dropdown {
+    top: unset;
+    left: unset;
+  }
+  
+  .rank_dropdown {
+    right: 0px;
+    top: unset;
+    left: unset;
+  }

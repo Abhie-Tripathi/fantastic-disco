@@ -8,6 +8,8 @@ import Trend from '/public/internal/trend.svg'
 import Research from '/public/internal/research.svg'
 import Exhibit from '/public/internal/exhibit.svg'
 import { usePathname } from "next/navigation";
+import Graph from '/public/internal/trend.svg'
+
 const Sidebar = () => {
   const pathname = usePathname();
   const [showSidebar, setShowSidebar] = useState(false);
@@ -24,9 +26,9 @@ const Sidebar = () => {
           <Image src={AddIcon} alt="herotext" width={144} />
         </div> */}
         <Link
-          href="/"
+          href="/internal"
           className={`${styles.link} ${
-            pathname === "/dashboard" ? styles.activeLink : ""
+            pathname === "/internal" ? styles.activeLink : ""
           }`}
         >
           <Image src={Dashboard} alt="dashboard" className={styles.icons} />
@@ -58,6 +60,15 @@ const Sidebar = () => {
         >
           <Image src={Exhibit} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Outreach</div>
+        </Link>
+        <Link
+          href="/internal/trends/attendance"
+          className={`${styles.link} ${
+            pathname === "/internal/trends/attendance" ? styles.activeLink : ""
+          }`}
+        >
+          <Image src={Graph} alt="location" className={styles.icons} />
+          <div className={styles.linkName}>Event Trends</div>
         </Link>
       </div>
     </div>
