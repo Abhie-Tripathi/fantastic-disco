@@ -8,6 +8,7 @@
     border-top: none;
     border-radius: 10px;
     top: 45px;
+    color:white;
     left: 0px;
   }
   .header {
@@ -207,6 +208,7 @@
   .searchResult {
     color:white;
     cursor: pointer;
+    color:white;
   }
   .searchResult:hover,
   .searchResult.active {

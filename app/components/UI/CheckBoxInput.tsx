@@ -12,6 +12,7 @@ const CheckboxInput = ({ id, checked, onChange }: CheckboxInputProps) => {
     <label className={styles.container} >
       <input
         id={id}
+        className={styles.text} 
         type="checkbox"
         onChange={() => onChange()}
         checked={checked}
