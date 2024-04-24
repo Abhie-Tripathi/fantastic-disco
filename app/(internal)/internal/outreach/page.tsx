@@ -96,7 +96,7 @@ const Page: React.FC = () => {
                 </div>
             </div>
             <div className={styles.modal}>
-                {modalOpen && <EventDetail />}
+                {modalOpen && <EventDetail openEventDetails={false} openOrganiserDetails={true} openPocDetails={true} />}
             </div>
         </div>
     );

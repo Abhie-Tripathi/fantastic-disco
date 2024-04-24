@@ -7,9 +7,12 @@ import ClockIcon from '/public/clock.svg'
 import LocationIcon from '/public/location.svg'
 import Placehodler from '/public/placeholder.png'
 
+interface Props{
+    open : boolean
+}
 
-const Organiser = () => {
-    const [accordianToggle, setAccordianToggle] = useState(false)
+const Organiser = ({open} : Props) => {
+    const [accordianToggle, setAccordianToggle] = useState(open)
     return (
         <div className={styles.container}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>

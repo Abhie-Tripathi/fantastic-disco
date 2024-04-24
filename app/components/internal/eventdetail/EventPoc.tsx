@@ -5,9 +5,12 @@ import Image from 'next/image'
 import PeopleIcon from '/public/people.svg'
 import Placehodler from '/public/placeholder.png'
 
+interface Props{
+    open : boolean
+}
 
-const EventPoc = () => {
-    const [accordianToggle, setAccordianToggle] = useState(false)
+const EventPoc = ({open} : Props) => {
+    const [accordianToggle, setAccordianToggle] = useState(open)
     return (
         <div className={styles.container}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>

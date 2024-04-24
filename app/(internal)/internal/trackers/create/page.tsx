@@ -14,7 +14,7 @@ import DateRangeInput from "@/app/components/dropdown/DateRangeInput"
 import EventAttendance from "@/app/components/dropdown/EventAttendance";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { createTracker } from "@/app/service/trackerService";
-                                                            
+
 interface ChipProps {
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
@@ -45,17 +45,14 @@ const Chip = ({ state, setState, value }: ChipProps) => {
 };
 
 const CreateTracker = () => {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [openDropdown, setOpenDropdown] = useState("");
-  const [eventStatus, setEventStatus] = useState(
-    searchParams.get("event_status")?.split(",") || []
-  );
-  const [categories, setCategories] = useState(
-    searchParams.get("categories")?.split(",") || []
-  );
-  const [dateRange, setDateRange] = useState<string[]>(
-    searchParams.get("date_range")?.split(",") || []
-  );
+  // const [eventStatus, setEventStatus] = useState(searchParams.get("event_status")?.split(",") || []);
+  // const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
+  // const [dateRange, setDateRange] = useState<string[]>(searchParams.get("date_range")?.split(",") || []);
+  const [eventStatus, setEventStatus] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<string[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
 
   const [attendanceRange, setAttendanceRange] = useState<string[]>([
