@@ -160,12 +160,10 @@ function generateMonthArray(year: number, month: number) {
   const monthDatesArray = generateMonthArray(year, month);
   
   const datesWithEvents = monthDatesArray.map((date: any) => {
-    console.log(date);
     if (date === "") return "";
     else {
       const filteredEvents = events.filter((event) => {
         const eventStartDate = new Date(event.startDate);
-        console.log(date+"   "+eventStartDate);
         const eventEndDate = new Date(event.endDate);
         return eventStartDate <= date && date <= eventEndDate;
       });
