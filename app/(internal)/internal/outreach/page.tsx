@@ -95,9 +95,9 @@ const Page: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className={styles.modal}>
-                {modalOpen && <EventDetail openEventDetails={false} openOrganiserDetails={true} openPocDetails={true} />}
-            </div>
+            {modalOpen && <div className={styles.modal}>
+                <EventDetail openEventDetails={false} openOrganiserDetails={true} openPocDetails={true} closeBtn = {true} handleModal={handleModal} />
+            </div>}
         </div>
     );
 };
