@@ -1,0 +1,241 @@
+.container {
+    padding: 20px;
+    color: black;
+  }
+  
+  .inputfields_container {
+    position: relative;
+    background-color: #313131;
+    border-radius: 30px;
+  }
+  
+  .searchbar {
+    background-color: var(--background);
+    border-radius: 30px;
+    box-shadow: 1px 3px 16px 0px #0000001f;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0px 20px;
+  }
+  
+  .searchbar input {
+    font-size: 16px;
+    border: none;
+    background-color: transparent;
+    padding: 20px 0px;
+    flex: 1;
+  }
+  .searchbar input:focus {
+    outline: none;
+  }
+  
+  .recentSearches_button {
+    background-color: white;
+    color: #6750a4;
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 5px 15px;
+    text-decoration: underline;
+    line-height: 24px;
+  }
+  
+  .searchbar button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .sub_container {
+    padding: 24px 20px;
+    
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .buttons_container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .inputdropdowns_container {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0px, 260px));
+    gap: 15px 25px;
+  }
+  
+  @media screen and (max-width: 1300px) {
+    .inputdropdowns_container {
+      grid-template-columns: repeat(3, minmax(0px, 260px));
+      gap: 15px 25px;
+    }
+  }
+  
+  @media screen and (max-width: 1150px) {
+    .inputdropdowns_container {
+      grid-template-columns: repeat(2, minmax(0px, 260px));
+      gap: 15px 25px;
+    }
+  }
+  
+  .viewTypeButtons_container {
+    position: absolute;
+    width: 100%;
+    top:25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  
+  .viewTypeButtons {
+    pointer-events: all;
+  
+    border-radius: 50px;
+    background-color: #1A1A1A;
+    margin-bottom: 40px;
+  }
+  /* .viewTypeButtons{
+    border-radius: 50px;
+    background-color: #1A1A1A;
+    margin-bottom: 40px;
+}
+
+.viewTypeButtons button.activeBtn{
+    border: 1px solid grey;
+    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    border-radius: 50px;
+} */
+.viewTypeButtons button{
+    color: white;
+    font-weight: 500;
+    padding: 12px 48px;
+    font-size: 14px;
+    background:none;
+    border: none;
+    cursor: pointer;
+}
+  /* .viewTypeButtons button {
+    font-weight: 500;
+    padding: 12px 48px;
+    font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  } */
+  .viewTypeButtons button.active {
+    border: 1px solid grey;
+    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    border-radius: 50px;
+  }
+  .message {
+    margin-top: 30px;
+    color: var(--primary-color);
+    font-size: 30px;
+    font-weight: 600;
+  }
+  .viewTypeButton {
+    margin-top: 60px;
+  }
+  
+  .input_container {
+    white-space: nowrap;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 50px;
+    position: relative;
+  }
+  
+  .createtracker_button {
+    line-height: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .createtracker_button:hover {
+    background-color: #6750a4;
+    color: white;
+  }
+  
+  .input {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .input_selected_no{
+    margin-left: 4px;
+    font-size: 10px;
+    height: 20px;
+    width: 20px;
+    background-color: #6750a4;
+    color: white;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    vertical-align: middle;
+  }
+  
+  .input_selected_title {
+    padding-left: 4px;
+    font-size: 10px;
+    color: #4d1bf3;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  
+  .viewContainer {
+    padding: 35px 15px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .exportedno_container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .exportedno {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    background-color: #4d1bf3;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .exportedno_title {
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #4d1bf3;
+  }
+  
+  .exportButton {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .exportButtonTitle {
+    color: #4d1bf3;
+  }

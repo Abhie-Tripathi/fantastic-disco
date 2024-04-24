@@ -1,5 +1,5 @@
 import React, { use, useRef } from "react";
-import styles from "./eventattend.style.module.css";
+import styles from './eventattend.style.module.css'
 import useClickOutside from "@/hooks/useClickOutside";
 
 interface EventAttendanceProps {

@@ -1,0 +1,76 @@
+.container {
+    position: absolute;
+    width: 250px;
+    top: 45px;
+    z-index: 2;
+    left: 0px;
+    background-color: black;
+    color: white;
+  }
+  
+  .header_container {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header_title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.1428571429;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  
+  .header_button {
+    cursor: pointer;
+    font-weight: 600;
+    color: #4d1bf3;
+    text-transform: uppercase;
+    line-height: 1.8181818182;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+  }
+  
+  .sub_container {
+    padding: 0 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  
+  .checkbox_container{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+  
+  .checkbox_container>label{
+      font-size: 14px;
+      /* color: #222; */
+  }
+  
+  .daterange_title{
+      border-top: 1px solid #f0f1f2;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      line-height: 1.1428571429;
+      letter-spacing: .05em;
+      padding: 24px 24px 8px;
+  }
+  
+  .daterange{
+      cursor: pointer;
+      /* color: rgba(34, 34, 34, .6); */
+      padding: 8px 14px;
+      padding-left: 24px;
+      padding-right: 24px;
+  }
+  
+  .daterange:hover{
+      color: #4d1bf3;
+  }

@@ -1,5 +1,5 @@
 .container{
-    margin-left: 74px;
+    /* margin-left: 74px; */
 }
 .innerContainer{
     display: flex;
@@ -15,10 +15,8 @@
     justify-content: center;
     padding: 25px 50px;
     background: linear-gradient(180deg, rgba(103, 80, 164, 0.3) 0%, rgba(102, 102, 102, 0) 100%);
-    border: 0.8px solid;
-    border-radius: 40px;
-    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
-    outline: 0.97px solid transparent;
+    border-radius: 17px;
+    border: 1px solid #6650a465;
 }
 .number{
     background: linear-gradient(180deg, rgba(247, 247, 247, 0.3) 0%, rgb(195, 194, 194) 100%);

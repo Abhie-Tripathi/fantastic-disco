@@ -80,7 +80,7 @@
     position: relative;
 }
 
-@media screen and (max-width: 1100px) {
+/* @media screen and (max-width: 1100px) {
     .time {
         padding: 12px 24px;
     }
@@ -95,4 +95,4 @@
     .containerRight {
         width: 90%;
     }
-}
+} */
