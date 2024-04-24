@@ -1,0 +1,379 @@
+"use client";
+import React, { useRef, useState } from "react";
+import Image from "next/image";
+import styles from "./page.style.module.css";
+import MoreIcon from "/public/dots.svg";
+import DropdownArrow from "/public/downArrow.svg";
+import ChipCircle from "/public/ChipCircle.svg";
+import ActiveChipCircle from "/public/ActiveChipCircle.svg";
+import Slider from "@/app/components/internal/trackers/Slider";
+import { useSearchParams } from "next/navigation";
+import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
+import LabelDropdown from "@/app/components/dropdown/LabelDropdown"
+import DateRangeInput from "@/app/components/dropdown/DateRangeInput"
+import EventAttendance from "@/app/components/dropdown/EventAttendance";
+import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { createTracker } from "@/app/service/trackerService";
+                                                            
+interface ChipProps {
+  state: string[];
+  setState: React.Dispatch<React.SetStateAction<string[]>>;
+  value: string;
+}
+
+const statusData = ["Active", "Cancelled", "Postponed", "Predicted"];
+
+const Chip = ({ state, setState, value }: ChipProps) => {
+  const onClickHandler = () => {
+    state.includes(value)
+      ? setState(state.filter((existingStatus) => existingStatus !== value))
+      : setState([...state, value]);
+  };
+  return (
+    <div
+      className={`${styles.chip} ${state.includes(value) ? styles.active : ""}`}
+      onClick={onClickHandler}
+    >
+      {state.includes(value) ? (
+        <Image src={ActiveChipCircle} alt="chipcircle" />
+      ) : (
+        <Image src={ChipCircle} alt="chipcircle" />
+      )}
+      <div>{value}</div>
+    </div>
+  );
+};
+
+const CreateTracker = () => {
+  const searchParams = useSearchParams();
+  const [openDropdown, setOpenDropdown] = useState("");
+  const [eventStatus, setEventStatus] = useState(
+    searchParams.get("event_status")?.split(",") || []
+  );
+  const [categories, setCategories] = useState(
+    searchParams.get("categories")?.split(",") || []
+  );
+  const [dateRange, setDateRange] = useState<string[]>(
+    searchParams.get("date_range")?.split(",") || []
+  );
+  const [labels, setLabels] = useState<string[]>([]);
+
+  const [attendanceRange, setAttendanceRange] = useState<string[]>([
+    "",
+    "Unlimited",
+  ]);
+  const [location, setLocation] = useState("");
+
+  const [startEventeliRank, setStartEventeliRank] = useState(34);
+  const [endEventeliRank, setEndEventeliRank] = useState(76);
+
+  const [startPredictedRank, setStartPredictedRank] = useState(23);
+  const [endPredictedRank, setEndPredictedRank] = useState(75);
+
+  const [startLocalRank, setStartLocalRank] = useState(35);
+  const [endLocalRank, setEndLocalRank] = useState(67);
+
+  const categoryDropdownRef = useRef(null);
+  const labelDropdownRef = useRef(null);
+  const dateRangeDropdownRef = useRef(null);
+  const attendanceDropdownRef = useRef(null);
+
+  const handleOnOpenDropdown = (value: string) => {
+    if (openDropdown == "") {
+      setOpenDropdown(value);
+    } else {
+      setOpenDropdown("");
+    }
+  };
+
+  const activegte = new Date("2024-04-10");
+  const activelte = new Date("2024-04-11");
+
+  const saveTrackerHandler = () => {
+    createTracker({
+      name: "Indigo",
+      parameters: {
+        labels: labels,
+        category: categories,
+        status: "ACTIVE",
+        city: "London",
+        "active.gte": activegte.toISOString(),
+        "active.lte": activelte.toISOString(),
+        "attendance.gte": "200",
+        "attendance.lte": "2000",
+        "event_rank.gte": "2",
+        "event_rank.lte": "100",
+        "local_rank.gte": "2",
+        "local_rank.lte": "100",
+        "aviation_rank.gte": "2",
+        "aviation_rank.lte": "100",
+      },
+    }).then((data) => console.log(data));
+  };
+
+  return (
+    <div>
+      <div className={styles.trackers_container}>
+        <div className={styles.trackers_header}>
+          <input
+            className={styles.trackers_header_input}
+            placeholder="Tracker Name"
+          />
+          <div className={styles.trackers_header_more_button}>
+            <Image src={MoreIcon} alt="moreicon" />
+          </div>
+          <button
+            onClick={saveTrackerHandler}
+            className={styles.trackers_header_newtracker_button}
+          >
+            <div>Save Tracker</div>
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.form_container}>
+        <div className={styles.first_container}>
+          <div ref={categoryDropdownRef}>
+            <div className={styles.input_title}>Category</div>
+            <div
+              className={styles.dropdown_container}
+              onClick={() => handleOnOpenDropdown("Category")}
+            >
+              <div className={styles.dropdown}>
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <div key={category} className={styles.tag}>
+                      {category}
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.dropdown_placeholder}>--Select--</div>
+                )}
+              </div>
+              <Image src={DropdownArrow} alt="dropdownarrow" />
+            </div>
+            {openDropdown == "Category" && (
+              <CategoryDropdown
+                className={styles.category_dropdown}
+                state={categories}
+                setState={setCategories}
+                dropdownRef={categoryDropdownRef}
+                onClose={() => setOpenDropdown("")}
+              />
+            )}
+          </div>
+
+          <div>
+            <div className={styles.input_title}>Event Status</div>
+            <div className={styles.chips_container}>
+              {statusData.map((status) => (
+                <Chip
+                  key={status}
+                  state={eventStatus}
+                  setState={setEventStatus}
+                  value={status}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div ref={labelDropdownRef}>
+            <div className={styles.input_title}>Labels</div>
+            <div
+              className={styles.dropdown_container}
+              onClick={() => handleOnOpenDropdown("Labels")}
+            >
+              <div className={styles.dropdown}>
+                {labels.length > 0 ? (
+                  labels.map((label) => (
+                    <div key={label} className={styles.tag}>
+                      {label}
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.dropdown_placeholder}>--Select--</div>
+                )}
+              </div>
+              <div className={styles.dropdown_choosebutton}>
+                <div>Choose</div>
+                <Image src={DropdownArrow} alt="dropdownarrow" />
+              </div>
+            </div>
+            {openDropdown == "Labels" && (
+              <LabelDropdown
+                className={styles.category_dropdown}
+                state={labels}
+                setState={setLabels}
+                dropdownRef={labelDropdownRef}
+                onClose={() => setOpenDropdown("")}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className={styles.second_container}>
+          <div ref={dateRangeDropdownRef}>
+            <div className={styles.input_title}>Date Range</div>
+            <div
+              className={styles.dropdown_container}
+              onClick={() => handleOnOpenDropdown("Date Range")}
+            >
+              <div className={styles.dropdown}>
+                {dateRange.length > 0 ? (
+                  <div className={styles.tag}>
+                    {`${dateRange[0]} - ${dateRange[1]}`}
+                  </div>
+                ) : (
+                  <div className={styles.dropdown_placeholder}>--Select--</div>
+                )}
+              </div>
+              <div className={styles.dropdown_choosebutton}>
+                <div>Choose</div>
+                <Image src={DropdownArrow} alt="dropdownarrow" />
+              </div>
+            </div>
+            {openDropdown == "Date Range" && (
+              <DateRangeInput
+                className={styles.category_dropdown}
+                state={dateRange}
+                setState={setDateRange}
+                dropdownRef={dateRangeDropdownRef}
+                onClose={() => setOpenDropdown("")}
+              />
+            )}
+          </div>
+
+          <div ref={attendanceDropdownRef}>
+            <div className={styles.input_title}>Attendance</div>
+            <div
+              className={styles.dropdown_container}
+              onClick={() => handleOnOpenDropdown("Attendance")}
+            >
+              {attendanceRange[0] !== "" ? (
+                <div className={styles.tag}>
+                  {`${attendanceRange[0]} - ${attendanceRange[1]}`}
+                </div>
+              ) : (
+                <div className={styles.dropdown_placeholder}>--Select--</div>
+              )}
+              <div className={styles.dropdown_choosebutton}>
+                <div>Choose</div>
+                <Image src={DropdownArrow} alt="dropdownarrow" />
+              </div>
+            </div>
+            {openDropdown == "Attendance" && (
+              <EventAttendance
+                className={styles.category_dropdown}
+                state={attendanceRange}
+                setState={setAttendanceRange}
+                dropdownRef={attendanceDropdownRef}
+                onClose={() => setOpenDropdown("")}
+              />
+            )}
+          </div>
+
+          <div>
+            <div className={styles.input_title}>Scores and Ranks</div>
+            <div className={styles.sliderinput_container}>
+              <Slider
+                StatsName="Eventeli Ranking"
+                startValue={startEventeliRank}
+                endValue={endEventeliRank}
+                onEndValueChange={setEndEventeliRank}
+                onStartValueChange={setStartEventeliRank}
+                Range="0-100"
+              />
+              <Slider
+                StatsName="Local Ranking"
+                startValue={startLocalRank}
+                endValue={endLocalRank}
+                onEndValueChange={setEndLocalRank}
+                onStartValueChange={setStartLocalRank}
+                Range="0-100"
+              />
+              <Slider
+                StatsName="Prediction Score"
+                startValue={startPredictedRank}
+                endValue={endPredictedRank}
+                onEndValueChange={setEndPredictedRank}
+                onStartValueChange={setStartPredictedRank}
+                Range="0-100"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.location_container}>
+        <div>
+          <div className={styles.input_title}>Location</div>
+          <div className={styles.input_description}>
+            Choose an area where you want to be notified upon on addition of any
+            new events
+          </div>
+        </div>
+
+        <div className={styles.location_tab_container}>
+          <div className={`${styles.location_tab} ${styles.active}`}>
+            Saved Locations
+          </div>
+          <div className={styles.location_tab}>City, State, Country etc..</div>
+          <div className={styles.location_tab}>Center Point & Radius</div>
+        </div>
+
+        <label htmlFor="london" className={styles.savedlocation}>
+          <div className={styles.savedlocation_text_container}>
+            <div className={styles.savedlocation_title}>London</div>
+            <div className={styles.savedlocation_description}>
+              London, England, United Kingdom (1.34 mi radius)
+            </div>
+          </div>
+          <div className={styles.savedlocation_checkbox_container}>
+            <CheckboxInput
+              id="london"
+              onChange={() => setLocation("london")}
+              checked={location == "london"}
+            />
+            <div className={styles.savedlocation_checkbox_title}>Select</div>
+          </div>
+        </label>
+
+        <label htmlFor="Chicago" className={styles.savedlocation}>
+          <div className={styles.savedlocation_text_container}>
+            <div className={styles.savedlocation_title}>Chicago</div>
+            <div className={styles.savedlocation_description}>
+              Chicago, Illinois, United States (1.34 mi radius)
+            </div>
+          </div>
+          <div className={styles.savedlocation_checkbox_container}>
+            <CheckboxInput
+              id="Chicago"
+              onChange={() => setLocation("Chicago")}
+              checked={location == "Chicago"}
+            />
+            <div className={styles.savedlocation_checkbox_title}>Select</div>
+          </div>
+        </label>
+
+        <label htmlFor="New York" className={styles.savedlocation}>
+          <div className={styles.savedlocation_text_container}>
+            <div className={styles.savedlocation_title}>New York</div>
+            <div className={styles.savedlocation_description}>
+              New York, United States (1.34 mi radius)
+            </div>
+          </div>
+          <div className={styles.savedlocation_checkbox_container}>
+            <CheckboxInput
+              id="New York"
+              checked={location == "New York"}
+              onChange={() => setLocation("New York")}
+            />
+            <div className={styles.savedlocation_checkbox_title}>Select</div>
+          </div>
+        </label>
+      </div>
+    </div>
+  );
+};
+
+export default CreateTracker;

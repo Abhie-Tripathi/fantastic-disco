@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./monthCalendar.module.css";
-import { log } from "console";
 interface Event {
     id: number;
     name: string;
@@ -14,10 +13,10 @@ interface Event {
     duration: number;
 }
 
-interface DateWithEvent {
-    date: Date;
-    events: Event[];
-}
+// interface DateWithEvent {
+//     date: Date;
+//     events: Event[];
+// }
 const days = [
   "SUNDAY",
   "MONDAY",
@@ -174,9 +173,6 @@ function generateMonthArray(year: number, month: number) {
   });
 
 const MonthCalendar: React.FC = () => {
-  // console.log(1);
-  
-    console.log("dates: "+datesWithEvents);
     
     return (
         <div className={styles.container}>
@@ -213,7 +209,6 @@ const MonthCalendar: React.FC = () => {
                         ? (width = "310%")
                         : "85%";
                     }
-                    console.log(dateWithEvent.date.getDate(), count);
 
                     return (
                       <div

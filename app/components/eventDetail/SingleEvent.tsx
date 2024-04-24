@@ -31,7 +31,7 @@ const SingleEvent = (params: { data: Data }) => {
                         <div className={styles.date}>30th Apr 2024</div>
                     </div>
                     <div className={styles.ctas}>
-                        <div style={{color:"#808080"}}>Participation</div>
+                        <div style={{ color: "#808080" }}>Participation</div>
                         <div className={styles.pill}>Attending</div>
                     </div>
                 </div>
@@ -51,26 +51,26 @@ const SingleEvent = (params: { data: Data }) => {
                     </div>
                 </div>
                 <div className={styles.description}>
-                    <div style={{color:"#CDCDCD" }}>Description</div>
-                    <div style={{ textAlign: "justify", color:"#ACACAC", fontFamily:"var(--font-inter)" }}>
+                    <div style={{ color: "#CDCDCD" }}>Description</div>
+                    <div style={{ textAlign: "justify", color: "#ACACAC", fontFamily: "var(--font-inter)" }}>
                         {params.data.description}
                     </div>
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.speakers}>
-  <div>Speakers</div>
-  <div className={styles.circles}>
-    <div className={styles.circle} data-name="John Doe">
-      <Image className={styles.image} src={person1} alt="person1" />
-    </div>
-    <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
-      <Image className={styles.image} src={person2} alt="person2" />
-    </div>
-    <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Custom Name">
-      CN
-    </div>
-  </div>
-</div>
+                    <div>Speakers</div>
+                    <div className={styles.circles}>
+                        <div className={styles.circle} data-name="John Doe">
+                            <Image className={styles.image} src={person1} alt="person1" />
+                        </div>
+                        <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
+                            <Image className={styles.image} src={person2} alt="person2" />
+                        </div>
+                        <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Custom Name">
+                            CN
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>

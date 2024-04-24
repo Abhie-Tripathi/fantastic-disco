@@ -2,10 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './page.module.css';
 import MyMeetings from '@/app/components/eventDetail/MyMeetings';
-import Background from '@/public/background.png';
-import Image from 'next/image';
-import Script from 'next/script';
-import {Notes} from '@/app/components/eventDetail/Notes';
+import { Notes } from '@/app/components/eventDetail/Notes';
 import SingleEvent from '@/app/components/eventDetail/SingleEvent';
 import ScheduleMeetings from '@/app/components/eventDetail/ScheduleMeetings';
 import eventData from '@/public/data/demoEvent.json';
@@ -14,12 +11,12 @@ interface EventData {
     id: number;
     imageUrl: string;
     name: string;
-    description:string;
+    description: string;
 }
 
 const Page = ({ params }: { params: { eventDetail: string } }) => {
     const [userCta, setUserCta] = useState<string>("Notes");
-    const [meet,setMeet]=useState(false);
+    const [meet, setMeet] = useState(false);
     const [single, setSingle] = useState<EventData>();
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
     const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
@@ -32,15 +29,13 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
             rightContainerRef.current.style.height = leftContainerHeight + 'px';
             console.log(leftContainerHeight);
         }
-       
-    }, [singledata]); 
-    const meetings=()=>{
+
+    }, [singledata]);
+    const meetings = () => {
         setMeet(!meet);
     }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {/* <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
-<page-widget page-id={"07cfbe59-a5d6-4142-8d6f-157297b9dff8"}></page-widget> */}
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={styles.containerOne}>
@@ -49,23 +44,21 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                     </div>
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
-                    <div style={{height:"100%", display:"flex",flexDirection:"column", gap:"10px"}}>
-                    <div className={styles.containerTopRight}>
-                        {/* Add onClick handlers to update userCta state */}
-                        <div className={userCta === "Notes" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Notes")}>Notes</div>
-                        <div className={styles.line}></div>
-                        <div className={userCta === "Schedule Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Schedule Meetings")}>Schedule Meetings</div>
-                        <div className={styles.line}></div>
-                        <div className={userCta === "My Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("My Meetings")}>My Meetings</div>
-                    </div>
-                    
-                    <div className={styles.containerBottomRight}>
-                        {/* Render component based on userCta state */}
-                        {userCta === "Notes" && <Notes />}
-                        {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
-                        {userCta === "My Meetings" && <MyMeetings/>}
-                   
-                    </div>
+                    <div style={{ height: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+                        <div className={styles.containerTopRight}>
+                            {/* Add onClick handlers to update userCta state */}
+                            <div className={userCta === "Notes" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Notes")}>Notes</div>
+                            <div className={styles.line}></div>
+                            <div className={userCta === "Schedule Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Schedule Meetings")}>Schedule Meetings</div>
+                            <div className={styles.line}></div>
+                            <div className={userCta === "My Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("My Meetings")}>My Meetings</div>
+                        </div>
+
+                        <div className={styles.containerBottomRight}>
+                            {userCta === "Notes" && <Notes />}
+                            {userCta === "Schedule Meetings" && <ScheduleMeetings meets={meetings} meet={meet} />}
+                            {userCta === "My Meetings" && <MyMeetings />}
+                        </div>
                     </div>
                 </div>
             </div>

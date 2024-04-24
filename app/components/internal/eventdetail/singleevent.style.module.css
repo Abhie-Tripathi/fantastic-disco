@@ -1,0 +1,41 @@
+.container{
+    display: flex;
+    gap: 15px;
+}
+.image{
+    border-radius: 13px;
+}
+.eventName{
+    font-size: 18px;
+}
+.organiser{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.organiser img{
+    background-color: #6750A44D;
+    padding: 7.5px;
+    border-radius: 40px;
+}
+.detailContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.statusContainer{
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+.statusHeading{
+    color: #808080;
+    font-size: 14px;
+}
+.statusValue{
+    background-color: #1a1a1a;
+    border: 1px solid #6750A4;
+    border-radius: 40px;
+    padding: 5px 10px;
+    font-size: 10px;
+}

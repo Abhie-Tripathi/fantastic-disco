@@ -1,0 +1,45 @@
+.polarChart_container {
+    position: relative;
+    height: 210px;
+    width: 210px;
+    margin-top: 30px;
+  }
+  
+  .polarChart_circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 5em;
+    height: 5em;
+    background-color: white;
+    box-shadow: 0px 1.8999783992767334px 9.499893188476562px 0px #0000001a;
+    border-radius: 100%;
+    /* padding: 5px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .polarChart_circle_innerborder {
+    border: 1px solid rgba(69, 68, 89, 0.2);
+    border-radius: 100%;
+    width: 4em;
+    height: 4em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .polarChart_totalNo {
+    color: #454459;
+    font-weight: 600;
+    font-size: 1.25em;
+  }
+  
+  .polarChart_totalNo_title {
+    color: #454459;
+    font-weight: 300;
+    font-size: 0.8em;
+  }

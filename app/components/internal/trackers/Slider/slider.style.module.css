@@ -1,0 +1,48 @@
+.container {
+    position: relative;
+  }
+  
+  .container > svg {
+    height: 150px;
+  }
+  
+  .container > circle {
+    height: 16px;
+    width: 16px;
+  }
+  
+  .disabled circle {
+    display: none;
+  }
+  
+  .stats_container {
+    position: absolute;
+    top: 85px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .stats_no {
+    color: grey;
+    font-weight: 600;
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .stats_name {
+    padding-top: 5px;
+    color: grey;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .stats_range {
+    padding-top: 2px;
+    color: #7a7a7a;
+    font-size: 10px;
+    font-weight: 500;
+  }
