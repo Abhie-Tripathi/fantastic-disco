@@ -10,10 +10,11 @@ import person1 from '@/public/person1.svg'
 
 interface DetailsProps {
     description: string;
+    open : boolean;
 }
 
-const EventDescription = ({ description }: DetailsProps) => {
-    const [accordianToggle, setAccordianToggle] = useState(false)
+const EventDescription = ({ description,open }: DetailsProps) => {
+    const [accordianToggle, setAccordianToggle] = useState(open)
     return (
         <div className={styles.container}>
             <div className={styles.header} onClick={()=>setAccordianToggle(!accordianToggle)}>

@@ -5,7 +5,7 @@ import EventDetail from '@/app/components/internal/eventdetail/EventDetail'
 const Page = () => {
   return (
     <div className={styles.body}>
-        <EventDetail/>
+        <EventDetail openEventDetails = {true} openOrganiserDetails={false} openPocDetails={false}/>
     </div>
   )
 }
