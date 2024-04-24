@@ -1,9 +1,10 @@
 .container {
+  filter: drop-shadow(1px 1px 5px rgb(46, 46, 46));
     position: absolute;
     top: 45px;
     left: -190px;
     z-index: 2;
-    background-color: white;
+    background-color: #1a1a1a;
     min-width: 600px;
   }
   
@@ -19,7 +20,7 @@
     align-items: center;
     padding: 15px 0px;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid grey;
   }
   
   .checkbox_label {
@@ -91,7 +92,7 @@
     text-transform: uppercase;
     line-height: 1.8181818182;
     letter-spacing: 0.1em;
-    color: #4d1bf3;
+    color: #ab91f1;
   }
   
   .header_button{
@@ -154,10 +155,11 @@
   .rank_input {
     padding: 0 10px;
     line-height: 34px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid grey;
+    background: none;
     border-radius: 2px;
     text-align: center;
-    color: #222;
+    color: white;
     font-weight: 600;
     outline: none;
   }

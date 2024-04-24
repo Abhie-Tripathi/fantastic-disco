@@ -48,17 +48,17 @@
   }
   
   .table td:first-child {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid grey;
     text-align: left;
   }
   
   .table th:first-child {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid grey;
   }
   
   .table_head_row {
-    color: #696b83;
-    border-bottom: 1px solid #ececf9;
+    color: #ab91f1;
+    border-bottom: 1px solid grey;
   }
   
   .table_head_row > th {
@@ -67,7 +67,7 @@
   }
   
   .table_body > tr {
-    border-bottom: 1px solid #ececf9;
+    border-bottom: 1px solid grey;
   }
   
   .table_body > tr > td {

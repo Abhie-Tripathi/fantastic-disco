@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import DownArrow from "/public/dropDown.svg";
-import Check from "/public/checkedBox.svg";
+import Check from "/public/tick.svg";
 import Image from "next/image";
 import PeriodicAnalytics from "@/app/components/internal/eventtrends/tableView/PeriodicAnalytics";
 import TableAnalytics from "@/app/components/internal/eventtrends/tableView/TableAnalytics";

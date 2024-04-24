@@ -1,10 +1,10 @@
 .container {
-    filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+    filter: drop-shadow(1px 1px 5px rgb(46, 46, 46));
     gap: 20px;
     position: absolute;
     min-width: 644px;
     z-index: 1;
-    background-color: white;
+    background-color:#1a1a1a;
     border-top: none;
     border-radius: 10px;
     top: 45px;
@@ -32,7 +32,7 @@
     line-height: 1.8181818182;
     letter-spacing: 0.1em;
     font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
-    color: #4d1bf3;
+    color: #ab91f1;
     cursor: pointer;
   }
   
@@ -45,8 +45,8 @@
   }
   
   .tab {
-    padding: 0.44em 2em;
-    color: rgba(34, 34, 34, 0.6);
+    padding: 5px 10px;
+    color: white;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5714285714;
@@ -172,10 +172,13 @@
   .input_container {
     margin-top: 20px;
     padding: 0 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid grey;
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+  .input_container input{
+    background: none;
   }
   
   .input_selected_location {
@@ -225,7 +228,7 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    color: #4d1bf3;
+    color: #ab91f1;
   }
   
   .addLocationModal_container {
@@ -336,7 +339,8 @@
   }
   
   .point_radius_input_container > input {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid grey;
+    background: none;
     padding: 0 15px;
     line-height: 42px;
     outline: none;
