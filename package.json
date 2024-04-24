@@ -16,6 +16,7 @@
     "react-aria-components": "^1.1.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-chartjs-2": "^5.2.0",
+    "react-circular-slider-svg": "^0.3.0",
     "react-dom": "^18",
     "react-map-gl": "^4.1.16",
     "react-otp-input": "^3.1.1",

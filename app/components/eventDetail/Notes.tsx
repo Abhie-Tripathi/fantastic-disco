@@ -24,29 +24,29 @@ export const Notes = ({ comments, productId }: Props) => {
       {
         comments ? (
           <div className={styles.commentDiv}>
-          <ul className={styles.comments}>
-            {comments.map((comment) => (
-              <li
-                className={comment.replies?.length! > 0 ? styles.thread : ""}
-                data-id={comment.id}
-                key={comment.id}
-                id="commentList"
-              >
-                <Comment
-                  productId={productId!}
-                  comment={comment}
-                  superCommentId={comment.id}
-                />
-              </li>
-            ))}
-          </ul>
+            <ul className={styles.comments}>
+              {comments.map((comment) => (
+                <li
+                  className={comment.replies?.length! > 0 ? styles.thread : ""}
+                  data-id={comment.id}
+                  key={comment.id}
+                  id="commentList"
+                >
+                  <Comment
+                    productId={productId!}
+                    comment={comment}
+                    superCommentId={comment.id}
+                  />
+                </li>
+              ))}
+            </ul>
           </div>
         )
           : null
       }
       <div className={styles.notesAdd}>
-      <AddComment productId={productId} />
-      {/* <ButtonView view={"sortByButton"} /> */}
+        <AddComment productId={productId} />
+        {/* <ButtonView view={"sortByButton"} /> */}
       </div>
     </div>
   );

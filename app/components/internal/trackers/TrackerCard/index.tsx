@@ -1,0 +1,68 @@
+import React, { Suspense, lazy } from "react";
+import styles from "./card.style.module.css";
+import Link from "next/link";
+import Loading from "@/app/components/UI/Loading";
+const LineChart = lazy(() => import("../LineChart/LineChart"));
+const PolarAreaChart = lazy(() => import("../PolarAreaChart/PolarArea"));
+
+const TrackerCard = () => {
+  return (
+    <Link href="/internal/trackers/tracker1" className={styles.tracker_card}>
+      <div className={styles.first_container}>
+        <div className={styles.trackerinfo_container}>
+          <div className={styles.tracker_title}>
+            Tracker 1 - Events in Bangalore
+          </div>
+          <div className={styles.tracker_description}>
+            Bengaluru Urban, India
+          </div>
+        </div>
+
+        <div className={styles.tags_container}>
+          <div className={styles.tag}>Hospitality</div>
+          <div className={styles.tag}>Festivals</div>
+        </div>
+
+        <div className={styles.linegraph_container}>
+          <div className={styles.linegraph_title}>Tracker Overview</div>
+          <div className={styles.linegraph_subtitle}>Since last visit</div>
+          <div className={styles.linegraph}>
+            <Suspense
+              fallback={<Loading className={styles.lineGraphLoading} />}
+            >
+              <LineChart />
+            </Suspense>
+          </div>
+        </div>
+      </div>
+      <div className={styles.second_container}>
+        <div className={styles.dateRange_container}>
+          <div className={styles.dateRange_title}>Date Range</div>
+          <div className={styles.dateRange}>1 Apr - 30 Apr</div>
+        </div>
+
+        <div className={styles.eventstatus_container}>
+          <div className={styles.eventstatus_title}>Event Status:</div>
+          <div className={styles.eventstatus}>Cancelled , Postponed</div>
+        </div>
+
+        <div className={styles.piechart_container}>
+          <div className={styles.highlighted_stats_container}>
+            <div className={styles.highlighted_stats_title}>
+              Festivals Cancelled
+            </div>
+            <div className={styles.highlighted_stats}>
+              <div className={styles.highlighted_stats_eventNo}>94 Events</div>
+              <div className={styles.highlighted_stats_increase}>+ 3.4%</div>
+            </div>
+          </div>
+          <Suspense fallback={<Loading className={styles.polarGraphLoading} />}>
+            <PolarAreaChart />
+          </Suspense>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+export default TrackerCard;

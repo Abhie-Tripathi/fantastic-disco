@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styles from './page.style.module.css';
 import CardTask from '@/app/components/outreach/CardTask';
-import NotesModal from '@/app/components/outreach/NotesModal';
+import EventDetail from '@/app/components/internal/eventdetail/EventDetail';
 
 const Page: React.FC = () => {
     const [shortlistedTasks, setShortlistedTasks] = useState<string[]>(['How to Practice as an International Doctor in Australia?', 'How to Practice as an International Doctor in Usa?', 'How to Practice as an International Doctor in India?', 'How to Practice as an International Doctor in Canada?']);
@@ -96,7 +96,7 @@ const Page: React.FC = () => {
                 </div>
             </div>
             <div className={styles.modal}>
-                {modalOpen && <NotesModal handleModal={handleModal} />}
+                {modalOpen && <EventDetail />}
             </div>
         </div>
     );

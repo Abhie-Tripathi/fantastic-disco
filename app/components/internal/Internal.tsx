@@ -2,7 +2,6 @@ import React from 'react'
 import YourEventCard from './YourEventCard'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
-// import DropDown from './DropdownRef'
 import eventData from '@/public/data/demoEvent.json'
 const Internal = () => {
     let prevDate: any = null;
