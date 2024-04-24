@@ -8,12 +8,9 @@ import Link from 'next/link';
 import DropDown from '@/app/components/employee/listView/DropdownRef'
 import { useAuthContext } from "@/context";
 interface UserDetail {
-
   firstname: string;
   email: string;
   lastname: string;
-
-
 }
 
 const Navbar = () => {
@@ -41,12 +38,8 @@ const Navbar = () => {
           <div style={{ display: "flex", gap: "8px", cursor: "pointer", position: "relative" }} ref={profilectas.dropdownRef} onClick={toggleDropdown}>
             <div className={styles.circle}>{userDetail?.firstname.charAt(0)}{userDetail?.lastname.charAt(0)}</div>
             <div className={styles.userDetails}>
-              <div>
                 <div>{userDetail?.firstname} {userDetail?.lastname}</div>
                 <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-              </div>
-
-
             </div>
             {profilectas.isOpen &&
               <div className={styles.userDropdown}>

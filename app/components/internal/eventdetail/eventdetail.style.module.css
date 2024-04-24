@@ -1,8 +1,6 @@
 .container {
     display: flex;
     justify-content: center;
-    /* padding-top: 60px;
-    padding-bottom: 60px; */
     border-radius: 10px;    
 }
 
@@ -37,22 +35,6 @@
     height: 100%;
 }
 
-.containerTopRight {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    border-radius: 12px;
-    border: 1px solid #201F24;
-    gap: 30px;
-    align-items: center;
-    height: 9%;
-    justify-content: center;
-    /* padding: 10px; */
-}
-
-.containerBottomRight {
-    height: 90%;
-}
 .line {
     border: 1px solid #1F1F1F;
     margin: 10px;

@@ -8,6 +8,7 @@ import Organiser from './Organiser';
 import EventPoc from './EventPoc';
 import Image from 'next/image';
 import CloseIcon from '/public/close.svg'
+import Navbar from '@/app/components/internal/eventdetail/navbar/Navbar'
 
 interface EventData {
     id: number;
@@ -16,14 +17,14 @@ interface EventData {
     description: string;
 }
 interface Props {
-    openEventDetails : boolean
-    openOrganiserDetails : boolean
-    openPocDetails : boolean
-    closeBtn : boolean;
-    handleModal ? : ()=>void
+    openEventDetails: boolean
+    openOrganiserDetails: boolean
+    openPocDetails: boolean
+    closeBtn: boolean;
+    handleModal?: () => void
 }
 
-const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal} : Props) => {
+const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal }: Props) => {
     const [userCta, setUserCta] = useState<string>("Notes");
     const [meet, setMeet] = useState(false);
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
@@ -41,7 +42,7 @@ const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails, cl
     }, [singledata]);
 
     const handleCloseModal = () => {
-        if(handleModal){
+        if (handleModal) {
             handleModal()
         }
     }
@@ -51,16 +52,13 @@ const EventDetail = ({openEventDetails, openOrganiserDetails, openPocDetails, cl
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     {singledata && <SingleEvent {...singledata} />}
-                    <EventDescription description = {singledata.description} open = {openEventDetails}/>
-                    <Organiser open = {openOrganiserDetails}/>
-                    <EventPoc open = {openPocDetails}/>
+                    <EventDescription description={singledata.description} open={openEventDetails} />
+                    <Organiser open={openOrganiserDetails} />
+                    <EventPoc open={openPocDetails} />
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
-                    <div style={{ height: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
-                        <div className={styles.containerBottomRight}>
-                            {userCta === "Notes" && <Notes />}
-                        </div>
-                    </div>
+                    <Navbar/>
+                    {userCta === "Notes" && <Notes />}
                 </div>
             </div>
         </div>
