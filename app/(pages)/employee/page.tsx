@@ -9,7 +9,7 @@ import Preloader from "@/public/preloader.svg"
 // import Map from '../../components/employee/mapview/Map';
 import CalendarContainer from '../../components/employee/calendarcontainer/CalendarContainer';
 import AddEventModal from '../../components/AddEventModal';
-const Map=React.lazy(()=>import('../../components/employee/mapview/Map'))
+const Map = React.lazy(() => import('../../components/employee/mapview/Map'))
 const EmployeePage: React.FC = () => {
     const [selectedView, setSelectedView] = useState<string>('list');
     const [isAddeventOpen, setIsAddEventOpen] = useState<boolean>(false);
@@ -28,8 +28,8 @@ const EmployeePage: React.FC = () => {
                 <EmployeeNavbar handleAddEvent={handleAddEvent} />
                 <ViewBtns handleSelectedData={handleSelectedData} />
                 {selectedView === 'list' && <ListView />}
-                <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}>
-                {selectedView === 'map' && <Map />}
+                <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50" /></div>}>
+                    {selectedView === 'map' && <Map />}
                 </Suspense>
                 {selectedView === 'calendar' && <CalendarContainer />}
             </div>
