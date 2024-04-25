@@ -22,7 +22,7 @@ interface Props {
     openOrganiserDetails: boolean
     openPocDetails: boolean
     closeBtn: boolean;
-    handleModal?: () => void
+    handleModal : () => void
 }
 
 const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal }: Props) => {

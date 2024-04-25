@@ -1,10 +1,16 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import Internal from '@/app/components/internal/Internal'
+import EventDetail from '@/app/components/internal/eventdetail/EventDetail'
 const Page = () => {
-  return (
+  const [modalOpen, setModalOpen] = useState(false)
 
-    <div className={styles.container}>
+  const handleModal = () => {
+    setModalOpen(!modalOpen)
+  }
+  return (
+    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`}>
       <div className={styles.innerContainer}>
         <div className={styles.container1}>
           <div className={styles.number}>12</div>
@@ -23,7 +29,10 @@ const Page = () => {
           <div className={styles.heading}>Attendee</div>
         </div>
       </div>
-      <Internal />
+      {!modalOpen && <Internal handleModal = {handleModal} />}
+      {modalOpen && <div className={styles.modal}>
+        <EventDetail openEventDetails={true} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} />
+      </div>}
     </div>
 
   )
