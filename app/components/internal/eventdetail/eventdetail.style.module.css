@@ -19,6 +19,7 @@
 
 .containerLeft {
     border-right: 1px solid #3A3152;
+    min-height: 100vh;
     padding-right: 50px;
     display: flex;
     flex-direction: column;
@@ -62,7 +63,7 @@
     position: relative;
 }
 
-@media screen and (max-width: 1700px) {
+@media screen and (max-width: 1437px) {
     .innerContainer {
         flex-direction: column;
     }
@@ -75,3 +76,4 @@
     }
     
 }
+
