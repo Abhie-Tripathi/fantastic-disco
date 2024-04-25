@@ -47,7 +47,7 @@
   }
   
   .sub_container {
-    padding: 24px 20px;
+    padding: 20px 24px;
     
     display: flex;
     justify-content: center;
@@ -62,7 +62,7 @@
   
   .inputdropdowns_container {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0px, 260px));
+    grid-template-columns: repeat(5, minmax(0px, 260px));
     gap: 15px 25px;
   }
   
@@ -153,9 +153,10 @@
   .createtracker_button {
     line-height: 24px;
     cursor: pointer;
+    color: white;
     white-space: nowrap;
     padding: 10px 20px;
-    background-color: white;
+    background-color: #6750a4;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -312,12 +313,12 @@
   
   .advancedFilter_dropdown_container {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0px, 260px));
+    grid-template-columns: repeat(6, minmax(0px, 260px));
     /* align-items: center; */
-    padding: 20px 24px;
+    padding: 20px 0px;
     justify-content: center;
     grid-gap: 12px 6px;
-    gap: 12px 6px;
+    gap: 20px;
   }
   
   .keyword_search_input {
@@ -335,7 +336,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 20px 24px;
+    padding: 20px 0px;
 
   }
   

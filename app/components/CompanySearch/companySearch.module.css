@@ -1,16 +1,16 @@
 .container {
-    /* filter: drop-shadow(1px 1px 5px rgb(216, 216, 216)); */
-    gap: 20px;
-    position: absolute;
-    min-width: 644px;
-    z-index: 1;
-    background-color: white;
-    /* background-color: black; */
-    border-top: none;
-    border-radius: 10px;
-    top: 45px;
-    left: 0;
-    padding: 20px;
+       /* filter: drop-shadow(1px 1px 5px rgb(216, 216, 216)); */
+       gap: 20px;
+       position: absolute;
+       min-width: 644px;
+       z-index: 1;
+       /* background-color: white; */
+       background-color: black;
+       border-top: none;
+       border-radius: 10px;
+       top: 45px;
+       right: 0;
+       padding: 20px;
   }
   
   .header {
@@ -40,7 +40,7 @@
   }
   
   .tabs_container {
-    background-color: #ffffff;
+    background-color: #1A1A1A;
     display: flex;
     justify-content: space-between;
     box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
@@ -50,7 +50,7 @@
   
   .tab {
     padding: 0.44em 2em;
-    color: rgba(34, 34, 34, 0.6);
+    color: white;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.5714285714;
@@ -61,10 +61,10 @@
   }
   
   .tab.active {
-    background-color: #f7f1fc;
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
     border-radius: 30px;
     box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
-    color: #222;
+    color: white;
   }
   
   .searchBar_container {
@@ -74,13 +74,13 @@
     margin: 25px 0;
     padding: 10px;
     border-radius: 30px;
-    background-color: #f6edff99;
+    background-color: #1A1A1A;
   }
   
   .inputSearch {
     outline: none;
     border: none;
-    background-color: #f6edff99;
+    background:transparent;
     width: 70%;
     line-height: 25px;
     padding-left: 10px;

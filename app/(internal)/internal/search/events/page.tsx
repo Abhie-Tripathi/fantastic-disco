@@ -6,9 +6,10 @@ import styles from "./page.style.module.css";
 import { myFetch } from "@/utils/myFetch";
 import DropIcon1 from "/public/internal/dropdown_arrow.svg";
 import upArrowIcon from "/public/internal/up_arrow.svg";
+import Add from '/public/plus.svg';
 import tickIcon from "/public/internal/tick.svg";
 import { EventDataType } from "@/app/components/types/allevents";
-import Table from "@/app/components/Table";
+// import Table from "@/app/components/Table";
 import similarEventData from '@/public/data/similarEventData.json';
 import SearchIcon from "/public/internal/SearchInput.svg";
 import DropIcon from "/public/internal/arrow_drop_down.svg";
@@ -35,6 +36,7 @@ import Loading from "@/app/components/UI/Loading";
 // import { searchEvents } from "@/services/eventsService";
 const Calendar = lazy(() => import("@/app/components/employee/calendarcontainer/CalendarContainer"));
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
+const Table=lazy(() => import("@/app/components/Table"));
 interface InsightsType {
   [key: string]: boolean;
 }
@@ -201,7 +203,7 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" />
+                  <Image src={openDropdown == "Category" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
                 </div>
                 {openDropdown == "Category" && (
                   <CategoryDropdown
@@ -224,7 +226,7 @@ const Search = () => {
                       {selectedLocations[0]}
                     </span>
                   </div>
-                  <Image src={DropIcon} alt="dropicon" />
+                  <Image src={openDropdown == "Location" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
                 </div>
                 {openDropdown == "Location" && (
                   <LocationDropdown
@@ -253,7 +255,7 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" />
+                  <Image src={openDropdown == "Labels" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
                 </div>
                 {openDropdown == "Labels" && (
                   <LabelDropdown
@@ -265,7 +267,7 @@ const Search = () => {
                 )}
               </div>
 
-              <div className={styles.input_container} ref={rankDropdownRef}>
+              {/* <div className={styles.input_container} ref={rankDropdownRef}>
                 <div
                   className={styles.input}
                   onClick={() => handleDropdownClick("Rank")}
@@ -285,7 +287,7 @@ const Search = () => {
                     onClose={() => setOpenDropdown("")}
                   />
                 )}
-              </div>
+              </div> */}
 
               <div className={styles.input_container} ref={dateDropdownRef}>
                 <div
@@ -293,7 +295,7 @@ const Search = () => {
                   onClick={() => handleDropdownClick("Date & Time")}
                 >
                   <div className={styles.input_title}>Date & Time</div>
-                  <Image src={DropIcon} alt="dropicon" />
+                  <Image src={openDropdown == "Date & Time" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
                 </div>
                 {openDropdown == "Date & Time" && (
                   <DateRangeInput
@@ -305,7 +307,7 @@ const Search = () => {
                 )}
               </div>
 
-              <div
+              {/* <div
                 className={styles.input_container}
                 ref={eventStatusDropdownRef}
               >
@@ -356,7 +358,7 @@ const Search = () => {
                     onClose={() => setOpenDropdown("")}
                   />
                 )}
-              </div>
+              </div> */}
               <div
                 className={`${styles.advanceFilter_button} ${
                   isAdvancedFilter ? styles.active_button : ""
@@ -377,13 +379,14 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container}>
-              <div className={styles.createtracker_button}>Clear Filters</div>
+              {/* <div className={styles.createtracker_button}>Clear Filters</div> */}
 
               <div
                 className={styles.createtracker_button}
 
               >
                 Create Tracker
+                <Image src={Add} alt="plus" width={20} height={20} style={{color:"white"}}/>
               </div>
             </div>
           </div>
@@ -416,7 +419,7 @@ const Search = () => {
                         src={
                           openDropdown == "Event Format"
                             ? upArrowIcon
-                            : DropIcon
+                            : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -449,7 +452,7 @@ const Search = () => {
                       </div>
                       <Image
                         src={
-                          openDropdown == "Event Fee" ? upArrowIcon : DropIcon
+                          openDropdown == "Event Fee" ? upArrowIcon : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -484,7 +487,7 @@ const Search = () => {
                         src={
                           openDropdown == "Event Rating"
                             ? upArrowIcon
-                            : DropIcon
+                            : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -517,7 +520,7 @@ const Search = () => {
                       </div>
                       <Image
                         src={
-                          openDropdown == "Event Size" ? upArrowIcon : DropIcon
+                          openDropdown == "Event Size" ? upArrowIcon : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -558,7 +561,7 @@ const Search = () => {
                         src={
                           openDropdown == "Event Keyword"
                             ? upArrowIcon
-                            : DropIcon
+                            : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -599,7 +602,7 @@ const Search = () => {
                         src={
                           openDropdown == "Company Search"
                             ? upArrowIcon
-                            : DropIcon
+                            : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -634,7 +637,7 @@ const Search = () => {
                         src={
                           openDropdown == "Event Status"
                             ? upArrowIcon
-                            : DropIcon
+                            : DropIcon1
                         }
                         alt="dropicon"
                         width={20}
@@ -751,7 +754,9 @@ const Search = () => {
               <List />
             )}
             {selectedView === "list" && listView === "table" && (
+              <Suspense fallback={<Loading />}>
               <Table eventData={similarEventData} />
+              </Suspense>
             )}
 
             {selectedView === "calendar" && (
