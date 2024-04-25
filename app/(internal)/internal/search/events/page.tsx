@@ -28,7 +28,7 @@ const Calendar = lazy(() => import("@/app/components/employee/calendarcontainer/
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
 
 const Search = () => {
-//   const searchParams = useSearchParams();
+  //   const searchParams = useSearchParams();
   const router = useRouter();
   const categoryDropdownRef = useRef(null);
   const locationDropdownRef = useRef(null);
@@ -37,7 +37,7 @@ const Search = () => {
   const dateDropdownRef = useRef(null);
   const eventStatusDropdownRef = useRef(null);
   const eventAttendanceDropdownRef = useRef(null);
-  const [listView,setListView]=useState("card");
+  const [listView, setListView] = useState("card");
   const [selectedView, setSelectedView] = useState("list");
   const [searchInput, setSearchInput] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -63,55 +63,55 @@ const Search = () => {
     console.log(dropdownName);
   };
 
-//   const createTrackerHandler = () => {
-//     const params = new URLSearchParams(searchParams);
-//     params.set("categories", selectedCategories?.join(","));
-//     params.set("location", selectedLocations?.join(","));
-//     params.set("status", "Active,Postponed,Predicted");
-//     // params.set(
-//     //   "date_range",
-//     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
-//     // );
-//     router.push(`/trackers/create?${params.toString()}`);
-//   };
+  //   const createTrackerHandler = () => {
+  //     const params = new URLSearchParams(searchParams);
+  //     params.set("categories", selectedCategories?.join(","));
+  //     params.set("location", selectedLocations?.join(","));
+  //     params.set("status", "Active,Postponed,Predicted");
+  //     // params.set(
+  //     //   "date_range",
+  //     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
+  //     // );
+  //     router.push(`/trackers/create?${params.toString()}`);
+  //   };
 
-//   const searchHandler = () => {
-//     const params = new URLSearchParams(searchParams);
-//     // params.set("categories", ) : ""
-//     // params.set("location", selectedLocations?.join(",")) : ""
-//     params.set("status", "ACTIVE,POSTPONED,PREDICTED");
-//     // params.set(
-//     //   "date_range",
-//     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
-//     // );
-//     router.push(`/search/events?${params.toString()}`);
-//   };
+  //   const searchHandler = () => {
+  //     const params = new URLSearchParams(searchParams);
+  //     // params.set("categories", ) : ""
+  //     // params.set("location", selectedLocations?.join(",")) : ""
+  //     params.set("status", "ACTIVE,POSTPONED,PREDICTED");
+  //     // params.set(
+  //     //   "date_range",
+  //     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
+  //     // );
+  //     router.push(`/search/events?${params.toString()}`);
+  //   };
 
-//   useEffect(() => {
-//     setSelectedCategories([
-//       "community",
-//       "concerts",
-//       "conferences",
-//       "expos",
-//       "festivals",
-//       "performing-arts",
-//       "sports",
-//       "academic",
-//       "daylight-savings",
-//       "observances",
-//       "politics",
-//       "public-holidays",
-//       "school-holidays",
-//       "disasters",
-//       "health-warnings",
-//       "severe-weather",
-//       "terror",
-//     ]);
+  //   useEffect(() => {
+  //     setSelectedCategories([
+  //       "community",
+  //       "concerts",
+  //       "conferences",
+  //       "expos",
+  //       "festivals",
+  //       "performing-arts",
+  //       "sports",
+  //       "academic",
+  //       "daylight-savings",
+  //       "observances",
+  //       "politics",
+  //       "public-holidays",
+  //       "school-holidays",
+  //       "disasters",
+  //       "health-warnings",
+  //       "severe-weather",
+  //       "terror",
+  //     ]);
 
-//     setSelectedEventStatus(["Active", "Cancelled", "Postponed", "Predicted"]);
+  //     setSelectedEventStatus(["Active", "Cancelled", "Postponed", "Predicted"]);
 
-//     // searchEvents(searchParams).then((data) => setEventData(data.data));
-//   }, [searchParams]);
+  //     // searchEvents(searchParams).then((data) => setEventData(data.data));
+  //   }, [searchParams]);
 
   return (
     <>
@@ -316,7 +316,7 @@ const Search = () => {
 
               <div
                 className={styles.createtracker_button}
-                
+
               >
                 Create Tracker
               </div>
@@ -336,25 +336,22 @@ const Search = () => {
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}
-                className={`${styles.listBtn} ${
-                  selectedView === "list" ? styles.active  : ""
-                }`}
+                className={`${styles.listBtn} ${selectedView === "list" ? styles.active : ""
+                  }`}
               >
                 List
               </button>
               <button
                 onClick={() => setSelectedView("map")}
-                className={`${styles.mapBtn} ${
-                  selectedView === "map" ? styles.active : ""
-                }`}
+                className={`${styles.mapBtn} ${selectedView === "map" ? styles.active : ""
+                  }`}
               >
                 Map
               </button>
               <button
                 onClick={() => setSelectedView("calendar")}
-                className={`${styles.calendarBtn} ${
-                  selectedView === "calendar" ? styles.active  : ""
-                }`}
+                className={`${styles.calendarBtn} ${selectedView === "calendar" ? styles.active : ""
+                  }`}
               >
                 Calendar
               </button>
@@ -377,38 +374,38 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView==="list" &&
-            <div>
-              <button  className={`${styles.listBtn} ${listView === "card" ? styles.active: ""}`}  onClick={()=>setListView("card")}>Card</button>
-              <button className={`${styles.listBtn} ${listView === "table" ? styles.active: ""}`}  onClick={()=>setListView("table")}>Table</button>
+            {selectedView === "list" &&
+              <div>
+                <button className={`${styles.listBtn} ${listView === "card" ? styles.active : ""}`} onClick={() => setListView("card")}>Card</button>
+                <button className={`${styles.listBtn} ${listView === "table" ? styles.active : ""}`} onClick={() => setListView("table")}>Table</button>
               </div>}
-            {selectedView === "list" && listView==="card"&&(
+            {selectedView === "list" && listView === "card" && (
               <List />
             )}
-            {selectedView === "list" && listView==="table" &&(
+            {selectedView === "list" && listView === "table" && (
               <Table eventData={similarEventData} />
             )}
-            
+
             {selectedView === "calendar" && (
-                 <div style={{padding:"32px"}}>
-              <Suspense fallback={<Loading />}>
-               
-                <Calendar />
-               
-              </Suspense>
+              <div style={{ padding: "32px" }}>
+                <Suspense fallback={<Loading />}>
+
+                  <Calendar />
+
+                </Suspense>
               </div>
             )}
           </div>
         )}
       </div>
-      
+
       {selectedView === "map" && (
-        <div style={{padding:"32px"}}>
-        <Suspense fallback={<Loading />}>
-            
-          <Map/>
-          
-        </Suspense>
+        <div style={{ padding: "32px" }}>
+          <Suspense fallback={<Loading />}>
+
+            <Map />
+
+          </Suspense>
         </div>
       )}
     </>
