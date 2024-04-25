@@ -56,7 +56,12 @@ const EventCard = ({ data }: EventCardProps) => {
                             <Image src={Refresh} alt='refresh' width={20} height={20} />
                             <div className={styles.editionFrequency}>{data.frequency}</div>
                             <div className={styles.editionFrequencyData}>{data.forecastedFrequency}</div>
-                            <div></div>
+                            <div style={{display:"flex", gap:3}}>
+                                <div className={styles.frequencyBorderOne}></div>
+                                <div className={styles.frequencyBorderTwo}></div>
+                                <div className={styles.frequencyBorderThree}></div>
+                                <div className={styles.frequencyBorderFour}></div>
+                            </div>
                         </div>
                     </div>
                     <div className={styles.eventAreaContainer}>

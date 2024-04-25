@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./list.module.css";
 import EventCard from "./EventCard";
 import ListData from '@/public/data/searchPageCard.json'
-import { EventDataType } from "../types/allevents";
 
 const List = () => {
   return (

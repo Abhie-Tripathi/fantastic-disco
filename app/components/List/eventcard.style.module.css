@@ -5,7 +5,6 @@
     display: block;
     padding: 23px 33px;
     background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
-    box-shadow: 4px 4px 8px 0px #a5a5a526;
     border: 1px solid grey;
     border-radius: 20px;
     margin-bottom: 20px;
@@ -150,8 +149,28 @@
     font-weight: 700;
     font-size: 14px;
     color: white;
+    margin-right: 10px;
 }
-
+.frequencyBorderOne{
+    height: 15px;
+    border-left: 4px solid #9f7ef7;
+    border-radius: 50px;
+}
+.frequencyBorderTwo{
+    height: 15px;
+    border-left: 4px solid #9e7ef7bd;
+    border-radius: 50px;
+}
+.frequencyBorderThree{
+    height: 15px;
+    border-left: 4px solid #9e7ef780;
+    border-radius: 50px;
+}
+.frequencyBorderFour{
+    height: 15px;
+    border-left: 4px solid #9e7ef74b;
+    border-radius: 50px;
+}
 .eventAreaContainer {
     display: flex;
     flex-direction: column;
@@ -251,6 +270,7 @@
 .eventAdditionalDetailsContainer{
     margin-top: 40px;
     padding-top: 16px;
+    margin-bottom: 10px;
     border-top: 1px solid rgb(36, 36, 36);
     display: flex;
     justify-content: space-between;
