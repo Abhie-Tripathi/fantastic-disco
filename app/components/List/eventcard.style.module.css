@@ -73,13 +73,13 @@
     display: flex;
     align-items: center;
     margin-top: 18px;
-    justify-content: space-between;
 }
 
 .eventtype_categoryContainer {
     display: flex;
     flex-direction: column;
     gap: 13px;
+    width: 20%;
 }
 
 .typeContainer {
@@ -126,6 +126,7 @@
     display: flex;
     flex-direction: column;
     gap: 13px;
+    width: 20%;
 }
 
 .editionAnalysis {
@@ -155,6 +156,7 @@
     display: flex;
     flex-direction: column;
     gap: 13px;
+    width: 20%;
 }
 
 .zoneContainer {
@@ -173,12 +175,14 @@
     font-size: 14px;
     color: grey;
     font-weight: 300;
+    
 }
 
 .predictedDataContainer {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 16px;    
+    width: 20%;
 }
 
 .predictedData {
@@ -209,6 +213,9 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
+    column-gap: 12px;
+    justify-items: center;
+    width: 20%;
 }
 
 .rank_container {
@@ -244,7 +251,7 @@
 .eventAdditionalDetailsContainer{
     margin-top: 40px;
     padding-top: 16px;
-    border-top: 1px solid grey;
+    border-top: 1px solid rgb(36, 36, 36);
     display: flex;
     justify-content: space-between;
 }
