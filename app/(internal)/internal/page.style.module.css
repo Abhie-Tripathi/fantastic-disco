@@ -1,6 +1,4 @@
-.container{
-    /* margin-left: 74px; */
-}
+
 .innerContainer{
     display: flex;
     align-items: center;
@@ -42,3 +40,12 @@ line-height: 33.6px;
 text-align: center;
 
 }
+.modal{
+    background-color: #0c0c0c;
+    position: absolute;
+    top: 0;
+    padding: 120px;
+    width: 100%;
+    z-index: 1;
+  }
+  
