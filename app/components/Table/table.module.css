@@ -1,5 +1,5 @@
 .table_container {
-    margin: 25px 0px;
+    margin: 25px 20px;
   }
   
   .table_wrapper {
@@ -9,9 +9,10 @@
     border-top-right-radius:12px;
     border-top-left-radius: 12px;
     overflow-x: auto;
-    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
-    box-shadow: 4px 4px 8px 0px #a5a5a526;
-    border: 1px solid #f6edff;
+    padding-bottom: 10px;
+    /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
+    /* box-shadow: 4px 4px 8px 0px #a5a5a526; */
+    /* border: 1px solid #f6edff; */
     scrollbar-width: thin;
   }
   
@@ -22,11 +23,13 @@
   }
   
   .table_head {
+    background-color: #1a1a1a;
+    color: white;
     border-bottom: 1px solid #ececf9;
   }
   
   .table_head_row {
-    color: #696b83;
+    /* color: #696b83; */
   }
   
   .table_head_row > th {
@@ -85,7 +88,7 @@
   
   .table_actionColumn {
     width: 100px;
-    background-color: #fff;
+    background-color: #1a1a1a;
     position: sticky;
     right: 0;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -94,18 +97,19 @@
   }
   
   .table_actionColumn_header {
-    background-color: #f7f7f9;
+    background-color: #1a1a1a;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   }
   
   .pagination_container {
-    /* margin-top: 20px; */
+    margin-top: 20px;
     /* background-color: #f7f7f9; */
-    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+    /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
+    background-color: #1a1a1a;
     border-radius: 0px 0px 12px 12px;
     border-width: 0px 1px 1px 1px;
-    border-style: solid;
-    border-color: #ececf9;
+    /* border-style: solid;
+    border-color: #ececf9; */
     display: flex;
     align-items: center;
     padding: 15px 20px;
@@ -172,4 +176,15 @@
    background: #2B233D;
     
     border-radius: 12px;
+  }
+  .saveBtn{
+    cursor: pointer;
+    background-color: #6750a4;
+    border-radius: 6px;
+    padding: 6px 16px;
+    color: white;
+    font-weight: 400;
+    max-width: -webkit-fit-content;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
   }

@@ -4,13 +4,22 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./page.style.module.css";
 import { myFetch } from "@/utils/myFetch";
+import DropIcon1 from "/public/internal/dropdown_arrow.svg";
+import upArrowIcon from "/public/internal/up_arrow.svg";
+import tickIcon from "/public/internal/tick.svg";
 import { EventDataType } from "@/app/components/types/allevents";
 import Table from "@/app/components/Table";
 import similarEventData from '@/public/data/similarEventData.json';
 import SearchIcon from "/public/internal/SearchInput.svg";
 import DropIcon from "/public/internal/arrow_drop_down.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
-
+import { insightsScore } from "@/public/data/researchData";
+import EventFee from '@/app/components/dropdown/EventFee'
+import EventFormat from "@/app/components/dropdown/EventFormat";
+import EventRatings from "@/app/components/dropdown/EventRatings";
+import EventSize from "@/app/components/dropdown/EventSize";
+import EventKeyword from "@/app/components/dropdown/EventKeyword";
+import CompanySearch from "@/app/components/CompanySearch";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
@@ -26,7 +35,9 @@ import Loading from "@/app/components/UI/Loading";
 // import { searchEvents } from "@/services/eventsService";
 const Calendar = lazy(() => import("@/app/components/employee/calendarcontainer/CalendarContainer"));
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
-
+interface InsightsType {
+  [key: string]: boolean;
+}
 const Search = () => {
   //   const searchParams = useSearchParams();
   const router = useRouter();
@@ -44,7 +55,7 @@ const Search = () => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
-
+  const [isAdvancedFilter, setIsAdvancedFilter] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
@@ -61,6 +72,43 @@ const Search = () => {
       prevDropdown === dropdownName ? null : dropdownName
     );
     console.log(dropdownName);
+  };
+  const advanceFilterHandler = () => {
+    setIsAdvancedFilter((prev) => !prev);
+  };
+  const eventFormatDropdownRef = useRef(null);
+  const eventFeeDropdownRef = useRef(null);
+  const eventSizeDropdownRef = useRef(null);
+  const eventRatingDropdownRef = useRef(null);
+  const eventKeyDropdownRef = useRef(null);
+  const companySearchDropdownRef = useRef(null);
+  const [selectedEventFormat, setSelectedEventFormat] = useState<string | null>(
+    null
+  );
+  const [selectedEventFee, setSelectedEventFee] = useState<string | null>(null);
+  const [selectedEventSize, setSelectedEventSize] = useState<string | null>(
+    null
+  );
+  const [selectedEventRating, setSelectedEventRating] = useState<string | null>(
+    null
+  );
+  const [selectedEventKeyword, setSelectedEventKeyword] = useState<string[]>(
+    []
+  );
+  const [selectedCompanySearch, setSelectedCompanySearch] = useState<string[]>(
+    []
+  );
+  const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
+
+  const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
+  };
+
+  const insightCheckHandler = (eventCode: string) => {
+    setSelectedInsights((prev:any) => ({
+      ...prev,
+      [eventCode]: !prev[eventCode],
+    }));
   };
 
   //   const createTrackerHandler = () => {
@@ -309,6 +357,23 @@ const Search = () => {
                   />
                 )}
               </div>
+              <div
+                className={`${styles.advanceFilter_button} ${
+                  isAdvancedFilter ? styles.active_button : ""
+                }`}
+                onClick={advanceFilterHandler}
+              >
+                <div>Advance Filters</div>
+                <Image
+                  src={isAdvancedFilter ? upArrowIcon : DropIcon1}
+                  alt="dropicon"
+                  width={20}
+                  height={20}
+                />
+              </div>
+
+             
+
             </div>
 
             <div className={styles.buttons_container}>
@@ -322,11 +387,314 @@ const Search = () => {
               </div>
             </div>
           </div>
+          
           {showRecentSearches && (
             <RecentSearches setShowRecentSearches={setShowRecentSearches} />
           )}
-        </div>
+           {isAdvancedFilter && (
+            <div className={styles.advanceFilter_container}>
+              <div className={styles.advanceFilter_subContainer1}>
+                <div className={styles.advanceFilter_title}>Advance Filter</div>
+                <div
+                  className={`${styles.inputdropdowns_container} ${styles.advancedFilter_dropdown_container}`}
+                >
+                  <div
+                    className={styles.input_container}
+                    ref={eventFormatDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Format")}
+                    >
+                      <div className={styles.input_title}>
+                        Format
+                        <span className={styles.input_selected_title}>
+                          {selectedEventFormat}
+                        </span>
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Format"
+                            ? upArrowIcon
+                            : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Format" && (
+                      <EventFormat
+                        dropdownRef={eventFormatDropdownRef}
+                        state={selectedEventFormat}
+                        setState={setSelectedEventFormat}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
 
+                  <div
+                    className={styles.input_container}
+                    ref={eventFeeDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Fee")}
+                    >
+                      <div className={styles.input_title}>
+                        Entry Fee
+                        <span className={styles.input_selected_title}>
+                          {selectedEventFee}
+                        </span>
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Fee" ? upArrowIcon : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Fee" && (
+                      <EventFee
+                        dropdownRef={eventFeeDropdownRef}
+                        state={selectedEventFee}
+                        setState={setSelectedEventFee}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.input_container}
+                    ref={eventRatingDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Rating")}
+                    >
+                      <div className={styles.input_title}>
+                        Ratings
+                        <span className={styles.input_selected_title}>
+                          {selectedEventRating}
+                        </span>
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Rating"
+                            ? upArrowIcon
+                            : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Rating" && (
+                      <EventRatings
+                        dropdownRef={eventRatingDropdownRef}
+                        state={selectedEventRating}
+                        setState={setSelectedEventRating}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.input_container}
+                    ref={eventSizeDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Size")}
+                    >
+                      <div className={styles.input_title}>
+                        Size
+                        <span className={styles.input_selected_title}>
+                          {selectedEventSize}
+                        </span>
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Size" ? upArrowIcon : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Size" && (
+                      <EventSize
+                        dropdownRef={eventSizeDropdownRef}
+                        state={selectedEventSize}
+                        setState={setSelectedEventSize}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.input_container}
+                    ref={eventKeyDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Keyword")}
+                    >
+                      <div className={styles.input_title}>
+                        Keywords
+                        {selectedEventKeyword?.length > 1 ? (
+                          <span className={styles.input_selected_no}>
+                            {selectedEventKeyword.length}
+                          </span>
+                        ) : (
+                          <span className={styles.input_selected_title}>
+                            {selectedEventKeyword[0]}
+                          </span>
+                        )}
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Keyword"
+                            ? upArrowIcon
+                            : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Keyword" && (
+                      <EventKeyword
+                        dropdownRef={eventKeyDropdownRef}
+                        state={selectedEventKeyword}
+                        setState={setSelectedEventKeyword}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.input_container}
+                    ref={companySearchDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Company Search")}
+                    >
+                      <div className={styles.input_title}>
+                        Company
+                        {selectedCompanySearch?.length > 1 ? (
+                          <span className={styles.input_selected_no}>
+                            {selectedCompanySearch.length}
+                          </span>
+                        ) : (
+                          <span className={styles.input_selected_title}>
+                            {selectedCompanySearch[0]}
+                          </span>
+                        )}
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Company Search"
+                            ? upArrowIcon
+                            : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Company Search" && (
+                      <CompanySearch
+                        dropdownRef={companySearchDropdownRef}
+                        state={selectedCompanySearch}
+                        setState={setSelectedCompanySearch}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+
+                  <div
+                    className={styles.input_container}
+                    ref={eventStatusDropdownRef}
+                  >
+                    <div
+                      className={styles.input}
+                      onClick={() => handleDropdownClick("Event Status")}
+                    >
+                      <div className={styles.input_title}>
+                        Status
+                        <span className={styles.input_selected_title}>
+                          {selectedEventStatus}
+                        </span>
+                      </div>
+                      <Image
+                        src={
+                          openDropdown == "Event Status"
+                            ? upArrowIcon
+                            : DropIcon
+                        }
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    {openDropdown == "Event Status" && (
+                      <EventStatus
+                        dropdownRef={eventStatusDropdownRef}
+                        state={selectedEventStatus}
+                        setState={setSelectedEventStatus}
+                        onClose={() => setOpenDropdown("")}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={styles.advanceFilter_subContainer1}>
+                <div className={styles.advanceFilter_title}>
+                  Insights & Scores
+                </div>
+                <div className={styles.insightsFilter_container}>
+                  {insightsScore.map((item) => (
+                    <div
+                      className={`${styles.input_container} ${styles.input_insights}`}
+                      key={item.id}
+                    >
+                      <div className={styles.input}>
+                        {item.name}
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => insightCheckHandler(item.code)}
+                                checked={selectedInsights[item.code]}
+                              />
+                              <span className={styles.slider}>
+                                {selectedInsights[item.code] && (
+                                  <Image
+                                    src={tickIcon}
+                                    alt="tick"
+                                    width={15}
+                                    height={15}
+                                    className={styles.slider_tick_image}
+                                  />
+                                )}
+                              </span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+            
         <div className={styles.viewContainer}>
           <div className={styles.exportedno_container}>
             <div className={styles.exportedno}>1</div>
