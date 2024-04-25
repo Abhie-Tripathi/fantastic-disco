@@ -92,7 +92,8 @@ const Table = ({
                                <td>Global</td>
                                 <td className={styles.table_actionColumn}>
                                     <div className={styles.save_image_container}>
-                                        <Image src={saveIcon} alt="Save" width={30} height={30} />
+                                        {/* <Image src={saveIcon} alt="Save" width={30} height={30} /> */}
+                                        <div className={styles.saveBtn}>Save</div>
                                     </div>
                                 </td>
                             </tr>
