@@ -1,0 +1,143 @@
+.container {
+    /* filter: drop-shadow(1px 1px 5px rgb(216, 216, 216)); */
+    gap: 20px;
+    position: absolute;
+    min-width: 644px;
+    z-index: 1;
+    background-color: white;
+    /* background-color: black; */
+    border-top: none;
+    border-radius: 10px;
+    top: 45px;
+    left: 0;
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header_title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.1428571429;
+    letter-spacing: 0.05em;
+    flex: 1;
+  }
+  
+  .header_button {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1.8181818182;
+    letter-spacing: 0.1em;
+    font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
+    color: #4d1bf3;
+    cursor: pointer;
+  }
+  
+  .tabs_container {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
+    border-radius: 30px;
+    width: 60%;
+  }
+  
+  .tab {
+    padding: 0.44em 2em;
+    color: rgba(34, 34, 34, 0.6);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5714285714;
+    letter-spacing: 0;
+    cursor: pointer;
+    width: 100%;
+    padding: 10.39px 41.55px 10.39px 41.55px;
+  }
+  
+  .tab.active {
+    background-color: #f7f1fc;
+    border-radius: 30px;
+    box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
+    color: #222;
+  }
+  
+  .searchBar_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 25px 0;
+    padding: 10px;
+    border-radius: 30px;
+    background-color: #f6edff99;
+  }
+  
+  .inputSearch {
+    outline: none;
+    border: none;
+    background-color: #f6edff99;
+    width: 70%;
+    line-height: 25px;
+    padding-left: 10px;
+    font-size: 17px;
+    font-weight: 400;
+  }
+  
+  .action_container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  .keywords_container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .keyword_chip {
+    padding: 4px 7px 4px 7px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    color: #6750a4;
+    font-weight: 500;
+  }
+  
+  .closeChip {
+    cursor: pointer;
+  }
+  
+  .button_container {
+    cursor: pointer;
+  }
+  
+  .button {
+    width: 80px;
+    padding: 6px;
+    background-color: #f6edff;
+    box-shadow: 0px 1.74px 3.49px 0px #00000026;
+    width: 60px;
+    border: 1px solid #ddd;
+    border-radius: 17px;
+    text-align: center;
+    color: #6750a4;
+    font-weight: 500;
+  }
+  
+  /* Company Search specific */
+  .import_container {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .upload_icon{
+    cursor: pointer;
+  }

@@ -1,11 +1,12 @@
 .container {
-    filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+    /* filter: drop-shadow(1px 1px 5px rgb(216, 216, 216)); */
     position: absolute;
     width: 250px;
     top: 45px;
     z-index: 2;
     left: 0px;
-    background-color: white;
+    background: black;
+    color: white;
     max-height: 250px;
     overflow-y: auto;
     scrollbar-width: thin;
