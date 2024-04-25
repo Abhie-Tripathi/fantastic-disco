@@ -17,6 +17,7 @@ interface YourEventCardProps {
   eventImage: string
   eventDate: string;
   eventCompany: string;
+  handleModal: () => void
 }
 
 const formatDate = (dateString: string): string => {
@@ -25,11 +26,14 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, handleModal }) => {
   const formattedDate = formatDate(eventDate);
 
+  const handleModalOpen = ()=>{
+    handleModal()
+  }
   return (
-    <Link href={`/internal/${eventId}`} className={styles.card}>
+    <div className={styles.card} onClick={handleModalOpen}>
       <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
       <div className={styles.cardDetails}>
         <div className={styles.eventNameComp}>
@@ -74,7 +78,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
