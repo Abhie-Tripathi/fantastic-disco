@@ -1,5 +1,5 @@
 .table_container {
-    margin: 25px 0px;
+    margin: 25px 20px;
   }
   
   .table_wrapper {
@@ -9,8 +9,9 @@
     border-top-right-radius:12px;
     border-top-left-radius: 12px;
     overflow-x: auto;
-    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
-    box-shadow: 4px 4px 8px 0px #a5a5a526;
+    padding-bottom: 10px;
+    /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
+    /* box-shadow: 4px 4px 8px 0px #a5a5a526; */
     /* border: 1px solid #f6edff; */
     scrollbar-width: thin;
   }
@@ -175,4 +176,15 @@
    background: #2B233D;
     
     border-radius: 12px;
+  }
+  .saveBtn{
+    cursor: pointer;
+    background-color: #6750a4;
+    border-radius: 6px;
+    padding: 6px 16px;
+    color: white;
+    font-weight: 400;
+    max-width: -webkit-fit-content;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
   }
