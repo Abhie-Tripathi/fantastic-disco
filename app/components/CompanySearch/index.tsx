@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import styles from "@/app/components/dropdown/EventFormat/EventFormt.module.css";
+import styles from "./companySearch.module.css";
 import Image from "next/image";
 import SearchIcon from "/public/search.svg";
 import CloseIcon from "/public/close.svg";
