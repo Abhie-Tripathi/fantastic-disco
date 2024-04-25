@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import styles from "./monthCalendar.module.css";
-<<<<<<< HEAD
 import { log } from "console";
 import EmptyCard from "@/app/components/EmptyCard";
 import EventCard from "@/app/components/EventCard";
 
-=======
->>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 interface Event {
   id: number;
   name: string;
@@ -21,17 +18,10 @@ interface Event {
   background: string;
 }
 
-<<<<<<< HEAD
 interface DateWithEvent {
   date: Date;
   events: Event[];
 }
-=======
-// interface DateWithEvent {
-//     date: Date;
-//     events: Event[];
-// }
->>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 const days = [
   "SUNDAY",
   "MONDAY",
@@ -158,7 +148,6 @@ function generateMonthArray(year: number, month: number) {
       monthArray.push("");
     }
   }
-<<<<<<< HEAD
 
   for (let day = 1; day <= daysInMonth; day++) {
     monthArray.push(new Date(year, month - 1, day));
@@ -222,36 +211,20 @@ function formatDateString(dateString: any) {
 //   return topPosition;
 // };
 
+function calculateWidth(eventDuration:any) {
+  // Define a constant for the width of a unit of time (e.g., 1 hour, 1 minute)
+  const unitWidth = 100; // Adjust as needed
+
+  // Calculate the width based on the duration of the event
+  const stripWidth = eventDuration * unitWidth;
+
+  return stripWidth;
+}
 const MonthCalendar: React.FC = () => {
   const [calendarIndex, setCalendarIndex] = useState([]);
 
   return (
     <div className={styles.container}>
-=======
-  
-  const year = 2024;
-  const month = 3;
-  const monthDatesArray = generateMonthArray(year, month);
-  
-  const datesWithEvents = monthDatesArray.map((date: any) => {
-    if (date === "") return "";
-    else {
-      const filteredEvents = events.filter((event) => {
-        const eventStartDate = new Date(event.startDate);
-        const eventEndDate = new Date(event.endDate);
-        return eventStartDate <= date && date <= eventEndDate;
-      });
-     
-      
-      return { date: date, events: filteredEvents };
-    }
-  });
-
-const MonthCalendar: React.FC = () => {
-    
-    return (
-        <div className={styles.container}>
->>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
       <div className={styles.dayCards_container}>
         {days.map((day) => (
           <div key={day} className={styles.dayCard}>
@@ -280,42 +253,68 @@ const MonthCalendar: React.FC = () => {
                   if (
                     formattedDate == dateWithEvent.date.toLocaleDateString()
                   ) {
-                    // count = count - 1;
-                    // let width = "85%";
-                    // if (event.duration > 0) {
-                    //   event.duration == 2
-                    //     ? (width = "200%")
-                    //     : event.duration == 5
-                    //     ? (width = "420%")
-                    //     : "85%";
-                    // }
+                    count = count - 1;
                     let width = "85%";
-                    // console.log("ddd",arrayFromNumber.length)
-                    for (
-                      let events = 0;
-                      events < arrayFromNumber.length;
-                      events++
-                    ) {
-                      // console.log("eventttt");
-                      for(let eventIndex = events; eventIndex < events; eventIndex++ ){
-                        console.log("inside_for", indexd)
-                      }
-                      // for (
-                      //   let eventsDuration = 1;
-                      //   eventsDuration < arrayFromNumber.length;
-                      //   eventsDuration++
-                      // ) {
-                      //   console.log("eventttt");
-                      // }
-                      // if(event.background && indexd){
-                      //   console.log("farh")
-                      // }
+                    if (event.duration > 0) {
+                      event.duration == 2
+                        ? (width = "200%")
+                        : event.duration == 5
+                        ? (width = "420%")
+                        : "85%";
                     }
-<<<<<<< HEAD
+                    // let width = "85%";
+                    // let stripWidth =0
+                    // console.log("ddd",arrayFromNumber.length)
+                    // for (
+                    //   let events = 0;
+                    //   events < arrayFromNumber.length;
+                    //   events++
+                    // ) {
+                    //   if(indexd++ && event.name ===  event.name){
+                    //    stripWidth = calculateWidth(event.duration);
+                      
+                    //   console.log("erer999ww",event.name, indexd,event.background, stripWidth);
+                    //   return  <div
+                    //   // style={{
+                    //   //   backgroundColor:`${event.background}`,
+                    //   //   width:`${stripWidth}%`,
+                    //   //   top:"40",
+                    //   //   zIndex:"20",
+                    //   //   color:"black"
+                    //   // }}
+                    //   // >asd
+                    //   className={styles.event}
+                    //   style={{
+                    //     width: `${stripWidth}`,
+                    //     // top: `${40 + count * 20}%`,
+                    //     top: `${40}%`,
+                    //     backgroundColor: event.background,
+                    //     color: "black",
+                    //     fontSize: "12px",
+                    //   }}
+                    // >
+                    //   {event.name}
+                    //   </div>
+                        
+                    //   }
+
+                    //   // console.log("inside_for", indexd++)
+                    //   // for(let eventIndex = events; eventIndex < events; eventIndex++ ){
+                    //   //   console.log("inside_for", indexd)
+                    //   // }
+                    //   // for (
+                    //   //   let eventsDuration = 1;
+                    //   //   eventsDuration < arrayFromNumber.length;
+                    //   //   eventsDuration++
+                    //   // ) {
+                    //   //   console.log("eventttt");
+                    //   // }
+                    //   // if(event.background && indexd){
+                    //   //   console.log("farh")
+                    //   // }
+                    // }
 
                     // console.log("RESULT", dateWithEvent.date.getDate(), count);
-=======
->>>>>>> d737f804ccb3e8fb3d2f099735b5183159f387b9
 
                     return (
                       <div
@@ -323,6 +322,7 @@ const MonthCalendar: React.FC = () => {
                         style={{
                           width: `${width}`,
                           top: `${40 + count * 20}%`,
+                          // top: `${40}%`,
                           backgroundColor: event.background,
                           color: "black",
                           fontSize: "12px",
