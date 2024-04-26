@@ -29,6 +29,11 @@
     height: 100%;
 }
 
+.containerLeftTop {
+    display: flex;
+    justify-content: space-between;
+}
+
 .containerRight {
     display: flex;
     height: 100%;   

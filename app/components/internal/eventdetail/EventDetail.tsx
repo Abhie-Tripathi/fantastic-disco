@@ -9,6 +9,9 @@ import EventPoc from './EventPoc';
 import Image from 'next/image';
 import CloseIcon from '/public/close.svg'
 import Follower from './Follower';
+import StatusBar from './StatusBar';
+import OwnerList from './ownerList';
+import StatusChangeDropdown from './statusChangeDropdown';
 
 interface EventData {
     id: number;
@@ -49,6 +52,11 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
             {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
             <div className={styles.innerContainer}>
+                <StatusBar />
+                <div className={styles.containerLeftTop}>
+                    <OwnerList label='test' eventId={123} />
+                    <StatusChangeDropdown label='' eventId={123} />
+                </div>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     {singledata && <SingleEvent {...singledata} />}
                     <EventDescription description={singledata.description} open={openEventDetails} />
