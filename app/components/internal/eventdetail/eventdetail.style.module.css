@@ -29,6 +29,11 @@
     height: fit-content;
 }
 
+.containerLeftTop {
+    display: flex;
+    justify-content: space-between;
+}
+
 .containerRight {
     display: flex;
     flex-direction: column;
