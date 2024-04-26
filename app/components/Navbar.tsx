@@ -34,27 +34,27 @@ const Navbar = () => {
   const pathName = usePathname().split("/")[1];
   return (
     <div className={styles.navbar}>
-      {pathName==='internal'?(<Link href='/internal'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>):<Link href='/'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>}
-      
+      {pathName === 'internal' ? (<Link href='/internal'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>) : <Link href='/'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>}
+
       <div className={styles.settings}>
-        {pathName==='internal'&& <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/'}>
+        {pathName === 'internal' && <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/'}>
           <Image src={Home} alt='internal' />
-          </Link>}
-        
-          {pathName!=='internal' && (
-            <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
-          <Image src={DoorIcon} alt='internal' />
+        </Link>}
+
+        {pathName !== 'internal' && (
+          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
+            <Image src={DoorIcon} alt='internal' />
           </Link>
-          )}
-        
-     
-        {pathName!=='internal'&&
-      // <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
-      //     <Image src={DoorIcon} alt='internal' />
-      //   </Link>
-        <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
-          <Image src={settingsIcon} alt='settings' />
-        </Link>
+        )}
+
+
+        {pathName !== 'internal' &&
+          // <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
+          //     <Image src={DoorIcon} alt='internal' />
+          //   </Link>
+          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
+            <Image src={settingsIcon} alt='settings' />
+          </Link>
         }
         {userDetail &&
           <div style={{ display: "flex", gap: "8px", cursor: "pointer", position: "relative" }} ref={profilectas.dropdownRef} onClick={toggleDropdown}>
