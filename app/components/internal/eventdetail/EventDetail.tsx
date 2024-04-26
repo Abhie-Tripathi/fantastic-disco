@@ -55,7 +55,6 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
                     <Organiser open={openOrganiserDetails} />
                     <EventPoc open={openPocDetails} />
                     <Follower/>
-
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
                     <Notes />

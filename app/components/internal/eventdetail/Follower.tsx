@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styles from './eventdesc.style.module.css'
 import Image from 'next/image'
 import PeopleIcon from '/public/people.svg'
-import PlaceHolder from '/public/placeholder.png'
+import PlaceHolder from '/public/speaker1.jpeg'
 
 const Follower = () => {
 
