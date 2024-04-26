@@ -4,10 +4,10 @@ import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
 import Image from "next/image";
 import person1 from '@/public/person2.svg'
-import profileImage from "@/public/profile_Image.jpg";
-import CommentProfileImage from "@/public/profile_Image.jpg";
-import { EditComment } from "./EditComment";
-import { text } from "stream/consumers";
+// import profileImage from "@/public/profile_Image.jpg";
+// import CommentProfileImage from "@/public/profile_Image.jpg";
+// import { EditComment } from "./EditComment";
+// import { text } from "stream/consumers";
 import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from '../ButtonView';
 
@@ -46,7 +46,6 @@ export const Notes = ({ comments, productId }: Props) => {
       }
       <div className={styles.notesAdd}>
         <AddComment productId={productId} />
-        {/* <ButtonView view={"sortByButton"} /> */}
       </div>
     </div>
   );

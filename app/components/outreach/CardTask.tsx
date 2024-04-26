@@ -2,12 +2,14 @@ import React from 'react'
 import styles from './cardtask.style.module.css'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image';
+import person2 from '@/public/person2.svg'
+import person1 from '@/public/person1.svg'
 
 interface CardTaskProps {
     name: string;
     draggable: boolean;
     onDragStart: (event: React.DragEvent<HTMLDivElement>, taskName: string) => void;
-    handleModal : ()=>void
+    handleModal: () => void
 }
 
 const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handleModal }) => {
@@ -16,10 +18,14 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handl
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>10Times</div>
             <div className={styles.date}>
-                <Image src={CalendarIcon} alt='cal' height={15} width={15}/>
+                <Image src={CalendarIcon} alt='cal' height={15} width={15} />
                 <div>1st Apr 2024 - 31st Apr 2024</div>
             </div>
-            
+            <div className={styles.typeOfEventContainer}>
+                <div className={styles.typeOfEvent}>Exhibting</div>
+                <div className={styles.typeOfEvent}>Attendee</div>
+            </div>
+
         </div>
     )
 }

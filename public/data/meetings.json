@@ -1,37 +1,37 @@
 [
-    {
-        "id":0,
-      "meeting_heading": "Event Connect - Discussion with Alexia",
-      "date": "2024-04-01",
-      "time": "14:30",
-      "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
-    },
-    {
-        "id":1,
-      "meeting_heading": "Event Connect - Group discussions",
-      "date": "2024-04-01",
-      "time": "14:30",
-      "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
-    },
-    {
-        "id":2,
-      "meeting_heading": "Event Connect - Discussion with Alexia",
-      "date": "2024-04-01",
-      "time": "14:30",
-      "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
-    },
-    {
-        "id":3,
-      "meeting_heading": "Event Connect - Group discussions",
-      "date": "2024-04-01",
-      "time": "14:30",
-      "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
-    },
-    {
-        "id":4,
-      "meeting_heading": "Event Connect - Discussion with Alexia",
-      "date": "2024-04-01",
-      "time": "14:30",
-      "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
-    }
-  ]
+  {
+    "id": 0,
+    "meeting_heading": "Event Connect - Discussion with Alexia",
+    "date": "2024-04-01",
+    "time": "14:30",
+    "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
+  },
+  {
+    "id": 1,
+    "meeting_heading": "Event Connect - Group discussions",
+    "date": "2024-04-01",
+    "time": "14:30",
+    "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
+  },
+  {
+    "id": 2,
+    "meeting_heading": "Event Connect - Discussion with Alexia",
+    "date": "2024-04-01",
+    "time": "14:30",
+    "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
+  },
+  {
+    "id": 3,
+    "meeting_heading": "Event Connect - Group discussions",
+    "date": "2024-04-01",
+    "time": "14:30",
+    "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
+  },
+  {
+    "id": 4,
+    "meeting_heading": "Event Connect - Discussion with Alexia",
+    "date": "2024-04-01",
+    "time": "14:30",
+    "meeting_link": "https://eventgeni.com/event-discussion14367a2e/joinmeet"
+  }
+]
