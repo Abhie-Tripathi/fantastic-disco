@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import styles from './eventdesc.style.module.css'
 import Image from 'next/image'
-import PeopleIcon from '/public/people.svg'
+import PeopleIcon from '/public/user.svg'
 import Placehodler from '/public/placeholder.png'
 
 interface Props{

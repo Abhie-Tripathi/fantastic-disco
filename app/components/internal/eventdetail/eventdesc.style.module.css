@@ -169,6 +169,33 @@
     align-items: center;
 }
 
+.followerContainer{
+    display: flex;
+    gap: 23px;
+    margin-bottom: 10px;
+}
+.followerDetails{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.followerProfilePhoto{
+    border-radius: 12px;
+}
+.followerName{
+    color: #D9D9D9;
+}
+.username{
+    margin-left: 5px;
+    color: #8C8EA4;
+}
+.followerPosition{
+    font-size: 12px;
+    color: #D9D9D9;
+}
+
+
+
 @media screen and (min-width: 1438px) and (max-width: 1700px) {
     .statusDateContainer{
         flex-direction: column;
