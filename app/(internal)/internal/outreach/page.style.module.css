@@ -5,9 +5,7 @@
   margin-right: 90px;
   margin-bottom: 20px;
   height: 85vh;
-  border: 1px solid rgb(51, 51, 51);
   border-radius: 12px;
-  padding: 32px 56px;
   display: flex;
   justify-content: space-evenly;
 }
@@ -47,7 +45,10 @@
   background-color: #0c0c0c;
   position: absolute;
   top: 0;
-  padding: 120px;
+  height: 100%; 
+  padding-top: 120px;
+  padding-left: 100px;
+  padding-right: 120px;
   width: 100%;
   z-index: 1;
 }

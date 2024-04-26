@@ -15,26 +15,26 @@
     width: 100%;
     display: flex;
     gap: 50px;
-    height: 100%;
+    height: 85vh;
 }
 
 .containerLeft {
+    overflow-x: auto;
     border-right: 1px solid #3A3152;
-    min-height: 100vh;
     padding-right: 50px;
     display: flex;
     flex-direction: column;
     gap: 19px;
     width: 30%;
-    height: fit-content;
+    height: 100%;
 }
 
 .containerRight {
     display: flex;
+    height: 100%;   
     flex-direction: column;
     gap: 20px;
     width: 65%;
-    /* height: 100%; */
 }
 
 .line {
@@ -67,6 +67,7 @@
 @media screen and (max-width: 1437px) {
     .innerContainer {
         flex-direction: column;
+        height: fit-content;
     }
     .containerLeft {
         width: 100%;

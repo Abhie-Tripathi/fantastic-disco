@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  height:70%;
+  height:100%;
   background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
   border: 1px solid #262626;
   border-radius: 18px;
@@ -374,7 +374,6 @@
 .notesAdd {
   padding: 20px;
   width: 100%;
-  margin: 0;
   border-radius: 12px;
   background: #1A1A1A;
 }

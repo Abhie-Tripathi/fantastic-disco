@@ -8,8 +8,8 @@
     {"id": "chandler@gmail.com", "name" :"Chandler", "initials":"C"},
     {"id": "walter@gmail.com", "name" :"Walter", "initials":"W"},
     {"id": "pinkman@gmail.com", "name" :"Jesse", "initials":"J"},
-    {"id": "gusfring@gmail.com", "name" :"Gus Fring", "initials":"G"},
-    {"id": "nolan@gmail.com", "name" :"Chris Nolan", "initials":"C"},
-    {"id": "rdj@gmail.com", "name" :"Robert Downy Jr", "initials":"R"},
+    {"id": "gusfring@gmail.com", "name" :"GusFring", "initials":"G"},
+    {"id": "nolan@gmail.com", "name" :"ChrisNolan", "initials":"C"},
+    {"id": "rdj@gmail.com", "name" :"RobertDownyJr", "initials":"R"},
     {"id": "thanos@gmail.com", "name" :"Thanos", "initials":"T"}
 ]

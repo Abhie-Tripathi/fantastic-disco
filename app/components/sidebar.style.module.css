@@ -13,7 +13,7 @@
   flex-direction: column;
   gap: 10px;
   transition: width 0.3s ease-in-out;
-  border-right: 1px solid #DCDFE4
+  border-right: 1px solid #2c2c2c
 }
 .container.open {
   width: 280px;
