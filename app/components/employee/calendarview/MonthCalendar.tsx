@@ -39,8 +39,8 @@ const events: Event[] = [
     description:
       "A food fest including a variety of drinks and food that you will savour for your entire life",
     location: "Delhi",
-    startDate: "3/20/2024",
-    endDate: "3/21/2024",
+    startDate: "3/11/2024",
+    endDate: "3/12/2024",
     tags: ["food", "festival", "drinks", "gathering", "hornok", "horn", "fest"],
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
@@ -55,7 +55,7 @@ const events: Event[] = [
       "A food fest including a variety of drinks and food that you will savour for your entire life",
     location: "Gurgaon",
     startDate: "3/14/2024",
-    endDate: "3/16/2024",
+    endDate: "3/17/2024",
     tags: [
       "food",
       "festival",
@@ -97,7 +97,7 @@ const events: Event[] = [
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1",
-    duration: 2,
+    duration: 1,
     background: "rgb(149 126 100)",
   },
   {
@@ -107,7 +107,7 @@ const events: Event[] = [
       "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
     location: "Gurgaon",
     startDate: "3/13/2024",
-    endDate: "3/15/2024",
+    endDate: "3/18/2024",
     tags: [
       "movie",
       "films",
@@ -130,17 +130,9 @@ function generateMonthArray(year: number, month: number) {
   const firstDayOfMonth = new Date(year, month - 1, 1);
   const lastDayOfMonth = new Date(year, month, 0);
   const daysInMonth = lastDayOfMonth.getDate();
-
-  // console.log("first_day", daysInMonth);
-  // console.log("last_day", lastDayOfMonth);
-
   const firstDayIndex = firstDayOfMonth.getDay();
-
   const monthArray = [];
-
   let currentDate = new Date(firstDayOfMonth);
-  // console.log("first_day_index", firstDayIndex);
-
   if (firstDayIndex === 1) {
     monthArray.push("");
   } else {
@@ -160,8 +152,6 @@ function generateMonthArray(year: number, month: number) {
 const year = 2024;
 const month = 3;
 const monthDatesArray = generateMonthArray(year, month);
-// console.log("monthDatesArray", monthDatesArray);
-
 const datesWithEvents = monthDatesArray.map((date: any) => {
   if (date === "") return "";
   else {
@@ -175,54 +165,7 @@ const datesWithEvents = monthDatesArray.map((date: any) => {
   }
 });
 
-function formatDateString(dateString: any) {
-  const [month, day, year] = dateString.split("/");
-
-  // Add leading zeros to day and month if necessary
-  const formattedDay = day.padStart(2, "0");
-  const formattedMonth = month.padStart(2, "0");
-
-  // Return the rearranged and formatted date string
-  return `${formattedDay}/${formattedMonth}/${year}`;
-}
-
-// const calculateEventWidth = (duration: any) => {
-//   // Default width for events with duration 1
-//   let width = "85%";
-//   // Adjust width based on duration
-//   if (duration === 2) {
-//     width = "200%";
-//   } else if (duration === 3) {
-//     width = "310%";
-//   }
-//   return width;
-// };
-
-// const calculateTopPosition = (totalCount: any, currentIndex: any) => {
-//   // Calculate the total number of positions available for events
-//   const totalPositions = 200;
-
-//   // Calculate the height of each position
-//   const positionHeight = totalPositions / totalCount;
-
-//   // Calculate the top position of the current event based on its index
-//   const topPosition = positionHeight * currentIndex;
-
-//   return topPosition;
-// };
-
-function calculateWidth(eventDuration:any) {
-  // Define a constant for the width of a unit of time (e.g., 1 hour, 1 minute)
-  const unitWidth = 100; // Adjust as needed
-
-  // Calculate the width based on the duration of the event
-  const stripWidth = eventDuration * unitWidth;
-
-  return stripWidth;
-}
 const MonthCalendar: React.FC = () => {
-  const [calendarIndex, setCalendarIndex] = useState([]);
-
   return (
     <div className={styles.container}>
       <div className={styles.dayCards_container}>
@@ -234,22 +177,18 @@ const MonthCalendar: React.FC = () => {
       </div>
 
       <div className={styles.monthCards_container}>
-        {datesWithEvents.map((dateWithEvent, indexd) => {
+        {/* {datesWithEvents.map((dateWithEvent, indexd) => {
           if (dateWithEvent == "") {
             return <div className={styles.emptyCard}></div>;
           } else {
             let count = dateWithEvent.events.length;
-            // console.log("count_dada", indexd);
             return (
               <div className={styles.monthCard}>
                 <div className={styles.monthCard_dayno}>
-                  {dateWithEvent.date.getDate()} {`idx->${indexd}`}
+                  {dateWithEvent.date.getDate()}
                 </div>
                 {dateWithEvent.events.map((event) => {
                   const formattedDate = formatDateString(event.startDate);
-                  const arrayFromNumber = Array.from({
-                    length: event.duration,
-                  });
                   if (
                     formattedDate == dateWithEvent.date.toLocaleDateString()
                   ) {
@@ -258,103 +197,51 @@ const MonthCalendar: React.FC = () => {
                     if (event.duration > 0) {
                       event.duration == 2
                         ? (width = "200%")
-                        : event.duration == 5
-                        ? (width = "420%")
+                        : event.duration == 3
+                        ? (width = "310%")
                         : "85%";
                     }
-                    // let width = "85%";
-                    // let stripWidth =0
-                    // console.log("ddd",arrayFromNumber.length)
-                    // for (
-                    //   let events = 0;
-                    //   events < arrayFromNumber.length;
-                    //   events++
-                    // ) {
-                    //   if(indexd++ && event.name ===  event.name){
-                    //    stripWidth = calculateWidth(event.duration);
-                      
-                    //   console.log("erer999ww",event.name, indexd,event.background, stripWidth);
-                    //   return  <div
-                    //   // style={{
-                    //   //   backgroundColor:`${event.background}`,
-                    //   //   width:`${stripWidth}%`,
-                    //   //   top:"40",
-                    //   //   zIndex:"20",
-                    //   //   color:"black"
-                    //   // }}
-                    //   // >asd
-                    //   className={styles.event}
-                    //   style={{
-                    //     width: `${stripWidth}`,
-                    //     // top: `${40 + count * 20}%`,
-                    //     top: `${40}%`,
-                    //     backgroundColor: event.background,
-                    //     color: "black",
-                    //     fontSize: "12px",
-                    //   }}
-                    // >
-                    //   {event.name}
-                    //   </div>
-                        
-                    //   }
-
-                    //   // console.log("inside_for", indexd++)
-                    //   // for(let eventIndex = events; eventIndex < events; eventIndex++ ){
-                    //   //   console.log("inside_for", indexd)
-                    //   // }
-                    //   // for (
-                    //   //   let eventsDuration = 1;
-                    //   //   eventsDuration < arrayFromNumber.length;
-                    //   //   eventsDuration++
-                    //   // ) {
-                    //   //   console.log("eventttt");
-                    //   // }
-                    //   // if(event.background && indexd){
-                    //   //   console.log("farh")
-                    //   // }
-                    // }
-
-                    // console.log("RESULT", dateWithEvent.date.getDate(), count);
 
                     return (
-                      <div
-                        className={styles.event}
-                        style={{
-                          width: `${width}`,
-                          top: `${40 + count * 20}%`,
-                          // top: `${40}%`,
-                          backgroundColor: event.background,
-                          color: "black",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {event.name}
-                      </div>
+                      <>
+                        <div
+                          className={styles.event}
+                          style={{
+                            width: `${width}`,
+                            top: `${40 + count * 20}%`,
+                            backgroundColor: event.background,
+                            color: "black",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {event.name}
+                        </div>
+                      </>
                     );
                   }
                 })}
               </div>
             );
           }
-        })}
+        })} */}
 
-        {/* <>
+        <>
           {datesWithEvents.map((dateWithEvent, index) => {
             if (dateWithEvent === "") {
               return <div className={styles.emptyCard} key={index}></div>;
             } else {
-              const formattedDate = dateWithEvent.date.toLocaleDateString();
+              let count = dateWithEvent?.events?.length;
               const eventCards = dateWithEvent.events.map(
                 (event, eventIndex) => {
-                  const eventWidth = calculateEventWidth(event.duration);
+                  count = count - 1;
                   return (
                     <EventCard
                       key={eventIndex}
-                      width={eventWidth}
-                      top={`${calculateTopPosition(
-                        dateWithEvent.events.length,
-                        eventIndex
-                      )}%`}
+                      top={
+                        count > 0
+                          ? `${35 + count * 20}%`
+                          : `${35 + count * 40}%`
+                      }
                       background={event.background}
                       name={event.name}
                     />
@@ -371,7 +258,7 @@ const MonthCalendar: React.FC = () => {
               );
             }
           })}
-        </> */}
+        </>
       </div>
     </div>
   );
