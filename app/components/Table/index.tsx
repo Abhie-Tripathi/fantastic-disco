@@ -434,7 +434,7 @@ const Table = ({
                     {isOpen == event.id && (
                       <div className={styles.modal}>
                         <header className={styles["modal_header"]}>
-                          <div className={styles["modal_header-title"]}>Do you want to participate in "{event.name}" ?</div>
+                          <div className={styles["modal_header-title"]}>Do you want to participate in &quot;{event.name}&quot; ?</div>
                           <button className={styles["close"]} onClick={() => handleModalOpen(event.id, event.edition)} >
                             <img src="/close.svg" alt="close" />
                           </button>

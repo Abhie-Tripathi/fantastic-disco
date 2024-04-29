@@ -1,32 +1,39 @@
 "use client";
-
-import { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 type Theme = "dark" | "light";
 
 interface ThemeContextType {
-  theme: Theme;
+  theme: Theme | null;
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext({
+const ThemeContext = createContext<ThemeContextType>({
   theme: "dark",
   toggleTheme: () => {},
-} as ThemeContextType);
+});
 
-export const ThemeProvider = ({ children }: any) => {
-  const [theme, setTheme] = useState<Theme>(() => {
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [theme, setTheme] = useState<Theme | null>(null);
+
+  useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
-    return (storedTheme as Theme) || "dark";
-  });
+    if (theme === null && storedTheme !== null) {
+      setTheme(storedTheme as Theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (theme !== null && typeof window !== "undefined") {
+      localStorage.setItem("theme", theme);
+    }
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-  }, [theme]);
 
   const value: ThemeContextType = {
     theme,
@@ -38,4 +45,4 @@ export const ThemeProvider = ({ children }: any) => {
   );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = (): ThemeContextType => useContext(ThemeContext);
