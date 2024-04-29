@@ -8,6 +8,7 @@ import person2 from '@/public/person2.svg'
 import Image from 'next/image';
 import Link from 'next/link';
 import ClockIcon from '/public/clock.svg'
+import StatusChangeDropdown from '@/app/components/internal/eventdetail/statusDropdown';
 
 interface YourEventCardProps {
   eventId: number;
@@ -41,10 +42,11 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div className={styles.eventName}>{eventName}</div>
             <div className={styles.company}>{eventCompany}</div>
           </div>
-          <div className={styles.tag}>
+          {/* <div className={styles.tag} onClick={handleTest}>
             <Image src={ClockIcon} alt="clock" width={16} height={16} />
             <div>Pending</div>
-          </div>
+          </div> */}
+          <StatusChangeDropdown label='' eventId={123} />
         </div>
         <div className={styles.locationAndDateContainer}>
           <div className={styles.eventLocation}>
