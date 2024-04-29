@@ -11,7 +11,8 @@ import Add from '/public/plus.svg';
 import tickIcon from "/public/internal/tick.svg";
 import { EventDataType } from "@/app/components/types/allevents";
 // import Table from "@/app/components/Table";
-import similarEventData from '@/public/data/similarEventData.json';
+// import similarEventData from '@/public/data/similarEventData.json';
+import similarEventData from "@/public/data/eventDataTesting.json";
 import SearchIcon from "/public/internal/SearchInput.svg";
 import DropIcon from "/public/internal/arrow_drop_down.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
@@ -757,7 +758,7 @@ const Search = () => {
             )}
             {selectedView === "list" && listView === "table" && (
               <Suspense fallback={<Loading />}>
-              <Table eventData={similarEventData} />
+              <Table eventData={similarEventData.data.events} showInsights={selectedInsights} />
               </Suspense>
             )}
 
