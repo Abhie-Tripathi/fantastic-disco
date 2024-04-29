@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './viewBtns.module.css';
+import { useTheme } from '@/context';
 
 interface Props {
     handleSelectedData: (view: string) => void;
@@ -7,6 +8,7 @@ interface Props {
 
 const ViewBtns: React.FC<Props> = ({ handleSelectedData }) => {
     const [selectedView, setSelectedView] = useState<string>('list'); 
+    const {theme} = useTheme();
 
     const handleButtonClick = (view: string): void => {
         setSelectedView(view);
@@ -14,7 +16,7 @@ const ViewBtns: React.FC<Props> = ({ handleSelectedData }) => {
     };
 
     return (
-        <div className={styles.btns}>
+        <div className={`${styles.btns} ${theme === 'light' ? styles.light : ""}`}>
             <button onClick={() => handleButtonClick('list')} className={`${styles.listBtn} ${selectedView === 'list' ? styles.activeBtn : ''}`}>
                 List
             </button>

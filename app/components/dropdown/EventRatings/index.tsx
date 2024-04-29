@@ -3,6 +3,7 @@ import styles from "@/app/components/dropdown/EventFormat/EventFormt.module.css"
 import useClickOutside from "@/hooks/useClickOutside";
 import starRate from "/public/internal/rating_star.svg";
 import Image from "next/image";
+import { useTheme } from "@/context";
 
 interface EventRatingProps {
   dropdownRef: React.MutableRefObject<null>;
@@ -19,6 +20,7 @@ const EventRatings = ({
 }: EventRatingProps) => {
   const menuNode = useRef(null);
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme()
 
   const selectRatingHandler = (event: React.MouseEvent<HTMLUListElement>) => {
     const eventTarget = event.target as HTMLElement;
@@ -27,7 +29,7 @@ const EventRatings = ({
   };
 
   return (
-    <div className={styles.container} ref={menuNode}>
+    <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} ref={menuNode}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Event Ratings</div>
       </div>

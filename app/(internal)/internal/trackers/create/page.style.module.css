@@ -34,6 +34,11 @@
   background-color: #1a1a1a;
 }
 
+.trackers_header_light{
+  background-color: var(--secondary-bg-light);
+  color: var(--primary-color-light);
+}
+
 .trackers_header_input {
   flex: 1;
   color: white;
@@ -90,7 +95,7 @@
 
 
 .input_title {
-  color: white;
+  color: inherit;
   font-weight: 600;
 }
 
@@ -129,6 +134,11 @@
   gap: 5px;
 }
 
+.chip_light{
+  background-color: var(--primary-bg-light);
+  color: inherit;
+}
+
 .chip.active {
   color: white;
   background-color: #6750a4;
@@ -148,6 +158,11 @@
   box-shadow: 0px 0px 12px 0px #2020200d;
   border: 1px solid #ececf9;
   background-color:#1a1a1a;
+}
+
+.dropdown_choosebutton_light{
+  background-color: var(--secondary-bg-light);
+  color: var(--primary-color-light);
 }
 
 .sliderinput_container {
@@ -170,6 +185,10 @@
   padding: 10px;
   display: flex;
   gap: 10px;
+}
+
+.location_tab_container_light{
+  background-color: var(--secondary-bg-light);
 }
 
 .location_tab {

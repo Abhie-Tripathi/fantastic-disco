@@ -6,6 +6,7 @@ import SearchIcon from "/public/search.svg";
 import CloseIcon from "/public/close.svg";
 import uploadIcon from "/public/internal/upload.svg";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 interface CompanySearchProps {
   className?: string;
@@ -26,6 +27,7 @@ const CompanySearch = ({
   const [inputText, setInputText] = useState<string>("");
   const [inputFile, setInputFile] = useState<File | null>(null);
   const [companyData, setCompanyData] = useState<string[]>(state);
+  const {theme} = useTheme()
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,7 +69,7 @@ const CompanySearch = ({
 
   return (
     <div>
-      <div className={`${styles.container} ${className}`}>
+      <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
         <div className={styles.header}>
           <div className={styles.tabs_container}>
             <div
@@ -93,7 +95,7 @@ const CompanySearch = ({
         </div>
 
         {activeTab == "Search" && (
-          <div className={styles.searchBar_container}>
+          <div className={`${styles.searchBar_container} ${theme === 'light' ? styles.searchBar_container_light : ""}`}>
             <input
               type="text"
               placeholder="Type your keywords to be included in search result"

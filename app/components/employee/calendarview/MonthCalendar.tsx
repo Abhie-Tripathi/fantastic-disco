@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./monthCalendar.module.css";
+import { useTheme } from "@/context";
 interface Event {
     id: number;
     name: string;
@@ -173,6 +174,7 @@ function generateMonthArray(year: number, month: number) {
   });
 
 const MonthCalendar: React.FC = () => {
+   const {theme} = useTheme()
     
     return (
         <div className={styles.container}>
@@ -191,7 +193,7 @@ const MonthCalendar: React.FC = () => {
           } else {
             let count = dateWithEvent.events.length;
             return (
-              <div className={styles.monthCard} key={index}>
+              <div className={`${styles.monthCard} ${theme === 'light' ? styles.monthCard_light : ""}`} key={index}>
                 <div className={styles.monthCard_dayno}>
                   {dateWithEvent.date.getDate()}
                 </div>

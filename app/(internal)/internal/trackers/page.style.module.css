@@ -16,6 +16,10 @@
     font-size: 20px;
 }
 
+.trackers_header_title_light{
+    color:var(--primary-color-light)
+}
+
 .trackers_header_more_button {
     cursor: pointer;
     border: 1px solid #e0e1e4;

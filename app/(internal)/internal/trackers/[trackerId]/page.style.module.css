@@ -33,10 +33,15 @@
     gap: 10px;
     background-color: #1a1a1a;
   }
+
+  .trackers_header_light{
+    background-color: var(--secondary-bg-light);
+    color: var(--primary-color-light);
+  }
   
   .trackers_header_title {
     flex: 1;
-    color: white;
+    color: inherit;
     font-weight: 500;
     font-size: 20px;
   }

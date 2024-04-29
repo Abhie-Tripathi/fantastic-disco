@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import styles from "@/app/components/dropdown/EventFormat/EventFormt.module.css";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 interface EventSizeProps {
   dropdownRef: React.MutableRefObject<null>;
@@ -17,6 +18,7 @@ const EventSize = ({
 }: EventSizeProps) => {
   const menuNode = useRef(null);
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme();
 
   const selectFeeHandler = (event: React.MouseEvent<HTMLUListElement>) => {
     const eventTarget = event.target as HTMLElement;
@@ -25,7 +27,7 @@ const EventSize = ({
   };
 
   return (
-    <div className={styles.container} ref={menuNode}>
+    <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} ref={menuNode}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Event Size</div>
       </div>

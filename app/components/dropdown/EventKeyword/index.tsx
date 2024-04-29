@@ -5,6 +5,7 @@ import Image from "next/image";
 import SearchIcon from "/public/search.svg";
 import CloseIcon from "/public/close.svg";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 interface EventKeywordProps {
   className?: string;
@@ -24,6 +25,7 @@ const EventKeyword = ({
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
   const [eventKeyword, setEventKeyword] = useState<string[]>(state);
+  const {theme} = useTheme()
 
   useClickOutside(dropdownRef, () => onClose());
 
@@ -52,7 +54,7 @@ const EventKeyword = ({
 
   return (
     <div>
-      <div className={`${styles.container} ${className}`}>
+      <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
         <div className={styles.header}>
           <div className={styles.tabs_container}>
             <div
@@ -77,7 +79,7 @@ const EventKeyword = ({
           </div>
         </div>
 
-        <div className={styles.searchBar_container}>
+        <div className={`${styles.searchBar_container} ${theme === 'light' ? styles.searchBar_container_light : ""}`}>
           <input
             type="text"
             placeholder={

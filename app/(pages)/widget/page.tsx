@@ -7,10 +7,12 @@ import Add from '/public/add.svg'
 import Image from 'next/image';
 import Link from 'next/link'
 import SkeletonWidget from '@/app/components/widgets/SkeletonWidget'
+import { useTheme } from '@/context'
 
 const Widget = () => {
 
   const [widgets, setWidgets] = useState<any>();
+  const {theme} = useTheme()
 
   
   useEffect(() => {
@@ -31,8 +33,8 @@ const Widget = () => {
   }, []);
 
   return (
-    <div className={Styles.outerContainer}>
-      <div className={Styles.containerOne}>
+    <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light: ""}`}>
+      <div className={`${Styles.containerOne} ${Styles.containerOne_light}`}>
         <div className={Styles.c1left}>Widgets</div>
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>

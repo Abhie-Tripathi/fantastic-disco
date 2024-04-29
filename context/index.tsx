@@ -1,4 +1,5 @@
 export * from "./auth";
+export * from "./theme";
 
 // export const baseUrl = process.env.NEXT_PUBLIC_BACKEND_ROUTE;
 export const baseUrl =process.env.NEXT_PUBLIC_EVENTGENI_URL;

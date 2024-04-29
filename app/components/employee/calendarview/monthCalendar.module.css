@@ -12,8 +12,9 @@
   }
   
   .dayCard {
-    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
-    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    /* filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%); */
+    background-color: #6750a4;
     border-radius: 12px 12px 0px 0px;
     padding: 25px 0px;
     width: 100%;
@@ -64,10 +65,16 @@
     width: calc((100% - 90px) / 7);
     border-radius: 20px;
     padding: 15px;
+    color: white;
+  }
+
+  .monthCard_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
   }
   
   .monthCard_dayno {
-    color: white;
+    /* color: white; */
     font-weight: 500;
     font-size: 28px;
   }
