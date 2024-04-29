@@ -1,4 +1,8 @@
-import dropdownIcon from "/public/internal/dropdown_arrow.svg";
+import dropdownIcon from "/public/internal/drop_down_angle.svg";
+import shortlistedIcon from "/public/internal/shortlist_status.svg";
+import confirmedIcon from "/public/internal/confirmed_status.svg";
+import cancelledIcon from "/public/internal/cancelled_status.svg";
+import negotiationIcon from "/public/internal/negotiation_status.svg";
 import Image from "next/image";
 import styles from './eventdesc.style.module.css';
 import { useState } from "react";
@@ -6,9 +10,7 @@ interface PropType {
   label: string;
   eventId: number;
 }
-interface UserType {
-  name: string
-}
+
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("SHORTLISTED");
@@ -29,7 +31,8 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            {value}&nbsp;
+            <Image width={14} height={14} src={shortlistedIcon} alt="downarrow" />
+            {value}
           </div>
           <Image width={14} height={14} src={dropdownIcon} alt="downarrow" />
         </div>
@@ -41,16 +44,24 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
             >
             <div
                 className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`}
-            >SHORTLISTED</div>
+            >
+              <Image width={14} height={14} src={shortlistedIcon} alt="downarrow" />SHORTLISTED
+            </div>
             <div
                 className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`}
-            >IN NEGOTIATION</div>
+            >
+              <Image width={14} height={14} src={negotiationIcon} alt="downarrow" />IN NEGOTIATION
+            </div>
             <div
                 className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`}
-            >CONFIRMED</div>
+            >
+              <Image width={14} height={14} src={confirmedIcon} alt="confirm" />CONFIRMED
+            </div>
             <div
                 className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`}
-            >CANCELLED</div>
+            >
+              <Image width={14} height={14} src={cancelledIcon} alt="downarrow" />CANCELLED
+            </div>
             </div>
           </div>
         )}

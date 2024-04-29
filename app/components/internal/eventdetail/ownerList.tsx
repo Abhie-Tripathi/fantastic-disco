@@ -1,4 +1,4 @@
-import dropdownIcon from "/public/internal/dropdown_arrow.svg";
+import dropdownIcon from "/public/internal/drop_down_angle.svg";
 import Image from "next/image";
 import styles from './eventdesc.style.module.css';
 import { useState } from "react";
@@ -23,7 +23,7 @@ const OwnerList: React.FC<PropType> = (props: PropType) => {
           className={styles.dropdown_container2}
           onClick={openDropDownHandler}
         >
-          <div className={styles.dropdown_value} style={{ display: "flex" }}>
+          <div className={styles.dropdown_value} style={{ display: "flex", marginRight: "1rem" }}>
             <img
               src={'https://c1.10times.com/board/images/default_user.png'}
               alt="user"

@@ -51,13 +51,14 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
             {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
+            <div>
+            <StatusBar />
             <div className={styles.innerContainer}>
-                <StatusBar />
-                <div className={styles.containerLeftTop}>
-                    <OwnerList label='test' eventId={123} />
-                    <StatusChangeDropdown label='' eventId={123} />
-                </div>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
+                    <div className={styles.containerLeftTop}>
+                        <OwnerList label='test' eventId={123} />
+                        <StatusChangeDropdown label='' eventId={123} />
+                    </div>
                     {singledata && <SingleEvent {...singledata} />}
                     <EventDescription description={singledata.description} open={openEventDetails} />
                     <Organiser open={openOrganiserDetails} />
@@ -67,6 +68,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
                 <div className={styles.containerRight} ref={rightContainerRef}>
                     <Notes />
                 </div>
+            </div>
             </div>
         </div>
     );
