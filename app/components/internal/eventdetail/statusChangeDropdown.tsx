@@ -31,7 +31,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            <Image width={14} height={14} src={shortlistedIcon} alt="downarrow" />
+            <Image width={14} height={14} src={value == 'SHORTLISTED' ? shortlistedIcon : value == 'IN NEGOTIATION' ? negotiationIcon :  value == 'CONFIRMED' ? confirmedIcon : cancelledIcon} alt="downarrow" />
             {value}
           </div>
           <Image width={14} height={14} src={dropdownIcon} alt="downarrow" />

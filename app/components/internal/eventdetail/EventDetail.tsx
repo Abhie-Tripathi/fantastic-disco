@@ -12,6 +12,7 @@ import Follower from './Follower';
 import StatusBar from './StatusBar';
 import OwnerList from './ownerList';
 import StatusChangeDropdown from './statusChangeDropdown';
+import { usePathname } from "next/navigation";
 
 interface EventData {
     id: number;
@@ -31,6 +32,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
     const [meet, setMeet] = useState(false);
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
     const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
+    const pathName = usePathname().split("/")[1];
 
     const singledata: EventData = { id: 12, imageUrl: "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg", name: "Great Indian Food Festival", description: "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more." };
 
@@ -52,7 +54,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
             {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
             <div>
-            <StatusBar />
+            {pathName === 'internal' && <StatusBar /> }
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={styles.containerLeftTop}>
