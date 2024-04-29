@@ -71,7 +71,15 @@
   padding: 10px;
   width: 100%;
 }
-
+.allUser{
+  position: absolute;
+  display: flex;
+  gap:10px;
+  flex-direction: column;
+  bottom:100%;
+  padding: 10px;
+  background-color: #1a1a1a;
+}
 .employeeDropdown {
   background-color: #1a1a1a;
   border-radius: 12px;

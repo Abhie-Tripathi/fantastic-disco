@@ -15,19 +15,29 @@ import Lock from '@/public/lock.svg'
 import Image from "next/image";
 import EmployeeData from "@/public/data/employeeData.json"
 import { revalidateComment } from "@/utils/commentAction";
-
 interface Props {
-  productId: string;
+  productId?: string;
   replyOptions?: replyOptions;
   focus?: boolean;
   isEditComment?: boolean;
   isEditReply?: boolean;
   editCommentText?: string;
   className?: string;
-  repliesLength?: number
+  repliesLength?: number;
+   notes:(()=>void);
+  
+   note?:string;
+   setNote:React.Dispatch<React.SetStateAction<string>>;
+   comments?: IComment[];
+}
+interface User{
+    firstname:string;
+    lastname:string;
+  
 }
 interface replyOptions {
   commentId: string;
+ 
 }
 export const AddComment = ({
   productId,
@@ -37,78 +47,117 @@ export const AddComment = ({
   isEditReply,
   className,
   repliesLength,
+  notes,
+  note,
+  setNote,
+  comments,
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const isReply = isEditComment || isEditReply ? false : !!commentId;
-  const [note, setNote] = useState<string>("");
+  const [noten, setNoten] = useState<string>("");
+  const [showUser,setShowUser]=useState(false);
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
+  const [alluser,setAlluser]=useState<String[]>([]);
+  // useEffect(() => {
+  //   const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
+  //   if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
+  //     setEmployeeDropDown(true);
+  //     const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
+  //     if (searchTerm) {  setAlluser(allUser);
+  //       const filtered = EmployeeData.filter((employee) =>
+  //         employee.name.toLowerCase().includes(searchTerm.toLowerCase())
+  //       );
+  //       setFilteredEmployees(filtered);
+  //     } else {
+  //       setFilteredEmployees(EmployeeData); // Show all employees if no specific name is typed after "@"
+  //     }
+  //   } else {
+  //     setEmployeeDropDown(false);
+  //   }
+  // }, [noten, EmployeeData]);
 
-  useEffect(() => {
-    const trimmedNote = note.trim(); // Trim whitespace from the beginning and end of the input
-    if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
-      setEmployeeDropDown(true);
-      const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
-      if (searchTerm) {
-        const filtered = EmployeeData.filter((employee) =>
-          employee.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredEmployees(filtered);
-      } else {
-        setFilteredEmployees(EmployeeData); // Show all employees if no specific name is typed after "@"
-      }
-    } else {
-      setEmployeeDropDown(false);
-    }
-  }, [note, EmployeeData]);
 
-
-  const handleEmployeeClick = (employee: any) => {
-    setNote((prevNote) => {
-      // Find the last index of "@" in the input value
-      const lastIndex = prevNote.lastIndexOf("@");
-      // Split the input value into two parts: text before "@" and text after "@"
-      const beforeAt = prevNote.substring(0, lastIndex);
-      const afterAt = prevNote.substring(lastIndex + 1);
-      // Concatenate the text before "@" with the selected employee name and "@" and text after "@"
-      return `${beforeAt}@${employee.name} ${afterAt}`;
-    });
-    setEmployeeDropDown(false);
+  // const handleEmployeeClick = (employee: any) => {
+  //   setNote((prevNote) => {
+  //     // Find the last index of "@" in the input value
+  //     const lastIndex = prevNote.lastIndexOf("@");
+  //     // Split the input value into two parts: text before "@" and text after "@"
+  //     const beforeAt = prevNote.substring(0, lastIndex);
+  //     const afterAt = prevNote.substring(lastIndex + 1);
+  //     // Concatenate the text before "@" with the selected employee name and "@" and text after "@"
+  //     return `${beforeAt}@${employee.name} ${afterAt}`;
+  //   });
+  //   setEmployeeDropDown(false);
+  // }
+  
+  // const renderNote = () => {
+  //   const parts = note.split("@");
+  //   return parts.map((part, index) => {
+  //     console.log("notes :"+part);
+  //     if (index === 0) {
+  //       return part;
+  //     } else {
+  //       return (
+  //         <span key={index} style={{ color: "blue" }}>
+  //           @{part}
+  //         </span>
+  //       );
+  //     }
+  //   });
+  // };
+  // const addNote=()=>{
+  //   console.log(notes);
+  //   const len=notes?.length;
+  //   const id = Date.now().toString();
+  //   const newNote={
+  //       id: id,
+  //     text: note
+  // }
+  //  notes = [ ...notes, newNote ];
+  //   // console.log(updatedNotes)
+  //     console.log(notes);
+      
+  // }
+  const noteFun=(e:any)=>{
+    setNote(e.target.value);
+    if (e.target.value.includes('@')) {
+      console.log(comments);
+      setShowUser(true);
+      let arr = Array.from(new Set(comments?.map(comment => "@"+comment?.user?.firstname+comment?.user?.lastname.toLowerCase())));
+      console.log(arr);
+      
+        setAlluser(arr);
+    }else setShowUser(false);
   }
-  const renderNote = () => {
-    const parts = note.split("@");
-    return parts.map((part, index) => {
-      if (index === 0) {
-        return part;
-      } else {
-        return (
-          <span key={index} style={{ color: "blue" }}>
-            @{part}
-          </span>
-        );
-      }
-    });
-  };
-
+  
   return (
     <div className={styles.container}>
+      {/* <div>{renderNote()}</div> */}
       <div className={styles.addNotes}>
-        <input type="text" placeholder="Take a note, @name" value={note} onChange={(e) => setNote(e.target.value)} />
-        <div style={{ display: "flex" }}><Image src={Send} alt="send" /></div>
+        <input type="text" placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} />
+        <div style={{ display: "flex" }} onClick={notes}><Image src={Send} alt="send" /></div>
         {employeeDropDown && (
           <div className={styles.employeeDropdown}>
             {filteredEmployees.map((employee: any, key: any) => (
-              <div key={key} className={styles.employee} onClick={() => handleEmployeeClick(employee)}>
+              <div key={key} className={styles.employee}>
                 {employee.name}
               </div>
             ))}
           </div>
         )}
-         <div>{renderNote()}</div>
+        {showUser && (
+    <div className={styles.allUser}>
+        {alluser.map((ele,ind) => (
+            <div key={ind}>{ele}</div>
+        ))}
+    </div>
+)}
       </div>
       <button className={styles.commentBtn}>
         {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
       </button>
+
       <div className={styles.attachmentOption}>
         <Image className={styles.attachIcon} src={Attach} alt="attach" />
         <Image className={styles.attachIcon} src={Link} alt="link" />
