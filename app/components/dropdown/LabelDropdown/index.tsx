@@ -5,6 +5,7 @@ import Image from "next/image";
 import { labels } from "@/public/data/categories";
 import useClickOutside from "@/hooks/useClickOutside";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface LabelDropdownProps {
   className?: string;
@@ -22,6 +23,7 @@ const LabelDropdown = ({
   onClose,
 }: LabelDropdownProps) => {
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme();
 
   const onClickHandler = (value: string) => {
     state.includes(value)
@@ -30,7 +32,7 @@ const LabelDropdown = ({
   };
 
   return (
-    <div className={`${styles.options} ${className}`}>
+    <div className={`${styles.options} ${className} ${theme === 'light' ? styles.options_light : ""}`}>
       <div className={styles.heading}>Labels</div>
       <div className={styles.search}>
         <input type="text" placeholder="Search Labels" />

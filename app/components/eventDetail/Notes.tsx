@@ -10,6 +10,7 @@ import person1 from '@/public/person2.svg'
 // import { text } from "stream/consumers";
 import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from '../ButtonView';
+import { useTheme } from '@/context';
 
 interface Props {
   productId?: string | undefined,
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const Notes = ({ comments, productId }: Props) => {
+  const {theme} = useTheme()
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
   comments = [...CommentsData];
   return (
@@ -44,7 +46,7 @@ export const Notes = ({ comments, productId }: Props) => {
         )
           : null
       }
-      <div className={styles.notesAdd}>
+      <div className={`${styles.notesAdd} ${theme === 'light' ? styles.notesAdd_light : ""}`}>
         <AddComment productId={productId} />
       </div>
     </div>

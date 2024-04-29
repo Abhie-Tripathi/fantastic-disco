@@ -5,6 +5,11 @@
     padding: 62px;
 }
 
+.container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+}
+
 .container1 {
     display: flex;
 
@@ -53,6 +58,11 @@
     padding-right: 120px;
     width: 100%;
     z-index: 1;
+  }
+
+  .modal_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
   }
 
   @media screen and (max-width: 1437px) {

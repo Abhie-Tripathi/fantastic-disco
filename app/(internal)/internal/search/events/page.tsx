@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTheme } from "@/context";
 import Image from "next/image";
 import styles from "./page.style.module.css";
 import { myFetch } from "@/utils/myFetch";
@@ -43,6 +44,7 @@ interface InsightsType {
 const Search = () => {
   //   const searchParams = useSearchParams();
   const router = useRouter();
+  const {theme} = useTheme();
   const categoryDropdownRef = useRef(null);
   const locationDropdownRef = useRef(null);
   const labelDropdownRef = useRef(null);
@@ -164,9 +166,9 @@ const Search = () => {
   //   }, [searchParams]);
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.inputfields_container}>
+      <div style={{ paddingTop: "70px", paddingLeft : "74px"}}>
+      <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} >
+        <div className={`${styles.inputfields_container} ${theme === 'light' ? styles.inputfields_container_light : ""}`}>
           <div className={styles.searchbar}>
             <input
               type="text"
@@ -704,7 +706,7 @@ const Search = () => {
             <div className={styles.exportedno_title}>Exported files</div>
           </div>
           <div className={styles.viewTypeButtons_container}>
-            <div className={styles.viewTypeButtons}>
+            <div className={`${styles.viewTypeButtons} ${theme === 'light' ? styles.viewTypeButtons_light : ""}`}>
               <button
                 onClick={() => setSelectedView("list")}
                 className={`${styles.listBtn} ${selectedView === "list" ? styles.active : ""
@@ -746,7 +748,7 @@ const Search = () => {
         ) : (
           <div className={styles.dataView}>
             {selectedView === "list" &&
-              <div>
+              <div className={`${theme === 'light' ? styles.listBtn_container_light : styles.listBtn_container}`}>
                 <button className={`${styles.listBtn} ${listView === "card" ? styles.active : ""}`} onClick={() => setListView("card")}>Card</button>
                 <button className={`${styles.listBtn} ${listView === "table" ? styles.active : ""}`} onClick={() => setListView("table")}>Table</button>
               </div>}
@@ -781,7 +783,7 @@ const Search = () => {
           </Suspense>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default Search;

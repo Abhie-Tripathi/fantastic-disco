@@ -7,6 +7,11 @@
     background-color: #1a1a1a;
     min-width: 600px;
   }
+
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
   
   .sub_container {
     padding: 0px 20px 20px 20px;
@@ -159,7 +164,7 @@
     background: none;
     border-radius: 2px;
     text-align: center;
-    color: white;
+    color: inherit;
     font-weight: 600;
     outline: none;
   }

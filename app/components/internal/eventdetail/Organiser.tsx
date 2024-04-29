@@ -6,6 +6,7 @@ import PeopleIcon from '/public/people.svg'
 import ClockIcon from '/public/clock.svg'
 import LocationIcon from '/public/location.svg'
 import Placehodler from '/public/placeholder.png'
+import { useTheme } from '@/context'
 
 interface Props{
     open : boolean
@@ -13,8 +14,9 @@ interface Props{
 
 const Organiser = ({open} : Props) => {
     const [accordianToggle, setAccordianToggle] = useState(open)
+    const {theme} = useTheme()
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>
                 <Image src={PeopleIcon} alt='page' />
                 <div>Organiser Details</div>
@@ -27,7 +29,7 @@ const Organiser = ({open} : Props) => {
                         <div style={{ fontSize: 12, color: "#999999" }}>Supercharge your online meetings</div>
                     </div>
                 </div>
-                <div className={styles.locationContainer}>
+                <div className={`${styles.locationContainer} ${theme === 'light' ? styles.locationContainer_light : ""}`}>
                     <Image src={LocationIcon} alt='location' />
                     <div className={styles.location}>Bengaluru, Karnataka</div>
                 </div>

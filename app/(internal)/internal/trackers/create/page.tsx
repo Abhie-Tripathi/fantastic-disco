@@ -14,6 +14,7 @@ import DateRangeInput from "@/app/components/dropdown/DateRangeInput"
 import EventAttendance from "@/app/components/dropdown/EventAttendance";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { createTracker } from "@/app/service/trackerService";
+import { useTheme } from "@/context";
 
 interface ChipProps {
   state: string[];
@@ -24,6 +25,7 @@ interface ChipProps {
 const statusData = ["Active", "Cancelled", "Postponed", "Predicted"];
 
 const Chip = ({ state, setState, value }: ChipProps) => {
+  const {theme} = useTheme();
   const onClickHandler = () => {
     state.includes(value)
       ? setState(state.filter((existingStatus) => existingStatus !== value))
@@ -31,7 +33,7 @@ const Chip = ({ state, setState, value }: ChipProps) => {
   };
   return (
     <div
-      className={`${styles.chip} ${state.includes(value) ? styles.active : ""}`}
+      className={`${styles.chip} ${state.includes(value) ? styles.active : ""} ${theme === 'light' ? styles.chip_light : ""}`}
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
@@ -74,6 +76,7 @@ const CreateTracker = () => {
   const labelDropdownRef = useRef(null);
   const dateRangeDropdownRef = useRef(null);
   const attendanceDropdownRef = useRef(null);
+  const {theme} = useTheme()
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -111,7 +114,7 @@ const CreateTracker = () => {
   return (
     <div>
       <div className={styles.trackers_container}>
-        <div className={styles.trackers_header}>
+        <div className={`${styles.trackers_header} ${theme === "light" ? styles.trackers_header_light : ""}`}>
           <input
             className={styles.trackers_header_input}
             placeholder="Tracker Name"
@@ -191,7 +194,7 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <div className={styles.dropdown_choosebutton}>
+              <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
                 <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
@@ -224,7 +227,7 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <div className={styles.dropdown_choosebutton}>
+              <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
                 <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
@@ -253,7 +256,7 @@ const CreateTracker = () => {
               ) : (
                 <div className={styles.dropdown_placeholder}>--Select--</div>
               )}
-              <div className={styles.dropdown_choosebutton}>
+               <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
                 <Image src={DropdownArrow} alt="dropdownarrow" />
               </div>
@@ -310,7 +313,7 @@ const CreateTracker = () => {
           </div>
         </div>
 
-        <div className={styles.location_tab_container}>
+        <div className={`${styles.location_tab_container} ${theme === 'light' ? styles.location_tab_container_light : ""}`}>
           <div className={`${styles.location_tab} ${styles.active}`}>
             Saved Locations
           </div>

@@ -17,6 +17,10 @@
     justify-content: space-between;
 }
 
+.buttons button{
+    color: white;
+}
+
 .filterBtns {
     display: flex;
     flex-wrap: wrap;
@@ -24,7 +28,6 @@
 
 .filterBtns button {
     margin-bottom: 10px;
-    color: white;
     font-size: 14px;
     background: none;
     border: none;
@@ -42,10 +45,10 @@
 
 .filterBtns button.activeFilterBtn {
     background-color: #6750A4;
+    color: white;
 }
 
 .eventsBtns button {
-    color: white;
     font-size: 14px;
     background: none;
     border: none;
@@ -58,6 +61,11 @@
 
 .eventsBtns .activeTeamBtn {
     background-color: #507ba4;
+    color: white;
+}
+
+.buttons_light button{
+    color: var(--primary-color-light);
 }
 
 .userEvents {

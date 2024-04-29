@@ -64,10 +64,16 @@
     width: calc((100% - 90px) / 7);
     border-radius: 20px;
     padding: 15px;
+    color: white;
+  }
+
+  .monthCard_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
   }
   
   .monthCard_dayno {
-    color: white;
+    /* color: white; */
     font-weight: 500;
     font-size: 28px;
   }

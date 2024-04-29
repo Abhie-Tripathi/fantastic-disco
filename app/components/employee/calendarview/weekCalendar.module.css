@@ -66,7 +66,13 @@
     flex-direction: column;
     gap: 10px;
     position: relative;
+    background-color: #1A1A1A;
   }
+
+  .eventCard_light{
+    background-color: var(--secondary-bg-light);
+  }
+
   
   .eventCard::before{
     content: "";

@@ -5,6 +5,7 @@ import saveIcon from "/public/save.svg";
 import Image from "next/image";
 import Link from "next/link";
 import Loading from "@/app/components/UI/Loading";
+import { useTheme } from "@/context";
 
 const Table = ({
     eventData
@@ -15,6 +16,7 @@ const Table = ({
     const [eventPerPage, setEventPerPage] = useState([]);
     const itemsPerPage = 10;
     const totalPages = Math.ceil(eventData.length / itemsPerPage);
+    const {theme} = useTheme();
 
     useEffect(() => {
         const startInd = (currPage - 1) * itemsPerPage;
@@ -28,9 +30,9 @@ const Table = ({
 
     return (
         <div className={styles.table_container}>
-            <div className={styles.table_wrapper}>
+            <div className={`${styles.table_wrapper} ${theme === 'light' ? styles.table_wrapper_light : ""}`}>
                 <table className={styles.table}>
-                    <thead className={styles.table_head}>
+                    <thead className={` ${theme === 'light' ? styles.table_head_light : styles.table_head}`}>
                         <tr className={styles.table_head_row}>
                             <th className={styles.table_firstColumn}>Event</th>
                             <th>Date</th>
@@ -46,7 +48,7 @@ const Table = ({
                             <th>Est. Exhibitor</th>
                             <th>Global</th>
                             <th
-                                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
+                                className={`${styles.table_actionColumn} ${theme === 'light' ? styles.table_actionColumn_light : ""}`}
                             >
                                 Actions
                             </th>
@@ -90,7 +92,7 @@ const Table = ({
                                 <td>Event Size</td>
                                 <td>Estimated Exhibitor</td>
                                <td>Global</td>
-                                <td className={styles.table_actionColumn}>
+                                <td className={`${styles.table_actionColumn} ${theme === 'light' ? styles.table_actionColumn_light : ""}`}>
                                     <div className={styles.save_image_container}>
                                         {/* <Image src={saveIcon} alt="Save" width={30} height={30} /> */}
                                         <div className={styles.saveBtn}>Save</div>
@@ -102,7 +104,7 @@ const Table = ({
                 </table>
             </div>
 
-            <div className={styles.pagination_container}>
+            <div className={`${styles.pagination_container} ${theme === 'light' ? styles.pagination_container_light : ""}`}>
                 <div
                     className={`${styles.pagination_control_button} ${currPage === 1 ? styles.disabled : ""
                         }`}

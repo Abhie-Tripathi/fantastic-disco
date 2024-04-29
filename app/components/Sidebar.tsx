@@ -9,14 +9,16 @@ import Research from '/public/internal/research.svg'
 import Exhibit from '/public/internal/exhibit.svg'
 import { usePathname } from "next/navigation";
 import Graph from '/public/internal/trend.svg'
+import { useTheme } from "@/context";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [showSidebar, setShowSidebar] = useState(false);
+  const {theme} = useTheme()
 
   return (
     <div
-      className={`${styles.container} ${showSidebar ? styles.open : ""}`}
+      className={`${styles.container} ${showSidebar ? styles.open : ""} ${theme === 'light' ? styles.container_light : ""}`}
       onMouseEnter={() => setShowSidebar(true)}
       onMouseLeave={() => setShowSidebar(false)}
     >

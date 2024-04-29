@@ -3,6 +3,7 @@ import styles from "./daterangeinput.style.module.css";
 import useClickOutside from "@/hooks/useClickOutside";
 import Loading from "@/app/components/UI/Loading";
 const DateRangeCalendar = lazy(() => import("./DateRangeCalendar"));
+import { useTheme } from "@/context";
 
 interface DateRangeInputProps {
   className?: string
@@ -20,9 +21,10 @@ const DateRangeInput = ({
   onClose,
 }: DateRangeInputProps) => {
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme();
 
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
       <div className={styles.header}>
         <div className={styles.header_title}>Date</div>
         <div className={styles.header_button} onClick={onClose}>Done</div>

@@ -1,5 +1,6 @@
 import React from "react";
 import styles from './yearCalendar.module.css'
+import { useTheme } from "@/context";
 
 interface MonthObject {
   monthName: string;
@@ -47,6 +48,7 @@ function generateYearArray(year: number): MonthObject[] {
 const yearData: MonthObject[] = generateYearArray(2024);
 
 const YearCalendar: React.FC = () => {
+  const {theme} = useTheme()
   return (
     <div className={styles.container}>
       {yearData.map((year: MonthObject, index: number) => (
@@ -61,7 +63,7 @@ const YearCalendar: React.FC = () => {
               if (date === "") {
                 return <div key={index} className={styles.emptyDayCard}></div>;
               } else {
-                return <div key={index} className={styles.dayCard}>{(date as Date).getDate()}</div>;
+                return <div key={index} className={`${styles.dayCard} ${theme === 'light' ? styles.dayCard_light : ""}`}>{(date as Date).getDate()}</div>;
               }
             })}
           </div>

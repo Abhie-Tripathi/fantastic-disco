@@ -1,11 +1,14 @@
+'use client'
 import React from "react";
 import styles from "./eventtable.style.module.css";
 import ExpandAll from "/public/expand.svg";
 import Add from "/public/add.svg";
 import Filter from "/public/filter.svg";
 import Image from "next/image";
+import { useTheme } from "@/context";
 
 const EventTable = ({ eventData }: { eventData: any }) => {
+  const {theme} = useTheme()
   return (
     <div className={styles.table_container}>
       <div className={styles.table_header_title}>Recently added events</div>
@@ -24,7 +27,7 @@ const EventTable = ({ eventData }: { eventData: any }) => {
       </div>
 
       <table className={styles.table}>
-        <thead className={styles.table_head}>
+        <thead className={`${styles.table_head} ${theme === 'light' ? styles.table_head_light : ""}`}>
           <tr className={styles.table_head_row}>
             <th>Event Name</th>
             <th>Event Date</th>
@@ -69,23 +72,23 @@ const EventTable = ({ eventData }: { eventData: any }) => {
         </tbody>
       </table>
 
-      <div className={styles.pagination_container}>
-        <div className={styles.pagination_control_button}>Previous</div>
+      <div className={`${styles.pagination_container} ${theme === 'light' ? styles.pagination_container_light : ""}`}>
+      <div className={`${styles.pagination_control_button} ${theme === 'light' ? styles.pagination_control_button_light : ""}`}>Previous</div>
 
-        <div className={styles.pagination_info_container}>
+        <div className={`${styles.pagination_info_container} ${theme === 'light' ? styles.pagination_info_container_light : ""}`}>
           <div>Showing</div>
           <Image src={ExpandAll} alt="expandall" />
-          <div className={styles.pagination_current_pageno}>10</div>
+          <div className={`${styles.pagination_current_pageno} ${theme === 'light' ? styles.pagination_current_pageno_light : ""}`}>1</div>
           <div>results/Page</div>
         </div>
 
         <div className={styles.pagination_page_control_container}>
           <div>Page</div>
-          <div className={styles.pagination_current_pageno}>1</div>
+          <div className={`${styles.pagination_current_pageno} ${theme === 'light' ? styles.pagination_current_pageno_light : ""}`}>1</div>
           <div>of 10</div>
         </div>
 
-        <div className={styles.pagination_control_button}>Next</div>
+        <div className={`${styles.pagination_control_button} ${theme === 'light' ? styles.pagination_control_button_light : ""}`}>Next</div>
       </div>
     </div>
   );

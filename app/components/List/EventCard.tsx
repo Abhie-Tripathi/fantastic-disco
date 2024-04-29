@@ -8,16 +8,17 @@ import Refresh from "/public/Refresh.svg";
 import { EventCardType } from "@/types/ListViewCard";
 import TrendingIcon from '/public/trendingarrow.svg'
 import LocatioinIcon from '/public/location.svg'
+import { useTheme } from '@/context';
 
 interface EventCardProps {
     data: EventCardType
 }
 
 const EventCard = ({ data }: EventCardProps) => {
-
+    const {theme} = useTheme();
     const [accordian, setAccordian] = useState(false)
     return (
-        <div className={styles.eventCard_container} onClick={()=>setAccordian(!accordian)}>
+        <div className={`${styles.eventCard_container} ${theme === 'light' ? styles.eventCard_container_light : ""}`} onClick={()=>setAccordian(!accordian)}>
             <div className={styles.eventCard_header}>
                 <div className={styles.title_dateContainer}>
                     <div className={styles.eventTitle}>{data.eventName}</div>

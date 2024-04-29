@@ -5,6 +5,11 @@
     width: 150px;
     font-size: 18px;
 }
+
+.timelineItem_light{
+    color: var(--primary-color-light);
+}
+
 .timelineItem.showCircle::before {
     content: "";
     position: absolute;
