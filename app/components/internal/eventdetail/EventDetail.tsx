@@ -82,4 +82,3 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
 }
 
 export default EventDetail;
-
