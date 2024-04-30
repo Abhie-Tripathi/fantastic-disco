@@ -2,18 +2,25 @@ import React from 'react'
 import styles from './cardtask.style.module.css'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image';
-import person2 from '@/public/person2.svg'
-import person1 from '@/public/person1.svg'
+import addEventIcon from '/public/addEvent.svg'
 
 interface CardTaskProps {
     name: string;
     draggable: boolean;
     onDragStart: (event: React.DragEvent<HTMLDivElement>, taskName: string) => void;
     handleModal: () => void
+    onClick:() => void
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handleModal }) => {
+const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handleModal,onClick }) => {
     return (
+        <>
+        <div className={styles.eventAdd_container}>
+            <div className={styles.addMore_event} onClick={onClick}>
+                <Image src={addEventIcon} alt="add" className={styles.addIcon} width={18} height={18} />
+                <div className={styles.line}> <hr  className={styles.hr}/> </div>
+            </div>
+        </div>
         <div className={styles.card} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={handleModal}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>10Times</div>
@@ -27,6 +34,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handl
             </div>
 
         </div>
+        </>
     )
 }
 
