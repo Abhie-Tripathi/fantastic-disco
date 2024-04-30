@@ -175,7 +175,7 @@ const Table = ({
   const itemsPerPage = 10;
   const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [pinEvent, setPinEvent] = useState<string| number>(918);
-  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[] | number[] | any[] >([1685, 5175]);
+  const [bookmarkedEvent, setBookmarkedEvent] = useState<number[]>([1685, 5175]);
   const {theme} = useTheme();
 
   const [formData, setFormData] = useState<FormDataType>({
