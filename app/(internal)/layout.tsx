@@ -25,17 +25,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
         <AuthContextProvider>
           <ThemeProvider>
-          <Sidebar/>
-          <Navbar />
-          <div>
-            {children}
-          </div>
+            <Sidebar />
+            <Navbar />
+            <div style={{ paddingTop: "80px", paddingLeft:"80px" }}>{children}</div>
           </ThemeProvider>
         </AuthContextProvider>
       </body>

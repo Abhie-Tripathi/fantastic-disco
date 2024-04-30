@@ -25,7 +25,7 @@ interface Props {
     openOrganiserDetails: boolean
     openPocDetails: boolean
     closeBtn: boolean;
-    handleModal : () => void
+    handleModal: () => void
 }
 
 const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal }: Props) => {
@@ -54,23 +54,23 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
             {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
             <div>
-            {pathName === 'internal' && <StatusBar /> }
-            <div className={styles.innerContainer}>
-                <div className={styles.containerLeft} ref={leftContainerRef}>
-                    <div className={styles.containerLeftTop}>
-                        <OwnerList label='test' eventId={123} />
-                        <StatusChangeDropdown label='' eventId={123} />
+                {pathName === 'internal' && <StatusBar />}
+                <div className={styles.innerContainer}>
+                    <div className={styles.containerLeft} ref={leftContainerRef}>
+                        <div className={styles.containerLeftTop}>
+                            <OwnerList label='test' eventId={123} />
+                            <StatusChangeDropdown label='' eventId={123} />
+                        </div>
+                        {singledata && <SingleEvent {...singledata} />}
+                        <EventDescription description={singledata.description} open={openEventDetails} />
+                        <Organiser open={openOrganiserDetails} />
+                        <EventPoc open={openPocDetails} />
+                        <Follower />
                     </div>
-                    {singledata && <SingleEvent {...singledata} />}
-                    <EventDescription description={singledata.description} open={openEventDetails} />
-                    <Organiser open={openOrganiserDetails} />
-                    <EventPoc open={openPocDetails} />
-                    <Follower/>
+                    <div className={styles.containerRight} ref={rightContainerRef}>
+                        <Notes />
+                    </div>
                 </div>
-                <div className={styles.containerRight} ref={rightContainerRef}>
-                    <Notes />
-                </div>
-            </div>
             </div>
         </div>
     );

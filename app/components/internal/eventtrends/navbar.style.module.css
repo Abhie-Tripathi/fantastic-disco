@@ -1,0 +1,32 @@
+.navbar{
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    background-color: #2B233D;
+    padding: 20px;
+    border-radius: 5px;
+}
+.yAxis{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.xAxis{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.navbarChip{
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #6750A4 ;
+}
+.navbarChip:hover{
+    transition-duration: .2s;
+    background-color: #6750A4;
+}
+.activeChip{
+    background-color: #6750A4;
+}
