@@ -1,15 +1,9 @@
 "use client";
 import React, { Suspense, useState } from "react";
 import styles from "./page.style.module.css";
-import SearchIcon from "/public/search.svg";
+import Research from '/public/internal/research.svg'
 import Image from "next/image";
 import GotoIcon from "/public/rightArrow.svg";
-import NotificationIcon from "/public/bell.svg";
-import TrackerIcon from "/public/internal/trend.svg";
-import NotificationsIcon from "/public/bell.svg";
-// import Warning from "/public/warning.svg";
-import Weather from "/public/weather.svg";
-// import Stars from "/public/stars.svg";
 import NewEvent from "/public/thunder.svg";
 import Explore from "/public/search.svg";
 import Location from "/public/location.svg";
@@ -18,20 +12,19 @@ import Timer from "/public/clock.svg";
 import CircleCross from "/public/close.svg";
 import Link from "next/link";
 import ExhibitIcon from '/public/internal/exhibit.svg'
-// import SearchBackground from "/public/search_background.svg";
-// import NotificationBackground from "/public/notification_background.svg";
-// import TrendsBackground from "/public/trends_background.svg";
+import DatasetIcon from '/public/dataset.svg'
 import Loading from "@/app/components/UI/Loading";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import LineChart from "@/app/components/internal/eventtrends/chart/LineChart";
 
 const cardsData = [
   {
-    icon: SearchIcon,
-    title: "Continue Search",
+    icon: Research,
+    title: "Continue Research",
     heading: "Bengaluru",
     description: "Bengaluru, Karnataka, India (1.34 mi radius)",
     link: "/internal/search/events",
+    tags: []
     // backgroundIcon: SearchBackground,
   },
   {
@@ -39,17 +32,24 @@ const cardsData = [
     title: "Outreach",
     heading: "",
     description:
-      "Quickly manage and prioritize your notifications to focus on what matters most.",
+      "Pending events to look at : 3",
     link: "/internal/outreach",
+    tags: []
     // backgroundIcon: NotificationBackground,
   },
   {
-    icon: TrackerIcon,
-    title: "Create tracker",
+    icon: DatasetIcon,
+    title: "Coordinate",
     heading: "",
     description:
-      "Track key events in real-time to make informed decisions and seize opportunities as they arise.",
-    link: "/internal/trackers/create",
+      "Total Events : 8",
+    link: "/internal/coordinate",
+    tags: [
+      { "name": "Exhibitors", "count": 1 },
+      { "name": "Sponsors", "count": 3 },
+      { "name": "Speakers", "count": 3 },
+      { "name": "Attendee", "count": 1 }
+    ]
     // backgroundIcon: TrendsBackground,
   },
 ];
@@ -80,9 +80,9 @@ const Dashboard = () => {
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
-          <div className={styles.primary_description}>
+          {/* <div className={styles.primary_description}>
             Unlock the possibilities of EventGTM
-          </div>
+          </div> */}
           <div className={styles.linkCard_container}>
             {cardsData.map((card) => (
               <Link
@@ -106,41 +106,17 @@ const Dashboard = () => {
                 <div className={styles.linkCard_description}>
                   {card.description}
                 </div>
+                <div className={styles.linkCard_tagsOuterContainer}>
+                  {card.tags.map((tag, key) => (
+                    <div className={styles.linkCard_tagsInnerContainer} key={key}>
+                      <div className={styles.linkCard_tagsName} >{tag.name}</div>
+                      <div className={styles.linkCard_tagsCount} >{tag.count}</div>
+                    </div>
+                  ))}
+                </div>
 
-                {/* <Image
-                  className={styles.linkCard_backgroundImage}
-                  src={card.backgroundIcon}
-                  alt={card.title}
-                /> */}
               </Link>
             ))}
-          </div>
-        </div>
-        <span className={styles.divider}></span>
-        <div className={styles.notification_container}>
-          <div className={styles.notification_header}>
-            <div className={styles.notification_header_title}>
-              <Image src={NotificationsIcon} alt="notificationsicon" />
-              <span>Notification</span>
-            </div>
-            <div className={styles.notification_status}>
-              {/* <Image src={Warning} alt="warning" /> */}
-              <span>Moderate</span>
-            </div>
-          </div>
-          <div className={styles.notification_card}>
-            <div className={styles.linkCard_header}>
-              <div className={styles.linkCard_header_title}>
-                <Image src={Weather} alt="search" />
-                <span>Weather Alert</span>
-              </div>
-              <div className={styles.viewButton}>View</div>
-            </div>
-
-            <div className={styles.notification_description}>
-              Potential impact on events due to moderate severe weather
-              conditions in your area.
-            </div>
           </div>
         </div>
       </div>
