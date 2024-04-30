@@ -4,6 +4,7 @@ import styles from './eventdesc.style.module.css'
 import Image from 'next/image'
 import PeopleIcon from '/public/user.svg'
 import Placehodler from '/public/placeholder.png'
+import { useTheme } from '@/context'
 
 interface Props{
     open : boolean
@@ -11,8 +12,9 @@ interface Props{
 
 const EventPoc = ({open} : Props) => {
     const [accordianToggle, setAccordianToggle] = useState(open)
+    const {theme} = useTheme()
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>
                 <Image src={PeopleIcon} alt='page' />
                 <div>Event POC</div>

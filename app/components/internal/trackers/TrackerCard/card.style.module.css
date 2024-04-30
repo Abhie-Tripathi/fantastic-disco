@@ -5,6 +5,11 @@
     display: flex;
     gap: 100px;
   }
+
+  .tracker_card_light{
+    background-color: var(--secondary-bg-light);
+    color: var(--primary-color-light);
+  }
   
   .first_container {
     display: flex;
@@ -19,12 +24,12 @@
   }
   
   .tracker_title {
-    color: white;
+    color: inherit;
     font-weight: 500;
   }
   
   .tracker_description {
-    color: white;
+    color: inherit;
   }
   
   .tags_container {
@@ -94,7 +99,7 @@
   
   .highlighted_stats_container {
     box-shadow: 0px 2.555555582046509px 5.111111164093018px 0px #0000000a;
-    border: 1.28px solid #f9f9f9;
+    border: 1.28px solid #ddd;
     background-color: #313131;
     padding: 10px 15px;
     display: flex;
@@ -103,9 +108,14 @@
     width: fit-content;
     border-radius: 10px;
   }
+
+  .highlighted_stats_container_light{
+    color: var(--primary-color-light);
+    background-color: #d7d7d7;
+  }
   
   .highlighted_stats_title {
-    color: white;
+    color: inherit;
     font-size: 10px;
   }
   
@@ -116,7 +126,7 @@
   }
   
   .highlighted_stats_eventNo {
-    color: white;
+    color: inherit;
   }
   
   .highlighted_stats_increase {

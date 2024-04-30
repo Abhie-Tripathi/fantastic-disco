@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./weekCalendar.module.css";
+import { useTheme } from "@/context";
 
 const daysAndDates = [
   {
@@ -108,6 +109,7 @@ const eventsData = [
 ];
 
 const EventCards = () => {
+  const {theme} = useTheme();
   let i = 0;
   let j = 0;
   const cards = [];
@@ -121,10 +123,10 @@ const EventCards = () => {
       cards.push(
         <div
           key={`event_${i}`}
-          className={styles.eventCard}
+          className={`${styles.eventCard} ${theme === 'light' ? styles.eventCard_light : ""}`}
           style={{
             width: `calc((((100% - 90px) / 7) * ${event.durationDays}) + (${event.durationDays} - 1) * 15px)`,
-            backgroundColor: "#1A1A1A",
+            // backgroundColor: "#1A1A1A",
             color: event.color,
           }}
         >

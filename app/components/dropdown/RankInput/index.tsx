@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./index.style.module.css";
 import ReactSlider from "react-slider";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 interface RankInputProps {
   className?: string
@@ -27,9 +28,10 @@ const RankInput = ({
   onClose,
 }: RankInputProps) => {
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme()
 
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
       <div className={styles.header}>
         <div className={styles.header_button} onClick={() => onClose()}>
           Done

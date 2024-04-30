@@ -2,11 +2,20 @@
     padding: 20px;
     color: black;
   }
+
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
   
   .inputfields_container {
     position: relative;
     background-color: #313131;
     border-radius: 30px;
+  }
+
+  .inputfields_container_light{
+    background-color: var(--secondary-bg-light);
   }
   
   .searchbar {
@@ -97,20 +106,14 @@
     background-color: #1A1A1A;
     margin-bottom: 40px;
   }
-  /* .viewTypeButtons{
-    border-radius: 50px;
-    background-color: #1A1A1A;
-    margin-bottom: 40px;
-}
 
-.viewTypeButtons button.activeBtn{
-    border: 1px solid grey;
-    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
-    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
-    border-radius: 50px;
-} */
+  .viewTypeButtons_light{
+    background-color: var(--secondary-bg-light);
+    color: black;
+  }
+ 
 .viewTypeButtons button{
-    color: white;
+    color: inherit;
     font-weight: 500;
     padding: 12px 48px;
     font-size: 14px;
@@ -118,15 +121,9 @@
     border: none;
     cursor: pointer;
 }
-  /* .viewTypeButtons button {
-    font-weight: 500;
-    padding: 12px 48px;
-    font-size: 14px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  } */
+
   .viewTypeButtons button.active {
+    color: white;
     border: 1px solid grey;
     filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
     background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
@@ -240,8 +237,15 @@
   .exportButtonTitle {
     color: #4d1bf3;
   }
-  .listBtn{
+  
+  .listBtn_container{
     color: white;
+  }
+  .listBtn_container_light{
+    color: black;
+  }
+  .listBtn{
+    color: inherit;
     font-size: 14px;
     background: none;
     border: none;
@@ -253,6 +257,7 @@
   }
   .active{
     background-color: #6750A4;
+    color: white;
   }
   .advanceFilter_button {
     line-height: 24px;

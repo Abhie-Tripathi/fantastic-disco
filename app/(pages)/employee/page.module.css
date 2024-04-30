@@ -19,6 +19,12 @@
     position: relative;   
     overflow: hidden; 
 }
+
+.light{
+    color: var(--primary-color-light);
+    background-color: var(--primary-bg-light);
+}
+
 @media screen and (max-width: 1400px) {
     .body{
         height: 140vh;

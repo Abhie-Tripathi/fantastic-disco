@@ -8,6 +8,7 @@ import CloseIcon from "/public/close.svg";
 // import MapPlaceId from "/public/map-placeid.png";
 // import MapRadius from "/public/map-radius.png";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 const searchResults = [
     {
@@ -44,6 +45,7 @@ const LocationDropdown = ({
     const [addLocationModal, setAddLocationModal] = useState(false);
     const [locationType, setLocationType] = useState("");
     const [activeTab, setActiveTab] = useState("Saved Location");
+    const {theme} = useTheme()
 
     const handleCheckboxChange = (value: string) => {
         const isChecked = checkedValues.includes(value);
@@ -67,7 +69,7 @@ const LocationDropdown = ({
 
     return (
         <div  >
-            <div className={`${styles.container} ${className}`}>
+            <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
                 <div className={styles.header}>
                     <div className={styles.header_title}>LOCATIONS</div>
 

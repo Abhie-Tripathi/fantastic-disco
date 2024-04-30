@@ -6,6 +6,7 @@ import Image from "next/image";
 import Add from "/public/add.svg";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import Link from "next/link";
+import { useTheme } from "@/context";
 
 const eventData = [
     {
@@ -77,11 +78,12 @@ const eventData = [
 ];
 
 const Trackers = () => {
+    const {theme} = useTheme()
     return (
         <div>
             <div className={styles.trackers_container}>
                 <div className={styles.trackers_header}>
-                    <div className={styles.trackers_header_title}>Your Trackers</div>
+                    <div className={`${styles.trackers_header_title} ${theme === 'light' ? styles.trackers_header_title_light : ""}`}>Your Trackers</div>
                     <div className={styles.trackers_header_more_button}>
                         <Image src={MoreIcon} alt="moreicon" />
                     </div>

@@ -11,6 +11,7 @@ import person1 from '@/public/person2.svg'
 // import { text } from "stream/consumers";
 import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from '../ButtonView';
+import { useTheme } from '@/context';
 import { useAuthContext } from "@/context";
 
 interface UserDetail {
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export const Notes = ({ comments, productId }: Props) => {
+  const {theme} = useTheme()
   const { user, signOut } = useAuthContext();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
   const [username,setUserName]=useState([]);
@@ -75,7 +77,7 @@ export const Notes = ({ comments, productId }: Props) => {
         )
           : null
       }
-      <div className={styles.notesAdd}>
+      <div className={`${styles.notesAdd} ${theme === 'light' ? styles.notesAdd_light : ""}`}>
         <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments}/>
       </div>
     </div>

@@ -4,6 +4,7 @@ import styles from './eventdesc.style.module.css'
 import Image from 'next/image'
 import PeopleIcon from '/public/people.svg'
 import PlaceHolder from '/public/speaker1.jpeg'
+import { useTheme } from '@/context'
 
 const Follower = () => {
 
@@ -15,9 +16,10 @@ const Follower = () => {
     ]
 
     const [accordianToggle, setAccordianToggle] = useState(false)
+    const {theme} = useTheme();
     return (
         <div>
-            <div className={styles.container}>
+            <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
                 <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>
                     <Image src={PeopleIcon} alt='page' />
                     <div>Followers</div>
