@@ -1,9 +1,35 @@
+
+.eventAdd_container{
+    /* margin-left: -12px; */
+}
+.eventAdd_container:hover{
+    .addMore_event{
+        opacity: 1;
+    }
+}
+.addMore_event{
+    display: flex;
+    align-items: center;
+    margin-left: -12px;
+    cursor: pointer;
+    margin-top: -5px;
+    height: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.line{
+    width: 100%;
+}
+
+.hr{
+    border-color: #6750A4;
+}
+
 .card {
-    /* background: linear-gradient(90deg, rgba(103, 80, 164, 0.40379901960784315) 0%, rgba(31, 31, 31, 1) 100%); */
-    border-radius: 12px;
-    width: 380px;
+    border-radius: 8px;
+    width: 100%;
     border: 1px solid #6666667c;
-    /* height: 150px; */
     padding: 10px;
     display: flex;
     flex-direction: column;

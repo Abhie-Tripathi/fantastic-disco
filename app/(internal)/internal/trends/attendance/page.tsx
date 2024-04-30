@@ -145,7 +145,7 @@ const EventTrends = () => {
 
             <div className={styles.inner_container}>
                 <div className={styles.predictedAttendence_container}>
-                    <LineChart />
+                    {/* <LineChart /> */}
                 </div>
             </div>
 
