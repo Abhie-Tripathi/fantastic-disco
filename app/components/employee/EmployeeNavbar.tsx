@@ -4,14 +4,16 @@ import swapIcon from '/public/swap.svg';
 import addIcon from '/public/add.svg';
 import CalendarIcon from '/public/calendar.svg';
 import Image from 'next/image';
+import { useTheme } from '@/context';
 
 interface Props {
   handleAddEvent: () => void;
 }
 
 const EmployeeNavbar: React.FC<Props> = ({ handleAddEvent }) => {
+  const {theme} = useTheme();
   return (
-    <div className={styles.navbar}>
+    <div className={`${styles.navbar} ${theme === 'light' ? styles.light: ""}`}>
       <div className={styles.heading}>
         <Image src={CalendarIcon} alt="calendarIcon" />
         <div>Upcoming Events</div>

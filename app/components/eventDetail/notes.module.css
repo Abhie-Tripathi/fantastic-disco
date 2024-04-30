@@ -4,7 +4,7 @@
   align-items: flex-start;
   width: 100%;
   height:100%;
-  background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+  /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
   border: 1px solid #262626;
   border-radius: 18px;
   overflow-y: scroll;
@@ -374,8 +374,15 @@
 .notesAdd {
   padding: 20px;
   width: 100%;
-  border-radius: 12px;
+  border-top: 1px solid #c3c3c3;
+  border-radius: 0px 0px 12px 12px;
   background: #1A1A1A;
+}
+
+.notesAdd_light{
+  background-color: white;
+  color: black;
+  /* color: #6a3afb; */
 }
 
 .commentDiv::-webkit-scrollbar {
@@ -385,7 +392,7 @@
 }
 
 .commentDiv::-webkit-scrollbar-thumb {
-  background: #2B233D;
+  background: grey;
   border-radius: 12px;
 }
 

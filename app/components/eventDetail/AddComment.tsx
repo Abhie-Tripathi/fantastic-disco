@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./addcomment.style.module.css";
 import { Comment as IComment } from "../../../types/comment";
 import { useAuthContext } from "@/context";
@@ -24,9 +24,9 @@ interface Props {
   editCommentText?: string;
   className?: string;
   repliesLength?: number;
-   notes:(()=>void);
+   notes:any;
   
-   note?:string;
+   note?:string|any;
    setNote:React.Dispatch<React.SetStateAction<string>>;
    comments?: IComment[];
 }
@@ -60,12 +60,15 @@ export const AddComment = ({
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
+  const [types,showTypes]=useState<boolean>(false);
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
   const [showUser,setShowUser]=useState(false);
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
+  const type:string[]=["Speak", "Attend"];
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
   const [alluser,setAlluser]=useState<String[]>([]);
+  const formRef = useRef<HTMLFormElement>(null); 
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
@@ -131,28 +134,37 @@ export const AddComment = ({
   // }
   // useEffect(() => {
     
- 
+ useEffect(()=>{
+  if (note?.charAt(note.length-1)==='@') {
+    console.log(comments);
+    setShowUser(true);
+    let arr = Array.from(new Set(comments?.map(comment => "@"+comment?.user?.firstname+comment?.user?.lastname.toLowerCase())));
+    console.log(arr);
+    
+      setAlluser(arr);
+  }else setShowUser(false);
+ },[note])
   const noteFun=(e:any)=>{
     setNote(e.target.value);
-    if (e.target.value?.includes('@')&& !alluser.some(name => note?.includes(name))) {
-      console.log(comments);
-      setShowUser(true);
-      let arr = Array.from(new Set(comments?.map(comment => "@"+comment?.user?.firstname+comment?.user?.lastname.toLowerCase())));
-      console.log(arr);
-      
-        setAlluser(arr);
-    }else setShowUser(false);
+    
   }
 // },[note])
   const handleSelectRecommendation = (name: String) => {
+    if(!note.includes(name)){
     setNote(prevNote => prevNote.replace(/@\w*$/, `${name} `));
-    setShowUser(false);
+    showTypes(false);
+    }
     // console.log(1);
     
 };
 const handleSelectAttend=()=>{
-  setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to attend");
+  // e.preventDefault();
+  setNote(prev=>prev+("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to attend"));
   setShowUser(false);
+
+  // if (formRef.current) {
+  //   formRef.current.submit(); 
+  // }
 }
 const handleSelectSpeak=()=>{
   setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to speak");
@@ -164,21 +176,47 @@ const handleRecommend=()=>{
   setNote("@");
   setShowUser(true);
 }
+const handleKeyDown=(event:React.KeyboardEvent<HTMLTextAreaElement>)=>{
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    notes(event);// Submit the form if "Enter" is pressed without "Shift"
+  } else if (event.key === 'Enter' && event.shiftKey) {
+    event.preventDefault();
+    setNote(prev => prev + '\n');
+  }
+}
+useEffect(() => {
+  const patternString = "@\\w+ for #"; 
+  const pattern = new RegExp(patternString);
+  if (pattern.test(note)&& note?.charAt(note.length-1)==='#') {
+    showTypes(true); 
+  } else {
+    showTypes(false); 
+  }
+}, [note]);
+ const handleSelectType=(ele:string)=>{
+  if(type.includes(ele)){
+  setNote(note+ele);
+  showTypes(false);
+  }
+ }
+
 console.log(note);
 
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
       <div className={styles.recommendBtn}>
-      <button onClick={() => handleSelectAttend()}>Attend</button>
+      <button onClick={handleSelectAttend}>Attend</button>
         <button onClick={() => handleSelectSpeak()}>Speak</button>
         <button onClick={()=>handleRecommend()}>Recommend</button>
         </div>
       <div className={styles.addNotes}>
-        
-        <input type="text" placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} />
-        <div style={{ display: "flex" }} onClick={notes}><Image src={Send} alt="send" /></div>
-        {employeeDropDown && (
+      <form onSubmit={notes} ref={formRef} className={styles.form}>
+        <textarea className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)}  rows={4}  onKeyDown={(e)=>handleKeyDown(e)}/>
+        <button style={{ display: "flex" }} type="submit"><Image src={Send} alt="send" /></button>
+        </form>
+        {/* {employeeDropDown && (
           <div className={styles.employeeDropdown}>
             {filteredEmployees.map((employee: any, key: any) => (
               <div key={key} className={styles.employee} onClick={() => handleSelectRecommendation(employee)}>
@@ -186,19 +224,26 @@ console.log(note);
               </div>
             ))}
           </div>
-        )}
+        )} */}
+        
         {showUser && (
     <div className={styles.allUser}>
         {alluser.map((ele,ind) => (
-            <div key={ind} onClick={() => handleSelectRecommendation(ele)}>{ele}</div>
+            <div className={styles.option} key={ind} onClick={() => handleSelectRecommendation(ele)}>{ele}</div>
         ))}
-    </div>
-)}
       </div>
+        )}
+        {types && (
+    <div className={styles.allUser}>
+        {type.map((ele,ind) => (
+            <div key={ind} className={styles.option} onClick={() => handleSelectType(ele)}>{ele}</div>
+        ))}
+      </div>
+        )}
       <button className={styles.commentBtn}>
         {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
       </button>
-
+      </div>
       <div className={styles.attachmentOption}>
         <Image className={styles.attachIcon} src={Attach} alt="attach" />
         <Image className={styles.attachIcon} src={Link} alt="link" />
@@ -208,6 +253,7 @@ console.log(note);
         <Image className={styles.attachIcon} src={Lock} alt="lock" />
         <Image className={styles.attachIcon} src={Pen} alt="pen" />
       </div>
+    
     </div>
   );
 };

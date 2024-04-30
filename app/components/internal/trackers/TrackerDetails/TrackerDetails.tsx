@@ -4,6 +4,7 @@ import Slider from "../Slider";
 import { Line, PolarArea } from "react-chartjs-2";
 import "chart.js/auto";
 import EventTable from "../EventTable/EventTable";
+import { useTheme } from "@/context";
 
 const eventData = [
   {
@@ -83,6 +84,8 @@ const TrackerDetails = () => {
 
   const [startLocalRank, setStartLocalRank] = useState(35);
   const [endLocalRank, setEndLocalRank] = useState(67);
+
+  const {theme} = useTheme();
 
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -256,7 +259,7 @@ const TrackerDetails = () => {
         </div>
       </div>
 
-      <div className={styles.overview_container}>
+      <div className={`${styles.overview_container} ${theme === 'light' ? styles.overview_container_light : ""}`}>
         <div className={styles.overview_header}>
           <div className={styles.overview_title_container}>
             <div className={styles.overview_title}>Tracker Overview</div>

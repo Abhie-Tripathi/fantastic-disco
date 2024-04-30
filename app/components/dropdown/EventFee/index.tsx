@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import styles from "@/app/components/dropdown/EventFormat/EventFormt.module.css";
 import useClickOutside from "@/hooks/useClickOutside";
+import { useTheme } from "@/context";
 
 interface EventFeeProps {
   dropdownRef: React.MutableRefObject<null>;
@@ -17,6 +18,7 @@ const EventFee = ({
 }: EventFeeProps) => {
   const menuNode = useRef(null);
   useClickOutside(dropdownRef, () => onClose());
+  const {theme} = useTheme();
 
   const selectFeeHandler = (event:any) => {
     console.log(event)
@@ -25,7 +27,7 @@ const EventFee = ({
   };
 
   return (
-    <div className={styles.container} ref={menuNode}>
+    <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} ref={menuNode}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Entry Fee</div>
       </div>

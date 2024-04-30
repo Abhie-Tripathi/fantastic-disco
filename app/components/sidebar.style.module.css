@@ -15,6 +15,12 @@
   transition: width 0.3s ease-in-out;
   border-right: 1px solid #2c2c2c
 }
+
+.container_light{
+  background-color: var(--secondary-bg-light);
+  color: var(--primary-color-light);
+}
+
 .container.open {
   width: 280px;
 }

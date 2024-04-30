@@ -1,10 +1,13 @@
+.bodyContainer_light{
+  background-color: var(--primary-bg-light);
+}
 
 .taskBody{
   margin-top: 50px;
   margin-left: 90px;
   margin-right: 90px;
   margin-bottom: 20px;
-  height: 85vh;
+  height: 100vh;
   border-radius: 12px;
   display: flex;
   justify-content: space-evenly;
@@ -21,6 +24,12 @@
   border: 1px solid #6666667c;
   background-color: #2B233D;
 }
+
+.heading_light{
+  /* background-color: var(--primary-bg-light);
+  color: var(--primary-color-light); */
+}
+
 .eventSize{
   background-color: #6750A4;
   font-size: 12px;
@@ -41,6 +50,12 @@
   gap: 18px;
   overflow: auto;
 }
+
+.cardsContainer_light{
+  background-color: var(--secondary-bg-light);
+  color: var(--primary-color-light);
+}
+
 .modal{
   background-color: #0c0c0c;
   position: absolute;
@@ -51,4 +66,9 @@
   padding-right: 120px;
   width: 100%;
   z-index: 1;
+}
+
+.modal_light{
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
 }

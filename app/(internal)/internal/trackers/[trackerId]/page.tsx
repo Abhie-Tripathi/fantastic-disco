@@ -5,6 +5,7 @@ import styles from './page.style.module.css';
 import Image from "next/image";
 import MoreIcon from "/public/dots.svg";
 import TrackerDetails from "@/app/components/internal/trackers/TrackerDetails/TrackerDetails";
+import { useTheme } from "@/context";
 
 const TrackerPage = () => {
   const router = useRouter();
@@ -18,10 +19,12 @@ const TrackerPage = () => {
     router.push(`/internal/trackers/create?${params.toString()}`);
   };
 
+  const {theme} = useTheme()
+
   return (
     <div>
       <div className={styles.trackers_container}>
-        <div className={styles.trackers_header}>
+        <div className={`${styles.trackers_header} ${theme === 'light' ? styles.trackers_header_light : ""}`}>
           <div className={styles.trackers_header_title}>
             Events in Bangalore
           </div>

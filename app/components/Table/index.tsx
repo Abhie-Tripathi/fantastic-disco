@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./EventList.module.css";
+import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from "@/context";
 
 interface FormDataType {
   edition_id?: string | number | null,
@@ -174,7 +175,8 @@ const Table = ({
   const itemsPerPage = 10;
   const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [pinEvent, setPinEvent] = useState<string| number>(918);
-  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[] | number[]|any >([1685, 5175]);
+  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[] | number[] | any[] >([1685, 5175]);
+  const {theme} = useTheme();
 
   const [formData, setFormData] = useState<FormDataType>({
     edition_id: null,
@@ -246,9 +248,9 @@ const Table = ({
 
   return (
     <div className={styles.table_container}>
-      <div className={styles.table_wrapper}>
+      <div className={`${styles.table_wrapper} ${theme === 'light' ? styles.table_wrapper_light : ""}`}>
         <table className={styles.table}>
-          <thead className={styles.table_head}>
+          <thead className={`${styles.table_head} ${theme === 'light' ? styles.table_head_light : ""}`}>
             <tr className={styles.table_head_row}>
               <th className={styles.table_firstColumn}>Event</th>
               <th>Date</th>
@@ -265,7 +267,7 @@ const Table = ({
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>Global</th>}
               <th
-                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
+                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header} ${theme === 'light' ? styles.table_actionColumn_light : ""}`}
               >
                 Actions
               </th>
@@ -273,7 +275,7 @@ const Table = ({
           </thead>
 
           <tbody className={styles.table_body}>
-            {eventPerPage.map((event: any) => (
+            {eventPerPage.map((event:any) => (
               <tr key={event.id}>
                 <td>
                   <div className={styles.event_title}>
@@ -413,7 +415,7 @@ const Table = ({
                 ) : <span className={styles.badge_danger}>Low</span>}
                   </td>
                 }
-                <td className={styles.table_actionColumn}>
+                <td className={`${styles.table_actionColumn} ${theme === 'light' ? styles.table_actionColumn_light : ""}`}>
                   <span
                     className={styles.save_image_container}
                     onClick={() => handleModalOpen(event.id, event.edition)}
@@ -518,7 +520,7 @@ const Table = ({
         </table>
       </div>
 
-      <div className={styles.pagination_container}>
+      <div className={`${styles.pagination_container} ${theme === 'light' ? styles.pagination_container_light : ""}`}>
         <div
           className={`${styles.pagination_control_button} ${
             currPage === 1 ? styles.disabled : ""

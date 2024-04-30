@@ -4,10 +4,13 @@
     font-family: "Roboto", sans-serif;
     display: block;
     padding: 23px 33px;
-    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
     border: 1px solid grey;
     border-radius: 20px;
     margin-bottom: 20px;
+}
+
+.eventCard_container_light{
+    color:var(--primary-color-light);
 }
 
 .eventTitle {
@@ -91,7 +94,7 @@
     font-size: 12px;
     letter-spacing: 1px;
     font-weight: 500;
-    color: white;
+    color: inherit;
 }
 
 .eventFormat {
@@ -213,7 +216,7 @@
 .predictedDataHeading {
     font-size: 10px;
     font-weight: 300;
-    color: white;
+    color: inherit;
 }
 
 .predictedDataValue {
