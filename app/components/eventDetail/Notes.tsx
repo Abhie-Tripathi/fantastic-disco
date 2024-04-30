@@ -40,16 +40,24 @@ export const Notes = ({ comments, productId }: Props) => {
   
   comments = [...notes];
   console.log(comments);
-  const addNote=()=>{
+  const addNote=(event:any)=>{
+   
+    event.preventDefault(); 
     // console.log(notes);
     // const { user } = useAuthContext();
     const len=CommentsData?.length;
     const id = Date.now().toString();
-    const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email}
+    // setNote(note.replace(/\n/g, "<br>"))
+    const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email, createdAt:new Date()}
     }];
     setNotes(updatedNotes);
+    console.log(note);
+   
     setNote("");
+    
+    
   }
+ 
   comments=[...notes];
   return (
     <div className={styles.container}>
@@ -121,7 +129,28 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
       </div>
       <ButtonView view={"cancelBtn"} productId={productId} commentId={comment.id} commentText={comment.text} />
       <div className={styles.text}>
-        <p className={styles.commentText}><span>{userName}</span> {comment.text}</p>
+        <div className={styles.commentText}><span>{userName}</span> {comment.text.split('\n').map((item, index) => {
+          if (item.includes('@')) {
+            const words = item.split(' ');
+            return (
+              <React.Fragment key={index}>
+                {words.map((word, idx) => {
+                  if (word.startsWith('@')) {
+                    const username = word.substring(1);
+                    return (
+                      <a key={idx} style={{color:"blue"}}href={`#${username}`}>{word}{" "}</a>
+                    );
+                  } else {
+                    return <React.Fragment key={idx}>{word} </React.Fragment>;
+                  }
+                })}
+                <br />
+              </React.Fragment>
+            );
+          } else {
+            return <p key={index}>{item}</p>;
+          }
+        })}</div>
       </div>
       <div className={styles.options}>
         <ButtonView view={"upvoteBtn"} />

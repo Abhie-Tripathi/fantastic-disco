@@ -14,8 +14,39 @@ interface Event {
   country: string;
 }
 // const ReactMapGL = React.lazy(() => import('react-map-gl'));
+
+// const EventListCard = (event: any) => {
+//   return (
+//     <div className={styles.eventListCard}>
+//       <div className={styles.eventListCard_title}>{event.event.title}</div>
+//       <div className={styles.eventListCard_location}>
+//         {event?.event.venue?.country}
+//       </div>
+//       <div className={styles.eventListCard_date}>
+//         {formatDateRange(
+//           event.event.startingDateTime,
+//           event.event.endingDateTime
+//         )}
+//       </div>
+//       <div className={styles.eventListCard_footer}>
+//         <div className={styles.eventListCard_footer_info}>
+//           <div className={styles.eventListCard_category}>
+//             <Image src={FestivalIcon} alt="festival" />
+//             <span>{event?.event.category?.name}</span>
+//           </div>
+//           <span>|</span>
+//           <div className={styles.eventListCard_label}>Parade</div>
+//         </div>
+//         <Link href={`/search/${event.event.id}`} target="_blank">
+//           View Details
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// };
 const Map: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
+  const [showList,setShowList]=useState<boolean>(false);
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
     longitude: -0.076132,
@@ -90,6 +121,32 @@ const Map: React.FC = () => {
           </div>
         ))}
       </ReactMapGL>
+      {/* {fullView && (
+        <div className={styles.eventList_container}>
+          <button
+            onClick={() => setShowList(!showList)}
+            className={styles.event_list_button}
+          >
+            EVENTS LIST
+          </button>
+          <div
+            className={`${styles.eventList} ${showList ? styles.active : ""}`}
+          >
+            <div className={styles.eventList_header}>
+              <span>Results</span>
+              <button>
+                <Image src={FilterIcon} alt="filter" />
+              </button>
+            </div>
+
+            <div className={styles.eventList_list}>
+              {eventData?.events.map((event) => (
+                <EventListCard event={event} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )} */}
       {/* </Suspense> */}
     </div>
 
