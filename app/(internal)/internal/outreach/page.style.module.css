@@ -1,17 +1,27 @@
 .bodyContainer_light{
   background-color: var(--primary-bg-light);
 }
+.body{
+  /* width: 32%; */
+}
 
 .taskBody{
-  margin-top: 50px;
-  margin-left: 90px;
-  margin-right: 90px;
-  margin-bottom: 20px;
-  height: 100vh;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  /* height: calc(100vh - 80px); */
   border-radius: 12px;
   display: flex;
   justify-content: space-evenly;
+  position: relative;
+  height: 75vh;
 }
+
+.outerCard{
+  width: 32%;
+}
+
 .heading{
   font-size: 20px;
   text-align: center;
@@ -25,10 +35,6 @@
   background-color: #2B233D;
 }
 
-.heading_light{
-  /* background-color: var(--primary-bg-light);
-  color: var(--primary-color-light); */
-}
 
 .eventSize{
   background-color: #6750A4;
@@ -39,21 +45,33 @@
 .cardsContainer{
   padding-top: 24px;
   padding-bottom: 24px;
-  width: 450px;
-  height: 90%;
+  height: 88%;
   background-color: #1D1D1D;
-  border-radius: 24px;
+  border-radius: 10px;
   margin-top: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 5px;
   overflow: auto;
+}
+.cardsContainer::-webkit-scrollbar {
+  width: 2px;
+  margin-top: 10px;
+}
+
+.cardsContainer::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: 12px;
 }
 
 .cardsContainer_light{
   background-color: var(--secondary-bg-light);
   color: var(--primary-color-light);
+}
+
+.cards{
+  width: 90%;
 }
 
 .modal{
@@ -68,7 +86,49 @@
   z-index: 1;
 }
 
+.modal2{
+  z-index: 1;
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  height: 100%;
+  top: 0;
+}
+
 .modal_light{
-  background-color: var(--primary-bg-light);
   color: var(--primary-color-light);
+}
+
+.card_shortlisted:hover{
+  .addEvent_btn{
+    opacity: 1;
+
+  }
+}
+
+.addEvent_btn{
+  width: 90%;
+  padding: 10px;
+  text-align: center;
+  font-size: 17px;
+  cursor: pointer;
+  opacity: 0;
+  font-weight: 600;
+  transition: opacity 0.4s ease;;
+}
+
+.addEvent_btn:hover{
+  background-color: #2d2c2c;
+}
+
+.addEvent_btn_light{
+  color: black;
+}
+
+.addEvent_btn_light:hover{
+ background-color: rgb(211, 211, 211);
 }
