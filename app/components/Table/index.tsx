@@ -174,7 +174,7 @@ const Table = ({
   const itemsPerPage = 10;
   const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [pinEvent, setPinEvent] = useState<string| number>(918);
-  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[] | number[] >([1685, 5175]);
+  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[] | number[]|any >([1685, 5175]);
 
   const [formData, setFormData] = useState<FormDataType>({
     edition_id: null,
@@ -432,7 +432,7 @@ const Table = ({
                     {isOpen == event.id && (
                       <div className={styles.modal}>
                         <header className={styles["modal_header"]}>
-                          <div className={styles["modal_header-title"]}>Do you want to participate in "{event.name}" ?</div>
+                          <div className={styles["modal_header-title"]}>Do you want to participate in &quot;{event.name}&quot; ?</div>
                           <button className={styles["close"]} onClick={() => handleModalOpen(event.id, event.edition)} >
                             <img src="/close.svg" alt="close" />
                           </button>

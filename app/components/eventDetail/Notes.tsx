@@ -43,7 +43,7 @@ export const Notes = ({ comments, productId }: Props) => {
     // const { user } = useAuthContext();
     const len=CommentsData?.length;
     const id = Date.now().toString();
-    const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email}
+    const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email, createdAt:new Date()}
     }];
     setNotes(updatedNotes);
     setNote("");

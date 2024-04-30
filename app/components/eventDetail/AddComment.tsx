@@ -39,6 +39,11 @@ interface replyOptions {
   commentId: string;
  
 }
+interface UserDetail {
+  firstname: string;
+  email: string;
+  lastname: string;
+}
 export const AddComment = ({
   productId,
   replyOptions,
@@ -53,12 +58,17 @@ export const AddComment = ({
   comments,
 }: Props) => {
   const commentId = replyOptions?.commentId;
+  const { user, signOut } = useAuthContext();
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
   const [showUser,setShowUser]=useState(false);
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
   const [alluser,setAlluser]=useState<String[]>([]);
+  useEffect(() => {
+    setUserDetail(user);
+  }, [user]);
   // useEffect(() => {
   //   const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
   //   if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
@@ -119,9 +129,12 @@ export const AddComment = ({
   //     console.log(notes);
       
   // }
+  // useEffect(() => {
+    
+ 
   const noteFun=(e:any)=>{
     setNote(e.target.value);
-    if (e.target.value.includes('@')) {
+    if (e.target.value?.includes('@')&& !alluser.some(name => note?.includes(name))) {
       console.log(comments);
       setShowUser(true);
       let arr = Array.from(new Set(comments?.map(comment => "@"+comment?.user?.firstname+comment?.user?.lastname.toLowerCase())));
@@ -130,17 +143,45 @@ export const AddComment = ({
         setAlluser(arr);
     }else setShowUser(false);
   }
-  
+// },[note])
+  const handleSelectRecommendation = (name: String) => {
+    setNote(prevNote => prevNote.replace(/@\w*$/, `${name} `));
+    setShowUser(false);
+    // console.log(1);
+    
+};
+const handleSelectAttend=()=>{
+  setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to attend");
+  setShowUser(false);
+}
+const handleSelectSpeak=()=>{
+  setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to speak");
+  setShowUser(false);
+}
+const handleRecommend=()=>{
+  let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
+    setAlluser(arr);
+  setNote("@");
+  setShowUser(true);
+}
+console.log(note);
+
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
+      <div className={styles.recommendBtn}>
+      <button onClick={() => handleSelectAttend()}>Attend</button>
+        <button onClick={() => handleSelectSpeak()}>Speak</button>
+        <button onClick={()=>handleRecommend()}>Recommend</button>
+        </div>
       <div className={styles.addNotes}>
+        
         <input type="text" placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} />
         <div style={{ display: "flex" }} onClick={notes}><Image src={Send} alt="send" /></div>
         {employeeDropDown && (
           <div className={styles.employeeDropdown}>
             {filteredEmployees.map((employee: any, key: any) => (
-              <div key={key} className={styles.employee}>
+              <div key={key} className={styles.employee} onClick={() => handleSelectRecommendation(employee)}>
                 {employee.name}
               </div>
             ))}
@@ -149,7 +190,7 @@ export const AddComment = ({
         {showUser && (
     <div className={styles.allUser}>
         {alluser.map((ele,ind) => (
-            <div key={ind}>{ele}</div>
+            <div key={ind} onClick={() => handleSelectRecommendation(ele)}>{ele}</div>
         ))}
     </div>
 )}
