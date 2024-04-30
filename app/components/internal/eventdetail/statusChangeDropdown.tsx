@@ -9,6 +9,14 @@ import { useState } from "react";
 interface PropType {
   label: string;
   eventId: number;
+  handleStatusChange: (arg:number) => void;
+}
+
+const statusValues:{[key: string]: number} = {
+  'SHORTLISTED' : 1,
+  'IN NEGOTIATION' : 2,
+  'CONFIRMED' : 10,
+  'CANCELLED' : 12,
 }
 
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
@@ -22,6 +30,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     const target = event.target as HTMLDivElement;
     setIsOpen(false);
     setValue(target.innerText);
+    props.handleStatusChange(statusValues[target.innerText]);
   };
   return (
     <div className={styles.filter_container}>
