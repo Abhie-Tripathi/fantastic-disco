@@ -55,7 +55,7 @@ const Page: React.FC = () => {
     }
 
     return (
-        <div className={`${theme === 'light' ? styles.bodyContainer_light : styles.bodyContainer}`}  style={{ paddingTop: "70px", paddingLeft : "74px"}}>
+        <div className={`${theme === 'light' ? styles.bodyContainer_light : styles.bodyContainer}`}  style={{ paddingTop: "70px"}}>
         <div className={styles.body} >
             <div className={`${styles.taskBody}`}>
                 <div className={styles.shortListedBody}>

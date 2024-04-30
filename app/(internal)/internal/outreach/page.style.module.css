@@ -3,12 +3,10 @@
 }
 
 .taskBody{
-  margin-top: 50px;
   margin-left: 90px;
   margin-right: 90px;
   margin-bottom: 20px;
   height: 80vh;
-  /* height: 100vh; */
   border-radius: 12px;
   display: flex;
   justify-content: space-evenly;

@@ -54,7 +54,7 @@ const Sidebar = () => {
           <Image src={Trend} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Trackers</div>
         </Link>
-        <Link
+        <Link 
           href="/internal/outreach"
           className={`${styles.link} ${
             pathname === "/coordinate/outreach" ? styles.activeLink : ""
@@ -64,9 +64,9 @@ const Sidebar = () => {
           <div className={styles.linkName}>Outreach</div>
         </Link>
         <Link
-          href="/internal/trends/attendance"
+          href="/internal/trends"
           className={`${styles.link} ${
-            pathname === "/internal/trends/attendance" ? styles.activeLink : ""
+            pathname === "/internal/trends" ? styles.activeLink : ""
           }`}
         >
           <Image src={Graph} alt="location" className={styles.icons} />
