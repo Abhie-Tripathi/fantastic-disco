@@ -1,0 +1,34 @@
+interface Prop {
+    fillColor: string,
+    borderColor: string
+}
+export default function StatusIcon2({ fillColor, borderColor }: Prop) {
+    return (
+        <svg
+            width="100%"
+            height="51"
+            viewBox="0 0 382 53"
+            fill={fillColor}
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path 
+                d="M0.881814 3.59518C-0.273278 2.30737 0.640725 0.259766 2.37066 0.259766H365.564L380.8 24.3625C381.625 25.6679 381.625 27.3317 380.8 28.637L365.564 52.7395L2.09943 52.7397C0.414097 52.7397 -0.515625 50.783 0.548904 49.4765L19.2157 26.5655C19.8376 25.8021 19.8114 24.6997 19.154 23.9668L0.881814 3.59518Z" 
+                fill={fillColor}
+                stroke={borderColor}
+                stroke-width="1px"
+            />
+            <defs>
+                <linearGradient
+                    id="paint0_linear_254_3527"
+                    x1="-11.3058"
+                    y1="25.4966"
+                    x2="368.331"
+                    y2="25.4966"
+                    gradientUnits="userSpaceOnUse"
+                >
+                </linearGradient>
+            </defs>
+        </svg>
+    );
+}

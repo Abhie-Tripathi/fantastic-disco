@@ -4,12 +4,15 @@ import styles from './page.style.module.css';
 import CardTask from '@/app/components/outreach/CardTask';
 import EventDetail from '@/app/components/internal/eventdetail/EventDetail';
 import { useTheme } from '@/context';
+import AddEventModal from '@/app/components/AddEventModal';
+import AddEventForm from '@/app/components/outreach/AddEventForm';
 
 const Page: React.FC = () => {
     const [shortlistedTasks, setShortlistedTasks] = useState<string[]>(['How to Practice as an International Doctor in Australia?', 'How to Practice as an International Doctor in Usa?', 'How to Practice as an International Doctor in India?', 'How to Practice as an International Doctor in Canada?']);
     const [outreachTasks, setOutreachTasks] = useState<string[]>([]);
     const [preFinalisedTasks, setPreFinalisedTasks] = useState<string[]>([]);
     const [modalOpen, setModalOpen] = useState(false)
+    const [addEventModal,setAddEventModal] = useState(false)
     const {theme} = useTheme()
 
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, taskName: string) => {
@@ -54,54 +57,80 @@ const Page: React.FC = () => {
         setModalOpen(!modalOpen)
     }
 
+    const openAddModalHandler = () => {
+        setAddEventModal(prev => !prev)
+    }
+
     return (
-        <div className={`${theme === 'light' ? styles.bodyContainer_light : styles.bodyContainer}`}  style={{ paddingTop: "70px"}}>
-        <div className={styles.body} >
-            <div className={`${styles.taskBody}`}>
-                <div className={styles.shortListedBody}>
-                    <div className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Shortlisted <span className={styles.eventSize}>{shortlistedTasks.length}</span></div>
-                    <div className={`${styles.shortListedContainer} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
-                        onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, 'shortlisted')}
-                        onDrop={(event) => handleDrop(event, 'shortlisted')}>
-                        {shortlistedTasks.map((task, index) => (
-                            <div className={styles.cards} key={index}>
-                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
+        <div className={`${theme === 'light' ? styles.bodyContainer_light : styles.bodyContainer}`}  style={{ paddingTop: "70px", paddingLeft : "74px"}}>
+            <div className={styles.body} >
+                <div className={`${styles.taskBody}`}>
+                    <div className={`${styles.outerCard}`}>
+                        <div className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Shortlisted <span className={styles.eventSize}>{shortlistedTasks.length}</span></div>
+                        <div className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
+                            onDragOver={(event) => handleDragOver(event)}
+                            onDragStart={(event) => handleDragContainerStart(event, 'shortlisted')}
+                            onDrop={(event) => handleDrop(event, 'shortlisted')}>
+                            {shortlistedTasks.map((task, index) => (
+                                <div className={styles.cards} key={index}>
+                                    <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} onClick={openAddModalHandler} />
+                                </div>
+                            ))}
+                            <div className={`${styles.addEvent_btn} ${theme === 'light' ? styles.addEvent_btn_light : ""}`} onClick={openAddModalHandler}>
+                                Add Event
                             </div>
-                        ))}
+                        </div>
+                    </div>
+                    <div className={`${styles.outerCard} `}>
+                        <div  className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Out Reach <span className={styles.eventSize}>{outreachTasks.length}</span></div>
+                        <div className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
+                            onDragOver={(event) => handleDragOver(event)}
+                            onDragStart={(event) => handleDragContainerStart(event, 'outreach')}
+                            onDrop={(event) => handleDrop(event, 'outreach')}>
+                            {outreachTasks.map((task, index) => (
+                                <div className={styles.cards} key={index}>
+                                    <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} onClick={openAddModalHandler}/>
+                                </div>
+                            ))}
+                            <div className={`${styles.addEvent_btn} ${theme === 'light' ? styles.addEvent_btn_light : ""}`} onClick={openAddModalHandler}>
+                                Add Event
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`${styles.outerCard}`}>
+                        <div  className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Pre Finalised <span className={styles.eventSize}>{preFinalisedTasks.length}</span></div>
+                        <div className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
+                            onDragOver={(event) => handleDragOver(event)}
+                            onDragStart={(event) => handleDragContainerStart(event, 'prefinalised')}
+                            onDrop={(event) => handleDrop(event, 'prefinalised')}>
+                            {preFinalisedTasks.map((task, index) => (
+                                <div className={styles.cards} key={index}>
+                                    <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} onClick={openAddModalHandler} />
+                                </div>
+                            ))}
+                            <div className={`${styles.addEvent_btn} ${theme === 'light' ? styles.addEvent_btn_light : ""}`} onClick={openAddModalHandler}>
+                                Add Event
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className={styles.inProgressBody}>
-                    <div  className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Out Reach <span className={styles.eventSize}>{outreachTasks.length}</span></div>
-                    <div className={`${styles.inProgressContainer} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
-                        onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, 'outreach')}
-                        onDrop={(event) => handleDrop(event, 'outreach')}>
-                        {outreachTasks.map((task, index) => (
-                            <div className={styles.cards} key={index}>
-                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
-                            </div>
-                        ))}
+                {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light :""}`}>
+                    <EventDetail openEventDetails={false} openOrganiserDetails={true} openPocDetails={true} closeBtn = {true} handleModal={handleModal} />
+                </div>}
+                {addEventModal && (
+                    <div className={`${styles.modal2} ${theme === 'light' ? styles.modal_light :""}`} onClick={(e) => {
+                        console.log(e);
+                        const targetElement = e.target as HTMLElement;
+                        if (
+                        targetElement.classList.contains(styles.modal2) ||
+                        targetElement.classList.contains(styles.bodyContainer)
+                        )
+                        openAddModalHandler();
+                    }}>
+                        <AddEventForm />
                     </div>
-                </div>
-                <div className={styles.finalisedBody}>
-                    <div  className={`${styles.heading} ${theme === 'light' ? styles.heading_light : ""}`}>Pre Finalised <span className={styles.eventSize}>{preFinalisedTasks.length}</span></div>
-                    <div className={`${styles.finalisedContainer} ${styles.cardsContainer} ${theme === 'light' ? styles.cardsContainer_light : ""}`}
-                        onDragOver={(event) => handleDragOver(event)}
-                        onDragStart={(event) => handleDragContainerStart(event, 'prefinalised')}
-                        onDrop={(event) => handleDrop(event, 'prefinalised')}>
-                        {preFinalisedTasks.map((task, index) => (
-                            <div className={styles.cards} key={index}>
-                                <CardTask key={index} name={task} draggable={true} onDragStart={(event) => handleDragStart(event, task)} handleModal={handleModal} />
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                )}
             </div>
-            {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light :""}`}>
-                <EventDetail openEventDetails={false} openOrganiserDetails={true} openPocDetails={true} closeBtn = {true} handleModal={handleModal} />
-            </div>}
-        </div>
         </div>
     );
 };
