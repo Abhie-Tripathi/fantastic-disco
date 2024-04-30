@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styles from "./monthCalendar.module.css";
 import { log } from "console";
-import EmptyCard from "@/app/components/EmptyCard";
 import EventCard from "@/app/components/EventCard";
 
 interface Event {
@@ -148,7 +147,6 @@ function generateMonthArray(year: number, month: number) {
 
   return monthArray;
 }
-
 const year = 2024;
 const month = 3;
 const monthDatesArray = generateMonthArray(year, month);
@@ -165,6 +163,44 @@ const datesWithEvents = monthDatesArray.map((date: any) => {
   }
 });
 
+function formatDateString(dateString: any) {
+  const [month, day, year] = dateString.split("/");
+
+  // Add leading zeros to day and month if necessary
+  const formattedDay = day.padStart(2, "0");
+  const formattedMonth = month.padStart(2, "0");
+
+  // Return the rearranged and formatted date string
+  return `${formattedDay}/${formattedMonth}/${year}`;
+}
+
+const findDays = (startDate: any, endDate: any, name:string) => {
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const eventsWeekDays = [];
+  const eventStartDate = new Date(startDate);
+  const eventStartEndDate = new Date(endDate);
+  const startDay = eventStartDate.getDay();
+  const endDay = eventStartEndDate.getDay();
+
+  for (let i = startDay; i <= endDay; i++) {
+    const dayName = weekdays[i];
+    eventsWeekDays.push(dayName, name);
+  }
+
+  const formatedStartDate = formatDateString(startDate);
+  const formateEndDate = formatDateString(endDate);
+  console.log("formated_event_datesdd", eventsWeekDays);
+  return eventsWeekDays
+};
+
 const MonthCalendar: React.FC = () => {
   return (
     <div className={styles.container}>
@@ -177,7 +213,7 @@ const MonthCalendar: React.FC = () => {
       </div>
 
       <div className={styles.monthCards_container}>
-        {/* {datesWithEvents.map((dateWithEvent, indexd) => {
+        {/* {datesWithEvents.map((dateWithEvent, index) => {
           if (dateWithEvent == "") {
             return <div className={styles.emptyCard}></div>;
           } else {
@@ -186,8 +222,11 @@ const MonthCalendar: React.FC = () => {
               <div className={styles.monthCard}>
                 <div className={styles.monthCard_dayno}>
                   {dateWithEvent.date.getDate()}
+                  {`idx=${index}`}
                 </div>
                 {dateWithEvent.events.map((event) => {
+                  const weekdays = findDays(event.startDate, event.endDate, event.name);
+                  console.log("WEEK_DAYS___", weekdays)
                   const formattedDate = formatDateString(event.startDate);
                   if (
                     formattedDate == dateWithEvent.date.toLocaleDateString()

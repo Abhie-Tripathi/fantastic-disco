@@ -31,7 +31,7 @@ const Navbar = () => {
     <div className={styles.navbar}>
       <Link href='/'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>
       <div className={styles.settings}>
-        <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
+        <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/settings'}>
           <Image src={settingsIcon} alt='settings' />
         </Link>
         {userDetail &&

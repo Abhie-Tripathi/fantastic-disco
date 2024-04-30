@@ -1,0 +1,76 @@
+.container {
+    padding: 12px;
+}
+
+.outerDiv {
+    padding-top: 20px;
+    padding-left: 20px;
+    background-color: #0D1117;
+    border-bottom: 1px solid #21262D;
+}
+
+
+
+.settingContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.settingFonts {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.superAdminFont {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 5px;
+    color: #8B949E;
+    border: 1px solid grey;
+    border-radius: 12px;
+    /* border: linear-gradient(#6750A4, #666666); */
+    /* border-image: linear-gradient(right, rgba(255, 255, 2555) 50%, rgba(0,0,0,0) 100%); */
+    border-image: linear-gradient(left , rgb(255,255,255) 50%, rgb(209,209,209) 50%, rgb(255,255,255) 50.5%);
+    /* border-width: 3px; */
+    border-style: solid;
+}
+
+.tabsContainer {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.comapny_container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.tabContainer {
+    padding-bottom: 10px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tabContainer.active {
+    border-bottom: 2px solid #AC8DFF;
+    font-weight: 600;
+}
+
+.innerDiv {
+    padding: 30px;
+    display: flex;
+    background-image: linear-gradient(#1A1A1A);
+}
+
+
