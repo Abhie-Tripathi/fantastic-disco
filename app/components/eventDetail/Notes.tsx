@@ -1,24 +1,56 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styles from './notes.module.css';
 import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
 import Image from "next/image";
 import person1 from '@/public/person2.svg'
-import profileImage from "@/public/profile_Image.jpg";
-import CommentProfileImage from "@/public/profile_Image.jpg";
-import { EditComment } from "./EditComment";
-import { text } from "stream/consumers";
+
+// import profileImage from "@/public/profile_Image.jpg";
+// import CommentProfileImage from "@/public/profile_Image.jpg";
+// import { EditComment } from "./EditComment";
+// import { text } from "stream/consumers";
 import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from '../ButtonView';
+import { useTheme } from '@/context';
+import { useAuthContext } from "@/context";
 
+interface UserDetail {
+  firstname: string;
+  email: string;
+  lastname: string;
+}
 interface Props {
   productId?: string | undefined,
   comments?: IComment[];
 }
 
 export const Notes = ({ comments, productId }: Props) => {
+  const {theme} = useTheme()
+  const { user, signOut } = useAuthContext();
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
+  const [username,setUserName]=useState([]);
+
+  useEffect(() => {
+    setUserDetail(user);
+  }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
-  comments = [...CommentsData];
+ 
+  const [note, setNote] = useState<string>("");
+  const [notes,setNotes]=useState<any>(CommentsData);
+  
+  comments = [...notes];
+  console.log(comments);
+  const addNote=()=>{
+    // console.log(notes);
+    // const { user } = useAuthContext();
+    const len=CommentsData?.length;
+    const id = Date.now().toString();
+    const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email}
+    }];
+    setNotes(updatedNotes);
+    setNote("");
+  }
+  comments=[...notes];
   return (
     <div className={styles.container}>
       {
@@ -36,6 +68,7 @@ export const Notes = ({ comments, productId }: Props) => {
                     productId={productId!}
                     comment={comment}
                     superCommentId={comment.id}
+                    notes={notes} setNote={setNote} 
                   />
                 </li>
               ))}
@@ -44,9 +77,8 @@ export const Notes = ({ comments, productId }: Props) => {
         )
           : null
       }
-      <div className={styles.notesAdd}>
-        <AddComment productId={productId} />
-        {/* <ButtonView view={"sortByButton"} /> */}
+      <div className={`${styles.notesAdd} ${theme === 'light' ? styles.notesAdd_light : ""}`}>
+        <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments}/>
       </div>
     </div>
   );
@@ -58,9 +90,11 @@ interface CommentProps {
   productId: string;
   superCommentId: string;
   userName?: string;
+  notes:(()=>void);
+  setNote:React.Dispatch<React.SetStateAction<string>>;
   setComments?: React.Dispatch<React.SetStateAction<IComment[]>>;
 }
-const Comment = ({ comment, productId, setComments, superCommentId, userName }: CommentProps) => {
+const Comment = ({ comment, productId, setComments, superCommentId, userName, notes, setNote }: CommentProps) => {
   return (
     <>
       <div className={styles.comment__user}>
@@ -102,6 +136,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName }: 
           productId={productId!}
           className={`${styles.active}`}
           repliesLength={comment.replies?.length}
+          notes={notes} setNote={setNote} 
         />
       </div>
       <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
@@ -117,6 +152,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName }: 
                 setComments={setComments!}
                 productId={productId}
                 superCommentId={superCommentId}
+                notes={notes} setNote={setNote} 
                 userName={"@Roxette"} />
             </li>
           );

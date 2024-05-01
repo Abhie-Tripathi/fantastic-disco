@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.eventCard_container {
+    font-family: "Roboto", sans-serif;
+    display: block;
+    padding: 23px 33px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.eventCard_container_light{
+    color:var(--primary-color-light);
+}
+
+.eventTitle {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: .5px;
+}
+
+.title_dateContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.minorDetailsContainer {
+    align-items: center;
+    margin-top: 12px;
+    display: flex;
+}
+
+.eventFeeContainer {
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    gap: 20px;
+    letter-spacing: 1px;
+}
+
+.participantCountContainer {
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 70px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.eventOrganiser {
+    font-size: 14px;
+    color: grey;
+    font-weight: 300;
+}
+
+.fees {
+    color: #6750A4;
+}
+
+.participantCount {
+    color: #6750A4;
+}
+
+.participantHeading {
+    color: grey;
+    font-weight: 400;
+}
+
+.majorDetailsContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.eventtype_categoryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    width: 20%;
+}
+
+.typeContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.eventType {
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: inherit;
+}
+
+.eventFormat {
+    font-size: 8px;
+    color: #9f7ef7;
+    letter-spacing: .5px;
+    border: 1px solid #9f7ef7;
+    margin-left: 10px;
+    border-radius: 40px;
+    padding: 6px;
+}
+
+.categoryContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category {
+    background-color: #F6EDFF;
+    font-size: 11px;
+    font-weight: 500;
+    color: black;
+    text-align: center;
+    border-radius: 40px;
+    letter-spacing: 1.2px;
+    padding: 5px 10px;
+}
+
+.eventEditionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    width: 20%;
+}
+
+.editionAnalysis {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.editionAnalysis img {
+    color: white;
+}
+
+.editionFrequency {
+    font-size: 14px;
+    color: white;
+    font-weight: 300;
+}
+
+.editionFrequencyData {
+    margin-left: 16px;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    margin-right: 10px;
+}
+.frequencyBorderOne{
+    height: 15px;
+    border-left: 4px solid #9f7ef7;
+    border-radius: 50px;
+}
+.frequencyBorderTwo{
+    height: 15px;
+    border-left: 4px solid #9e7ef7bd;
+    border-radius: 50px;
+}
+.frequencyBorderThree{
+    height: 15px;
+    border-left: 4px solid #9e7ef780;
+    border-radius: 50px;
+}
+.frequencyBorderFour{
+    height: 15px;
+    border-left: 4px solid #9e7ef74b;
+    border-radius: 50px;
+}
+.eventAreaContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    width: 20%;
+}
+
+.zoneContainer {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.zone {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+}
+
+.eventVenueAddress {
+    font-size: 14px;
+    color: grey;
+    font-weight: 300;
+    
+}
+
+.predictedDataContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;    
+    width: 20%;
+}
+
+.predictedData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.predictedDataHeading {
+    font-size: 10px;
+    font-weight: 300;
+    color: inherit;
+}
+
+.predictedDataValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6750A4;
+}
+
+.eventAttendance_amount {
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0;
+}
+
+.eventCardStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    column-gap: 12px;
+    justify-items: center;
+    width: 20%;
+}
+
+.rank_container {
+    width: 50px;
+    height: 50px;
+    position: relative;
+
+}
+
+.rank {
+    color: #6750a4;
+    position: absolute;
+    top: 50%;
+    margin-top: -15px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.rank_title {
+    position: absolute;
+    font-size: 8px;
+    line-height: 10px;
+    top: 50%;
+    margin-top: 4px;
+    color: grey;
+    width: 100%;
+    text-align: center;
+}
+.eventAdditionalDetailsContainer{
+    margin-top: 40px;
+    padding-top: 16px;
+    margin-bottom: 10px;
+    border-top: 1px solid rgb(36, 36, 36);
+    display: flex;
+    justify-content: space-between;
+}
+.accordianContainer{
+    display: flex;
+    gap: 5px;
+}
+.additionaHeading{
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    color: white;
+}
+.additionalDetail{
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    color: #9f7ef7;
+}
+

@@ -2,12 +2,14 @@ import React, { Suspense, lazy } from "react";
 import styles from "./card.style.module.css";
 import Link from "next/link";
 import Loading from "@/app/components/UI/Loading";
+import { useTheme } from "@/context";
 const LineChart = lazy(() => import("../LineChart/LineChart"));
 const PolarAreaChart = lazy(() => import("../PolarAreaChart/PolarArea"));
 
 const TrackerCard = () => {
+  const {theme} = useTheme();
   return (
-    <Link href="/internal/trackers/tracker1" className={styles.tracker_card}>
+    <Link href="/internal/trackers/tracker1" className={`${styles.tracker_card} ${theme === 'light' ? styles.tracker_card_light : ""}`}>
       <div className={styles.first_container}>
         <div className={styles.trackerinfo_container}>
           <div className={styles.tracker_title}>
@@ -47,7 +49,7 @@ const TrackerCard = () => {
         </div>
 
         <div className={styles.piechart_container}>
-          <div className={styles.highlighted_stats_container}>
+          <div className={`${styles.highlighted_stats_container} ${theme === 'light' ? styles.highlighted_stats_container_light : ""}`}>
             <div className={styles.highlighted_stats_title}>
               Festivals Cancelled
             </div>

@@ -3,6 +3,7 @@ import styles from "./category.style.module.css";
 import { categories } from "@/public/data/categories";
 import useClickOutside from "../../../../hooks/useClickOutside";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface CategoryDropdownProps {
   className?: string
@@ -21,6 +22,7 @@ const CategoryDropdown = ({
 }: CategoryDropdownProps) => {
   useClickOutside(dropdownRef, () => onClose());
 
+  const {theme} = useTheme();
   const onClickHandler = (value: string) => {
     console.log(value);
     state.includes(value)
@@ -29,7 +31,7 @@ const CategoryDropdown = ({
   };
 
   return (
-    <div className={`${styles.options} ${className}`}>
+    <div className={`${styles.options} ${className} ${theme === 'light' ? styles.options_light : ""}`}>
       <div>
         <div className={styles.heading}>Attended</div>
         <div className={styles.list}>

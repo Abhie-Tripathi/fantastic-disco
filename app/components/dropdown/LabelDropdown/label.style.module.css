@@ -5,6 +5,7 @@
   filter: drop-shadow(1px 1px 5px rgb(59, 59, 59));
   gap: 20px;
   position: absolute;
+  color: white;
   height: 250px;
   overflow: auto;
   z-index: 1;
@@ -14,6 +15,12 @@
   padding: 15px;
   top: 45px;
   left: 0px;
+  scrollbar-width: thin;
+}
+
+.options_light{
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
 }
 .search{
   color: grey;
@@ -30,6 +37,7 @@
   font-size: 14px;
   background: none;
   border: none;
+  color: inherit;
 }
 .search img{
   margin-right: 14px;

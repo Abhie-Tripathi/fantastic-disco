@@ -1,11 +1,14 @@
-import React, { Suspense, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import styles from './map.module.css'
-import { useState } from 'react';
-import eventData from '../../../../public/data/demoEvent.json'
-import MapPointer from '/public/Marker.svg'
-import  ReactMapGL, { Marker, Popup } from 'react-map-gl'
+import React, { Suspense, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./map.module.css";
+import { useState } from "react";
+import eventData from "../../../../public/data/demoEvent.json";
+import MapPointer from "/public/Marker.svg";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import { formatDateRange } from "@/utils/dateFormat";
+import FilterIcon from "/public/filterIcon.svg";
+import FestivalIcon from "/public/festivalIcon.svg";
 interface Event {
   id: number;
   venue: { lat: number; lng: number }[];
@@ -14,21 +17,52 @@ interface Event {
   country: string;
 }
 // const ReactMapGL = React.lazy(() => import('react-map-gl'));
-const Map: React.FC = () => {
+
+const EventListCard = (event: any) => {
+  return (
+    <div className={styles.eventListCard}>
+      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_location}>
+        {event?.event?.location}
+      </div>
+      <div className={styles.eventListCard_date}>
+        {formatDateRange(event?.event?.startDate, event?.event?.endDate)}
+      </div>
+      <div className={styles.eventListCard_footer}>
+        <div className={styles.eventListCard_footer_info}>
+          <div className={styles.eventListCard_category}>
+            <Image src={FestivalIcon} alt="festival" />
+            {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
+          </div>
+          <span style={{ color: "grey" }}>|</span>
+          <div className={styles.eventListCard_label}>Parade</div>
+        </div>
+        <Link href={`/search/${event.id}`} target="_blank">
+          View Details
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const Map: React.FC = ({}) => {
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
+  const [showList, setShowList] = useState(false);
+  const [fullView, setFullView] = useState(true);
+
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
     longitude: -0.076132,
-    width: '100%',
-    height: '500px',
+    width: fullView ? "calc(100vw - 85px)" : "",
+    height: fullView ? "80vh" : "350px",
     zoom: 2,
   });
   return (
     <div className={styles.map}>
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
-        <ReactMapGL
-          {...viewport}
-          mapStyle="mapbox://styles/mapbox/dark-v11"
+      <ReactMapGL
+        {...viewport}
+        mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxApiAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
         onViewportChange={(viewport) => {
           setViewport(viewport);
@@ -67,9 +101,7 @@ const Map: React.FC = () => {
                   >
                     {event.name}
                   </Link>
-                  <div className={styles.event_country}>
-                    {event.location}
-                  </div>
+                  <div className={styles.event_country}>{event.location}</div>
                   <div className={styles.event_datetime}>
                     Wed, 6 Mar 2024 (1 day)
                   </div>
@@ -90,10 +122,36 @@ const Map: React.FC = () => {
           </div>
         ))}
       </ReactMapGL>
+
+      {fullView && (
+        <div className={styles.eventList_container}>
+          <button
+            onClick={() => setShowList(!showList)}
+            className={styles.event_list_button}
+          >
+            EVENTS LIST
+          </button>
+          <div
+            className={`${styles.eventList} ${showList ? styles.active : ""}`}
+          >
+            <div className={styles.eventList_header}>
+              <span>Results</span>
+              <button>
+                <Image src={FilterIcon} alt="filter" />
+              </button>
+            </div>
+
+            <div className={styles.eventList_list}>
+              {eventData?.map((event) => (
+                <EventListCard event={event} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       {/* </Suspense> */}
     </div>
-
-  )
+  );
 };
 
 export default Map;

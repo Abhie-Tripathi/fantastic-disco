@@ -5,20 +5,20 @@
     padding: 18px;
     margin-bottom: 65px;
     width: 100%;
+    color: #ffffff;
 }
 .navbar .heading{
     display: flex;
     align-items: center;
     font-size: 24px;
     font-weight: 700;
-    color: white;
 }
 .navbar .heading img{
     margin-right: 5px;
 }
 
 .navbar .btns{
-    color: white;
+    /* color: white; */
     display: flex;
     align-items: center;
 }
@@ -52,4 +52,9 @@
 }
 .navbar .btns .add img{
     margin-right: 10px;
+}
+
+.light{
+    color: var(--primary-color-light);
+    background-color: var(--secondary-bg-light);
 }

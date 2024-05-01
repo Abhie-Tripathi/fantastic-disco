@@ -23,9 +23,9 @@
     height: 35px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
-.userDetails {}
 
 .userDropdown {
     position: absolute;
@@ -44,4 +44,9 @@
 
 .btns:hover {
     background-color: #6750A4;
+}
+
+.light{
+    color: var(--primary-color-light);
+    background-color: var(--secondary-bg-light);
 }

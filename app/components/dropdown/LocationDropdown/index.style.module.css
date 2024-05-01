@@ -11,6 +11,10 @@
     color:white;
     left: 0px;
   }
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
   .header {
     display: flex;
     padding: 24px 20px;
@@ -18,7 +22,7 @@
   }
   
   .header_title {
-    color:white;
+    color:inherit;
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
@@ -48,7 +52,7 @@
   
   .tab {
     padding: 5px 10px;
-    color: white;
+    color: inherit;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5714285714;
@@ -206,9 +210,8 @@
   }
   
   .searchResult {
-    color:white;
     cursor: pointer;
-    color:white;
+    color:inherit;
   }
   .searchResult:hover,
   .searchResult.active {
@@ -221,6 +224,7 @@
   
   .searchResults_location_description {
     color: rgba(34, 34, 34, 0.6);
+    color: grey;
     font-size: 13px;
     line-height: 1.5384615385;
     letter-spacing: 0;

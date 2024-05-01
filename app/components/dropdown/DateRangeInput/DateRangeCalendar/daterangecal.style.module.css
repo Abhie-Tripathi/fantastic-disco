@@ -5,7 +5,13 @@
 
 .ariaRangeCalendar {
   padding: 10px;
+  color: white;
 }
+
+.ariaRangeCalendar_light{
+  color: var(--primary-color-light);
+}
+
 
 .ariaRangeCalendar header {
   display: flex;
@@ -18,7 +24,7 @@
   margin: 0;
   text-align: center;
   font-size: 1rem;
-  color: white;
+  /* color: white; */
   font-weight: 400;
   outline: none;
 }
@@ -36,7 +42,7 @@
 }
 
 .ariaRangeCalendar table th {
-  color: white;
+  /* color: white; */
   font-weight: 500;
 }
 
@@ -64,7 +70,7 @@
 .ariaRangeCalendar .ariaCalendarCell[data-selected] {
   cursor: pointer;
   background: #8470c9;
-  color: white;
+  /* color: white; */
   border-radius: 0;
 }
 
@@ -82,5 +88,5 @@
   border-end-end-radius: 6px;
 }
 .ariaCalendarCell{
-  color:white;
+  /* color:white; */
 }

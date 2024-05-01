@@ -1,0 +1,214 @@
+[
+  {
+    "eventName": "TechExpo",
+    "format": "Offline",
+    "eventType": "Tradeshow",
+    "categoryName": [
+      "Technology",
+      "Electronics"
+    ],
+    "startDate": "2024-06-10",
+    "endDate": "2024-06-13",
+    "organiser": "TechEvents",
+    "fee": "150",
+    "participantCount": "200",
+    "eventSeries": true,
+    "frequency": "Annual",
+    "forecastedFrequency": "4.2",
+    "eventZone": "North America",
+    "venueAddress": "Convention Center",
+    "venueCountry": "United States",
+    "venueCity": "San Francisco",
+    "estimatedAttendance": "8000",
+    "estimatedExhibitors": "500",
+    "stats": {
+      "EIS": "90",
+      "local": "60",
+      "regional": "45",
+      "international": "95",
+      "influence": "70"
+    },
+    "tags": {
+      "keywords": [
+        "Technology",
+        "Innovation"
+      ],
+      "department": [
+        "Research & Development"
+      ],
+      "designation": [
+        "CTOs",
+        "Product Managers"
+      ]
+    }
+  },
+  {
+    "eventName": "AutoShow",
+    "format": "Offline",
+    "eventType": "Tradeshow",
+    "categoryName": [
+      "Automotive"
+    ],
+    "startDate": "2024-08-20",
+    "endDate": "2024-08-25",
+    "organiser": "CarExpo",
+    "fee": "120",
+    "participantCount": "150",
+    "eventSeries": true,
+    "frequency": "Annual",
+    "forecastedFrequency": "3.5",
+    "eventZone": "Europe",
+    "venueAddress": "Exhibition Center",
+    "venueCountry": "Germany",
+    "venueCity": "Frankfurt",
+    "estimatedAttendance": "10000",
+    "estimatedExhibitors": "300",
+    "stats": {
+      "EIS": "95",
+      "local": "50",
+      "regional": "70",
+      "international": "80",
+      "influence": "85"
+    },
+    "tags": {
+      "keywords": [
+        "Automobile",
+        "Innovation"
+      ],
+      "department": [
+        "Engineering"
+      ],
+      "designation": [
+        "Engineers",
+        "Marketing Heads"
+      ]
+    }
+  },
+  {
+    "eventName": "GreenTech Summit",
+    "format": "Offline",
+    "eventType": "Conference",
+    "categoryName": [
+      "Environment",
+      "Technology"
+    ],
+    "startDate": "2024-09-15",
+    "endDate": "2024-09-17",
+    "organiser": "GreenTech Society",
+    "fee": "200",
+    "participantCount": "300",
+    "eventSeries": false,
+    "frequency": "One-time",
+    "eventZone": "Asia",
+    "venueAddress": "Green Convention Center",
+    "venueCountry": "Japan",
+    "venueCity": "Tokyo",
+    "estimatedAttendance": "5000",
+    "estimatedExhibitors": "50",
+    "stats": {
+      "EIS": "85",
+      "local": "40",
+      "regional": "60",
+      "international": "80",
+      "influence": "75"
+    },
+    "tags": {
+      "keywords": [
+        "Green Technology",
+        "Sustainability"
+      ],
+      "department": [
+        "Environmental Sciences"
+      ],
+      "designation": [
+        "Environmentalists",
+        "Sustainability Officers"
+      ]
+    }
+  },
+  {
+    "eventName": "EnergyForum",
+    "format": "Offline",
+    "eventType": "Forum",
+    "categoryName": [
+      "Power and Energy"
+    ],
+    "startDate": "2024-10-10",
+    "endDate": "2024-10-12",
+    "organiser": "EnergySummit",
+    "fee": "100",
+    "participantCount": "100",
+    "eventSeries": true,
+    "frequency": "Biannual",
+    "forecastedFrequency": "2.7",
+    "eventZone": "Middle East",
+    "venueAddress": "Energy Center",
+    "venueCountry": "UAE",
+    "venueCity": "Dubai",
+    "estimatedAttendance": "3000",
+    "estimatedExhibitors": "80",
+    "stats": {
+      "EIS": "92",
+      "local": "45",
+      "regional": "70",
+      "international": "85",
+      "influence": "80"
+    },
+    "tags": {
+      "keywords": [
+        "Energy",
+        "Renewables"
+      ],
+      "department": [
+        "Energy"
+      ],
+      "designation": [
+        "Energy Analysts",
+        "Policy Makers"
+      ]
+    }
+  },
+  {
+    "eventName": "AutoTech Expo",
+    "format": "Offline",
+    "eventType": "Exhibition",
+    "categoryName": [
+      "Automotive",
+      "Technology"
+    ],
+    "startDate": "2024-11-05",
+    "endDate": "2024-11-07",
+    "organiser": "AutoTech Events",
+    "fee": "150",
+    "participantCount": "180",
+    "eventSeries": true,
+    "frequency": "Annual",
+    "forecastedFrequency": "3.9",
+    "eventZone": "North America",
+    "venueAddress": "Tech Plaza",
+    "venueCountry": "United States",
+    "venueCity": "Detroit",
+    "estimatedAttendance": "7000",
+    "estimatedExhibitors": "250",
+    "stats": {
+      "EIS": "88",
+      "local": "55",
+      "regional": "75",
+      "international": "80",
+      "influence": "82"
+    },
+    "tags": {
+      "keywords": [
+        "Automobile",
+        "Technology"
+      ],
+      "department": [
+        "Engineering"
+      ],
+      "designation": [
+        "Engineers",
+        "Product Developers"
+      ]
+    }
+  }
+]

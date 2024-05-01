@@ -10,7 +10,7 @@
   font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: white;
+  color: inherit;
 }
 
 .options {
@@ -28,6 +28,11 @@
   width: 80vw;
   top: 45px;
   left: 0px;
+}
+
+.options_light {
+  color: var(--primary-color-light);
+  background-color: var(--primary-bg-light);
 }
 
 

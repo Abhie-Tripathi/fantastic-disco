@@ -3,7 +3,12 @@ import YourEventCard from './YourEventCard'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import eventData from '@/public/data/demoEvent.json'
-const Internal = () => {
+
+interface Props{
+    handleModal : () => void
+}
+
+const Internal = ({handleModal} : Props) => {
     let prevDate: any = null;
   return (
     <div>
@@ -25,6 +30,7 @@ const Internal = () => {
                     eventImage={item.imageUrl}
                     eventDate={item.startDate}
                     eventCompany={item.company}
+                    handleModal={handleModal}
                 />
             </div>
         );

@@ -4,6 +4,7 @@ import YourEventCard from './YourEventCard'
 import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
 import eventData from '../../../../public/data/demoEvent.json'
+import { useTheme } from '@/context'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
@@ -11,6 +12,7 @@ const ListView = () => {
     const [teamSelection, setTeamSelection] = useState('All Events')
     // Sponsoring/Exhibiting/Speaking/Attending
     const personalize = DropDown();
+    const {theme} = useTheme();
 
 
     let prevDate: any = null;
@@ -48,7 +50,7 @@ const ListView = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.buttons}>
+            <div className={`${styles.buttons} ${theme === 'light' ? styles.buttons_light : ""}`}>
                 <div className={styles.filterBtns}>
                     <button onClick={() => handleFilter("Sponsoring")} className={`${selectedRoles.includes("Sponsoring") ? styles.activeFilterBtn : ''}`}>Sponsoring</button>
                     <button onClick={() => handleFilter("Exhibiting")} className={`${selectedRoles.includes("Exhibiting") ? styles.activeFilterBtn : ''}`}>Exhibiting</button>

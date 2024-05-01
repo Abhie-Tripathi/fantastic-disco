@@ -11,6 +11,7 @@ import {
   Heading,
   RangeCalendar,
 } from "react-aria-components";
+import { useTheme } from "@/context";
 
 interface DateRangePickerProps {
   setState: ([]) => void;
@@ -31,6 +32,7 @@ function convertToCustomFormat(dateStr:string) {
 }
 
 const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {
+  const {theme} = useTheme();
   return (
     <DateRangePicker
       aria-label="Date Range"
@@ -39,7 +41,7 @@ const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {
         setState([convertToCustomFormat(value.start.toString()), convertToCustomFormat(value.end.toString())])
       }
     >
-      <RangeCalendar className={styles.ariaRangeCalendar}>
+      <RangeCalendar className={`${styles.ariaRangeCalendar} ${theme === 'light' ? styles.ariaRangeCalendar_light : ""}`}>
         <header>
           <Button slot="previous" className={styles.ariaCalBtn}>
             <Image src={LeftArrow} alt="prev" width={24} />
