@@ -56,7 +56,6 @@ const StickyWidget = (props: StickyWidgetProps) => {
         const endpoint = "widgets"; // Check if this is the correct endpoint
         const body = JSON.stringify({
             type: "sticky",
-            // companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",
             event: selectedEvent._source.name,
             height: height,
             fontSize: fontSize,
