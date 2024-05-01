@@ -2,10 +2,6 @@
 import React, { useState, FormEvent } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
-import Script from "next/script";
-// import EventeliText from "/public/assets/eventeli_text.svg";
-// import EventeliLogo from "/public/assets/heroLogo.png";
-// import { SignInDTO } from '@/app/components/types/signin';
 import LeftBackground from "../../../public/leftBackground.svg";
 import TopRightBackground from "../../../public/topRightBackground.svg";
 import BottomRightBackground from "../../../public/bottomRightBackground.svg";
@@ -56,8 +52,6 @@ const SignIn = () => {
 
   return (
     <div className={styles.container}>
-               {/* <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
-<sticky-widget sticky-id={"d887c580-a444-4149-8fdc-8eb6f7de67f4"}/> */}
       <div className={styles.hero_container}>
         <div className={styles.heroImage}>
           {/* <Image src={EventeliLogo} alt="logo" width={65} />

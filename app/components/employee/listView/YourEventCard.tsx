@@ -58,7 +58,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
             <Image className={styles.image} src={person2} alt="person2" />
           </div>
-          
+
         </div>
         <div className={styles.eventDetails}>
           <div className={styles.detailContainer}>
