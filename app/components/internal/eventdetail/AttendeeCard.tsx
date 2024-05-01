@@ -1,0 +1,119 @@
+'use client'
+import React, { useState, useEffect } from 'react'
+import styles from './attendeecard.style.module.css'
+import Image from 'next/image'
+import searchIcon from '/public/internal/SearchInput.svg'
+import UserList from '../../../../public/data/employeeData.json'
+import userImageIcon from '/public/person2.svg'
+import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+
+interface Props{
+    cardType: string
+}
+
+interface User {
+    id: string;
+    name: string;
+    initials: string;
+    selected?: boolean;
+}
+
+const AttendeeCard = ({cardType} : Props) => {
+
+    const [userData, setUserData] = useState<User[]>(UserList);
+    const [searchUser, setSearchUser] = useState<string>("");
+    const [allSelected, setAllSelected] = useState<boolean>(false);
+    const [selectedUserCount, setSelectedUserCount] = useState<number>(0);
+
+    const handleAllSelect = () => {
+        const updatedUserData = userData.map(user => ({ ...user, selected: !allSelected }));
+        setUserData(updatedUserData);
+        setAllSelected(!allSelected);
+    }
+
+    const onUserSelect = (user: any) => {
+        setUserData(prevUserData => {
+            const userIndex = prevUserData.findIndex(item => item.id === user.id);
+            
+            if (userIndex !== -1) {
+                const updatedUserData = [...prevUserData];
+                updatedUserData[userIndex] = { ...updatedUserData[userIndex], selected: (user.selected?!user.selected:true) };
+                return updatedUserData;
+            }
+            
+            return prevUserData;
+        });
+    }
+
+    const updateSelectedUserCount = () => {
+        const count = userData.filter(user => user.selected).length;
+        setSelectedUserCount(count);
+    };
+
+    useEffect(() => {
+        updateSelectedUserCount();
+    }, [userData]);
+
+    useEffect(() => {
+        const filterUser = (item: any) => {
+            let u_name = item.name.toLowerCase();
+            return u_name.includes(searchUser.toLowerCase())
+        }
+
+        if (searchUser.trim() !== '') {
+            const matches = UserList.filter(filterUser);
+            setUserData(matches);
+        } else {
+            setUserData(UserList);
+        }
+    }, [searchUser]);
+
+    return(
+        <div className={styles.card_container} >
+            <div className={styles.card_title} >
+                <div className={styles.total_request}>
+                    <CheckboxInput
+                        id={'abc'}
+                        onChange={handleAllSelect}
+                        checked={allSelected}
+                    />
+                    {UserList.length} {cardType} Requests
+                </div>
+                <span className={styles.selected_users}>{selectedUserCount} selected</span>
+            </div>
+            <div className={styles.search_container} >
+                <input 
+                    value={searchUser}
+                    onChange={(e) => setSearchUser(e.target.value)}
+                    className={styles.searchInput}
+                    placeholder="Search @ user name"
+                    type="text" >
+                </input>
+                <Image src={searchIcon} alt="search" />
+            </div>
+            <div className={styles.users_list} >
+                {userData.map(user => (
+                    <div key={user.id} className={styles.userItem} >
+                        <CheckboxInput
+                            id={'abc'}
+                            onChange={() => onUserSelect(user)}
+                            checked={(user.selected !== undefined)? user.selected :false}
+                        />
+                        <span className={styles.imgContainer}>
+                            <Image className={styles.userImage} src={userImageIcon} alt="user" />
+                        </span>
+                        <div className={styles.comment_name}>
+                            <span>
+                                {user.name}
+                                <span> @{user.name}</span>
+                            </span>
+                            <p className={styles.designationText}>Development / Engineering</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+export default AttendeeCard
