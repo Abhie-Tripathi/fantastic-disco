@@ -172,7 +172,6 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         const formBody = {
             type: "page",
             query: queryString,
-            // companyId: "daa7ad95-656e-4108-8652-b4a7451dbd77",  
             body: JSON.stringify(bodyData)
         };
         try {
