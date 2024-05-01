@@ -48,7 +48,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
             console.log(leftContainerHeight);
         }
 
-    }, [singledata]);
+    }, []);
 
     const handleCloseModal = () => {
         if (handleModal) {

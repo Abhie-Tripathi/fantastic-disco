@@ -30,7 +30,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
     <Link href={`/employee/${eventId}`} className={styles.card}>
       <Image src={eventImage} alt="eventImage" width={300} height={238} className={styles.cardImg} />
       <div className={styles.cardDetails}>
-        <div style={{ position: "relative" }}>
+        <div>
           <div className={styles.eventName}>{eventName}</div>
           <div className={styles.pills}>
             {eventCtas.map((item, index) => (

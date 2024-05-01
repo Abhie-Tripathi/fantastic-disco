@@ -167,7 +167,7 @@ const Search = () => {
   //   }, [searchParams]);
 
   return (
-    <div style={{ paddingTop: "70px", paddingLeft: "74px" }}>
+      <div>
       <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} >
         <div className={`${styles.inputfields_container} ${theme === 'light' ? styles.inputfields_container_light : ""}`}>
           <div className={styles.searchbar}>
