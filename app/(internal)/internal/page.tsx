@@ -1,28 +1,27 @@
 "use client";
-import React, { Suspense, useState } from "react";
+import React from "react";
 import styles from "./page.style.module.css";
 import Research from '/public/internal/research.svg'
 import Image from "next/image";
 import GotoIcon from "/public/rightArrow.svg";
 import NewEvent from "/public/thunder.svg";
-import Explore from "/public/search.svg";
-import Location from "/public/location.svg";
-import LocationPoint from "/public/locationPointer.svg";
 import Timer from "/public/clock.svg";
 import CircleCross from "/public/close.svg";
 import Link from "next/link";
 import ExhibitIcon from '/public/internal/exhibit.svg'
 import DatasetIcon from '/public/dataset.svg'
-import Loading from "@/app/components/UI/Loading";
+import BellIcon from '/public/bell.svg'
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
-import LineChart from "@/app/components/internal/eventtrends/chart/LineChart";
+import Trend from '/public/internal/trend.svg'
+import Bookmark from '/public/bookmark.svg'
+import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 
 const cardsData = [
   {
     icon: Research,
     title: "Continue Research",
     heading: "Bengaluru",
-    description: "Bengaluru, Karnataka, India (1.34 mi radius)",
+    description: ["Bengaluru, Karnataka, India (1.34 mi radius)"],
     link: "/internal/search/events",
     tags: []
     // backgroundIcon: SearchBackground,
@@ -31,26 +30,19 @@ const cardsData = [
     icon: ExhibitIcon,
     title: "Outreach",
     heading: "",
-    description:
-      "Pending events to look at : 3",
+    description: ["Pending events to look at : 3", "Shortlisted Events : 3", "Pre Finalised Events : 1"],
     link: "/internal/outreach",
     tags: []
     // backgroundIcon: NotificationBackground,
   },
   {
-    icon: DatasetIcon,
-    title: "Coordinate",
+    icon: Trend,
+    title: "Create tracker",
     heading: "",
-    description:
-      "Total Events : 8",
-    link: "/internal/coordinate",
-    tags: [
-      { "name": "Exhibitors", "count": 1 },
-      { "name": "Sponsors", "count": 3 },
-      { "name": "Speakers", "count": 3 },
-      { "name": "Attendee", "count": 1 }
-    ]
-    // backgroundIcon: TrendsBackground,
+    description: [
+      "Track key events in real-time to make informed decisions and seize opportunities as they arise.",],
+    link: "/internal/trackers/create",
+    tags: []
   },
 ];
 
@@ -72,17 +64,35 @@ const trackerCardsData = [
   },
 ];
 
+const coordinateCardTags = [
+  { "name": "Exhibitors", "count": 1 },
+  { "name": "Sponsors", "count": 3 },
+  { "name": "Speakers", "count": 3 },
+  { "name": "Attendee", "count": 1 }
+]
+
+const notifications = [
+  "@Walterwhite recommended you as a Speaker for Las vegas Event",
+  "@Gusfring recommended you as a Atendee for Pollos Event",
+  "@Pinkman recommended you as a Speaker for expo Event",
+  "@Asackshra recommended you as a Speaker for Las vegas Event",
+  "@Asackshra recommended you as a Speaker for Las vegas Event",
+]
+
+const savedEvents = [
+  "Horn Ok Food Festival",
+  "Theatre Festival",
+  "Film Festival",
+  "Auto Expo",
+  "TED X"
+]
+
 const Dashboard = () => {
-  const [activeChipY, setActiveChipY] = useState("Predicted Attendance");
-  const [activeChipX, setActiveChipX] = useState("Date");
   return (
     <div className={styles.container}>
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
-          {/* <div className={styles.primary_description}>
-            Unlock the possibilities of EventGTM
-          </div> */}
           <div className={styles.linkCard_container}>
             {cardsData.map((card) => (
               <Link
@@ -104,18 +114,31 @@ const Dashboard = () => {
                   </div>
                 )}
                 <div className={styles.linkCard_description}>
-                  {card.description}
+                  {card.description.map((desc, key) => (
+                    <div key={key}>{desc}</div>
+                  ))}
                 </div>
                 <div className={styles.linkCard_tagsOuterContainer}>
-                  {card.tags.map((tag, key) => (
+                  {/* {card.tags.map((tag, key) => (
                     <div className={styles.linkCard_tagsInnerContainer} key={key}>
                       <div className={styles.linkCard_tagsName} >{tag.name}</div>
                       <div className={styles.linkCard_tagsCount} >{tag.count}</div>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
-
               </Link>
+            ))}
+          </div>
+        </div>
+        <span className={styles.divider}></span>
+        <div className={styles.notification_container}>
+          <div className={styles.notification_header_title}>
+            <Image src={BellIcon} alt="notificationsicon" />
+            <span>Notification</span>
+          </div>
+          <div className={styles.notification_card}>
+            {notifications.map((notification, key) => (
+              <div key={key} className={styles.notification}>{notification}</div>
             ))}
           </div>
         </div>
@@ -152,7 +175,6 @@ const Dashboard = () => {
               <PolarAreaChart className={styles.events_stats_polarChart} />
             </div>
           </div>
-
           <div className={styles.tracker_card}>
             <div className={styles.tracker_card_header}>
               <span>Tracker 2 - Events in Allahabad</span>
@@ -177,34 +199,47 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
         <span className={styles.body_divider}></span>
-
-        <div className={styles.trends_container}>
-          <div className={styles.trends_container_header}>
-            <Image src={Explore} alt="explore" />
-            <div>Explore some latest and trending events near you!</div>
-            <button>Explore</button>
-          </div>
-
-          <div className={styles.trends_location_container}>
-            <Image src={Location} alt="location" />
-            <span>Bengaluru, Karnataka, India (1.34 mi radius)</span>
-            <button>
-              <Image src={LocationPoint} alt="locationpoint" />
-              <span>Choose Location</span>
-            </button>
-          </div>
-
-          <div className={styles.tab_container}>
-            <div className={`${styles.tab} ${styles.active}`}>
-              Predicted Attendance
+        <div className={styles.savedEvent_coordinateContainer}>
+          <div className={styles.savedEventsContainer}>
+            <div className={styles.savedEventsHeader}>
+              <Image src={Bookmark} alt="save" />
+              <div>Saved Events</div>
             </div>
-            <div className={styles.tab}>No of Events</div>
+            <div className={styles.savedEventsData}>
+              {savedEvents.map((event, key) => (
+                <div className={styles.savedEvent} key={key}>
+                  <div>{event}</div>
+                  <BookmarkIcon fillColor={'#ff851b'} />
+                </div>
+              ))}
+            </div>
           </div>
-          <Suspense fallback={<Loading />}>
-            <LineChart activeChipY={activeChipY} activeChipX={activeChipX} />
-          </Suspense>
+          <div className={`${styles.linkCard_container} ${styles.coordinateCard}`}>
+            <Link
+              href={"/internal/coordinate"}
+              className={styles.linkCard}
+            >
+              <div className={styles.linkCard_header}>
+                <div className={styles.linkCard_header_title}>
+                  <Image src={DatasetIcon} alt="data" />
+                  <span>Coordiante</span>
+                </div>
+                <Image src={GotoIcon} alt="goto" />
+              </div>
+              <div className={styles.linkCard_description}>
+                <div>Total Events : 8</div>
+              </div>
+              <div className={styles.linkCard_tagsOuterContainer}>
+                {coordinateCardTags.map((tag, key) => (
+                  <div className={styles.linkCard_tagsInnerContainer} key={key}>
+                    <div className={styles.linkCard_tagsName} >{tag.name}</div>
+                    <div className={styles.linkCard_tagsCount} >{tag.count}</div>
+                  </div>
+                ))}
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

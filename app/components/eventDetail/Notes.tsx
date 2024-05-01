@@ -48,17 +48,20 @@ export const Notes = ({ comments, productId }: Props) => {
     const len=CommentsData?.length;
     const id = Date.now().toString();
     // setNote(note.replace(/\n/g, "<br>"))
+    if(note!==""){
+      
     const updatedNotes = [...notes, { id: Date.now().toString(), text: note, user:{id: user?.id, firstname:user?.firstname, lastname:user?.lastname, email:user?.email, createdAt:new Date()}
     }];
     setNotes(updatedNotes);
     console.log(note);
-   
+  }
     setNote("");
     
     
   }
  
   comments=[...notes];
+  let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
   return (
     <div className={styles.container}>
       {
@@ -77,6 +80,7 @@ export const Notes = ({ comments, productId }: Props) => {
                     comment={comment}
                     superCommentId={comment.id}
                     notes={notes} setNote={setNote} 
+                    arr={arr}
                   />
                 </li>
               ))}
@@ -86,7 +90,7 @@ export const Notes = ({ comments, productId }: Props) => {
           : null
       }
       <div className={`${styles.notesAdd} ${theme === 'light' ? styles.notesAdd_light : ""}`}>
-        <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments}/>
+        <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments} />
       </div>
     </div>
   );
@@ -100,12 +104,18 @@ interface CommentProps {
   userName?: string;
   notes:(()=>void);
   setNote:React.Dispatch<React.SetStateAction<string>>;
+  arr?:string[];
   setComments?: React.Dispatch<React.SetStateAction<IComment[]>>;
 }
-const Comment = ({ comment, productId, setComments, superCommentId, userName, notes, setNote }: CommentProps) => {
+const Comment = ({ comment, productId, setComments, superCommentId, userName, notes, setNote , arr}: CommentProps) => {
+
   return (
     <>
-      <div className={styles.comment__user}>
+    {!arr?.some(ele=>comment.text.includes(ele))?(
+    <>
+    <div className={styles.comment__user}>
+        
+        
         <header>
           <span className={styles.imgContainer}>
             <Image
@@ -129,28 +139,35 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
       </div>
       <ButtonView view={"cancelBtn"} productId={productId} commentId={comment.id} commentText={comment.text} />
       <div className={styles.text}>
-        <div className={styles.commentText}><span>{userName}</span> {comment.text.split('\n').map((item, index) => {
-          if (item.includes('@')) {
-            const words = item.split(' ');
-            return (
-              <React.Fragment key={index}>
-                {words.map((word, idx) => {
-                  if (word.startsWith('@')) {
-                    const username = word.substring(1);
-                    return (
-                      <a key={idx} style={{color:"blue"}}href={`#${username}`}>{word}{" "}</a>
-                    );
-                  } else {
-                    return <React.Fragment key={idx}>{word} </React.Fragment>;
-                  }
-                })}
-                <br />
-              </React.Fragment>
-            );
-          } else {
-            return <p key={index}>{item}</p>;
-          }
-        })}</div>
+      <div className={styles.commentText} >
+  <span>{userName}</span> {comment.text.split('\n').map((item, index) => {
+    if (item.includes('@')) {
+      const words = item.split(' ');
+      return (
+        <React.Fragment key={index}>
+          {words.map((word, idx) => {
+            if (word.startsWith('@')) {
+              const username = word.substring(1);
+              if(arr?.includes("@"+username)){
+                return (
+                  <a key={idx} style={{ color: "blue" }} href={`#${username}`}>{word}{" "}</a>
+                );
+              } else {
+                return <React.Fragment key={idx}>{word} </React.Fragment>;
+              }
+            } else {
+              return <React.Fragment key={idx}>{word} </React.Fragment>;
+            }
+          })}
+          <br />
+        </React.Fragment>
+      );
+    } else {
+      return <p key={index}>{item}</p>;
+    }
+  })}
+</div>
+
       </div>
       <div className={styles.options}>
         <ButtonView view={"upvoteBtn"} />
@@ -187,6 +204,99 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
           );
         })}
       </ul>
+    </>):(
+    <>
+    <div className={styles.comment__user}>
+      </div>
+      <ButtonView view={"cancelBtn"} productId={productId} commentId={comment.id} commentText={comment.text} />
+      <div className={styles.text1}>
+      <span className={styles.imgContainer}>
+            <Image
+              width={30}
+              height={30}
+              
+              src={person1}
+              alt=""
+            />
+          </span>
+      <div className={styles.commentText1} >
+  <span>{userName}</span> {comment.text.split('\n').map((item, index) => {
+    if (item.includes('@')) {
+      const words = item.split(' ');
+      return (
+        <React.Fragment key={index}>
+          {words.map((word, idx) => {
+            if (word.startsWith('@')) {
+              const username = word.substring(1); 
+              <header>
+               
+                <div className={styles.comment_name}>
+                  <span>
+                    {comment.user?.firstname} {comment.user?.lastname}
+                    <span> @{`${comment.user.firstname}${comment.user.lastname.charAt(0).toLowerCase()}${comment.user.lastname.slice(1)}`}</span>
+                  </span>
+      
+                  <p className={styles.designationText}>Founder and leadership at Nityo Infotech</p>
+                </div>
+              </header>
+              if(arr?.includes("@"+username)){
+                return (
+                  <a key={idx} style={{ color: "blue" }} href={`#${username}`}>{word}{" "}</a>
+                );
+              } else {
+                return <React.Fragment key={idx}>{word} </React.Fragment>;
+              }
+            } else {
+              return <React.Fragment key={idx}>{word} </React.Fragment>;
+            }
+          })}
+          <br />
+        </React.Fragment>
+      );
+    } else {
+      return <p key={index}>{item}</p>;
+    }
+  })}
+</div>
+
+      </div>
+      {/* <div className={styles.options}>
+        <ButtonView view={"upvoteBtn"} />
+        <ButtonView view={"replyBtn"} />
+        <p>Mar 20,2024</p>
+        <ButtonView view={"editDeleteButton"} commentUserId={comment.user.id} />
+      </div>
+      <div className={styles.addMoreCommentSection}>
+        <AddComment
+          focus
+          replyOptions={{ commentId: superCommentId }}
+          productId={productId!}
+          className={`${styles.active}`}
+          repliesLength={comment.replies?.length}
+          notes={notes} setNote={setNote} 
+        />
+      </div>
+      <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
+      <ul className={styles.replies} id="replyContainer">
+        {comment.replies?.map((reply) => {
+          return (
+            <li
+              className={reply.replies?.length! > 0 ? styles.thread : ""}
+              key={reply.id}
+            >
+              <Comment
+                comment={reply}
+                setComments={setComments!}
+                productId={productId}
+                superCommentId={superCommentId}
+                notes={notes} setNote={setNote} 
+                userName={"@Roxette"} />
+            </li>
+          );
+        })}
+      </ul> */}
+    </>)}
+      
     </>
   );
 };

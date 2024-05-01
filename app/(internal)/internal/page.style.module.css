@@ -22,7 +22,7 @@
   
   .linkCard_container {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     gap: 10px;
     padding: 30px 0px;
   }
@@ -105,12 +105,6 @@
     height: 250px;
   }
   
-  .notification_header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
   .notification_header_title {
     display: flex;
     align-items: center;
@@ -131,14 +125,23 @@
   }
   
   .notification_card {
-    margin-top: 28px;
+    margin-top: 5px;
     border-radius: 12px;
     border: 1px solid grey;
-    padding: 25px;
     height: 160px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow-y: auto;
+  }
+  .notification{
+    cursor: pointer;
+    font-size: 14px;
+    padding: 10px;
+    border-bottom: 1px solid rgb(51, 51, 51);
+  }
+  .notification:hover{
+    background-color: #1a1a1a;
   }
   
   .viewButton {
@@ -156,6 +159,7 @@
   }
   
   .body_container {
+    margin-top: 10px;
     display: flex;
     gap: 20px;
   }
@@ -313,4 +317,36 @@
   
   .body_divider {
     border-left: 2px solid grey;
+  }
+  .coordinateCard{
+    margin-right: 20px;
+  }
+  .savedEvent_coordinateContainer{
+    /* display: flex; */
+    width: 100%;
+  }
+  .savedEventsContainer{
+    width: 100%;
+  }
+  .savedEventsHeader{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .savedEventsData{
+    width: 100%;
+    margin-top: 20px;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+  }
+  .savedEvent{
+    border-bottom: 1px solid rgb(51, 51, 51);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    
+    cursor: pointer;
+  }
+  .savedEvent:hover{
+    background-color: #454459;
   }
