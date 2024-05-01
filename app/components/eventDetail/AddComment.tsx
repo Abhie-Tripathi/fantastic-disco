@@ -64,6 +64,7 @@ export const AddComment = ({
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
   const [showUser,setShowUser]=useState(false);
+  const [rec,setRec]=useState<boolean>(false);
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
   const type:string[]=["Speak", "Attend"];
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
@@ -75,21 +76,31 @@ export const AddComment = ({
   // useEffect(() => {
   //   const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
   //   if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
-  //     setEmployeeDropDown(true);
+  //     setShowUser(true);
   //     const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
-  //     if (searchTerm) {  setAlluser(allUser);
-  //       const filtered = EmployeeData.filter((employee) =>
-  //         employee.name.toLowerCase().includes(searchTerm.toLowerCase())
+  //     if (searchTerm) {
+  //       const filtered = alluser.filter((employee) =>
+  //         employee.toLowerCase().includes(searchTerm.toLowerCase())
   //       );
-  //       setFilteredEmployees(filtered);
-  //     } else {
-  //       setFilteredEmployees(EmployeeData); // Show all employees if no specific name is typed after "@"
-  //     }
-  //   } else {
-  //     setEmployeeDropDown(false);
-  //   }
-  // }, [noten, EmployeeData]);
-
+  //       setAlluser(filtered);
+  //     } 
+  //   } 
+  // }, [note, alluser]); 
+  useEffect(() => {
+    const trimmedNote = note?.trim();
+    if (trimmedNote?.includes("@")) {
+      setShowUser(true);
+      const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
+      if (searchTerm) {
+        const filtered = alluser?.filter(user => {
+          return user.toLowerCase().includes(searchTerm.toLowerCase())
+         
+        });
+        setAlluser(filtered);
+      } 
+    }else  setShowUser(false);
+  }, [note]);
+  
 
   // const handleEmployeeClick = (employee: any) => {
   //   setNote((prevNote) => {
@@ -135,6 +146,7 @@ export const AddComment = ({
   // useEffect(() => {
     
  useEffect(()=>{
+
   if (note?.charAt(note.length-1)==='@') {
     console.log(comments);
     setShowUser(true);
@@ -142,7 +154,8 @@ export const AddComment = ({
     console.log(arr);
     
       setAlluser(arr);
-  }else setShowUser(false);
+  }
+  // else setShowUser(false);
  },[note])
   const noteFun=(e:any)=>{
     setNote(e.target.value);
@@ -153,38 +166,67 @@ export const AddComment = ({
     if(!note.includes(name)){
     setNote(prevNote => prevNote.replace(/@\w*$/, `${name} `));
     showTypes(false);
+    setShowUser(false);
+    setRec(true);
     }
     // console.log(1);
     
 };
 const handleSelectAttend=()=>{
-  // e.preventDefault();
-  setNote(prev=>prev+("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to attend"));
+  setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to attend");
   setShowUser(false);
-
-  // if (formRef.current) {
-  //   formRef.current.submit(); 
-  // }
 }
 const handleSelectSpeak=()=>{
-  setNote("@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to speak");
+  setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to speak");
   setShowUser(false);
 }
-const handleRecommend=()=>{
+const handleRecommend=(event:any)=>{
+  event.preventDefault();
   let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
     setAlluser(arr);
-  setNote("@");
+    setNote(note.substring(0, note.lastIndexOf('/'))+`@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()} wants to recommend @`);
+  
   setShowUser(true);
 }
+useEffect(()=>{
+  if(rec){
+    setNote(prev=> prev+"for #")
+    setRec(!rec);
+  }
+},[rec])
+
 const handleKeyDown=(event:React.KeyboardEvent<HTMLTextAreaElement>)=>{
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
-    notes(event);// Submit the form if "Enter" is pressed without "Shift"
+    notes(event);
   } else if (event.key === 'Enter' && event.shiftKey) {
     event.preventDefault();
     setNote(prev => prev + '\n');
   }
 }
+const [recommendCalled, setRecommendCalled] = useState(false);
+if (note?.includes('/recommend') && !recommendCalled) {
+  setRecommendCalled(true);
+  handleRecommend(event); 
+
+}
+const formRef1 = useRef(null);
+
+useEffect(() => {
+  if (note?.includes('#speak')) {
+    handleSelectSpeak();
+  }
+  if(note?.includes('#attend')){
+    handleSelectAttend();
+  }
+  if (note?.includes('/recommend')) {
+    handleRecommend(event); 
+  }
+  if(note?.charAt(note.length-1)==='@'){
+    handleRecommend(event); 
+  }
+  if(note==="") setRec(false);
+}, [note]); 
 useEffect(() => {
   const patternString = "@\\w+ for #"; 
   const pattern = new RegExp(patternString);
@@ -194,28 +236,35 @@ useEffect(() => {
     showTypes(false); 
   }
 }, [note]);
- const handleSelectType=(ele:string)=>{
+ const handleSelectType=(event:any,ele:string)=>{
   if(type.includes(ele)){
   setNote(note+ele);
+  handleKeyDown(event);
   showTypes(false);
   }
  }
-
+ const textareaRef = useRef<HTMLTextAreaElement>(null);
+ useEffect(() => {
+  if (type.some(type=>note?.includes(type)) && textareaRef.current) {
+    textareaRef.current.focus();
+  }
+}, [types]);
 console.log(note);
 
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
+      <form onSubmit={notes} ref={formRef1} className={styles.form}>
       <div className={styles.recommendBtn}>
       <button onClick={handleSelectAttend}>Attend</button>
-        <button onClick={() => handleSelectSpeak()}>Speak</button>
-        <button onClick={()=>handleRecommend()}>Recommend</button>
+        <button onClick={() => handleSelectSpeak()} data-action="speak">Speak</button>
+        <button onClick={handleRecommend}>Recommend</button>
         </div>
       <div className={styles.addNotes}>
-      <form onSubmit={notes} ref={formRef} className={styles.form}>
-        <textarea className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)}  rows={4}  onKeyDown={(e)=>handleKeyDown(e)}/>
+     
+        <textarea ref={textareaRef} className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)}  rows={4}  onKeyDown={(e)=>handleKeyDown(e)}/>
         <button style={{ display: "flex" }} type="submit"><Image src={Send} alt="send" /></button>
-        </form>
+        
         {/* {employeeDropDown && (
           <div className={styles.employeeDropdown}>
             {filteredEmployees.map((employee: any, key: any) => (
@@ -236,7 +285,7 @@ console.log(note);
         {types && (
     <div className={styles.allUser}>
         {type.map((ele,ind) => (
-            <div key={ind} className={styles.option} onClick={() => handleSelectType(ele)}>{ele}</div>
+            <div key={ind} className={styles.option} onClick={(e) => handleSelectType(e,ele)}>{ele}</div>
         ))}
       </div>
         )}
@@ -244,6 +293,7 @@ console.log(note);
         {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
       </button>
       </div>
+      </form>
       <div className={styles.attachmentOption}>
         <Image className={styles.attachIcon} src={Attach} alt="attach" />
         <Image className={styles.attachIcon} src={Link} alt="link" />

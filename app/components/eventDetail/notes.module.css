@@ -118,6 +118,8 @@
 
 .commentText {
   font-size: 12px;
+  display: flex;
+  align-items: center;
   text-align: justify;
 }
 
@@ -320,6 +322,7 @@
 
 .commentText {
   margin: 1rem 0 0;
+  gap:5px;
   display: block;
 }
 
@@ -395,7 +398,13 @@
   background: grey;
   border-radius: 12px;
 }
-
+.text1{
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  gap:5px;
+  padding-bottom: 40px;
+}
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;
     border-radius: 12px;
