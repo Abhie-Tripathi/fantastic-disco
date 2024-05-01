@@ -182,3 +182,14 @@
     opacity: 1;
     
   }
+
+  /* @media screen and (min-width : 1100px) {
+    .card{
+        flex-direction: column;
+        height: fit-content;
+        width: fit-content;
+    }
+    .cardImg{
+        height: 20%;
+    }
+  } */

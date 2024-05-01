@@ -31,7 +31,6 @@ const Page = () => {
         <EventDetail openEventDetails={true} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} />
       </div>}
     </div>
-
   )
 }
 
