@@ -1,11 +1,13 @@
 import ClockIcon from '/public/clock.svg'
-import crossIcon from "/public/close.svg";
 import Image from "next/image";
 import styles from './statusDropdown.style.module.css';
 import { useState } from "react";
+
 interface PropType {
   label: string;
   eventId: number;
+  handleShortlistModal: () => void;
+  handleRejectClick: () => void;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,18 +16,12 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     setIsOpen((prev) => !prev);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
     setIsOpen(false);
     setValue(target.innerText);
-    setIsModalOpen(true);
+    props.handleShortlistModal();
   };
-
-  const closeModal = () =>{
-    setIsModalOpen(false);
-  }
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -48,12 +44,11 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           <div className={styles.dropdown_menu}>
             <div
               className={styles.dropdown_menu_items}
-              onClick={handleMenuItemClick}
             >
-              <div className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
+              <div onClick={handleMenuItemClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
                 Shortlist
               </div>
-              <div className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
+              <div onClick={props.handleRejectClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
                 Reject
               </div>
             </div>
@@ -61,22 +56,6 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
         )}
       </div>
     </div>
-    {
-      isModalOpen && (
-          <div className={styles["modalContainer"]} onClick={handleClickEvent} >
-              <div className={styles["modal"]} >
-                <header className={styles["modal_header"]}>
-                  <div className={styles["modal_header-title"]}>Modal Heading</div>
-                  <button className={styles["close"]} onClick={() => closeModal()} >
-                    <Image src={crossIcon} alt="clock" width={16} height={16} />
-                  </button>
-                </header>
-                <main className={styles["modal_content"]} style={{padding:"0 1rem"}}>
-                </main>
-              </div>
-          </div>
-      )
-    }
     </>
   );
 };
