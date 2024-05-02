@@ -152,3 +152,58 @@
 .option:hover{
   background-color: #303030;
 }
+.overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  color:red;
+  padding: 20px;
+  border-radius: 4px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-Y: auto;
+}
+.filePreview{
+  display: flex;
+  gap:10px
+}
+.fileDiv{
+  position: relative;
+}
+.close{
+  position: absolute;
+    right: 0;
+    cursor: pointer;
+}
+.pdf{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px solid white;
+}
+.btn1{
+  padding: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 200px;
+  text-align: center;
+  border-radius: 30px;
+  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
+}
+.btn1:hover{
+  background-color: #2B233D;
+}

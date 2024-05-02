@@ -83,6 +83,9 @@
 }
 
 .text {
+  display: flex;
+  flex-direction: column;
+  gap:10px;
   margin: 2rem 3.6rem 0;
 }
 
@@ -402,8 +405,23 @@
   display: flex;
   align-items: center;
   font-size: 12px;
+  color: grey;
   gap:5px;
   padding-bottom: 40px;
+}
+.pdf{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px solid white;
+}
+.images{
+  display: grid;
+  gap:10px;
+  /* flex-direction: column; */
+    grid-template-columns: repeat(2,0fr);
 }
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;
