@@ -38,14 +38,14 @@ import Loading from "@/app/components/UI/Loading";
 // import { searchEvents } from "@/services/eventsService";
 const Calendar = lazy(() => import("@/app/components/employee/calendarcontainer/CalendarContainer"));
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
-const Table=lazy(() => import("@/app/components/Table"));
+const Table = lazy(() => import("@/app/components/Table"));
 interface InsightsType {
   [key: string]: boolean;
 }
 const Search = () => {
   //   const searchParams = useSearchParams();
   const router = useRouter();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const categoryDropdownRef = useRef(null);
   const locationDropdownRef = useRef(null);
   const labelDropdownRef = useRef(null);
@@ -110,7 +110,7 @@ const Search = () => {
   };
 
   const insightCheckHandler = (eventCode: string) => {
-    setSelectedInsights((prev:any) => ({
+    setSelectedInsights((prev: any) => ({
       ...prev,
       [eventCode]: !prev[eventCode],
     }));
@@ -167,7 +167,7 @@ const Search = () => {
   //   }, [searchParams]);
 
   return (
-      <div style={{ paddingTop: "70px", paddingLeft : "74px"}}>
+      <div>
       <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} >
         <div className={`${styles.inputfields_container} ${theme === 'light' ? styles.inputfields_container_light : ""}`}>
           <div className={styles.searchbar}>
@@ -206,7 +206,7 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={openDropdown == "Category" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
+                  <Image src={openDropdown == "Category" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
                 </div>
                 {openDropdown == "Category" && (
                   <CategoryDropdown
@@ -229,7 +229,7 @@ const Search = () => {
                       {selectedLocations[0]}
                     </span>
                   </div>
-                  <Image src={openDropdown == "Location" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
+                  <Image src={openDropdown == "Location" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
                 </div>
                 {openDropdown == "Location" && (
                   <LocationDropdown
@@ -258,7 +258,7 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={openDropdown == "Labels" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
+                  <Image src={openDropdown == "Labels" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
                 </div>
                 {openDropdown == "Labels" && (
                   <LabelDropdown
@@ -298,7 +298,7 @@ const Search = () => {
                   onClick={() => handleDropdownClick("Date & Time")}
                 >
                   <div className={styles.input_title}>Date & Time</div>
-                  <Image src={openDropdown == "Date & Time" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20}/>
+                  <Image src={openDropdown == "Date & Time" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
                 </div>
                 {openDropdown == "Date & Time" && (
                   <DateRangeInput
@@ -363,9 +363,8 @@ const Search = () => {
                 )}
               </div> */}
               <div
-                className={`${styles.advanceFilter_button} ${
-                  isAdvancedFilter ? styles.active_button : ""
-                }`}
+                className={`${styles.advanceFilter_button} ${isAdvancedFilter ? styles.active_button : ""
+                  }`}
                 onClick={advanceFilterHandler}
               >
                 <div>Advance Filters</div>
@@ -377,7 +376,7 @@ const Search = () => {
                 />
               </div>
 
-             
+
 
             </div>
 
@@ -389,15 +388,15 @@ const Search = () => {
 
               >
                 Create Tracker
-                <Image src={Add} alt="plus" width={20} height={20} style={{color:"white"}}/>
+                <Image src={Add} alt="plus" width={20} height={20} style={{ color: "white" }} />
               </div>
             </div>
           </div>
-          
+
           {showRecentSearches && (
             <RecentSearches setShowRecentSearches={setShowRecentSearches} />
           )}
-           {isAdvancedFilter && (
+          {isAdvancedFilter && (
             <div className={styles.advanceFilter_container}>
               <div className={styles.advanceFilter_subContainer1}>
                 <div className={styles.advanceFilter_title}>Advance Filter</div>
@@ -700,7 +699,7 @@ const Search = () => {
             </div>
           )}
         </div>
-            
+
         <div className={styles.viewContainer}>
           <div className={styles.exportedno_container}>
             <div className={styles.exportedno}>1</div>
@@ -758,7 +757,7 @@ const Search = () => {
             )}
             {selectedView === "list" && listView === "table" && (
               <Suspense fallback={<Loading />}>
-              <Table eventData={similarEventData.data.events} showInsights={selectedInsights} />
+                <Table eventData={similarEventData.data.events} showInsights={selectedInsights} />
               </Suspense>
             )}
 

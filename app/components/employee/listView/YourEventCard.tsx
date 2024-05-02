@@ -30,7 +30,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
     <Link href={`/employee/${eventId}`} className={styles.card}>
       <Image src={eventImage} alt="eventImage" width={300} height={238} className={styles.cardImg} />
       <div className={styles.cardDetails}>
-        <div style={{ position: "relative" }}>
+        <div className={styles.eventHeader}>
           <div className={styles.eventName}>{eventName}</div>
           <div className={styles.pills}>
             {eventCtas.map((item, index) => (
@@ -48,22 +48,24 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>{formattedDate}</div>
           </div>
         </div>
-        <div className={styles.circles}>
-          <div className={styles.circle} data-name="John Doe">
-            <Image className={styles.image} src={person1} alt="person1" />
+        <div className={styles.card_footer}>
+          <div className={styles.circles}>
+            <div className={styles.circle} data-name="John Doe">
+              <Image className={styles.image} src={person1} alt="person1" />
+            </div>
+            <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Ravi Tripathi">
+              RT
+            </div>
+            <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
+              <Image className={styles.image} src={person2} alt="person2" />
+            </div>
+
           </div>
-          <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Ravi Tripathi">
-            RT
-          </div>
-          <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
-            <Image className={styles.image} src={person2} alt="person2" />
-          </div>
-          
-        </div>
-        <div className={styles.eventDetails}>
-          <div className={styles.detailContainer}>
-            <div>View Details</div>
-            <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
+          <div className={styles.eventDetails}>
+            <div className={styles.detailContainer}>
+              <div>View Details</div>
+              <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
+            </div>
           </div>
         </div>
       </div>

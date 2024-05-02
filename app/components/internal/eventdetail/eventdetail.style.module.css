@@ -8,7 +8,8 @@
 .closeIcon {
     position: absolute;
     cursor: pointer;
-    right: 6%;
+    right: 20px;
+    top: 15px;
 }
 
 .innerContainer {
@@ -34,6 +35,7 @@
     justify-content: space-between;
     border-bottom: 0.7px solid #3A3152;
     padding-bottom: 20px;
+    color: inherit;
 }
 
 .containerRight {

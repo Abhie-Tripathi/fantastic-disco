@@ -2,7 +2,6 @@
   margin: 1rem 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
 }
 
@@ -63,6 +62,7 @@
 
 .addNotes {
   display: flex;
+  justify-content: space-between;
   position: relative;
   gap: 20px;
   border-radius: 30px;
@@ -77,7 +77,7 @@
   gap:10px;
   flex-direction: column;
   bottom:100%;
-  padding: 10px;
+  /* padding: 10px; */
   background-color: #1a1a1a;
 }
 .employeeDropdown {
@@ -115,4 +115,40 @@
 
 .attachIcon {
   cursor: pointer;
+}
+.recommendBtn{
+  display: flex;
+  gap:10px;
+}
+.recommendBtn button{
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.form{
+  gap: 10px;
+  /* width: 100%; */
+  flex-direction: column;
+  display: flex;
+}
+.form button{
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.textArea{
+  display: flex;
+  height: 20px;
+  width: 80%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding-top: 3px;
+  padding-left: 5px;
+}
+.option{
+  padding: 10px 5px;
+}
+.option:hover{
+  background-color: #303030;
 }

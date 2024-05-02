@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, FormEvent } from "react";
 import styles from "./page.module.css";
-import Script from "next/script";
 import Image from "next/image";
 import LeftBackground from "../../../public/leftBackground.svg";
 import TopRightBackground from "../../../public/topRightBackground.svg";
@@ -9,7 +8,6 @@ import BottomRightBackground from "../../../public/bottomRightBackground.svg";
 import SignUpVisuals from "../../../public/signupVisuals.svg";
 import Verification from "../verification/page";
 import { useAuthContext } from "@/context/auth";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
 import { ZodError } from "zod";
