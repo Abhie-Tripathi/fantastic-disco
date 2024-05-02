@@ -1,11 +1,12 @@
-import React, { Suspense, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import styles from './map.module.css'
-import { useState } from 'react';
-import eventData from '../../../../public/data/demoEvent.json'
-import MapPointer from '/public/Marker.svg'
-import  ReactMapGL, { Marker, Popup } from 'react-map-gl'
+import React, { Suspense, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./map.module.css";
+import { useState } from "react";
+import eventData from "../../../../public/data/demoEvent.json";
+import MapPointer from "/public/Marker.svg";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import { useTheme } from "@/context";
 interface Event {
   id: number;
   venue: { lat: number; lng: number }[];
@@ -46,20 +47,25 @@ interface Event {
 // };
 const Map: React.FC = () => {
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
-  const [showList,setShowList]=useState<boolean>(false);
+  const [showList, setShowList] = useState<boolean>(false);
+  const { theme } = useTheme();
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
     longitude: -0.076132,
-    width: '100%',
-    height: '500px',
+    width: "100%",
+    height: "500px",
     zoom: 2,
   });
   return (
     <div className={styles.map}>
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
-        <ReactMapGL
-          {...viewport}
-          mapStyle="mapbox://styles/mapbox/dark-v11"
+      <ReactMapGL
+        {...viewport}
+        mapStyle={
+          theme === "light"
+            ? "mapbox://styles/mapbox/light-v10"
+            : "mapbox://styles/mapbox/dark-v11"
+        }
         mapboxApiAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
         onViewportChange={(viewport) => {
           setViewport(viewport);
@@ -98,9 +104,7 @@ const Map: React.FC = () => {
                   >
                     {event.name}
                   </Link>
-                  <div className={styles.event_country}>
-                    {event.location}
-                  </div>
+                  <div className={styles.event_country}>{event.location}</div>
                   <div className={styles.event_datetime}>
                     Wed, 6 Mar 2024 (1 day)
                   </div>
@@ -149,8 +153,7 @@ const Map: React.FC = () => {
       )} */}
       {/* </Suspense> */}
     </div>
-
-  )
+  );
 };
 
 export default Map;
