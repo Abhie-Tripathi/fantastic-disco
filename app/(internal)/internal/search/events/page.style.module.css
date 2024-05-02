@@ -1,505 +1,512 @@
 .container {
-    padding: 20px;
-    color: black;
-  }
-
-  .container_light{
-    background-color: var(--primary-bg-light);
-    color: var(--primary-color-light);
-  }
-  
-  .inputfields_container {
-    position: relative;
-    background-color: #313131;
-    border-radius: 30px;
-  }
-
-  .inputfields_container_light{
-    background-color: var(--secondary-bg-light);
-  }
-  
-  .searchbar {
-    background-color: var(--background);
-    border-radius: 30px;
-    box-shadow: 1px 3px 16px 0px #0000001f;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 0px 20px;
-  }
-  
-  .searchbar input {
-    font-size: 16px;
-    border: none;
-    background-color: transparent;
-    padding: 20px 0px;
-    flex: 1;
-  }
-  .searchbar input:focus {
-    outline: none;
-  }
-  
-  .recentSearches_button {
-    background-color: white;
-    color: #6750a4;
-    cursor: pointer;
-    border-radius: 20px;
-    padding: 5px 15px;
-    text-decoration: underline;
-    line-height: 24px;
-  }
-  
-  .searchbar button {
-    border: none;
-    background: none;
-    cursor: pointer;
-  }
-  
-  .sub_container {
-    padding: 20px 24px;
-    
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .buttons_container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .inputdropdowns_container {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0px, 260px));
-    gap: 15px 25px;
-  }
-  
-  @media screen and (max-width: 1300px) {
-    .inputdropdowns_container {
-      grid-template-columns: repeat(3, minmax(0px, 260px));
-      gap: 15px 25px;
-    }
-  }
-  
-  @media screen and (max-width: 1150px) {
-    .inputdropdowns_container {
-      grid-template-columns: repeat(2, minmax(0px, 260px));
-      gap: 15px 25px;
-    }
-  }
-  
-  .viewTypeButtons_container {
-    position: absolute;
-    width: 100%;
-    top:25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-  
-  .viewTypeButtons {
-    pointer-events: all;
-  
-    border-radius: 50px;
-    background-color: #1A1A1A;
-    margin-bottom: 40px;
-  }
-
-  .viewTypeButtons_light{
-    background-color: var(--secondary-bg-light);
-    color: black;
-  }
- 
-.viewTypeButtons button{
-    color: inherit;
-    font-weight: 500;
-    padding: 12px 48px;
-    font-size: 14px;
-    background:none;
-    border: none;
-    cursor: pointer;
+  padding: 20px;
+  color: black;
 }
 
-  .viewTypeButtons button.active {
-    color: white;
-    border: 1px solid grey;
-    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
-    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
-    border-radius: 50px;
-  }
-  .message {
-    margin-top: 30px;
-    color: var(--primary-color);
-    font-size: 30px;
-    font-weight: 600;
-  }
-  .viewTypeButton {
-    margin-top: 60px;
-  }
-  
-  .input_container {
-    white-space: nowrap;
-    padding: 10px 20px;
-    background-color: white;
-    border-radius: 50px;
-    position: relative;
-  }
-  
-  .createtracker_button {
-    line-height: 24px;
-    cursor: pointer;
-    color: white;
-    white-space: nowrap;
-    padding: 10px 20px;
-    background-color: #6750a4;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .createtracker_button:hover {
-    background-color: #6750a4;
-    color: white;
-  }
-  
-  .input {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .input_selected_no{
-    margin-left: 4px;
-    font-size: 10px;
-    height: 20px;
-    width: 20px;
-    background-color: #6750a4;
-    color: white;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 100%;
-    vertical-align: middle;
-  }
-  
-  .input_selected_title {
-    padding-left: 4px;
-    font-size: 10px;
-    color: #4d1bf3;
-    font-weight: 500;
-    vertical-align: middle;
-  }
-  
-  .viewContainer {
-    padding: 35px 15px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .exportedno_container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .exportedno {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    background-color: #4d1bf3;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .exportedno_title {
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #4d1bf3;
-  }
-  
-  .exportButton {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .exportButtonTitle {
-    color: #4d1bf3;
-  }
-  
-  .listBtn_container{
-    color: white;
-  }
-  .listBtn_container_light{
-    color: black;
-  }
-  .listBtn{
-    color: inherit;
-    font-size: 14px;
-    background: none;
-    border: none;
-    border: 1px solid #6750A4;
-    padding: 5px 15px;
-    border-radius: 10px;
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  .active{
-    background-color: #6750A4;
-    color: white;
-  }
-  .advanceFilter_button {
-    line-height: 24px;
-    cursor: pointer;
-    white-space: nowrap;
-    padding: 10px 20px;
-    background-color: white;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .advanceFilter_button:hover {
-    background-color: #eaddff;
-    color: black;
-  }
-  
-  .active_button {
-    background-color: #eaddff;
-    color: black;
-  }
-  
+.container_light {
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
+}
 
-  .createTracker_button {
-    background-color: #6750a4;
-    color: white;
-    line-height: 24px;
-    cursor: pointer;
-    white-space: nowrap;
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.inputfields_container {
+  position: relative;
+  background-color: #313131;
+  border-radius: 30px;
+}
+
+.inputfields_container_light {
+  background-color: var(--secondary-bg-light);
+}
+
+.searchbar {
+  background-color: var(--background);
+  border-radius: 30px;
+  box-shadow: 1px 3px 16px 0px #0000001f;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0px 20px;
+}
+
+.searchbar input {
+  font-size: 16px;
+  border: none;
+  background-color: transparent;
+  padding: 20px 0px;
+  flex: 1;
+}
+
+.searchbar input:focus {
+  outline: none;
+}
+
+.recentSearches_button {
+  background-color: white;
+  color: #6750a4;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 5px 15px;
+  text-decoration: underline;
+  line-height: 24px;
+}
+
+.searchbar button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.sub_container {
+  padding: 20px 24px;
+
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.buttons_container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputdropdowns_container {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0px, 260px));
+  gap: 15px 25px;
+}
+
+@media screen and (max-width: 1300px) {
+  .inputdropdowns_container {
+    grid-template-columns: repeat(3, minmax(0px, 260px));
+    gap: 15px 25px;
   }
-  
-  .advanceFilter_container {
-    padding: 0 20px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+}
+
+@media screen and (max-width: 1150px) {
+  .inputdropdowns_container {
+    grid-template-columns: repeat(2, minmax(0px, 260px));
+    gap: 15px 25px;
   }
-  
-  .advanceFilter_subContainer1 {
-    display: flex;
-    gap: 15px;
-    flex-direction: column;
-  }
-  
-  .advanceFilter_title {
-    font-size: 13px;
-    font-weight: 500;
-    color: grey;
-    border-bottom: 1px solid #ddd;
-    line-height: 20px;
-  }
-  
-  .advancedFilter_dropdown_container {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0px, 260px));
-    /* align-items: center; */
-    padding: 20px 0px;
-    justify-content: center;
-    grid-gap: 12px 6px;
-    gap: 20px;
-  }
-  
-  .keyword_search_input {
-    outline: none;
-    border: none;
-    font-size: 15px;
-    width: 95%;
-  }
-  
-  /* .keyword_search_input::placeholder{
+}
+
+.viewTypeButtons_container {
+  position: absolute;
+  width: 100%;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.viewTypeButtons {
+  pointer-events: all;
+  border-radius: 50px;
+  background-color: #1A1A1A;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.viewTypeButtons_light {
+  background-color: var(--secondary-bg-light);
+  color: black;
+}
+
+.viewTypeButtons button {
+  color: inherit;
+  font-weight: 500;
+  padding: 12px 48px;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.viewTypeButtons button.active {
+  color: white;
+  border: 1px solid grey;
+  filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+  background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
+  border-radius: 50px;
+}
+
+.message {
+  margin-top: 30px;
+  color: var(--primary-color);
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.viewTypeButton {
+  margin-top: 60px;
+}
+
+.input_container {
+  white-space: nowrap;
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 50px;
+  position: relative;
+}
+
+.createtracker_button {
+  line-height: 24px;
+  cursor: pointer;
+  color: white;
+  white-space: nowrap;
+  padding: 10px 20px;
+  background-color: #6750a4;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createtracker_button:hover {
+  background-color: #6750a4;
+  color: white;
+}
+
+.input {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input_selected_no {
+  margin-left: 4px;
+  font-size: 10px;
+  height: 20px;
+  width: 20px;
+  background-color: #6750a4;
+  color: white;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  vertical-align: middle;
+}
+
+.input_selected_title {
+  padding-left: 4px;
+  font-size: 10px;
+  color: #4d1bf3;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.viewContainer {
+  padding: 35px 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exportedno_container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.exportedno {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  background-color: #4d1bf3;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exportedno_title {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #4d1bf3;
+}
+
+.exportButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.exportButtonTitle {
+  color: #4d1bf3;
+}
+
+.listBtn_container {
+  color: white;
+}
+
+.listBtn_container_light {
+  color: black;
+}
+
+.listBtn {
+  color: inherit;
+  font-size: 14px;
+  background: none;
+  border: none;
+  border: 1px solid #6750A4;
+  padding: 5px 15px;
+  border-radius: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #6750A4;
+  color: white;
+}
+
+.advanceFilter_button {
+  line-height: 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.advanceFilter_button:hover {
+  background-color: #eaddff;
+  color: black;
+}
+
+.active_button {
+  background-color: #eaddff;
+  color: black;
+}
+
+
+.createTracker_button {
+  background-color: #6750a4;
+  color: white;
+  line-height: 24px;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.advanceFilter_container {
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.advanceFilter_subContainer1 {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+}
+
+.advanceFilter_title {
+  font-size: 13px;
+  font-weight: 500;
+  color: grey;
+  border-bottom: 1px solid #ddd;
+  line-height: 20px;
+}
+
+.advancedFilter_dropdown_container {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0px, 260px));
+  /* align-items: center; */
+  padding: 20px 0px;
+  justify-content: center;
+  grid-gap: 12px 6px;
+  gap: 20px;
+}
+
+.keyword_search_input {
+  outline: none;
+  border: none;
+  font-size: 15px;
+  width: 95%;
+}
+
+/* .keyword_search_input::placeholder{
     color: inherit;
   } */
-  
-  .insightsFilter_container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 20px 0px;
 
-  }
-  
-  .input_insights {
-    width: 200px;
-    font-size: 12px;
-  }
-  
-  .input {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .input_selected_no {
-    margin-left: 4px;
-    font-size: 10px;
-    height: 20px;
-    width: 20px;
-    background-color: #6750a4;
-    color: white;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 100%;
-    vertical-align: middle;
-  }
-  
-  .input_selected_title {
-    padding-left: 4px;
-    font-size: 10px;
-    color: #4d1bf3;
-    font-weight: 500;
-    vertical-align: middle;
-  }
-  
-  .viewContainer {
-    padding: 35px 15px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .exportedno_container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .exportedno {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    background-color: #4d1bf3;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .exportedno_title {
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #4d1bf3;
-  }
-  
-  .exportButton {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .exportButtonTitle {
-    color: #4d1bf3;
-  }
-  
-  /*
+.insightsFilter_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px 0px;
+
+}
+
+.input_insights {
+  width: 200px;
+  font-size: 12px;
+}
+
+.input {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input_selected_no {
+  margin-left: 4px;
+  font-size: 10px;
+  height: 20px;
+  width: 20px;
+  background-color: #6750a4;
+  color: white;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  vertical-align: middle;
+}
+
+.input_selected_title {
+  padding-left: 4px;
+  font-size: 10px;
+  color: #4d1bf3;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.viewContainer {
+  padding: 35px 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exportedno_container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.exportedno {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  background-color: #4d1bf3;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.exportedno_title {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #4d1bf3;
+}
+
+.exportButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.exportButtonTitle {
+  color: #4d1bf3;
+}
+
+/*
   Styling for toggle button
   */
-  
-  /* .toggle_container {
+
+/* .toggle_container {
     display: flex;
     align-items: center;
   } */
-  
-  .toggle_container > span {
-    color: #79747e;
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  .switch {
-    position: relative;
-    width: 30px;
-    height: 17px;
-    display: inline-block;
-  }
-  
-  .switch input {
-    width: 0;
-    height: 0;
-    opacity: 0;
-  }
-  
-  .slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    cursor: pointer;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 34px;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 13px;
-    width: 13px;
-    left: 2px;
-    bottom: 4px;
-    top: 2px;
-    background-color: white;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-  
-  .slider_tick_image {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-  }
-  
-  input:checked + .slider {
-    background-color: #6750a4;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #6750a4;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(13px);
-    -ms-transform: translateX(13px);
-    transform: translateX(13px);
-  }
-  
-  .eventList_container {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    text-decoration: none;
-  }
+
+.toggle_container>span {
+  color: #79747e;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.switch {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  display: inline-block;
+}
+
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  cursor: pointer;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 4px;
+  top: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.slider_tick_image {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
+input:checked+.slider {
+  background-color: #6750a4;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #6750a4;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+.eventList_container {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-decoration: none;
+}

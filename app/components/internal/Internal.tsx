@@ -5,10 +5,12 @@ import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import eventData from '@/public/data/demoEvent.json'
 
 interface Props{
-    handleModal : () => void
+    handleModal : () => void,
+    handleShortlistModal: () => void
+    handleRejectClick: () => void
 }
 
-const Internal = ({handleModal} : Props) => {
+const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props) => {
     let prevDate: any = null;
   return (
     <div>
@@ -31,6 +33,8 @@ const Internal = ({handleModal} : Props) => {
                     eventDate={item.startDate}
                     eventCompany={item.company}
                     handleModal={handleModal}
+                    handleShortlistModal={handleShortlistModal}
+                    handleRejectClick={handleRejectClick}
                 />
             </div>
         );

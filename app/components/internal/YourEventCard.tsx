@@ -18,7 +18,9 @@ interface YourEventCardProps {
   eventImage: string
   eventDate: string;
   eventCompany: string;
-  handleModal: () => void
+  handleModal: () => void;
+  handleShortlistModal: () => void;
+  handleRejectClick: () => void;
 }
 
 const formatDate = (dateString: string): string => {
@@ -27,7 +29,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, handleModal }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, handleModal, handleShortlistModal, handleRejectClick }) => {
   const formattedDate = formatDate(eventDate);
 
   const handleModalOpen = ()=>{
@@ -46,7 +48,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <Image src={ClockIcon} alt="clock" width={16} height={16} />
             <div>Pending</div>
           </div> */}
-          <StatusChangeDropdown label='' eventId={123} />
+          <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
         </div>
         <div className={styles.locationAndDateContainer}>
           <div className={styles.eventLocation}>

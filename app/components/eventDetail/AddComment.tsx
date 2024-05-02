@@ -409,7 +409,6 @@ const imgUpload=()=>{
               ))}
             </div>
           )}
-
           <button className={styles.commentBtn}>
             {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
           </button>

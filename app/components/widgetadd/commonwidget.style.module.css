@@ -56,15 +56,22 @@
     margin-left: 10px;
     background: none;
     color: rgb(233, 233, 233);
+    color: inherit;
 }
 
 .inputInnerContainer input:focus {
     outline: none;
 }
+
+
 .placeholder{
     color: #ffffff5b;
     margin-left: 10px;
-    font-weight: 300;
+    font-weight: 400;
+}
+
+.placeholder_light{
+    color: grey;
 }
 
 .eventGeoContainer{
@@ -130,6 +137,7 @@
 .btns{
     display: flex;
     gap: 30px;
+    color: inherit;
 }
 .submitBtn{
     cursor: pointer;
@@ -146,7 +154,7 @@
 .cancelBtn{
     background: none;
     border: none;
-    color: white;
+    color: inherit;
 }
 
 .checkboxInput {
