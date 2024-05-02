@@ -12,11 +12,21 @@
     padding-bottom: 30px;
   }
   
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
+
   .configurationForm {
     background-color: #1A1A1A;
     border-radius: 12px;
     padding: 42px;
     width: 40%;
+  }
+
+  .configurationForm_light{
+    background-color: var(--secondary-bg-light);
+    color: var(--primary-color-light);
   }
   
   .previewSection {

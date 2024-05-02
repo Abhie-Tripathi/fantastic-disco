@@ -105,6 +105,7 @@
   border-radius: 50px;
   background-color: #1A1A1A;
   margin-bottom: 40px;
+  color: white;
 }
 
 .viewTypeButtons_light {
@@ -113,7 +114,7 @@
 }
 
 .viewTypeButtons button {
-  color: white;
+  color: inherit;
   font-weight: 500;
   padding: 12px 48px;
   font-size: 14px;

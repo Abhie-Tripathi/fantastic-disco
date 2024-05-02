@@ -19,6 +19,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .tagInput{
     margin-left: 5px;
     font-size: 16px;
@@ -26,6 +27,11 @@
     width: 90%;
     background: none;
 }
+
+.tagInput_light{
+    color: black;
+}
+
 .tagInput:focus{
     outline: none;
 }
