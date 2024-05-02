@@ -48,7 +48,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
             console.log(leftContainerHeight);
         }
 
-    }, [singledata]);
+    }, []);
 
     const handleCloseModal = () => {
         if (handleModal) {
@@ -57,7 +57,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
     }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {closeBtn && <Image className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
+            {closeBtn && <img className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
             <div>
             {pathName && pathName === 'outreach' && <StatusBar status={status} /> }
             <div className={styles.innerContainer}>

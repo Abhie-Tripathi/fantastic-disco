@@ -6,6 +6,11 @@
     padding: 20px;
     border-radius: 5px;
 }
+
+.navbar_light{
+    background-color: var(--secondary-bg-light);
+    color: var(--primary-color-light);
+}
 .yAxis{
     display: flex;
     align-items: center;
@@ -29,4 +34,5 @@
 }
 .activeChip{
     background-color: #6750A4;
+    color: white;
 }

@@ -31,7 +31,7 @@ const OwnerList: React.FC<PropType> = (props: PropType) => {
               style={{ width: 48, height: 48 }}
               referrerPolicy="no-referrer"
             />
-            <div style={{ color:"#fff"}}>
+            <div>
               <span style={{ fontSize:"14px", textWrap: "nowrap", marginRight: "0.5rem" }}>{value}&nbsp;</span><br />
               <span style={{fontSize:"10px"}}>OWNER&nbsp;</span>
             </div>

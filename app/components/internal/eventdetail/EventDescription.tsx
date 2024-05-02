@@ -20,7 +20,7 @@ const EventDescription = ({ description,open }: DetailsProps) => {
     return (
         <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
             <div className={styles.header} onClick={()=>setAccordianToggle(!accordianToggle)}>
-                <Image src={PageIcon} alt='page' />
+                <img src={PageIcon} alt='page' />
                 <div>Event Details</div>
             </div>
             {accordianToggle && <div className={styles.accordian}>
