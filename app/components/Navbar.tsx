@@ -61,9 +61,7 @@ const Navbar = () => {
 
 
         {pathName !== 'internal' &&
-          // <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
-          //     <Image src={DoorIcon} alt='internal' />
-          //   </Link>
+
           <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
             <Image src={Spinner} alt='settings' />
           </Link>

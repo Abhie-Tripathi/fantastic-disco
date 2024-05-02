@@ -29,7 +29,7 @@ export default function RootLayout({
         <AuthContextProvider>
           <ThemeProvider>
             <Navbar />
-            <div style={{ paddingTop: "70px" }}>{children}</div>
+            <div style={{ paddingTop: "74px" }}>{children}</div>
           </ThemeProvider>
         </AuthContextProvider>
       </body>
