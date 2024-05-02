@@ -1,0 +1,58 @@
+.inputInnerContainer {
+  border: 1px solid #666666;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.inputInnerContainer input {
+  font-size: 16px;
+  border: none;
+  width: 100%;
+  margin-left: 10px;
+  background: none;
+  color: rgb(233, 233, 233);
+}
+
+.inputInnerContainer input:focus,
+.textAreaInput:focus {
+  outline: none;
+}
+
+.tagsOuterContainer {
+  border: 1px dashed #666666;
+  border-radius: 12px;
+}
+
+.tagsContainer {
+  padding: 0 10px;
+  padding-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-height: 80px;
+  overflow: auto;
+}
+
+.tagItem {
+  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  outline: 0.6px solid transparent;
+  padding: 4.23px 12.68px;
+  border-radius: 40px;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.addBtn {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
