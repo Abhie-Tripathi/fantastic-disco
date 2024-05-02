@@ -1,5 +1,8 @@
 .container {
     display: flex;
+    margin-top: 20px;
+    /* justify-content: center; */
+    gap: 20px;
 }
 
 .navContainerLeft {
@@ -7,15 +10,11 @@
     flex-direction: column;
     gap: 10px;
     border-right: 0.98px solid #262626;
-    height: 200px;
-    padding-right: 30px;
-    width: 250px;
-}
-
-.navContainerRight {
-    padding-left: 20px;
+    padding: 20px;
+    background-image: linear-gradient(to bottom, #1A1A1A 100%,  #1A1A1A 0%);
 
 }
+
 
 
 .text {
@@ -30,7 +29,9 @@
     gap: 8px;
     font-size: 14px;
     font-weight: 400;
-    width: 150px;
+    /* width: 150px; */
+    /* width: 250px; */
+    
 }
 
 .tabContainer {
@@ -41,29 +42,14 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    text-wrap: nowrap;
 }
 
 .tabContainer.active {
     padding: 10px;
     border-radius: 8px;
     font-weight: 600;
-    width: 150px;
+    width: 250px;
     background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
 }
 
-
-.gradient_border {
-    position: relative;
-    padding-bottom: 10px;
-}
-
-.gradient_border::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, #6750A4, #666666);
-    width: 760px;
-}

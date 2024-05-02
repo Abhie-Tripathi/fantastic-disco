@@ -63,7 +63,7 @@ const Navbar = () => {
           // <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
           //     <Image src={DoorIcon} alt='internal' />
           //   </Link>
-          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
+          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/settings'}>
             <Image src={settingsIcon} alt='settings' />
           </Link>
         }

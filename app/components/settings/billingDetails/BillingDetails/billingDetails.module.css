@@ -1,0 +1,749 @@
+.gradient_border {
+    position: relative;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.gradient_border::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(to right, #6750A4, #666666);
+}
+.downloadText{
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 5px;
+}
+
+.firstContainer {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #16131E;
+    border: 1px solid #1F1F1F;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.billingUsage_container {
+    padding: 10px;
+}
+
+.divider {
+    border-left: 1px solid #666666;
+    height: 100px;
+    width: 1px;
+}
+
+.second_divider {
+    border-left: 1px solid #666666;
+    height: 20px;
+    width: 1px;
+}
+
+.basic_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.basic_container_content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.statusBtn {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+
+.activeFlag {
+    background-color: #19922C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #0E9B1C;
+}
+
+.inactiveFlag {
+    background-color: #d83147;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.inactiveStatus {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #d83147;
+}
+
+.userSection {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+}
+
+.userContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px 5px 10px;
+    border-radius: 20px;
+    background-color: #1A1A1A;
+    gap: 5px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+}
+
+
+.includeText {
+    color: #ACACAC;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.billing_number {
+    font-size: 14px;
+    padding-left: 8px;
+    padding-right: 3px;
+}
+
+.userText {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.masterCard_sec {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.masterCard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #D9D9D9;
+}
+
+.planContainer {
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.upgradeIcn {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 20px;
+    padding: 8px 10px 8px 10px;
+    background-color: #1A1A1A;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+}
+
+.dollar {
+    font-size: 25px;
+    font-size: 700;
+    color: #FFFFFF;
+}
+
+.dollarText {
+    color: #ACACAC;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.planContainerItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.icon_background {
+    background-color: #2B233D;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+
+}
+
+.secondContainer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #1F1F1F;
+    border-radius: 15px;
+}
+
+.secondText {
+    color: #CDCDCD;
+}
+
+.currentPlan_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.usagePolicy {
+    color: #B8B7EA;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.tracker_container {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.trackerCard {
+    padding: 20px;
+    border-radius: 25px;
+    border: 1px solid #1F1F1F;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.tracker {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: #1A1A1A;
+    border: 1px solid #B8B7EA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.outerTracker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #B8B7EA;
+    background-color: #A48BE6;
+}
+
+.trackerCard_content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tracker_text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.bottomLine {
+    border: 0.5px solid #3A3152;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.unlock_container {
+    background-color: #1C1C1C;
+    border: 1.25px solid #1F1F1F;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bellIcon_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.thirdDiv {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.accountManagemantCard {
+    padding: 20px;
+    border: 1px solid #1F1F1F;
+    border-radius: 15px;
+
+}
+
+.billing_container {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.billing_text {
+    color: #CDCDCD;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.changeText {
+    color: #B8B7EA;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+}
+
+.innerCard {
+    margin-top: 20px;
+    background-color: #1D1926;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.inner_card_content {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    gap: 230px;
+}
+
+.username_container {
+    display: flex;
+    gap: 10px;
+}
+
+.username {
+    color: #8C8EA4;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.imageDiv {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile {
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.superAdminCard {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid grey;
+}
+
+.cardInformation_container {
+    margin-top: 20px;
+}
+
+.cardInformation_text {
+    color: #FFFFFF;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.right_container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tracker_icons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightSideContnet {
+    display: flex;
+    gap: 50px;
+}
+
+.tracker_sec {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    border-bottom: 0.5px solid #666666;
+
+}
+
+.tracker_text {
+    color: #AC8DFF;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.number {
+    font-size: 20;
+    font-weight: 700;
+    color: #D9D9D9;
+}
+
+
+.fourthDiv {
+    margin-top: 20px;
+}
+
+.pricingCard_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.cardUpper_sec {
+    margin-top: 20px;
+    background-color: #1F1F1F;
+    padding: 20px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.cardLower_sec {
+    background-color: #1A1A1A;
+    padding: 20px;
+}
+
+.upper_sec_content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+.planButton_container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #6750A4;
+    border-radius: 10px;
+
+    color: #AC8DFF;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.basicText {
+    color: #D8D8D8;
+    font-size: 24px;
+    font-weight: 600;
+
+}
+
+.desc {
+    color: #D9D9D9;
+    font-size: 13px;
+    font-weight: 400;
+
+}
+
+.price {
+    color: #D5D4D4;
+    font-size: 48px;
+    font-weight: 400;
+}
+
+.monthy_price {
+    color: #D9D9D9;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.lowerCardText {
+    padding: 10px;
+    color: #57606A;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.card_texts {
+    padding-bottom: 20px;
+}
+
+.fifth_div {
+    margin-top: 20px;
+}
+
+.invoices_container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.invoiceBtn {
+    background-color: #6750A4;
+    padding: 8px 12px 8px 12px;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.handleInvoice {
+    color: #CDCDCD;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.table_cont {
+    margin-top: 20px;
+}
+
+.tableContainer {
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table_head {
+    background-color: #1F1F1F;
+}
+
+.table_head_row>th {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #F2F2FF;
+}
+
+.table_body>tr {
+    border-bottom: 0.6px solid #424242;
+
+}
+
+.table_body>tr>td {
+    padding: 20px;
+    color: #fff;
+}
+
+
+.table th:first-child {
+    border-radius: 12px 0px 0px 0px;
+}
+
+.table th:last-child {
+    border-radius: 0 12px 0px 0;
+}
+
+
+.profileContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.userNameContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tableHeaderProfile {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.down_icon {
+    margin-right: 10px;
+}
+
+.tableHeaderDate {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.tableHeaderEmail {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.event_date {
+    font-size: 16px;
+    color: #DADBD8;
+    font-weight: 400;
+}
+
+.messageButton {
+    border-radius: 8px;
+    border: 1px solid #F060A2;
+    padding: 8px 8px 8px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #F060A2;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.tableBelow {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #1A1A1A;
+    margin-top: 10px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.paginationContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.prevTextContainer {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.prevText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px 8px 12px;
+    border-radius: 12px;
+    background-color: #29292C;
+    cursor: pointer;
+    color: #ABAAAA;
+}
+
+.nextText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 12px 8px 12px;
+    border-radius: 12px;
+    background-color: #29292C;
+    cursor: pointer;
+    color: #ABAAAA;
+}
+
+.showingContainer {
+    background-color: #29292C;
+    padding: 8px 12px 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: #ABAAAA;
+}
+
+
+
+.pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-right: auto;
+    padding-left: 75px;
+    color: #ABAAAA;
+
+}
+
+.pageNumber {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 12px 5px 12px;
+    border-radius: 12px;
+    border: 0.5px solid #E0E1E4;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #29292C;
+    color: #ABAAAA;
+}
+
+
+.tableHeaderPhoneNumber {
+    text-align: left;
+    padding-left: 25px;
+}
+
+.tableHeaderPhoneMessage {
+    text-align: left;
+    padding-left: 25px;
+}
+
+
+.page_count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border-radius: 12px;
+    border: 0.5px solid #E0E1E4;
+    color: #ABAAAA;
+    font-size: 16px;
+    font-weight: 500;
+}

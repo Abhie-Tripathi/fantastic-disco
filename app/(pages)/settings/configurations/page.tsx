@@ -1,30 +1,13 @@
+"use client";
 import React, { useState } from "react";
 import styles from "./config.module.css";
 import Image from "next/image";
 import WidgetIcon from "/public/widgetIcon.svg";
 import KanbanIcon from "/public/kanbanIcon.svg";
 import FeatureIcon from "/public/featuresIcon.svg";
-import Link from "next/link";
-import WidgetCard from '@/app/components/configurations/wigitCard'
+import WidgetCard from "./wigitCard";
 
-// interface TabIconsArrayItem {
-//   name: string;
-//   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-//   path: string;
-// }
-const index = () => {
-  //   const sidebarData: TabIconsArrayItem[] = [
-  //     {
-  //       name: "Department",
-  //       icon: DepartmentIcon,
-  //       path: "/setting/department",
-  //     },
-  //     {
-  //       name: "Team",
-  //       icon: TeamIcon,
-  //       path: "/setting/team",
-  //     },
-  //   ];
+const page = () => {
   const [activeTab, setActiveTab] = useState("Widgets");
 
   return (
@@ -66,7 +49,7 @@ const index = () => {
         <div className={styles.navContainerRight}>
           <div className={styles.gradient_border}>Widget</div>
 
-          <WidgetCard/>
+          <WidgetCard />
         </div>
       ) : (
         ""
@@ -86,46 +69,8 @@ const index = () => {
       ) : (
         ""
       )}
-
-      {/* <div className={styles.navContainerRight}>
-        <div className={styles.gradient_border}>Widget</div>
-      </div> */}
     </div>
-
-    // <>
-    //   {sidebarData.map((item: any) => {
-    //     const TabIcon = item.icon;
-
-    //     return (
-    //       <>
-    //         <nav
-    //           className={`${styles.sideNav} ${
-    //             activeTab == item.name ? styles.active : ""
-    //           }`}
-    //         >
-    //           <Link
-    //             href={item.path}
-    //             className={`${styles.sidebarLink} ${
-    //               activeTab === item.name ? styles.active : ""
-    //             }`}
-    //             onClick={() => {
-    //               setActiveTab(item.name);
-    //             }}
-    //           >
-    //             <TabIcon
-    //               className={`${styles.tab_icon} ${
-    //                 activeTab === item.name ? styles.active : ""
-    //               }`}
-    //               onClick={() => setActiveTab(item.name)}
-    //             />
-    //             <span className={styles.sidebarLabel}>{item.name}</span>
-    //           </Link>
-    //         </nav>
-    //       </>
-    //     );
-    //   })}
-    // </>
   );
 };
 
-export default index;
+export default page;

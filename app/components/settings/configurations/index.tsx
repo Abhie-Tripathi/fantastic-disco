@@ -5,6 +5,7 @@ import WidgetIcon from "/public/widgetIcon.svg";
 import KanbanIcon from "/public/kanbanIcon.svg";
 import FeatureIcon from "/public/featuresIcon.svg";
 import Link from "next/link";
+import WidgetCard from '../../../(pages)/settings/configurations/wigitCard'
 
 // interface TabIconsArrayItem {
 //   name: string;
@@ -64,6 +65,8 @@ const index = () => {
       {activeTab === "Widgets" ? (
         <div className={styles.navContainerRight}>
           <div className={styles.gradient_border}>Widget</div>
+
+          <WidgetCard/>
         </div>
       ) : (
         ""
