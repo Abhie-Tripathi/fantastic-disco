@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
+import Spinner from '/public/Icon.svg'
 
 interface UserDetail {
   firstname: string;
@@ -64,7 +65,7 @@ const Navbar = () => {
           //     <Image src={DoorIcon} alt='internal' />
           //   </Link>
           <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
-            <Image src={settingsIcon} alt='settings' />
+            <Image src={Spinner} alt='settings' />
           </Link>
         }
         {userDetail &&
