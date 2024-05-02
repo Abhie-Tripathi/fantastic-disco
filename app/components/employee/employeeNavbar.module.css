@@ -49,6 +49,7 @@
     align-items: center;
     background-color: #6750A4;
     cursor: pointer;
+    color: white;
 }
 .navbar .btns .add img{
     margin-right: 10px;

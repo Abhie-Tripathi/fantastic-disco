@@ -1,20 +1,22 @@
 "use client";
 import React from "react";
 import styles from "./page.style.module.css";
-import Research from '/public/internal/research.svg'
+import Research from "/public/internal/research.svg";
 import Image from "next/image";
 import GotoIcon from "/public/rightArrow.svg";
 import NewEvent from "/public/thunder.svg";
 import Timer from "/public/clock.svg";
 import CircleCross from "/public/close.svg";
 import Link from "next/link";
-import ExhibitIcon from '/public/internal/exhibit.svg'
-import DatasetIcon from '/public/dataset.svg'
-import BellIcon from '/public/bell.svg'
+import ExhibitIcon from "/public/internal/exhibit.svg";
+import DatasetIcon from "/public/dataset.svg";
+import BellIcon from "/public/bell.svg";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
-import Trend from '/public/internal/trend.svg'
-import Bookmark from '/public/bookmark.svg'
+import Trend from "/public/internal/trend.svg";
+import Bookmark from "/public/bookmark.svg";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
+import { useTheme } from "@/context";
+
 
 const cardsData = [
   {
@@ -23,16 +25,20 @@ const cardsData = [
     heading: "Bengaluru",
     description: ["Bengaluru, Karnataka, India (1.34 mi radius)"],
     link: "/internal/search/events",
-    tags: []
+    tags: [],
     // backgroundIcon: SearchBackground,
   },
   {
     icon: ExhibitIcon,
     title: "Outreach",
     heading: "",
-    description: ["Pending events to look at : 3", "Shortlisted Events : 3", "Pre Finalised Events : 1"],
+    description: [
+      "Pending events to look at : 3",
+      "Shortlisted Events : 3",
+      "Pre Finalised Events : 1",
+    ],
     link: "/internal/outreach",
-    tags: []
+    tags: [],
     // backgroundIcon: NotificationBackground,
   },
   {
@@ -40,9 +46,10 @@ const cardsData = [
     title: "Create tracker",
     heading: "",
     description: [
-      "Track key events in real-time to make informed decisions and seize opportunities as they arise.",],
+      "Track key events in real-time to make informed decisions and seize opportunities as they arise.",
+    ],
     link: "/internal/trackers/create",
-    tags: []
+    tags: [],
   },
 ];
 
@@ -65,11 +72,11 @@ const trackerCardsData = [
 ];
 
 const coordinateCardTags = [
-  { "name": "Exhibitors", "count": 1 },
-  { "name": "Sponsors", "count": 3 },
-  { "name": "Speakers", "count": 3 },
-  { "name": "Attendee", "count": 1 }
-]
+  { name: "Exhibitors", count: 1 },
+  { name: "Sponsors", count: 3 },
+  { name: "Speakers", count: 3 },
+  { name: "Attendee", count: 1 },
+];
 
 const notifications = [
   "@Walterwhite recommended you as a Speaker for Las vegas Event",
@@ -77,19 +84,20 @@ const notifications = [
   "@Pinkman recommended you as a Speaker for expo Event",
   "@Asackshra recommended you as a Speaker for Las vegas Event",
   "@Asackshra recommended you as a Speaker for Las vegas Event",
-]
+];
 
 const savedEvents = [
   "Horn Ok Food Festival",
   "Theatre Festival",
   "Film Festival",
   "Auto Expo",
-  "TED X"
-]
+  "TED X",
+];
 
 const Dashboard = () => {
+  const {theme} = useTheme();
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${theme === 'light' ? styles.container_light: ""}`}>
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
@@ -138,7 +146,9 @@ const Dashboard = () => {
           </div>
           <div className={styles.notification_card}>
             {notifications.map((notification, key) => (
-              <div key={key} className={styles.notification}>{notification}</div>
+              <div key={key} className={`${styles.notification} ${theme === 'light' && styles.notification_light}`}>
+                {notification}
+              </div>
             ))}
           </div>
         </div>
@@ -146,11 +156,11 @@ const Dashboard = () => {
 
       <div className={styles.body_container}>
         <div className={styles.trackers_container}>
-          <div className={styles.tracker_container_header}>
+          <div className={`${styles.tracker_container_header} ${theme === 'light' ? styles.tracker_content_light : ""}`}>
             {/* <Image src={Stars} alt="stars" /> */}
             <div>Here &apos;s what&apos;s new since you last checked in</div>
           </div>
-          <div className={styles.tracker_card}>
+          <div className={`${styles.tracker_card} ${theme === 'light' && styles.tracker_content_light}`}>
             <div className={styles.tracker_card_header}>
               <span>Tracker 1 - Events in Bangalore</span>
               <Image src={GotoIcon} alt="goto" />
@@ -175,7 +185,7 @@ const Dashboard = () => {
               <PolarAreaChart className={styles.events_stats_polarChart} />
             </div>
           </div>
-          <div className={styles.tracker_card}>
+          <div className={`${styles.tracker_card} ${theme === 'light' && styles.tracker_content_light}`}>
             <div className={styles.tracker_card_header}>
               <span>Tracker 2 - Events in Allahabad</span>
               <Image src={GotoIcon} alt="goto" />
@@ -206,20 +216,19 @@ const Dashboard = () => {
               <Image src={Bookmark} alt="save" />
               <div>Saved Events</div>
             </div>
-            <div className={styles.savedEventsData}>
+            <div className={`${styles.savedEventsData} ${theme === 'light' && styles.savedEventsData_light}`}>
               {savedEvents.map((event, key) => (
-                <div className={styles.savedEvent} key={key}>
+                <div className={`${styles.savedEvent} ${theme === 'light' && styles.savedEvent_light}`} key={key}>
                   <div>{event}</div>
-                  <BookmarkIcon fillColor={'#ff851b'} />
+                  <BookmarkIcon fillColor={"#ff851b"} />
                 </div>
               ))}
             </div>
           </div>
-          <div className={`${styles.linkCard_container} ${styles.coordinateCard}`}>
-            <Link
-              href={"/internal/coordinate"}
-              className={styles.linkCard}
-            >
+          <div
+            className={`${styles.linkCard_container} ${styles.coordinateCard}`}
+          >
+            <Link href={"/internal/coordinate"} className={styles.linkCard}>
               <div className={styles.linkCard_header}>
                 <div className={styles.linkCard_header_title}>
                   <Image src={DatasetIcon} alt="data" />
@@ -233,8 +242,8 @@ const Dashboard = () => {
               <div className={styles.linkCard_tagsOuterContainer}>
                 {coordinateCardTags.map((tag, key) => (
                   <div className={styles.linkCard_tagsInnerContainer} key={key}>
-                    <div className={styles.linkCard_tagsName} >{tag.name}</div>
-                    <div className={styles.linkCard_tagsCount} >{tag.count}</div>
+                    <div className={styles.linkCard_tagsName}>{tag.name}</div>
+                    <div className={styles.linkCard_tagsCount}>{tag.count}</div>
                   </div>
                 ))}
               </div>

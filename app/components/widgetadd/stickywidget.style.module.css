@@ -33,6 +33,10 @@
     color: rgb(233, 233, 233);
 }
 
+.eventNameInput_light input{
+    color: black;
+}
+
 .eventNameInput input:focus {
     outline: none;
 }
@@ -74,6 +78,7 @@
 .heightAndFont {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .heightInput {
@@ -92,7 +97,7 @@
     width: 100%;
     margin-left: 10px;
     background: none;
-    color: rgb(233, 233, 233);
+    color: inherit;
 }
 
 .heightInput input:focus {
@@ -115,7 +120,7 @@
     width: 100%;
     margin-left: 10px;
     background: none;
-    color: rgb(233, 233, 233);
+    color: inherit;
 
 }
 
@@ -172,7 +177,7 @@
     border: none;
     border-radius: 12px;
     padding: 8px 24px;
-    color: white;
+    color: inherit;
 }
 
 .submitBtn:hover {
@@ -183,5 +188,5 @@
 .cancelBtn {
     background: none;
     border: none;
-    color: white;
+    color: inherit;
 }
