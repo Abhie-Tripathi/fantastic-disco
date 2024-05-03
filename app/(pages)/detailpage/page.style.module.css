@@ -1,0 +1,101 @@
+.body{
+    padding: 50px;
+    display: flex;
+}
+.leftContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.poster{
+    border-radius: 10px;
+    border: 1px solid rgb(70, 70, 70);
+}
+.eventName{
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
+    font-size: 25px;
+
+}
+.rightContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-left: 30px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 20px;
+}
+.headerContainer{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #9274e4;
+}
+.companyContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.companyNameContainer{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+}
+.companyLogo{
+    border-radius: 4px;
+}
+.companyName{
+     font-size: 15px;
+     color: white;
+}
+.companyDesc{
+    font-size: 12px;
+    color: grey;
+}
+.rightArrow{
+    height: 30px;
+    width: 30px;
+    border-radius: 20px;
+    margin-left: 20px;
+    cursor: pointer;
+    padding: 5px;
+    background-color: black;
+}
+.descContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.eventDesc{
+    font-size: 14px;
+}
+.startDateEndDateContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dateContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.dateHeader{
+    display: flex;
+    font-size: 12px;
+    color: white;
+    align-items: center;
+    gap: 10px;
+}
+.date{
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: white;
+    background-color: #574783;
+}
+

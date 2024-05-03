@@ -107,15 +107,43 @@
   background: transparent;
 }
 
-.attachmentOption {
+.attachmentIcon {
   width: 100%;
   display: flex;
   gap: 2px;
 }
-
-.attachIcon {
+.attachIconContainer{
+  position: relative;
   cursor: pointer;
+  height: 25px;
+  width: 25px;
+  padding: 1px;
 }
+.attachIconContainer:hover{
+  background-color: rgb(15, 15, 15);
+  border-radius: 10px;
+}
+.attachIconContainer::before {
+  content: attr(data-name);
+  position: absolute;
+  bottom: 130%;
+  left: 60%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.attachIconContainer:hover::before {
+  opacity: 1;
+}
+
+
 .recommendBtn{
   display: flex;
   gap:10px;
