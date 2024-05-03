@@ -7,6 +7,7 @@ import Calendar from '@/public/vector.svg'
 import Location from '@/public/location.svg'
 import Speaker1 from '@/public/speaker1.jpeg'
 import rightArrowIcon from '/public/rightbigarrow.svg';
+import { useTheme } from '@/context';
 
 interface Data {
     imageUrl: string;
@@ -15,6 +16,8 @@ interface Data {
 }
 
 const SingleEvent = (params: { data: Data }) => {
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? styles.icons_light : styles.icon
     console.log(params.data);
     return (
         <div className={styles.card}>
@@ -24,20 +27,20 @@ const SingleEvent = (params: { data: Data }) => {
             <div className={styles.downView}>
                 <div className={styles.eventHeading}>{params.data.name}</div>
                 <div className={styles.datecta}>
-                    <div className={styles.calendar}>
-                        <Image src={Calendar} alt="Calendar" />
+                    <div className={`${styles.calendar} ${theme === 'light' && styles.calendar_light}`}>
+                        <Image src={Calendar} alt="Calendar" className={iconClass} />
                         <div className={styles.date}>1st Apr 2024</div>
                         <div>-</div>
                         <div className={styles.date}>30th Apr 2024</div>
                     </div>
                     <div className={styles.ctas}>
-                        <div style={{ color: "#808080" }}>Participation</div>
+                        <div>Participation</div>
                         <div className={styles.pill}>Attending</div>
                     </div>
                 </div>
-                <div className={styles.locationInfo}>
+                <div className={`${styles.locationInfo} ${theme === 'light' && styles.locationInfo_light}`}>
                     <div className={styles.locationDetail}>
-                        <Image src={Location} alt="Location" />
+                        <Image src={Location} alt="Location" className={iconClass} />
                         <div className={styles.des}>
                             <div>UrbanVault HSR Layout 1515</div>
                             <div>Bengaluru, Karnataka</div>
@@ -46,13 +49,13 @@ const SingleEvent = (params: { data: Data }) => {
                     <div className={styles.eventDetails}>
                         <div className={styles.detailContainer}>
                             <div>View location</div>
-                            <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} />
+                            <Image src={rightArrowIcon} alt="rightArrowIcon" width={50} height={24} className={iconClass} />
                         </div>
                     </div>
                 </div>
-                <div className={styles.description}>
-                    <div style={{ color: "#CDCDCD" }}>Description</div>
-                    <div style={{ textAlign: "justify", color: "#ACACAC", fontFamily: "var(--font-inter)" }}>
+                <div className={`${styles.description} ${theme === 'light' && styles.description_light}`}>
+                    <div>Description</div>
+                    <div>
                         {params.data.description}
                     </div>
                 </div>

@@ -20,6 +20,7 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
         handleShortlistModal();
     }
     const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
     return (
         <div className={styles["modalContainer"]} >
@@ -33,20 +34,20 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
                 <main className={styles["modal_content"]} style={{ padding: "0 1.8rem" }}>
                     <div className={styles["tag_container"]} >
                         <span className={styles["tag_item"]}>
-                            <Image src={attendeeIcon} alt="" width={15} height={15} />
+                            <Image src={attendeeIcon} alt="" width={15} height={15} className={iconClass} />
                             Attendee
-                            <Image src={tickIcon} alt="" width={13} height={13} />
+                            <Image src={tickIcon} alt="" width={13} height={13} className={iconClass}/>
                         </span>
                         <span className={styles["tag_item"]}>
-                            <Image src={speakerIcon} alt="" width={15} height={15} />
+                            <Image src={speakerIcon} alt="" width={15} height={15} className={iconClass} />
                             Speaker
-                            <Image src={tickIcon} alt="" width={13} height={13} />
+                            <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
                         </span>
                         <span className={styles["tag_item"]}>
-                            <Image src={exhibitorIcon} alt="" width={15} height={15} />
+                            <Image src={exhibitorIcon} alt="" width={15} height={15} className={iconClass} />
                             Exhibitors</span>
                         <span className={styles["tag_item"]}>
-                            <Image src={sponsorIcon} alt="" width={15} height={15} />
+                            <Image src={sponsorIcon} alt="" width={15} height={15} className={iconClass} />
                             Sponsors</span>
                     </div>
                     <div className={styles["total_attendee"]}>

@@ -355,6 +355,10 @@ border-radius: 12px;
     background-color: #0c0c0c;
     border-radius: 50%;
 }
+
+.icons_light{
+    filter: invert(1);
+}
 @media screen and (max-width: 1608px) {
     .allDetail{
         flex-direction: column;

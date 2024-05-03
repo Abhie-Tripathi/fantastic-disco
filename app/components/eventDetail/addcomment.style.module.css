@@ -145,6 +145,10 @@
   resize: none;
   padding-top: 3px;
   padding-left: 5px;
+  color: white;
+}
+.textArea_light{
+  color: black;
 }
 .option{
   padding: 10px 5px;
@@ -207,3 +211,12 @@
 .btn1:hover{
   background-color: #2B233D;
 }
+
+.btn1_light{
+  color: black;
+}
+
+.btn1_light:hover{
+  background-color: var(--secondary-bg-light);
+}
+

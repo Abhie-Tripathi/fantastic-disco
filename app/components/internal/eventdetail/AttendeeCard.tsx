@@ -6,6 +6,7 @@ import searchIcon from '/public/internal/SearchInput.svg'
 import UserList from '../../../../public/data/employeeData.json'
 import userImageIcon from '/public/person2.svg'
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { useTheme } from '@/context'
 
 interface Props{
     cardType: string
@@ -24,6 +25,8 @@ const AttendeeCard = ({cardType} : Props) => {
     const [searchUser, setSearchUser] = useState<string>("");
     const [allSelected, setAllSelected] = useState<boolean>(false);
     const [selectedUserCount, setSelectedUserCount] = useState<number>(0);
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
     const handleAllSelect = () => {
         const updatedUserData = userData.map(user => ({ ...user, selected: !allSelected }));
@@ -89,7 +92,7 @@ const AttendeeCard = ({cardType} : Props) => {
                     placeholder="Search @ user name"
                     type="text" >
                 </input>
-                <Image src={searchIcon} alt="search" />
+                <Image src={searchIcon} alt="search" className={iconClass} />
             </div>
             <div className={styles.users_list} >
                 {userData.map(user => (

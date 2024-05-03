@@ -6,6 +6,7 @@ import { Notes } from '@/app/components/eventDetail/Notes';
 import SingleEvent from '@/app/components/eventDetail/SingleEvent';
 import ScheduleMeetings from '@/app/components/eventDetail/ScheduleMeetings';
 import eventData from '@/public/data/demoEvent.json';
+import { useTheme } from '@/context';
 
 interface EventData {
     id: number;
@@ -20,6 +21,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
     const [single, setSingle] = useState<EventData>();
     const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
     const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
+    const {theme} = useTheme();
 
     const singledata: EventData | undefined = eventData.find((item: EventData) => parseInt(params?.eventDetail) === item.id);
 
@@ -35,10 +37,10 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
         setMeet(!meet);
     }
     return (
-        <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
+        <div className={`${styles.container} ${meet && styles.fullHeight} ${theme === 'light' && styles.container_light}`}>
             <div className={styles.innerContainer}>
                 <div className={styles.containerLeft} ref={leftContainerRef}>
-                    <div className={styles.containerOne}>
+                    <div className={`${styles.containerOne} ${theme === 'light' && styles.containerOne_light}`}>
                         {/* Pass data as a prop to SingleEvent component */}
                         {singledata && <SingleEvent data={singledata} />}
                     </div>
@@ -47,11 +49,11 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                     <div style={{ height: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
                         <div className={styles.containerTopRight}>
                             {/* Add onClick handlers to update userCta state */}
-                            <div className={userCta === "Notes" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Notes")}>Notes</div>
+                            <div className={ `${styles.btn} ${userCta === 'Notes' && styles.active} ${theme === 'light' && styles.btn_light}`} onClick={() => setUserCta("Notes")}>Notes</div>
                             <div className={styles.line}></div>
-                            <div className={userCta === "Schedule Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("Schedule Meetings")}>Schedule Meetings</div>
+                            <div className={ `${styles.btn} ${userCta === 'Schedule Meetings' && styles.active} ${theme === 'light' && styles.btn_light}`} onClick={() => setUserCta("Schedule Meetings")}>Schedule Meetings</div>
                             <div className={styles.line}></div>
-                            <div className={userCta === "My Meetings" ? `${styles.btn} ${styles.active}` : styles.btn} onClick={() => setUserCta("My Meetings")}>My Meetings</div>
+                            <div className={ `${styles.btn} ${userCta === 'My Meetings' && styles.active} ${theme === 'light' && styles.btn_light}`} onClick={() => setUserCta("My Meetings")}>My Meetings</div>
                         </div>
 
                         <div className={styles.containerBottomRight}>

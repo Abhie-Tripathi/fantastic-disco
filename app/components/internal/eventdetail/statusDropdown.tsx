@@ -2,6 +2,7 @@ import ClockIcon from '/public/clock.svg'
 import Image from "next/image";
 import styles from './statusDropdown.style.module.css';
 import { useState } from "react";
+import { useTheme } from '@/context';
 
 interface PropType {
   label: string;
@@ -12,6 +13,8 @@ interface PropType {
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("Pending");
+  const {theme} = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsOpen((prev) => !prev);
   };
@@ -36,7 +39,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            <Image src={ClockIcon} alt="clock" width={16} height={16} />
+            <Image src={ClockIcon} alt="clock" width={16} height={16} className={iconClass} />
             {value}
           </div>
         </div>

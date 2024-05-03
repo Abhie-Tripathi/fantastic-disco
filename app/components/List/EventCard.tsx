@@ -16,6 +16,7 @@ interface EventCardProps {
 
 const EventCard = ({ data }: EventCardProps) => {
     const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     const [accordian, setAccordian] = useState(false)
     return (
         <div className={`${styles.eventCard_container} ${theme === 'light' ? styles.eventCard_container_light : ""}`} onClick={()=>setAccordian(!accordian)}>
@@ -33,7 +34,7 @@ const EventCard = ({ data }: EventCardProps) => {
                         <div className={styles.fees}>${data.fee}</div>
                     </div>
                     <div className={styles.participantCountContainer}>
-                        <Image src={TrendingIcon} alt='arrow' height={15} width={15} />
+                        <Image src={TrendingIcon} alt='arrow' height={15} width={15} className={iconClass} />
                         <div className={styles.participantCount}>+ {data.participantCount}</div>
                         <div className={styles.participantHeading}>New Participants</div>
                     </div>
@@ -41,7 +42,7 @@ const EventCard = ({ data }: EventCardProps) => {
                 <div className={styles.majorDetailsContainer}>
                     <div className={styles.eventtype_categoryContainer}>
                         <div className={styles.typeContainer}>
-                            <Image src={Festival} alt='fest' />
+                            <Image src={Festival} alt='fest' className={iconClass} />
                             <div className={styles.eventType}>{data.eventType.toUpperCase()}</div>
                             <div className={styles.eventFormat}>{data.format.toUpperCase()}</div>
                         </div>
@@ -54,7 +55,7 @@ const EventCard = ({ data }: EventCardProps) => {
                     <div className={styles.eventEditionContainer}>
                         <div className={styles.editionHeading}>EDITION</div>
                         <div className={styles.editionAnalysis}>
-                            <Image src={Refresh} alt='refresh' width={20} height={20} />
+                            <Image src={Refresh} alt='refresh' width={20} height={20} className={iconClass} />
                             <div className={styles.editionFrequency}>{data.frequency}</div>
                             <div className={styles.editionFrequencyData}>{data.forecastedFrequency}</div>
                             <div style={{display:"flex", gap:3}}>
@@ -67,7 +68,7 @@ const EventCard = ({ data }: EventCardProps) => {
                     </div>
                     <div className={styles.eventAreaContainer}>
                         <div className={styles.zoneContainer}>
-                            <Image src={LocatioinIcon} width={17} height={17} alt='gps' />
+                            <Image src={LocatioinIcon} width={17} height={17} alt='gps' className={iconClass} />
                             <div className={styles.zone}>{data.eventZone.toUpperCase()}</div>
                         </div>
                         <div className={styles.eventVenueAddress}>

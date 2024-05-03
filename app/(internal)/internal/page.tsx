@@ -17,7 +17,6 @@ import Bookmark from "/public/bookmark.svg";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import { useTheme } from "@/context";
 
-
 const cardsData = [
   {
     icon: Research,
@@ -95,9 +94,22 @@ const savedEvents = [
 ];
 
 const Dashboard = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? 'icons_light' : 'icon';
+
+
+  // INstagram temporray
+  const handleClick = () => {
+    const url = 'https://share-functionality.vercel.app/';
+    window.open(`https://www.instagram.com/create/story/?url=${encodeURIComponent(url)}`);
+      };
+
   return (
-    <div className={`${styles.container} ${theme === 'light' ? styles.container_light: ""}`}>
+    <div
+      className={`${styles.container} ${
+        theme === "light" ? styles.container_light : ""
+      }`}
+    >
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
@@ -113,7 +125,7 @@ const Dashboard = () => {
                     <Image src={card.icon} alt="search" />
                     <span>{card.title}</span>
                   </div>
-                  <Image src={GotoIcon} alt="goto" />
+                  <Image src={GotoIcon} alt="goto" className={iconClass} />
                 </div>
 
                 {card?.heading && (
@@ -141,12 +153,21 @@ const Dashboard = () => {
         <span className={styles.divider}></span>
         <div className={styles.notification_container}>
           <div className={styles.notification_header_title}>
-            <Image src={BellIcon} alt="notificationsicon" />
+            <Image
+              src={BellIcon}
+              alt="notificationsicon"
+              className={iconClass}
+            />
             <span>Notification</span>
           </div>
           <div className={styles.notification_card}>
             {notifications.map((notification, key) => (
-              <div key={key} className={`${styles.notification} ${theme === 'light' && styles.notification_light}`}>
+              <div
+                key={key}
+                className={`${styles.notification} ${
+                  theme === "light" && styles.notification_light
+                }`}
+              >
                 {notification}
               </div>
             ))}
@@ -156,14 +177,22 @@ const Dashboard = () => {
 
       <div className={styles.body_container}>
         <div className={styles.trackers_container}>
-          <div className={`${styles.tracker_container_header} ${theme === 'light' ? styles.tracker_content_light : ""}`}>
+          <div
+            className={`${styles.tracker_container_header} ${
+              theme === "light" ? styles.tracker_content_light : ""
+            }`}
+          >
             {/* <Image src={Stars} alt="stars" /> */}
             <div>Here &apos;s what&apos;s new since you last checked in</div>
           </div>
-          <div className={`${styles.tracker_card} ${theme === 'light' && styles.tracker_content_light}`}>
+          <div
+            className={`${styles.tracker_card} ${
+              theme === "light" && styles.tracker_content_light
+            }`}
+          >
             <div className={styles.tracker_card_header}>
               <span>Tracker 1 - Events in Bangalore</span>
-              <Image src={GotoIcon} alt="goto" />
+              <Image src={GotoIcon} alt="goto" className={iconClass} />
             </div>
 
             <div className={styles.event_cards_container}>
@@ -185,10 +214,14 @@ const Dashboard = () => {
               <PolarAreaChart className={styles.events_stats_polarChart} />
             </div>
           </div>
-          <div className={`${styles.tracker_card} ${theme === 'light' && styles.tracker_content_light}`}>
+          <div
+            className={`${styles.tracker_card} ${
+              theme === "light" && styles.tracker_content_light
+            }`}
+          >
             <div className={styles.tracker_card_header}>
               <span>Tracker 2 - Events in Allahabad</span>
-              <Image src={GotoIcon} alt="goto" />
+              <Image src={GotoIcon} alt="goto" className={iconClass} />
             </div>
             <div className={styles.event_cards_container}>
               {trackerCardsData.map((trackerCard) => (
@@ -213,12 +246,21 @@ const Dashboard = () => {
         <div className={styles.savedEvent_coordinateContainer}>
           <div className={styles.savedEventsContainer}>
             <div className={styles.savedEventsHeader}>
-              <Image src={Bookmark} alt="save" />
+              <Image src={Bookmark} alt="save" className={iconClass} />
               <div>Saved Events</div>
             </div>
-            <div className={`${styles.savedEventsData} ${theme === 'light' && styles.savedEventsData_light}`}>
+            <div
+              className={`${styles.savedEventsData} ${
+                theme === "light" && styles.savedEventsData_light
+              }`}
+            >
               {savedEvents.map((event, key) => (
-                <div className={`${styles.savedEvent} ${theme === 'light' && styles.savedEvent_light}`} key={key}>
+                <div
+                  className={`${styles.savedEvent} ${
+                    theme === "light" && styles.savedEvent_light
+                  }`}
+                  key={key}
+                >
                   <div>{event}</div>
                   <BookmarkIcon fillColor={"#ff851b"} />
                 </div>
@@ -231,10 +273,10 @@ const Dashboard = () => {
             <Link href={"/internal/coordinate"} className={styles.linkCard}>
               <div className={styles.linkCard_header}>
                 <div className={styles.linkCard_header_title}>
-                  <Image src={DatasetIcon} alt="data" />
+                  <Image src={DatasetIcon} alt="data" className={iconClass} />
                   <span>Coordiante</span>
                 </div>
-                <Image src={GotoIcon} alt="goto" />
+                <Image src={GotoIcon} alt="goto" className={iconClass} />
               </div>
               <div className={styles.linkCard_description}>
                 <div>Total Events : 8</div>
@@ -251,6 +293,9 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      {/* Instagram temporaray */}
+      <button onClick={handleClick}>Share on Instagram</button>
+      
     </div>
   );
 };

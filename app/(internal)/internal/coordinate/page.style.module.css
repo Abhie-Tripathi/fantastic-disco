@@ -48,7 +48,7 @@
 
 }
 
-.modal{
+/* .modal{
     background-color: #0c0c0c;
     position: absolute;
     top: 0;
@@ -57,6 +57,14 @@
     padding-left: 100px;
     padding-right: 120px;
     width: 100%;
+    z-index: 1;
+  } */
+
+  .modal{
+    position: absolute;
+    top: 75px;
+    padding: 20px;
+    padding-top: 90px;
     z-index: 1;
   }
 
