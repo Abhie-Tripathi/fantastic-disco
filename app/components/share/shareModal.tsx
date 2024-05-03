@@ -24,13 +24,15 @@ const ShareModal = ({ handleShareModal }: Props) => {
   }
   const { theme } = useTheme();
 
-  const urlString = "https://console.eventgeni.com/internal";
+  const urlString = "https://console.eventgeni.com";
 
   const copyURL = () => {
     navigator.clipboard.writeText(urlString);
     toast.success('Copied!', {
-      position: 'top-center',
+      position: 'bottom-right',
       autoClose: 2000,
+      closeButton: false,
+      hideProgressBar: true,
     });
   }
 
