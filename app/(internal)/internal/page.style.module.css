@@ -389,3 +389,21 @@
 .savedEvent_light:hover {
   background-color: #e0e0e0;
 }
+@media screen and (max-width: 1250px) {
+  .header_container{
+    flex-direction: column;
+    gap: 0px;
+  }
+  .divider {
+    height: 0px;
+  }
+  .notification_container{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .body_container{
+    flex-direction: column;
+  }
+}
