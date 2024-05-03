@@ -31,10 +31,6 @@ interface Props {
   filePreviews: any;
   selectedPdfs: any;
   setSelectedPdfs: any;
-  setFilePreviews: any;
-  filePreviews: any;
-  selectedPdfs: any;
-  setSelectedPdfs: any;
   note?: string | any;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   comments?: IComment[];
@@ -87,7 +83,7 @@ export const AddComment = ({
   const pdfRef = useRef(null);
 
   const { theme } = useTheme();
-  const iconClass = theme === "light" ? 'icons_light' : 'icon' ;
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   useEffect(() => {
     setUserDetail(user);
@@ -311,7 +307,7 @@ export const AddComment = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const handleFileChange = (event: any) => {
+  // const handleFileChange = (event: any) => {
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
     setFilePreviews((prevSelectedFiles: File[] | null) => {
@@ -394,17 +390,29 @@ export const AddComment = ({
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
         <div className={styles.recommendBtn}>
-          <button onClick={handleSelectAttend} className={`${styles.btn1} ${theme === 'light' && styles.btn1_light}`}>
+          <button
+            onClick={handleSelectAttend}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
+          >
             I want to Attend
           </button>
           <button
             onClick={() => handleSelectSpeak()}
             data-action="speak"
-            className={`${styles.btn1} ${theme === 'light' && styles.btn1_light}`}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
           >
             I want to Speak
           </button>
-          <button onClick={handleRecommend} className={`${styles.btn1} ${theme === 'light' && styles.btn1_light}`}>
+          <button
+            onClick={handleRecommend}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
+          >
             I want to @Recommend
           </button>
         </div>
@@ -444,7 +452,9 @@ export const AddComment = ({
           <textarea
             readOnly={disable}
             ref={textareaRef}
-            className={`${styles.textArea} ${theme === 'light' && styles.textArea_light}`}
+            className={`${styles.textArea} ${
+              theme === "light" && styles.textArea_light
+            }`}
             placeholder="Take a note, @name"
             value={note}
             onChange={(e) => noteFun(e)}

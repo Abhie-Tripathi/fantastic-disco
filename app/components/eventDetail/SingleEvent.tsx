@@ -8,14 +8,14 @@ import Location from '@/public/location.svg'
 import Speaker1 from '@/public/speaker1.jpeg'
 import rightArrowIcon from '/public/rightbigarrow.svg';
 import { useTheme } from '@/context';
+import shareIcon from '/public/shareIcon.svg'
 
 interface Data {
     imageUrl: string;
     name: string;
     description: string;
 }
-
-const SingleEvent = (params: { data: Data }) => {
+const SingleEvent = (params: { data: Data, handleShareModal:() => void }) => {
     const {theme} = useTheme();
     const iconClass = theme === 'light' ? styles.icons_light : styles.icon
     console.log(params.data);
