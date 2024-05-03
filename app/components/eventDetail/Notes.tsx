@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useRef } from 'react'
 import styles from './notes.module.css';
 import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
@@ -36,10 +36,20 @@ export const Notes = ({ comments, productId }: Props) => {
     setUserDetail(user);
   }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
-
+  const containerRef = useRef(null);
   const [note, setNote] = useState<string>("");
   const [notes, setNotes] = useState<any>(CommentsData);
-
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      (containerRef.current as HTMLElement).scrollTop = (containerRef.current as HTMLElement).scrollHeight;
+    }
+    
+  };
+  
+  useEffect(() => {
+    // if(note!==null)
+    scrollToBottom();
+  },[notes]);
   comments = [...notes];
   console.log(comments);
   const addNote = (event: any) => {
@@ -55,12 +65,15 @@ export const Notes = ({ comments, productId }: Props) => {
       const updatedNotes = [...notes, {
         id: Date.now().toString(), images: filePreviews, pdfs: selectedPdfs, text: note, user: { id: user?.id, firstname: user?.firstname, lastname: user?.lastname, email: user?.email, createdAt: new Date() }
       }];
+      scrollToBottom();
       setNotes(updatedNotes);
       console.log(note);
+      // scrollToBottom();
     }
     setNote("");
     setFilePreviews(null);
     setSelectedPdfs([]);
+   
   }
   console.log(filePreviews);
 
@@ -70,7 +83,7 @@ export const Notes = ({ comments, productId }: Props) => {
     <div className={styles.container}>
       {
         comments ? (
-          <div className={styles.commentDiv}>
+          <div className={styles.commentDiv} ref={containerRef} >
             <ul className={styles.comments}>
               {comments.map((comment) => (
                 <li
@@ -194,15 +207,25 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
                 </div>
               ))}
             </div>
-            <div style={{ display: "flex", gap: "10px"}}>
+            {/* <div style={{ display: "flex", gap: "10px"}}>
 
-              {comment?.pdfs?.map((item: any, ind: number) => (
-                <div className={styles.pdf} key={ind} style={{width:"200px" }}>
-                  <Image src={Pdf} width={50} height={50} alt="pdf" />
-                  <p key={ind} style={{ display: "flex" }}>{item}</p>
-                </div>
-              ))}
-            </div>
+            {comment?.pdfs?.map((item: any, ind: number) => (
+  <div className={styles.pdf} key={ind} style={{ width: "200px", height:"150px",overflow: 'hidden' }}>
+    <iframe src={URL.createObjectURL(item)} className={styles.pdf} style={{ border: "none", outline: "none", width: "90%", height: "100%", overflow: "hidden",scrollbarWidth: "thin" }} title="PDF Preview" scrolling="no" />
+  </div>
+))}
+
+            </div> */}
+            <div style={{display:"flex",gap:"10px"}}>
+        {comment?.pdfs?.map((item:any, ind:number) => (
+          
+          <div key={ind} className={styles.pdf}>
+           
+          <Image src={Pdf} width={50} height={50} alt="pdf"/>
+          <p key={ind} style={{display:"flex"}}>{item.name}</p>
+          </div>
+        ))}
+        </div>
           </div>
           <div className={styles.options}>
             <ButtonView view={"upvoteBtn"} />

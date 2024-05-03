@@ -31,6 +31,10 @@ interface Props {
   filePreviews: any;
   selectedPdfs: any;
   setSelectedPdfs: any;
+  setFilePreviews: any;
+  filePreviews: any;
+  selectedPdfs: any;
+  setSelectedPdfs: any;
   note?: string | any;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   comments?: IComment[];
@@ -308,6 +312,7 @@ export const AddComment = ({
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (event: any) => {
+  const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
     setFilePreviews((prevSelectedFiles: File[] | null) => {
       if (
@@ -351,7 +356,7 @@ export const AddComment = ({
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
-    console.log(selectedFile);
+    console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
     if (selectedFile && selectedFile.type === "application/pdf") {

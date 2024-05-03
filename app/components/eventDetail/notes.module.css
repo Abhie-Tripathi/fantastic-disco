@@ -418,14 +418,29 @@
   gap: 10px;
   align-items: center;
   padding: 5px;
-  border-radius: 10px;
-  border: 1px solid white;
+
+  /* border-radius: 10px;
+  border: 1px solid white; */
+}
+.iframe{
+  -webkit-overflow-scrolling: hidden !important;
+  overflow: hidden !important;
 }
 .images{
   display: grid;
   gap:10px;
   /* flex-direction: column; */
     grid-template-columns: repeat(2,0fr);
+}
+.pdf object {
+  overflow: hidden !important;
+}
+.pdf object::-webkit-scrollbar {
+  display: none !important; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+.pdf object {
+  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;

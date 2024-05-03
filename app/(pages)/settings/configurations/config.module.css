@@ -1,0 +1,51 @@
+.container {
+    display: flex;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.navContainerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-right: 0.98px solid #262626;
+    padding: 20px;
+    background-image: linear-gradient(to bottom, #1A1A1A 100%,  #1A1A1A 0%);
+}
+
+
+
+.text {
+    color: #D9D9D9;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.comapny_container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    
+}
+
+.tabContainer {
+    padding-bottom: 10px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-wrap: nowrap;
+}
+
+.tabContainer.active {
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 250px;
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
+

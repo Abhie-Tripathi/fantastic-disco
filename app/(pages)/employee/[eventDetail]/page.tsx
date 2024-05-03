@@ -7,6 +7,9 @@ import SingleEvent from '@/app/components/eventDetail/SingleEvent';
 import ScheduleMeetings from '@/app/components/eventDetail/ScheduleMeetings';
 import eventData from '@/public/data/demoEvent.json';
 import { useTheme } from '@/context';
+import ShareModal from '@/app/components/share/shareModal'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface EventData {
     id: number;
@@ -25,6 +28,11 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
 
     const singledata: EventData | undefined = eventData.find((item: EventData) => parseInt(params?.eventDetail) === item.id);
 
+    const [shareModalOpen, setShareModalOpen] = useState(false)
+    const handleShareModal = () => {
+        setShareModalOpen(!shareModalOpen)
+    }
+
     useEffect(() => {
         if (leftContainerRef.current && rightContainerRef.current) {
             const leftContainerHeight = leftContainerRef.current.clientHeight;
@@ -42,7 +50,7 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                 <div className={styles.containerLeft} ref={leftContainerRef}>
                     <div className={`${styles.containerOne} ${theme === 'light' && styles.containerOne_light}`}>
                         {/* Pass data as a prop to SingleEvent component */}
-                        {singledata && <SingleEvent data={singledata} />}
+                        {singledata && <SingleEvent data={singledata} handleShareModal={handleShareModal} />}
                     </div>
                 </div>
                 <div className={styles.containerRight} ref={rightContainerRef}>
@@ -64,6 +72,10 @@ const Page = ({ params }: { params: { eventDetail: string } }) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
+            {shareModalOpen &&
+                <ShareModal handleShareModal={handleShareModal}/>
+            }
         </div>
     );
 }
