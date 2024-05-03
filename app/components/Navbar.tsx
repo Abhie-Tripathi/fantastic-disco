@@ -46,7 +46,7 @@ const Navbar = () => {
       {pathName === 'internal' ? (<Link href='/internal'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>) : <Link href='/'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>}
 
       <div className={styles.settings}>
-        <div className={styles.circle} style={{marginRight:'10px'}} onClick={themeSwitchHandler}>
+        <div className={styles.circle} style={{ marginRight: '10px' }} onClick={themeSwitchHandler}>
           <Image src={lightModeIcon} alt="theme" />
         </div>
         {pathName === 'internal' && <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/'}>
