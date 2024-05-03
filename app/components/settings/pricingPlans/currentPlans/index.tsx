@@ -9,7 +9,7 @@ import UserIcon from "/public/usersIcon.svg";
 import Image from "next/image";
 import BellIcon from "/public/bellIcon.svg";
 import RightArrow from "/public/rightArrowNew.svg";
-const index = () => {
+const Index = () => {
   const cardData = [
     "3 Trackers to track your events",
     "5 Limited user access with in the teams",
@@ -120,8 +120,8 @@ const index = () => {
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
               <div className={styles.cardLower_sec}>
-                {cardData.map((item) => (
-                  <div className={styles.card_texts}>
+                {cardData.map((item, key) => (
+                  <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />
                     <span className={styles.lowerCardText}>{item}</span>
                   </div>
@@ -143,8 +143,8 @@ const index = () => {
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
               <div className={styles.cardLower_sec}>
-                {cardData.map((item) => (
-                  <div className={styles.card_texts}>
+                {cardData.map((item, key) => (
+                  <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />
                     <span className={styles.lowerCardText}>{item}</span>
                   </div>
@@ -166,8 +166,8 @@ const index = () => {
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
               <div className={styles.cardLower_sec}>
-                {cardData.map((item) => (
-                  <div className={styles.card_texts}>
+                {cardData.map((item, key) => (
+                  <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />
                     <span className={styles.lowerCardText}>{item}</span>
                   </div>
@@ -181,4 +181,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

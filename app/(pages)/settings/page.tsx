@@ -4,7 +4,7 @@ import styles from "./setting.module.css";
 import Image from "next/image";
 import DepartmentIcon from "/public/departmentIcon.svg";
 import TeamIcon from "/public/teamIcon.svg";
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState("Department");
 
   return (
@@ -51,4 +51,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

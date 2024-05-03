@@ -6,7 +6,7 @@ import BillingIcon from "/public/billingIcon.svg";
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import BillingDetailsComponent from "@/app/components/settings/billingDetails/BillingDetails";
 import Timer from '/public/timer.svg'
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState("Billing Details");
   return (
     <div className={styles.container}>
@@ -73,4 +73,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

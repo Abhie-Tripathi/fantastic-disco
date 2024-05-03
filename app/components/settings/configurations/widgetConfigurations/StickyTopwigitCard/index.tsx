@@ -13,7 +13,7 @@ type PromotedEvent = {
   startDate: string; // You may want to use Date type if the dates are parsed as Date objects
   endDate: string; // You may want to use Date type if the dates are parsed as Date objects
 };
-const index = ({ data }: any) => {
+const Index = ({ data }: any) => {
   const propsData = data;
   const [activeState, setActiveState] = useState("Active");
   const [widgetType, setWidgetType] = useState<string>("");
@@ -217,7 +217,14 @@ const index = ({ data }: any) => {
 
         <div className={styles.category}>
           <div className={styles.category_text}>
-            Category- <span>Hospitality, Festival</span>{" "}
+            Category-
+            {categories?.map((category) => (
+              <>
+                <span>{category}</span>{" "}
+              </>
+            ))}
+            {/* <span>Hospitality, Festival</span>{" "}
+            <span>Format-Exhibition</span> */}
             <span>Format-Exhibition</span>
             <span>+6 more...</span>
           </div>
@@ -270,4 +277,4 @@ const index = ({ data }: any) => {
   );
 };
 
-export default index;
+export default Index;

@@ -10,7 +10,7 @@ import ShortListedIcon from "/public/shortlistedIcon.svg";
 import ThreeDots from "/public/threeDots.svg";
 import TimerIcon from "/public/timer.svg";
 import Image from "next/image";
-const index = () => {
+const Index = () => {
   const [widgets, setWidgets] = useState<any>();
 
   useEffect(() => {
@@ -117,8 +117,10 @@ const index = () => {
               className={`${styles.outreachCard} ${
                 id % 2 === 0 ? styles.cardbackgroundColor : ""
               }`}
+              key={id}
             >
-              <div className={styles.cardTopSec}>
+              <div className={styles.cardTopSec} 
+              >
                 <Image src={card?.icon} alt="" />
                 <div className={styles.inner_sec}>{card.cardItitle}</div>
                 <Image src={ThreeDots} alt="dots" />
@@ -142,4 +144,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
