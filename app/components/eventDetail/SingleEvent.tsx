@@ -15,7 +15,7 @@ interface Data {
     description: string;
 }
 
-const SingleEvent = (params: { data: Data, handleShareModal:() => void }) => {
+const SingleEvent = (params: { data: Data, handleShareModal: () => void }) => {
     console.log(params.data);
     return (
         <div className={styles.card}>
@@ -23,10 +23,11 @@ const SingleEvent = (params: { data: Data, handleShareModal:() => void }) => {
                 <Image src={params.data.imageUrl} alt="eventImage" width={400} height={250} style={{ borderRadius: "12px", width: "90%" }} />
             </div>
             <div className={styles.downView}>
-                <div className={styles.eventHeading}>{params.data.name}
-                    <span style={{float:"right", cursor:"pointer"}} onClick={params.handleShareModal}>
-                        <Image src={shareIcon} alt="share" />
-                    </span>
+                <div className={styles.eventHeaderContainer}>
+                    <div className={styles.eventHeading}>{params.data.name}</div>
+                    <div onClick={params.handleShareModal} className={styles.shareBtnContainer} data-name="Share">
+                        <Image src={shareIcon} alt="share"/>
+                    </div>
                 </div>
                 <div className={styles.datecta}>
                     <div className={styles.calendar}>

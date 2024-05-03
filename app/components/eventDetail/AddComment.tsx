@@ -27,10 +27,10 @@ interface Props {
   className?: string;
   repliesLength?: number;
   notes: any;
-  setFilePreviews:any;
-  filePreviews:any;
-  selectedPdfs:any;
-  setSelectedPdfs:any;
+  setFilePreviews: any;
+  filePreviews: any;
+  selectedPdfs: any;
+  setSelectedPdfs: any;
   note?: string | any;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   comments?: IComment[];
@@ -80,7 +80,7 @@ export const AddComment = ({
   const [alluser, setAlluser] = useState<String[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef(null);
-  const pdfRef=useRef(null);
+  const pdfRef = useRef(null);
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
@@ -274,7 +274,7 @@ export const AddComment = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const handleFileChange = (event:any) => {
+  const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
     setFilePreviews((prevSelectedFiles: File[] | null) => {
       if (prevSelectedFiles === null || typeof prevSelectedFiles === 'undefined') {
@@ -337,18 +337,18 @@ export const AddComment = ({
   useEffect(() => {
     console.log(selectedPdfs);
   }, [selectedPdfs])
-const pdfSelect=()=>{
-  if (pdfRef.current) {
-    const inputElement = pdfRef.current as HTMLInputElement;
-    inputElement.click();
+  const pdfSelect = () => {
+    if (pdfRef.current) {
+      const inputElement = pdfRef.current as HTMLInputElement;
+      inputElement.click();
+    }
   }
-}
-const imgUpload=()=>{
-  if (fileRef.current) {
-    const inputElement = fileRef.current as HTMLInputElement;
-    inputElement.click();
+  const imgUpload = () => {
+    if (fileRef.current) {
+      const inputElement = fileRef.current as HTMLInputElement;
+      inputElement.click();
+    }
   }
-}
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
@@ -358,19 +358,19 @@ const imgUpload=()=>{
           <button onClick={() => handleSelectSpeak()} data-action="speak" className={styles.btn1}>I want to Speak</button>
           <button onClick={handleRecommend} className={styles.btn1}>I want to @Recommend</button>
         </div>
-        <div style={{display:"flex",gap:"10px"}}>
-        {selectedPdfs?.map((item:string, ind:number) => (
-          <div key={ind} className={styles.pdf}>
-          <Image src={Pdf} width={50} height={50} alt="pdf"/>
-          <p key={ind} style={{display:"flex"}}>{item}</p>
-          </div>
-        ))}
+        <div style={{ display: "flex", gap: "10px" }}>
+          {selectedPdfs?.map((item: string, ind: number) => (
+            <div key={ind} className={styles.pdf}>
+              <Image src={Pdf} width={50} height={50} alt="pdf" />
+              <p key={ind} style={{ display: "flex" }}>{item}</p>
+            </div>
+          ))}
         </div>
         {filePreviews && (
           <>
             <div className={styles.filePreview}>
 
-              {filePreviews.map((filePreview:any, index:number) => (
+              {filePreviews.map((filePreview: any, index: number) => (
 
                 <div className={styles.fileDiv} key={index}>
                   <Image src={URL.createObjectURL(filePreview)} width={80} height={80} alt="File Preview" />
@@ -418,18 +418,32 @@ const imgUpload=()=>{
       <div className={styles.attachmentIcon}>
         <button ref={fileRef} onClick={() => setModal()} style={{ display: "none" }}>Upload File</button>
         <input type="file" onChange={handleFileChange} ref={fileRef} style={{ display: "none" }} />
-        <input ref={pdfRef} type="file" name="file" id="file" onChange={pdfUpload} style={{display:"none"}} />
-        <Image className={styles.attachIcon} src={Attach} alt="attach" />
-        <Image className={styles.attachIcon} src={Link} alt="link" />
-        <Image className={styles.attachIcon} src={Emoji} alt="emoji" />
-        <Image className={styles.attachIcon} onClick={pdfSelect} src={Drive} alt="drive" />
-        <Image className={styles.attachIcon} src={Pic} onClick={imgUpload}  alt="image" />
-        <Image className={styles.attachIcon} src={Lock} alt="lock" />
-        <Image className={styles.attachIcon} src={Pen} alt="pen" />
+        <input ref={pdfRef} type="file" name="file" id="file" onChange={pdfUpload} style={{ display: "none" }} />
+        <div className={styles.attachIconContainer} data-name="Attach">
+          <Image className={styles.attachIcon} src={Attach} alt="attach" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Link">
+          <Image className={styles.attachIcon} src={Link} alt="link" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Emoji">
+          <Image className={styles.attachIcon} src={Emoji} alt="emoji" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Upload File">
+          <Image className={styles.attachIcon} onClick={pdfSelect} src={Drive} alt="drive" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Upload Image">
+          <Image className={styles.attachIcon} src={Pic} onClick={imgUpload} alt="image" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Lock">
+          <Image className={styles.attachIcon} src={Lock} alt="lock" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Write">
+          <Image className={styles.attachIcon} src={Pen} alt="pen" />
+        </div>
       </div>
 
       {modalIsOpen &&
-        <div className={styles.overlay}>
+        <div className={styles.overlay} >
           <div className={styles.content} onClick={(e) => e.stopPropagation()}>
             <h2>Upload File</h2>
             <input type="file" onChange={handleFileChange} />
