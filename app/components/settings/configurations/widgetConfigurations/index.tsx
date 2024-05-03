@@ -96,10 +96,10 @@ const Index = () => {
       <div className={styles.wigitCard_container}>
         {widgets?.length > 0
           ? widgets.map((item: any, index: number) => (
-              <div key={index}>
-                <StickyTopWigitCard data={item} />
-              </div>
-            ))
+            <div key={index}>
+              <StickyTopWigitCard data={item} />
+            </div>
+          ))
           : "No widgets Added"}
         {/* <StickyTopWigitCard />
         <PageWigitCard/> */}
@@ -112,12 +112,10 @@ const Index = () => {
           You can manage and configure all the stages present on the outreach
         </div>
         <div className={styles.outreachCard_container}>
-          {staticCardsData?.map((card: any, id: any) => (
-            <div
-              className={`${styles.outreachCard} ${
-                id % 2 === 0 ? styles.cardbackgroundColor : ""
-              }`}
-              key={id}
+          {staticCardsData?.map((card: any, id: any, key:any) => (
+            <div key={key}
+              className={`${styles.outreachCard} ${id % 2 === 0 ? styles.cardbackgroundColor : ""
+                }`}
             >
               <div className={styles.cardTopSec} 
               >

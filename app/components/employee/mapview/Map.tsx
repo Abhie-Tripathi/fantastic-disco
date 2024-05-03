@@ -148,8 +148,8 @@ const Map: React.FC = ({}) => {
             </div>
 
             <div className={styles.eventList_list}>
-              {eventData?.map((event) => (
-                <EventListCard event={event} />
+              {eventData?.map((event, key) => (
+                <EventListCard key={key} event={event} />
               ))}
             </div>
           </div>
