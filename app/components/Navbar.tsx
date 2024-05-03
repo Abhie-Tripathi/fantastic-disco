@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
-import Spinner from '/public/Icon.svg'
+import Spinner from "/public/Icon.svg";
 
 interface UserDetail {
   firstname: string;
@@ -42,33 +42,93 @@ const Navbar = () => {
     toggleTheme();
   };
   return (
-    <div className={`${styles.navbar} ${theme === 'light' ? styles.light : ""}`}>
-      {pathName === 'internal' ? (<Link href='/internal'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>) : <Link href='/'><Image className={styles.logo} src={logo} width={45} height={53} alt='logo' /></Link>}
+    <div
+      className={`${styles.navbar} ${theme === "light" ? styles.light : ""}`}
+    >
+      {pathName === "internal" ? (
+        <Link href="/internal">
+          <Image
+            className={styles.logo}
+            src={logo}
+            width={45}
+            height={53}
+            alt="logo"
+          />
+        </Link>
+      ) : (
+        <Link href="/">
+          <Image
+            className={styles.logo}
+            src={logo}
+            width={45}
+            height={53}
+            alt="logo"
+          />
+        </Link>
+      )}
 
       <div className={styles.settings}>
-        <div className={styles.circle} style={{marginRight:'10px'}} onClick={themeSwitchHandler}>
+        <div
+          className={styles.circle}
+          style={{ marginRight: "10px" }}
+          onClick={themeSwitchHandler}
+        >
           <Image src={lightModeIcon} alt="theme" />
         </div>
-        {pathName === 'internal' && <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/'}>
-          <Image src={Home} alt='internal' />
-        </Link>}
-
-        {pathName !== 'internal' && (
-          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/internal'}>
-            <Image src={DoorIcon} alt='internal' />
+        {pathName === "internal" && (
+          <Link
+            className={styles.circle}
+            style={{ marginRight: "10px" }}
+            href={"/"}
+          >
+            <Image src={Home} alt="internal" />
           </Link>
         )}
 
-
-        {pathName !== 'internal' &&
-
-          <Link className={styles.circle} style={{ marginRight: "10px" }} href={'/widget'}>
-            <Image src={Spinner} alt='settings' />
+        {pathName !== "internal" && (
+          <Link
+            className={styles.circle}
+            style={{ marginRight: "10px" }}
+            href={"/internal"}
+          >
+            <Image src={DoorIcon} alt="internal" />
           </Link>
-        }
-        {userDetail &&
-          <div style={{ display: "flex", gap: "8px", cursor: "pointer", position: "relative" }} ref={profilectas.dropdownRef} onClick={toggleDropdown}>
-            <div className={styles.circle}>{userDetail?.firstname.charAt(0)}{userDetail?.lastname.charAt(0)}</div>
+        )}
+
+        {pathName !== "internal" && (
+          <>
+            <Link
+              className={styles.circle}
+              style={{ marginRight: "10px" }}
+              href={"/widget"}
+            >
+              <Image src={Spinner} alt="settings" />
+            </Link>
+
+            <Link
+              className={styles.circle}
+              style={{ marginRight: "10px" }}
+              href={"/settings"}
+            >
+              <Image src={settingsIcon} alt="settings" />
+            </Link>
+          </>
+        )}
+        {userDetail && (
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+              cursor: "pointer",
+              position: "relative",
+            }}
+            ref={profilectas.dropdownRef}
+            onClick={toggleDropdown}
+          >
+            <div className={styles.circle}>
+              {userDetail?.firstname.charAt(0)}
+              {userDetail?.lastname.charAt(0)}
+            </div>
             <div className={styles.userDetails}>
               <div>
                 {userDetail?.firstname} {userDetail?.lastname}
@@ -84,7 +144,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
-        }
+        )}
       </div>
     </div>
   );
