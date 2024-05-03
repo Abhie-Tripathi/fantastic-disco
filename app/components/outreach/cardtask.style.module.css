@@ -1,62 +1,58 @@
-
-.eventAdd_container{
-    /* margin-left: -12px; */
-}
-.eventAdd_container:hover{
-    .addMore_event{
-        opacity: 1;
-    }
-}
-.addMore_event{
-    display: flex;
-    align-items: center;
-    margin-left: -12px;
-    cursor: pointer;
-    margin-top: -5px;
-    height: 10px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.line{
-    width: 100%;
-}
-
-.hr{
-    border-color: #6750A4;
-}
-
 .card {
-    border-radius: 8px;
-    width: 100%;
-    border: 1px solid #6666667c;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    justify-content: space-evenly;
-    cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+  border: 1px solid #6666667c;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-evenly;
+  cursor: pointer;
 }
-.date{
-    display: flex;
-    font-size: 10px;
-    align-items: center;
-    background-color: inherit;
-    width: fit-content;
-    padding: 2px 5px;
-    gap: 5px;
-    border-radius: 6px;   
-    border: 1px solid #6750A4;
+.date {
+  display: flex;
+  font-size: 10px;
+  align-items: center;
+  background-color: inherit;
+  width: fit-content;
+  padding: 2px 5px;
+  gap: 5px;
+  border-radius: 6px;
+  border: 1px solid #6750a4;
 }
-.typeOfEventContainer{
-    display: flex;
-    gap: 5px;
+.typeOfEventContainer {
+  display: flex;
+  gap: 5px;
 }
-.typeOfEvent{
-    border: 1px solid #313131;
-    background-color:#6750A4 ;
-    padding: 5px 10px;
-    color: white;
-    font-size: 10px;
-    border-radius: 6px;
+.typeOfEvent {
+  border: 1px solid #313131;
+  background-color: #6750a4;
+  padding: 5px 10px;
+  color: white;
+  font-size: 10px;
+  border-radius: 6px;
+}
+
+.eventAdd_container:hover {
+  .addMore_event {
+    opacity: 1;
+  }
+}
+.addMore_event {
+  display: flex;
+  align-items: center;
+  margin-left: -12px;
+  cursor: pointer;
+  margin-top: -5px;
+  height: 10px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.line {
+  width: 100%;
+}
+
+.hr {
+  border-color: #6750a4;
 }

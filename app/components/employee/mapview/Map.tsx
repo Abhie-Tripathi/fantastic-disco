@@ -9,6 +9,7 @@ import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 import FestivalIcon from "/public/festivalIcon.svg";
+import { useTheme } from "@/context";
 interface Event {
   id: number;
   venue: { lat: number; lng: number }[];
@@ -46,6 +47,7 @@ const EventListCard = (event: any) => {
 };
 
 const Map: React.FC = ({}) => {
+  const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
   const [showList, setShowList] = useState(false);
   const [fullView, setFullView] = useState(true);
@@ -62,7 +64,11 @@ const Map: React.FC = ({}) => {
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
       <ReactMapGL
         {...viewport}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle={
+          theme === "light"
+            ? "mapbox://styles/mapbox/light-v10"
+            : "mapbox://styles/mapbox/dark-v11"
+        }
         mapboxApiAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
         onViewportChange={(viewport) => {
           setViewport(viewport);

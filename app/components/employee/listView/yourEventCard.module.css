@@ -20,6 +20,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
+  color: white;
 }
 
 .eventHeader {
@@ -30,6 +31,7 @@
 
 .eventName {
   font-size: 24px;
+  /* color: white; */
 }
 
 .pills {

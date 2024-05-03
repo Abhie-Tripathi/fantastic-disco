@@ -1,3 +1,8 @@
-.body{
-    padding: 30px;
+.body {
+  padding: 30px;
+}
+
+.body_light {
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
 }

@@ -1,97 +1,138 @@
-.card{
+.card {
     display: flex;
     flex-direction: column;
     height: 100%;
     align-items: center;
-    gap:20px;
+    gap: 20px;
 }
-.topView{
+
+.topView {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 50%;
 }
-.downView{
+
+.downView {
     width: 90%;
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap: 10px;
 }
-.eventHeading{
-font-size: 24px;
-font-weight: 400;
-line-height: 33.6px;
-letter-spacing: -0.02em;
-text-align: left;
+
+.eventHeaderContainer {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 33.6px;
+    letter-spacing: -0.02em;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
 
 }
-.datecta{
+
+.shareBtnContainer {
+    position: relative;
+    cursor: pointer;
+}
+
+.shareBtnContainer::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 130%;
+    left: 60%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.shareBtnContainer:hover::before {
+    opacity: 1;
+}
+
+.datecta {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
 }
-.calendar{
+
+.calendar {
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
-  outline: 0.97px solid transparent;
-  border-radius: 8px;
-  font-size: 12px;
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-  align-items: center;
-  padding: 4.31px 12.92px 4.31px 12.92px;
-  background-color: #313131;
+    outline: 0.97px solid transparent;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 4.31px 12.92px 4.31px 12.92px;
+    background-color: #313131;
 }
-.date{
-font-weight: 400;
-line-height: 21px;
-text-align: left;
+
+.date {
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
 
 }
-.ctas{
+
+.ctas {
     display: flex;
-  gap: 10px;
-  font-size: 14px;
+    gap: 10px;
+    font-size: 14px;
 }
-.pill{
+
+.pill {
     background-color: #6650a452;
-  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
-  outline: 0.97px solid transparent;
-  padding:4.23px 12.68px;
-  border-radius: 40px;
-  font-size: 10px;
+    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.97px solid transparent;
+    padding: 4.23px 12.68px;
+    border-radius: 40px;
+    font-size: 10px;
 }
-.locationInfo{
+
+.locationInfo {
     display: flex;
     display: flex;
-  justify-content: space-between;
-  background-color: black;
-  padding: 20px 30px;
-  border-radius: 12px;
+    justify-content: space-between;
+    background-color: black;
+    padding: 20px 30px;
+    border-radius: 12px;
     justify-content: space-between;
 }
-.locationDetail{
+
+.locationDetail {
     display: flex;
-    gap:10px;
-  align-items: center;
+    gap: 10px;
+    align-items: center;
 }
+
 .eventDetails {
     color: white;
     right: 0;
     bottom: 0;
 }
-.eventDetails .detailContainer{
+
+.eventDetails .detailContainer {
     border-radius: 40px;
     box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.97px solid transparent;
-   padding: 5.59px 5.59px 5.59px 13.41px;
+    padding: 5.59px 5.59px 5.59px 13.41px;
     display: flex;
     align-items: center;
     position: relative;
     background: #0c0c0c;
 }
+
 .eventDetails .detailContainer::after {
     content: '';
     position: absolute;
@@ -100,43 +141,52 @@ text-align: left;
     height: 105%;
     border-radius: 40px;
     background: linear-gradient(118deg, rgba(103, 80, 164, 1) 0%, rgba(133, 133, 133, 1) 100%);
-  	z-index:-1;
+    z-index: -1;
 }
-.eventDetails .detailContainer img{
+
+.eventDetails .detailContainer img {
     background-color: #6650a452;
     padding: 4px 10px 4px 10px;
     border-radius: 40px;
     margin-left: 7px;
 }
-.eventDetails .detailContainer div{
+
+.eventDetails .detailContainer div {
     font-size: 12px;
 }
-.cardImg{
+
+.cardImg {
     border-radius: 12px 0px 0px 12px;
 }
-.des{
+
+.des {
     font-weight: 600;
 }
-.description{
+
+.description {
     padding: 30px 0;
     display: flex;
     flex-direction: column;
     gap: 30px;
-font-size: 14px;
-font-weight: 400;
-line-height: 21px;
-text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
 }
-.line{
+
+.line {
     border: 0.95px solid #3A3152
 }
-.speakers{
+
+.speakers {
     padding: 10px 0;
 }
-.circles{
+
+.circles {
     padding-top: 20px;
     display: flex;
 }
+
 /* .circle{
     margin-right: -18px;
     background-color: #3a3e42;
@@ -150,10 +200,11 @@ text-align: left;
     flex-shrink: 0;
     box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
 } */
-.circle:hover{
+.circle:hover {
     transform: scale(1.05);
     z-index: 1;
 }
+
 .circle {
     position: relative;
     cursor: pointer;
@@ -168,32 +219,33 @@ text-align: left;
     background-color: #fff;
     border: none;
     box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
-    transition: transform 0.2s ease; 
+    transition: transform 0.2s ease;
 }
-  
-  .circle::before {
+
+.circle::before {
     content: attr(data-name);
     position: absolute;
-    bottom: 120%; 
-    left: 50%; 
-    white-space: nowrap; 
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
-    color: #fff; 
-    padding: 5px 10px; 
+    color: #fff;
+    padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
-  }
-  
-  .circle:hover::before {
+}
+
+.circle:hover::before {
     opacity: 1;
-    
-  }
-  @media screen and (max-width: 1050px) {
-    .topView{
+
+}
+
+@media screen and (max-width: 1050px) {
+    .topView {
         width: 400px;
     }
-  }
+}

@@ -7,6 +7,7 @@ import Calendar from '@/public/vector.svg'
 import Location from '@/public/location.svg'
 import Speaker1 from '@/public/speaker1.jpeg'
 import rightArrowIcon from '/public/rightbigarrow.svg';
+import shareIcon from '/public/shareIcon.svg';
 
 interface Data {
     imageUrl: string;
@@ -14,7 +15,7 @@ interface Data {
     description: string;
 }
 
-const SingleEvent = (params: { data: Data }) => {
+const SingleEvent = (params: { data: Data, handleShareModal: () => void }) => {
     console.log(params.data);
     return (
         <div className={styles.card}>
@@ -22,7 +23,12 @@ const SingleEvent = (params: { data: Data }) => {
                 <Image src={params.data.imageUrl} alt="eventImage" width={400} height={250} style={{ borderRadius: "12px", width: "90%" }} />
             </div>
             <div className={styles.downView}>
-                <div className={styles.eventHeading}>{params.data.name}</div>
+                <div className={styles.eventHeaderContainer}>
+                    <div className={styles.eventHeading}>{params.data.name}</div>
+                    <div onClick={params.handleShareModal} className={styles.shareBtnContainer} data-name="Share">
+                        <Image src={shareIcon} alt="share"/>
+                    </div>
+                </div>
                 <div className={styles.datecta}>
                     <div className={styles.calendar}>
                         <Image src={Calendar} alt="Calendar" />

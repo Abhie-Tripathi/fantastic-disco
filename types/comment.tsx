@@ -4,6 +4,8 @@ export interface Comment {
   id: string;
   text: string;
   createdAt: string;
-  user: Omit<UserResponse, "email">;
+  pdfs?:[];
+  images:[any];
+  user: Omit<UserResponse, "email">|any;
   replies?: Comment[];
 }
