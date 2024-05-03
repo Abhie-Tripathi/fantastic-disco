@@ -36,7 +36,7 @@ const LabelDropdown = ({
       <div className={styles.heading}>Labels</div>
       <div className={styles.search}>
         <input type="text" placeholder="Search Labels" />
-        <Image src={SearchIcon} alt="searchIcon" />
+        <Image src={SearchIcon} alt="searchIcon" className={theme === 'light' ? styles.icons_light : styles.icon} />
       </div>
       <ul className={styles.list}>
         {labels?.map((label) => {

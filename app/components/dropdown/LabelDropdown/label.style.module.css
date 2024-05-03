@@ -85,3 +85,7 @@
   align-items: center;
   gap: 8px;
 }
+
+.icons_light{
+  filter: invert(1);
+}

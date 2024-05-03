@@ -90,3 +90,7 @@
 .ariaCalendarCell{
   /* color:white; */
 }
+
+.icons_light{
+  filter: invert(1);
+}

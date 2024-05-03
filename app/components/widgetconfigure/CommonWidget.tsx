@@ -14,6 +14,7 @@ import Tag from "../widgetadd/Tag";
 import useFetch from "@/hooks/useFetch";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from "@/context";
 
 interface CommonWidgetProps {
     widgetType: string;
@@ -27,6 +28,8 @@ interface PromotedEvent {
 const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     // const [tagList, setTagList] = useState<string[]>([]);
     // const isAdd: boolean = true;
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     const [geoInput, setGeoInput] = useState<string>("");
 
     const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
@@ -284,7 +287,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Regions</div>
                 <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setGeoInput(e.target.value)}
@@ -296,7 +299,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Categories</div>
                 <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setCategoryInput(e.target.value)}
@@ -321,7 +324,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
-                    <Image src={ArrowDownIcon} alt='dropdown' />
+                    <Image src={ArrowDownIcon} alt='dropdown' className={iconClass}/>
                     <div className={styles.placeholder}>For ex : Expo</div>
                 </div>
                 {isEventTypeDropdownOpen && (
@@ -359,7 +362,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
                 {promotedEventTags.length < promotedEventsLimit && <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setPromotedInput(e.target.value)}

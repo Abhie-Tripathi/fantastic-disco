@@ -13,10 +13,11 @@ interface Props{
 const EventPoc = ({open} : Props) => {
     const [accordianToggle, setAccordianToggle] = useState(open)
     const {theme} = useTheme()
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     return (
         <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>
-                <Image src={PeopleIcon} alt='page' />
+                <Image src={PeopleIcon} alt='page' className={iconClass} />
                 <div>Event POC</div>
             </div>
             {accordianToggle && <div className={styles.accordian}>

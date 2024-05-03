@@ -133,8 +133,8 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
   filePreviews,
   selectedPdfs,
   setSelectedPdfs, }: CommentProps) => {
-   
-  // let len=("@"+comment.user.firstname+comment.user.lastname+"wants to recommend"+something+"for #Attend").length
+
+    const {theme} = useTheme();
   return (
     <>
       {!arr?.some(ele => comment.text.includes(ele)) ? (
@@ -152,7 +152,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
                   alt=""
                 />
               </span>
-              <div className={styles.comment_name}>
+              <div className={`${styles.comment_name} ${theme === 'light' && styles.comment_name_light}`}>
                 <span>
                   {comment.user?.firstname} {comment.user?.lastname}
                   <span> @{`${comment.user.firstname}${comment.user.lastname.charAt(0).toLowerCase()}${comment.user.lastname.slice(1)}`}</span>

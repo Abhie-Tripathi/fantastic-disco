@@ -26,6 +26,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
   const [stickyId, setStickyId] = useState<string>("");
   const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
   const {theme} = useTheme()
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
   const handleColorChange = (event: any) => {
     setBgColor(event.target.value);
@@ -109,7 +110,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
       <div className={styles.eventNameContainer}>
         <div className={styles.heading}>Event Name</div>
         <div className={`${styles.eventNameInput} ${theme === 'light' && styles.eventNameInput_light}`}>
-          <Image src={SearchIcon} alt="search" />
+          <Image src={SearchIcon} alt="search" className={iconClass} />
           <input
             type="text"
             onChange={(e) => setSearchInput(e.target.value)}
@@ -143,7 +144,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             />
             <div className={styles.dropdownIconValue}>
               <div>px</div>
-              <Image src={Down} alt="dropdown"></Image>
+              <Image src={Down} alt="dropdown" className={iconClass}/>
             </div>
           </div>
         </div>
@@ -157,7 +158,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             />
             <div className={styles.dropdownIconValue}>
               <div>px</div>
-              <Image src={Down} alt="dropdown"></Image>
+              <Image src={Down} alt="dropdown" className={iconClass} />
             </div>
           </div>
         </div>
