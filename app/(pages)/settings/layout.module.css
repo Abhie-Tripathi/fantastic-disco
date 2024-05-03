@@ -17,13 +17,13 @@
 }
 
 .settingFonts {
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     color: #FFFFFF;
 }
 
 .superAdminFont {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     padding: 2px 5px;
     color: #8B949E;
@@ -38,8 +38,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .tabsContainer {
@@ -63,6 +63,6 @@
 
 .text{
     color: #FFFFFF;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
 }

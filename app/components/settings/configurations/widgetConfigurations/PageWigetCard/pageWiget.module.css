@@ -1,0 +1,136 @@
+.container {
+    margin-top: 20px;
+    background-color: #202020;
+    border: 0.5px solid #202020;
+    padding: 10px 20px 10px 20px;
+    border-radius: 8px;
+
+}
+
+.widgetText {
+    color: #C9D1D9;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
+.outerDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.stickyTopSec {
+    margin-left: 10px;
+    margin-right: auto;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+
+.secondSec {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.thirdSec {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttonContainer {
+    padding: 8px 20px 8px 20px;
+    background-color: #6750A4;
+    border-radius: 5px;
+    border: 1px solid #F0F6FC1A;
+    width: fit-content;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.geographyText {
+    color: #6E7681;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.statusBtn {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+
+.activeFlag {
+    background-color: #19922C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #0E9B1C;
+}
+
+.inactiveFlag {
+    background-color: #d83147;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.inactiveStatus {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #d83147;
+}
+
+.eventDetail {
+    outline: 1px solid transparent;
+    padding: 3px;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: #313131;
+
+}
+
+.icon_container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.category {
+    margin-top: 20px;
+    color: #6E7681;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.category_text {
+    display: flex;
+    gap: 16px;
+}

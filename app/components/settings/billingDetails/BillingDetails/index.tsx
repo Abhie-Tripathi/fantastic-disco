@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./billingDetails.module.css";
+import styles from "./billingAndPlans.module.css";
 import BasicIcon from "/public/basicIcon.svg";
 import IncreasingIcon from "/public/increasingIcon.svg";
 import MasterCardIcon from "/public/masterCardIcon.svg";
@@ -69,7 +69,7 @@ const index = () => {
         Billing Details
         <div>
           <Image src={DownloadIcon} alt="download icon" />
-         <span className={styles.downloadText}> Download Invoice</span>
+          <span className={styles.downloadText}> Download Invoice</span>
         </div>
       </div>
 

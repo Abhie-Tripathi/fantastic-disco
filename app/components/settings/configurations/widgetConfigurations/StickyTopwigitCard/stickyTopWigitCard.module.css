@@ -1,4 +1,3 @@
-
 .container {
     margin-top: 20px;
     background-color: #202020;
@@ -23,16 +22,13 @@
 }
 
 .stickyTopSec {
-    margin-right: auto;
     margin-left: 10px;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 2px 5px;
-    color: #6E7681;
-    border: 1px solid grey;
-    border-radius: 12px;
-    border-image: linear-gradient(left, rgb(255, 255, 255) 50%, rgb(209, 209, 209) 50%, rgb(255, 255, 255) 50.5%);
-    border-style: solid;
+    margin-right: auto;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
 }
 
 .secondSec {
@@ -47,21 +43,23 @@
     margin-top: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .buttonContainer {
     padding: 8px 20px 8px 20px;
-    background-color: #21262D;
+    background-color: #6750A4;
     border-radius: 5px;
     border: 1px solid #F0F6FC1A;
     width: fit-content;
     font-size: 16px;
     font-weight: 400;
+    cursor: pointer;
 }
 
 .geographyText {
     color: #6E7681;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 400;
 }
 
@@ -116,4 +114,45 @@
     align-items: center;
     background-color: #313131;
 
+}
+
+.icon_container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.category {
+    margin-top: 20px;
+    color: #6E7681;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.category_text {
+    display: flex;
+    gap: 16px;
+}
+
+.delete{
+    margin-left: 20px;
+    padding: 3px;
+    border-radius: 8px;
+    background-color: #313131;
+    cursor: pointer;
+}
+.delete:hover{
+    transition-duration: .2s;
+    background-color: rgb(218, 99, 99);
+}
+
+.deleteModal{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.blur{
+    filter: blur(2px);
 }
