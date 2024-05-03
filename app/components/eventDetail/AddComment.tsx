@@ -318,11 +318,11 @@ export const AddComment = ({
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
-    console.log(selectedFile);
+    console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
     if (selectedFile && selectedFile.type === 'application/pdf') {
-      setSelectedPdfs([...selectedPdfs, selectedFile.name]);
+      setSelectedPdfs([...selectedPdfs, selectedFile]);
     } else {
       // Handle case when file is not a PDF
       console.log('Please select a PDF file.');
@@ -358,13 +358,15 @@ export const AddComment = ({
           <button onClick={() => handleSelectSpeak()} data-action="speak" className={styles.btn1}>I want to Speak</button>
           <button onClick={handleRecommend} className={styles.btn1}>I want to @Recommend</button>
         </div>
-        <div style={{ display: "flex", gap: "10px" }}>
-          {selectedPdfs?.map((item: string, ind: number) => (
-            <div key={ind} className={styles.pdf}>
-              <Image src={Pdf} width={50} height={50} alt="pdf" />
-              <p key={ind} style={{ display: "flex" }}>{item}</p>
-            </div>
-          ))}
+        <div style={{display:"flex",gap:"10px"}}>
+        {selectedPdfs?.map((item:any, ind:number) => (
+          
+          <div key={ind} className={styles.pdf}>
+           
+          <Image src={Pdf} width={50} height={50} alt="pdf"/>
+          <p key={ind} style={{display:"flex"}}>{item.name}</p>
+          </div>
+        ))}
         </div>
         {filePreviews && (
           <>
