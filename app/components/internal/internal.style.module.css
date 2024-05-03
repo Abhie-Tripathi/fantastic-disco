@@ -3,9 +3,10 @@
     padding-left: 100px;
     padding-right: 50px;
     padding-bottom: 94px;
+    padding-top: 20px;
 }
 .timelineContainer{
-    margin-top: 30px;
+    /* margin-top: 100px; */
 }
 .timeline{
     display: flex;
