@@ -10,7 +10,7 @@ import ShortListedIcon from "/public/shortlistedIcon.svg";
 import ThreeDots from "/public/threeDots.svg";
 import TimerIcon from "/public/timer.svg";
 import Image from "next/image";
-const index = () => {
+const Index = () => {
   const [widgets, setWidgets] = useState<any>();
 
   useEffect(() => {
@@ -96,10 +96,10 @@ const index = () => {
       <div className={styles.wigitCard_container}>
         {widgets?.length > 0
           ? widgets.map((item: any, index: number) => (
-              <div key={index}>
-                <StickyTopWigitCard data={item} />
-              </div>
-            ))
+            <div key={index}>
+              <StickyTopWigitCard data={item} />
+            </div>
+          ))
           : "No widgets Added"}
         {/* <StickyTopWigitCard />
         <PageWigitCard/> */}
@@ -112,11 +112,10 @@ const index = () => {
           You can manage and configure all the stages present on the outreach
         </div>
         <div className={styles.outreachCard_container}>
-          {staticCardsData?.map((card: any, id: any) => (
-            <div
-              className={`${styles.outreachCard} ${
-                id % 2 === 0 ? styles.cardbackgroundColor : ""
-              }`}
+          {staticCardsData?.map((card: any, id: any, key:any) => (
+            <div key={key}
+              className={`${styles.outreachCard} ${id % 2 === 0 ? styles.cardbackgroundColor : ""
+                }`}
             >
               <div className={styles.cardTopSec}>
                 <Image src={card?.icon} alt="" />
@@ -142,4 +141,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

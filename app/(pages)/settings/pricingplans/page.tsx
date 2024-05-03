@@ -6,7 +6,7 @@ import BillingIcon from "/public/billingIcon.svg";
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import CurrentPlan from "@/app/components/settings/pricingPlans/currentPlans";
 import AvailablePlans from "@/app/components/settings/pricingPlans/availablePlans";
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState("Current Plan");
   return (
     <div className={styles.container}>
@@ -44,4 +44,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

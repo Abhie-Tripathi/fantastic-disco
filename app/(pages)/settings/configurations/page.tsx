@@ -84,7 +84,7 @@ import OutreachConfigurations from "@/app/components/settings/configurations/out
 import WidgetIcon from "/public/widgetIcon.svg";
 import FeatureIcon from "/public/featuresIcon.svg";
 import OutreachIcon from "/public/kanbanIcon.svg";
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState("Widgets Configurations");
   return (
     <div className={styles.container}>
@@ -132,4 +132,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

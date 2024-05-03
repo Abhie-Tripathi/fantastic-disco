@@ -6,7 +6,7 @@ import CloseEyeIcon from "/public/closeEyeIcon.svg";
 import OpenEyeIcon from "/public/openEyeIcon.svg";
 import DeleteBox from "/public/deleteBox.svg";
 
-const index = () => {
+const Index = () => {
   const [activeState, setActiveState] = useState("Inactive");
   return (
     <div className={styles.container}>
@@ -78,4 +78,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

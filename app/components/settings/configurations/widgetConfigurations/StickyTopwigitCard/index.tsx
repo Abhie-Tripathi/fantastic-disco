@@ -13,7 +13,7 @@ type PromotedEvent = {
   startDate: string; // You may want to use Date type if the dates are parsed as Date objects
   endDate: string; // You may want to use Date type if the dates are parsed as Date objects
 };
-const index = ({ data }: any) => {
+const Index = ({ data }: any) => {
   const propsData = data;
   const [activeState, setActiveState] = useState("Active");
   const [widgetType, setWidgetType] = useState<string>("");
@@ -270,4 +270,4 @@ const index = ({ data }: any) => {
   );
 };
 
-export default index;
+export default Index;
