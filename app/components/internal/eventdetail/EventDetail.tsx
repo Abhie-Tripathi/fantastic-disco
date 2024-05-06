@@ -6,8 +6,6 @@ import SingleEvent from './SingleEvent';
 import EventDescription from './EventDescription';
 import Organiser from './Organiser';
 import EventPoc from './EventPoc';
-import Image from 'next/image';
-import CloseIcon from '/public/close.svg'
 import Follower from './Follower';
 import StatusBar from './StatusBar';
 import OwnerList from './ownerList';
@@ -57,7 +55,7 @@ const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, c
     }
     return (
         <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {closeBtn && <img className={styles.closeIcon} src={CloseIcon} alt='X' onClick={handleCloseModal} />}
+            {closeBtn && <div className={styles.closeIcon} onClick={handleCloseModal} />}
             <div>
             {pathName && pathName === 'outreach' && <StatusBar status={status} /> }
             <div className={styles.innerContainer}>

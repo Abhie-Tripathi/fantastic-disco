@@ -44,7 +44,7 @@ const SingleEvent = (params: { data: Data, handleShareModal: () => void }) => {
                 <div className={styles.locationInfo}>
                     <div className={styles.locationDetail}>
                         <Image src={Location} alt="Location" />
-                        <div className={styles.des}>
+                        <div className={styles.locationDes}>
                             <div>UrbanVault HSR Layout 1515</div>
                             <div>Bengaluru, Karnataka</div>
                         </div>
