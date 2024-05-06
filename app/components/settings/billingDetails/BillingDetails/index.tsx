@@ -72,7 +72,6 @@ const Index = () => {
           <span className={styles.downloadText}> Download Invoice</span>
         </div>
       </div>
-
       <div className={styles.firstContainer}>
         <div className={styles.billingUsage_container}>
           <div className={styles.basic_container}>
@@ -82,14 +81,12 @@ const Index = () => {
             </div>
             <div className={styles.statusBtn}>
               <div
-                className={`${styles.activeFlag} ${
-                  activeState === "Inactive" ? styles.inactiveFlag : ""
-                }`}
+                className={`${styles.activeFlag} ${activeState === "Inactive" ? styles.inactiveFlag : ""
+                  }`}
               ></div>
               <div
-                className={`${styles.status} ${
-                  activeState === "Inactive" ? styles.inactiveStatus : ""
-                }`}
+                className={`${styles.status} ${activeState === "Inactive" ? styles.inactiveStatus : ""
+                  }`}
               >
                 {activeState}
               </div>
