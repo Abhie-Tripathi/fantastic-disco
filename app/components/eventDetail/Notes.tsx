@@ -133,7 +133,20 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
   filePreviews,
   selectedPdfs,
   setSelectedPdfs, }: CommentProps) => {
+    let a = comment.text.split('\n');
+    console.log(a);
+    let newArr: string[] = [];
+    a.map((item, ind) => {
+        if (item.length === 0 && (a[ind - 1]?.length === 0 && a[ind + 1]?.length === 0)) {
+            newArr.push("space");
+        } else if (item.length !== 0) {
+            newArr.push(item);
+        }
+    });
+    console.log(newArr);
+    
 
+ 
     const {theme} = useTheme();
   return (
     <>
@@ -196,7 +209,13 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
                     </React.Fragment>
                   );
                 } else {
-                  return <p key={index}>{item}</p>;
+                  if (item.length === 0 && item) {
+                    // If line is empty, return an empty <p> tag with a unique key
+                    return <p key={index} style={{ margin: 0 }}>&nbsp;</p>;
+                } else {
+                    // If line is not empty, return the line wrapped in a <p> tag
+                    return <p key={index} style={{ margin: 0 }}>{item}</p>;
+                }
                 }
               })}
             </div>
@@ -338,7 +357,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
                     </React.Fragment>
                   );
                 } else {
-                  return <p key={index}>{item}</p>;
+                  return <p key={index}>{item || '\u00A0'}</p>;
                 }
               })}
             </div>
