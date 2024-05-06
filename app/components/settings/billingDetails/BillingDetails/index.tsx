@@ -64,7 +64,8 @@ const Index = () => {
 
   const [activeState, setActiveState] = useState("Active");
   return (
-    <div className={styles.container}>
+   <div className={styles.bodySec}>
+     <div className={styles.container}>
       <div className={styles.gradient_border}>
         Billing Details
         <div>
@@ -499,6 +500,7 @@ const Index = () => {
         </div>
       </div>
     </div>
+   </div>
   );
 };
 
