@@ -218,13 +218,13 @@ const Index = ({ data }: any) => {
         <div className={styles.category}>
           <div className={styles.category_text}>
             Category-
-            {categories?.map((category) => (
+            {/* {categories?.map((category) => (
               <>
                 <span>{category}</span>{" "}
               </>
-            ))}
-            {/* <span>Hospitality, Festival</span>{" "}
-            <span>Format-Exhibition</span> */}
+            ))} */}
+            <span>Hospitality, Festival</span>{" "}
+            {/* <span>Format-Exhibition</span> */}
             <span>Format-Exhibition</span>
             <span>+6 more...</span>
           </div>
