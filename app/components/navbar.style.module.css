@@ -26,6 +26,26 @@
     justify-content: center;
     cursor: pointer;
     color: white;
+    position: relative;
+}
+.circle::before {
+    content: attr(data-name);
+    position: absolute;
+    top:120%;
+    left: 60%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.circle:hover::before {
+  opacity: 1;
 }
 .userDetails{
     color: white;
