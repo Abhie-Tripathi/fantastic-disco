@@ -167,8 +167,8 @@ const Search = () => {
   //   }, [searchParams]);
 
   return (
-      <div>
       <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} >
+      <div >
         <div className={`${styles.inputfields_container} ${theme === 'light' ? styles.inputfields_container_light : ""}`}>
           <div className={styles.searchbar}>
             <input
@@ -775,7 +775,7 @@ const Search = () => {
       </div>
 
       {selectedView === "map" && (
-        <div style={{ padding: "32px" }}>
+        <div style={{ padding: "32px", height:"100vh"}}>
           <Suspense fallback={<Loading />}>
 
             <Map />

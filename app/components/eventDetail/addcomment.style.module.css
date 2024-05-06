@@ -80,6 +80,15 @@
   /* padding: 10px; */
   background-color: #1a1a1a;
 }
+/* .textArea::-webkit-inner-spin-button,
+.textArea::-webkit-outer-spin-button {
+  -webkit-appearance: none !important; 
+  appearance: none !important; 
+  margin: 0 !important; 
+} */
+.textArea::-webkit-outer-spin-button{
+  appearance: none;
+}
 .employeeDropdown {
   background-color: #1a1a1a;
   border-radius: 12px;
