@@ -293,8 +293,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      {/* Instagram temporaray */}
-      <button onClick={handleClick}>Share on Instagram</button>
       
     </div>
   );
