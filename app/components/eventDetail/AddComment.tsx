@@ -35,6 +35,7 @@ interface Props {
   note?: string | any;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   comments?: IComment[];
+  commentType?: string;
 }
 interface User {
   firstname: string;
@@ -64,6 +65,7 @@ export const AddComment = ({
   selectedPdfs,
   setSelectedPdfs,
   comments,
+  commentType
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
@@ -463,6 +465,7 @@ export const AddComment = ({
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
+        { commentType === 'mainComment' ? 
         <div className={styles.recommendBtn}>
           <button
             onClick={handleSelectAttend}
@@ -487,6 +490,7 @@ export const AddComment = ({
             I want to @Recommend
           </button>
         </div>
+        : <></>}
         <div style={{ display: "flex", gap: "10px" }}>
           {selectedPdfs?.map((item: string, ind: number) => (
             <div key={ind} className={styles.pdf}>
