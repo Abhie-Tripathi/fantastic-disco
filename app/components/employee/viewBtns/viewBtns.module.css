@@ -25,3 +25,9 @@
     color: var(--primary-color-light);
     background-color: var(--secondary-bg-light);
 }
+
+@media screen and (max-width:460px) {
+    .btns button{
+        padding: 12px 30px;
+    }
+}

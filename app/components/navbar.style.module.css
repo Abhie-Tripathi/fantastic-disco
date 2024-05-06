@@ -1,5 +1,6 @@
 .navbar {
     background-color: #1A1A1A;
+    color: #ffffff;
     padding: 12px 28px 12px 28px;
     display: flex;
     justify-content: space-between;
@@ -47,9 +48,6 @@
 .circle:hover::before {
   opacity: 1;
 }
-.userDetails{
-    color: white;
-}
 
 .userDropdown {
     position: absolute;
@@ -71,6 +69,6 @@
 }
 
 .light{
-    color: var(--primary-color-light);
+    color: #131313;
     background-color: var(--secondary-bg-light);
 }

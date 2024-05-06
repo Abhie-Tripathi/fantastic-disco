@@ -24,17 +24,16 @@
 .filterBtns {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
 }
 
 .filterBtns button {
-    margin-bottom: 10px;
     font-size: 14px;
     background: none;
     border: none;
     border: 1px solid #6750A4;
     padding: 5px 15px;
     border-radius: 10px;
-    margin-left: 10px;
     cursor: pointer;
 }
 
@@ -48,6 +47,12 @@
     color: white;
 }
 
+.eventsBtns{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .eventsBtns button {
     font-size: 14px;
     background: none;
@@ -55,7 +60,7 @@
     border: 1px solid #507ba4;
     padding: 5px 15px;
     border-radius: 10px;
-    margin-left: 10px;
+    /* margin-left: 10px; */
     cursor: pointer;
 }
 
@@ -122,5 +127,10 @@
     .buttons{
         flex-direction: column;
         align-items: center;
+        gap: 10px;
     }
 }
+
+/* @media screen and (max-width:) {
+    
+} */

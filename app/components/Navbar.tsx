@@ -43,7 +43,7 @@ const Navbar = () => {
   };
   return (
     <div
-      className={`${styles.navbar} ${theme === "light" ? styles.light : ""}`}
+      className={`${styles.navbar} ${theme === "light" && styles.light}`}
     >
       {pathName === "internal" ? (
         <Link href="/internal">
