@@ -71,7 +71,7 @@ const Navbar = () => {
         <div
           className={styles.circle}
           style={{ marginRight: "10px" }}
-          onClick={themeSwitchHandler}
+          onClick={themeSwitchHandler} data-name="Switch Theme"
         >
           <Image src={lightModeIcon} alt="theme" />
         </div>
@@ -79,9 +79,9 @@ const Navbar = () => {
           <Link
             className={styles.circle}
             style={{ marginRight: "10px" }}
-            href={"/"}
+            href={"/"} data-name="Home"
           >
-            <Image src={Home} alt="internal" />
+            <Image src={Home} alt="Home" />
           </Link>
         )}
 
@@ -89,7 +89,7 @@ const Navbar = () => {
           <Link
             className={styles.circle}
             style={{ marginRight: "10px" }}
-            href={"/internal"}
+            href={"/internal"} data-name="Internal"
           >
             <Image src={DoorIcon} alt="internal" />
           </Link>
@@ -100,15 +100,15 @@ const Navbar = () => {
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/widget"}
+              href={"/widget"} data-name="Widget"
             >
-              <Image src={Spinner} alt="settings" />
+              <Image src={Spinner} alt="widget" />
             </Link>
 
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/settings"}
+              href={"/settings"} data-name="Settings"
             >
               <Image src={settingsIcon} alt="settings" />
             </Link>
@@ -125,7 +125,7 @@ const Navbar = () => {
             ref={profilectas.dropdownRef}
             onClick={toggleDropdown}
           >
-            <div className={styles.circle}>
+            <div className={styles.circle} data-name="Username">
               {userDetail?.firstname.charAt(0)}
               {userDetail?.lastname.charAt(0)}
             </div>

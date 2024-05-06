@@ -67,9 +67,9 @@ export const AddComment = ({
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
- 
+
   const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
   const [types, showTypes] = useState<boolean>(false);
   const isReply = isEditComment || isEditReply ? false : !!commentId;
@@ -77,14 +77,14 @@ export const AddComment = ({
   const [showUser, setShowUser] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [rec, setRec] = useState<boolean>(false);
-  const [mention,setMention]=useState("");
+  const [mention, setMention] = useState("");
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
   const type: string[] = ["Speak", "Attend"];
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
   const [alluser, setAlluser] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef(null);
-  const pdfRef=useRef(null);
+  const pdfRef = useRef(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultContainer = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -126,7 +126,7 @@ export const AddComment = ({
   // const handleKeyDown1 = (e) => {
   //   const { key } = e;
   //   console.log(1);
-    
+
   //   let nextIndexCount = 0;
 
   //   // move down
@@ -138,22 +138,22 @@ export const AddComment = ({
   //     nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
 
   // };
-  const handleKeyDown1: React.KeyboardEventHandler<HTMLDivElement | HTMLTextAreaElement>= (e) => {
+  const handleKeyDown1: React.KeyboardEventHandler<HTMLDivElement | HTMLTextAreaElement> = (e) => {
     const { key } = e;
-    console.log(types+" "+showUser);
+    console.log(types + " " + showUser);
     let nextIndexCount = 0;
     // if(rec===true) setRec(false);
     // if(showUser===true) setShowUser(false);
     // move down
     if (key === "ArrowDown")
       nextIndexCount = (focusedIndex + 1) % alluser.length;
-  
+
     // move up
     if (key === "ArrowUp")
       nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
-    if(key === "Enter" && !e.shiftKey && (showUser||rec)){
+    if (key === "Enter" && !e.shiftKey && (showUser || rec)) {
       e.preventDefault();
-      const newNote=note+ alluser[focusedIndex].substring(1)+" ";
+      const newNote = note + alluser[focusedIndex].substring(1) + " ";
       setNote(newNote);
       setRec(true);
     }
@@ -163,18 +163,18 @@ export const AddComment = ({
       notes(e);
     }
 
-     else if (key === "Enter" && e.shiftKey) {
+    else if (key === "Enter" && e.shiftKey) {
       // Prevent default behavior
       e.preventDefault();
       // Handle shift + Enter to add a new line
       setNote(prev => prev + '\n');
     }
-  
+
     setFocusedIndex(nextIndexCount);
   };
-  
-  
-  
+
+
+
 
   // const handleEmployeeClick = (employee: any) => {
   //   setNote((prevNote) => {
@@ -256,9 +256,9 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
-        " wants to #Attend"
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Attend"
     );
     setShowUser(false);
   };
@@ -266,9 +266,9 @@ export const AddComment = ({
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
-        " wants to #Speak"
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Speak"
     );
     setShowUser(false);
   };
@@ -289,12 +289,12 @@ export const AddComment = ({
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
     //   textareaRef.current.focus();
     // }
-    if(textareaRef?.current)
-    textareaRef.current.focus();
+    if (textareaRef?.current)
+      textareaRef.current.focus();
     setShowUser(true);
   };
   useEffect(() => {
-    if (rec===true) {
+    if (rec === true) {
       setNote(prev => prev + "for #")
       setRec(false);
       setShowUser(false);
@@ -302,7 +302,7 @@ export const AddComment = ({
   }, [rec]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && mention.length===0 ) {
+    if (event.key === 'Enter' && !event.shiftKey && mention.length === 0) {
       event.preventDefault();
       console.log(11111);
       notes(event);
@@ -345,7 +345,7 @@ export const AddComment = ({
       showTypes(false);
     }
   }, [note]);
-  
+
   const [disable, setDisable] = useState(false);
   const handleSelectType = (event: any, ele: string) => {
     console.log(ele);
@@ -360,7 +360,7 @@ export const AddComment = ({
       // notes(event);
     }
   }
-  
+
   useEffect(() => {
     if (type.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
@@ -440,25 +440,25 @@ export const AddComment = ({
   useEffect(() => {
     console.log(selectedPdfs);
   }, [selectedPdfs])
-const pdfSelect=()=>{
-  if (pdfRef.current) {
-    const inputElement = pdfRef.current as HTMLInputElement;
-    inputElement.click();
+  const pdfSelect = () => {
+    if (pdfRef.current) {
+      const inputElement = pdfRef.current as HTMLInputElement;
+      inputElement.click();
+    }
   }
-}
-const imgUpload=()=>{
-  if (fileRef.current) {
-    const inputElement = fileRef.current as HTMLInputElement;
-    inputElement.click();
+  const imgUpload = () => {
+    if (fileRef.current) {
+      const inputElement = fileRef.current as HTMLInputElement;
+      inputElement.click();
+    }
   }
-}
-useEffect(() => {
-  if (!resultContainer.current) return;
+  useEffect(() => {
+    if (!resultContainer.current) return;
 
-  resultContainer.current.scrollIntoView({
-    block: "center",
-  });
-}, [focusedIndex]);
+    resultContainer.current.scrollIntoView({
+      block: "center",
+    });
+  }, [focusedIndex]);
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
@@ -466,26 +466,23 @@ useEffect(() => {
         <div className={styles.recommendBtn}>
           <button
             onClick={handleSelectAttend}
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
           >
             I want to Attend
           </button>
           <button
             onClick={() => handleSelectSpeak()}
             data-action="speak"
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
           >
             I want to Speak
           </button>
           <button
             onClick={handleRecommend}
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
           >
             I want to @Recommend
           </button>
@@ -542,10 +539,10 @@ useEffect(() => {
             <div className={styles.allUser} >
               {alluser.map((ele, ind) => (
                 <div ref={ind === focusedIndex ? resultContainer : null}
-                style={{
-                  backgroundColor:
-                    ind === focusedIndex ? "#2B233D" : "",
-                }} className={styles.option} key={ind} onMouseDown={() => handleSelectRecommendation(ele)} 
+                  style={{
+                    backgroundColor:
+                      ind === focusedIndex ? "#2B233D" : "",
+                  }} className={styles.option} key={ind} onMouseDown={() => handleSelectRecommendation(ele)}
                 >{ele}</div>
               ))}
             </div>
@@ -553,7 +550,7 @@ useEffect(() => {
           {types && (
             <div className={styles.allUser}>
               {type.map((ele, ind) => (
-                <div  key={ind} className={styles.option} onClick={(e) => handleSelectType(e, ele)}>{ele}</div>
+                <div key={ind} className={styles.option} onClick={(e) => handleSelectType(e, ele)}>{ele}</div>
               ))}
             </div>
           )}
@@ -585,43 +582,27 @@ useEffect(() => {
           onChange={pdfUpload}
           style={{ display: "none" }}
         />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Attach}
-          alt="attach"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Link}
-          alt="link"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Emoji}
-          alt="emoji"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          onClick={pdfSelect}
-          src={Drive}
-          alt="drive"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Pic}
-          onClick={imgUpload}
-          alt="image"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Lock}
-          alt="lock"
-        />
-        <Image
-          className={`${styles.attachIcon} ${iconClass}`}
-          src={Pen}
-          alt="pen"
-        />
+        <div className={styles.attachIconContainer} data-name="Attach">
+          <Image className={styles.attachIcon} src={Attach} alt="attach" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Link">
+          <Image className={styles.attachIcon} src={Link} alt="link" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Emoji">
+          <Image className={styles.attachIcon} src={Emoji} alt="emoji" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Upload File">
+          <Image className={styles.attachIcon} onClick={pdfSelect} src={Drive} alt="drive" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Upload Image">
+          <Image className={styles.attachIcon} src={Pic} onClick={imgUpload} alt="image" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Lock">
+          <Image className={styles.attachIcon} src={Lock} alt="lock" />
+        </div>
+        <div className={styles.attachIconContainer} data-name="Write">
+          <Image className={styles.attachIcon} src={Pen} alt="pen" />
+        </div>
       </div>
 
       {modalIsOpen && (
