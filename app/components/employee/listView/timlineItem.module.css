@@ -1,7 +1,9 @@
 .timelineItem{
     color: white;
-    position: absolute;
-    left: 17%;
+    /* position: absolute;
+    left: 17%; */
+    position: relative;
+    right: 40%;
     width: 150px;
     font-size: 18px;
 }
