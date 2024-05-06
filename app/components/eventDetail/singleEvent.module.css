@@ -54,6 +54,9 @@
     pointer-events: none;
     transition: opacity 0.2s ease;
 }
+.shareBtnContainer:hover::before {
+  opacity: 1;
+}
 .datecta {
   display: flex;
   justify-content: space-between;

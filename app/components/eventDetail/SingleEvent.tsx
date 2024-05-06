@@ -5,7 +5,6 @@ import person1 from '@/public/person1.svg'
 import person2 from '@/public/person2.svg'
 import Calendar from '@/public/vector.svg'
 import Location from '@/public/location.svg'
-import Speaker1 from '@/public/speaker1.jpeg'
 import rightArrowIcon from '/public/rightbigarrow.svg';
 import { useTheme } from '@/context';
 import shareIcon from '/public/shareIcon.svg'
