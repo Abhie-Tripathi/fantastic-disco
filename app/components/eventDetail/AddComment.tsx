@@ -2,20 +2,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./addcomment.style.module.css";
 import { Comment as IComment } from "../../../types/comment";
-import { useAuthContext } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { MouseEvent } from "react";
-import Send from '@/public/send.svg';
-import Pdf from '/public/pdf.svg';
-import Close from '/public/close.svg'
-import Attach from '@/public/attach.svg';
-import Link from '@/public/link.svg'
-import Emoji from '@/public/emoji.svg'
-import Pic from '@/public/image.svg'
-import Pen from '@/public/pen.svg'
-import Drive from '@/public/drive.svg'
-import Lock from '@/public/lock.svg'
+import Send from "@/public/send.svg";
+import Pdf from "/public/pdf.svg";
+import Close from "/public/close.svg";
+import Attach from "@/public/attach.svg";
+import Link from "@/public/link.svg";
+import Emoji from "@/public/emoji.svg";
+import Pic from "@/public/image.svg";
+import Pen from "@/public/pen.svg";
+import Drive from "@/public/drive.svg";
+import Lock from "@/public/lock.svg";
 import Image from "next/image";
-import EmployeeData from "@/public/data/employeeData.json"
+import EmployeeData from "@/public/data/employeeData.json";
 import { revalidateComment } from "@/utils/commentAction";
 import { log } from "util";
 interface Props {
@@ -28,10 +28,10 @@ interface Props {
   className?: string;
   repliesLength?: number;
   notes: any;
-  setFilePreviews:any;
-  filePreviews:any;
-  selectedPdfs:any;
-  setSelectedPdfs:any;
+  setFilePreviews: any;
+  filePreviews: any;
+  selectedPdfs: any;
+  setSelectedPdfs: any;
   note?: string | any;
   setNote: React.Dispatch<React.SetStateAction<string>>;
   comments?: IComment[];
@@ -39,11 +39,9 @@ interface Props {
 interface User {
   firstname: string;
   lastname: string;
-
 }
 interface replyOptions {
   commentId: string;
-
 }
 interface UserDetail {
   firstname: string;
@@ -69,6 +67,8 @@ export const AddComment = ({
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
+  const {theme} = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
  
   const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
   const [types, showTypes] = useState<boolean>(false);
@@ -100,18 +100,17 @@ export const AddComment = ({
   //         employee.toLowerCase().includes(searchTerm.toLowerCase())
   //       );
   //       setAlluser(filtered);
-  //     } 
-  //   } 
-  // }, [note, alluser]); 
+  //     }
+  //   }
+  // }, [note, alluser]);
   useEffect(() => {
     const trimmedNote = note?.trim();
     if (trimmedNote?.includes("@")) {
       // setShowUser(true);
       const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
       if (searchTerm) {
-        const filtered = alluser?.filter(user => {
-          return user.toLowerCase().includes(searchTerm.toLowerCase())
-
+        const filtered = alluser?.filter((user) => {
+          return user.toLowerCase().includes(searchTerm.toLowerCase());
         });
         setAlluser(filtered);
       }
@@ -221,45 +220,70 @@ export const AddComment = ({
   // useEffect(() => {
 
   useEffect(() => {
-
-    if (note?.charAt(note.length - 1) === '@') {
+    if (note?.charAt(note.length - 1) === "@") {
       console.log(comments);
       setShowUser(true);
-      let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
+      let arr = Array.from(
+        new Set(
+          comments?.map(
+            (comment) =>
+              "@" +
+              comment?.user?.firstname +
+              comment?.user?.lastname.toLowerCase()
+          )
+        )
+      );
       console.log(arr);
 
       setAlluser(arr);
     }
     // else setShowUser(false);
-  }, [note])
+  }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
-
-  }
+  };
   // },[note])
   const handleSelectRecommendation = (name: String) => {
     if (!note.includes(name)) {
-      setNote(prevNote => prevNote.replace(/@\w*$/, `${name} `));
+      setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
       showTypes(false);
       setShowUser(false);
       // setMention("");
       setRec(true);
     }
     // console.log(1);
-
   };
   const handleSelectAttend = () => {
-    setNote("@" + userDetail?.firstname + userDetail?.lastname.toLowerCase() + " wants to #Attend");
+    setNote(
+      "@" +
+        userDetail?.firstname +
+        userDetail?.lastname.toLowerCase() +
+        " wants to #Attend"
+    );
     setShowUser(false);
-  }
+  };
   const handleSelectSpeak = () => {
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
-    setNote("@" + userDetail?.firstname + userDetail?.lastname.toLowerCase() + " wants to #Speak");
+    setNote(
+      "@" +
+        userDetail?.firstname +
+        userDetail?.lastname.toLowerCase() +
+        " wants to #Speak"
+    );
     setShowUser(false);
-  }
+  };
   const handleRecommend = (event: any) => {
     event.preventDefault();
-    let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
+    let arr = Array.from(
+      new Set(
+        comments?.map(
+          (comment) =>
+            "@" +
+            comment?.user?.firstname +
+            comment?.user?.lastname.toLowerCase()
+        )
+      )
+    );
     setAlluser(arr);
     setNote(note.substring(0, note.lastIndexOf('/')) + `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()} wants to recommend @`);
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
@@ -268,44 +292,43 @@ export const AddComment = ({
     if(textareaRef?.current)
     textareaRef.current.focus();
     setShowUser(true);
-  }
+  };
   useEffect(() => {
     if (rec===true) {
       setNote(prev => prev + "for #")
       setRec(false);
       setShowUser(false);
     }
-  }, [rec])
+  }, [rec]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey && mention.length===0 ) {
       event.preventDefault();
       console.log(11111);
       notes(event);
-    } else if (event.key === 'Enter' && event.shiftKey) {
+    } else if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
-      setNote(prev => prev + '\n');
+      setNote((prev) => prev + "\n");
     }
-  }
+  };
   const [recommendCalled, setRecommendCalled] = useState(false);
-  if (note?.includes('/recommend') && !recommendCalled) {
+  if (note?.includes("/recommend") && !recommendCalled) {
     setRecommendCalled(true);
     handleRecommend(event);
-
   }
   const formRef1 = useRef(null);
 
   useEffect(() => {
-    if (note?.includes('#speak')) {
+    if (note?.includes("#speak")) {
       handleSelectSpeak();
     }
-    if (note?.includes('#attend')) {
+    if (note?.includes("#attend")) {
       handleSelectAttend();
     }
-    if (note?.includes('/recommend')) {
+    if (note?.includes("/recommend")) {
       handleRecommend(event);
     }
-    if (note?.charAt(note.length - 1) === '@') {
+    if (note?.charAt(note.length - 1) === "@") {
       handleRecommend(event);
     }
     if (note === "") {
@@ -316,7 +339,7 @@ export const AddComment = ({
   useEffect(() => {
     const patternString = "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
     const pattern = new RegExp(patternString);
-    if (pattern.test(note) && note?.charAt(note.length - 1) === '#') {
+    if (pattern.test(note) && note?.charAt(note.length - 1) === "#") {
       showTypes(true);
     } else {
       showTypes(false);
@@ -339,7 +362,7 @@ export const AddComment = ({
   }
   
   useEffect(() => {
-    if (type.some(type => note?.includes(type)) && textareaRef.current) {
+    if (type.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
     }
     if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
@@ -351,21 +374,22 @@ export const AddComment = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const handleFileChange = (event:any) => {
+  // const handleFileChange = (event: any) => {
+  const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
     setFilePreviews((prevSelectedFiles: File[] | null) => {
-      if (prevSelectedFiles === null || typeof prevSelectedFiles === 'undefined') {
+      if (
+        prevSelectedFiles === null ||
+        typeof prevSelectedFiles === "undefined"
+      ) {
         return [event.target.files[0]];
       } else {
         return [...prevSelectedFiles, event.target.files[0]];
       }
     });
-
   };
 
   const handleUpload = () => {
-
-
     // setUploading(true);
     setTimeout(() => {
       setUploading(true);
@@ -391,22 +415,24 @@ export const AddComment = ({
   // }, [selectedFile])
   const setModal = () => {
     setModalIsOpen(true);
-  }
+  };
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
     console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setSelectedPdfs([...selectedPdfs, selectedFile]);
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      setSelectedPdfs([...selectedPdfs, selectedFile.name]);
     } else {
       // Handle case when file is not a PDF
-      console.log('Please select a PDF file.');
+      console.log("Please select a PDF file.");
     }
   };
   const removeImg = (id: number) => {
-    const filteredImg = filePreviews.filter((item: any, ind: number) => ind !== id);
+    const filteredImg = filePreviews.filter(
+      (item: any, ind: number) => ind !== id
+    );
     console.log(filteredImg);
 
     setFilePreviews(filteredImg);
@@ -438,29 +464,59 @@ useEffect(() => {
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
         <div className={styles.recommendBtn}>
-          <button onClick={handleSelectAttend} className={styles.btn1}>I want to Attend</button>
-          <button onClick={() => handleSelectSpeak()} data-action="speak" className={styles.btn1}>I want to Speak</button>
-          <button onClick={handleRecommend} className={styles.btn1}>I want to @Recommend</button>
+          <button
+            onClick={handleSelectAttend}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
+          >
+            I want to Attend
+          </button>
+          <button
+            onClick={() => handleSelectSpeak()}
+            data-action="speak"
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
+          >
+            I want to Speak
+          </button>
+          <button
+            onClick={handleRecommend}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
+          >
+            I want to @Recommend
+          </button>
         </div>
-        <div style={{display:"flex",gap:"10px"}}>
-        {selectedPdfs?.map((item:any, ind:number) => (
-          
-          <div key={ind} className={styles.pdf}>
-           
-          <Image src={Pdf} width={50} height={50} alt="pdf"/>
-          <p key={ind} style={{display:"flex"}}>{item.name}</p>
-          </div>
-        ))}
+        <div style={{ display: "flex", gap: "10px" }}>
+          {selectedPdfs?.map((item: string, ind: number) => (
+            <div key={ind} className={styles.pdf}>
+              <Image src={Pdf} width={50} height={50} alt="pdf" />
+              <p key={ind} style={{ display: "flex" }}>
+                {item}
+              </p>
+            </div>
+          ))}
         </div>
         {filePreviews && (
           <>
             <div className={styles.filePreview}>
-
-              {filePreviews.map((filePreview:any, index:number) => (
-
+              {filePreviews.map((filePreview: any, index: number) => (
                 <div className={styles.fileDiv} key={index}>
-                  <Image src={URL.createObjectURL(filePreview)} width={80} height={80} alt="File Preview" />
-                  <Image className={styles.close} src={Close} onClick={() => removeImg(index)} alt="close" />
+                  <Image
+                    src={URL.createObjectURL(filePreview)}
+                    width={80}
+                    height={80}
+                    alt="File Preview"
+                  />
+                  <Image
+                    className={styles.close}
+                    src={Close}
+                    onClick={() => removeImg(index)}
+                    alt="close"
+                  />
                 </div>
               ))}
             </div>
@@ -502,25 +558,73 @@ useEffect(() => {
             </div>
           )}
           <button className={styles.commentBtn}>
-            {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
+            {isReply ? (isEditComment ? "Edit Comment" : "Reply") : "Comment"}
           </button>
         </div>
       </form>
 
       <div className={styles.attachmentIcon}>
-        <button ref={fileRef} onClick={() => setModal()} style={{ display: "none" }}>Upload File</button>
-        <input type="file" onChange={handleFileChange} ref={fileRef} style={{ display: "none" }} />
-        <input ref={pdfRef} type="file" name="file" id="file" onChange={pdfUpload} style={{display:"none"}} />
-        <Image className={styles.attachIcon} src={Attach} alt="attach" />
-        <Image className={styles.attachIcon} src={Link} alt="link" />
-        <Image className={styles.attachIcon} src={Emoji} alt="emoji" />
-        <Image className={styles.attachIcon} onClick={pdfSelect} src={Drive} alt="drive" />
-        <Image className={styles.attachIcon} src={Pic} onClick={imgUpload}  alt="image" />
-        <Image className={styles.attachIcon} src={Lock} alt="lock" />
-        <Image className={styles.attachIcon} src={Pen} alt="pen" />
+        <button
+          ref={fileRef}
+          onClick={() => setModal()}
+          style={{ display: "none" }}
+        >
+          Upload File
+        </button>
+        <input
+          type="file"
+          onChange={handleFileChange}
+          ref={fileRef}
+          style={{ display: "none" }}
+        />
+        <input
+          ref={pdfRef}
+          type="file"
+          name="file"
+          id="file"
+          onChange={pdfUpload}
+          style={{ display: "none" }}
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Attach}
+          alt="attach"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Link}
+          alt="link"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Emoji}
+          alt="emoji"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          onClick={pdfSelect}
+          src={Drive}
+          alt="drive"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Pic}
+          onClick={imgUpload}
+          alt="image"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Lock}
+          alt="lock"
+        />
+        <Image
+          className={`${styles.attachIcon} ${iconClass}`}
+          src={Pen}
+          alt="pen"
+        />
       </div>
 
-      {modalIsOpen &&
+      {modalIsOpen && (
         <div className={styles.overlay}>
           <div className={styles.content} onClick={(e) => e.stopPropagation()}>
             <h2>Upload File</h2>
@@ -538,9 +642,7 @@ useEffect(() => {
             {uploading && <p>Uploading...</p>}
           </div>
         </div>
-
-      }
+      )}
     </div>
-
   );
 };

@@ -13,6 +13,7 @@ import DescriptionModal from './DescriptionModal';
 import SearchIcon from '/public/search.svg'
 import EmployeeData from '../../public/data/employeeData.json'
 import Image from 'next/image';
+import { useTheme } from '@/context';
 
 interface ImageState {
     placeHolder: any;
@@ -41,6 +42,8 @@ const AddEventModal = () => {
     const [matchingEmployees, setMatchingEmployees] = useState<any[]>([]);
     const [isEmployeeDropdownOpen, setIsEmployeeDropdownOpen] = useState<boolean>(false);
     const [addedEmployees, setAddedEmployees] = useState<any[]>([]);
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
 
     // Will filter the events according to the search event input
@@ -158,7 +161,7 @@ const AddEventModal = () => {
                 <div className={styles.formFieldsContainer}>
                     <div className={styles.search}>
                         <div className={styles.searchContainer}>
-                            <Image src={SearchIcon} alt='search' />
+                            <Image src={SearchIcon} alt='search' className={iconClass} />
                             <input
                                 type='text'
                                 placeholder='Enter Event Url or Search for an Event'
@@ -180,17 +183,17 @@ const AddEventModal = () => {
                     </div>
                     <div className={styles.dateContainer}>
                         <div className={styles.dateIconContainer}>
-                            <Image src={DateIcon} alt='SearchIcon' />
+                            <Image src={DateIcon} alt='SearchIcon' className={iconClass} />
                             <span className={styles.heading}>Dates</span>
                         </div>
                         <div className={styles.input}><RangePicker startDate={startDate} endDate={endDate} disabled={isFormDisabled} /></div>
                     </div>
                     <div className={styles.locationContainer}>
-                        <Image src={LocationIcon} alt='LocationIcon' />
+                        <Image src={LocationIcon} alt='LocationIcon' className={iconClass}/>
                         <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required placeholder='Location' disabled={isFormDisabled} />
                     </div>
                     <div className={styles.descContainer} onClick={handleModal}>
-                        <Image src={DescIcon} alt='DescIcon' />
+                        <Image src={DescIcon} alt='DescIcon' className={iconClass}/>
                         <div className={styles.headingContainer}>
                             <div className={styles.descHeading} >Description</div>
                             {description.length > 0 && <input className={styles.descPara} disabled={true} value={description} />}
@@ -198,7 +201,7 @@ const AddEventModal = () => {
                     </div>
                     <div className={styles.employeeContainer}>
                         <div className={styles.employeeIconContainer}>
-                            <Image src={PeopleIcon} alt='SearchIcon' />
+                            <Image src={PeopleIcon} alt='SearchIcon' className={iconClass}/>
                             <input type="text" value={employeeMail} onChange={(e) => setEmployeeMail(e.target.value)} required placeholder='Add Employee mail' disabled={isFormDisabled} />
                         </div>
                         {isEmployeeDropdownOpen && (

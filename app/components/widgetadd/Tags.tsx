@@ -11,6 +11,7 @@ const Tags = () => {
   const [tagsList, setTagsList] = useState<string[]>([]);
   const [inputTag, setInputTag] = useState<string>("");
   const { theme } = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
   const handleTagsSubmit = () => {
     setTagsList([...tagsList, inputTag]);
@@ -25,7 +26,7 @@ const Tags = () => {
     <div className={styles.tagsContainer}>
       <div className={styles.tag_title}>
         <div>Tags</div>
-        <Image src={TagIcon} alt="tagIcon" />
+        <Image src={TagIcon} alt="tagIcon" className={iconClass} />
       </div>
       <div className={styles.innerContainer}>
         <div
@@ -43,7 +44,7 @@ const Tags = () => {
             onClick={handleTagsSubmit}
             className={styles.addBtn}
           >
-            <Image src={AddIcon} alt="add" />
+            <Image src={AddIcon} alt="add" className={iconClass} />
           </button>
         </div>
         <div className={styles.tagsList}>

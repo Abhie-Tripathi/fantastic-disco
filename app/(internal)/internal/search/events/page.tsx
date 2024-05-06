@@ -72,6 +72,7 @@ const Search = () => {
   const [selectedEventAttendanceRange, setSelectedEventAttendanceRange] =
     useState<string[]>([]);
 
+
   const handleDropdownClick = (dropdownName: string) => {
     setOpenDropdown((prevDropdown) =>
       prevDropdown === dropdownName ? null : dropdownName

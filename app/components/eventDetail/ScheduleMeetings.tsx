@@ -8,6 +8,7 @@ import profile from "@/public/data/profile.json"
 import Image from 'next/image';
 import Close from '/public/close.svg';
 import rightArrowIcon from '/public/rightbigarrow.svg';
+import { useTheme } from '@/context';
 interface Props {
   meets: () => void;
   meet: boolean;
@@ -15,6 +16,8 @@ interface Props {
 const ScheduleMeetings: React.FC<Props> = (props) => {
 
   // const [meet,setMeet]=useState(false);
+  const {theme} = useTheme();
+  const iconClass = theme === 'light' ? styles.icons_light : styles.icons;
   const [start, setStart] = useState<number>();
   const [nickName, setNickName] = useState();
   const [selectedDate, setSelectedDay] = useState<string>(new Date().getDate().toString());
@@ -109,7 +112,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
         <div className={styles.eventDetails} onClick={meets}>
           <div className={styles.detailContainer}>
             <div>Meet</div>
-            <Image src={rightArrowIcon} alt="rightArrowIcon" width={30} height={20} />
+            <Image src={rightArrowIcon} alt="rightArrowIcon" width={30} height={20} className={iconClass} />
           </div>
         </div>
       </div>
@@ -132,7 +135,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
           <div style={{ fontSize: "10px" }} className={styles.number}>224 people have shown interest to participate in the event</div>
         </div>
         <div className={styles.innerContainer2}>
-          <Image src={Search} alt="Search" />
+          <Image src={Search} alt="Search" className={iconClass} />
           <div>
             <input type='text' className={styles.search} placeholder='Search @name / department' />
           </div>

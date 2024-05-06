@@ -7,6 +7,7 @@ import HelpIcon from "/public/help.svg";
 import MinusIcon from "/public/minus.svg";
 import DownloadIcon from "/public/download.svg";
 import GreenCheck from "/public/greenCheck.svg";
+import { useTheme } from "@/context";
 
 interface exportModalProps {
   onClose: () => void;
@@ -15,6 +16,8 @@ interface exportModalProps {
 const ExportModal = ({ onClose }: exportModalProps) => {
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
+  const {theme} = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
   return (
     <div className={styles.container}>
@@ -75,7 +78,7 @@ const ExportModal = ({ onClose }: exportModalProps) => {
             </div>
 
             <div className={styles.refresh_button}>
-              <Image src={Refresh} alt="refresh" width={24} height={24} />
+              <Image src={Refresh} alt="refresh" width={24} height={24} className={iconClass} />
               <div>refresh</div>
             </div>
 
@@ -89,7 +92,7 @@ const ExportModal = ({ onClose }: exportModalProps) => {
 
           <div className={styles.exportedfiles_container}>
             <div className={styles.alertpanel}>
-              <Image src={HelpIcon} alt="helpicon" width={28} height={28} />
+              <Image src={HelpIcon} alt="helpicon" width={28} height={28}  />
               <div className={styles.alerttext}>
                 <div>
                   Large exports may take some time. Exports will run in the
@@ -117,7 +120,7 @@ const ExportModal = ({ onClose }: exportModalProps) => {
               <div className={styles.exportedfile_controls}>
                 <div className={styles.exportedfile_status}>processing</div>
                 <span className={styles.exportedfile_minusicon}>
-                  <Image src={MinusIcon} alt="minusicon" />
+                  <Image src={MinusIcon} alt="minusicon"  />
                 </span>
               </div>
             </div>

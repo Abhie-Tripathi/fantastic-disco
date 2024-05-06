@@ -6,6 +6,9 @@ import { useState } from "react";
 import eventData from "../../../../public/data/demoEvent.json";
 import MapPointer from "/public/Marker.svg";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import { formatDateRange } from "@/utils/dateFormat";
+import FilterIcon from "/public/filterIcon.svg";
+import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
 interface Event {
   id: number;
@@ -16,44 +19,44 @@ interface Event {
 }
 // const ReactMapGL = React.lazy(() => import('react-map-gl'));
 
-// const EventListCard = (event: any) => {
-//   return (
-//     <div className={styles.eventListCard}>
-//       <div className={styles.eventListCard_title}>{event.event.title}</div>
-//       <div className={styles.eventListCard_location}>
-//         {event?.event.venue?.country}
-//       </div>
-//       <div className={styles.eventListCard_date}>
-//         {formatDateRange(
-//           event.event.startingDateTime,
-//           event.event.endingDateTime
-//         )}
-//       </div>
-//       <div className={styles.eventListCard_footer}>
-//         <div className={styles.eventListCard_footer_info}>
-//           <div className={styles.eventListCard_category}>
-//             <Image src={FestivalIcon} alt="festival" />
-//             <span>{event?.event.category?.name}</span>
-//           </div>
-//           <span>|</span>
-//           <div className={styles.eventListCard_label}>Parade</div>
-//         </div>
-//         <Link href={`/search/${event.event.id}`} target="_blank">
-//           View Details
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// };
-const Map: React.FC = () => {
-  const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
-  const [showList, setShowList] = useState<boolean>(false);
+const EventListCard = (event: any) => {
+  return (
+    <div className={styles.eventListCard}>
+      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_location}>
+        {event?.event?.location}
+      </div>
+      <div className={styles.eventListCard_date}>
+        {formatDateRange(event?.event?.startDate, event?.event?.endDate)}
+      </div>
+      <div className={styles.eventListCard_footer}>
+        <div className={styles.eventListCard_footer_info}>
+          <div className={styles.eventListCard_category}>
+            <Image src={FestivalIcon} alt="festival" />
+            {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
+          </div>
+          <span style={{ color: "grey" }}>|</span>
+          <div className={styles.eventListCard_label}>Parade</div>
+        </div>
+        <Link href={`/search/${event.id}`} target="_blank">
+          View Details
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const Map: React.FC = ({}) => {
   const { theme } = useTheme();
+  const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
+  const [showList, setShowList] = useState(false);
+  const [fullView, setFullView] = useState(true);
+
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
     longitude: -0.076132,
-    width: "100%",
-    height: "500px",
+    width: fullView ? "calc(100vw - 85px)" : "",
+    height: fullView ? "80vh" : "350px",
     zoom: 2,
   });
   return (
@@ -125,7 +128,8 @@ const Map: React.FC = () => {
           </div>
         ))}
       </ReactMapGL>
-      {/* {fullView && (
+
+      {fullView && (
         <div className={styles.eventList_container}>
           <button
             onClick={() => setShowList(!showList)}
@@ -144,13 +148,13 @@ const Map: React.FC = () => {
             </div>
 
             <div className={styles.eventList_list}>
-              {eventData?.events.map((event) => (
-                <EventListCard event={event} />
+              {eventData?.map((event, key) => (
+                <EventListCard key={key} event={event} />
               ))}
             </div>
           </div>
         </div>
-      )} */}
+      )}
       {/* </Suspense> */}
     </div>
   );

@@ -36,6 +36,10 @@
   flex-direction: column;
 }
 
+.comment_name_light{
+  color: var(--primary-color-light);
+}
+
 .options {
   position: relative;
   padding: 0 0.5rem;

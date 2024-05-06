@@ -76,3 +76,7 @@
     border-image-slice: 1;
     border-image-width: 1;
 }
+
+.icons_light{
+    filter: invert(1);
+}

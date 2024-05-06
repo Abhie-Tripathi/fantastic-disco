@@ -454,3 +454,7 @@
   .closeIcon {
     cursor: pointer;
   }
+
+  .icons_light{
+    filter: invert(1);
+  }
