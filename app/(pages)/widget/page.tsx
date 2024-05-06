@@ -13,6 +13,7 @@ const Widget = () => {
 
   const [widgets, setWidgets] = useState<any>();
   const {theme} = useTheme()
+  const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
 
   
   useEffect(() => {
@@ -39,7 +40,7 @@ const Widget = () => {
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
-            <div><Image src={Add} alt="add" /></div>
+            <div><Image src={Add} alt="add" className={iconClass} /></div>
             <div>Add Widget</div>
           </Link>
         </div>

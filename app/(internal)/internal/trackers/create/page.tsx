@@ -37,7 +37,7 @@ const Chip = ({ state, setState, value }: ChipProps) => {
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
-        <Image src={ActiveChipCircle} alt="chipcircle" />
+        <Image src={ActiveChipCircle} alt="chipcircle"  />
       ) : (
         <Image src={ChipCircle} alt="chipcircle" />
       )}
@@ -77,6 +77,7 @@ const CreateTracker = () => {
   const dateRangeDropdownRef = useRef(null);
   const attendanceDropdownRef = useRef(null);
   const {theme} = useTheme()
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -120,7 +121,7 @@ const CreateTracker = () => {
             placeholder="Tracker Name"
           />
           <div className={styles.trackers_header_more_button}>
-            <Image src={MoreIcon} alt="moreicon" />
+            <Image src={MoreIcon} alt="moreicon" className={iconClass} />
           </div>
           <button
             onClick={saveTrackerHandler}
@@ -150,7 +151,7 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <Image src={DropdownArrow} alt="dropdownarrow" />
+              <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
             </div>
             {openDropdown == "Category" && (
               <CategoryDropdown
@@ -196,7 +197,7 @@ const CreateTracker = () => {
               </div>
               <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" />
+                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
               </div>
             </div>
             {openDropdown == "Labels" && (
@@ -229,7 +230,7 @@ const CreateTracker = () => {
               </div>
               <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" />
+                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
               </div>
             </div>
             {openDropdown == "Date Range" && (
@@ -258,7 +259,7 @@ const CreateTracker = () => {
               )}
                <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" />
+                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
               </div>
             </div>
             {openDropdown == "Attendance" && (

@@ -33,6 +33,7 @@ function convertToCustomFormat(dateStr:string) {
 
 const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {
   const {theme} = useTheme();
+  const iconClass = theme === 'light' ? styles.icons_light : styles.icons
   return (
     <DateRangePicker
       aria-label="Date Range"
@@ -44,11 +45,11 @@ const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {
       <RangeCalendar className={`${styles.ariaRangeCalendar} ${theme === 'light' ? styles.ariaRangeCalendar_light : ""}`}>
         <header>
           <Button slot="previous" className={styles.ariaCalBtn}>
-            <Image src={LeftArrow} alt="prev" width={24} />
+            <Image src={LeftArrow} alt="prev" width={24} className={iconClass} />
           </Button>
           <Heading className={styles.ariaHeading} />
           <Button slot="next" className={styles.ariaCalBtn}>
-            <Image src={RightArrow} alt="next" width={24} />
+            <Image src={RightArrow} alt="next" width={24} className={iconClass}  />
           </Button>
         </header>
         <CalendarGrid>
