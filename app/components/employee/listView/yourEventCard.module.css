@@ -8,18 +8,27 @@
   /* justify-content: space-between; */
   margin-bottom: 25px;
   margin-top: 40px;
+  padding: 25px;
+}
+
+.cardImg_container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 10px; */
 }
 
 .cardImg {
-  width: 40%;
+  /* width: 40%; */
+  border-radius: 12px;
 }
 
 .cardDetails {
-  width: 60%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding-left: 20px;
   color: white;
 }
 
@@ -155,10 +164,6 @@
 
 .eventDetails .detailContainer div {
   font-size: 12px;
-}
-
-.cardImg {
-  border-radius: 12px 0px 0px 12px;
 }
 
 .circles {

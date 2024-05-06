@@ -1,5 +1,7 @@
 .container {
     padding: 30px 90px;
+    background-color: #131313;
+    color: #ffffff;
   }
 
   .container_light{

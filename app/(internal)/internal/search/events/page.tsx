@@ -776,7 +776,7 @@ const Search = () => {
       </div>
 
       {selectedView === "map" && (
-        <div style={{ padding: "32px" }}>
+        <div className={`${styles.map_container} ${theme === 'light' && styles.map_container_light}`}>
           <Suspense fallback={<Loading />}>
 
             <Map />

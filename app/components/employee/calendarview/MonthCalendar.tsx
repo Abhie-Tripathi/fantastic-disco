@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./monthCalendar.module.css";
 import { log } from "console";
 import EventCard from "@/app/components/EventCard";
+import { useTheme } from "@/context";
 
 interface Event {
   id: number;
@@ -202,6 +203,7 @@ const findDays = (startDate: any, endDate: any, name:string) => {
 };
 
 const MonthCalendar: React.FC = () => {
+  const {theme} = useTheme();
   return (
     <div className={styles.container}>
       <div className={styles.dayCards_container}>
@@ -288,7 +290,7 @@ const MonthCalendar: React.FC = () => {
                 }
               );
               return (
-                <div className={styles.monthCard} key={index}>
+                <div className={`${styles.monthCard} ${theme === 'light' && styles.monthCard_light}`} key={index}>
                   <div className={styles.monthCard_dayno}>
                     {dateWithEvent.date.getDate()}
                   </div>

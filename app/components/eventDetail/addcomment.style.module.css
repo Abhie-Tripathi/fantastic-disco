@@ -23,7 +23,6 @@
   transform: scale(1.1);
 }
 
-
 .container h2 {
   color: #21293c;
 }
@@ -66,17 +65,17 @@
   position: relative;
   gap: 20px;
   border-radius: 30px;
-  box-shadow: 0 0 0 0.9px inset #ACACAC, 0 0 0 0.47px inset #666666;
+  box-shadow: 0 0 0 0.9px inset #acacac, 0 0 0 0.47px inset #666666;
   outline: 0.9px solid transparent;
   padding: 10px;
   width: 100%;
 }
-.allUser{
+.allUser {
   position: absolute;
   display: flex;
-  gap:10px;
+  gap: 10px;
   flex-direction: column;
-  bottom:100%;
+  bottom: 100%;
   /* padding: 10px; */
   background-color: #1a1a1a;
 }
@@ -112,14 +111,14 @@
   display: flex;
   gap: 2px;
 }
-.attachIconContainer{
+.attachIconContainer {
   position: relative;
   cursor: pointer;
   height: 25px;
   width: 25px;
   padding: 1px;
 }
-.attachIconContainer:hover{
+.attachIconContainer:hover {
   background-color: rgb(15, 15, 15);
   border-radius: 10px;
 }
@@ -143,27 +142,26 @@
   opacity: 1;
 }
 
-
-.recommendBtn{
+.recommendBtn {
   display: flex;
-  gap:10px;
+  gap: 10px;
 }
-.recommendBtn button{
+.recommendBtn button {
   padding: 5px 10px;
   cursor: pointer;
 }
-.form{
+.form {
   gap: 10px;
   /* width: 100%; */
   flex-direction: column;
   display: flex;
 }
-.form button{
+.form button {
   border: none;
   outline: none;
   background-color: transparent;
 }
-.textArea{
+.textArea {
   display: flex;
   height: 20px;
   width: 80%;
@@ -175,16 +173,16 @@
   padding-left: 5px;
   color: white;
 }
-.textArea_light{
+.textArea_light {
   color: black;
 }
-.option{
+.option {
   padding: 10px 5px;
 }
-.option:hover{
+.option:hover {
   background-color: #303030;
 }
-.overlay{
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -198,27 +196,27 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
-  color:red;
+  color: red;
   padding: 20px;
   border-radius: 4px;
   max-width: 400px;
   width: 100%;
   max-height: 80vh;
-  overflow-Y: auto;
+  overflow-y: auto;
 }
-.filePreview{
+.filePreview {
   display: flex;
-  gap:10px
+  gap: 10px;
 }
-.fileDiv{
+.fileDiv {
   position: relative;
 }
-.close{
+.close {
   position: absolute;
-    right: 0;
-    cursor: pointer;
+  right: 0;
+  cursor: pointer;
 }
-.pdf{
+.pdf {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -226,25 +224,25 @@
   border-radius: 10px;
   border: 1px solid white;
 }
-.btn1{
+.btn1 {
   padding: 12px;
   cursor: pointer;
   font-size: 14px;
   width: 200px;
   text-align: center;
   border-radius: 30px;
-  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  box-shadow: 0 0 0 0.97px inset #6750a4, 0 0 0 0.47px inset #666666;
   outline: 0.97px solid transparent;
+  color: #ffffff;
 }
-.btn1:hover{
-  background-color: #2B233D;
+.btn1:hover {
+  background-color: #2b233d;
 }
 
-.btn1_light{
+.btn1_light {
   color: black;
 }
 
-.btn1_light:hover{
+.btn1_light:hover {
   background-color: var(--secondary-bg-light);
 }
-

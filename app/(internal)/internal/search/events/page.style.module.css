@@ -1,6 +1,7 @@
 .container {
   padding: 20px;
-  color: black;
+  background-color: #131313;
+  color: #ffffff;
 }
 
 .container_light {
@@ -12,6 +13,7 @@
   position: relative;
   background-color: #313131;
   border-radius: 30px;
+  color: #131313;
 }
 
 .inputfields_container_light {
@@ -509,4 +511,15 @@ input:checked+.slider:before {
   margin-top: 15px;
   margin-bottom: 15px;
   text-decoration: none;
+}
+
+.map_container{
+  padding: 32px;
+  background-color: #131313;
+  color: #ffffff;
+}
+
+.map_container_light{
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
 }
