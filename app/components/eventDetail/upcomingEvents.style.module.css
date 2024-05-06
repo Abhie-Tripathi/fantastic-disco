@@ -150,3 +150,7 @@
   opacity: 1;
   
 }
+
+.icons_light{
+  filter: invert(1);
+}

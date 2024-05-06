@@ -1,17 +1,12 @@
-.bodyContainer{
-  height: 86vh;
+.bodyContainer {
+  height: calc(100vh - 80px);
+  background-color: #131313;
 }
-.bodyContainer_light{
+.bodyContainer_light {
   background-color: var(--primary-bg-light);
 }
 
-.bodyContainer_openModal{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.taskBody{
+.taskBody {
   padding-top: 40px;
   padding-bottom: 20px;
   padding-left: 10px;
@@ -20,15 +15,14 @@
   display: flex;
   justify-content: space-evenly;
   position: relative;
-  height: 80vh;
-  
 }
 
-.outerCard{
+.outerCard {
   width: 32%;
+  color: #ffffff;
 }
 
-.heading{
+.heading {
   font-size: 20px;
   text-align: center;
   display: flex;
@@ -38,21 +32,20 @@
   padding: 12px 24px;
   border-radius: 100px;
   border: 1px solid #6666667c;
-  background-color: #2B233D;
+  background-color: #2b233d;
 }
 
-
-.eventSize{
-  background-color: #6750A4;
+.eventSize {
+  background-color: #6750a4;
   font-size: 12px;
   border-radius: 5px;
   padding: 5px;
 }
-.cardsContainer{
+.cardsContainer {
   padding-top: 24px;
   padding-bottom: 24px;
-  height: 88%;
-  background-color: #1D1D1D;
+  height: calc(100vh - 220px);
+  background-color: #1d1d1d;
   border-radius: 10px;
   margin-top: 24px;
   display: flex;
@@ -71,25 +64,27 @@
   border-radius: 12px;
 }
 
-.cardsContainer_light{
+.cardsContainer_light {
   background-color: var(--secondary-bg-light);
   color: var(--primary-color-light);
 }
 
-.cards{
+.cards {
   width: 90%;
 }
 
-.modal{
-  background-color: #1A1A1A;
+
+
+
+.modal {
+  height: fit-content;
+  background-color: #131313;
   position: absolute;
-  top: 90px;
+  top: 75px;
   padding: 20px;
   padding-top: 90px;
-  width: 90%;
   z-index: 1;
-  height: 84vh;
-  overflow-y: scroll;
+  color: #ffffff;
 }
 
 .modal::-webkit-scrollbar {
@@ -102,7 +97,7 @@
   border-radius: 12px;
 }
 
-.modal2{
+.modal2 {
   z-index: 1;
   position: absolute;
   margin: auto;
@@ -115,19 +110,18 @@
   top: 0;
 }
 
-.modal_light{
+.modal_light {
   color: var(--primary-color-light);
-  background-color: var(--secondary-bg-light);
+  background-color: var(--primary-bg-light);
 }
 
-.card_shortlisted:hover{
-  .addEvent_btn{
+.card_shortlisted:hover {
+  .addEvent_btn {
     opacity: 1;
-
   }
 }
 
-.addEvent_btn{
+.addEvent_btn {
   width: 90%;
   padding: 10px;
   text-align: center;
@@ -135,17 +129,17 @@
   cursor: pointer;
   opacity: 0;
   font-weight: 600;
-  transition: opacity 0.4s ease;;
+  transition: opacity 0.4s ease;
 }
 
-.addEvent_btn:hover{
+.addEvent_btn:hover {
   background-color: #2d2c2c;
 }
 
-.addEvent_btn_light{
+.addEvent_btn_light {
   color: black;
 }
 
-.addEvent_btn_light:hover{
- background-color: rgb(211, 211, 211);
+.addEvent_btn_light:hover {
+  background-color: rgb(211, 211, 211);
 }

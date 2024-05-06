@@ -7,7 +7,7 @@ import styles from "./page.style.module.css";
 import { myFetch } from "@/utils/myFetch";
 import DropIcon1 from "/public/internal/dropdown_arrow.svg";
 import upArrowIcon from "/public/internal/up_arrow.svg";
-import Add from '/public/plus.svg';
+import Add from "/public/plus.svg";
 import tickIcon from "/public/internal/tick.svg";
 import { EventDataType } from "@/app/components/types/allevents";
 // import Table from "@/app/components/Table";
@@ -17,7 +17,7 @@ import SearchIcon from "/public/internal/SearchInput.svg";
 import DropIcon from "/public/internal/arrow_drop_down.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
 import { insightsScore } from "@/public/data/researchData";
-import EventFee from '@/app/components/dropdown/EventFee'
+import EventFee from "@/app/components/dropdown/EventFee";
 import EventFormat from "@/app/components/dropdown/EventFormat";
 import EventRatings from "@/app/components/dropdown/EventRatings";
 import EventSize from "@/app/components/dropdown/EventSize";
@@ -36,7 +36,9 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import List from "@/app/components/List";
 import Loading from "@/app/components/UI/Loading";
 // import { searchEvents } from "@/services/eventsService";
-const Calendar = lazy(() => import("@/app/components/employee/calendarcontainer/CalendarContainer"));
+const Calendar = lazy(
+  () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
+);
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
 const Table = lazy(() => import("@/app/components/Table"));
 interface InsightsType {
@@ -167,9 +169,17 @@ const Search = () => {
   //   }, [searchParams]);
 
   return (
+    <div
+      className={`${styles.container} ${
+        theme === "light" ? styles.container_light : ""
+      }`}
+    >
       <div>
-      <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`} >
-        <div className={`${styles.inputfields_container} ${theme === 'light' ? styles.inputfields_container_light : ""}`}>
+        <div
+          className={`${styles.inputfields_container} ${
+            theme === "light" ? styles.inputfields_container_light : ""
+          }`}
+        >
           <div className={styles.searchbar}>
             <input
               type="text"
@@ -183,7 +193,7 @@ const Search = () => {
             >
               Recent searches
             </div>
-            <button >
+            <button>
               <Image src={SearchIcon} alt="search" />
             </button>
           </div>
@@ -206,7 +216,12 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={openDropdown == "Category" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
+                  <Image
+                    src={openDropdown == "Category" ? upArrowIcon : DropIcon1}
+                    alt="dropicon"
+                    width={20}
+                    height={20}
+                  />
                 </div>
                 {openDropdown == "Category" && (
                   <CategoryDropdown
@@ -229,7 +244,12 @@ const Search = () => {
                       {selectedLocations[0]}
                     </span>
                   </div>
-                  <Image src={openDropdown == "Location" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
+                  <Image
+                    src={openDropdown == "Location" ? upArrowIcon : DropIcon1}
+                    alt="dropicon"
+                    width={20}
+                    height={20}
+                  />
                 </div>
                 {openDropdown == "Location" && (
                   <LocationDropdown
@@ -258,7 +278,12 @@ const Search = () => {
                       </span>
                     )}
                   </div>
-                  <Image src={openDropdown == "Labels" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
+                  <Image
+                    src={openDropdown == "Labels" ? upArrowIcon : DropIcon1}
+                    alt="dropicon"
+                    width={20}
+                    height={20}
+                  />
                 </div>
                 {openDropdown == "Labels" && (
                   <LabelDropdown
@@ -298,7 +323,14 @@ const Search = () => {
                   onClick={() => handleDropdownClick("Date & Time")}
                 >
                   <div className={styles.input_title}>Date & Time</div>
-                  <Image src={openDropdown == "Date & Time" ? upArrowIcon : DropIcon1} alt="dropicon" width={20} height={20} />
+                  <Image
+                    src={
+                      openDropdown == "Date & Time" ? upArrowIcon : DropIcon1
+                    }
+                    alt="dropicon"
+                    width={20}
+                    height={20}
+                  />
                 </div>
                 {openDropdown == "Date & Time" && (
                   <DateRangeInput
@@ -363,8 +395,9 @@ const Search = () => {
                 )}
               </div> */}
               <div
-                className={`${styles.advanceFilter_button} ${isAdvancedFilter ? styles.active_button : ""
-                  }`}
+                className={`${styles.advanceFilter_button} ${
+                  isAdvancedFilter ? styles.active_button : ""
+                }`}
                 onClick={advanceFilterHandler}
               >
                 <div>Advance Filters</div>
@@ -375,20 +408,20 @@ const Search = () => {
                   height={20}
                 />
               </div>
-
-
-
             </div>
 
             <div className={styles.buttons_container}>
               {/* <div className={styles.createtracker_button}>Clear Filters</div> */}
 
-              <div
-                className={styles.createtracker_button}
-
-              >
+              <div className={styles.createtracker_button}>
                 Create Tracker
-                <Image src={Add} alt="plus" width={20} height={20} style={{ color: "white" }} />
+                <Image
+                  src={Add}
+                  alt="plus"
+                  width={20}
+                  height={20}
+                  style={{ color: "white" }}
+                />
               </div>
             </div>
           </div>
@@ -706,25 +739,28 @@ const Search = () => {
             <div className={styles.exportedno_title}>Exported files</div>
           </div>
           <div className={styles.viewTypeButtons_container}>
-            <div className={`${styles.viewTypeButtons} ${theme === 'light' ? styles.viewTypeButtons_light : ""}`}>
+            <div
+              className={`${styles.viewTypeButtons} ${
+                theme === "light" ? styles.viewTypeButtons_light : ""
+              }`}
+            >
               <button
                 onClick={() => setSelectedView("list")}
-                className={`${styles.listBtn} ${selectedView === "list" ? styles.active : ""
-                  }`}
+                className={`${selectedView === "list" ? styles.active : ""}`}
               >
                 List
               </button>
               <button
                 onClick={() => setSelectedView("map")}
-                className={`${styles.mapBtn} ${selectedView === "map" ? styles.active : ""
-                  }`}
+                className={`${selectedView === "map" ? styles.active : ""}`}
               >
                 Map
               </button>
               <button
                 onClick={() => setSelectedView("calendar")}
-                className={`${styles.calendarBtn} ${selectedView === "calendar" ? styles.active : ""
-                  }`}
+                className={`${
+                  selectedView === "calendar" ? styles.active : ""
+                }`}
               >
                 Calendar
               </button>
@@ -747,26 +783,46 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView === "list" &&
-              <div className={`${theme === 'light' ? styles.listBtn_container_light : styles.listBtn_container}`}>
-                <button className={`${styles.listBtn} ${listView === "card" ? styles.active : ""}`} onClick={() => setListView("card")}>Card</button>
-                <button className={`${styles.listBtn} ${listView === "table" ? styles.active : ""}`} onClick={() => setListView("table")}>Table</button>
-              </div>}
-            {selectedView === "list" && listView === "card" && (
-              <List />
+            {selectedView === "list" && (
+              <div
+                className={`${
+                  theme === "light"
+                    ? styles.listBtn_container_light
+                    : styles.listBtn_container
+                }`}
+              >
+                <button
+                  className={`${styles.listBtns} ${
+                    listView === "card" ? styles.active : ""
+                  }`}
+                  onClick={() => setListView("card")}
+                >
+                  Card
+                </button>
+                <button
+                  className={`${styles.listBtns} ${
+                    listView === "table" ? styles.active : ""
+                  }`}
+                  onClick={() => setListView("table")}
+                >
+                  Table
+                </button>
+              </div>
             )}
+            {selectedView === "list" && listView === "card" && <List />}
             {selectedView === "list" && listView === "table" && (
               <Suspense fallback={<Loading />}>
-                <Table eventData={similarEventData.data.events} showInsights={selectedInsights} />
+                <Table
+                  eventData={similarEventData.data.events}
+                  showInsights={selectedInsights}
+                />
               </Suspense>
             )}
 
             {selectedView === "calendar" && (
               <div style={{ padding: "32px" }}>
                 <Suspense fallback={<Loading />}>
-
                   <Calendar />
-
                 </Suspense>
               </div>
             )}
@@ -775,11 +831,13 @@ const Search = () => {
       </div>
 
       {selectedView === "map" && (
-        <div style={{ padding: "32px" }}>
+        <div
+          className={`${styles.map_container} ${
+            theme === "light" && styles.map_container_light
+          }`}
+        >
           <Suspense fallback={<Loading />}>
-
             <Map />
-
           </Suspense>
         </div>
       )}

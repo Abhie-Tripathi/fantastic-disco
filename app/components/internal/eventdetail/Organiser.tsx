@@ -15,10 +15,11 @@ interface Props{
 const Organiser = ({open} : Props) => {
     const [accordianToggle, setAccordianToggle] = useState(open)
     const {theme} = useTheme()
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     return (
         <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
             <div className={styles.header} onClick={() => setAccordianToggle(!accordianToggle)}>
-                <Image src={PeopleIcon} alt='page' />
+                <Image src={PeopleIcon} alt='page' className={iconClass} />
                 <div>Organiser Details</div>
             </div>
             {accordianToggle && <div className={styles.accordian}>
@@ -30,16 +31,16 @@ const Organiser = ({open} : Props) => {
                     </div>
                 </div>
                 <div className={`${styles.locationContainer} ${theme === 'light' ? styles.locationContainer_light : ""}`}>
-                    <Image src={LocationIcon} alt='location' />
+                    <Image src={LocationIcon} alt='location' className={iconClass} />
                     <div className={styles.location}>Bengaluru, Karnataka</div>
                 </div>
                 <div className={styles.eventStats}>
                     <div className={styles.upcomingEvent}>
-                        <Image src={ClockIcon} alt='clock' height={17} width={17} />
+                        <Image src={ClockIcon} alt='clock' height={17} width={17} className={iconClass} />
                         <div>Upcoming Events : 00</div>
                     </div>
                     <div className={styles.eventsHosted}>
-                        <Image src={ClockIcon} alt='clock' height={17} width={17}/>
+                        <Image src={ClockIcon} alt='clock' height={17} width={17} className={iconClass}/>
                         <div>Events Hosted : 12</div>
                     </div>
                 </div>

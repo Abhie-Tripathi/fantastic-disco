@@ -3,6 +3,7 @@ import styles from './cardtask.style.module.css'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image';
 import addEventIcon from '/public/addEvent.svg'
+import { useTheme } from '@/context';
 
 interface CardTaskProps {
     name: string;
@@ -13,6 +14,8 @@ interface CardTaskProps {
 }
 
 const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handleModal,onClick }) => {
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     return (
         <>
         <div className={styles.eventAdd_container}>
@@ -25,7 +28,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, onDragStart, handl
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>10Times</div>
             <div className={styles.date}>
-                <Image src={CalendarIcon} alt='cal' height={15} width={15} />
+                <Image src={CalendarIcon} alt='cal' height={15} width={15} className={iconClass} />
                 <div>1st Apr 2024 - 31st Apr 2024</div>
             </div>
             <div className={styles.typeOfEventContainer}>

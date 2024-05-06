@@ -2,21 +2,22 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "./addcomment.style.module.css";
 import { Comment as IComment } from "../../../types/comment";
-import { useAuthContext } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { MouseEvent } from "react";
-import Send from '@/public/send.svg';
-import Pdf from '/public/pdf.svg';
-import Close from '/public/close.svg'
-import Attach from '@/public/attach.svg';
-import Link from '@/public/link.svg'
-import Emoji from '@/public/emoji.svg'
-import Pic from '@/public/image.svg'
-import Pen from '@/public/pen.svg'
-import Drive from '@/public/drive.svg'
-import Lock from '@/public/lock.svg'
+import Send from "@/public/send.svg";
+import Pdf from "/public/pdf.svg";
+import Close from "/public/close.svg";
+import Attach from "@/public/attach.svg";
+import Link from "@/public/link.svg";
+import Emoji from "@/public/emoji.svg";
+import Pic from "@/public/image.svg";
+import Pen from "@/public/pen.svg";
+import Drive from "@/public/drive.svg";
+import Lock from "@/public/lock.svg";
 import Image from "next/image";
-import EmployeeData from "@/public/data/employeeData.json"
+import EmployeeData from "@/public/data/employeeData.json";
 import { revalidateComment } from "@/utils/commentAction";
+import { log } from "util";
 interface Props {
   productId?: string;
   replyOptions?: replyOptions;
@@ -38,11 +39,9 @@ interface Props {
 interface User {
   firstname: string;
   lastname: string;
-
 }
 interface replyOptions {
   commentId: string;
-
 }
 interface UserDetail {
   firstname: string;
@@ -68,19 +67,26 @@ export const AddComment = ({
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
+  const { theme } = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
+
   const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
   const [types, showTypes] = useState<boolean>(false);
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
   const [showUser, setShowUser] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(0);
   const [rec, setRec] = useState<boolean>(false);
+  const [mention, setMention] = useState("");
   const [employeeDropDown, setEmployeeDropDown] = useState(false)
   const type: string[] = ["Speak", "Attend"];
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
-  const [alluser, setAlluser] = useState<String[]>([]);
+  const [alluser, setAlluser] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef(null);
   const pdfRef = useRef(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const resultContainer = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
@@ -94,23 +100,80 @@ export const AddComment = ({
   //         employee.toLowerCase().includes(searchTerm.toLowerCase())
   //       );
   //       setAlluser(filtered);
-  //     } 
-  //   } 
-  // }, [note, alluser]); 
+  //     }
+  //   }
+  // }, [note, alluser]);
   useEffect(() => {
     const trimmedNote = note?.trim();
     if (trimmedNote?.includes("@")) {
-      setShowUser(true);
+      // setShowUser(true);
       const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
       if (searchTerm) {
-        const filtered = alluser?.filter(user => {
-          return user.toLowerCase().includes(searchTerm.toLowerCase())
-
+        const filtered = alluser?.filter((user) => {
+          return user.toLowerCase().includes(searchTerm.toLowerCase());
         });
         setAlluser(filtered);
       }
     } else setShowUser(false);
   }, [note]);
+  // useEffect(() => {
+  //   if (!resultContainer.current) return;
+
+  //   resultContainer.current.scrollIntoView({
+  //     block: "center",
+  //   });
+  // }, [focusedIndex]);
+  // const handleKeyDown1 = (e) => {
+  //   const { key } = e;
+  //   console.log(1);
+
+  //   let nextIndexCount = 0;
+
+  //   // move down
+  //   if (key === "ArrowDown")
+  //     nextIndexCount = (focusedIndex + 1) % alluser.length;
+
+  //   // move up
+  //   if (key === "ArrowUp")
+  //     nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
+
+  // };
+  const handleKeyDown1: React.KeyboardEventHandler<HTMLDivElement | HTMLTextAreaElement> = (e) => {
+    const { key } = e;
+    console.log(types + " " + showUser);
+    let nextIndexCount = 0;
+    // if(rec===true) setRec(false);
+    // if(showUser===true) setShowUser(false);
+    // move down
+    if (key === "ArrowDown")
+      nextIndexCount = (focusedIndex + 1) % alluser.length;
+
+    // move up
+    if (key === "ArrowUp")
+      nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
+    if (key === "Enter" && !e.shiftKey && (showUser || rec)) {
+      e.preventDefault();
+      const newNote = note + alluser[focusedIndex].substring(1) + " ";
+      setNote(newNote);
+      setRec(true);
+    }
+    // Handle Enter key press
+    else if (key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      notes(e);
+    }
+
+    else if (key === "Enter" && e.shiftKey) {
+      // Prevent default behavior
+      e.preventDefault();
+      // Handle shift + Enter to add a new line
+      setNote(prev => prev + '\n');
+    }
+
+    setFocusedIndex(nextIndexCount);
+  };
+
+
 
 
   // const handleEmployeeClick = (employee: any) => {
@@ -157,84 +220,115 @@ export const AddComment = ({
   // useEffect(() => {
 
   useEffect(() => {
-
-    if (note?.charAt(note.length - 1) === '@') {
+    if (note?.charAt(note.length - 1) === "@") {
       console.log(comments);
       setShowUser(true);
-      let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
+      let arr = Array.from(
+        new Set(
+          comments?.map(
+            (comment) =>
+              "@" +
+              comment?.user?.firstname +
+              comment?.user?.lastname.toLowerCase()
+          )
+        )
+      );
       console.log(arr);
 
       setAlluser(arr);
     }
     // else setShowUser(false);
-  }, [note])
+  }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
-
-  }
+  };
   // },[note])
   const handleSelectRecommendation = (name: String) => {
     if (!note.includes(name)) {
-      setNote(prevNote => prevNote.replace(/@\w*$/, `${name} `));
+      setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
       showTypes(false);
       setShowUser(false);
+      // setMention("");
       setRec(true);
     }
     // console.log(1);
-
   };
   const handleSelectAttend = () => {
-    setNote("@" + userDetail?.firstname + userDetail?.lastname.toLowerCase() + " wants to #Attend");
+    setNote(
+      "@" +
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Attend"
+    );
     setShowUser(false);
-  }
+  };
   const handleSelectSpeak = () => {
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
-    setNote("@" + userDetail?.firstname + userDetail?.lastname.toLowerCase() + " wants to #Speak");
+    setNote(
+      "@" +
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Speak"
+    );
     setShowUser(false);
-  }
+  };
   const handleRecommend = (event: any) => {
     event.preventDefault();
-    let arr = Array.from(new Set(comments?.map(comment => "@" + comment?.user?.firstname + comment?.user?.lastname.toLowerCase())));
+    let arr = Array.from(
+      new Set(
+        comments?.map(
+          (comment) =>
+            "@" +
+            comment?.user?.firstname +
+            comment?.user?.lastname.toLowerCase()
+        )
+      )
+    );
     setAlluser(arr);
     setNote(note.substring(0, note.lastIndexOf('/')) + `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()} wants to recommend @`);
-
+    // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
+    //   textareaRef.current.focus();
+    // }
+    if (textareaRef?.current)
+      textareaRef.current.focus();
     setShowUser(true);
-  }
+  };
   useEffect(() => {
-    if (rec) {
+    if (rec === true) {
       setNote(prev => prev + "for #")
-      setRec(!rec);
+      setRec(false);
+      setShowUser(false);
     }
-  }, [rec])
+  }, [rec]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && mention.length === 0) {
       event.preventDefault();
+      console.log(11111);
       notes(event);
-    } else if (event.key === 'Enter' && event.shiftKey) {
+    } else if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
-      setNote(prev => prev + '\n');
+      setNote((prev) => prev + "\n");
     }
-  }
+  };
   const [recommendCalled, setRecommendCalled] = useState(false);
-  if (note?.includes('/recommend') && !recommendCalled) {
+  if (note?.includes("/recommend") && !recommendCalled) {
     setRecommendCalled(true);
     handleRecommend(event);
-
   }
   const formRef1 = useRef(null);
 
   useEffect(() => {
-    if (note?.includes('#speak')) {
+    if (note?.includes("#speak")) {
       handleSelectSpeak();
     }
-    if (note?.includes('#attend')) {
+    if (note?.includes("#attend")) {
       handleSelectAttend();
     }
-    if (note?.includes('/recommend')) {
+    if (note?.includes("/recommend")) {
       handleRecommend(event);
     }
-    if (note?.charAt(note.length - 1) === '@') {
+    if (note?.charAt(note.length - 1) === "@") {
       handleRecommend(event);
     }
     if (note === "") {
@@ -243,52 +337,59 @@ export const AddComment = ({
     }
   }, [note]);
   useEffect(() => {
-    const patternString = "@\\w+ for #";
+    const patternString = "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
     const pattern = new RegExp(patternString);
-    if (pattern.test(note) && note?.charAt(note.length - 1) === '#') {
+    if (pattern.test(note) && note?.charAt(note.length - 1) === "#") {
       showTypes(true);
     } else {
       showTypes(false);
     }
   }, [note]);
+
   const [disable, setDisable] = useState(false);
   const handleSelectType = (event: any, ele: string) => {
     console.log(ele);
 
     if (type.includes(ele)) {
       setNote(prev => prev + ele);
-      handleKeyDown(event);
+      // handleKeyDown1(event);
       showTypes(false);
+      setRec(false);
+      setShowUser(false);
       setDisable(true);
       // notes(event);
     }
   }
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
-    if (type.some(type => note?.includes(type)) && textareaRef.current) {
+    if (type.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
     }
-  }, [types]);
+    if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [types, note]);
   console.log(note);
   const [selectedFile, setSelectedFile] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  // const handleFileChange = (event: any) => {
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
     setFilePreviews((prevSelectedFiles: File[] | null) => {
-      if (prevSelectedFiles === null || typeof prevSelectedFiles === 'undefined') {
+      if (
+        prevSelectedFiles === null ||
+        typeof prevSelectedFiles === "undefined"
+      ) {
         return [event.target.files[0]];
       } else {
         return [...prevSelectedFiles, event.target.files[0]];
       }
     });
-
   };
 
   const handleUpload = () => {
-
-
     // setUploading(true);
     setTimeout(() => {
       setUploading(true);
@@ -314,22 +415,24 @@ export const AddComment = ({
   // }, [selectedFile])
   const setModal = () => {
     setModalIsOpen(true);
-  }
+  };
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
     console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setSelectedPdfs([...selectedPdfs, selectedFile]);
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      setSelectedPdfs([...selectedPdfs, selectedFile.name]);
     } else {
       // Handle case when file is not a PDF
-      console.log('Please select a PDF file.');
+      console.log("Please select a PDF file.");
     }
   };
   const removeImg = (id: number) => {
-    const filteredImg = filePreviews.filter((item: any, ind: number) => ind !== id);
+    const filteredImg = filePreviews.filter(
+      (item: any, ind: number) => ind !== id
+    );
     console.log(filteredImg);
 
     setFilePreviews(filteredImg);
@@ -349,42 +452,76 @@ export const AddComment = ({
       inputElement.click();
     }
   }
+  useEffect(() => {
+    if (!resultContainer.current) return;
+
+    resultContainer.current.scrollIntoView({
+      block: "center",
+    });
+  }, [focusedIndex]);
   return (
     <div className={styles.container}>
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
         <div className={styles.recommendBtn}>
-          <button onClick={handleSelectAttend} className={styles.btn1}>I want to Attend</button>
-          <button onClick={() => handleSelectSpeak()} data-action="speak" className={styles.btn1}>I want to Speak</button>
-          <button onClick={handleRecommend} className={styles.btn1}>I want to @Recommend</button>
+          <button
+            onClick={handleSelectAttend}
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
+          >
+            I want to Attend
+          </button>
+          <button
+            onClick={() => handleSelectSpeak()}
+            data-action="speak"
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
+          >
+            I want to Speak
+          </button>
+          <button
+            onClick={handleRecommend}
+            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+              }`}
+          >
+            I want to @Recommend
+          </button>
         </div>
-        <div style={{display:"flex",gap:"10px"}}>
-        {selectedPdfs?.map((item:any, ind:number) => (
-          
-          <div key={ind} className={styles.pdf}>
-           
-          <Image src={Pdf} width={50} height={50} alt="pdf"/>
-          <p key={ind} style={{display:"flex"}}>{item.name}</p>
-          </div>
-        ))}
+        <div style={{ display: "flex", gap: "10px" }}>
+          {selectedPdfs?.map((item: string, ind: number) => (
+            <div key={ind} className={styles.pdf}>
+              <Image src={Pdf} width={50} height={50} alt="pdf" />
+              <p key={ind} style={{ display: "flex" }}>
+                {item}
+              </p>
+            </div>
+          ))}
         </div>
         {filePreviews && (
           <>
             <div className={styles.filePreview}>
-
               {filePreviews.map((filePreview: any, index: number) => (
-
                 <div className={styles.fileDiv} key={index}>
-                  <Image src={URL.createObjectURL(filePreview)} width={80} height={80} alt="File Preview" />
-                  <Image className={styles.close} src={Close} onClick={() => removeImg(index)} alt="close" />
+                  <Image
+                    src={URL.createObjectURL(filePreview)}
+                    width={80}
+                    height={80}
+                    alt="File Preview"
+                  />
+                  <Image
+                    className={styles.close}
+                    src={Close}
+                    onClick={() => removeImg(index)}
+                    alt="close"
+                  />
                 </div>
               ))}
             </div>
           </>
         )}
-        <div className={styles.addNotes}>
+        <div className={styles.addNotes} onKeyDown={handleKeyDown1}>
 
-          <textarea readOnly={disable} ref={textareaRef} className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} rows={4} onKeyDown={(e) => handleKeyDown(e)} />
+          <textarea readOnly={disable} ref={textareaRef} className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} rows={4} onKeyDown={handleKeyDown1} />
           <button style={{ display: "flex" }} type="submit"><Image src={Send} alt="send" /></button>
 
           {/* {employeeDropDown && (
@@ -398,9 +535,15 @@ export const AddComment = ({
         )} */}
 
           {showUser && (
-            <div className={styles.allUser}>
+            // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
+            <div className={styles.allUser} >
               {alluser.map((ele, ind) => (
-                <div className={styles.option} key={ind} onClick={() => handleSelectRecommendation(ele)}>{ele}</div>
+                <div ref={ind === focusedIndex ? resultContainer : null}
+                  style={{
+                    backgroundColor:
+                      ind === focusedIndex ? "#2B233D" : "",
+                  }} className={styles.option} key={ind} onMouseDown={() => handleSelectRecommendation(ele)}
+                >{ele}</div>
               ))}
             </div>
           )}
@@ -412,15 +555,33 @@ export const AddComment = ({
             </div>
           )}
           <button className={styles.commentBtn}>
-            {isReply ? isEditComment ? "Edit Comment" : "Reply" : "Comment"}
+            {isReply ? (isEditComment ? "Edit Comment" : "Reply") : "Comment"}
           </button>
         </div>
       </form>
 
       <div className={styles.attachmentIcon}>
-        <button ref={fileRef} onClick={() => setModal()} style={{ display: "none" }}>Upload File</button>
-        <input type="file" onChange={handleFileChange} ref={fileRef} style={{ display: "none" }} />
-        <input ref={pdfRef} type="file" name="file" id="file" onChange={pdfUpload} style={{ display: "none" }} />
+        <button
+          ref={fileRef}
+          onClick={() => setModal()}
+          style={{ display: "none" }}
+        >
+          Upload File
+        </button>
+        <input
+          type="file"
+          onChange={handleFileChange}
+          ref={fileRef}
+          style={{ display: "none" }}
+        />
+        <input
+          ref={pdfRef}
+          type="file"
+          name="file"
+          id="file"
+          onChange={pdfUpload}
+          style={{ display: "none" }}
+        />
         <div className={styles.attachIconContainer} data-name="Attach">
           <Image className={styles.attachIcon} src={Attach} alt="attach" />
         </div>
@@ -444,8 +605,8 @@ export const AddComment = ({
         </div>
       </div>
 
-      {modalIsOpen &&
-        <div className={styles.overlay} >
+      {modalIsOpen && (
+        <div className={styles.overlay}>
           <div className={styles.content} onClick={(e) => e.stopPropagation()}>
             <h2>Upload File</h2>
             <input type="file" onChange={handleFileChange} />
@@ -462,9 +623,7 @@ export const AddComment = ({
             {uploading && <p>Uploading...</p>}
           </div>
         </div>
-
-      }
+      )}
     </div>
-
   );
 };
