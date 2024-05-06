@@ -9,6 +9,12 @@
   justify-content: space-evenly;
   cursor: pointer;
 }
+.heading{
+  color: white;
+}
+.comapnyName{
+  color : white;
+}
 .date {
   display: flex;
   font-size: 10px;
@@ -17,6 +23,7 @@
   width: fit-content;
   padding: 2px 5px;
   gap: 5px;
+  color: white;
   border-radius: 6px;
   border: 1px solid #6750a4;
 }

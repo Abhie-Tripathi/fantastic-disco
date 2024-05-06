@@ -4,7 +4,6 @@ import styles from "./page.style.module.css";
 import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
-import AddEventModal from "@/app/components/AddEventModal";
 import AddEventForm from "@/app/components/outreach/AddEventForm";
 
 const Page: React.FC = () => {
@@ -80,24 +79,20 @@ const Page: React.FC = () => {
 
   return (
     <div
-      className={`${styles.bodyContainer} ${
-        theme === "light" ? styles.bodyContainer_light : ""
-      } ${modalOpen && styles.bodyContainer_openModal}`}
+      className={`${styles.bodyContainer} ${theme === "light" ? styles.bodyContainer_light : ""
+        } ${modalOpen && styles.bodyContainer_openModal}`}
     >
       <div className={`${styles.taskBody}`}>
         <div className={`${styles.outerCard}`}>
           <div
-            className={`${styles.heading} ${
-              theme === "light" ? styles.heading_light : ""
-            }`}
-          >
+            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+              }`}>
             Shortlisted{" "}
             <span className={styles.eventSize}>{shortlistedTasks.length}</span>
           </div>
           <div
-            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${
-              theme === "light" ? styles.cardsContainer_light : ""
-            }`}
+            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
+              }`}
             onDragOver={(event) => handleDragOver(event)}
             onDragStart={(event) =>
               handleDragContainerStart(event, "shortlisted")
@@ -117,9 +112,8 @@ const Page: React.FC = () => {
               </div>
             ))}
             <div
-              className={`${styles.addEvent_btn} ${
-                theme === "light" ? styles.addEvent_btn_light : ""
-              }`}
+              className={`${styles.addEvent_btn} ${theme === "light" ? styles.addEvent_btn_light : ""
+                }`}
               onClick={openAddModalHandler}
             >
               Add Event
@@ -128,17 +122,15 @@ const Page: React.FC = () => {
         </div>
         <div className={`${styles.outerCard} `}>
           <div
-            className={`${styles.heading} ${
-              theme === "light" ? styles.heading_light : ""
-            }`}
+            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+              }`}
           >
             Out Reach{" "}
             <span className={styles.eventSize}>{outreachTasks.length}</span>
           </div>
           <div
-            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${
-              theme === "light" ? styles.cardsContainer_light : ""
-            }`}
+            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
+              }`}
             onDragOver={(event) => handleDragOver(event)}
             onDragStart={(event) => handleDragContainerStart(event, "outreach")}
             onDrop={(event) => handleDrop(event, "outreach")}
@@ -156,9 +148,8 @@ const Page: React.FC = () => {
               </div>
             ))}
             <div
-              className={`${styles.addEvent_btn} ${
-                theme === "light" ? styles.addEvent_btn_light : ""
-              }`}
+              className={`${styles.addEvent_btn} ${theme === "light" ? styles.addEvent_btn_light : ""
+                }`}
               onClick={openAddModalHandler}
             >
               Add Event
@@ -167,17 +158,15 @@ const Page: React.FC = () => {
         </div>
         <div className={`${styles.outerCard}`}>
           <div
-            className={`${styles.heading} ${
-              theme === "light" ? styles.heading_light : ""
-            }`}
+            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+              }`}
           >
             Pre Finalised{" "}
             <span className={styles.eventSize}>{preFinalisedTasks.length}</span>
           </div>
           <div
-            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${
-              theme === "light" ? styles.cardsContainer_light : ""
-            }`}
+            className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
+              }`}
             onDragOver={(event) => handleDragOver(event)}
             onDragStart={(event) =>
               handleDragContainerStart(event, "prefinalised")
@@ -197,9 +186,8 @@ const Page: React.FC = () => {
               </div>
             ))}
             <div
-              className={`${styles.addEvent_btn} ${
-                theme === "light" ? styles.addEvent_btn_light : ""
-              }`}
+              className={`${styles.addEvent_btn} ${theme === "light" ? styles.addEvent_btn_light : ""
+                }`}
               onClick={openAddModalHandler}
             >
               Add Event
@@ -209,9 +197,8 @@ const Page: React.FC = () => {
       </div>
       {modalOpen && (
         <div
-          className={`${styles.modal} ${
-            theme === "light" ? styles.modal_light : ""
-          }`}
+          className={`${styles.modal} ${theme === "light" ? styles.modal_light : ""
+            }`}
         >
           <EventDetail
             openEventDetails={false}
@@ -224,9 +211,8 @@ const Page: React.FC = () => {
       )}
       {addEventModal && (
         <div
-          className={`${styles.modal2} ${
-            theme === "light" ? styles.modal_light : ""
-          }`}
+          className={`${styles.modal2} ${theme === "light" ? styles.modal_light : ""
+            }`}
           onClick={(e) => {
             console.log(e);
             const targetElement = e.target as HTMLElement;

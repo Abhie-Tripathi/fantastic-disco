@@ -45,8 +45,8 @@ const SingleEvent = (params: { data: Data, handleShareModal:() => void }) => {
                 </div>
                 <div className={`${styles.locationInfo} ${theme === 'light' && styles.locationInfo_light}`}>
                     <div className={styles.locationDetail}>
-                        <Image src={Location} alt="Location" className={iconClass} />
-                        <div className={styles.des}>
+                        <Image src={Location} alt="Location" />
+                        <div className={styles.locationDes}>
                             <div>UrbanVault HSR Layout 1515</div>
                             <div>Bengaluru, Karnataka</div>
                         </div>

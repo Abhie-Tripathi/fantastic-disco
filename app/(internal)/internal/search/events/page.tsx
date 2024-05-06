@@ -710,21 +710,21 @@ const Search = () => {
             <div className={`${styles.viewTypeButtons} ${theme === 'light' ? styles.viewTypeButtons_light : ""}`}>
               <button
                 onClick={() => setSelectedView("list")}
-                className={`${styles.listBtn} ${selectedView === "list" ? styles.active : ""
+                className={`${selectedView === "list" ? styles.active : ""
                   }`}
               >
                 List
               </button>
               <button
                 onClick={() => setSelectedView("map")}
-                className={`${styles.mapBtn} ${selectedView === "map" ? styles.active : ""
+                className={`${selectedView === "map" ? styles.active : ""
                   }`}
               >
                 Map
               </button>
               <button
                 onClick={() => setSelectedView("calendar")}
-                className={`${styles.calendarBtn} ${selectedView === "calendar" ? styles.active : ""
+                className={`${selectedView === "calendar" ? styles.active : ""
                   }`}
               >
                 Calendar
@@ -750,8 +750,8 @@ const Search = () => {
           <div className={styles.dataView}>
             {selectedView === "list" &&
               <div className={`${theme === 'light' ? styles.listBtn_container_light : styles.listBtn_container}`}>
-                <button className={`${styles.listBtn} ${listView === "card" ? styles.active : ""}`} onClick={() => setListView("card")}>Card</button>
-                <button className={`${styles.listBtn} ${listView === "table" ? styles.active : ""}`} onClick={() => setListView("table")}>Table</button>
+                <button className={`${styles.listBtns} ${listView === "card" ? styles.active : ""}`} onClick={() => setListView("card")}>Card</button>
+                <button className={`${styles.listBtns} ${listView === "table" ? styles.active : ""}`} onClick={() => setListView("table")}>Table</button>
               </div>}
             {selectedView === "list" && listView === "card" && (
               <List />
