@@ -59,3 +59,13 @@
     color: var(--primary-color-light);
     background-color: var(--secondary-bg-light);
 }
+
+@media screen and (max-width: 550px) {
+    .navbar{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+    }
+}
