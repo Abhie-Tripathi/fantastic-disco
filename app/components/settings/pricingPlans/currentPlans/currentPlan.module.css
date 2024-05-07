@@ -1,5 +1,6 @@
 .container {
     padding: 20px;
+    width: 80%;
 }
 .container_light{
     color: black;
@@ -537,4 +538,22 @@
 
 .card_texts {
     padding-bottom: 20px;
+}
+@media screen and (max-width: 1730px) {
+    .upgradeIcn{
+        font-size:12px;
+        text-wrap: nowrap;
+    }
+    .userText{
+        font-size: 12px;
+    }
+    .number{
+        font-size: 12px;
+    }
+    .includeText{
+        font-size: 12px;
+    }
+    .masterCard{
+        font-size: 14px;
+    }
 }
