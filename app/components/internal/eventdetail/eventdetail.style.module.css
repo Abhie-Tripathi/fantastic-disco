@@ -3,14 +3,14 @@
     justify-content: center;
     border-radius: 10px;    
     width: 100%;
-
 }
 
 .closeIcon {
     position: absolute;
     cursor: pointer;
-    right: 20px;
-    top: 15px;
+    right: 3%;
+    top: 5%;
+    z-index: 1;
 }
 
 .innerContainer {
@@ -18,6 +18,7 @@
     display: flex;
     gap: 50px;
     height: 85vh;
+    justify-content: space-between;
 }
 
 .containerLeft {
@@ -27,7 +28,7 @@
     display: flex;
     flex-direction: column;
     gap: 19px;
-    width: 30%;
+    width: 35%;
     height: 100%;
 }
 
@@ -40,10 +41,6 @@
 }
 
 .containerRight {
-    display: flex;
-    height: 100%;   
-    flex-direction: column;
-    gap: 20px;
     width: 65%;
 }
 
@@ -85,6 +82,9 @@
     }
     .containerRight {
         width: 100%;
+    }
+    .closeIcon{
+        top: 2%;
     }
     
 }
