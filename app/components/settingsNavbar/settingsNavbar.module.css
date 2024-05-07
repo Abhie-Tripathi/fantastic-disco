@@ -1,0 +1,89 @@
+.container {
+    padding: 12px;
+    background-color: #131313;
+    color: white;
+}
+
+.container_light{
+    background-color: var(--primary-bg-light);
+    /* color: var(--primary-color-light); */
+}
+
+.outerDiv {
+    /* padding-top: 20px;
+    padding-left: 20px;
+    background-color: #0D1117;
+    border-bottom: 1px solid #21262D; */
+
+
+    padding-top: 20px;
+    background-color: #0D1117;
+    border-bottom: 1px solid #21262D; 
+    color: #ffffff;
+    padding: 12px 28px 12px 28px;
+    position: fixed;
+    width: 100%;
+    z-index: 111;
+    top: 80px;
+}
+.outerDiv_light{
+    background-color: white;
+    color: black;
+    /* color: var(--secondary-color-light); */
+}
+
+.settingContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.settingFonts {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.superAdminFont {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 2px 5px;
+    color: #8B949E;
+    border: 1px solid grey;
+    border-radius: 12px;
+    border-image: linear-gradient(left, rgb(255, 255, 255) 50%, rgb(209, 209, 209) 50%, rgb(255, 255, 255) 50.5%);
+    border-style: solid;
+}
+
+
+.comapny_container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.tabsContainer {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.tab {
+    padding-bottom: 12px;
+    /* color: #696b83; */
+    font-weight: 500;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.tab.active {
+    border-bottom: 3px solid #6750a4;
+}
+
+.text{
+    /* color: #FFFFFF; */
+    font-size: 16px;
+    font-weight: 400;
+}
