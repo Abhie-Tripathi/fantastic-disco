@@ -34,6 +34,7 @@
   font-family: var(--font-inter);
   display: flex;
   flex-direction: column;
+  color: white;
 }
 
 .comment_name_light{

@@ -2,7 +2,13 @@
     width: 100%;
     gap: 20px;
     display: flex;
+    color: white;
 }
+
+.container_light{
+  color: black;
+}
+
 .leftContainer{
     width:60%;
     font-family: var(--font-inter);
@@ -20,7 +26,7 @@ text-align: left;
 .card{
   width: 100%;
   padding: 30px 40px;
-  background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
+  /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
   border: 1px solid #262626;
   border-radius: 18px;
   display: flex;
@@ -51,6 +57,9 @@ text-align: left;
     font-size: 10px;
     padding: 5px;
     border-radius: 6px;
+}
+.upcomming_light{
+  background-color: var(--secondary-bg-light);
 }
 .timings{
     display: flex;

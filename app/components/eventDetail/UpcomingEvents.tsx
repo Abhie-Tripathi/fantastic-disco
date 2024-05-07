@@ -11,7 +11,7 @@ const UpcomingEvents = () => {
   const iconClass = theme === "light" ? styles.icons_light : styles.icon;
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
       Upcoming Meetings
       <div className={styles.cards}>
         <div className={styles.card}>
@@ -44,12 +44,12 @@ const UpcomingEvents = () => {
           <div className={styles.card2}>
             Event Connect - Discussion with Alexia
           </div>
-          <div className={styles.card3}>
+          <div className={`${styles.card3} ${theme === 'light' && styles.card3_light}`}>
             <Image src={Calendar} alt="Calendar" className={iconClass} />
             <div> 1st Apr 2024 2:30 PM</div>
           </div>
           <div className={styles.card4}>
-            <div className={styles.hostBtn}>HOST</div>
+            <div className={`${styles.hostBtn} ${theme === 'light' && styles.hostBtn_light}`}>HOST</div>
             <div style={{ color: "#8C8EA4", fontSize: "14px" }}>
               @Robslatexv,@alexia_cohade_1
             </div>
@@ -90,12 +90,12 @@ const UpcomingEvents = () => {
           <div className={styles.card2}>
             Event Connect - Discussion with Alexia
           </div>
-          <div className={styles.card3}>
+          <div className={`${styles.card3} ${theme === 'light' && styles.card3_light}`}>
             <Image src={Calendar} alt="Calendar" className={iconClass}/>
             <div> 1st Apr 2024 2:30 PM</div>
           </div>
           <div className={styles.card4}>
-            <div className={styles.hostBtn}>HOST</div>
+          <div className={`${styles.hostBtn} ${theme === 'light' && styles.hostBtn_light}`}>HOST</div>
             <div style={{ color: "#8C8EA4", fontSize: "14px" }}>
               @Robslatexv,@alexia_cohade_1
             </div>
