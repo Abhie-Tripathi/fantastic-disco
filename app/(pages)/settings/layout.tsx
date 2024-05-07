@@ -10,15 +10,16 @@ import PricingIcon from "/public/pricingIcon.svg";
 import BillingIcon from "/public/billin.svg";
 import ConfigIcon from "/public/config.svg";
 import UserManagemantIcon from "/public/userManagement.svg";
-
+import { useTheme } from "@/context";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathName = usePathname();
-
+  const {theme}=useTheme(); 
+  const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
   return (
-    <div className={styles.container}>
-      <div className={styles.outerDiv}>
+    <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
+      <div className={`${styles.outerDiv} ${theme === 'light' && styles.outerDiv_light}`}>
         <div className={styles.settingContainer}>
-          <Image src={SettingIcon} alt="setting icon" />
+          <Image className={`${iconClass}`} src={SettingIcon} alt="setting icon" />
           <div className={styles.settingFonts}>Setting</div>
           <div className={styles.superAdminFont}> Super Admin</div>
         </div>
@@ -30,7 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }`}
           >
             <div className={`${styles.comapny_container}`}>
-              <Image src={CompanyIcon} alt="company icon" />
+              <Image className={`${iconClass}`} src={CompanyIcon} alt="company icon" />
               <div className={styles.text}>Company</div>
             </div>
           </Link>
@@ -42,7 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }`}
           >
             <div className={`${styles.comapny_container}`}>
-              <Image src={BillingIcon} alt="billing and plans icon" />
+              <Image className={`${iconClass}`} src={BillingIcon} alt="billing and plans icon" />
               <div className={styles.text}>Billing Details</div>
             </div>
           </Link>
@@ -54,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }`}
           >
             <div className={`${styles.comapny_container}`}>
-              <Image src={PricingIcon} alt="config icon" />
+              <Image className={`${iconClass}`} src={PricingIcon} alt="config icon" />
               <div className={styles.text}>Pricing Plans</div>
             </div>
           </Link>
@@ -66,7 +67,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }`}
           >
             <div className={`${styles.comapny_container}`}>
-              <Image src={ConfigIcon} alt="config icon" />
+              <Image className={`${iconClass}`} src={ConfigIcon} alt="config icon" />
               <div className={styles.text}>Configurations</div>
             </div>
           </Link>
@@ -78,7 +79,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }`}
           >
             <div className={`${styles.comapny_container}`}>
-              <Image src={UserManagemantIcon} alt="user management icon" />
+              <Image className={`${iconClass}`}src={UserManagemantIcon} alt="user management icon" />
               <div className={styles.text}>User Management</div>
             </div>
           </Link>

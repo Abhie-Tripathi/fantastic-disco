@@ -1,7 +1,9 @@
 .container {
     padding: 20px;
 }
-
+.container_light{
+    color: black;
+}
 .gradient_border {
     position: relative;
     padding-bottom: 10px;
@@ -37,7 +39,9 @@
     gap: 20px;
 
 }
-
+.firstContainer_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
 .billingUsage_container {
     padding: 10px;
 }
@@ -132,7 +136,9 @@
     font-size: 16px;
     font-weight: 400;
 }
-
+.includeText_light{
+    color: #57606A;
+}
 .billing_number {
     font-size: 14px;
     padding-left: 8px;
@@ -157,7 +163,7 @@
     gap: 10px;
     font-size: 16px;
     font-weight: 400;
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
 }
 
 .planContainer {
@@ -176,11 +182,13 @@
     background-color: #1A1A1A;
     box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
 }
-
+.upgradeIcn_light{
+    background-color: var(--secondary-bg-light);
+}
 .dollar {
     font-size: 25px;
     font-size: 700;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
 }
 
 .dollarText {
@@ -188,7 +196,9 @@
     font-size: 16px;
     font-weight: 500;
 }
-
+.dollarText_light{
+    color: gray;
+}
 .planContainerItems {
     display: flex;
     flex-direction: column;
@@ -297,7 +307,9 @@
     justify-content: center;
     align-items: center;
 }
-
+.unlock_container_light{
+    background-color: white;
+}
 .bellIcon_container {
     display: flex;
     align-items: center;
@@ -455,12 +467,16 @@
     padding: 20px;
     border-radius: 10px 10px 0px 0px;
 }
-
+.cardUpper_sec_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
 .cardLower_sec {
     background-color: #1A1A1A;
     padding: 20px;
 }
-
+.cardLower_sec_light{
+    background-color: var(--secondary-bg-light);
+}
 .upper_sec_content {
     display: flex;
     flex-direction: column;
@@ -487,27 +503,27 @@
 }
 
 .basicText {
-    color: #D8D8D8;
+    /* color: #D8D8D8; */
     font-size: 24px;
     font-weight: 600;
 
 }
 
 .desc {
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
     font-size: 13px;
     font-weight: 400;
 
 }
 
 .price {
-    color: #D5D4D4;
+    /* color: #D5D4D4; */
     font-size: 48px;
     font-weight: 400;
 }
 
 .monthy_price {
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
     font-size: 11px;
     font-weight: 400;
 }

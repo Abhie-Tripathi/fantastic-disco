@@ -241,7 +241,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
           <div key={ind} className={styles.pdf}>
            
           <Image src={Pdf} width={50} height={50} alt="pdf"/>
-          <p key={ind} style={{display:"flex"}}>{item.name}</p>
+          <p key={ind} style={{display:"flex"}}>{item}</p>
           </div>
         ))}
         </div>
