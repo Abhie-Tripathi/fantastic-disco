@@ -38,7 +38,6 @@
     display: flex;
     justify-content: space-between;
     gap: 20px;
-
 }
 .firstContainer_light{
     background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);

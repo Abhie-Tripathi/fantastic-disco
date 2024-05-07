@@ -86,14 +86,12 @@ const Index = () => {
             </div>
             <div className={styles.statusBtn}>
               <div
-                className={`${styles.activeFlag} ${
-                  activeState === "Inactive" ? styles.inactiveFlag : ""
-                }`}
+                className={`${styles.activeFlag} ${activeState === "Inactive" ? styles.inactiveFlag : ""
+                  }`}
               ></div>
               <div
-                className={`${styles.status} ${
-                  activeState === "Inactive" ? styles.inactiveStatus : ""
-                }`}
+                className={`${styles.status} ${activeState === "Inactive" ? styles.inactiveStatus : ""
+                  }`}
               >
                 {activeState}
               </div>
