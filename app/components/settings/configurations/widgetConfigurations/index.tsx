@@ -117,7 +117,8 @@ const Index = () => {
               className={`${styles.outreachCard} ${id % 2 === 0 ? styles.cardbackgroundColor : ""
                 }`}
             >
-              <div className={styles.cardTopSec}>
+              <div className={styles.cardTopSec} 
+              >
                 <Image src={card?.icon} alt="" />
                 <div className={styles.inner_sec}>{card.cardItitle}</div>
                 <Image src={ThreeDots} alt="dots" />
