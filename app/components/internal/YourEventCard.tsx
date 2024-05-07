@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './yourEventCard.style.module.css'
 import UserIcon from '/public/user.svg';
 import calendarIcon from '/public/calendar.svg';
@@ -9,6 +9,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ClockIcon from '/public/clock.svg'
 import StatusChangeDropdown from '@/app/components/internal/eventdetail/statusDropdown';
+import upArrow from '/public/internal/up_arrow.svg';
+import { useTheme } from '@/context';
+import UpVoteTag from '@/app/components/internal/coordinate/upVoteTag';
 
 interface YourEventCardProps {
   eventId: number;
@@ -31,10 +34,31 @@ const formatDate = (dateString: string): string => {
 
 const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, handleModal, handleShortlistModal, handleRejectClick }) => {
   const formattedDate = formatDate(eventDate);
+  const {theme} = useTheme();
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
+
+  const [voteStatus, setVoteStatus] = useState({
+    Attending: false,
+    Speaking: false,
+    Sponsoring: false,
+    Exhibiting: false,
+  });
+
+  const handleVoteClick = (item: keyof typeof voteStatus) => {
+    setVoteStatus(prevState => ({
+      ...prevState,
+      [item]: !prevState[item]
+    }));
+  }
 
   const handleModalOpen = ()=>{
     handleModal()
   }
+
+  const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }
+
   return (
     <div className={styles.card} onClick={handleModalOpen}>
       <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
@@ -64,6 +88,20 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>{formattedDate}</div>
           </div>
         </div>
+        <div style={{display:"flex", gap: "6px"}} onClick={handleClickEvent}>
+          <div className={styles.total_upvotes}>
+            231
+            <div style={{display:"flex", paddingTop: "10px"}}>
+              <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
+              &nbsp;Upvotes
+            </div>
+          </div>
+          <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} voteCount={12} handleVoteClick={handleVoteClick} />
+          <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />
+          <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} voteCount={15} handleVoteClick={handleVoteClick} />
+          <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} voteCount={112} handleVoteClick={handleVoteClick} />
+        </div>
+        {/* 
         <div className={styles.circles}>
           <div className={styles.circle} data-name="John Doe">
             <Image className={styles.image} src={person1} alt="person1" />
@@ -81,6 +119,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>I&apos;m Interested</div>
           </div>
         </div>
+         */}
       </div>
     </div>
   );
