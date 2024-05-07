@@ -13,7 +13,7 @@ interface Props {
 const StatusBar = ({status}:Props) => {
 
     return (
-        <div className={styles.statusContainer}>
+        <div className={styles.outreachStatusContainer}>
             <div className={styles.statusCard}>
                 {status < 1 ?
                     <StatusIcon fillColor={''} borderColor={"#6750A4"} /> :
