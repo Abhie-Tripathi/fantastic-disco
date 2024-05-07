@@ -37,7 +37,7 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
             const currentDiv = divRef.current;
             if (currentDiv) {
                 const { scrollTop, scrollHeight, clientHeight } = currentDiv;
-                if (scrollTop + clientHeight >= scrollHeight) {
+                if (scrollTop + clientHeight >= (scrollHeight - 2)) {
                     handleScrollEnd();
                 }
             }
