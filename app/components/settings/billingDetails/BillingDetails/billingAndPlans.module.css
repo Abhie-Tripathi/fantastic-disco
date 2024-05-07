@@ -7,6 +7,8 @@
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .gradient_border::after {
@@ -422,11 +424,11 @@
 
 }
 
-.tracker_text {
+/* .tracker_text {
     color: #AC8DFF;
     font-size: 16px;
     font-weight: 400;
-}
+} */
 
 .number {
     font-size: 20;
