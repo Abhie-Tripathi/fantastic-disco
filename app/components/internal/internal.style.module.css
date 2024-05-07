@@ -8,6 +8,13 @@
 .timelineContainer{
     /* margin-top: 100px; */
 }
+
+.scrollContainer {
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    /* position: absolute; */
+    width: 100%;
+}
 .timeline{
     display: flex;
     align-items: center;

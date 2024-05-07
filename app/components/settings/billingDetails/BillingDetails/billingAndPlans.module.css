@@ -7,9 +7,6 @@
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    font-size: 18px;
-    font-weight: 600;
-
 }
 
 .gradient_border::after {
@@ -43,6 +40,10 @@
 
 .billingUsage_container {
     padding: 10px;
+}
+
+.bodySec{
+    width: 80%;
 }
 
 .divider {
@@ -350,7 +351,7 @@
     display: flex;
     /* justify-content: space-between; */
     align-items: center;
-    gap: 230px;
+    gap: 30px;
 }
 
 .username_container {
