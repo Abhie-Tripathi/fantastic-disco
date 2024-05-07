@@ -9,6 +9,7 @@
     margin-bottom: 25px;
     margin-top: 40px;
     padding: 25px;
+    cursor: pointer;
 }
 
 .eventNameComp {
