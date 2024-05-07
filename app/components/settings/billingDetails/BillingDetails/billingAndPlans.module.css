@@ -1,7 +1,10 @@
 .container {
     padding: 20px;
 }
-
+.container_light{
+    /* background-color: var(--secondary-bg-light); */
+    color: black;
+}
 .gradient_border {
     position: relative;
     padding-bottom: 10px;
@@ -22,7 +25,7 @@
 }
 
 .downloadText {
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
     font-size: 14px;
     font-weight: 400;
     padding-left: 5px;
@@ -39,7 +42,9 @@
     gap: 20px;
 
 }
-
+.firstContainer_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
 .billingUsage_container {
     padding: 10px;
 }
@@ -134,7 +139,7 @@
 
 
 .includeText {
-    color: #ACACAC;
+    /* color: #ACACAC; */
     font-size: 16px;
     font-weight: 400;
 }
@@ -163,7 +168,7 @@
     gap: 10px;
     font-size: 16px;
     font-weight: 400;
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
 }
 
 .planContainer {
@@ -182,17 +187,22 @@
     background-color: #1A1A1A;
     box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
 }
-
+.upgradeIcn_light{
+    background-color: var(--secondary-bg-light);
+}
 .dollar {
     font-size: 25px;
     font-size: 700;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
 }
 
 .dollarText {
     color: #ACACAC;
     font-size: 16px;
     font-weight: 500;
+}
+.dollarText_light{
+    color: grey;
 }
 
 .planContainerItems {
@@ -263,7 +273,9 @@
     font-size: 10px;
     font-weight: 300;
 }
-
+.tracker_light{
+    color: white;
+}
 .outerTracker {
     display: flex;
     justify-content: center;
@@ -302,7 +314,9 @@
     justify-content: space-between;
     align-items: center;
 }
-
+.unlock_container_light{
+    background-color: white;
+}
 .bellIcon_container {
     display: flex;
     align-items: center;
@@ -348,7 +362,9 @@
     padding: 20px;
     border-radius: 10px;
 }
-
+.innerCard_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
 .inner_card_content {
     display: flex;
     /* justify-content: space-between; */
@@ -384,6 +400,7 @@
 .superAdminCard {
     padding: 10px;
     border-radius: 20px;
+    text-wrap: nowrap;
     border: 1px solid grey;
 }
 
@@ -392,7 +409,7 @@
 }
 
 .cardInformation_text {
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
     font-style: italic;
     font-size: 16px;
     font-weight: 400;
@@ -456,16 +473,23 @@
 
 .cardUpper_sec {
     margin-top: 20px;
+    color: #D8D8D8;
     background-color: #1F1F1F;
     padding: 20px;
     border-radius: 10px 10px 0px 0px;
+}
+.cardUpper_sec_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+    color: #1A1A1A;
 }
 
 .cardLower_sec {
     background-color: #1A1A1A;
     padding: 20px;
 }
-
+.cardLower_sec_light{
+    background-color: var(--secondary-bg-light);
+}
 .upper_sec_content {
     display: flex;
     flex-direction: column;
@@ -492,27 +516,27 @@
 }
 
 .basicText {
-    color: #D8D8D8;
+    /* color: #D8D8D8; */
     font-size: 24px;
     font-weight: 600;
 
 }
 
 .desc {
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
     font-size: 13px;
     font-weight: 400;
 
 }
 
 .price {
-    color: #D5D4D4;
+    /* color: #D5D4D4; */
     font-size: 48px;
     font-weight: 400;
 }
 
 .monthy_price {
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
     font-size: 11px;
     font-weight: 400;
 }
@@ -574,13 +598,16 @@
 .table_head {
     background-color: #1F1F1F;
 }
-
+.table_head_light{
+    background-color: var(--secondary-bg-light);
+    color: #1a1a1a;
+}
 .table_head_row>th {
     padding-top: 25px;
     padding-bottom: 25px;
     font-weight: 600;
     font-size: 16px;
-    color: #F2F2FF;
+    /* color: #F2F2FF; */
 }
 
 .table_body>tr {
@@ -590,7 +617,7 @@
 
 .table_body>tr>td {
     padding: 20px;
-    color: #fff;
+    /* color: #fff; */
 }
 
 
@@ -636,7 +663,7 @@
 
 .event_date {
     font-size: 16px;
-    color: #DADBD8;
+    /* color: #DADBD8; */
     font-weight: 400;
 }
 
@@ -661,7 +688,9 @@
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
-
+.tableBelow_light{
+    background-color: var(--secondary-bg-light);
+}
 .paginationContainer {
     display: flex;
     justify-content: space-between;
@@ -686,7 +715,10 @@
     cursor: pointer;
     color: #ABAAAA;
 }
-
+.prevText_light{
+    color: #1A1A1A;
+    background-color: white;
+}
 .nextText {
     display: flex;
     justify-content: center;
@@ -697,7 +729,10 @@
     cursor: pointer;
     color: #ABAAAA;
 }
-
+.nextText_light{
+    background-color: var(--primary-bg-light);
+    color: #1A1A1A;
+}
 .showingContainer {
     background-color: #29292C;
     padding: 8px 12px 8px 12px;
@@ -710,7 +745,10 @@
     color: #ABAAAA;
 }
 
-
+.showingContainer_light{
+    background-color: white;
+    color: #1a1a1a;
+}
 
 .pages {
     display: flex;
@@ -721,6 +759,9 @@
     padding-left: 75px;
     color: #ABAAAA;
 
+}
+.pages_light{
+    color: #1A1A1A;
 }
 
 .pageNumber {
@@ -735,7 +776,10 @@
     background-color: #29292C;
     color: #ABAAAA;
 }
-
+.pageNumber_light{
+    color: black;
+    background-color: white;
+}
 
 .tableHeaderPhoneNumber {
     text-align: left;

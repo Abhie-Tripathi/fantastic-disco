@@ -8,12 +8,12 @@
   gap: 20px;
   justify-content: space-evenly;
   cursor: pointer;
-}
-.heading{
   color: white;
 }
-.comapnyName{
-  color : white;
+
+.card_light{
+  background-color: var(--primary-bg-light);
+  color: black;
 }
 .date {
   display: flex;
@@ -23,7 +23,7 @@
   width: fit-content;
   padding: 2px 5px;
   gap: 5px;
-  color: white;
+  /* color: white; */
   border-radius: 6px;
   border: 1px solid #6750a4;
 }

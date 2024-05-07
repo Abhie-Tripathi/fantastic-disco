@@ -108,7 +108,7 @@ export const Notes = ({ comments, productId }: Props) => {
           : null
       }
       <div className={`${styles.notesAdd} ${theme === 'light' ? styles.notesAdd_light : ""}`}>
-        <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments} filePreviews={filePreviews} setFilePreviews={setFilePreviews} selectedPdfs={selectedPdfs} setSelectedPdfs={setSelectedPdfs} />
+        <AddComment productId={productId} notes={addNote} setNote={setNote} note={note} comments={comments} filePreviews={filePreviews} setFilePreviews={setFilePreviews} selectedPdfs={selectedPdfs} setSelectedPdfs={setSelectedPdfs} commentType={'mainComment'} />
       </div>
     </div>
   );
@@ -241,7 +241,7 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
           <div key={ind} className={styles.pdf}>
            
           <Image src={Pdf} width={50} height={50} alt="pdf"/>
-          <p key={ind} style={{display:"flex"}}>{item.name}</p>
+          <p key={ind} style={{display:"flex"}}>{item}</p>
           </div>
         ))}
         </div>
@@ -266,8 +266,8 @@ const Comment = ({ comment, productId, setComments, superCommentId, userName, no
               className={`${styles.active}`}
               repliesLength={comment.replies?.length}
               notes={notes} setNote={setNote}
-              filePreviews={filePreviews} setFilePreviews={setFilePreviews} selectedPdfs={selectedPdfs} setSelectedPdfs={setSelectedPdfs}
-            />Unassigned
+              filePreviews={filePreviews} setFilePreviews={setFilePreviews} selectedPdfs={selectedPdfs} setSelectedPdfs={setSelectedPdfs} commentType={'subComment'}
+            />
           </div>
           <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
           <ul className={styles.replies} id="replyContainer">
