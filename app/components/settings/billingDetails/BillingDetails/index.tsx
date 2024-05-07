@@ -67,7 +67,8 @@ const Index = () => {
   const {theme}=useTheme();
   const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
   return (
-    <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
+   <div className={styles.bodySec}>
+     <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
       <div className={styles.gradient_border}>
         Billing Details
         <div>
@@ -502,6 +503,7 @@ const Index = () => {
         </div>
       </div>
     </div>
+   </div>
   );
 };
 

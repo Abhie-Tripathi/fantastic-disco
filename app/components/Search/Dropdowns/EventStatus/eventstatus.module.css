@@ -7,6 +7,11 @@
     background-color: black;
     color: white;
   }
+
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
   
   .header_container {
     padding: 24px 20px;
