@@ -58,6 +58,7 @@
     width: 250px;
     margin-left: 10px;
     margin-right: 10px;
+    position: relative;
 }
 
 
@@ -66,33 +67,35 @@
 
 }
 
-.cardTopSec{
+.cardTopSec {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* position: relative; */
 }
 
-.cards_borderBottom{
+.cards_borderBottom {
     position: absolute;
     top: 30%;
     border: 0.5px solid #342854;
     width: 100vw;
 }
 
-.inner_sec{
+.inner_sec {
     margin-right: auto;
     margin-left: 10px;
     font-size: 16px;
     font-weight: 500;
-    
+
 }
-.innerText{
+
+.innerText {
     margin-top: 20px;
     font-size: 12px;
 
 }
 
-.addBtnContainer{
+.addBtnContainer {
     background-color: #342854;
     width: 20px;
     height: 20px;
@@ -100,5 +103,22 @@
     border-radius: 5px;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.popUp {
+    position: absolute;
+    background-color: #2A2A2A;
+    left: 50%;
+    right: 0;
+    padding: 10px;
+    border-radius: 6px;
+    color: #B8B8B8;
+    font-size: 12px;
+}
+
+.popUpContent{
+    display: flex;
+    gap: 5px;
     align-items: center;
 }
