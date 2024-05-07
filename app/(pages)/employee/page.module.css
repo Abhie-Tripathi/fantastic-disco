@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     min-height: 92vh;
+    min-width: 830px;
 }
 .blur{
     filter: blur(2px);

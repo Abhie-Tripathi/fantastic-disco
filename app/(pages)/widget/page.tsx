@@ -33,6 +33,10 @@ const Widget = () => {
     fetchData();
   }, []);
 
+  useEffect(()=>{
+    console.log("widget length is", widgets)
+  },[widgets])
+
   return (
     <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light: ""}`}>
       <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light:""}`}>

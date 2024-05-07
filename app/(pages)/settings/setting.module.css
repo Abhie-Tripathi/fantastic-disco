@@ -1,6 +1,7 @@
 .container {
     display: flex;
     margin-top: 20px;
+    width: 100%;
     gap: 20px;
 }
 
@@ -13,7 +14,9 @@
     background-image: linear-gradient(to bottom, #1A1A1A 100%, #1A1A1A 0%);
     height: 100vh;
 }
-
+.navContainerRight{
+    width: 80%;
+}
 .text {
     color: #D9D9D9;
     font-size: 16px;
