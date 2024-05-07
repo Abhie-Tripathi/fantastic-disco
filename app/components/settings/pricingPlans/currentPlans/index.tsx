@@ -27,6 +27,7 @@ const Index = () => {
 
       <div className={`${styles.firstContainer} ${theme === 'light' && styles.firstContainer_light}`}>
         <div className={styles.billingUsage_container}>
+          
           <div className={styles.basic_container}>
             <div className={styles.basic_container_content}>
               <Image className={`${iconClass}`} src={BasicIcon} alt="basic icon" />
@@ -56,14 +57,14 @@ const Index = () => {
             </div>
             <div className={styles.second_divider}></div>
             <div className={styles.userContent}>
-              <Image className={`${iconClass}`} src={TrackerIcon} alt="user icon" />
+              <Image  src={TrackerIcon} alt="user icon" />
               <span className={styles.number}>3</span>
               <span className={styles.userText}>Trackers</span>
             </div>
             <div className={styles.second_divider}></div>
 
             <div className={styles.userContent}>
-              <Image className={`${iconClass}`} src={SearchIcon} alt="user icon" />
+              <Image src={SearchIcon} alt="user icon" />
               <span className={styles.number}>50</span>
               <span className={styles.userText}>Searches</span>
             </div>

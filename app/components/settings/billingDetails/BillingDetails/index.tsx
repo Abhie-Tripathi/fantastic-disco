@@ -86,14 +86,12 @@ const Index = () => {
             </div>
             <div className={styles.statusBtn}>
               <div
-                className={`${styles.activeFlag} ${
-                  activeState === "Inactive" ? styles.inactiveFlag : ""
-                }`}
+                className={`${styles.activeFlag} ${activeState === "Inactive" ? styles.inactiveFlag : ""
+                  }`}
               ></div>
               <div
-                className={`${styles.status} ${
-                  activeState === "Inactive" ? styles.inactiveStatus : ""
-                }`}
+                className={`${styles.status} ${activeState === "Inactive" ? styles.inactiveStatus : ""
+                  }`}
               >
                 {activeState}
               </div>
@@ -102,20 +100,20 @@ const Index = () => {
           <div className={styles.userSection}>
             <div className={styles.includeText}>Includes upto:</div>
             <div className={styles.userContent}>
-              <Image className={`${iconClass}`}  src={UserIcon} alt="user icon" />
+              <Image  src={UserIcon} alt="user icon" />
               <span className={styles.number}>5</span>
               <span className={styles.userText}>Users</span>
             </div>
             <div className={styles.second_divider}></div>
             <div className={styles.userContent}>
-              <Image className={`${iconClass}`}  src={TrackerIcon} alt="user icon" />
+              <Image src={TrackerIcon} alt="user icon" />
               <span className={styles.number}>3</span>
               <span className={styles.userText}>Trackers</span>
             </div>
             <div className={styles.second_divider}></div>
 
             <div className={styles.userContent}>
-              <Image className={`${iconClass}`} src={SearchIcon} alt="user icon" />
+              <Image src={SearchIcon} alt="user icon" />
               <span className={styles.number}>50</span>
               <span className={styles.userText}>Searches</span>
             </div>
@@ -258,7 +256,7 @@ const Index = () => {
             <div className={styles.billingUsage_container}>
               <div className={styles.basic_container}>
                 <div className={styles.basic_container_content}>
-                  <Image src={BasicIcon} alt="basic icon" />
+                  <Image className={`${iconClass}`} src={BasicIcon} alt="basic icon" />
                   <div>Basic</div>
                 </div>
               </div>

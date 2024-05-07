@@ -38,7 +38,7 @@ const EventListCard = (event: any) => {
           <span style={{ color: "grey" }}>|</span>
           <div className={styles.eventListCard_label}>Parade</div>
         </div>
-        <Link href={`/search/${event.id}`} target="_blank">
+        <Link href={`/employee/${event.id}`}>
           View Details
         </Link>
       </div>
@@ -149,7 +149,7 @@ const Map: React.FC = ({}) => {
 
             <div className={styles.eventList_list}>
               {eventData?.map((event, key) => (
-                <EventListCard key={key} event={event} />
+                <EventListCard key={key} event={event}/>
               ))}
             </div>
           </div>
