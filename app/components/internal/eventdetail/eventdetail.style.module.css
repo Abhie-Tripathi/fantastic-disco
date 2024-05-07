@@ -74,7 +74,7 @@
     position: relative;
 }
 
-@media screen and (max-width: 1437px) {
+@media screen and (max-width: 1490px) {
     .innerContainer {
         flex-direction: column;
         height: fit-content;

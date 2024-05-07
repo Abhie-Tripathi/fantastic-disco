@@ -148,8 +148,10 @@ export const AddComment = ({
     HTMLDivElement | HTMLTextAreaElement
   > = (e) => {
     const { key } = e;
-    console.log(types + " " + showUser);
+    console.log(rec + " " + showUser);
     let nextIndexCount = 0;
+    if(showUser){
+    
     // if(rec===true) setRec(false);
     // if(showUser===true) setShowUser(false);
     // move down
@@ -159,11 +161,27 @@ export const AddComment = ({
     // move up
     if (key === "ArrowUp")
       nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
-    if (key === "Enter" && !e.shiftKey && (showUser || rec)) {
+    }if(types){
+    // if(rec===true) setRec(false);
+    // if(showUser===true) setShowUser(false);
+    // move down
+    if (key === "ArrowDown")
+      nextIndexCount = (focusedIndex + 1) % type.length;
+
+    // move up
+    if (key === "ArrowUp")
+      nextIndexCount = (focusedIndex + type.length - 1) % type.length;
+    }
+    if (key === "Enter" && !e.shiftKey && (showUser || types)) {
       e.preventDefault();
-      const newNote = note + alluser[focusedIndex].substring(1) + " ";
-      setNote(newNote);
+      let newNote="";
+      if(showUser){
+      newNote = note + alluser[focusedIndex].substring(1) + " ";
       setRec(true);
+      }
+      else newNote = note + type[focusedIndex] + " ";
+      setNote(newNote);
+      // setRec(true);
     }
     // Handle Enter key press
     else if (key === "Enter" && !e.shiftKey) {
@@ -581,7 +599,11 @@ export const AddComment = ({
                 <div
                   key={ind}
                   className={styles.option}
-                  onClick={(e) => handleSelectType(e, ele)}
+                  ref={ind === focusedIndex ? resultContainer : null}
+                  style={{
+                    backgroundColor: ind === focusedIndex ? "#2B233D" : "",
+                  }}
+                  onMouseDown={(e) => handleSelectType(e, ele)}
                 >
                   {ele}
                 </div>
