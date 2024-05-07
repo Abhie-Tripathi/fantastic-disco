@@ -1,6 +1,7 @@
 .container{
     background-color: #131313;
 }
+
 .innerContainer {
     display: flex;
     align-items: center;
