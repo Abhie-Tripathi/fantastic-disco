@@ -213,3 +213,13 @@
     opacity: 1;
 
 }
+
+.total_upvotes {
+    border-right: .5px solid #D9D9D9;
+    font-size: 14px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
