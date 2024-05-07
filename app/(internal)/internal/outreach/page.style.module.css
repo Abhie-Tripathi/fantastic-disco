@@ -4,6 +4,7 @@
 }
 .bodyContainer_light {
   background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
 }
 
 .taskBody {

@@ -1,82 +1,110 @@
-"use client"
-import React, { useState, useEffect, useRef } from 'react';
-import styles from './eventdetail.style.module.css'
-import { Notes } from '@/app/components/eventDetail/Notes';
-import SingleEvent from './SingleEvent';
-import EventDescription from './EventDescription';
-import Organiser from './Organiser';
-import EventPoc from './EventPoc';
-import Follower from './Follower';
-import StatusBar from './StatusBar';
-import OwnerList from './ownerList';
-import StatusChangeDropdown from './statusChangeDropdown';
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import styles from "./eventdetail.style.module.css";
+import { Notes } from "@/app/components/eventDetail/Notes";
+import SingleEvent from "./SingleEvent";
+import EventDescription from "./EventDescription";
+import Organiser from "./Organiser";
+import EventPoc from "./EventPoc";
+import Follower from "./Follower";
+import StatusBar from "./StatusBar";
+import OwnerList from "./ownerList";
+import StatusChangeDropdown from "./statusChangeDropdown";
 import { usePathname } from "next/navigation";
+import closeIcon from "/public/close.svg";
+import Image from "next/image";
 
 interface EventData {
-    id: number;
-    imageUrl: string;
-    name: string;
-    description: string;
+  id: number;
+  imageUrl: string;
+  name: string;
+  description: string;
 }
 interface Props {
-    openEventDetails: boolean
-    openOrganiserDetails: boolean
-    openPocDetails: boolean
-    closeBtn: boolean;
-    handleModal : () => void
+  openEventDetails: boolean;
+  openOrganiserDetails: boolean;
+  openPocDetails: boolean;
+  closeBtn: boolean;
+  handleModal: () => void;
 }
 
-const EventDetail = ({ openEventDetails, openOrganiserDetails, openPocDetails, closeBtn, handleModal }: Props) => {
-    const [meet, setMeet] = useState(false);
-    const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
-    const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
-    const pathName = usePathname().split("/")[2];
+const EventDetail = ({
+  openEventDetails,
+  openOrganiserDetails,
+  openPocDetails,
+  closeBtn,
+  handleModal,
+}: Props) => {
+  const [meet, setMeet] = useState(false);
+  const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
+  const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
+  const pathName = usePathname().split("/")[2];
 
-    const singledata: EventData = { id: 12, imageUrl: "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg", name: "Great Indian Food Festival", description: "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more." };
+  const singledata: EventData = {
+    id: 12,
+    imageUrl:
+      "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
+    name: "Great Indian Food Festival",
+    description:
+      "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
+  };
 
-    const [status, setStatus] = useState<number>(1);
-    const handleStatusChange = (changeStatusTo: number) => {
-        setStatus(changeStatusTo);
+  const [status, setStatus] = useState<number>(1);
+  const handleStatusChange = (changeStatusTo: number) => {
+    setStatus(changeStatusTo);
+  };
+
+  useEffect(() => {
+    if (leftContainerRef.current && rightContainerRef.current) {
+      const leftContainerHeight = leftContainerRef.current.clientHeight;
+      rightContainerRef.current.style.height = leftContainerHeight + "px";
+      console.log(leftContainerHeight);
     }
+  }, []);
 
-    useEffect(() => {
-        if (leftContainerRef.current && rightContainerRef.current) {
-            const leftContainerHeight = leftContainerRef.current.clientHeight;
-            rightContainerRef.current.style.height = leftContainerHeight + 'px';
-            console.log(leftContainerHeight);
-        }
-
-    }, []);
-
-    const handleCloseModal = () => {
-        if (handleModal) {
-            handleModal()
-        }
+  const handleCloseModal = () => {
+    if (handleModal) {
+      handleModal();
     }
-    return (
-        <div className={meet ? `${styles.container} ${styles.fullHeight}` : styles.container}>
-            {closeBtn && <div className={styles.closeIcon} onClick={handleCloseModal} />}
-            <div>
-            {pathName && pathName === 'outreach' && <StatusBar status={status} /> }
-            <div className={styles.innerContainer}>
-                <div className={styles.containerLeft} ref={leftContainerRef}>
-                    <div className={styles.containerLeftTop}>
-                        <OwnerList label='test' eventId={123} />
-                        <StatusChangeDropdown label='' eventId={123} handleStatusChange={handleStatusChange} />
-                    </div>
-                    {singledata && <SingleEvent {...singledata} />}
-                    <EventDescription description={singledata.description} open={openEventDetails} />
-                    <Organiser open={openOrganiserDetails} />
-                    <EventPoc open={openPocDetails} />
-                    <Follower/>
-                </div>
-                <div className={styles.containerRight} ref={rightContainerRef}>
-                    <Notes />
-                </div>
+  };
+  return (
+    <div
+      className={
+        meet ? `${styles.container} ${styles.fullHeight}` : styles.container
+      }
+    >
+      <div className={styles.closeIcon} onClick={handleCloseModal}>
+        <Image src={closeIcon} alt="close" />
+      </div>
+
+      <div>
+        {pathName && pathName === "outreach" && <StatusBar status={status} />}
+        <div className={styles.innerContainer}>
+          <div className={styles.containerLeft} ref={leftContainerRef}>
+            <div className={styles.containerLeftTop}>
+              <OwnerList label="test" eventId={123} />
+              <StatusChangeDropdown
+                label=""
+                eventId={123}
+                handleStatusChange={handleStatusChange}
+              />
             </div>
-            </div>
+            {singledata && <SingleEvent {...singledata} />}
+            <EventDescription
+              description={singledata.description}
+              open={openEventDetails}
+            />
+            <Organiser open={openOrganiserDetails} />
+            <EventPoc open={openPocDetails} />
+            <Follower />
+          </div>
+          <div className={styles.containerRight} ref={rightContainerRef}>
+            <Notes />
+          </div>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
 
 export default EventDetail;

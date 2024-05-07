@@ -20,39 +20,38 @@
 }
 
 .eventHeaderContainer {
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 33.6px;
-    letter-spacing: -0.02em;
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 33.6px;
+  letter-spacing: -0.02em;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
-.eventHeading{
-    color: white;
+.eventHeading {
+  color: white;
 }
 
 .shareBtnContainer {
-    position: relative;
-    cursor: pointer;
+  position: relative;
+  cursor: pointer;
 }
 
 .shareBtnContainer::before {
-    content: attr(data-name);
-    position: absolute;
-    bottom: 130%;
-    left: 60%;
-    white-space: nowrap;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+  content: attr(data-name);
+  position: absolute;
+  bottom: 130%;
+  left: 60%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 .shareBtnContainer:hover::before {
   opacity: 1;
@@ -74,48 +73,53 @@
   align-items: center;
   padding: 4.31px 12.92px 4.31px 12.92px;
   background-color: #313131;
+  color: white;
 }
-.calendar_light{
+.calendar_light {
   background-color: var(--secondary-bg-light);
+  color: black;
 }
 .date {
-    font-weight: 400;
-    line-height: 21px;
-    text-align: left;
-    color: white;
-
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  /* color: white; */
 }
 .ctas {
   display: flex;
   gap: 10px;
   font-size: 14px;
+  color: white;
 }
 .pill {
-    background-color: #6650a452;
-    box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
-    outline: 0.97px solid transparent;
-    padding: 4.23px 12.68px;
-    border-radius: 40px;
-    font-size: 10px;
-    color: white;
+  background-color: #6650a452;
+  box-shadow: 0 0 0 0.97px inset #6750a4, 0 0 0 0.47px inset #666666;
+  outline: 0.97px solid transparent;
+  padding: 4.23px 12.68px;
+  border-radius: 40px;
+  font-size: 10px;
+  color: white;
 }
 .locationInfo {
   display: flex;
   display: flex;
   justify-content: space-between;
-  background-color: black;
+  background-color: #131313;
+  color: white;
   padding: 20px 30px;
   border-radius: 12px;
   justify-content: space-between;
 }
+
+.locationInfo_light {
+  background-color: var(--secondary-bg-light);
+  color: var(--primary-color-light);
+}
+
 .locationDetail {
   display: flex;
   gap: 10px;
   align-items: center;
-}
-.locationInfo_light{
-  background-color: var(--secondary-bg-light);
-  color: black;
 }
 .eventDetails {
   color: white;
@@ -161,8 +165,8 @@
 }
 
 .locationDes {
-    font-weight: 600;
-    color: white;
+  font-weight: 600;
+  /* color: white; */
 }
 .description {
   padding: 30px 0;
@@ -176,7 +180,7 @@
   color: white;
 }
 
-.description_light{
+.description_light {
   color: black;
 }
 
@@ -185,28 +189,16 @@
 }
 .speakers {
   padding: 10px 0;
+  color: white;
 }
+
+.speakers_light {
+  color: black;
+}
+
 .circles {
   padding-top: 20px;
   display: flex;
-}
-
-/* .circle{
-    margin-right: -18px;
-    background-color: #3a3e42;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: white;
-    flex-shrink: 0;
-    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
-} */
-.circle:hover {
-  transform: scale(1.05);
-  z-index: 1;
 }
 
 .circle {
@@ -224,6 +216,11 @@
   border: none;
   box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
   transition: transform 0.2s ease;
+}
+
+.circle:hover {
+  transform: scale(1.05);
+  z-index: 1;
 }
 
 .circle::before {

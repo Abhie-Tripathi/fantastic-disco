@@ -784,17 +784,11 @@ const Search = () => {
         ) : (
           <div className={styles.dataView}>
             {selectedView === "list" && (
-              <div
-                className={`${
-                  theme === "light"
-                    ? styles.listBtn_container_light
-                    : styles.listBtn_container
-                }`}
-              >
+              <div>
                 <button
                   className={`${styles.listBtns} ${
                     listView === "card" ? styles.active : ""
-                  }`}
+                  }  ${theme === "light" && styles.listBtns_light}`}
                   onClick={() => setListView("card")}
                 >
                   Card
@@ -802,7 +796,7 @@ const Search = () => {
                 <button
                   className={`${styles.listBtns} ${
                     listView === "table" ? styles.active : ""
-                  }`}
+                  } ${theme === "light" && styles.listBtns_light}`}
                   onClick={() => setListView("table")}
                 >
                   Table

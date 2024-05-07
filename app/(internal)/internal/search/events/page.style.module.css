@@ -242,6 +242,8 @@
 .exportButtonTitle {
   color: #4d1bf3;
 }
+
+
 .listBtns{
   font-size: 14px;
   background: none;
@@ -252,6 +254,10 @@
   border-radius: 10px;
   margin-left: 10px;
   cursor: pointer;
+}
+
+.listBtns_light{
+  color: black;
 }
 
 .active {
