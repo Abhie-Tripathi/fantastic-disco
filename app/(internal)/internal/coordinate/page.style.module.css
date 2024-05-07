@@ -1,5 +1,6 @@
 .container{
   background-color: #131313;
+  min-width: 1000px;
 }
 
 .innerContainer {

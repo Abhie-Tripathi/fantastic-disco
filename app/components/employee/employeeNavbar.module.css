@@ -61,11 +61,11 @@
 }
 
 @media screen and (max-width: 550px) {
-    .navbar{
+    /* .navbar{
         flex-direction: column;
         justify-content: center;
         align-items: center;
         width: 100%;
         gap: 10px;
-    }
+    } */
 }
