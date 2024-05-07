@@ -3,6 +3,7 @@ import YourEventCard from './YourEventCard'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import eventData from '@/public/data/demoEvent.json'
+import { eventDataType } from "../../../types/coordinateEventType";
 
 interface Props{
     handleModal : () => void,
@@ -13,7 +14,7 @@ interface Props{
 const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props) => {
     let prevDate: any = null;
 
-    const [eventData1, setEventData1] = useState<any>([]);
+    const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(1);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
 
