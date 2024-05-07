@@ -124,7 +124,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
   return (
     <div className={styles.meetingContainer}>
 
-      <div className={styles.container1} >
+      <div className={`${styles.container1} ${theme === 'light' && styles.container1_light}`} >
         <div className={styles.innerContainer1}>
           <div className={styles.circles}>
           <div className={styles.circle} style={{width:"45px", height:"45px"}}>CT</div>
@@ -134,7 +134,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
           </div>
           <div style={{ fontSize: "10px" }} className={styles.number}>224 people have shown interest to participate in the event</div>
         </div>
-        <div className={styles.innerContainer2}>
+        <div className={`${styles.innerContainer2} ${theme === 'light' && styles.innerContainer2_light}`}>
           <Image src={Search} alt="Search" className={iconClass} />
           <div>
             <input type='text' className={styles.search} placeholder='Search @name / department' />
@@ -142,7 +142,7 @@ const ScheduleMeetings: React.FC<Props> = (props) => {
         </div>
       </div>
       <div className={styles.container2}>
-        <div className={styles.mainCard}>
+        <div className={`${styles.mainCard} ${theme === 'light' && styles.mainCard_light}`}>
           {meetingCards}
         </div>
       </div>

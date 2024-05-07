@@ -68,9 +68,11 @@ export const AddComment = ({
   const commentId = replyOptions?.commentId;
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(user ? user : null);
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+    user ? user : null
+  );
   const [types, showTypes] = useState<boolean>(false);
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
@@ -78,7 +80,7 @@ export const AddComment = ({
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [rec, setRec] = useState<boolean>(false);
   const [mention, setMention] = useState("");
-  const [employeeDropDown, setEmployeeDropDown] = useState(false)
+  const [employeeDropDown, setEmployeeDropDown] = useState(false);
   const type: string[] = ["Speak", "Attend"];
   const [filteredEmployees, setFilteredEmployees] = useState(EmployeeData);
   const [alluser, setAlluser] = useState<string[]>([]);
@@ -107,7 +109,9 @@ export const AddComment = ({
     const trimmedNote = note?.trim();
     if (trimmedNote?.includes("@")) {
       // setShowUser(true);
-      const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
+      const searchTerm = trimmedNote
+        .substring(trimmedNote.lastIndexOf("@") + 1)
+        .trim();
       if (searchTerm) {
         const filtered = alluser?.filter((user) => {
           return user.toLowerCase().includes(searchTerm.toLowerCase());
@@ -138,7 +142,9 @@ export const AddComment = ({
   //     nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
 
   // };
-  const handleKeyDown1: React.KeyboardEventHandler<HTMLDivElement | HTMLTextAreaElement> = (e) => {
+  const handleKeyDown1: React.KeyboardEventHandler<
+    HTMLDivElement | HTMLTextAreaElement
+  > = (e) => {
     const { key } = e;
     console.log(types + " " + showUser);
     let nextIndexCount = 0;
@@ -161,20 +167,15 @@ export const AddComment = ({
     else if (key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       notes(e);
-    }
-
-    else if (key === "Enter" && e.shiftKey) {
+    } else if (key === "Enter" && e.shiftKey) {
       // Prevent default behavior
       e.preventDefault();
       // Handle shift + Enter to add a new line
-      setNote(prev => prev + '\n');
+      setNote((prev) => prev + "\n");
     }
 
     setFocusedIndex(nextIndexCount);
   };
-
-
-
 
   // const handleEmployeeClick = (employee: any) => {
   //   setNote((prevNote) => {
@@ -256,9 +257,9 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-      userDetail?.firstname +
-      userDetail?.lastname.toLowerCase() +
-      " wants to #Attend"
+        userDetail?.firstname +
+        userDetail?.lastname.toLowerCase() +
+        " wants to #Attend"
     );
     setShowUser(false);
   };
@@ -266,9 +267,9 @@ export const AddComment = ({
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-      userDetail?.firstname +
-      userDetail?.lastname.toLowerCase() +
-      " wants to #Speak"
+        userDetail?.firstname +
+        userDetail?.lastname.toLowerCase() +
+        " wants to #Speak"
     );
     setShowUser(false);
   };
@@ -285,24 +286,28 @@ export const AddComment = ({
       )
     );
     setAlluser(arr);
-    setNote(note.substring(0, note.lastIndexOf('/')) + `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()} wants to recommend @`);
+    setNote(
+      note.substring(0, note.lastIndexOf("/")) +
+        `@${
+          userDetail?.firstname
+        }${userDetail?.lastname.toLowerCase()} wants to recommend @`
+    );
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
     //   textareaRef.current.focus();
     // }
-    if (textareaRef?.current)
-      textareaRef.current.focus();
+    if (textareaRef?.current) textareaRef.current.focus();
     setShowUser(true);
   };
   useEffect(() => {
     if (rec === true) {
-      setNote(prev => prev + "for #")
+      setNote((prev) => prev + "for #");
       setRec(false);
       setShowUser(false);
     }
   }, [rec]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && mention.length === 0) {
+    if (event.key === "Enter" && !event.shiftKey && mention.length === 0) {
       event.preventDefault();
       console.log(11111);
       notes(event);
@@ -337,7 +342,8 @@ export const AddComment = ({
     }
   }, [note]);
   useEffect(() => {
-    const patternString = "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
+    const patternString =
+      "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
     const pattern = new RegExp(patternString);
     if (pattern.test(note) && note?.charAt(note.length - 1) === "#") {
       showTypes(true);
@@ -351,7 +357,7 @@ export const AddComment = ({
     console.log(ele);
 
     if (type.includes(ele)) {
-      setNote(prev => prev + ele);
+      setNote((prev) => prev + ele);
       // handleKeyDown1(event);
       showTypes(false);
       setRec(false);
@@ -359,13 +365,13 @@ export const AddComment = ({
       setDisable(true);
       // notes(event);
     }
-  }
+  };
 
   useEffect(() => {
     if (type.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
     }
-    if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
+    if (alluser.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
     }
   }, [types, note]);
@@ -439,19 +445,19 @@ export const AddComment = ({
   };
   useEffect(() => {
     console.log(selectedPdfs);
-  }, [selectedPdfs])
+  }, [selectedPdfs]);
   const pdfSelect = () => {
     if (pdfRef.current) {
       const inputElement = pdfRef.current as HTMLInputElement;
       inputElement.click();
     }
-  }
+  };
   const imgUpload = () => {
     if (fileRef.current) {
       const inputElement = fileRef.current as HTMLInputElement;
       inputElement.click();
     }
-  }
+  };
   useEffect(() => {
     if (!resultContainer.current) return;
 
@@ -466,23 +472,26 @@ export const AddComment = ({
         <div className={styles.recommendBtn}>
           <button
             onClick={handleSelectAttend}
-            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
-              }`}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
           >
             I want to Attend
           </button>
           <button
             onClick={() => handleSelectSpeak()}
             data-action="speak"
-            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
-              }`}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
           >
             I want to Speak
           </button>
           <button
             onClick={handleRecommend}
-            className={`${styles.btn1} ${theme === "light" && styles.btn1_light
-              }`}
+            className={`${styles.btn1} ${
+              theme === "light" && styles.btn1_light
+            }`}
           >
             I want to @Recommend
           </button>
@@ -520,9 +529,19 @@ export const AddComment = ({
           </>
         )}
         <div className={styles.addNotes} onKeyDown={handleKeyDown1}>
-
-          <textarea readOnly={disable} ref={textareaRef} className={styles.textArea} placeholder="Take a note, @name" value={note} onChange={(e) => noteFun(e)} rows={4} onKeyDown={handleKeyDown1} />
-          <button style={{ display: "flex" }} type="submit"><Image src={Send} alt="send" /></button>
+          <textarea
+            readOnly={disable}
+            ref={textareaRef}
+            className={`${styles.textArea} ${theme === 'light' && styles.textArea_light}`}
+            placeholder="Take a note, @name"
+            value={note}
+            onChange={(e) => noteFun(e)}
+            rows={4}
+            onKeyDown={handleKeyDown1}
+          />
+          <button style={{ display: "flex" }} type="submit">
+            <Image src={Send} alt="send" className={iconClass} />
+          </button>
 
           {/* {employeeDropDown && (
           <div className={styles.employeeDropdown}>
@@ -536,21 +555,32 @@ export const AddComment = ({
 
           {showUser && (
             // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
-            <div className={styles.allUser} >
+            <div className={styles.allUser}>
               {alluser.map((ele, ind) => (
-                <div ref={ind === focusedIndex ? resultContainer : null}
+                <div
+                  ref={ind === focusedIndex ? resultContainer : null}
                   style={{
-                    backgroundColor:
-                      ind === focusedIndex ? "#2B233D" : "",
-                  }} className={styles.option} key={ind} onMouseDown={() => handleSelectRecommendation(ele)}
-                >{ele}</div>
+                    backgroundColor: ind === focusedIndex ? "#2B233D" : "",
+                  }}
+                  className={styles.option}
+                  key={ind}
+                  onMouseDown={() => handleSelectRecommendation(ele)}
+                >
+                  {ele}
+                </div>
               ))}
             </div>
           )}
           {types && (
             <div className={styles.allUser}>
               {type.map((ele, ind) => (
-                <div key={ind} className={styles.option} onClick={(e) => handleSelectType(e, ele)}>{ele}</div>
+                <div
+                  key={ind}
+                  className={styles.option}
+                  onClick={(e) => handleSelectType(e, ele)}
+                >
+                  {ele}
+                </div>
               ))}
             </div>
           )}
@@ -583,25 +613,55 @@ export const AddComment = ({
           style={{ display: "none" }}
         />
         <div className={styles.attachIconContainer} data-name="Attach">
-          <Image className={styles.attachIcon} src={Attach} alt="attach" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Attach}
+            alt="attach"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Link">
-          <Image className={styles.attachIcon} src={Link} alt="link" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Link}
+            alt="link"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Emoji">
-          <Image className={styles.attachIcon} src={Emoji} alt="emoji" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Emoji}
+            alt="emoji"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Upload File">
-          <Image className={styles.attachIcon} onClick={pdfSelect} src={Drive} alt="drive" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            onClick={pdfSelect}
+            src={Drive}
+            alt="drive"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Upload Image">
-          <Image className={styles.attachIcon} src={Pic} onClick={imgUpload} alt="image" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Pic}
+            onClick={imgUpload}
+            alt="image"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Lock">
-          <Image className={styles.attachIcon} src={Lock} alt="lock" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Lock}
+            alt="lock"
+          />
         </div>
         <div className={styles.attachIconContainer} data-name="Write">
-          <Image className={styles.attachIcon} src={Pen} alt="pen" />
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            src={Pen}
+            alt="pen"
+          />
         </div>
       </div>
 
