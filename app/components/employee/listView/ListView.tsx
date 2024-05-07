@@ -58,7 +58,7 @@ const ListView = () => {
                     <button onClick={() => handleFilter("Attending")} className={` ${selectedRoles.includes('Attending') ? styles.activeFilterBtn : ''}`}>Attending</button>
                 </div>
                 <div className={styles.eventsBtns}>
-                    <button onClick={() => selectedTeam('All ./YourEventCardEvents')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
+                    <button onClick={() => selectedTeam('All Events')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
                     <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
                     <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
                 </div>
