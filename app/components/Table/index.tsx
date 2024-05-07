@@ -543,14 +543,14 @@ const Table = ({
                     {bookmarkedEvent.includes(event.id) ? (
                       <BookmarkIcon fillColor={"#ff851b"} />
                     ) : (
-                      <BookmarkIcon fillColor={"#000000"} />
+                      <BookmarkIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
                     )}
                   </span>
                   <span onClick={() => handlePinEvent(event.id)}>
                     {event.id == pinEvent ? (
                       <PinIcon fillColor={"#ff851b"} />
                     ) : (
-                      <PinIcon fillColor={"#000000"} />
+                      <PinIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
                     )}
                   </span>
                   {isOpen == event.id && (

@@ -118,56 +118,6 @@ const Search = () => {
     }));
   };
 
-  //   const createTrackerHandler = () => {
-  //     const params = new URLSearchParams(searchParams);
-  //     params.set("categories", selectedCategories?.join(","));
-  //     params.set("location", selectedLocations?.join(","));
-  //     params.set("status", "Active,Postponed,Predicted");
-  //     // params.set(
-  //     //   "date_range",
-  //     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
-  //     // );
-  //     router.push(`/trackers/create?${params.toString()}`);
-  //   };
-
-  //   const searchHandler = () => {
-  //     const params = new URLSearchParams(searchParams);
-  //     // params.set("categories", ) : ""
-  //     // params.set("location", selectedLocations?.join(",")) : ""
-  //     params.set("status", "ACTIVE,POSTPONED,PREDICTED");
-  //     // params.set(
-  //     //   "date_range",
-  //     //   `${selectedCategories?.startingDateTime},${selectedCategories?.endingDateTime}`
-  //     // );
-  //     router.push(`/search/events?${params.toString()}`);
-  //   };
-
-  //   useEffect(() => {
-  //     setSelectedCategories([
-  //       "community",
-  //       "concerts",
-  //       "conferences",
-  //       "expos",
-  //       "festivals",
-  //       "performing-arts",
-  //       "sports",
-  //       "academic",
-  //       "daylight-savings",
-  //       "observances",
-  //       "politics",
-  //       "public-holidays",
-  //       "school-holidays",
-  //       "disasters",
-  //       "health-warnings",
-  //       "severe-weather",
-  //       "terror",
-  //     ]);
-
-  //     setSelectedEventStatus(["Active", "Cancelled", "Postponed", "Predicted"]);
-
-  //     // searchEvents(searchParams).then((data) => setEventData(data.data));
-  //   }, [searchParams]);
-
   return (
     <div
       className={`${styles.container} ${
