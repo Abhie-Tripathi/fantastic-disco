@@ -22,7 +22,7 @@ const ExportModal = ({ onClose }: exportModalProps) => {
   return (
     <div className={styles.container}>
       {!showExportedFiles && (
-        <div className={styles.exportType_modal}>
+        <div className={`${styles.exportType_modal} ${theme === 'light' && styles.exportType_modal_light}`}>
           <div className={styles.exportType_modal_header}>
             <div className={styles.exportType_modal_header_title}>
               Export Events
@@ -70,7 +70,7 @@ const ExportModal = ({ onClose }: exportModalProps) => {
       )}
 
       {showExportedFiles && (
-        <div className={styles.exportedfiles_modal}>
+        <div className={`${styles.exportedfiles_modal} ${theme === 'light' && styles.exportedfiles_modal_light}`}>
           <div className={styles.exportedfiles_header}>
             <div className={styles.exportedfiles_header_title}>
               Exported Files
