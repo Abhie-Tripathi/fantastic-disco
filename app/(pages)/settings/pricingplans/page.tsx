@@ -5,12 +5,15 @@ import Image from "next/image";
 import BillingIcon from "/public/billingIcon.svg";
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import CurrentPlan from "@/app/components/settings/pricingPlans/currentPlans";
+import { useTheme } from "@/context";
 import AvailablePlans from "@/app/components/settings/pricingPlans/availablePlans";
 const Page = () => {
   const [activeTab, setActiveTab] = useState("Current Plan");
+  const {theme}=useTheme(); 
+  const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
   return (
     <div className={styles.container}>
-      <div className={styles.navContainerLeft}>
+      <div className={`${styles.navContainerLeft} ${theme === 'light' && styles.navContainerLeft_light}`}>
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${
             activeTab == "Current Plan" ? styles.active : ""
@@ -18,7 +21,7 @@ const Page = () => {
           onClick={() => setActiveTab("Current Plan")}
         >
           <div>
-            <Image src={BillingIcon} alt="billing icon" />
+            <Image className={`${iconClass}`}  src={BillingIcon} alt="billing icon" />
           </div>
           <div className={styles.text}>Current Plan</div>
         </div>
@@ -28,7 +31,7 @@ const Page = () => {
           }`}
           onClick={() => setActiveTab("Available Plans")}
         >
-          <Image src={BillingAccountIcon} alt="team icon" />
+          <Image className={`${iconClass}`}  src={BillingAccountIcon} alt="team icon" />
           <div className={styles.text}>Available Plans</div>
         </div>
       </div>
