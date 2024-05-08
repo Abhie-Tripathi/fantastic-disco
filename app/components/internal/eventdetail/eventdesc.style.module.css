@@ -207,7 +207,6 @@
     border-radius: 12px;
 }
 .followerName{
-    color: #D9D9D9;
 }
 .username{
     margin-left: 5px;
@@ -215,7 +214,6 @@
 }
 .followerPosition{
     font-size: 12px;
-    color: #D9D9D9;
 }
 
 .statusCard {
