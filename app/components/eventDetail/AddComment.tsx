@@ -71,7 +71,7 @@ export const AddComment = ({
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
+  const [boxSpace,setBoxSpace]=useState(0);
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
@@ -262,6 +262,7 @@ export const AddComment = ({
   }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
+    
   };
   // },[note])
   const handleSelectRecommendation = (name: String) => {
@@ -360,7 +361,15 @@ export const AddComment = ({
       setRec(false);
       setDisable(false);
     }
+    
   }, [note]);
+  useEffect(()=>{
+    if (textareaRef.current) {
+      const cursorPosition = textareaRef.current.selectionStart;
+      console.log('Cursor position:', cursorPosition*14);
+      setBoxSpace(cursorPosition*8%600);
+    }
+  },[note])
   useEffect(() => {
     const patternString =
       "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
@@ -577,7 +586,7 @@ export const AddComment = ({
 
           {showUser && (
             // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
-            <div className={styles.allUser}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
               {alluser.map((ele, ind) => (
                 <div
                   ref={ind === focusedIndex ? resultContainer : null}
@@ -594,7 +603,7 @@ export const AddComment = ({
             </div>
           )}
           {types && (
-            <div className={styles.allUser}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
               {type.map((ele, ind) => (
                 <div
                   key={ind}

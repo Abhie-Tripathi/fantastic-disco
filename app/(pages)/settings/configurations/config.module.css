@@ -2,10 +2,12 @@
     display: flex;
     margin-top: 20px;
     gap: 20px;
+    width: 100%;
 }
 
 .navContainerLeft {
     display: flex;
+    width: 20%;
     flex-direction: column;
     gap: 10px;
     border-right: 0.98px solid #262626;
@@ -13,10 +15,15 @@
     background-image: linear-gradient(to bottom, #1A1A1A 100%,  #1A1A1A 0%);
 }
 
+.navContainerLeft_light{
+    background-image: none;
+    color: black;
+        background-color: var(--secondary-bg-light);
+}
 
 
 .text {
-    color: #D9D9D9;
+    /* color: #D9D9D9; */
     font-size: 16px;
     font-weight: 500;
 }
@@ -32,20 +39,25 @@
 
 .tabContainer {
     padding-bottom: 10px;
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
     font-size: 14px;
     font-weight: 300;
     display: flex;
     align-items: center;
     cursor: pointer;
-    text-wrap: nowrap;
+    /* text-wrap: nowrap; */
 }
 
 .tabContainer.active {
     padding: 10px;
     border-radius: 8px;
     font-weight: 600;
-    width: 250px;
+    /* width: 250px; */
     background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
 }
-
+@media screen and (min-width: 1200px) {
+   .tabContainer{
+    font-size: 12px;
+   }
+  }
+  

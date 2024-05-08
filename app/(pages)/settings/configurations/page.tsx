@@ -7,11 +7,14 @@ import OutreachConfigurations from "@/app/components/settings/configurations/out
 import WidgetIcon from "/public/widgetIcon.svg";
 import FeatureIcon from "/public/featuresIcon.svg";
 import OutreachIcon from "/public/kanbanIcon.svg";
+import { useTheme } from "@/context";
 const Page = () => {
+  const {theme}=useTheme();
+  const iconClass = theme ===  'light' ? 'icons_light' : 'icon';
   const [activeTab, setActiveTab] = useState("Widgets Configurations");
   return (
     <div className={styles.container}>
-      <div className={styles.navContainerLeft}>
+      <div className={`${styles.navContainerLeft} ${theme === 'light' && styles.navContainerLeft_light}`}>
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${
             activeTab == "Widgets Configurations" ? styles.active : ""
@@ -19,7 +22,7 @@ const Page = () => {
           onClick={() => setActiveTab("Widgets Configurations")}
         >
           <div>
-            <Image src={WidgetIcon} alt="billing icon" />
+            <Image className={`${iconClass}`}  src={WidgetIcon} alt="billing icon" />
           </div>
           <div className={styles.text}>Widgets Configurations</div>
         </div>
@@ -29,7 +32,7 @@ const Page = () => {
           }`}
           onClick={() => setActiveTab("Outreach Configurations")}
         >
-          <Image src={OutreachIcon} alt="team icon" />
+          <Image className={`${iconClass}`}  src={OutreachIcon} alt="team icon" />
           <div className={styles.text}>Outreach Configurations</div>
         </div>
 
@@ -39,7 +42,7 @@ const Page = () => {
           }`}
           onClick={() => setActiveTab("Features")}
         >
-          <Image src={FeatureIcon} alt="team icon" />
+          <Image className={`${iconClass}`}  src={FeatureIcon} alt="team icon" />
           <div className={styles.text}>Features</div>
         </div>
       </div>
