@@ -187,6 +187,7 @@
 }
 .option {
   padding: 10px 5px;
+  color: white;
 }
 .option:hover {
   background-color: #303030;

@@ -6,6 +6,7 @@
 }
 
 .navContainerLeft {
+    margin-top: 80px;
     display: flex;
     width: 20%;
     flex-direction: column;
