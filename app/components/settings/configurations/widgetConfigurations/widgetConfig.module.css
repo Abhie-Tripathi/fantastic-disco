@@ -1,5 +1,6 @@
 .container {
     padding: 20px;
+    margin-top: 80px;
 
 }
 
@@ -121,4 +122,28 @@
     display: flex;
     gap: 5px;
     align-items: center;
+}
+
+
+
+.editPopUp {
+    position: absolute;
+    background-color:#2A2A2A;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    border-radius: 6px;
+    color: #B8B8B8;
+    font-size: 12px;
+}
+
+.btn_container{
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.btn{
+    padding: 3px 5px 3px 5px;
+    border-radius: 5px;
+    border: 1px solid #6750A4;   
 }
