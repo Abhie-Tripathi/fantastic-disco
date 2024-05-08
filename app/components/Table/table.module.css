@@ -69,9 +69,12 @@
   padding: 20px;
 }
 
-.event_title {
-  color: #242424;
+.event_title {  
   font-weight: 500;
+  color: white;
+}
+.eventTitle_light{
+  color: black;
 }
 
 .event_organizer {
