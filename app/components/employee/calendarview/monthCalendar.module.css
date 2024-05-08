@@ -44,7 +44,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 15px;
-  width: 1200px;
+  /* width: 1200px; */
 }
 
 .emptyCard {
