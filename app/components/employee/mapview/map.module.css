@@ -120,7 +120,7 @@
     display: none;
     max-width: 350px;
     height: 80vh;
-    background-color: white;
+    background-color: #1a1a1a;
     padding: 0px 20px;
     overflow: hidden;
 }
@@ -128,9 +128,6 @@
 .eventList.active {
     display: block;
 }
-
-
-
 
 .eventList_header {
     padding: 15px 0px;
@@ -140,7 +137,7 @@
 }
 
 .eventList_header span {
-    color: #604a98;
+    color: white;
     font-size: 14px;
     font-weight: 500;
 }
@@ -164,27 +161,29 @@
 
 
 .eventListCard {
-    border: 1px solid #f6edff;
+    border: 1px solid #303030;
     padding: 10px;
     border-radius: 8px;
 }
 
 .eventListCard_title {
     font-weight: 500;
-    color: #222;
+    color: white;
     font-size: 14px;
 }
 
 .eventListCard_location {
     padding-top: 8px;
-    color: #696b83;
+    /* color: #696b83; */
+    color: grey;
     font-size: 14px;
 }
 
 .eventListCard_date {
     padding-top: 6px;
     font-size: 14px;
-    color: #696b83;
+    /* color: #696b83; */
+    color: grey;
 }
 
 .eventListCard_footer {

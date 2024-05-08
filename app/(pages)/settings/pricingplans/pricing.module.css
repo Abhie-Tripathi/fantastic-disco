@@ -1,6 +1,7 @@
 .container {
     display: flex;
     margin-top: 20px;
+    width: 100%;
     gap: 20px;
 }
 
@@ -8,6 +9,7 @@
     margin-top: 80px;
     display: flex;
     flex-direction: column;
+    width: 20%;
     gap: 10px;
     border-right: 0.98px solid #262626;
     padding: 20px;
@@ -47,7 +49,7 @@
     padding: 10px;
     border-radius: 8px;
     font-weight: 600;
-    width: 250px;
+    width: 100%;
     background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
 }
 

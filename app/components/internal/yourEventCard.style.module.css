@@ -9,6 +9,7 @@
     margin-bottom: 25px;
     margin-top: 40px;
     padding: 25px;
+    cursor: pointer;
 }
 
 .eventNameComp {
@@ -212,4 +213,14 @@
 .circle:hover::before {
     opacity: 1;
 
+}
+
+.total_upvotes {
+    border-right: .5px solid #D9D9D9;
+    font-size: 14px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

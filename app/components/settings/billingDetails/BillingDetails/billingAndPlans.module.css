@@ -41,7 +41,6 @@
     display: flex;
     justify-content: space-between;
     gap: 20px;
-
 }
 .firstContainer_light{
     background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
@@ -51,7 +50,7 @@
 }
 
 .bodySec{
-    width: 80%;
+    width: 100%;
 }
 
 .divider {
@@ -325,6 +324,7 @@
 }
 
 .thirdDiv {
+    width: 100%;
     margin-top: 20px;
     display: flex;
     gap: 10px;
@@ -333,6 +333,7 @@
 
 .accountManagemantCard {
     padding: 20px;
+    width: 50%;
     border: 1px solid #1F1F1F;
     border-radius: 15px;
 
@@ -803,4 +804,22 @@
     color: #ABAAAA;
     font-size: 16px;
     font-weight: 500;
+}
+@media screen and (max-width: 1730px) {
+    .upgradeIcn{
+        font-size:12px;
+        text-wrap: nowrap;
+    }
+    .userText{
+        font-size: 12px;
+    }
+    .number{
+        font-size: 12px;
+    }
+    .includeText{
+        font-size: 12px;
+    }
+    .masterCard{
+        font-size: 14px;
+    }
 }
