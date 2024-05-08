@@ -35,7 +35,8 @@ const Index = () => {
   }, []);
   const [openPopUpIndex, setOpenPopUpIndex] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(null);
-  const [isEdit, setIsedit] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editItems, setEditItems] = useState<any>({});
   const [staticCardsData, setCardData] = useState([
     {
@@ -89,36 +90,29 @@ const Index = () => {
 
   const togglePopUp = (index: any) => {
     setOpenPopUpIndex((prevIndex) => (prevIndex === index ? null : index));
+    setIsOpen(true);
   };
 
   const editCard = (index: any, card: any) => {
-    console.log("cards", card);
     setOpenEditPopUp((prevIndex) => (prevIndex === index ? null : index));
     setEditItems(card);
-    setIsedit(true);
+    setIsEdit(true);
   };
 
   const handleEdit = (id: any, newContent: any) => {
     const updatedCards = staticCardsData.map((card) => {
       if (card.id === id) {
-        return (card.cardItitle = newContent);
+        return (card.cardItitle = newContent), (card.text = newContent);
       }
       return card;
     });
     setCardData(updatedCards);
+    setIsEdit(false);
   };
 
-
-  // const handleDelete = (id:any) => {
-  //   console.log("ifddd", id)
-  //   setCardData(staticCardsData.filter(card => card.id !== id));
-  // };
-
-  const handleDelete = (id:any) => {
-    setCardData(prevCards => prevCards.filter(card => card.id !== id));
+  const handleDelete = (id: any) => {
+    setCardData((prevCards) => prevCards.filter((card) => card.id !== id));
   };
-
-  console.log("cardssss", staticCardsData)
 
   return (
     <div
@@ -163,7 +157,7 @@ const Index = () => {
                   onClick={() => togglePopUp(id)}
                 />
               </div>
-              {openPopUpIndex === id && (
+              {isOpen && openPopUpIndex === id && (
                 <div className={styles.popUp}>
                   {/* Content of the pop-up */}
                   <div
@@ -174,8 +168,10 @@ const Index = () => {
                     <Image src={PencilIcon} alt="pen" />
                     Edit
                   </div>
-                  <div className={styles.popUpContent} style={{ cursor: "pointer" }}
-                  // onClick={() => handleDelete(id)}
+                  <div
+                    className={styles.popUpContent}
+                    style={{ cursor: "pointer" }}
+                    // onClick={() => handleDelete(id)}
                   >
                     <Image src={Delete} alt="delete" />
                     Delete
@@ -187,6 +183,7 @@ const Index = () => {
                 <div className={styles.editPopUp}>
                   <div>
                     <input
+                      className={styles.inputBox}
                       value={editItems?.cardItitle}
                       onChange={(e) =>
                         setEditItems({
@@ -196,7 +193,19 @@ const Index = () => {
                       }
                     />
                   </div>
-                  <div></div>
+
+                  <div>
+                    <input
+                      className={styles.inputBox}
+                      value={editItems?.text}
+                      onChange={(e) =>
+                        setEditItems({
+                          ...editItems,
+                          text: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
 
                   <div className={styles.btn_container}>
                     <div
@@ -207,7 +216,7 @@ const Index = () => {
                     </div>
                     <div
                       className={styles.btn}
-                      onClick={() => setIsedit(false)}
+                      onClick={() => setIsEdit(false)}
                     >
                       Cancel
                     </div>
