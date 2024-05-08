@@ -310,16 +310,13 @@ const Table = ({
             {eventPerPage.map((event: any) => (
               <tr key={event.id}>
                 <td>
-                  <div className={styles.event_title}>
                     <Link
-                      href={`/event-analytics/${event.id}`}
-                      style={{ textDecoration: "none", color: "blue" }}
+                      href={`/event-analytics/${event.id}`} className={`${styles.event_title} ${theme === "light"? styles.eventTitle_light : ""}`}
                     >
                       {event.name.length > 80
                         ? event.name.slice(0, 80) + "..."
                         : event.name}
                     </Link>
-                  </div>
                   <div className={styles.event_organizer}>
                     {event.organizer.name}
                   </div>
