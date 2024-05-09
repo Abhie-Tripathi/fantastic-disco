@@ -199,7 +199,7 @@ const Table = ({
     1685, 5175,
   ]);
   const { theme } = useTheme();
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
     edition_id: null,
@@ -310,13 +310,17 @@ const Table = ({
             {eventPerPage.map((event: any) => (
               <tr key={event.id}>
                 <td>
-                    <Link
-                      href={`/detailpage`}
-                      style={{ textDecoration: "none", color: theme === 'light' ? 'black' : 'white' }}
-                      {event.name.length > 80
-                        ? event.name.slice(0, 80) + "..."
-                        : event.name}
-                    </Link>
+                  <Link
+                    href={`/detailpage`}
+                    style={{
+                      textDecoration: "none",
+                      color: theme === "light" ? "black" : "white",
+                    }}
+                  >
+                    {event.name.length > 80
+                      ? event.name.slice(0, 80) + "..."
+                      : event.name}
+                  </Link>
                   <div className={styles.event_organizer}>
                     {event.organizer.name}
                   </div>
@@ -540,14 +544,18 @@ const Table = ({
                     {bookmarkedEvent.includes(event.id) ? (
                       <BookmarkIcon fillColor={"#ff851b"} />
                     ) : (
-                      <BookmarkIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
+                      <BookmarkIcon
+                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                      />
                     )}
                   </span>
                   <span onClick={() => handlePinEvent(event.id)}>
                     {event.id == pinEvent ? (
                       <PinIcon fillColor={"#ff851b"} />
                     ) : (
-                      <PinIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
+                      <PinIcon
+                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                      />
                     )}
                   </span>
                   {isOpen == event.id && (

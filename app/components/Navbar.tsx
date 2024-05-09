@@ -136,7 +136,7 @@ const Navbar = () => {
               <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
             </div>
             {profilectas.isOpen && (
-              <div className={`${styles.userDropdown} ${styles.light}`}>
+              <div className={`${styles.userDropdown} ${theme === 'light' && styles.light}`}>
                 <div className={styles.btns}>Profile</div>
                 <div className={styles.btns} onClick={signOut}>
                   Log Out
