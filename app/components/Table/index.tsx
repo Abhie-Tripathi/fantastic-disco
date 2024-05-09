@@ -313,7 +313,6 @@ const Table = ({
                     <Link
                       href={`/detailpage`}
                       style={{ textDecoration: "none", color: theme === 'light' ? 'black' : 'white' }}
-                    >
                       {event.name.length > 80
                         ? event.name.slice(0, 80) + "..."
                         : event.name}
