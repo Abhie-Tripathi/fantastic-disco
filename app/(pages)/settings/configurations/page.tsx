@@ -44,13 +44,15 @@ const Page = () => {
         </div>
       </div>
 
-      {activeTab === "Widgets Configurations" ? <WidgetConfiguration /> : ""}
+      <div className={styles.rightContainer}>
+        {activeTab === "Widgets Configurations" ? <WidgetConfiguration /> : ""}
 
-      {activeTab === "Outreach Configurations" ? (
-        <OutreachConfigurations />
-      ) : (
-        ""
-      )}
+        {activeTab === "Outreach Configurations" ? (
+          <OutreachConfigurations />
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 };

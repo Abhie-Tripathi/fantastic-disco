@@ -40,11 +40,7 @@ const EventListCard = (event: any) => {
   );
 };
 
-interface MapProps{
-  listButton : boolean;
-}
-
-const Map = ({ listButton} : MapProps) => {
+const Map = () => {
   const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
   const [showList, setShowList] = useState(false);
@@ -129,12 +125,12 @@ const Map = ({ listButton} : MapProps) => {
 
       {fullView && (
         <div className={styles.eventList_container}>
-          {listButton && <button
+          <button
             onClick={() => setShowList(!showList)}
             className={styles.event_list_button}
           >
             EVENTS LIST
-          </button>}
+          </button>
           <div
             className={`${styles.eventList} ${showList ? styles.active : ""}`}
           >

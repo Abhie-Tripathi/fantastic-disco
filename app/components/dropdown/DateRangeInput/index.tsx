@@ -23,6 +23,15 @@ const DateRangeInput = ({
   useClickOutside(dropdownRef, () => onClose());
   const {theme} = useTheme();
 
+  const selectDateHandler = (event: any) => {
+    console.log(event);
+    const text = event.target.innerText;
+    if (text != "Custom") {
+      setState(text);
+      onClose();
+    }
+  };
+
   return (
     <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
       <div className={styles.header}>
@@ -30,7 +39,7 @@ const DateRangeInput = ({
         <div className={styles.header_button} onClick={onClose}>Done</div>
       </div>
 
-      <ul className={styles.dateRangeList}>
+      <ul className={styles.dateRangeList} onClick={selectDateHandler}>
         <li>Any time</li>
         <li>Today</li>
         <li>This month</li>

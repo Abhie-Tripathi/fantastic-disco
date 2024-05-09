@@ -38,6 +38,18 @@
   flex: 1;
 }
 
+.inputSearch{
+  color: #ffffff;
+}
+
+.inputSearch_light{
+  color: #000000;
+}
+
+.inputSearch::placeholder{
+  color: gray;
+}
+
 .searchbar input:focus {
   outline: none;
 }
