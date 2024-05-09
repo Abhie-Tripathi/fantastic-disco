@@ -28,8 +28,6 @@ import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
 import RecentSearches from "@/app/components/Search/RecentSearches";
 import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
-import RankInput from "@/app/components/Search/Dropdowns/RankInput";
-import EventAttendance from "@/app/components/Search/Dropdowns/EventAttendence";
 import EventStatus from "@/app/components/Search/Dropdowns/EventStatus";
 import ExportModal from "@/app/components/Search/ExportModal";
 

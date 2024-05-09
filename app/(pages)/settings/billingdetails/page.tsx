@@ -5,22 +5,30 @@ import Image from "next/image";
 import BillingIcon from "/public/billingIcon.svg";
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import BillingDetailsComponent from "@/app/components/settings/billingDetails/BillingDetails";
-import Timer from '/public/timer.svg'
+import Timer from "/public/timer.svg";
 import { useTheme } from "@/context";
 const Page = () => {
-  const {theme}=useTheme();
-  const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   const [activeTab, setActiveTab] = useState("Billing Details");
   return (
     <div className={styles.container}>
-      <div className={`${styles.navContainerLeft} ${theme === 'light' && styles.navContainerLeft_light}`}>
+      <div
+        className={`${styles.navContainerLeft} ${
+          theme === "light" && styles.navContainerLeft_light
+        }`}
+      >
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${activeTab == "Billing Details" ? styles.active : ""
             }`}
           onClick={() => setActiveTab("Billing Details")}
         >
           <div>
-            <Image className={`${iconClass}`}  src={BillingIcon} alt="billing icon" />
+            <Image
+              className={`${iconClass}`}
+              src={BillingIcon}
+              alt="billing icon"
+            />
           </div>
           <div className={styles.text}>Billing Details</div>
         </div>
@@ -29,7 +37,11 @@ const Page = () => {
             }`}
           onClick={() => setActiveTab("Billing Account Management")}
         >
-          <Image className={`${iconClass}`} src={BillingAccountIcon} alt="team icon" />
+          <Image
+            className={`${iconClass}`}
+            src={BillingAccountIcon}
+            alt="team icon"
+          />
           <div className={styles.text}>Billing Account Management</div>
         </div>
 
