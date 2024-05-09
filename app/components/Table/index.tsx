@@ -311,8 +311,8 @@ const Table = ({
               <tr key={event.id}>
                 <td>
                     <Link
-                      href={`/event-analytics/${event.id}`} className={`${styles.event_title} ${theme === "light"? styles.eventTitle_light : ""}`}
-                    >
+                      href={`/detailpage`}
+                      style={{ textDecoration: "none", color: theme === 'light' ? 'black' : 'white' }}
                       {event.name.length > 80
                         ? event.name.slice(0, 80) + "..."
                         : event.name}
@@ -447,12 +447,12 @@ const Table = ({
                       event.yoyGrowth > 0 ? (
                         <div className={styles.text_green}>
                           {event.yoyGrowth}%{" "}
-                          <Image src={UpArrow} alt="up" width={10} className={iconClass} />
+                          <Image src={UpArrow} alt="up" width={10} />
                         </div>
                       ) : (
                         <div className={styles.text_red}>
                           {event.yoyGrowth}%{" "}
-                          <Image src={DownArrow} alt="down" width={10} className={iconClass}  />
+                          <Image src={DownArrow} alt="down" width={10} />
                         </div>
                       )
                     ) : (
@@ -485,12 +485,12 @@ const Table = ({
                       event.reputationSentiment > 0 ? (
                         <div className={styles.text_green}>
                           {event.reputationSentiment}%{" "}
-                          <Image src={UpArrow} alt="up" width={10} className={iconClass} />{" "}
+                          <Image src={UpArrow} alt="up" width={10} />{" "}
                         </div>
                       ) : (
                         <div className={styles.text_red}>
                           {event.reputationSentiment}%{" "}
-                          <Image src={DownArrow} alt="down" width={10} className={iconClass} />{" "}
+                          <Image src={DownArrow} alt="down" width={10} />{" "}
                         </div>
                       )
                     ) : event.stats.rating == undefined ? (
