@@ -3,23 +3,25 @@ import React, { useState } from "react";
 import styles from "./sidebar.style.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import Dashboard from '/public/internal/dashboard.svg'
-import Trend from '/public/internal/trend.svg'
-import Research from '/public/internal/research.svg'
-import DatasetIcon from '/public/dataset.svg'
-import Exhibit from '/public/internal/exhibit.svg'
+import Dashboard from "/public/internal/dashboard.svg";
+import Trend from "/public/internal/trend.svg";
+import Research from "/public/internal/research.svg";
+import DatasetIcon from "/public/dataset.svg";
+import Exhibit from "/public/internal/exhibit.svg";
 import { usePathname } from "next/navigation";
-import Graph from '/public/internal/trend.svg'
+import Graph from "/public/internal/trend.svg";
 import { useTheme } from "@/context";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [showSidebar, setShowSidebar] = useState(false);
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   return (
     <div
-      className={`${styles.container} ${showSidebar ? styles.open : ""} ${theme === 'light' ? styles.container_light : ""}`}
+      className={`${styles.container} ${showSidebar ? styles.open : ""} ${
+        theme === "light" ? styles.container_light : ""
+      }`}
       onMouseEnter={() => setShowSidebar(true)}
       onMouseLeave={() => setShowSidebar(false)}
     >
@@ -30,48 +32,78 @@ const Sidebar = () => {
         </div> */}
         <Link
           href="/internal"
-          className={`${styles.link} ${pathname === "/internal" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={Dashboard} alt="dashboard" className={styles.icons} />
           <div className={styles.linkName}>Dashboard</div>
         </Link>
         <Link
           href="/internal/coordinate"
-          className={`${styles.link} ${pathname === "/internal/coordinate" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal/coordinate"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={DatasetIcon} alt="coordinate" className={styles.icons} />
           <div className={styles.linkName}>Coordinate</div>
         </Link>
         <Link
           href="/internal/search/events"
-          className={`${styles.link} ${pathname === "/research" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal/search/events"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={Research} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Research</div>
         </Link>
         <Link
           href="/internal/trackers"
-          className={`${styles.link} ${pathname === "/internal/trackers" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal/trackers"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={Trend} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Trackers</div>
         </Link>
         <Link
           href="/internal/outreach"
-          className={`${styles.link} ${pathname === "/coordinate/outreach" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal/outreach"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={Exhibit} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Outreach</div>
         </Link>
         <Link
           href="/internal/trends"
-          className={`${styles.link} ${pathname === "/internal/trends" ? styles.activeLink : ""
-            }`}
+          className={`${styles.link} ${
+            pathname === "/internal/trends"
+              ? theme === "light"
+                ? styles.activeLink_light
+                : styles.activeLink
+              : ""
+          }`}
         >
           <Image src={Graph} alt="location" className={styles.icons} />
           <div className={styles.linkName}>Event Trends</div>

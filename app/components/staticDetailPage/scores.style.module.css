@@ -1,0 +1,62 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+.valuesContainer{
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+}
+.predictedDataContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;    
+}
+
+.predictedData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.predictedDataHeading {
+    font-size: 12px;
+    font-weight: 300;
+    color: inherit;
+}
+
+.predictedDataValue {
+    font-size: 14px;
+    font-weight: 700;
+    color: #9274e4;
+}
+
+.eventCardStats {
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 12px;
+    column-gap: 12px;
+    justify-items: center;
+}
+
+.rank_container {
+    position: relative;
+    border: 6px solid #9274e4;;
+    display: flex;
+    flex-direction: column;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    height: 75px;
+
+}
+.rank_title{
+    font-size: 10px;
+    color: white;
+}
+.rank{
+    color: #9274e4;
+}

@@ -1,6 +1,7 @@
 .container {
     padding: 20px;
     width: 80%;
+    margin-top: 80px;
 }
 .container_light{
     color: black;

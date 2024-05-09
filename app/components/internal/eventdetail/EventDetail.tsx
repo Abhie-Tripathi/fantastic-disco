@@ -92,7 +92,7 @@ const EventDetail = ({
             {singledata && <SingleEvent {...singledata} />}
             <EventDescription
               description={singledata.description}
-              open={openEventDetails}
+              open={openEventDetails} speakers={true} shortlist={false}
             />
             <Organiser open={openOrganiserDetails} />
             <EventPoc open={openPocDetails} />

@@ -4,18 +4,28 @@
     color: white;
 }
 
-.container_light{
+.container_light {
     background-color: var(--primary-bg-light);
     /* color: var(--primary-color-light); */
 }
 
 .outerDiv {
-    padding-top: 20px;
+    /* padding-top: 20px;
     padding-left: 20px;
     background-color: #0D1117;
+    border-bottom: 1px solid #21262D; */
+
+    background-color: #0D1117;
     border-bottom: 1px solid #21262D;
+    color: #ffffff;
+    padding: 12px 28px 12px 28px;
+    position: fixed;
+    width: 100%;
+    z-index: 111;
+    top: 80px;
 }
-.outerDiv_light{
+
+.outerDiv_light {
     background-color: white;
     color: black;
     /* color: var(--secondary-color-light); */
@@ -71,7 +81,7 @@
     border-bottom: 3px solid #6750a4;
 }
 
-.text{
+.text {
     /* color: #FFFFFF; */
     font-size: 16px;
     font-weight: 400;

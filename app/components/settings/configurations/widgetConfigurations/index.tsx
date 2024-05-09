@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./widgetConfig.module.css";
 import StickyTopWigitCard from "./StickyTopwigitCard";
-import PageWigitCard from "./PageWigetCard";
 import PlusIcon from "/public/addIcon.svg";
 import ApproveIcon from "/public/approvedIcon.svg";
 import conciergeIcon from "/public/conciergeIcon.svg";
@@ -10,9 +9,10 @@ import ShortListedIcon from "/public/shortlistedIcon.svg";
 import ThreeDots from "/public/threeDots.svg";
 import TimerIcon from "/public/timer.svg";
 import Image from "next/image";
+import PencilIcon from "/public/pencilIcon.svg";
+import Delete from "/public/deleteIconSvg.svg";
 const Index = () => {
   const [widgets, setWidgets] = useState<any>();
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,38 +33,42 @@ const Index = () => {
 
     fetchData();
   }, []);
-
+  const [openPopUpIndex, setOpenPopUpIndex] = useState(null);
+  const [openEditPopUp, setOpenEditPopUp] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [editItems, setEditItems] = useState<any>({});
   const [staticCardsData, setCardData] = useState([
     {
-      id: 1,
+      id: 0,
       cardItitle: "Shortlisted",
       dotIcon: ThreeDots,
       icon: ShortListedIcon,
       text: " List of all shortlisted events by admin",
     },
     {
-      id: 2,
+      id: 1,
       cardItitle: "In Process",
       dotIcon: ThreeDots,
       icon: TimerIcon,
       text: "List of all the events in negotiations",
     },
     {
-      id: 3,
+      id: 2,
       cardItitle: "Concierge",
       dotIcon: ThreeDots,
       icon: conciergeIcon,
       text: "EventGeni Support",
     },
     {
-      id: 4,
+      id: 3,
       cardItitle: "Approved",
       dotIcon: ThreeDots,
       icon: ApproveIcon,
       text: " List of all events finalised afted negotiations",
     },
     {
-      id: 5,
+      id: 4,
       cardItitle: "Declined",
       dotIcon: ThreeDots,
       icon: CrossIcon,
@@ -84,6 +88,32 @@ const Index = () => {
     // setCardData([...staticCardsData, newCard]);
   };
 
+  const togglePopUp = (index: any) => {
+    setOpenPopUpIndex((prevIndex) => (prevIndex === index ? null : index));
+    setIsOpen(true);
+  };
+
+  const editCard = (index: any, card: any) => {
+    setOpenEditPopUp((prevIndex) => (prevIndex === index ? null : index));
+    setEditItems(card);
+    setIsEdit(true);
+  };
+
+  const handleEdit = (id: any, newContent: any) => {
+    const updatedCards = staticCardsData.map((card) => {
+      if (card.id === id) {
+        return (card.cardItitle = newContent), (card.text = newContent);
+      }
+      return card;
+    });
+    setCardData(updatedCards);
+    setIsEdit(false);
+  };
+
+  const handleDelete = (id: any) => {
+    setCardData((prevCards) => prevCards.filter((card) => card.id !== id));
+  };
+
   return (
     <div
       className={`${styles.container} ${styles.deleteModal ? styles.blur : ""}`}
@@ -96,13 +126,11 @@ const Index = () => {
       <div className={styles.wigitCard_container}>
         {widgets?.length > 0
           ? widgets.map((item: any, index: number) => (
-            <div key={index}>
-              <StickyTopWigitCard data={item} />
-            </div>
-          ))
+              <div key={index}>
+                <StickyTopWigitCard data={item} />
+              </div>
+            ))
           : "No widgets Added"}
-        {/* <StickyTopWigitCard />
-        <PageWigitCard/> */}
       </div>
       <div className={styles.outreachPanelSec}>
         <div className={styles.gradient_border}>Outreach Configurations</div>
@@ -112,20 +140,93 @@ const Index = () => {
           You can manage and configure all the stages present on the outreach
         </div>
         <div className={styles.outreachCard_container}>
-          {staticCardsData?.map((card: any, id: any, key:any) => (
-            <div key={key}
-              className={`${styles.outreachCard} ${id % 2 === 0 ? styles.cardbackgroundColor : ""
-                }`}
+          {staticCardsData?.map((card: any, id: any, key: any) => (
+            <div
+              key={key}
+              className={`${styles.outreachCard} ${
+                id % 2 === 0 ? styles.cardbackgroundColor : ""
+              }`}
             >
-              <div className={styles.cardTopSec} 
-              >
+              <div className={styles.cardTopSec}>
                 <Image src={card?.icon} alt="" />
                 <div className={styles.inner_sec}>{card.cardItitle}</div>
-                <Image src={ThreeDots} alt="dots" />
+                <Image
+                  src={ThreeDots}
+                  alt="dots"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => togglePopUp(id)}
+                />
               </div>
+              {isOpen && openPopUpIndex === id && (
+                <div className={styles.popUp}>
+                  {/* Content of the pop-up */}
+                  <div
+                    className={styles.popUpContent}
+                    onClick={() => editCard(id, card)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Image src={PencilIcon} alt="pen" />
+                    Edit
+                  </div>
+                  <div
+                    className={styles.popUpContent}
+                    style={{ cursor: "pointer" }}
+                    // onClick={() => handleDelete(id)}
+                  >
+                    <Image src={Delete} alt="delete" />
+                    Delete
+                  </div>
+                </div>
+              )}
+
+              {isEdit && openEditPopUp === id && (
+                <div className={styles.editPopUp}>
+                  <div>
+                    <input
+                      className={styles.inputBox}
+                      value={editItems?.cardItitle}
+                      onChange={(e) =>
+                        setEditItems({
+                          ...editItems,
+                          cardItitle: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div>
+                    <input
+                      className={styles.inputBox}
+                      value={editItems?.text}
+                      onChange={(e) =>
+                        setEditItems({
+                          ...editItems,
+                          text: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className={styles.btn_container}>
+                    <div
+                      className={styles.btn}
+                      onClick={() => handleEdit(id, editItems)}
+                    >
+                      Save
+                    </div>
+                    <div
+                      className={styles.btn}
+                      onClick={() => setIsEdit(false)}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className={styles.innerText}>{card.text}</div>
             </div>
           ))}
+
           <div className={styles.cards_borderBottom}></div>
 
           <div className={styles.addBtnContainer}>

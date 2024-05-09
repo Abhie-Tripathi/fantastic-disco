@@ -28,8 +28,6 @@ import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
 import RecentSearches from "@/app/components/Search/RecentSearches";
 import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
-import RankInput from "@/app/components/Search/Dropdowns/RankInput";
-import EventAttendance from "@/app/components/Search/Dropdowns/EventAttendence";
 import EventStatus from "@/app/components/Search/Dropdowns/EventStatus";
 import ExportModal from "@/app/components/Search/ExportModal";
 
@@ -118,6 +116,12 @@ const Search = () => {
     }));
   };
 
+  const truncateDateRange = (range:any) => {
+    return range.length > 8 ? range.slice(0, 7) + "..." : range;
+  };
+
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+
   return (
     <div
       className={`${styles.container} ${
@@ -136,7 +140,12 @@ const Search = () => {
               placeholder="Search Events"
               onChange={(e) => setSearchInput(e.target.value)}
               value={searchInput}
-            ></input>
+              className={
+                theme === "light"
+                  ? styles.inputSearch_light
+                  : styles.inputSearch
+              }
+            />
             <div
               className={styles.recentSearches_button}
               onClick={() => setShowRecentSearches(!showRecentSearches)}
@@ -144,7 +153,7 @@ const Search = () => {
               Recent searches
             </div>
             <button>
-              <Image src={SearchIcon} alt="search" />
+              <Image src={SearchIcon} alt="search" className={iconClass} />
             </button>
           </div>
           <div className={styles.sub_container}>
@@ -272,7 +281,14 @@ const Search = () => {
                   className={styles.input}
                   onClick={() => handleDropdownClick("Date & Time")}
                 >
-                  <div className={styles.input_title}>Date & Time</div>
+                  <div className={styles.input_title}>
+                    Date & Time
+                    <span className={styles.input_selected_title}>
+                      {selectedDateRange && selectedDateRange.length === 2
+                        ? truncateDateRange(selectedDateRange.join(" - "))
+                        : truncateDateRange(selectedDateRange)}
+                    </span>
+                  </div>
                   <Image
                     src={
                       openDropdown == "Date & Time" ? upArrowIcon : DropIcon1

@@ -1,0 +1,10 @@
+.circular_loader {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.text {
+    font-size: 14px;
+    font-weight: bold;
+}
