@@ -9,11 +9,18 @@
     margin-top: 80px;
     display: flex;
     flex-direction: column;
-    width: 20%;
     gap: 10px;
     border-right: 0.98px solid #262626;
     padding: 20px;
+    width: 20%;
     background-image: linear-gradient(to bottom, #1A1A1A 100%,  #1A1A1A 0%);
+    position: fixed;
+    height: 100%;
+}
+
+.rightContainer{
+    width: 100%;
+    padding-left: 22%;
 }
 .navContainerLeft_light{
     color: black;
