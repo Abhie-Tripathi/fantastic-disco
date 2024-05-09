@@ -55,12 +55,27 @@
     border-radius: 10px;
     padding: 20px;
 }
-
-.score_locationContainer {
+.venueContainer{
+    padding: 20px;
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 10px;
     display: flex;
-    flex-direction: column;
-    width: 500px;
-    gap: 30px;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+.venueName{
+    font-size: 14px;
+    margin-top: 20px;
+}
+.venueLocation{
+    font-size: 12px;
+    color: grey;
+}
+.venueButton{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #9274e4;
 }
 
 .eventDetails_dateTime_heading {
@@ -101,6 +116,18 @@
     align-items: center;
     gap: 10px;
     padding: 30px 0px;
+}
+.score_locationContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+.scoreContainer{
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 10px;
+    width: 70%;
+    padding: 20px;
+    height: fit-content;
 }
 
 .locationContainer {

@@ -7,6 +7,7 @@ import Organiser from '@/app/components/internal/eventdetail/Organiser'
 import Scores from '@/app/components/staticDetailPage/Scores'
 import Map from '@/app/components/staticDetailPage/Map'
 import DateCard from '@/app/components/staticDetailPage/DateCard'
+import RightArrowIcon from "/public/rightBigArrow.svg"
 
 const Page = () => {
 
@@ -57,9 +58,21 @@ const Page = () => {
                         <DateCard />
                     </div>
                 </div>
-                
+                <div className={styles.venueContainer}>
+                    <div>
+                        <div className={styles.venueHeading}>VENUE</div>
+                        <div className={styles.venueName}>The Konzerthaus Berlin</div>
+                        <div className={styles.venueLocation}>Gendarmenmarkt square</div>
+                    </div>
+                    <div className={styles.venueButton}>
+                        <Image src={RightArrowIcon} alt='arrow' />
+                        <div>Search this venue</div>
+                    </div>
+                </div>
                 <div className={styles.score_locationContainer}>
-                    <Scores />
+                    <div className={styles.scoreContainer}>
+                        <Scores />
+                    </div>
                     <div className={styles.locationContainer}>
                         <div className={styles.locationHeading}>LOCATION</div>
                         <div className={styles.locationName}>Berlin, Germany</div>
