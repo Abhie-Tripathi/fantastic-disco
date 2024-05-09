@@ -571,7 +571,7 @@ const Table = ({
                             handleModalOpen(event.id, event.edition)
                           }
                         >
-                          <img src="/close.svg" alt="close" />
+                          <Image src="/close.svg" alt="close" />
                         </button>
                       </header>
                       <main className={styles["modal_content"]}>

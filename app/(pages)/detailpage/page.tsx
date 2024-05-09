@@ -7,7 +7,7 @@ import Organiser from '@/app/components/internal/eventdetail/Organiser'
 import Scores from '@/app/components/staticDetailPage/Scores'
 import Map from '@/app/components/staticDetailPage/Map'
 import DateCard from '@/app/components/staticDetailPage/DateCard'
-import RightArrowIcon from "/public/rightBigArrow.svg"
+import RightArrowIcon from "/public/rightbigarrow.svg"
 
 const Page = () => {
 
