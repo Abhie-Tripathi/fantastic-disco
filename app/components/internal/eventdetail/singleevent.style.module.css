@@ -23,11 +23,6 @@
     flex-direction: column;
     justify-content: space-evenly;
 }
-.statusContainer{
-    display: flex;
-    align-items: center;
-    gap: 17px;
-}
 .statusHeading{
     color: #808080;
     font-size: 14px;
