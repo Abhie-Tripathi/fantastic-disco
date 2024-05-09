@@ -311,7 +311,7 @@ const Table = ({
               <tr key={event.id}>
                 <td>
                     <Link
-                      href={`/event-analytics/${event.id}`} className={`${styles.event_title} ${theme === "light"? styles.eventTitle_light : ""}`}
+                      href={`/detailpage`} className={`${styles.event_title} ${theme === "light"? styles.eventTitle_light : ""}`}
                     >
                       {event.name.length > 80
                         ? event.name.slice(0, 80) + "..."

@@ -32,7 +32,7 @@ const EventListCard = (event: any) => {
           <span style={{ color: "grey" }}>|</span>
           <div className={styles.eventListCard_label}>Parade</div>
         </div>
-        <Link href={`/employee/${event.id}`}>
+        <Link href={`/detailpage`}>
           View Details
         </Link>
       </div>

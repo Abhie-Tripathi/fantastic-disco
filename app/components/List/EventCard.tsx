@@ -9,6 +9,7 @@ import { EventCardType } from "@/types/ListViewCard";
 import TrendingIcon from '/public/trendingarrow.svg'
 import LocatioinIcon from '/public/location.svg'
 import { useTheme } from '@/context';
+import Link from 'next/link';
 
 interface EventCardProps {
     data: EventCardType
@@ -21,12 +22,12 @@ const EventCard = ({ data }: EventCardProps) => {
     return (
         <div className={`${styles.eventCard_container} ${theme === 'light' ? styles.eventCard_container_light : ""}`} onClick={()=>setAccordian(!accordian)}>
             <div className={styles.eventCard_header}>
-                <div className={styles.title_dateContainer}>
+                <Link href={"/detailpage"} className={styles.title_dateContainer}>
                     <div className={styles.eventTitle}>{data.eventName}</div>
                     <div className={styles.eventDate}>
                         {data.startDate} - {data.endDate}
                     </div>
-                </div>
+                </Link>
                 <div className={styles.minorDetailsContainer}>
                     <div className={styles.eventOrganiser}>{data.organiser}</div>
                     <div className={styles.eventFeeContainer}>
