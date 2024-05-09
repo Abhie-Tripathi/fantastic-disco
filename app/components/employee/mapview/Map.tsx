@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.module.css";
@@ -10,14 +10,8 @@ import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
-interface Event {
-  id: number;
-  venue: { lat: number; lng: number }[];
-  eventUrl: string;
-  name: string;
-  country: string;
-}
-// const ReactMapGL = React.lazy(() => import('react-map-gl'));
+
+
 
 const EventListCard = (event: any) => {
   return (
@@ -38,7 +32,7 @@ const EventListCard = (event: any) => {
           <span style={{ color: "grey" }}>|</span>
           <div className={styles.eventListCard_label}>Parade</div>
         </div>
-        <Link href={`/employee/${event.event.id}`}>
+        <Link href={`/detailpage`}>
           View Details
         </Link>
       </div>
@@ -46,7 +40,7 @@ const EventListCard = (event: any) => {
   );
 };
 
-const Map: React.FC = ({}) => {
+const Map = () => {
   const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
   const [showList, setShowList] = useState(false);
@@ -149,13 +143,13 @@ const Map: React.FC = ({}) => {
 
             <div className={styles.eventList_list}>
               {eventData?.map((event, key) => (
-                <EventListCard key={key} event={event}/>
+                <EventListCard key={key} event={event} />
               ))}
             </div>
           </div>
         </div>
       )}
-      {/* </Suspense> */}
+
     </div>
   );
 };

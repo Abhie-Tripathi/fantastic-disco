@@ -1,6 +1,6 @@
 .form {
     min-height: 400px;
-    background-color: var(--secondary-bg);
+    background-color: #1a1a1a;
     border-radius: 10px;
     display: flex;
     padding: 20px;
@@ -351,6 +351,9 @@
 }
 
 .formImgContainer .imageHolder .logo {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
     position: absolute;
     top: 1%;
     left: 1%;

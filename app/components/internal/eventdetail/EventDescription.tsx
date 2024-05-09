@@ -12,9 +12,11 @@ import { useTheme } from '@/context'
 interface DetailsProps {
     description: string;
     open : boolean;
+    speakers : boolean;
+    shortlist : boolean;
 }
 
-const EventDescription = ({ description,open }: DetailsProps) => {
+const EventDescription = ({ description,open, speakers, shortlist }: DetailsProps) => {
     const [accordianToggle, setAccordianToggle] = useState(open)
     const {theme} = useTheme()
     const iconClass = theme === 'light' ? 'icons_light' : 'icon'
@@ -30,10 +32,10 @@ const EventDescription = ({ description,open }: DetailsProps) => {
                         <Image src={CalendarIcon} alt='date' className={iconClass} />
                         <div className={styles.date}>1st Apr 2024 - 30th Apr 2024</div>
                     </div>
-                    <div className={styles.statusContainer}>
+                    {shortlist && <div className={styles.statusContainer}>
                         <div className={styles.statusHeading}>Status</div>
                         <div className={styles.statusValue}>Shortlisted</div>
-                    </div>
+                    </div>}
                 </div>
                 <div className={`${styles.locationContainer} ${theme === 'light' ? styles.locationContainer_light : ""}`}>
                     <Image src={LocationIcon} alt='location' className={iconClass} />
@@ -43,7 +45,7 @@ const EventDescription = ({ description,open }: DetailsProps) => {
                     <div className={styles.descHeading}>Description</div>
                     <div className={styles.description}>{description}</div>
                 </div>
-                <div className={styles.speakersContainer}>
+                {speakers && <div className={styles.speakersContainer}>
                     <div className={styles.speakerHeading}>Speakers</div>
                     <div className={styles.circles}>
                         <div className={styles.circle} data-name="John Doe">
@@ -56,7 +58,7 @@ const EventDescription = ({ description,open }: DetailsProps) => {
                             <Image className={styles.image} src={person2} alt="person2" />
                         </div>
                     </div>
-                </div>
+                </div>}
             </div>}
         </div>
     )
