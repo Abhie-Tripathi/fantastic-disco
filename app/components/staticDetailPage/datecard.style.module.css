@@ -1,0 +1,46 @@
+.container {
+    flex: 1;
+    position: relative;
+    background-color: #292929;
+    border-radius: 12px;
+    padding: 10px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-direction: column;
+  }
+  
+  .container::before {
+    content: "";
+    position: absolute;
+    width: 95%;
+    height: 6px;
+    border-radius: 5px;
+    background-color: #8f68ce;
+    top: -4px;
+  }
+  
+  .day {
+    color: #8f68ce;
+    font-weight: 500;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .date {
+    border-radius: 11px;
+    background-color: #8f68ce;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    line-height: 17px;
+    padding: 8px;
+  }
+  
+  .monthAndYear {
+    color: #8f68ce;
+    font-weight: 500;
+    text-align: center;
+  }

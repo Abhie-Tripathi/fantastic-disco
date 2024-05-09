@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.module.css";
@@ -10,14 +10,8 @@ import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
-interface Event {
-  id: number;
-  venue: { lat: number; lng: number }[];
-  eventUrl: string;
-  name: string;
-  country: string;
-}
-// const ReactMapGL = React.lazy(() => import('react-map-gl'));
+
+
 
 const EventListCard = (event: any) => {
   return (
@@ -46,7 +40,11 @@ const EventListCard = (event: any) => {
   );
 };
 
-const Map: React.FC = ({}) => {
+interface MapProps{
+  listButton : boolean;
+}
+
+const Map = ({ listButton} : MapProps) => {
   const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
   const [showList, setShowList] = useState(false);
@@ -131,12 +129,12 @@ const Map: React.FC = ({}) => {
 
       {fullView && (
         <div className={styles.eventList_container}>
-          <button
+          {listButton && <button
             onClick={() => setShowList(!showList)}
             className={styles.event_list_button}
           >
             EVENTS LIST
-          </button>
+          </button>}
           <div
             className={`${styles.eventList} ${showList ? styles.active : ""}`}
           >
@@ -149,13 +147,13 @@ const Map: React.FC = ({}) => {
 
             <div className={styles.eventList_list}>
               {eventData?.map((event, key) => (
-                <EventListCard key={key} event={event}/>
+                <EventListCard key={key} event={event} />
               ))}
             </div>
           </div>
         </div>
       )}
-      {/* </Suspense> */}
+
     </div>
   );
 };

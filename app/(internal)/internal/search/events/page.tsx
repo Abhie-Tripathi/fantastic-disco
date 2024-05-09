@@ -779,7 +779,7 @@ const Search = () => {
           }`}
         >
           <Suspense fallback={<Loading />}>
-            <Map />
+            <Map listButton={true} />
           </Suspense>
         </div>
       )}
