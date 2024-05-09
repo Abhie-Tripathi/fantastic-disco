@@ -12,6 +12,8 @@ import Placeholder from '/public/placeholder.png'
 import DescriptionModal from './DescriptionModal';
 import SearchIcon from '/public/search.svg'
 import EmployeeData from '../../public/data/employeeData.json'
+import logo from '/public/googlelogo.png'
+
 import Image from 'next/image';
 import { useTheme } from '@/context';
 
@@ -71,7 +73,6 @@ const AddEventModal = () => {
         setEndDate(selectedEvent?.endDate || '')
         setLogoUrl(selectedEvent?.logo || "")
     }, [selectedEvent]);
-
 
     const filterEmployees = (mail: any) => {
         return mail.id.includes(employeeMail.toLowerCase())
@@ -238,7 +239,7 @@ const AddEventModal = () => {
                             <div className={styles.imageBox}>
                                 <Image src={image.placeHolder} alt="" width={400} height={400} />
                                 <div className={styles.imageLocation}>{location}</div>
-                                {/* <Image src={logoUrl} alt='logo' className={styles.logo} width={40} height={40}></Image> */}
+                                <Image src={logo} alt='logo' className={styles.logo}></Image>
                             </div>
                         )}
                     </div>

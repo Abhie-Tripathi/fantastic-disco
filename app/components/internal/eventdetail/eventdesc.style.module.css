@@ -1,8 +1,8 @@
 .container {
     border-radius: 20px;
-    border: 1px solid #fff;
+    border: 1px solid #8d8d8d;
     padding: 27px 36px;
-    /* background: linear-gradient(180deg, rgba(26, 26, 26, 1) 0%, rgba(26, 26, 26, 0) 100%); */
+    background: linear-gradient(180deg, rgba(26, 26, 26, 1) 0%, rgba(26, 26, 26, 0) 100%);
 }
 
 .container_light{
@@ -207,7 +207,6 @@
     border-radius: 12px;
 }
 .followerName{
-    color: #D9D9D9;
 }
 .username{
     margin-left: 5px;
@@ -215,7 +214,6 @@
 }
 .followerPosition{
     font-size: 12px;
-    color: #D9D9D9;
 }
 
 .statusCard {

@@ -41,6 +41,7 @@
     border-radius: 12px;
     padding: 5px 24px;
     margin-right: 12px;
+    display: flex;
 }
 .navbar .btns .add{
     border-radius: 12px;
@@ -60,12 +61,33 @@
     background-color: var(--secondary-bg-light);
 }
 
-@media screen and (max-width: 550px) {
-    /* .navbar{
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        gap: 10px;
-    } */
+@media screen and (max-width: 768px) {
+    .navbar .heading{
+        font-size: 14px;
+    }
+    .navbar .heading img{
+        font-size: 14px;
+    }
+    .navbar .btns .add{
+        font-size: 8px;
+        padding: 4px 14px;
+        border-radius: 7px;
+    }
+    .navbar .btns .sort{
+        border-radius: 4px;
+        padding: 2px 3px;
+    }
+    .navbar .btns .add img{
+        width: 7px;
+        height: 7px;
+    }
+    .navbar .btns .sort img{
+        width: 12px;
+        height: 12px;
+    }
+    .navbar{
+        margin-bottom: 20px;
+        width: 100vw;
+    }
+
 }

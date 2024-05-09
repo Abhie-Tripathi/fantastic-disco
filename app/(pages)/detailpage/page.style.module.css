@@ -1,101 +1,150 @@
-.body{
+.body {
     padding: 50px;
     display: flex;
+    gap: 20px;
 }
-.leftContainer{
+
+.leftContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 28%;
+    padding-right: 20px;
+    border-right: 1px solid rgb(59, 59, 59);
 }
-.poster{
+
+.headerContainer {
+    display: flex;
+    gap: 20px;
+}
+
+.poster {
     border-radius: 10px;
     border: 1px solid rgb(70, 70, 70);
 }
-.eventName{
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    padding: 5px;
-    color: white;
-    font-size: 25px;
 
-}
-.rightContainer{
+.eventNameTagsContainer {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    margin-left: 30px;
+}
+
+.eventName {
+    color: white;
+    font-size: 25px;
+}
+
+.tags {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    border-radius: 40px;
+    padding: 2px 10px;
+    font-size: 12px;
+    background-color: #9274e4;
+}
+
+.rightContainer {
+    display: flex;
+    width: 72%;
+    flex-direction: column;
     background-color: #1a1a1a;
     border-radius: 10px;
     padding: 20px;
 }
-.headerContainer{
+.venueContainer{
+    padding: 20px;
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+.venueName{
+    font-size: 14px;
+    margin-top: 20px;
+}
+.venueLocation{
+    font-size: 12px;
+    color: grey;
+}
+.venueButton{
     display: flex;
     align-items: center;
     gap: 5px;
     color: #9274e4;
 }
-.companyContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
+.eventDetails_dateTime_heading {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 20px;
 }
 
-.companyNameContainer{
+.eventDetails_dateTime {
     display: flex;
-    gap: 10px;
     align-items: center;
+}
 
-}
-.companyLogo{
-    border-radius: 4px;
-}
-.companyName{
-     font-size: 15px;
-     color: white;
-}
-.companyDesc{
-    font-size: 12px;
-    color: grey;
-}
-.rightArrow{
-    height: 30px;
-    width: 30px;
-    border-radius: 20px;
-    margin-left: 20px;
-    cursor: pointer;
-    padding: 5px;
-    background-color: black;
-}
-.descContainer{
+.eventDetails_dateTime_container {
+    flex: 1;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 10px;
 }
 
-.eventDesc{
+.eventDetails_dateTime_container span {
+    color: #79747e;
     font-size: 14px;
 }
-.startDateEndDateContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.dateContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.dateHeader{
-    display: flex;
+
+.eventDetails_timeZone_container {
+    padding-top: 5px;
+    color: #8f68ce;
+    font-weight: 500;
     font-size: 12px;
-    color: white;
-    align-items: center;
-    gap: 10px;
-}
-.date{
-    border-radius: 10px;
-    padding: 5px 10px;
-    color: white;
-    background-color: #574783;
+    letter-spacing: 0.5px;
+    line-height: 26px;
 }
 
+.eventDetails_dates_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 30px 0px;
+}
+.score_locationContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+.scoreContainer{
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 10px;
+    width: 70%;
+    padding: 20px;
+    height: fit-content;
+}
+
+.locationContainer {
+    border: 1px solid rgb(63, 63, 63);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.locationName {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.locationCoordinate {
+    font-size: 13px;
+    color: grey;
+}

@@ -9,6 +9,7 @@ import { EventCardType } from "@/types/ListViewCard";
 import TrendingIcon from "/public/trendingarrow.svg";
 import LocatioinIcon from "/public/location.svg";
 import { useTheme } from "@/context";
+import Link from "next/link";
 
 interface EventCardProps {
   data: EventCardType;
@@ -19,49 +20,31 @@ const EventCard = ({ data }: EventCardProps) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [accordian, setAccordian] = useState(false);
 
-  const formatDate = (dateString: any) => {
-    const newDateString = dateString;
-    var date = new Date(newDateString);
-
-    // Array of days of the week and months
-    var daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
+  const formatDate = (date: string) => {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
       "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
-    // Get day of the week, month, and year
-    var dayOfWeek = daysOfWeek[date.getDay()];
-    var month = months[date.getMonth()];
-    var day = date.getDate();
-    var year = date.getFullYear();
+    const [year, month, day] = date.split("-");
+    const monthIndex = parseInt(month) - 1; // Adjust for zero-based indexing of months
 
-    var formattedDate = dayOfWeek + "," + " " + month + " " + day + " " + year;
+    const formattedDate = `${parseInt(day)} ${months[monthIndex]} ${parseInt(
+      year
+    )}`;
 
-    // console.log("formatted_date__farah", formattedDate);
     return formattedDate;
   };
-
-  const formattedStartDate = formatDate(data.startDate);
-  const formattedEndDate = formatDate(data.endDate);
 
   return (
     <div
@@ -71,13 +54,21 @@ const EventCard = ({ data }: EventCardProps) => {
       onClick={() => setAccordian(!accordian)}
     >
       <div className={styles.eventCard_header}>
-        <div className={styles.title_dateContainer}>
-          <div className={styles.eventTitle}>{data.eventName}</div>
+        <Link href={"/detailpage"} className={styles.title_dateContainer}>
+          <Link
+            href={`/detailpage`}
+            style={{
+              textDecoration: "none",
+              color: theme === "light" ? "black" : "white",
+            }}
+            className={styles.eventTitle}
+          >
+            {data.eventName}{" "}
+          </Link>
           <div className={styles.eventDate}>
-            {formattedStartDate} - {formattedEndDate}
-            {}
+            {formatDate(data.startDate)} - {formatDate(data.endDate)}
           </div>
-        </div>
+        </Link>
         <div className={styles.minorDetailsContainer}>
           <div className={styles.eventOrganiser}>{data.organiser}</div>
           <div className={styles.eventFeeContainer}>

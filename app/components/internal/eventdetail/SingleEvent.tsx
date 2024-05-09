@@ -22,10 +22,6 @@ const SingleEvent = (props: EventData) => {
                     <Image src={WorkIcon} alt='work' className={iconClass} />
                     <div>Campus</div>
                 </div>
-                <div className={styles.statusContainer}>
-                    <div className={styles.statusHeading}>Status</div>
-                    <div className={styles.statusValue}>Shortlisted</div>
-                </div>
             </div>
         </div>
     )

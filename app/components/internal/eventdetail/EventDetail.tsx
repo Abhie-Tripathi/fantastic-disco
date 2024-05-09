@@ -95,7 +95,7 @@ const EventDetail = ({
             {singledata && <SingleEvent {...singledata} />}
             <EventDescription
               description={singledata.description}
-              open={openEventDetails}
+              open={openEventDetails} speakers={true} shortlist={false}
             />
             <EventRequest
               open={openEventRequest}
