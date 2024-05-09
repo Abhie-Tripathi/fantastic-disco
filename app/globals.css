@@ -49,8 +49,24 @@ a {
   filter: invert(1);
 }
 
+.mobile_view{
+  display: none;
+}
+.desktop_view{
+  display: unset;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mobile_view{
+      display: unset;
+  }
+  .desktop_view{
+    display: none;
   }
 }
