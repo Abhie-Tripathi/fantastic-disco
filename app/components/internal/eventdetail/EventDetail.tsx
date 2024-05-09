@@ -13,6 +13,7 @@ import StatusChangeDropdown from "./statusChangeDropdown";
 import { usePathname } from "next/navigation";
 import closeIcon from "/public/close.svg";
 import Image from "next/image";
+import EventRequest from "./EventRequest";
 
 interface EventData {
   id: number;
@@ -25,6 +26,7 @@ interface Props {
   openOrganiserDetails: boolean;
   openPocDetails: boolean;
   closeBtn: boolean;
+  openEventRequest:boolean
   handleModal: () => void;
 }
 
@@ -33,6 +35,7 @@ const EventDetail = ({
   openOrganiserDetails,
   openPocDetails,
   closeBtn,
+  openEventRequest,
   handleModal,
 }: Props) => {
   const [meet, setMeet] = useState(false);
@@ -93,6 +96,10 @@ const EventDetail = ({
             <EventDescription
               description={singledata.description}
               open={openEventDetails}
+            />
+            <EventRequest
+              open={openEventRequest}
+              description={singledata.description}
             />
             <Organiser open={openOrganiserDetails} />
             <EventPoc open={openPocDetails} />
