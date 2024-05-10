@@ -18,6 +18,7 @@ import DownArrow from "/public/Arrow_Down 2.svg";
 import DownloadIcon from "/public/downloadIcon.svg";
 import { useTheme } from "@/context";
 import CircularTracker from "@/app/components/CircularLoader";
+import AddressIcon from "/public/address.svg";
 const Index = () => {
   const cardData = [
     "3 Trackers to track your events",
@@ -189,7 +190,7 @@ const Index = () => {
           </div>
           <div className={styles.tracker_container}>
             <div className={styles.trackerCard}>
-              <CircularTracker numerator={3} denominator={3} />
+              <CircularTracker numerator={3} denominator={3} text='Trackers'/>
 
               <div className={styles.trackerCard_content}>
                 <div className={styles.tracker_text}>Trackers</div>
@@ -199,14 +200,14 @@ const Index = () => {
               </div>
             </div>
             <div className={styles.trackerCard}>
-              <CircularTracker numerator={3} denominator={5} />
+              <CircularTracker numerator={3} denominator={5} text='Users' />
               <div className={styles.trackerCard_content}>
                 <div className={styles.tracker_text}>Users</div>
                 <div>Currently three active users out of 5 seats available</div>
               </div>
             </div>
             <div className={styles.trackerCard}>
-              <CircularTracker numerator={3} denominator={50} />
+              <CircularTracker numerator={3} denominator={50}  text='Search'/>
               <div className={styles.trackerCard_content}>
                 <div className={styles.tracker_text}>Search</div>
                 <div>3 out of 50 search queries have been utilized</div>
@@ -239,232 +240,158 @@ const Index = () => {
           </div>
         </div>
 
-        <div className={styles.thirdDiv}>
-          <div className={styles.accountManagemantCard}>
-            <div className={styles.billing_container}>
-              <div>Billing Account Management</div>
-              <div className={styles.changeText}>Change</div>
+        <div className={styles.billing_acc}>
+          <div className={styles.gradient_border}>
+            Billing Account Management
+            <div>
+              <Image src={DownloadIcon} alt="download icon" />
+              <span className={styles.downloadText}> Download Invoice</span>
             </div>
-            <div
-              className={`${styles.innerCard} ${
-                theme === "light" && styles.innerCard_light
-              }`}
-            >
-              <div className={styles.inner_card_content}>
-                <div className={styles.imageDiv}>
-                  <Image src={DummyImage} alt="dummy image" />
-                  <div className={styles.profile}>
-                    <div className={styles.username_container}>
-                      <span>Rob Slate</span>
-                      <span className={styles.username}>@Ronbstess</span>
+          </div>
+          <div className={styles.thirdDiv}>
+            <div className={styles.accountManagemantCard}>
+              <div className={styles.billing_container}>
+                <div>Billing Account Management</div>
+                <div className={styles.changeText}>Change</div>
+              </div>
+              <div
+                className={`${styles.innerCard} ${
+                  theme === "light" && styles.innerCard_light
+                }`}
+              >
+                <div className={styles.inner_card_content}>
+                  <div className={styles.imageDiv}>
+                    <Image src={DummyImage} alt="dummy image" />
+                    <div className={styles.profile}>
+                      <div className={styles.username_container}>
+                        <span>Rob Slate</span>
+                        <span className={styles.username}>@Ronbstess</span>
+                      </div>
+                      <div>robslate@acmen.com</div>
                     </div>
-                    <div>robslate@acmen.com</div>
                   </div>
+                  <div className={styles.superAdminCard}> Super Admin</div>
                 </div>
-                <div className={styles.superAdminCard}> Super Admin</div>
               </div>
-            </div>
-            <div className={styles.cardInformation_container}>
-              <div className={styles.cardInformation_text}>
-                Card Information
-              </div>
-              <div className={styles.masterCard_sec}>
+              <div className={styles.cardInformation_container}>
                 <div>
-                  <Image src={MasterCardIcon} alt="master card icon" />
+                  <div className={styles.cardInformation_text}>
+                    Card Information
+                  </div>
+                  <div className={styles.masterCard_sec}>
+                    <div>
+                      <Image src={MasterCardIcon} alt="master card icon" />
+                    </div>
+                    <div className={styles.masterCard}>
+                      <div>MasterCard</div>
+                      <div>**** **** **** 2200</div>
+                      <div>Expiry on 20/2025</div>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.masterCard}>
-                  <div>MasterCard</div>
-                  <div>**** **** **** 2200</div>
-                  <div>Expiry on 20/2025</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className={styles.accountManagemantCard}>
-            <div className={styles.billing_container}>
-              <div>Previous Billing and Usage Details</div>
-              <div className={styles.changeText}>Repeat Plan</div>
-            </div>
-            <div
-              className={`${styles.innerCard} ${
-                theme === "light" && styles.innerCard_light
-              }`}
-            >
-              <div className={styles.billingUsage_container}>
-                <div className={styles.basic_container}>
-                  <div className={styles.basic_container_content}>
-                    <Image src={BasicIcon} alt="basic icon" />
-                    <div>Basic</div>
+                <div>
+                  <div className={styles.cardInformation_text}>
+                    Billing Address
                   </div>
-                </div>
-                <div className={styles.userSection}>
-                  <div className={styles.includeText}>Includes upto:</div>
-                  <div className={styles.userContent}>
-                    <Image src={UserIcon} alt="user icon" />
-                    <span className={styles.number}>5</span>
-                    <span className={styles.userText}>Users</span>
-                  </div>
-                  <div className={styles.second_divider}></div>
-                  <div className={styles.userContent}>
-                    <Image src={TrackerIcon} alt="user icon" />
-                    <span className={styles.number}>3</span>
-                    <span className={styles.userText}>Trackers</span>
-                  </div>
-                  <div className={styles.second_divider}></div>
-
-                  <div className={styles.userContent}>
-                    <Image src={SearchIcon} alt="user icon" />
-                    <span className={styles.number}>50</span>
-                    <span className={styles.userText}>Searches</span>
+                  <div className={styles.masterCard_sec}>
+                    <div>
+                      <Image src={AddressIcon} alt="master card icon" />
+                    </div>
+                    <div className={styles.masterCard}>
+                      <div>ACME CORP Pvt.Ltd</div>
+                      <div>Street 23, New york</div>
+                      <div>United States of Ameraica</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className={styles.cardInformation_container}>
-              <div className={styles.cardInformation_text}>
-                Payment Method and Usage
+            <div className={styles.accountManagemantCard}>
+              <div className={styles.billing_container}>
+                <div>Previous Billing and Usage Details</div>
+                <div className={styles.changeText}>Repeat Plan</div>
               </div>
-              <div className={styles.right_container}>
-                <div className={styles.masterCard_sec}>
-                  <div>
-                    <Image src={MasterCardIcon} alt="master card icon" />
-                  </div>
-                  <div className={styles.masterCard}>
-                    <div>MasterCard</div>
-                    <div>**** **** **** 2200</div>
-                    <div>Expiry on 20/2025</div>
-                  </div>
-                </div>
-                <div className={styles.rightSideContnet}>
-                  <div className={styles.tracker_icons}>
-                    <div className={styles.tracker_sec}>
-                      <Image src={ColoredTrackerIcon} alt="tracker icon" />
-                      <div className={styles.tracker_text}>Trackers</div>
+              <div
+                className={`${styles.innerCard} ${
+                  theme === "light" && styles.innerCard_light
+                }`}
+              >
+                <div className={styles.billingUsage_container}>
+                  <div className={styles.basic_container}>
+                    <div className={styles.basic_container_content}>
+                      <Image src={BasicIcon} alt="basic icon" />
+                      <div>Basic</div>
                     </div>
-                    <div className={styles.border_bottom}></div>
-                    <div className={styles.tracker_number}>3/3</div>
                   </div>
+                  <div className={styles.userSection}>
+                    <div className={styles.includeText}>Includes upto:</div>
+                    <div className={styles.userContent}>
+                      <Image src={UserIcon} alt="user icon" />
+                      <span className={styles.number}>5</span>
+                      <span className={styles.userText}>Users</span>
+                    </div>
+                    <div className={styles.second_divider}></div>
+                    <div className={styles.userContent}>
+                      <Image src={TrackerIcon} alt="user icon" />
+                      <span className={styles.number}>3</span>
+                      <span className={styles.userText}>Trackers</span>
+                    </div>
+                    <div className={styles.second_divider}></div>
 
-                  <div className={styles.tracker_icons}>
-                    <div className={styles.tracker_sec}>
-                      <Image src={ColoredGroupIcon} alt="group icon" />
-                      <div className={styles.tracker_text}>Users</div>
+                    <div className={styles.userContent}>
+                      <Image src={SearchIcon} alt="user icon" />
+                      <span className={styles.number}>50</span>
+                      <span className={styles.userText}>Searches</span>
                     </div>
-                    <div className={styles.border_bottom}></div>
-                    <div className={styles.tracker_number}>4/5</div>
-                  </div>
-
-                  <div className={styles.tracker_icons}>
-                    <div className={styles.tracker_sec}>
-                      <Image src={ColoredSearchIcon} alt="search icon" />
-                      <div className={styles.tracker_text}>Search</div>
-                    </div>
-                    <div className={styles.border_bottom}></div>
-                    <div className={styles.tracker_number}>30/39</div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <div className={styles.fourthDiv}>
-          <div className={styles.gradient_border}>Pricing Plans</div>
-          <div className={styles.pricingCard_container}>
-            <div className={styles.card_container}>
-              <div>
-                <div
-                  className={`${styles.cardUpper_sec} ${
-                    theme === "light" && styles.cardUpper_sec_light
-                  }`}
-                >
-                  <div className={styles.upper_sec_content}>
-                    <div className={styles.basicText}>Basic</div>
-                    <div className={styles.desc}>
-                      The basics for individuals and small organizations
+              <div className={styles.payment_method_container}>
+                <div className={styles.cardInformation_text}>
+                  Payment Method and Usage
+                </div>
+                <div className={styles.right_container}>
+                  <div className={styles.masterCard_sec}>
+                    <div>
+                      <Image src={MasterCardIcon} alt="master card icon" />
                     </div>
-                    <div className={styles.price}>$650</div>
-                    <div className={styles.monthy_price}>per month</div>
-                    <div>forever</div>
+                    <div className={styles.masterCard}>
+                      <div>MasterCard</div>
+                      <div>**** **** **** 2200</div>
+                      <div>Expiry on 20/2025</div>
+                    </div>
                   </div>
+                  <div className={styles.rightSideContnet}>
+                    <div className={styles.tracker_icons}>
+                      <div className={styles.tracker_sec}>
+                        <Image src={ColoredTrackerIcon} alt="tracker icon" />
+                        <div className={styles.tracker_text}>Trackers</div>
+                      </div>
+                      <div className={styles.border_bottom}></div>
+                      <div className={styles.tracker_number}>3/3</div>
+                    </div>
 
-                  <div className={styles.planButton_container}>Repeat plan</div>
-                </div>
-                <div
-                  className={`${styles.cardLower_sec} ${
-                    theme === "light" && styles.cardLower_sec_light
-                  }`}
-                >
-                  {cardData.map((item, key) => (
-                    <div className={styles.card_texts} key={key}>
-                      <Image src={RightArrow} alt="right arrow" />
-                      <span className={styles.lowerCardText}>{item}</span>
+                    <div className={styles.tracker_icons}>
+                      <div className={styles.tracker_sec}>
+                        <Image src={ColoredGroupIcon} alt="group icon" />
+                        <div className={styles.tracker_text}>Users</div>
+                      </div>
+                      <div className={styles.border_bottom}></div>
+                      <div className={styles.tracker_number}>4/5</div>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div
-                  className={`${styles.cardUpper_sec} ${
-                    theme === "light" && styles.cardUpper_sec_light
-                  }`}
-                >
-                  <div className={styles.upper_sec_content}>
-                    <div className={styles.basicText}>Advanced</div>
-                    <div className={styles.desc}>
-                      Advanced collaboration for individuals and organization
+
+                    <div className={styles.tracker_icons}>
+                      <div className={styles.tracker_sec}>
+                        <Image src={ColoredSearchIcon} alt="search icon" />
+                        <div className={styles.tracker_text}>Search</div>
+                      </div>
+                      <div className={styles.border_bottom}></div>
+                      <div className={styles.tracker_number}>30/39</div>
                     </div>
-                    <div className={styles.price}>$850</div>
-                    <div className={styles.monthy_price}>per month</div>
-                    <div>forever</div>
                   </div>
-
-                  <div className={styles.planButton_container}>Repeat plan</div>
-                </div>
-                <div
-                  className={`${styles.cardLower_sec} ${
-                    theme === "light" && styles.cardLower_sec_light
-                  }`}
-                >
-                  {cardData.map((item, key) => (
-                    <div className={styles.card_texts} key={key}>
-                      <Image src={RightArrow} alt="right arrow" />
-                      <span className={styles.lowerCardText}>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div
-                  className={`${styles.cardUpper_sec} ${
-                    theme === "light" && styles.cardUpper_sec_light
-                  }`}
-                >
-                  <div className={styles.upper_sec_content}>
-                    <div className={styles.basicText}>Premium</div>
-                    <div className={styles.desc}>
-                      Unlimited access to all the features on the platform
-                    </div>
-                    <div className={styles.price}>$650</div>
-                    <div className={styles.monthy_price}>per month</div>
-                    <div>forever</div>
-                  </div>
-
-                  <div className={styles.planButton_container}>Repeat plan</div>
-                </div>
-                <div
-                  className={`${styles.cardLower_sec} ${
-                    theme === "light" && styles.cardLower_sec_light
-                  }`}
-                >
-                  {cardData.map((item, key) => (
-                    <div className={styles.card_texts} key={key}>
-                      <Image src={RightArrow} alt="right arrow" />
-                      <span className={styles.lowerCardText}>{item}</span>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
@@ -489,45 +416,56 @@ const Index = () => {
                 >
                   <tr className={styles.table_head_row}>
                     <th className={styles.tableHeaderProfile}>
-                      <input className={styles.down_icon} type="checkbox" />
-                      <span className={styles.down_icon}>Invoice ID</span>
-                      <Image
-                        className={`${iconClass}`}
-                        src={DownArrow}
-                        alt="down icon"
-                      />
+                      <div className={styles.table_row}>
+                        <input className={styles.down_icon} type="checkbox" />
+                        <span className={styles.down_icon}>Invoice ID</span>
+                        <Image
+                          className={`${iconClass}`}
+                          src={DownArrow}
+                          alt="down icon"
+                        />
+                      </div>
                     </th>
                     <th className={styles.tableHeaderDate}>
-                      <span className={styles.down_icon}>Billing Date</span>
-                      <Image
-                        className={`${iconClass}`}
-                        src={DownArrow}
-                        alt="down icon"
-                      />
+                      <div className={styles.table_row}>
+                        <span className={styles.down_icon}>Billing Date</span>
+                        <Image
+                          className={`${iconClass}`}
+                          src={DownArrow}
+                          alt="down icon"
+                        />
+                      </div>
                     </th>
                     <th className={styles.tableHeaderEmail}>
-                      <span className={styles.down_icon}>Plan</span>
+                     <div className={styles.table_row}>
+                     <span className={styles.down_icon}>Plan</span>
                       <Image
                         className={`${iconClass}`}
                         src={DownArrow}
                         alt="down icon"
                       />
+                     </div>
                     </th>
                     <th className={styles.tableHeaderPhoneNumber}>
+                      <div className={styles.table_row}>
                       <span className={styles.down_icon}>Amount</span>
                       <Image
                         className={`${iconClass}`}
                         src={DownArrow}
                         alt="down icon"
                       />
+                      </div>
+                     
                     </th>
                     <th className={styles.tableHeaderPhoneMessage}>
+                      <div className={styles.table_row}>
                       <span className={styles.down_icon}>Status</span>
                       <Image
                         className={`${iconClass}`}
                         src={DownArrow}
                         alt="down icon"
                       />
+                      </div>
                     </th>
                   </tr>
                 </thead>
