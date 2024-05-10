@@ -12,15 +12,15 @@ const CircularLoader = ({ numerator, denominator, text }: any) => {
           className="progress-ring_circle"
           stroke="#B8B7EA"
           strokeWidth="6"
-          fill="transparent"
+          fill="#6750A41A"
           r="32"
           cx="40"
           cy="40"
         />
-        <text className={styles.number} x="50%" y="50%" textAnchor="middle" fill="#FFFFFF" dy=".3em">
+        <text className={styles.number} x="50%" y="45%" textAnchor="middle" fill="#FFFFFF" dy=".3em">
           {`${numerator}/${denominator}`}
         </text>
-        <text className={styles.text} x="50%" y="70%" textAnchor="middle" fill="#FFFFFF" dy=".3em">{text}</text>
+        <text className={styles.text} x="50%" y="65%" textAnchor="middle" fill="#FFFFFF" dy=".3em">{text}</text>
       </svg>
       <style jsx>{`
         .progress-ring_circle {
