@@ -40,6 +40,6 @@
         left: -25%;
     }
     .timelineItem::after {
-        height: 1000%;
+        height: 1200%;
     } 
 }

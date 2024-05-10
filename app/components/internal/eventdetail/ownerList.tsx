@@ -1,5 +1,6 @@
 import dropdownIcon from "/public/internal/drop_down_angle.svg";
 import Image from "next/image";
+import userImg from '/public/person1.svg'
 import styles from './eventdesc.style.module.css';
 import { useState } from "react";
 import ProfileIcon from '/public/profile_Image.jpg'
