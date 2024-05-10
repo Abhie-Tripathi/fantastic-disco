@@ -72,7 +72,7 @@
 
 @media screen and (max-width:768px) {
   .main {
-    font-size: 10px;
+    font-size: 8px;
   }
   .vote_tags {
     padding: 4px 8px;
