@@ -251,7 +251,7 @@
 }
 
 .trackerCard {
-    padding: 20px;
+    padding: 20px 20px 40px 20px;
     border-radius: 25px;
     border: 1px solid #1F1F1F;
     display: flex;
