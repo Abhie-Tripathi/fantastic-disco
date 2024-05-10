@@ -80,7 +80,7 @@ import { useTheme } from "@/context";
 const Trackers = () => {
     const {theme} = useTheme()
     return (
-        <div>
+        <div className={styles.body}>
             <div className={styles.trackers_container}>
                 <div className={styles.trackers_header}>
                     <div className={`${styles.trackers_header_title} ${theme === 'light' ? styles.trackers_header_title_light : ""}`}>Your Trackers</div>
