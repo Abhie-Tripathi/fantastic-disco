@@ -2,7 +2,9 @@
     /* display: inline-flex; */
     /* margin-right: 1.5rem; */
     /* justify-content: flex-end; */
-    float: inline-end;
+    /* float: inline-end; */
+    display: flex;
+    justify-content: flex-end;
 }
 
 .filter {
