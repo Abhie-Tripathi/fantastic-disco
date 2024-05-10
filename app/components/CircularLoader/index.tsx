@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./circularLoader.module.css";
 
-const CircularLoader = ({ numerator, denominator }: any) => {
+const CircularLoader = ({ numerator, denominator, text }: any) => {
   // Calculate the percentage of completion
   const percentage = (numerator / denominator) * 100;
 
@@ -17,9 +17,10 @@ const CircularLoader = ({ numerator, denominator }: any) => {
           cx="40"
           cy="40"
         />
-        <text className={styles.text} x="50%" y="50%" textAnchor="middle" fill="#A48BE6" dy=".3em">
+        <text className={styles.number} x="50%" y="50%" textAnchor="middle" fill="#FFFFFF" dy=".3em">
           {`${numerator}/${denominator}`}
         </text>
+        <text className={styles.text} x="50%" y="70%" textAnchor="middle" fill="#FFFFFF" dy=".3em">{text}</text>
       </svg>
       <style jsx>{`
         .progress-ring_circle {
