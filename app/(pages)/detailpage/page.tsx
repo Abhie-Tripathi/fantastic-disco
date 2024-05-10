@@ -33,7 +33,7 @@ const Page = () => {
     //       window.removeEventListener("resize", updateContainerWidth);
     //     };
 
-    //   },[mapContainerWidth]); 
+    //   },[]); 
     return (
         <div className={styles.body}>
             <div className={styles.leftContainer}>

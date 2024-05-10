@@ -23,7 +23,7 @@ const Map = ({ lat, long} :MapProps ) => {
   const [viewport, setViewport] = useState<any>({
     latitude: 40.7128,
     longitude: -74.0060,
-    width: "100%" ,
+    width: "calc(100%-0px)" ,
     height: "350px",
     zoom: 2,
   });
