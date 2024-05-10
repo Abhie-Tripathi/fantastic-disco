@@ -4,7 +4,7 @@
     border: 1px solid #6650a465;
     background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
     border-radius: 12px;
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     margin-bottom: 25px;
     margin-top: 40px;
@@ -232,6 +232,9 @@
 }
 
 @media screen and (max-width:768px) {
+    .topContainer {
+        border-bottom: 0.5px solid #3A3152;
+    }
     .cardImg{
       width: 115px;
       height: 90px;

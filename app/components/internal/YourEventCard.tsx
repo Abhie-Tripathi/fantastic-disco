@@ -61,6 +61,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
 
   return (
     <div className={styles.card} onClick={handleModalOpen}>
+    <div className={styles.topContainer} style={{display:"flex"}}>
       <div className={styles.leftContainer}>
         <div className='mobile_view'>
           <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
@@ -98,7 +99,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
         <div className='mobile_view'>
-          <div style={{float: "inline-end", marginTop: "-50px"}}>
+          <div style={{marginTop: "-50px"}}>
           <div className={styles.total_upvotes}>
             231
             <div style={{display:"flex", paddingTop: "5px"}}>
@@ -108,6 +109,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
           </div>
         </div>
+        <div className='desktop_view'>
         <div style={{display:"flex", gap: "6px"}} onClick={handleClickEvent}>
           <div className={styles.total_upvotes}>
             231
@@ -120,6 +122,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />
           <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} voteCount={15} handleVoteClick={handleVoteClick} />
           <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} voteCount={112} handleVoteClick={handleVoteClick} />
+        </div>
         </div>
         {/* 
         <div className={styles.circles}>
@@ -140,6 +143,17 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
          */}
+      </div>
+    </div>
+      <div className={styles.bottomContainer}>
+        <div className='mobile_view'>
+          <div style={{display:"flex", gap: "6px", paddingTop:"15px"}} onClick={handleClickEvent}>
+            <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} voteCount={12} handleVoteClick={handleVoteClick} />
+            <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />
+            <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} voteCount={15} handleVoteClick={handleVoteClick} />
+            <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} voteCount={112} handleVoteClick={handleVoteClick} />
+          </div>
+        </div>
       </div>
     </div>
   );
