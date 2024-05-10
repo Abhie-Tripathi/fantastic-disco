@@ -206,6 +206,7 @@ const Page: React.FC = () => {
             openPocDetails={true}
             closeBtn={true}
             handleModal={handleModal}
+            openEventRequest={false}
           />
         </div>
       )}

@@ -42,7 +42,7 @@ const Page = () => {
         </div>)}
       {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />}
       {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light : ""}`}>
-        <EventDetail openEventDetails={true} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} />
+        <EventDetail openEventDetails={true} openEventRequest={false} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} />
       </div>}
 
       {shortlistModalOpen && 

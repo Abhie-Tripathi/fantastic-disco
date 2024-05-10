@@ -1,69 +1,167 @@
-'use client'
+"use client";
 import Image from "next/image";
-import styles from './statusDropdown.style.module.css';
+import styles from "./statusDropdown.style.module.css";
 import crossIcon from "/public/close.svg";
-import AttendeeCard from './AttendeeCard';
-import tickIcon from '/public/internal/circle_tick.svg';
-import attendeeIcon from '/public/internal/attendee.svg';
-import exhibitorIcon from '/public/internal/exhibitor.svg';
-import speakerIcon from '/public/internal/speaker.svg';
-import sponsorIcon from '/public/internal/sponsor.svg';
-import { useTheme } from '@/context';
-
+import AttendeeCard from "./AttendeeCard";
+import tickIcon from "/public/internal/circle_tick.svg";
+import attendeeIcon from "/public/internal/attendee.svg";
+import exhibitorIcon from "/public/internal/exhibitor.svg";
+import speakerIcon from "/public/internal/speaker.svg";
+import sponsorIcon from "/public/internal/sponsor.svg";
+import { useTheme } from "@/context";
+import { useState } from "react";
+import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
+import person1 from "@/public/person1.svg";
+import person2 from "@/public/person2.svg";
 interface Props {
-    handleShortlistModal: () => void
+  handleShortlistModal: () => void;
 }
 
 const ShortlistModal = ({ handleShortlistModal }: Props) => {
+  const closeModal = () => {
+    handleShortlistModal();
+  };
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+  const [voteStatus, setVoteStatus] = useState({
+    Attending: false,
+    Speaking: false,
+    Sponsoring: false,
+    Exhibiting: false,
+  });
 
-    const closeModal = () => {
-        handleShortlistModal();
-    }
-    const {theme} = useTheme();
-    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+  const handleVoteClick = (item: keyof typeof voteStatus) => {
+    setVoteStatus((prevState) => ({
+      ...prevState,
+      [item]: !prevState[item],
+    }));
+  };
 
-    return (
-        <div className={styles["modalContainer"]} >
-            <div className={`${styles["modal"]} ${theme === 'light' ? styles.modal_light : ""}`} >
-                <header className={styles["modal_header"]}>
-                    <div className={styles["modal_header-title"]}>Shortlist Event</div>
-                    <button className={styles["close"]} onClick={() => closeModal()} >
-                        <Image src={crossIcon} alt="clock" width={16} height={16} />
-                    </button>
-                </header>
-                <main className={styles["modal_content"]} style={{ padding: "0 1.8rem" }}>
-                    <div className={styles["tag_container"]} >
-                        <span className={styles["tag_item"]}>
-                            <Image src={attendeeIcon} alt="" width={15} height={15} className={iconClass} />
-                            Attendee
-                            <Image src={tickIcon} alt="" width={13} height={13} className={iconClass}/>
-                        </span>
-                        <span className={styles["tag_item"]}>
-                            <Image src={speakerIcon} alt="" width={15} height={15} className={iconClass} />
-                            Speaker
-                            <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
-                        </span>
-                        <span className={styles["tag_item"]}>
-                            <Image src={exhibitorIcon} alt="" width={15} height={15} className={iconClass} />
-                            Exhibitors</span>
-                        <span className={styles["tag_item"]}>
-                            <Image src={sponsorIcon} alt="" width={15} height={15} className={iconClass} />
-                            Sponsors</span>
-                    </div>
-                    <div className={styles["total_attendee"]}>
-                        50 People have shown interest
-                    </div>
-                    <div style={{ marginTop: "20px", display:"flex", gap:"15px" }}>
-                        <AttendeeCard cardType={'Attendee'} />
-                        <AttendeeCard cardType={'Speaker'} />
-                    </div>
-                </main>
-                <footer className={styles.modal_footer}>
-                    <span className={styles.submitBtn}>Mark as Shortlisted</span>
-                </footer>
+  return (
+    <div className={styles["modalContainer"]}>
+      <div
+        className={`${styles["modal"]} ${
+          theme === "light" ? styles.modal_light : ""
+        }`}
+      >
+        <header className={styles["modal_header"]}>
+          <div className={styles["modal_header-title"]}>Shortlist Event</div>
+          <button className={styles["close"]} onClick={() => closeModal()}>
+            <Image src={crossIcon} alt="clock" width={16} height={16} />
+          </button>
+        </header>
+        <main
+          className={styles["modal_content"]}
+          style={{ padding: "0 1.8rem" }}
+        >
+          <div className={styles["tag_container"]}>
+            <span className={styles["tag_item"]}>
+              <Image
+                src={attendeeIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Attendee
+              <Image
+                src={tickIcon}
+                alt=""
+                width={13}
+                height={13}
+                className={iconClass}
+              />
+            </span>
+            <span className={styles["tag_item"]}>
+              <Image
+                src={speakerIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Speaker
+              <Image
+                src={tickIcon}
+                alt=""
+                width={13}
+                height={13}
+                className={iconClass}
+              />
+            </span>
+            <span className={styles["tag_item"]}>
+              <Image
+                src={exhibitorIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Exhibitors
+            </span>
+            <span className={styles["tag_item"]}>
+              <Image
+                src={sponsorIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Sponsors
+            </span>
+          </div>
+          <div className={styles["total_attendee"]}>
+
+            <div style={{ fontSize: "12px" }}>
+              <div className={styles.circles}>
+                <div className={styles.circle} data-name="John Doe">
+                  <Image
+                    className={styles.image}
+                    src={person1}
+                    alt="person1"
+                    width={25}
+                    height={25}
+                  />
+                </div>
+                <div
+                  className={styles.circle}
+                  style={{ marginLeft: "-8px", width: "25px", height: "25px" }}
+                  data-name="Ravi Tripathi"
+                >
+                  RT
+                </div>
+                <div
+                  className={styles.circle}
+                  style={{ marginLeft: "-8px" }}
+                  data-name="Jane Smith"
+                >
+                  <Image
+                    className={styles.image}
+                    src={person2}
+                    alt="person2"
+                    width={25}
+                    height={25}
+                  />
+                </div>
+              </div>
             </div>
-        </div>
-    )
-}
 
-export default ShortlistModal
+            <div className={styles.moddleText}>
+              50 People have shown interest
+            </div>
+            <div className={styles.markListBtn}>Mark as Shortlisted</div>
+          </div>
+          <div className={styles.main_section}>
+            <AttendeeCard cardType={"Attendee"} />
+            <AttendeeCard cardType={"Speaker"} />
+          </div>
+        </main>
+        <footer className={styles.modal_footer}>
+          <span className={styles.submitBtn}>Mark as Shortlisted</span>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default ShortlistModal;
