@@ -8,79 +8,79 @@ import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import Link from "next/link";
 import { useTheme } from "@/context";
 
-const eventData = [
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-    {
-        title: "Sydney Royal Easter Show",
-        organizer: "Royal Agricultural Society of NSW",
-        new: true,
-        startdate: "14 Nov 2024",
-        enddate: "04 Apr 2024",
-        location: "Sydney, Australia",
-        category: "Entertainment & Media",
-        est_audience: "15,000 - 25000",
-        intl_audience: "Low",
-    },
-];
+// const eventData = [
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+//     {
+//         title: "Sydney Royal Easter Show",
+//         organizer: "Royal Agricultural Society of NSW",
+//         new: true,
+//         startdate: "14 Nov 2024",
+//         enddate: "04 Apr 2024",
+//         location: "Sydney, Australia",
+//         category: "Entertainment & Media",
+//         est_audience: "15,000 - 25000",
+//         intl_audience: "Low",
+//     },
+// ];
 
 const Trackers = () => {
     const {theme} = useTheme()
     return (
-        <div>
+        <div className={styles.body}>
             <div className={styles.trackers_container}>
                 <div className={styles.trackers_header}>
                     <div className={`${styles.trackers_header_title} ${theme === 'light' ? styles.trackers_header_title_light : ""}`}>Your Trackers</div>

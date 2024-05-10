@@ -95,14 +95,7 @@ const savedEvents = [
 
 const Dashboard = () => {
   const { theme } = useTheme();
-  const iconClass = theme === "light" ? 'icons_light' : 'icon';
-
-
-  // INstagram temporray
-  const handleClick = () => {
-    const url = 'https://share-functionality.vercel.app/';
-    window.open(`https://www.instagram.com/create/story/?url=${encodeURIComponent(url)}`);
-      };
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   return (
     <div
@@ -125,7 +118,11 @@ const Dashboard = () => {
                     <Image src={card.icon} alt="search" />
                     <span>{card.title}</span>
                   </div>
-                  <Image src={GotoIcon} alt="goto" className={iconClass} />
+                  <Image
+                    src={GotoIcon}
+                    alt="goto"
+                    className={`${iconClass} ${styles.goto_icon}`}
+                  />
                 </div>
 
                 {card?.heading && (
@@ -192,25 +189,39 @@ const Dashboard = () => {
           >
             <div className={styles.tracker_card_header}>
               <span>Tracker 1 - Events in Bangalore</span>
-              <Image src={GotoIcon} alt="goto" className={iconClass} />
+              <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
             </div>
 
             <div className={styles.event_cards_container}>
-              {trackerCardsData.map((trackerCard) => (
-                <div key={trackerCard.title} className={styles.eventCard}>
-                  <div className={styles.eventCard_title}>
-                    <Image src={trackerCard.icon} alt="newevent" />
-                    <span>{trackerCard.title}</span>
-                  </div>
-                  <div className={styles.eventCard_stats}>
-                    <div className={styles.eventCard_stats_no}>
-                      {trackerCard.stats}
+              <div className={styles.desktop_trackerCard_container}>
+                {trackerCardsData.map((trackerCard) => (
+                  <div key={trackerCard.title} className={styles.eventCard}>
+                    <div className={styles.eventCard_title}>
+                      <Image src={trackerCard.icon} alt="newevent" />
+                      <span>{trackerCard.title}</span>
                     </div>
-                    <div className={styles.eventCard_description}>Events</div>
+                    <div className={styles.eventCard_stats}>
+                      <div className={styles.eventCard_stats_no}>
+                        {trackerCard.stats}
+                      </div>
+                      <div className={styles.eventCard_description}>Events</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
+              <div className={styles.mobile_trackerCard_container}>
+                {trackerCardsData.map((trackerCard, key) => (
+                  <div className={styles.mobile_eventCard} key={key}>
+                    <div className={styles.mobile_eventCard_title}>
+                      {trackerCard.title}
+                    </div>
+                    <div className={styles.mobile_eventStats_container}>
+                      {trackerCard.stats} Events
+                    </div>
+                  </div>
+                ))}
+              </div>
               <PolarAreaChart className={styles.events_stats_polarChart} />
             </div>
           </div>
@@ -221,23 +232,38 @@ const Dashboard = () => {
           >
             <div className={styles.tracker_card_header}>
               <span>Tracker 2 - Events in Allahabad</span>
-              <Image src={GotoIcon} alt="goto" className={iconClass} />
+              <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
             </div>
             <div className={styles.event_cards_container}>
-              {trackerCardsData.map((trackerCard) => (
-                <div key={trackerCard.title} className={styles.eventCard}>
-                  <div className={styles.eventCard_title}>
-                    <Image src={trackerCard.icon} alt="newevent" />
-                    <span>{trackerCard.title}</span>
-                  </div>
-                  <div className={styles.eventCard_stats}>
-                    <div className={styles.eventCard_stats_no}>
-                      {trackerCard.stats}
+              <div className={styles.desktop_trackerCard_container}>
+                {trackerCardsData.map((trackerCard) => (
+                  <div key={trackerCard.title} className={styles.eventCard}>
+                    <div className={styles.eventCard_title}>
+                      <Image src={trackerCard.icon} alt="newevent" />
+                      <span>{trackerCard.title}</span>
                     </div>
-                    <div className={styles.eventCard_description}>Events</div>
+                    <div className={styles.eventCard_stats}>
+                      <div className={styles.eventCard_stats_no}>
+                        {trackerCard.stats}
+                      </div>
+                      <div className={styles.eventCard_description}>Events</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              <div className={styles.mobile_trackerCard_container}>
+                {trackerCardsData.map((trackerCard, key) => (
+                  <div className={styles.mobile_eventCard} key={key}>
+                    <div className={styles.mobile_eventCard_title}>
+                      {trackerCard.title}
+                    </div>
+                    <div className={styles.mobile_eventStats_container}>
+                      {trackerCard.stats} Events
+                    </div>
+                  </div>
+                ))}
+              </div>
               <PolarAreaChart className={styles.events_stats_polarChart} />
             </div>
           </div>
@@ -276,7 +302,7 @@ const Dashboard = () => {
                   <Image src={DatasetIcon} alt="data" className={iconClass} />
                   <span>Coordiante</span>
                 </div>
-                <Image src={GotoIcon} alt="goto" className={iconClass} />
+                <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
               </div>
               <div className={styles.linkCard_description}>
                 <div>Total Events : 8</div>
@@ -293,7 +319,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 };

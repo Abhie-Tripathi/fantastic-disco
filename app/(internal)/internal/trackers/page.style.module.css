@@ -1,3 +1,6 @@
+.body{
+    min-width: 810px;
+}
 .trackers_container {
     padding: 30px 0px;
 }
@@ -218,3 +221,8 @@
 .button {
     cursor: pointer;
 }
+@media screen and (max-width: 1100px) {
+    .trackers_card_container {
+      flex-direction: column;
+    }
+  }
