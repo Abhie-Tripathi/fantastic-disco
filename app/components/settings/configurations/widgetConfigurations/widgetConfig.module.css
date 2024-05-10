@@ -32,6 +32,7 @@
     margin-top: 20px;
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .outreachPanelSec {
@@ -146,7 +147,8 @@
 .btn{
     padding: 3px 5px 3px 5px;
     border-radius: 5px;
-    border: 1px solid #6750A4;   
+    border: 1px solid #6750A4;  
+    cursor: pointer; 
 }
 
 
