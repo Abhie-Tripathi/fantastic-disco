@@ -25,8 +25,8 @@ const OwnerList: React.FC<PropType> = (props: PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value} style={{ display: "flex", marginRight: "1rem" }}>
-            <Image
-              src={userImg}
+            <img
+              src={'https://c1.10times.com/board/images/default_user.png'}
               alt="user"
               className={styles["owner_img"]}
               style={{ width: 48, height: 48 }}
