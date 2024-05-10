@@ -19,6 +19,7 @@ import EmployeeData from "@/public/data/employeeData.json";
 import { revalidateComment } from "@/utils/commentAction";
 import { log } from "util";
 interface Props {
+  replyId?: string,
   productId?: string;
   replyOptions?: replyOptions;
   focus?: boolean;
@@ -59,6 +60,7 @@ export const AddComment = ({
   repliesLength,
   notes,
   note,
+  replyId,
   setNote,
   setFilePreviews,
   filePreviews,
@@ -71,7 +73,7 @@ export const AddComment = ({
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
+  const [boxSpace, setBoxSpace] = useState(0);
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
@@ -95,17 +97,17 @@ export const AddComment = ({
     setUserDetail(user);
   }, [user]);
   // useEffect(() => {
-  //   const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
-  //   if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
-  //     setShowUser(true);
-  //     const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
-  //     if (searchTerm) {
-  //       const filtered = alluser.filter((employee) =>
-  //         employee.toLowerCase().includes(searchTerm.toLowerCase())
-  //       );
-  //       setAlluser(filtered);
-  //     }
-  //   }
+  // const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
+  // if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
+  // setShowUser(true);
+  // const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
+  // if (searchTerm) {
+  // const filtered = alluser.filter((employee) =>
+  // employee.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  // setAlluser(filtered);
+  // }
+  // }
   // }, [note, alluser]);
   useEffect(() => {
     const trimmedNote = note?.trim();
@@ -123,47 +125,65 @@ export const AddComment = ({
     } else setShowUser(false);
   }, [note]);
   // useEffect(() => {
-  //   if (!resultContainer.current) return;
+  // if (!resultContainer.current) return;
 
-  //   resultContainer.current.scrollIntoView({
-  //     block: "center",
-  //   });
+  // resultContainer.current.scrollIntoView({
+  // block: "center",
+  // });
   // }, [focusedIndex]);
   // const handleKeyDown1 = (e) => {
-  //   const { key } = e;
-  //   console.log(1);
+  // const { key } = e;
+  // console.log(1);
 
-  //   let nextIndexCount = 0;
+  // let nextIndexCount = 0;
 
-  //   // move down
-  //   if (key === "ArrowDown")
-  //     nextIndexCount = (focusedIndex + 1) % alluser.length;
+  // // move down
+  // if (key === "ArrowDown")
+  // nextIndexCount = (focusedIndex + 1) % alluser.length;
 
-  //   // move up
-  //   if (key === "ArrowUp")
-  //     nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
+  // // move up
+  // if (key === "ArrowUp")
+  // nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
 
   // };
   const handleKeyDown1: React.KeyboardEventHandler<
     HTMLDivElement | HTMLTextAreaElement
   > = (e) => {
     const { key } = e;
-    console.log(types + " " + showUser);
+    console.log(rec + " " + showUser);
     let nextIndexCount = 0;
-    // if(rec===true) setRec(false);
-    // if(showUser===true) setShowUser(false);
-    // move down
-    if (key === "ArrowDown")
-      nextIndexCount = (focusedIndex + 1) % alluser.length;
+    if (showUser) {
 
-    // move up
-    if (key === "ArrowUp")
-      nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
-    if (key === "Enter" && !e.shiftKey && (showUser || rec)) {
+      // if(rec===true) setRec(false);
+      // if(showUser===true) setShowUser(false);
+      // move down
+      if (key === "ArrowDown")
+        nextIndexCount = (focusedIndex + 1) % alluser.length;
+
+      // move up
+      if (key === "ArrowUp")
+        nextIndexCount = (focusedIndex + alluser.length - 1) % alluser.length;
+    } if (types) {
+      // if(rec===true) setRec(false);
+      // if(showUser===true) setShowUser(false);
+      // move down
+      if (key === "ArrowDown")
+        nextIndexCount = (focusedIndex + 1) % type.length;
+
+      // move up
+      if (key === "ArrowUp")
+        nextIndexCount = (focusedIndex + type.length - 1) % type.length;
+    }
+    if (key === "Enter" && !e.shiftKey && (showUser || types)) {
       e.preventDefault();
-      const newNote = note + alluser[focusedIndex].substring(1) + " ";
+      let newNote = "";
+      if (showUser) {
+        newNote = note + alluser[focusedIndex].substring(1) + " ";
+        setRec(true);
+      }
+      else newNote = note + type[focusedIndex] + " ";
       setNote(newNote);
-      setRec(true);
+      // setRec(true);
     }
     // Handle Enter key press
     else if (key === "Enter" && !e.shiftKey) {
@@ -180,44 +200,44 @@ export const AddComment = ({
   };
 
   // const handleEmployeeClick = (employee: any) => {
-  //   setNote((prevNote) => {
-  //     // Find the last index of "@" in the input value
-  //     const lastIndex = prevNote.lastIndexOf("@");
-  //     // Split the input value into two parts: text before "@" and text after "@"
-  //     const beforeAt = prevNote.substring(0, lastIndex);
-  //     const afterAt = prevNote.substring(lastIndex + 1);
-  //     // Concatenate the text before "@" with the selected employee name and "@" and text after "@"
-  //     return `${beforeAt}@${employee.name} ${afterAt}`;
-  //   });
-  //   setEmployeeDropDown(false);
+  // setNote((prevNote) => {
+  // // Find the last index of "@" in the input value
+  // const lastIndex = prevNote.lastIndexOf("@");
+  // // Split the input value into two parts: text before "@" and text after "@"
+  // const beforeAt = prevNote.substring(0, lastIndex);
+  // const afterAt = prevNote.substring(lastIndex + 1);
+  // // Concatenate the text before "@" with the selected employee name and "@" and text after "@"
+  // return `${beforeAt}@${employee.name} ${afterAt}`;
+  // });
+  // setEmployeeDropDown(false);
   // }
 
   // const renderNote = () => {
-  //   const parts = note.split("@");
-  //   return parts.map((part, index) => {
-  //     console.log("notes :"+part);
-  //     if (index === 0) {
-  //       return part;
-  //     } else {
-  //       return (
-  //         <span key={index} style={{ color: "blue" }}>
-  //           @{part}
-  //         </span>
-  //       );
-  //     }
-  //   });
+  // const parts = note.split("@");
+  // return parts.map((part, index) => {
+  // console.log("notes :"+part);
+  // if (index === 0) {
+  // return part;
+  // } else {
+  // return (
+  // <span key={index} style={{ color: "blue" }}>
+  // @{part}
+  // </span>
+  // );
+  // }
+  // });
   // };
   // const addNote=()=>{
-  //   console.log(notes);
-  //   const len=notes?.length;
-  //   const id = Date.now().toString();
-  //   const newNote={
-  //       id: id,
-  //     text: note
+  // console.log(notes);
+  // const len=notes?.length;
+  // const id = Date.now().toString();
+  // const newNote={
+  // id: id,
+  // text: note
   // }
-  //  notes = [ ...notes, newNote ];
-  //   // console.log(updatedNotes)
-  //     console.log(notes);
+  // notes = [ ...notes, newNote ];
+  // // console.log(updatedNotes)
+  // console.log(notes);
 
   // }
   // useEffect(() => {
@@ -244,6 +264,7 @@ export const AddComment = ({
   }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
+
   };
   // },[note])
   const handleSelectRecommendation = (name: String) => {
@@ -259,9 +280,9 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
-        " wants to #Attend"
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Attend"
     );
     setShowUser(false);
   };
@@ -269,9 +290,9 @@ export const AddComment = ({
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
-        " wants to #Speak"
+      userDetail?.firstname +
+      userDetail?.lastname.toLowerCase() +
+      " wants to #Speak"
     );
     setShowUser(false);
   };
@@ -290,12 +311,11 @@ export const AddComment = ({
     setAlluser(arr);
     setNote(
       note.substring(0, note.lastIndexOf("/")) +
-        `@${
-          userDetail?.firstname
-        }${userDetail?.lastname.toLowerCase()} wants to recommend @`
+      `@${userDetail?.firstname
+      }${userDetail?.lastname.toLowerCase()} wants to recommend @`
     );
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
-    //   textareaRef.current.focus();
+    // textareaRef.current.focus();
     // }
     if (textareaRef?.current) textareaRef.current.focus();
     setShowUser(true);
@@ -332,7 +352,7 @@ export const AddComment = ({
     if (note?.includes("#attend")) {
       handleSelectAttend();
     }
-    if (note?.includes("/recommend")) {
+    if (note?.includes("#recommend")) {
       handleRecommend(event);
     }
     if (note?.charAt(note.length - 1) === "@") {
@@ -342,7 +362,15 @@ export const AddComment = ({
       setRec(false);
       setDisable(false);
     }
+
   }, [note]);
+  useEffect(() => {
+    if (textareaRef.current) {
+      const cursorPosition = textareaRef.current.selectionStart;
+      console.log('Cursor position:', cursorPosition * 14);
+      setBoxSpace(cursorPosition * 8 % 600);
+    }
+  }, [note])
   useEffect(() => {
     const patternString =
       "@\\w+\\s+wants\\s+to\\s+recommend\\s+@\\w+\\s+for\\s+#";
@@ -407,19 +435,19 @@ export const AddComment = ({
     }, 2000);
   };
   // useEffect(() => {
-  //   if (!selectedFile) {
-  //     console.error("No file selected.");
-  //     return;
-  //   }
+  // if (!selectedFile) {
+  // console.error("No file selected.");
+  // return;
+  // }
 
-  //   // Simulate upload process
-  //   if (selectedFile && selectedFile.type.startsWith("image")) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setFilePreview(reader.result as string);
-  //     };
-  //     reader.readAsDataURL(selectedFile);
-  //   }
+  // // Simulate upload process
+  // if (selectedFile && selectedFile.type.startsWith("image")) {
+  // const reader = new FileReader();
+  // reader.onloadend = () => {
+  // setFilePreview(reader.result as string);
+  // };
+  // reader.readAsDataURL(selectedFile);
+  // }
   // }, [selectedFile])
   const setModal = () => {
     setModalIsOpen(true);
@@ -427,12 +455,26 @@ export const AddComment = ({
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
+
     console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
     if (selectedFile && selectedFile.type === "application/pdf") {
       setSelectedPdfs([...selectedPdfs, selectedFile.name]);
-    } else {
+    } else if (selectedFile.type.startsWith('image/')) {
+
+      setFilePreviews((prevSelectedFiles: File[] | null) => {
+        if (
+          prevSelectedFiles === null ||
+          typeof prevSelectedFiles === "undefined"
+        ) {
+          return [event.target.files[0]];
+        } else {
+          return [...prevSelectedFiles, event.target.files[0]];
+        }
+      });
+    }
+    else {
       // Handle case when file is not a PDF
       console.log("Please select a PDF file.");
     }
@@ -448,13 +490,19 @@ export const AddComment = ({
   useEffect(() => {
     console.log(selectedPdfs);
   }, [selectedPdfs]);
-  const pdfSelect = () => {
+  const pdfSelect = (e: any) => {
+    e.preventDefault();
     if (pdfRef.current) {
       const inputElement = pdfRef.current as HTMLInputElement;
       inputElement.click();
     }
+    // if (fileRef.current) {
+    // const inputElement = fileRef.current as HTMLInputElement;
+    // inputElement.click();
+    // }
   };
-  const imgUpload = () => {
+  const imgUpload = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault(); // Prevent the default behavior of the click event
     if (fileRef.current) {
       const inputElement = fileRef.current as HTMLInputElement;
       inputElement.click();
@@ -467,39 +515,47 @@ export const AddComment = ({
       block: "center",
     });
   }, [focusedIndex]);
+  // const [replyId,setReplyId]=useState(null);
+  const [replyText, setReplyText] = useState<string | undefined>("");
+  useEffect(() => {
+    const reply = comments?.find(comment => comment.id == replyId);
+    console.log("reply is: " + reply?.text);
+    setReplyText(reply?.text);
+  }, [replyId])
+
+
   return (
     <div className={styles.container}>
+
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
-        { commentType === 'mainComment' ? 
-        <div className={styles.recommendBtn}>
-          <button
-            onClick={handleSelectAttend}
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
-          >
-            I want to Attend
-          </button>
-          <button
-            onClick={() => handleSelectSpeak()}
-            data-action="speak"
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
-          >
-            I want to Speak
-          </button>
-          <button
-            onClick={handleRecommend}
-            className={`${styles.btn1} ${
-              theme === "light" && styles.btn1_light
-            }`}
-          >
-            I want to @Recommend
-          </button>
-        </div>
-        : <></>}
+
+        {commentType === 'mainComment' ?
+          <div className={styles.recommendBtn}>
+            <button
+              onClick={handleSelectAttend}
+              className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+                }`}
+            >
+              I want to Attend
+            </button>
+            <button
+              onClick={() => handleSelectSpeak()}
+              data-action="speak"
+              className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+                }`}
+            >
+              I want to Speak
+            </button>
+            <button
+              onClick={handleRecommend}
+              className={`${styles.btn1} ${theme === "light" && styles.btn1_light
+                }`}
+            >
+              I want to #Recommend
+            </button>
+          </div>
+          : <></>}
         <div style={{ display: "flex", gap: "10px" }}>
           {selectedPdfs?.map((item: string, ind: number) => (
             <div key={ind} className={styles.pdf}>
@@ -543,23 +599,33 @@ export const AddComment = ({
             rows={4}
             onKeyDown={handleKeyDown1}
           />
-          <button style={{ display: "flex" }} type="submit">
-            <Image src={Send} alt="send" className={iconClass} />
-          </button>
+          <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+            <button style={{ display: "flex", background: "transparent" }} className={styles.attachIconContainer} data-name="Add File">
+              <Image
+                className={`${styles.attachIcon} ${iconClass}`}
+                onClick={pdfSelect}
+                src={Drive}
+                alt="drive"
+              />
+            </button>
+            <button style={{ display: "flex", background: "transparent" }} className={styles.attachIconContainer} data-name="Send" type="submit">
+              <Image src={Send} alt="send" className={iconClass} />
+            </button>
 
-          {/* {employeeDropDown && (
-          <div className={styles.employeeDropdown}>
-            {filteredEmployees.map((employee: any, key: any) => (
-              <div key={key} className={styles.employee} onClick={() => handleSelectRecommendation(employee)}>
-                {employee.name}
-              </div>
-            ))}
           </div>
-        )} */}
+          {/* {employeeDropDown && (
+ <div className={styles.employeeDropdown}>
+ {filteredEmployees.map((employee: any, key: any) => (
+ <div key={key} className={styles.employee} onClick={() => handleSelectRecommendation(employee)}>
+ {employee.name}
+ </div>
+ ))}
+ </div>
+ )} */}
 
           {showUser && (
-            // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
-            <div className={styles.allUser}>
+            // <div className={styles.allUser} tabIndex={1} onKeyDown={handleKeyDown1}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
               {alluser.map((ele, ind) => (
                 <div
                   ref={ind === focusedIndex ? resultContainer : null}
@@ -576,12 +642,16 @@ export const AddComment = ({
             </div>
           )}
           {types && (
-            <div className={styles.allUser}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
               {type.map((ele, ind) => (
                 <div
                   key={ind}
                   className={styles.option}
-                  onClick={(e) => handleSelectType(e, ele)}
+                  ref={ind === focusedIndex ? resultContainer : null}
+                  style={{
+                    backgroundColor: ind === focusedIndex ? "#2B233D" : "",
+                  }}
+                  onMouseDown={(e) => handleSelectType(e, ele)}
                 >
                   {ele}
                 </div>
@@ -594,9 +664,10 @@ export const AddComment = ({
         </div>
       </form>
 
-      <div className={styles.attachmentIcon}>
+      <div className={styles.attachmentIcon} style={{ display: "none" }}>
         <button
           ref={fileRef}
+
           onClick={() => setModal()}
           style={{ display: "none" }}
         >
@@ -679,10 +750,10 @@ export const AddComment = ({
             <div className={styles.attachmentContainer}>
               {/* Render file preview if available */}
               {/* {filePreview && (
-                <div className={styles.filePreview}>
-                  <Image src={filePreview} width={100} height={100} alt="File Preview" />
-                </div>
-              )} */}
+ <div className={styles.filePreview}>
+ <Image src={filePreview} width={100} height={100} alt="File Preview" />
+ </div>
+ )} */}
             </div>
             {uploading && <p>Uploading...</p>}
           </div>

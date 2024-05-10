@@ -2,6 +2,8 @@ import dropdownIcon from "/public/internal/drop_down_angle.svg";
 import Image from "next/image";
 import styles from './eventdesc.style.module.css';
 import { useState } from "react";
+import ProfileIcon from '/public/profile_Image.jpg'
+
 interface PropType {
   label: string;
   eventId: number;
@@ -24,11 +26,11 @@ const OwnerList: React.FC<PropType> = (props: PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value} style={{ display: "flex", marginRight: "1rem" }}>
-            <img
-              src={'https://c1.10times.com/board/images/default_user.png'}
+            <Image
+              src={ProfileIcon}
               alt="user"
               className={styles["owner_img"]}
-              style={{ width: 48, height: 48 }}
+              width={48} height={48}
               referrerPolicy="no-referrer"
             />
             <div>
