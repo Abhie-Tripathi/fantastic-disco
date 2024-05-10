@@ -32,8 +32,14 @@
     border-left: 1px dashed #6750A4;
 } 
 
-@media screen and (max-width:1100px) {
+@media screen and (max-width:768px) {
     /* .timelineItem{
         right: 35%;
     } */
+    .timelineItem{
+        left: -25%;
+    }
+    .timelineItem::after {
+        height: 1000%;
+    } 
 }

@@ -5,6 +5,7 @@ import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
 import eventData from '../../../../public/data/demoEvent.json'
 import { useTheme } from '@/context'
+import EventTypeDropdown from './EventTypeDropdown'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
@@ -57,10 +58,15 @@ const ListView = () => {
                     <button onClick={() => handleFilter("Speaking")} className={` ${selectedRoles.includes('Speaking') ? styles.activeFilterBtn : ''}`}>Speaking</button>
                     <button onClick={() => handleFilter("Attending")} className={` ${selectedRoles.includes('Attending') ? styles.activeFilterBtn : ''}`}>Attending</button>
                 </div>
-                <div className={styles.eventsBtns}>
-                    <button onClick={() => selectedTeam('All Events')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
-                    <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
-                    <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
+                <div className='desktop_view' >
+                    <div className={styles.eventsBtns}>
+                        <button onClick={() => selectedTeam('All Events')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
+                        <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
+                        <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
+                    </div>
+                </div>
+                <div className='mobile_view' >
+                    <EventTypeDropdown label='Event Type' eventId={123} />
                 </div>
             </div>
 
