@@ -251,7 +251,7 @@
 }
 
 .trackerCard {
-    padding: 20px;
+    padding: 20px 20px 40px 20px;
     border-radius: 25px;
     border: 1px solid #1F1F1F;
     display: flex;
@@ -400,18 +400,26 @@
 }
 
 .superAdminCard {
-    padding: 10px;
+    padding: 5px 10px 5px 10px;
     border-radius: 20px;
-    text-wrap: nowrap;
-    border: 1px solid grey;
+    background-color: #1A1A1A;
+    font-size: 12px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+}
+
+.payment_method_container{
+    margin-top: 20px;
 }
 
 .cardInformation_container {
-    margin-top: 20px;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .cardInformation_text {
     /* color: #FFFFFF; */
+    margin-bottom: 16px;
     font-style: italic;
     font-size: 16px;
     font-weight: 400;
@@ -432,7 +440,7 @@
 
 .rightSideContnet {
     display: flex;
-    gap: 50px;
+    gap: 30px;
 }
 
 .tracker_sec {
@@ -822,4 +830,13 @@
     .masterCard{
         font-size: 14px;
     }
+}
+
+.billing_acc{
+    margin-top: 20px;
+}
+
+.table_row{
+    display: flex;
+    align-items: center;
 }

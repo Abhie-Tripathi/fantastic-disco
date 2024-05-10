@@ -38,56 +38,6 @@ const Index = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editItems, setEditItems] = useState<any>({});
-  const [staticCardsData, setCardData] = useState([
-    {
-      id: 0,
-      cardItitle: "Shortlisted",
-      dotIcon: ThreeDots,
-      icon: ShortListedIcon,
-      text: " List of all shortlisted events by admin",
-    },
-    {
-      id: 1,
-      cardItitle: "In Process",
-      dotIcon: ThreeDots,
-      icon: TimerIcon,
-      text: "List of all the events in negotiations",
-    },
-    {
-      id: 2,
-      cardItitle: "Concierge",
-      dotIcon: ThreeDots,
-      icon: conciergeIcon,
-      text: "EventGeni Support",
-    },
-    {
-      id: 3,
-      cardItitle: "Approved",
-      dotIcon: ThreeDots,
-      icon: ApproveIcon,
-      text: " List of all events finalised afted negotiations",
-    },
-    {
-      id: 4,
-      cardItitle: "Declined",
-      dotIcon: ThreeDots,
-      icon: CrossIcon,
-      text: " List of all events declined after negotiations",
-    },
-  ]);
-
-  const addCard = () => {
-    const newCardId = Math.random().toString(36).substring(7);
-    const newCard = {
-      id: newCardId,
-      cardItitle: "Shortlisted",
-      dotIcon: ThreeDots,
-      icon: ShortListedIcon,
-      text: " List of all shortlisted events by admin",
-    };
-    // setCardData([...staticCardsData, newCard]);
-  };
-
   const togglePopUp = (index: any) => {
     setOpenPopUpIndex((prevIndex) => (prevIndex === index ? null : index));
     setIsOpen(true);
@@ -102,16 +52,67 @@ const Index = () => {
   const handleEdit = (id: any, newContent: any) => {
     const updatedCards = staticCardsData.map((card) => {
       if (card.id === id) {
-        return (card.cardItitle = newContent), (card.text = newContent);
+        return (card.cardTitle = newContent), (card.text = newContent);
       }
       return card;
     });
     setCardData(updatedCards);
     setIsEdit(false);
+    setIsOpen(false)
   };
 
   const handleDelete = (id: any) => {
     setCardData((prevCards) => prevCards.filter((card) => card.id !== id));
+    setIsOpen(false)
+  };
+
+  const [staticCardsData, setCardData] = useState([
+    {
+      id: 0,
+      cardTitle: "Shortlisted",
+      dotIcon: ThreeDots,
+      icon: ShortListedIcon,
+      text: " List of all shortlisted events by admin",
+    },
+    {
+      id: 1,
+      cardTitle: "In Process",
+      dotIcon: ThreeDots,
+      icon: TimerIcon,
+      text: "List of all the events in negotiations",
+    },
+    {
+      id: 2,
+      cardTitle: "Concierge",
+      dotIcon: ThreeDots,
+      icon: conciergeIcon,
+      text: "EventGeni Support",
+    },
+    {
+      id: 3,
+      cardTitle: "Approved",
+      dotIcon: ThreeDots,
+      icon: ApproveIcon,
+      text: "List of all events finalised afted negotiations",
+    },
+    {
+      id: 4,
+      cardTitle: "Declined",
+      dotIcon: ThreeDots,
+      icon: CrossIcon,
+      text: " List of all events declined after negotiations",
+    },
+  ]);
+
+  const addCard = () => {
+    const newCard = {
+      id: staticCardsData.length,
+      cardTitle: "New Card",
+      dotIcon: ThreeDots,
+      icon: TimerIcon,
+      text: "Description of the new card",
+    };
+    setCardData((prevCards) => [...prevCards, newCard]);
   };
 
   return (
@@ -140,29 +141,29 @@ const Index = () => {
           You can manage and configure all the stages present on the outreach
         </div>
         <div className={styles.outreachCard_container}>
-          {staticCardsData?.map((card: any, id: any, key: any) => (
+          {staticCardsData.map((card, index) => (
             <div
-              key={key}
+              key={index}
               className={`${styles.outreachCard} ${
-                id % 2 === 0 ? styles.cardbackgroundColor : ""
+                index % 2 === 0 ? styles.cardbackgroundColor : ""
               }`}
             >
               <div className={styles.cardTopSec}>
                 <Image src={card?.icon} alt="" />
-                <div className={styles.inner_sec}>{card.cardItitle}</div>
+                <div className={styles.inner_sec}>{card.cardTitle}</div>
                 <Image
                   src={ThreeDots}
                   alt="dots"
                   style={{ cursor: "pointer" }}
-                  onClick={() => togglePopUp(id)}
+                  onClick={() => togglePopUp(index)}
                 />
               </div>
-              {isOpen && openPopUpIndex === id && (
+
+              {isOpen && openPopUpIndex === index && (
                 <div className={styles.popUp}>
-                  {/* Content of the pop-up */}
                   <div
                     className={styles.popUpContent}
-                    onClick={() => editCard(id, card)}
+                    onClick={() => editCard(index, card)}
                     style={{ cursor: "pointer" }}
                   >
                     <Image src={PencilIcon} alt="pen" />
@@ -171,7 +172,7 @@ const Index = () => {
                   <div
                     className={styles.popUpContent}
                     style={{ cursor: "pointer" }}
-                    // onClick={() => handleDelete(id)}
+                    onClick={() => handleDelete(index)}
                   >
                     <Image src={Delete} alt="delete" />
                     Delete
@@ -179,16 +180,16 @@ const Index = () => {
                 </div>
               )}
 
-              {isEdit && openEditPopUp === id && (
+              {isEdit && openEditPopUp === index && (
                 <div className={styles.editPopUp}>
                   <div>
                     <input
                       className={styles.inputBox}
-                      value={editItems?.cardItitle}
+                      value={editItems?.cardTitle}
                       onChange={(e) =>
                         setEditItems({
                           ...editItems,
-                          cardItitle: e.target.value,
+                          cardTitle: e.target.value,
                         })
                       }
                     />
@@ -210,7 +211,7 @@ const Index = () => {
                   <div className={styles.btn_container}>
                     <div
                       className={styles.btn}
-                      onClick={() => handleEdit(id, editItems)}
+                      onClick={() => handleEdit(index, editItems)}
                     >
                       Save
                     </div>
