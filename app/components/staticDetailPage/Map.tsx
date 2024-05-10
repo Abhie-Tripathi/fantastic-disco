@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.style.module.css";
@@ -9,17 +9,21 @@ import { useTheme } from "@/context";
 
 interface MapProps{
     lat : number;
-    long : number
+    long : number;
+    // containerWidth : number;
 }
 const Map = ({ lat, long} :MapProps ) => {
   const { theme } = useTheme();
-  const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
-  const [fullView, setFullView] = useState(false);
+  // const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
+  // const [fullView, setFullView] = useState(false);
 
+  // useEffect(()=>{
+  //   console.log("container width is ",containerWidth)
+  // },[containerWidth])
   const [viewport, setViewport] = useState<any>({
     latitude: 40.7128,
     longitude: -74.0060,
-    width: "450px" ,
+    width: "100%" ,
     height: "350px",
     zoom: 2,
   });

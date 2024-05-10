@@ -1,34 +1,57 @@
 'use client'
-import React from 'react'
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
 import EventDescription from '@/app/components/internal/eventdetail/EventDescription'
 import Organiser from '@/app/components/internal/eventdetail/Organiser'
 import Scores from '@/app/components/staticDetailPage/Scores'
-import Map from '@/app/components/staticDetailPage/Map'
 import DateCard from '@/app/components/staticDetailPage/DateCard'
 import RightArrowIcon from "/public/rightbigarrow.svg"
+import Loading from '@/app/components/UI/Loading'
+import FestIcon from '/public/festival.svg'
 
 const Page = () => {
 
     const tags = ["#paint", "#art", "#fest", "#fest", "#fest", "#fest", "#fest"]
     const description = "Unleash your creativity and immerse yourself in the world of art at the Painting Fest in New York. This vibrant celebration brings together artists, painters, and art enthusiasts from all walks of life to celebrate the joy of creation. Whether you're a seasoned artist or a novice, the festival offers a welcoming space to express yourself and explore new artistic horizons. From live painting demonstrations to interactive workshops, there's something for everyone to enjoy. Join us for a weekend filled with color, inspiration, and community as we come together to paint the town red, blue, and every color of the rainbow."
 
+    const Map = lazy(() => import("@/app/components/staticDetailPage/Map"));
+
+    // const locationContainerRef = useRef<HTMLDivElement>(null);
+    // const [mapContainerWidth, setMapContainerWidth] = useState<number>(0);
+    // useEffect(() => {
+    //     const updateContainerWidth = () => {
+    //       if (locationContainerRef.current) {
+    //         const width = locationContainerRef.current.offsetWidth; 
+    //         setMapContainerWidth(width); 
+    //       }
+    //     };
+
+    //     updateContainerWidth();
+    //     window.addEventListener("resize", updateContainerWidth);
+    //     return () => {
+    //       window.removeEventListener("resize", updateContainerWidth);
+    //     };
+
+    //   },[mapContainerWidth]); 
     return (
         <div className={styles.body}>
             <div className={styles.leftContainer}>
                 <div className={styles.headerContainer}>
                     <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={250} height={250} className={styles.poster} />
-                    <div className={styles.eventNameTagsContainer}>
+                    <div className={styles.name_categoryContainer}>
                         <div className={styles.eventName}>Painting Fest</div>
-                        <div className={styles.tags}>{tags.map((tag, key) => (
-                            <div key={key} className={styles.tag}>{tag}</div>
-                        ))}
+                        <div className={styles.categoryContainer}>
+                            <Image src={FestIcon} alt='fest'/>
+                            <div className={styles.category}>Tradeshow</div>
                         </div>
                     </div>
-
                 </div>
 
+                <div className={styles.tags}>{tags.map((tag, key) => (
+                    <div key={key} className={styles.tag}>{tag}</div>
+                ))}
+                </div>
                 <EventDescription open={true} description={description} speakers={false} shortlist={false} />
                 <Organiser open={true} />
             </div>
@@ -77,9 +100,10 @@ const Page = () => {
                         <div className={styles.locationHeading}>LOCATION</div>
                         <div className={styles.locationName}>Berlin, Germany</div>
                         <div className={styles.locationCoordinate}>Center : 40.7128, -74.0060</div>
-                        <div className={styles.mapContainer}>
+                        <Suspense fallback={<Loading />}>
+                            {/* <Map lat={40.7128} long={-74.0060} containerWidth={mapContainerWidth} /> */}
                             <Map lat={40.7128} long={-74.0060} />
-                        </div>
+                        </Suspense>
                     </div>
                 </div>
             </div>
