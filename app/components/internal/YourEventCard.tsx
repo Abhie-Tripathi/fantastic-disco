@@ -61,7 +61,14 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
 
   return (
     <div className={styles.card} onClick={handleModalOpen}>
-      <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
+      <div className={styles.leftContainer}>
+        <div className='mobile_view'>
+          <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+        </div>
+        <div>
+        <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
+        </div>
+      </div>
       <div className={styles.cardDetails}>
         <div className={styles.eventNameComp}>
           <div>
@@ -72,7 +79,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <Image src={ClockIcon} alt="clock" width={16} height={16} />
             <div>Pending</div>
           </div> */}
-          <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+          <div className='desktop_view'>
+            <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+          </div>
         </div>
         <div className={styles.locationAndDateContainer}>
           <div className={styles.eventLocation}>
@@ -86,6 +95,17 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           <div className={styles.eventDate}>
             <Image src={calendarIcon} alt="calendarIcon" width={14} height={14} />
             <div>{formattedDate}</div>
+          </div>
+        </div>
+        <div className='mobile_view'>
+          <div style={{float: "inline-end", marginTop: "-50px"}}>
+          <div className={styles.total_upvotes}>
+            231
+            <div style={{display:"flex", paddingTop: "5px"}}>
+              <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
+              &nbsp;Upvotes
+            </div>
+          </div>
           </div>
         </div>
         <div style={{display:"flex", gap: "6px"}} onClick={handleClickEvent}>

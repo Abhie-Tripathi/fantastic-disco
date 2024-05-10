@@ -224,3 +224,72 @@
     justify-content: center;
     align-items: center;
 }
+
+.leftContainer {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media screen and (max-width:768px) {
+    .cardImg{
+      width: 115px;
+      height: 90px;
+    }
+    .eventName {
+      font-size: 14px;
+    }
+    .locationAndDateContainer {
+      flex-direction: column-reverse;
+      gap: 4px;
+    }
+    .eventDate {
+      font-size: 8px;
+      margin-left: 0;
+      margin-top: 8px;
+      width: fit-content;
+    }
+    .eventLocation {
+      font-size: 8px;
+    }
+    .eventLocation img {
+        height: 20px;
+        width: 20px;
+        padding: 3px;
+    }
+    .card {
+      min-height: 140px;
+      height: unset;
+      padding: 15px 10px;
+      margin-top: 15px;
+      width: 100%;
+      z-index: 9;
+    }
+    .cardDetails {
+      gap: 5px;
+      padding-left: 10px;
+      margin-left: 0;
+    }
+    .cardImg_container{
+      align-items: flex-start;
+    }
+    .circle {
+      width: 25px;
+      height: 25px;
+    }
+  
+    .circle .image {
+      width: 25px;
+      height: 25px;
+    }
+    .pill {
+      font-size: 8px;
+      padding: 3px 5px;
+    }
+    .total_upvotes {
+        border-right: unset;
+        font-size: 12px;
+        color: #BEA6FE;
+        font-weight: 700;
+    }
+  }
