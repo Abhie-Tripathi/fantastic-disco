@@ -30,7 +30,7 @@ const EventTypeDropdown: React.FC<PropType> = (props: PropType) => {
 
   return (
     <>
-      <div className={`${styles.filter_container} mobile_view`} onClick={handleClickEvent}>
+      <div className={`${styles.filter_container} tablet_view mobile_view`} onClick={handleClickEvent}>
         <div className={styles.filter}>
           <div
             className={`${styles.dropdown_container3} ${theme === 'light' ? styles.dropdown_container_light : ""}`}

@@ -243,7 +243,7 @@
     }
 }
 
-@media screen and (max-width:768px) {
+@media screen and (max-width:992px) {
     .topContainer {
         border-bottom: 0.5px solid #3A3152;
     }

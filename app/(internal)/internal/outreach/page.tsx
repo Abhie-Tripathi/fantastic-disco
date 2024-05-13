@@ -127,7 +127,7 @@ const Page: React.FC = () => {
       <div className={`${styles.taskBody}`}>
         {(tabsVisible == 'shortlist' || tabsVisible == 'all') &&
         <div className={`${styles.outerCard}`}>
-          <div className='desktop_view'>
+          <div className='desktop_view tablet_view'>
             <div
               className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
                 }`}>
@@ -168,7 +168,7 @@ const Page: React.FC = () => {
         }
         {(tabsVisible == 'outreach' || tabsVisible == 'all') &&
         <div className={`${styles.outerCard} `}>
-          <div className='desktop_view'>
+          <div className='desktop_view tablet_view'>
             <div
               className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
                 }`}
@@ -208,7 +208,7 @@ const Page: React.FC = () => {
         }
         {(tabsVisible == 'preFinal'  || tabsVisible == 'all') &&
         <div className={`${styles.outerCard}`}>
-          <div className='desktop_view'>
+          <div className='desktop_view tablet_view'>
             <div
               className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
                 }`}

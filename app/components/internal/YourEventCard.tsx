@@ -63,7 +63,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
     <div className={styles.card} onClick={handleModalOpen}>
     <div className={styles.topContainer} style={{display:"flex"}}>
       <div className={styles.leftContainer}>
-        <div className='mobile_view'>
+        <div className='tablet_view mobile_view'>
           <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
         </div>
         <div>
@@ -98,7 +98,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>{formattedDate}</div>
           </div>
         </div>
-        <div className='mobile_view'>
+        <div className='tablet_view mobile_view'>
           <div style={{marginTop: "-50px"}}>
           <div className={styles.total_upvotes}>
             231
@@ -146,7 +146,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
       </div>
     </div>
       <div className={styles.bottomContainer}>
-        <div className='mobile_view'>
+        <div className='tablet_view mobile_view'>
           <div style={{display:"flex", gap: "6px", paddingTop:"15px"}} onClick={handleClickEvent}>
             <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} voteCount={12} handleVoteClick={handleVoteClick} />
             <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />

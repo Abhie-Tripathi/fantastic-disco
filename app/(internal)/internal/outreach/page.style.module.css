@@ -146,7 +146,7 @@
   background-color: #2B233D!important;
 }
 
-@media screen and (max-width:768px) {
+@media screen and (max-width:576px) {
   .seprator {
     border-right: 0.33px solid #1F1F1F;
     margin-right: 5px;
