@@ -52,8 +52,11 @@ a {
 .mobile_view{
   display: none;
 }
+.tablet_view{
+  display: none;
+}
 .desktop_view{
-  display: unset;
+  display: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -62,11 +65,20 @@ a {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 992px) {
+  .desktop_view{
+    display: unset;
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 992px) {
+  .tablet_view{
+    display: unset;
+  }
+}
+
+@media screen and (max-width: 576px) {
   .mobile_view{
       display: unset;
-  }
-  .desktop_view{
-    display: none;
   }
 }
