@@ -1,4 +1,4 @@
-.table_container {
+  .table_container {
     margin: 25px 0px;
   }
   
@@ -53,7 +53,7 @@
   }
   
   .table_head {
-    background-color: #1a1a1a;
+    background-color: #6750A433;
     color: white;
   }
 
@@ -123,7 +123,7 @@
   
   .pagination_container {
     margin-top: 20px;
-    background-color: #1a1a1a;
+    background-color: #6750A433;
     border-radius: 0px 0px 12px 12px;
     display: flex;
     align-items: center;

@@ -263,38 +263,40 @@ const TrackerDetails = () => {
       </div>
 
       <div className={`${styles.overview_container} ${theme === 'light' ? styles.overview_container_light : ""}`}>
-        <div className={styles.overview_header}>
-          <div className={styles.overview_title_container}>
-            <div className={styles.overview_title}>Tracker Overview</div>
-            <div className={styles.overview_description}>
-              Have a quick overview of all trackers and addition of any new
-              events
-            </div>
-          </div>
-          <div className={styles.eventStats_container}>
-            <div className={styles.eventStats_title}>Total New Events</div>
-            <div className={styles.eventStats}>189</div>
-          </div>
-        </div>
-        <div className={styles.chart_container}>
-          <div className={styles.firstchart}>
-            <div className={styles.chart_title}>Changes since Last visit</div>
-            <div className={styles.lineChart_container}>
-              <div className={styles.lineChart}>
-                <Line data={lineData} options={lineOptions} />
+        <div className={styles.trackerContainer}>
+          <div className={styles.overview_header}>
+            <div className={styles.overview_title_container}>
+              <div className={styles.overview_title}>Tracker Overview</div>
+              <div className={styles.overview_description}>
+                Have a quick overview of all trackers and addition of any new
+                events
               </div>
             </div>
+            <div className={styles.eventStats_container}>
+              <div className={styles.eventStats_title}>Total New Events</div>
+              <div className={styles.eventStats}>189</div>
+            </div>
           </div>
-          <div className={styles.secondchart}>
-            <div className={styles.chart_title}>Event Details</div>
-            <div className={styles.polarChart_container}>
-              <div className={styles.polarChart}>
-                <PolarArea data={polarData} options={polarOptions} />
-                <div className={styles.polarChart_circle}>
-                  <div className={styles.polarChart_circle_innerborder}>
-                    <div className={styles.polarChart_totalNo}>206</div>
-                    <div className={styles.polarChart_totalNo_title}>
-                      events
+          <div className={styles.chart_container}>
+            <div className={styles.firstchart}>
+              <div className={styles.chart_title}>Changes since Last visit</div>
+              <div className={styles.lineChart_container}>
+                <div className={styles.lineChart}>
+                  <Line data={lineData} options={lineOptions} />
+                </div>
+              </div>
+            </div>
+            <div className={styles.secondchart}>
+              <div className={styles.chart_title}>Event Details</div>
+              <div className={styles.polarChart_container}>
+                <div className={styles.polarChart}>
+                  <PolarArea data={polarData} options={polarOptions} />
+                  <div className={styles.polarChart_circle}>
+                    <div className={styles.polarChart_circle_innerborder}>
+                      <div className={styles.polarChart_totalNo}>206</div>
+                      <div className={styles.polarChart_totalNo_title}>
+                        events
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -302,7 +304,6 @@ const TrackerDetails = () => {
             </div>
           </div>
         </div>
-
         <EventTable eventData={eventData} />
       </div>
     </>
