@@ -28,7 +28,13 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
             setEventData1(eventData);
         }
         else if(page>1){
-            setEventData1(prevData => [...prevData, ...eventData]);
+            // setEventData1(prevData => [...prevData, ...eventData]);
+            setEventData1(prevData => {
+                const newData = eventData.filter(newEvent => {
+                    return !prevData.some(prevEvent => prevEvent.id === newEvent.id);
+                });
+                return [...prevData, ...newData];
+            });
         }
     };
 

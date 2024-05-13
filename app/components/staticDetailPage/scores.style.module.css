@@ -34,11 +34,12 @@
 }
 
 .eventCardStats {
-    display: flex;
-    /* flex-wrap: wrap; */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    flex-wrap: wrap;
     gap: 12px;
     column-gap: 12px;
-    justify-items: center;
+    /* justify-items: center; */
 }
 
 .rank_container {
@@ -60,3 +61,13 @@
 .rank{
     color: #9274e4;
 }
+@media screen and (max-width: 1640px) {
+    .eventCardStats{
+        grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media screen and (max-width: 1310px) {
+    .eventCardStats{
+        grid-template-columns: repeat(5, 1fr);
+    }
+  }

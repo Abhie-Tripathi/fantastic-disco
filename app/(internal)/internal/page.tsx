@@ -211,8 +211,8 @@ const Dashboard = () => {
               </div>
 
               <div className={styles.mobile_trackerCard_container}>
-                {trackerCardsData.map((trackerCard) => (
-                  <div className={styles.mobile_eventCard}>
+                {trackerCardsData.map((trackerCard, key) => (
+                  <div className={styles.mobile_eventCard} key={key}>
                     <div className={styles.mobile_eventCard_title}>
                       {trackerCard.title}
                     </div>
@@ -253,8 +253,8 @@ const Dashboard = () => {
               </div>
 
               <div className={styles.mobile_trackerCard_container}>
-                {trackerCardsData.map((trackerCard) => (
-                  <div className={styles.mobile_eventCard}>
+                {trackerCardsData.map((trackerCard, key) => (
+                  <div className={styles.mobile_eventCard} key={key}>
                     <div className={styles.mobile_eventCard_title}>
                       {trackerCard.title}
                     </div>
