@@ -21,7 +21,7 @@
   --bg: #3a3e42;
   --primary-bg-light: #ffffff;
   --primary-color-light: #000000;
-  --secondary-bg-light:#efecec;
+  --secondary-bg-light: #efecec;
 }
 html,
 body {
@@ -49,11 +49,19 @@ a {
   filter: invert(1);
 }
 
+.body_layout {
+  margin-top: 80px;
+  margin-left: 80px;
+}
+
 .mobile_view{
-  display: none;
+  display: none !important;
+}
+.tablet_view{
+  display: none !important;
 }
 .desktop_view{
-  display: unset;
+  display: none !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,12 +69,22 @@ a {
     color-scheme: dark;
   }
 }
-
-@media screen and (max-width: 768px) {
-  .mobile_view{
-      display: unset;
+@media screen and (min-width: 992px) {
+  .desktop_view {
+    display: flex !important;
   }
-  .desktop_view{
-    display: none;
+}
+@media screen and (min-width: 576px) and (max-width: 992px) {
+  .tablet_view {
+    display: flex !important;
+  }
+}
+@media screen and (max-width: 575px) {
+  .mobile_view {
+    display: flex !important;
+  }
+  .body_layout{
+    margin-top: 80px;
+    margin-left: 0;
   }
 }
