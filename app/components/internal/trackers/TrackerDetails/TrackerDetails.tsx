@@ -5,6 +5,8 @@ import { Line, PolarArea } from "react-chartjs-2";
 import "chart.js/auto";
 import EventTable from "../EventTable/EventTable";
 import { useTheme } from "@/context";
+import CalendarIcon from '/public/calendar.svg'
+import Image from "next/image";
 
 const eventData = [
   {
@@ -85,7 +87,7 @@ const TrackerDetails = () => {
   const [startLocalRank, setStartLocalRank] = useState(35);
   const [endLocalRank, setEndLocalRank] = useState(67);
 
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -177,48 +179,49 @@ const TrackerDetails = () => {
     <>
       <div className={styles.detailsCards_container}>
         <div className={styles.detailsCard}>
-          <div className={styles.first_container}>
+          <div className={styles.card_header}>
             <div className={styles.detail_title}>Tracker Details</div>
-            <div className={styles.tracker_details}>
-              <div className={styles.tracker_name}>
-                Tracker 1 - Events in Bangalore
-              </div>
-              <div className={styles.tracker_location}>
-                Bengaluru Urban, India
+            <div className={styles.tracker_name}>
+              Events in Bangalore
+            </div>
+          </div>
+          <div className={styles.location_dateContainer}>
+            <div className={styles.locationContainer}>Bengaluru, India</div>
+            <div className={styles.dateContainer}>
+              <Image src={CalendarIcon} alt="cal" />
+              <span className={styles.date_value}>1 Apr 2024 - 30 Apr 2024</span>
+            </div>
+          </div>
+          <div className={styles.category_statusContainer}>
+            <div className={styles.category_container}>
+              <div className={styles.subcontainer_detail__title}>Event Category</div>
+              <div className={styles.category_values}>
+                <div className={styles.chips_value}>Hospitality</div>
+                <div className={styles.chips_value}>Festivals</div>
               </div>
             </div>
-
-            <div className={styles.tag_container}>
-              <div className={styles.tag}>Hospitality</div>
-              <div className={styles.tag}>Festivals</div>
-            </div>
-
-            <div className={styles.label_container}>
-              <div className={styles.label_title}>Labels</div>
-              <div className={styles.labels}>
-                Politics, parade, nightlife, landslide, hurricane,
-                hybrid-session
+            <div className={styles.statusContainer}>
+              <div className={styles.subcontainer_detail__title}>
+                Event Status
+              </div>
+              <div className={styles.status_values}>
+                <div className={styles.chips_value}>Cancelled</div>
+                <div className={styles.chips_value}>Postpones</div>
               </div>
             </div>
           </div>
-          <div className={styles.second_container}>
-            <div>
-              <span className={styles.subcontainer_detail__title}>
-                Date Range
-              </span>
-              <span className={styles.detail_value}>1 Apr - 30 Apr</span>
-            </div>
-            <div>
+          <div className={styles.attendance_labelContainer}>
+            <div className={styles.attendanceContainer}>
               <span className={styles.subcontainer_detail__title}>
                 Attendance
               </span>
               <span className={styles.detail_value}>2,00,000-5,00,000</span>
             </div>
-            <div>
-              <div className={styles.subcontainer_detail__title}>
-                Event Status
+            <div className={styles.label_container}>
+              <div className={styles.label_title}>Labels</div>
+              <div className={styles.labels}>
+                Politics, parade, nightlife
               </div>
-              <div className={styles.value}>Cancelled , Postponed</div>
             </div>
           </div>
         </div>

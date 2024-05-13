@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
-      <div className={styles.header_container}>
+      {/* <div className={styles.header_container}>
         <div className={styles.tab_container}>
           <Link
             href="/internal/trackers"
@@ -43,7 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             New Tracker
           </Link>
         </div>
-      </div>
+      </div> */}
 
       {children}
     </div>
