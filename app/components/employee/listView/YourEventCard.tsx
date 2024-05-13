@@ -97,7 +97,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               <Image className={styles.image} src={person2} alt="person2" />
             </div>
           </div>
-          <div className='mobile_view' >
+          <div className='tablet_view mobile_view' >
             <div className={styles.pills}>
               {eventCtas.map((item, index) => (
                 <div key={index} className={styles.pill}>

@@ -65,7 +65,7 @@ const ListView = () => {
                         <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
                     </div>
                 </div>
-                <div className='mobile_view' >
+                <div className='mobile_view tablet_view' >
                     <EventTypeDropdown label='Event Type' eventId={123} />
                 </div>
             </div>

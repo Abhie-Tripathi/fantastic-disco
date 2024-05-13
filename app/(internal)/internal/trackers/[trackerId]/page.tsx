@@ -19,7 +19,7 @@ const TrackerPage = () => {
     router.push(`/internal/trackers/create?${params.toString()}`);
   };
 
-  const {theme} = useTheme()
+  const { theme } = useTheme()
 
   return (
     <div>
@@ -38,8 +38,9 @@ const TrackerPage = () => {
           </button>
         </div>
       </div>
-
-      <TrackerDetails />
+      <div className={styles.trackerDetailsContainer}>
+        <TrackerDetails />
+      </div>  
     </div>
   );
 };

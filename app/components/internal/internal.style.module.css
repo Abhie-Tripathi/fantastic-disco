@@ -105,3 +105,17 @@
     display: flex;
     justify-content: center;
 }
+
+@media screen and (max-width:1200px) {
+    .container{
+        padding-left: 60px;
+        padding-right: 40px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .container{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
