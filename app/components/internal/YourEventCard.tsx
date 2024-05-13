@@ -110,7 +110,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
           </div>
         </div>
         <div className='desktop_view'>
-        <div style={{display:"flex", gap: "6px"}} onClick={handleClickEvent}>
+        <div style={{display:"flex", gap: "16px", flexWrap: "wrap", marginTop: "15px"}} onClick={handleClickEvent}>
           <div className={styles.total_upvotes}>
             231
             <div style={{display:"flex", paddingTop: "10px"}}>

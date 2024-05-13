@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./page.style.module.css";
 import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -18,6 +18,12 @@ const Page: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
+
+  const [tabsVisible, setTabsVisible] =useState<string>('shortlist');
+
+  const handleVisibleTab = (item: string) => {
+    setTabsVisible(item);
+  }
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
@@ -77,18 +83,57 @@ const Page: React.FC = () => {
     setAddEventModal((prev) => !prev);
   };
 
+  useEffect(() => {
+    if(window.innerWidth > 768){
+      setTabsVisible('all');
+    }
+  },[])
+
   return (
     <div
       className={`${styles.bodyContainer} ${theme === "light" ? styles.bodyContainer_light : ""
         } ${modalOpen && styles.bodyContainer_openModal}`}
     >
+    <div style={{paddingTop:"10px"}}>
+      <div className='mobile_view'>
+        <div className={styles.mobileTab} >
+            <div
+              onClick={()=>handleVisibleTab('shortlist')}
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                } ${tabsVisible == 'shortlist' ? styles.tabActive : ""}`}>
+              Shortlisted{" "}
+              <span className={styles.eventSize}>{shortlistedTasks.length}</span>
+            </div>
+            <span className={styles.seprator}></span>
+            <div
+              onClick={()=>handleVisibleTab('outreach')}
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                } ${tabsVisible == 'outreach' ? styles.tabActive : ""}`}
+            >
+              Out Reach{" "}
+              <span className={styles.eventSize}>{outreachTasks.length}</span>
+            </div>
+            <span className={styles.seprator}></span>
+            <div
+              onClick={()=>handleVisibleTab('preFinal')}
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                } ${tabsVisible == 'preFinal' ? styles.tabActive : ""}`}
+            >
+              Pre Finalised{" "}
+              <span className={styles.eventSize}>{preFinalisedTasks.length}</span>
+            </div>
+        </div>
+      </div>
       <div className={`${styles.taskBody}`}>
+        {(tabsVisible == 'shortlist' || tabsVisible == 'all') &&
         <div className={`${styles.outerCard}`}>
-          <div
-            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
-              }`}>
-            Shortlisted{" "}
-            <span className={styles.eventSize}>{shortlistedTasks.length}</span>
+          <div className='desktop_view'>
+            <div
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                }`}>
+              Shortlisted{" "}
+              <span className={styles.eventSize}>{shortlistedTasks.length}</span>
+            </div>
           </div>
           <div
             className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
@@ -120,13 +165,17 @@ const Page: React.FC = () => {
             </div>
           </div>
         </div>
+        }
+        {(tabsVisible == 'outreach' || tabsVisible == 'all') &&
         <div className={`${styles.outerCard} `}>
-          <div
-            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
-              }`}
-          >
-            Out Reach{" "}
-            <span className={styles.eventSize}>{outreachTasks.length}</span>
+          <div className='desktop_view'>
+            <div
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                }`}
+            >
+              Out Reach{" "}
+              <span className={styles.eventSize}>{outreachTasks.length}</span>
+            </div>
           </div>
           <div
             className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
@@ -156,13 +205,17 @@ const Page: React.FC = () => {
             </div>
           </div>
         </div>
+        }
+        {(tabsVisible == 'preFinal'  || tabsVisible == 'all') &&
         <div className={`${styles.outerCard}`}>
-          <div
-            className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
-              }`}
-          >
-            Pre Finalised{" "}
-            <span className={styles.eventSize}>{preFinalisedTasks.length}</span>
+          <div className='desktop_view'>
+            <div
+              className={`${styles.heading} ${theme === "light" ? styles.heading_light : ""
+                }`}
+            >
+              Pre Finalised{" "}
+              <span className={styles.eventSize}>{preFinalisedTasks.length}</span>
+            </div>
           </div>
           <div
             className={`${styles.card_shortlisted} ${styles.cardsContainer} ${theme === "light" ? styles.cardsContainer_light : ""
@@ -194,7 +247,9 @@ const Page: React.FC = () => {
             </div>
           </div>
         </div>
+        }
       </div>
+    </div>
       {modalOpen && (
         <div
           className={`${styles.modal} ${theme === "light" ? styles.modal_light : ""

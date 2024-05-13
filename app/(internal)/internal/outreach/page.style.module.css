@@ -16,6 +16,7 @@
   display: flex;
   justify-content: space-evenly;
   position: relative;
+  gap: 10px;
 }
 
 .outerCard {
@@ -139,4 +140,52 @@
 
 .addEvent_btn_light:hover {
   background-color: rgb(211, 211, 211);
+}
+
+.tabActive {
+  background-color: #2B233D!important;
+}
+
+@media screen and (max-width:768px) {
+  .seprator {
+    border-right: 0.33px solid #1F1F1F;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  .taskBody {
+    padding-top: 0;
+  }
+  .mobileTab {
+    display: flex;
+    justify-content: space-between;
+    border: 0.33px solid #6750A440;
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin: 10px 20px;
+    color: #ffffff;
+  }
+
+  .heading_light {
+    color: #1F1F1F;
+  }
+
+  .heading {
+    font-size: 9px;
+    padding: 4px 8px;
+    gap: 5px;
+    border: 0.33px solid #1F1F1F;
+    background-color: inherit;
+    cursor: pointer;
+  }
+
+  .eventSize {
+    font-size: 10px;
+    padding: 2px 4px;
+    color: #ffffff;
+  }
+
+  .outerCard {
+    width: 95%;
+    color: #ffffff;
+  }
 }
