@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styles from "./eventtable.style.module.css";
 import ExpandAll from "/public/expand.svg";
-import Add from "/public/add.svg";
 import unSaveIcon from '/public/internal/unsave.svg'
 import Filter from "/public/filter.svg";
 import Image from "next/image";
@@ -10,7 +9,7 @@ import { useTheme } from "@/context";
 
 const EventTable = ({ eventData }: { eventData: any }) => {
   const [showCheckBox, setShowCheckBox] = useState(false);
-  const [selectMode, setSelectMode] = useState(false);
+  // const [selectMode, setSelectMode] = useState(false);
   const { theme } = useTheme();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -58,12 +57,10 @@ const EventTable = ({ eventData }: { eventData: any }) => {
           </div>
         </div>
       </div>
-
       <table className={styles.table}>
         <thead
-          className={`${styles.table_head} ${
-            theme === "light" ? styles.table_head_light : ""
-          }`}
+          className={`${styles.table_head} ${theme === "light" ? styles.table_head_light : ""
+            }`}
         >
           <tr className={styles.table_head_row}>
             {showCheckBox && <th></th>}
@@ -115,29 +112,25 @@ const EventTable = ({ eventData }: { eventData: any }) => {
       </table>
 
       <div
-        className={`${styles.pagination_container} ${
-          theme === "light" ? styles.pagination_container_light : ""
-        }`}
+        className={`${styles.pagination_container} ${theme === "light" ? styles.pagination_container_light : ""
+          }`}
       >
         <div
-          className={`${styles.pagination_control_button} ${
-            theme === "light" ? styles.pagination_control_button_light : ""
-          }`}
+          className={`${styles.pagination_control_button} ${theme === "light" ? styles.pagination_control_button_light : ""
+            }`}
         >
           Previous
         </div>
 
         <div
-          className={`${styles.pagination_info_container} ${
-            theme === "light" ? styles.pagination_info_container_light : ""
-          }`}
+          className={`${styles.pagination_info_container} ${theme === "light" ? styles.pagination_info_container_light : ""
+            }`}
         >
           <div>Showing</div>
           <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div
-            className={`${styles.pagination_current_pageno} ${
-              theme === "light" ? styles.pagination_current_pageno_light : ""
-            }`}
+            className={`${styles.pagination_current_pageno} ${theme === "light" ? styles.pagination_current_pageno_light : ""
+              }`}
           >
             1
           </div>
@@ -147,9 +140,8 @@ const EventTable = ({ eventData }: { eventData: any }) => {
         <div className={styles.pagination_page_control_container}>
           <div>Page</div>
           <div
-            className={`${styles.pagination_current_pageno} ${
-              theme === "light" ? styles.pagination_current_pageno_light : ""
-            }`}
+            className={`${styles.pagination_current_pageno} ${theme === "light" ? styles.pagination_current_pageno_light : ""
+              }`}
           >
             1
           </div>
@@ -157,9 +149,8 @@ const EventTable = ({ eventData }: { eventData: any }) => {
         </div>
 
         <div
-          className={`${styles.pagination_control_button} ${
-            theme === "light" ? styles.pagination_control_button_light : ""
-          }`}
+          className={`${styles.pagination_control_button} ${theme === "light" ? styles.pagination_control_button_light : ""
+            }`}
         >
           Next
         </div>
