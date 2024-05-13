@@ -1,20 +1,20 @@
 "use client";
 import React from "react";
 import styles from "./layout.style.module.css";
-// import Link from "next/link";
-// import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@/context";
-// import Image from "next/image";
-// import MoreIcon from "/public/dots.svg";
-// import Add from "/public/add.svg";
+import Image from "next/image";
+import MoreIcon from "/public/dots.svg";
+import Add from "/public/add.svg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  // const pathName = usePathname();
+  const pathName = usePathname();
   const { theme } = useTheme()
 
   return (
     <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
-      {/* <div className={styles.header_container}>
+      <div className={styles.header_container}>
         <div className={styles.tab_container}>
           <Link
             href="/internal/trackers"
@@ -43,7 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             New Tracker
           </Link>
         </div>
-      </div> */}
+      </div>
 
       {children}
     </div>
