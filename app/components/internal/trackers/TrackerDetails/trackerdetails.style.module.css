@@ -5,7 +5,8 @@
 
 .detailsCard {
   /* flex: 1; */
-  border: 1px solid #424242;
+  background-color: #6750A433;
+  border: 1px solid #6750A4;
   padding: 20px;
   border-radius: 12px;
   display: flex;
@@ -15,8 +16,9 @@
 }
 
 .thresholdCard {
-  flex: 1;
-  border: 1px solid #424242;
+  width: 50%;
+  background-color: #6750A433 ;
+  border: 1px solid #6750A4;
   padding: 20px;
   border-radius: 12px;
   display: flex;
@@ -77,8 +79,8 @@
 }
 
 .detail_title {
-  color: #6750a4;
-  font-weight: 600;
+  color: white;
+  font-weight: 400;
 }
 
 .category_values {
@@ -169,7 +171,7 @@
 }
 .trackerContainer{
   padding: 20px;
-  background-color: #6750A466;
+  background-color: #6750A433;
   border-radius: 12px;
   border: 1px solid #6750a4;
 }
@@ -458,6 +460,9 @@
 
 @media screen and (max-width: 1272px) {
   .detailsCard{
+    width: 100%;
+  }
+  .thresholdCard{
     width: 100%;
   }
   .detailsCards_container {
