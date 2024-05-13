@@ -81,7 +81,7 @@ const Trackers = () => {
     const {theme} = useTheme()
     return (
         <div className={styles.body}>
-            <div className={styles.trackers_container}>
+            {/* <div className={styles.trackers_container}>
                 <div className={styles.trackers_header}>
                     <div className={`${styles.trackers_header_title} ${theme === 'light' ? styles.trackers_header_title_light : ""}`}>Your Trackers</div>
                     <div className={styles.trackers_header_more_button}>
@@ -93,9 +93,9 @@ const Trackers = () => {
                     >
                         <Image src={Add} alt="addicon" />
                         New Tracker
-                    </Link>
+                    </Link> 
                 </div>
-            </div>
+            </div> */}
             <div className={styles.trackers_card_container}>
                 <TrackerCard />
                 <TrackerCard />
