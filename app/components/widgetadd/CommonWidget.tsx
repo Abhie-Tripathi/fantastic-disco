@@ -179,7 +179,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(11111111111111111111111111);
+    // console.log(11111111111111111111111111);
     
     // Generate query string
     const queryString = generateQueryString();
