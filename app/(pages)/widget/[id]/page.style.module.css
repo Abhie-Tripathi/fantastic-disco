@@ -23,8 +23,10 @@
   padding: 5px;
   cursor: pointer;
 }
-
 .code:hover {
+  background-color: #8764e783;
+}
+.activeCodeBtn{
   background-color: #8764e783;
 }
 

@@ -200,10 +200,15 @@
 }
 .submitBtn:hover{
     transition-duration:.2s;
-    padding: 9px 24px;
+    background-color: #8671c283;
 }
 .cancelBtn{
+    color: white;
+    cursor: pointer;
     background: none;
     border: none;
-    color: white;
+}
+.cancelBtn:hover{
+    transition-duration:.2s;
+    color: rgb(218, 218, 218);
 }
