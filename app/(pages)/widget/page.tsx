@@ -23,7 +23,7 @@ const Widget = () => {
         const responseSticky = await fetch('https://api.eventgeni.com/widgets?type=sticky');
         const dataPage = await responsePage.json();
         const dataSticky = await responseSticky.json();
-        const allWidgets = [...dataPage, ...dataSticky];
+        const allWidgets = [...dataPage.data.pageData, ...dataSticky.data.stickyData];
         setWidgets(allWidgets);
       } catch (error) {
         console.error('Error fetching widgets:', error);
@@ -32,11 +32,6 @@ const Widget = () => {
 
     fetchData();
   }, []);
-
-  useEffect(()=>{
-    console.log("widget length is", widgets)
-  },[widgets])
-
   return (
     <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light: ""}`}>
       <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light:""}`}>
