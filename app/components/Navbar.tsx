@@ -106,7 +106,6 @@ const Navbar = () => {
         )}
 
         {/* ThemeSwitch */}
-        {pathName === "internal" && (
           <div
             className={`${styles.circle} desktop_view tablet_view`}
             style={{ marginRight: "10px" }}
@@ -115,7 +114,6 @@ const Navbar = () => {
           >
             <Image src={lightModeIcon} alt="theme" />
           </div>
-        )}
 
         {/* Home */}
         {pathName === "internal" && (

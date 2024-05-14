@@ -33,9 +33,10 @@ const Page = ({ params }: Props) => {
             <div className={styles.container} >
                 {previewState === "Side Preview" && <div className={styles.configurationForm}>
                     <div className={styles.dropdown_container}>
-                        <div className={styles.code} onClick={() => setCodeWindow(!codeWindow)}>
+                        <div className={`${styles.code} ${codeWindow ? styles.activeCodeBtn : ""}`} onClick={() => setCodeWindow(!codeWindow)}>
                             <Image src={CodeIcon} alt='code' />Code
                         </div>
+
                         {!codeWindow && (
                             <>
                                 {type === "Sticky" && <StickyWidget stickyId={widgetId} />}

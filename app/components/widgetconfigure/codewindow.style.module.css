@@ -1,5 +1,26 @@
 .container{
     margin-top: 30px;
+    position: relative;
+}
+.backBtnContainer{
+    top: -33%;
+    right: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    border:1px solid white;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+}
+.backBtnContainer img{
+    width: 18px;
+    height: 18px;
+}
+.backBtnContainer:hover{
+    transition-duration: .2s;
+    background-color: #313131;
 }
 .headerContainer{
     display: flex;
