@@ -37,6 +37,7 @@ const WidgetCard = ({ data }: any) => {
     } else {
       setWidgetType("Sticky")
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

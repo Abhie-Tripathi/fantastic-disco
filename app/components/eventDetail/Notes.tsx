@@ -165,6 +165,7 @@ export const Notes = ({ comments, productId }: Props) => {
       // Handle case when file is not a PDF
       console.log("Please select a PDF file.");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
   // useEffect(() => {
@@ -207,6 +208,7 @@ export const Notes = ({ comments, productId }: Props) => {
     const reply = comments?.find(comment => comment.id == replyId);
     console.log("reply is: " + reply?.text);
     setReplyText(reply?.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replyId])
   return (
     <div className={styles.container}>

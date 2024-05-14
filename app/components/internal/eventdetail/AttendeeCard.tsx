@@ -55,6 +55,7 @@ const AttendeeCard = ({cardType} : Props) => {
 
     useEffect(() => {
         updateSelectedUserCount();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData]);
 
     useEffect(() => {
