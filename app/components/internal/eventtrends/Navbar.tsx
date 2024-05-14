@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   return (
     <div className={`${styles.navbar} ${theme === 'light' && styles.navbar_light}`}>
       <div className={styles.yAxis}>
-        <div className={styles.heading}>Data : </div>
+        <div className={styles.heading}>Data: </div>
         <div
           className={`${styles.navbarChip} ${
             activeChipY === "Predicted Attendance" ? styles.activeChip : ""
@@ -44,7 +44,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         </div>
       </div>
       <div className={styles.xAxis}>
-        <div className={styles.heading}>Category : </div>
+        <div className={styles.heading}>Category: </div>
         <div
           className={`${styles.navbarChip} ${
             activeChipX === "Date" ? styles.activeChip : ""

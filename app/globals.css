@@ -74,9 +74,10 @@ a {
     display: flex !important;
   }
 }
-@media screen and (min-width: 576px) and (max-width: 992px) {
-  .tablet_view {
-    display: flex !important;
+
+@media screen and (min-width: 577px) and (max-width: 991px) {
+  .tablet_view{
+    display: unset;
   }
 }
 @media screen and (max-width: 575px) {
