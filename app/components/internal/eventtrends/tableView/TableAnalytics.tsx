@@ -52,7 +52,7 @@ const TableAnalytics = () => {
           </span>
         </div>
       </div>
-      <div className={styles.table_container}>
+      <div className={`${styles.table_container} ${styles.table_container2}`}>
         <table className={styles.table}>
           <thead className={styles.table_head}>
             <tr className={styles.table_head_row}>

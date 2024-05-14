@@ -149,7 +149,7 @@ const EventTrends = ({activeChipY,activeChipX} : EventTrendsProps) => {
             </div>
 
             <div className={styles.inner_container}>
-                <div className={styles.predictedAttendence_container}>
+                <div className={`${styles.predictedAttendence_container} ${styles.chartContainer}`}>
                     <LineChart activeChipX={activeChipX} activeChipY={activeChipY} />
                 </div>
             </div>
