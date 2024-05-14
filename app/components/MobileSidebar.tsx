@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./MobileSidebar.module.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,15 +10,30 @@ import DatasetIcon from "/public/dataset.svg";
 import Exhibit from "/public/internal/exhibit.svg";
 import { usePathname } from "next/navigation";
 import Graph from "/public/internal/trend.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import closeIcon from "/public/close.svg";
 import logoutIcon from "/public/internal/logout.svg";
 import Home from "/public/internal/home.svg";
 
+interface UserDetail {
+  firstname: string;
+  email: string;
+  lastname: string;
+}
+
 const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { user, signOut } = useAuthContext();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+    user ? user : null
+  );
+
+  useEffect(() => {
+    setUserDetail(user);
+  }, [user]);
 
   const themeSwitchHandler = () => {
     toggleTheme();
@@ -43,18 +58,18 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             // onClick={toggleDropdown}
           >
             <div className={styles.circle} data-name="Username">
-              {/* {userDetail?.firstname.charAt(0)}
-              {userDetail?.lastname.charAt(0)} */}
-              AM
+              {userDetail?.firstname.charAt(0)}
+              {userDetail?.lastname.charAt(0)}
+              {/* AM */}
             </div>
             <div className={styles.userDetails}>
               <div>
-                {/* {userDetail?.firstname} {userDetail?.lastname} */}
-                Ashwani M.
+                {userDetail?.firstname} {userDetail?.lastname}
+                {/* Ashwani M. */}
               </div>
               <div style={{ fontSize: "14px" }}>
-                {/* {userDetail?.email} */}
-                user@email.com
+                {userDetail?.email}
+                {/* user@email.com */}
               </div>
             </div>
           </div>
@@ -173,21 +188,6 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
       <div className={styles.footer}>
-        {/* <Link
-          href="#"
-          className={`${styles.link} ${
-            pathname === "/notification"
-              ? theme === "light"
-                ? styles.activeLink_light
-                : styles.activeLink
-              : ""
-          }`}
-          onClick={onClose}
-        >
-          <Image src={Dashboard} alt="dashboard" className={styles.icons} />
-          <div className={styles.linkName}>Notification</div>
-        </Link> */}
-
         <Link
           href="#"
           className={`${styles.link} ${
@@ -197,7 +197,7 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
                 : styles.activeLink
               : ""
           }`}
-          onClick={onClose}
+          onClick={signOut}
         >
           <Image
             src={logoutIcon}
@@ -216,7 +216,7 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
               <span className={styles.slider}></span>
             </label>
           </div>
-          <span>Dark Mode</span>
+          <span>Light Mode</span>
         </div>
       </div>
     </div>
