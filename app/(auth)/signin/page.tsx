@@ -13,8 +13,6 @@ import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 
-
-
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,13 +21,13 @@ const SignIn = () => {
   const router = useRouter();
   const { signin } = useAuthContext();
 
-  const signinHandler = async (event:FormEvent<HTMLFormElement>) => {
+  const signinHandler = async (event: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     try {
       SignInFormSchema.parse({ email, password });
       setErrors({});
       const response = await signin({ email, password });
-      console.log(response)
+      console.log(response);
       if (response?.error) {
         setErrors({ password: response.error });
       } else {
@@ -65,80 +63,84 @@ const SignIn = () => {
       <Image
         src={LeftBackground}
         alt="leftBackground"
-        className={styles.leftBackground_image}
+        className={`${styles.leftBackground_image} desktop_view tablet_view`}
       />
       <Image
         src={TopRightBackground}
         alt="toprightBackground"
-        className={styles.topRightBackground_image}
+        className={`${styles.topRightBackground_image} desktop_view tablet_view`}
       />
       <Image
         src={BottomRightBackground}
         alt="bottomRightBackground"
-        className={styles.bottomRightBackground}
+        className={`${styles.bottomRightBackground} desktop_view tablet_view`}
       />
 
-      <Image src={LoginVisuals} alt="loginvisuals" width={400} />
-      <form className={styles.loginForm} onSubmit={signinHandler}>
-        <div className={styles.form_container}>
-          <div className={styles.form_heading}>Sign In</div>
+      <div className={styles.sub_container}>
+        <Image src={LoginVisuals} alt="loginvisuals" className={styles.image} />
+        <form className={styles.loginForm} onSubmit={signinHandler}>
+          <div className={styles.form_container}>
+            <div className={styles.form_heading}>Sign In</div>
 
-          <div className={styles.input_container}>
-            <div className={styles.input_title}>Email Address</div>
-            <input
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {errors.email && <div className={styles.error}>{errors.email}</div>}
-          </div>
-
-          <div className={styles.input_container}>
-            <div className={styles.input_title}>Password</div>
-            <input
-              className={styles.input}
-              value={password}
-              type={visible ? "text" : "password"}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Image
-              src={Visibility}
-              alt="visibility"
-              className={styles.visibility_Icon}
-              onClick={() => setVisible(!visible)}
-            />
-            {errors.password && (
-              <div className={styles.error}>{errors.password}</div>
-            )}
-          </div>
-
-          <div className={styles.checkbox_container}>
-            <input
-              type="checkbox"
-              id="remember"
-              className={styles.checkbox_input}
-            />
-            <label htmlFor="remember" className={styles.checkbox_title}>
-              Remember me
-            </label>
-          </div>
-
-          <div className={styles.actions_container}>
-            <button className={styles.button}  type="submit">
-              Sign In
-            </button>
-            <div className={styles.new_account}>
-              Do not have an account?
-              <Link href={"/signup"} className={styles.createNew_link}>
-                {" "}
-                Create New
-              </Link>
+            <div className={styles.input_container}>
+              <div className={styles.input_title}>Email Address</div>
+              <input
+                className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {errors.email && (
+                <div className={styles.error}>{errors.email}</div>
+              )}
             </div>
-          </div>
 
-          <div className={styles.forgot_password_link}>Forgot Password?</div>
-        </div>
-      </form>
+            <div className={styles.input_container}>
+              <div className={styles.input_title}>Password</div>
+              <input
+                className={styles.input}
+                value={password}
+                type={visible ? "text" : "password"}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Image
+                src={Visibility}
+                alt="visibility"
+                className={styles.visibility_Icon}
+                onClick={() => setVisible(!visible)}
+              />
+              {errors.password && (
+                <div className={styles.error}>{errors.password}</div>
+              )}
+            </div>
+
+            <div className={styles.checkbox_container}>
+              <input
+                type="checkbox"
+                id="remember"
+                className={styles.checkbox_input}
+              />
+              <label htmlFor="remember" className={styles.checkbox_title}>
+                Remember me
+              </label>
+            </div>
+
+            <div className={styles.actions_container}>
+              <button className={styles.button} type="submit">
+                Sign In
+              </button>
+              <div className={styles.new_account}>
+                Do not have an account?
+                <Link href={"/signup"} className={styles.createNew_link}>
+                  {" "}
+                  Create New
+                </Link>
+              </div>
+            </div>
+
+            <div className={styles.forgot_password_link}>Forgot Password?</div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

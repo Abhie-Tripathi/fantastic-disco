@@ -64,12 +64,14 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        <Image
-          src={menuIcon}
-          alt="Menu"
-          className={`styles.mobile_menuIcon mobile_view ${iconClass}`}
-          onClick={handelSideShow}
-        />
+        {pathName === "internal" && (
+          <Image
+            src={menuIcon}
+            alt="Menu"
+            className={`styles.mobile_menuIcon mobile_view ${iconClass}`}
+            onClick={handelSideShow}
+          />
+        )}
         {pathName === "internal" ? (
           <Link href="/internal">
             <Image
@@ -96,12 +98,14 @@ const Navbar = () => {
       <div className={styles.settings}>
         {/* Notification */}
         {pathName === "internal" && (
-          <div
-            className={`${styles.circle}`}
-            style={{ marginRight: "10px" }}
-            data-name="Notification"
-          >
-            <Image src={BellIcon} alt="notification" />
+          <div className="mobile_view">
+            <div
+              className={`${styles.circle} `}
+              style={{ marginRight: "10px" }}
+              data-name="Notification"
+            >
+              <Image src={BellIcon} alt="notification" />
+            </div>
           </div>
         )}
 
@@ -124,7 +128,7 @@ const Navbar = () => {
           <div className="desktop_view tablet_view">
             <Link
               href="/"
-              className={`${styles.circle}`}
+              className={`${styles.circle} desktop_view tablet_view`}
               style={{ marginRight: "10px" }}
               data-name="Home"
             >
@@ -179,40 +183,39 @@ const Navbar = () => {
         )}
         {userDetail && (
           <div className="desktop_view tablet_view">
-          <div
-            className="desktop_view tablet_view"
-            style={{
-              display: "flex",
-              gap: "8px",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            ref={profilectas.dropdownRef}
-            onClick={toggleDropdown}
-          >
-            <div className={styles.circle} data-name="Username">
-              {userDetail?.firstname.charAt(0)}
-              {userDetail?.lastname.charAt(0)}
-            </div>
-            <div className={styles.userDetails}>
-              <div>
-                {userDetail?.firstname} {userDetail?.lastname}
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              ref={profilectas.dropdownRef}
+              onClick={toggleDropdown}
+            >
+              <div className={styles.circle} data-name="Username">
+                {userDetail?.firstname.charAt(0)}
+                {userDetail?.lastname.charAt(0)}
               </div>
-              <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-            </div>
-            {profilectas.isOpen && (
-              <div
-                className={`${styles.userDropdown} ${
-                  theme === "light" && styles.light
-                }`}
-              >
-                <div className={styles.btns}>Profile</div>
-                <div className={styles.btns} onClick={signOut}>
-                  Log Out
+              <div className={styles.userDetails}>
+                <div>
+                  {userDetail?.firstname} {userDetail?.lastname}
                 </div>
+                <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
               </div>
-            )}
-          </div>
+              {profilectas.isOpen && (
+                <div
+                  className={`${styles.userDropdown} ${
+                    theme === "light" && styles.light
+                  }`}
+                >
+                  <div className={styles.btns}>Profile</div>
+                  <div className={styles.btns} onClick={signOut}>
+                    Log Out
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
