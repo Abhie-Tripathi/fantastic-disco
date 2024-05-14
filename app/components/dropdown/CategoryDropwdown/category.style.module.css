@@ -84,3 +84,12 @@
   align-items: center;
   gap: 8px;
 }
+
+@media screen and (max-width:992px) {
+  .list li {
+    font-size: 10px;
+  }
+  .options {
+    overflow-y: auto;
+  }
+}
