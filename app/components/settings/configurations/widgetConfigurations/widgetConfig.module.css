@@ -32,6 +32,7 @@
     margin-top: 20px;
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .outreachPanelSec {
@@ -48,7 +49,7 @@
     margin-top: 40px;
     display: flex;
     position: relative;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .outreachCard {
@@ -135,6 +136,7 @@
     border-radius: 6px;
     color: #B8B8B8;
     font-size: 12px;
+    z-index: 12;
 }
 
 .btn_container{
@@ -145,5 +147,23 @@
 .btn{
     padding: 3px 5px 3px 5px;
     border-radius: 5px;
-    border: 1px solid #6750A4;   
+    border: 1px solid #6750A4;  
+    cursor: pointer; 
+}
+
+
+.inputBox {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #2A2A2A;
+  }
+
+  .inputBox:focus {
+    outline: none;
+  }
+  
+  .blur{
+    filter: blur(2px);
 }

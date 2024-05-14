@@ -8,22 +8,18 @@ import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import CurrentPlan from "@/app/components/settings/pricingPlans/currentPlans";
 import { useTheme } from "@/context";
 import AvailablePlans from "@/app/components/settings/pricingPlans/availablePlans";
+import Link from "next/link";
 const Page = () => {
   const [activeTab, setActiveTab] = useState("Current Plan");
-  const {theme}=useTheme(); 
-  const sideValue = [
-    { text: "Current Plan" },
-    { text: "Available Plans" },
-  ];
-  // setSideValue(updatedSideValue);
-  console.log(11111111111111+activeTab);
-  
-  const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={styles.container}>
-       <SettingsSidebar sideVal={sideValue} active={activeTab} 
-      setActive={setActiveTab}/>
-      {/* <div className={`${styles.navContainerLeft} ${theme === 'light' && styles.navContainerLeft_light}`}>
+      <div
+        className={`${styles.navContainerLeft} ${
+          theme === "light" && styles.navContainerLeft_light
+        }`}
+      >
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${
             activeTab == "Current Plan" ? styles.active : ""
@@ -31,9 +27,16 @@ const Page = () => {
           onClick={() => setActiveTab("Current Plan")}
         >
           <div>
-            <Image className={`${iconClass}`}  src={BillingIcon} alt="billing icon" />
+            <Image
+              className={`${iconClass}`}
+              src={BillingIcon}
+              alt="billing icon"
+            />
           </div>
-          <div className={styles.text}>Current Plan</div>
+
+          <Link href="#current_plan" className={styles.text}>
+            Current Plan
+          </Link>
         </div>
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${
@@ -41,16 +44,20 @@ const Page = () => {
           }`}
           onClick={() => setActiveTab("Available Plans")}
         >
-          <Image className={`${iconClass}`}  src={BillingAccountIcon} alt="team icon" />
-          <div className={styles.text}>Available Plans</div>
+          <Image
+            className={`${iconClass}`}
+            src={BillingAccountIcon}
+            alt="team icon"
+          />
+          <Link href="#our_pricing_plans" className={styles.text}>Available Plans</Link>
         </div>
-      </div> */}
+      </div> 
 
-      {activeTab === "Current Plan" ? <CurrentPlan /> : ""}
+      <div className={styles.rightContainer}>
+        {activeTab === "Current Plan" ? <CurrentPlan /> : ""}
 
-      {activeTab === "Available Plans" && 
-        <AvailablePlans />
-      }
+        {activeTab === "Available Plans" ? <AvailablePlans /> : ""}
+      </div>
     </div>
   );
 };

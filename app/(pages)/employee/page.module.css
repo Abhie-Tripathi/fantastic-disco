@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   min-height: 92vh;
-  min-width: 830px;
+  /* min-width: 830px; */
 }
 .blur {
   filter: blur(2px);
@@ -41,6 +41,14 @@
     padding: 94px 30px;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .eventsBody {
+    padding: 0 15px;
+    padding-bottom: 60px;
+  }
+}
+
 @media screen and (max-width: 1400px) {
   .body {
     height: 140vh;

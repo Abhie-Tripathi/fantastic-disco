@@ -4,19 +4,19 @@
   z-index: 2;
   top: 0px;
   left: 0px;
-  height: 100vh;
+  height: 100%;
   width: 80px;
   margin-top: 80px;
   padding: 15px 0px;
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
   display: flex;
   flex-direction: column;
   gap: 10px;
   transition: width 0.3s ease-in-out;
-  border-right: 1px solid #2c2c2c
+  border-right: 1px solid #2c2c2c;
 }
 
-.container_light{
+.container_light {
   background-color: var(--secondary-bg-light);
   color: var(--primary-color-light);
 }
@@ -63,14 +63,12 @@
 .link {
   display: flex;
   align-items: center;
-  margin-left: 7px;
-  margin-right: 15px;
-  padding: 18px 18px 18px 18px;
+  gap: 20px;
+  padding: 18px 18px 18px 24px;
   height: 56px;
   font-size: 17px;
   overflow: hidden;
   text-decoration: none;
-  /* color: black; */
 }
 .linkName {
   margin-left: 12px;
@@ -86,12 +84,22 @@
   width: 300px;
   gap: 10px;
 }
-/* .activeLink {
-  background-color: #d3e1fc;
-  border-radius: 50px;
-  font-weight: 600;
-  color: white;
-} */
+.activeLink {
+  padding-left: 21px;
+  border-left: 6px solid #8f68ce;
+  background-color: #292929;
+  font-weight: 500;
+  color: #8f68ce;
+}
+
+.activeLink_light {
+  padding-left: 21px;
+  border-left: 6px solid #8f68ce;
+  background-color: #e2c4ff;
+  font-weight: 500;
+  color: #8f68ce;
+}
+
 .sublink {
   margin-top: 10px;
   margin-left: 30px;

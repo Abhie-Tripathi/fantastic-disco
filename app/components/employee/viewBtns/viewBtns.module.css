@@ -30,4 +30,7 @@
     /* .btns button{
         padding: 12px 30px;
     } */
+    .btns button{
+        padding: 12px 24px;
+    }
 }

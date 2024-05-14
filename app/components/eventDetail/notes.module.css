@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  height:100%;
+  height: 100%;
   /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
   border: 1px solid #262626;
   border-radius: 18px;
@@ -39,7 +39,7 @@
   color: white;
 }
 
-.comment_name_light{
+.comment_name_light {
   color: var(--primary-color-light);
 }
 
@@ -134,6 +134,7 @@
 }
 
 .viewMoreReplies {
+  margin: 0rem 3.6rem;
   margin: 0rem 3.6rem;
   color: #696b83;
   cursor: pointer;
@@ -394,7 +395,7 @@
   background: #1A1A1A;
 }
 
-.notesAdd_light{
+.notesAdd_light {
   background-color: white;
   color: black;
   /* color: #6a3afb; */
@@ -410,19 +411,22 @@
   background: grey;
   border-radius: 12px;
 }
-.text1{
+
+.text1 {
   display: flex;
   align-items: center;
   font-size: 12px;
   color: grey;
-  gap:5px;
+  gap: 5px;
   padding-bottom: 40px;
 }
-.pdf{
+
+.pdf {
   display: flex;
   gap: 10px;
   align-items: center;
   padding: 5px;
+  color: white;
   color: white;
   /* border-radius: 10px;
   border: 1px solid white; */
@@ -434,21 +438,28 @@
   -webkit-overflow-scrolling: hidden !important;
   overflow: hidden !important;
 }
-.images{
+
+.images {
   display: grid;
-  gap:10px;
+  gap: 10px;
   /* flex-direction: column; */
-    grid-template-columns: repeat(2,0fr);
+  grid-template-columns: repeat(2, 0fr);
 }
+
 .pdf object {
   overflow: hidden !important;
 }
+
 .pdf object::-webkit-scrollbar {
-  display: none !important; /* Hide scrollbar for Chrome, Safari, and Opera */
+  display: none !important;
+  /* Hide scrollbar for Chrome, Safari, and Opera */
 }
+
 .pdf object {
-  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for Internet Explorer and Edge */
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
 }
 .dragover {
   opacity: 0.6;

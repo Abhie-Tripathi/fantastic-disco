@@ -19,18 +19,30 @@ const Index = () => {
   ];
 
   const [activeState, setActiveState] = useState("Active");
-  const {theme}=useTheme();
-  const iconClass = theme ===  'light' ? 'icons_light' : 'icon'
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
-    <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
-      <div className={styles.gradient_border}>Current Plan Details</div>
-
-      <div className={`${styles.firstContainer} ${theme === 'light' && styles.firstContainer_light}`}>
+    <div
+      className={`${styles.container} ${
+        theme === "light" && styles.container_light
+      }`}
+    >
+      <div id="current_plan" className={styles.gradient_border}>
+        Current Plan Details
+      </div>
+      <div
+        className={`${styles.firstContainer} ${
+          theme === "light" && styles.firstContainer_light
+        }`}
+      >
         <div className={styles.billingUsage_container}>
-          
           <div className={styles.basic_container}>
             <div className={styles.basic_container_content}>
-              <Image className={`${iconClass}`} src={BasicIcon} alt="basic icon" />
+              <Image
+                className={`${iconClass}`}
+                src={BasicIcon}
+                alt="basic icon"
+              />
               <div>Basic</div>
             </div>
             <div className={styles.statusBtn}>
@@ -49,7 +61,13 @@ const Index = () => {
             </div>
           </div>
           <div className={styles.userSection}>
-            <div className={`${styles.includeText} ${theme === 'light' && styles.includeText_light}`}>Includes upto:</div>
+            <div
+              className={`${styles.includeText} ${
+                theme === "light" && styles.includeText_light
+              }`}
+            >
+              Includes upto:
+            </div>
             <div className={styles.userContent}>
               <Image src={UserIcon} alt="user icon" />
               <span className={styles.number}>5</span>
@@ -57,7 +75,7 @@ const Index = () => {
             </div>
             <div className={styles.second_divider}></div>
             <div className={styles.userContent}>
-              <Image  src={TrackerIcon} alt="user icon" />
+              <Image src={TrackerIcon} alt="user icon" />
               <span className={styles.number}>3</span>
               <span className={styles.userText}>Trackers</span>
             </div>
@@ -85,9 +103,19 @@ const Index = () => {
         <div className={styles.planContainer}>
           <div className={styles.planContainerItems}>
             <div className={styles.dollar}>$689.00</div>
-            <div className={`${styles.dollarText} ${theme === 'light' && styles.dollarText_light}`}>Next renewal 17 May 2024</div>
+            <div
+              className={`${styles.dollarText} ${
+                theme === "light" && styles.dollarText_light
+              }`}
+            >
+              Next renewal 17 May 2024
+            </div>
           </div>
-          <div className={`${styles.upgradeIcn} ${theme === 'light' && styles.upgradeIcn_light}`}>
+          <div
+            className={`${styles.upgradeIcn} ${
+              theme === "light" && styles.upgradeIcn_light
+            }`}
+          >
             <span>Upgrade Plan</span>
             <span className={styles.icon_background}>
               <Image src={IncreasingIcon} alt="increasing icon" />
@@ -96,9 +124,13 @@ const Index = () => {
         </div>
       </div>
 
-      <div className={`${styles.unlock_container} ${theme === 'light' && styles.unlock_container_light}`}>
+      <div
+        className={`${styles.unlock_container} ${
+          theme === "light" && styles.unlock_container_light
+        }`}
+      >
         <div className={styles.bellIcon_container}>
-          <Image className={`${iconClass}`}  src={BellIcon} alt="bell icon" />
+          <Image className={`${iconClass}`} src={BellIcon} alt="bell icon" />
           <span>
             Unlock unlimited features and make the most of our platform by
             upgrading to our Advanced or Premium plans
@@ -106,11 +138,17 @@ const Index = () => {
         </div>
       </div>
       <div className={styles.fourthDiv}>
-        <div className={styles.gradient_border}>Our Pricing Plans</div>
+        <div id="our_pricing_plans" className={styles.gradient_border}>
+          Our Pricing Plans
+        </div>
         <div className={styles.pricingCard_container}>
           <div className={styles.card_container}>
             <div>
-              <div className={`${styles.cardUpper_sec} ${theme === 'light' && styles.cardUpper_sec_light}`}>
+              <div
+                className={`${styles.cardUpper_sec} ${
+                  theme === "light" && styles.cardUpper_sec_light
+                }`}
+              >
                 <div className={styles.upper_sec_content}>
                   <div className={styles.basicText}>Basic</div>
                   <div className={styles.desc}>
@@ -123,7 +161,11 @@ const Index = () => {
 
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
-              <div className={`${styles.cardLower_sec} ${theme === 'light' && styles.cardLower_sec_light}`}>
+              <div
+                className={`${styles.cardLower_sec} ${
+                  theme === "light" && styles.cardLower_sec_light
+                }`}
+              >
                 {cardData.map((item, key) => (
                   <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />
@@ -133,7 +175,11 @@ const Index = () => {
               </div>
             </div>
             <div>
-              <div className={`${styles.cardUpper_sec} ${theme === 'light' && styles.cardUpper_sec_light}`}>
+              <div
+                className={`${styles.cardUpper_sec} ${
+                  theme === "light" && styles.cardUpper_sec_light
+                }`}
+              >
                 <div className={styles.upper_sec_content}>
                   <div className={styles.basicText}>Advanced</div>
                   <div className={styles.desc}>
@@ -146,7 +192,11 @@ const Index = () => {
 
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
-              <div className={`${styles.cardLower_sec} ${theme === 'light' && styles.cardLower_sec_light}`}>
+              <div
+                className={`${styles.cardLower_sec} ${
+                  theme === "light" && styles.cardLower_sec_light
+                }`}
+              >
                 {cardData.map((item, key) => (
                   <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />
@@ -156,7 +206,11 @@ const Index = () => {
               </div>
             </div>
             <div>
-              <div className={`${styles.cardUpper_sec} ${theme === 'light' && styles.cardUpper_sec_light}`}>
+              <div
+                className={`${styles.cardUpper_sec} ${
+                  theme === "light" && styles.cardUpper_sec_light
+                }`}
+              >
                 <div className={styles.upper_sec_content}>
                   <div className={styles.basicText}>Premium</div>
                   <div className={styles.desc}>
@@ -169,7 +223,11 @@ const Index = () => {
 
                 <div className={styles.planButton_container}>Repeat plan</div>
               </div>
-              <div className={`${styles.cardLower_sec} ${theme === 'light' && styles.cardLower_sec_light}`}>
+              <div
+                className={`${styles.cardLower_sec} ${
+                  theme === "light" && styles.cardLower_sec_light
+                }`}
+              >
                 {cardData.map((item, key) => (
                   <div className={styles.card_texts} key={key}>
                     <Image src={RightArrow} alt="right arrow" />

@@ -12,6 +12,9 @@ import Link from "next/link";
 import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
 import Spinner from "/public/Icon.svg";
+import menuIcon from "/public/internal/hamburger.svg";
+import MobileSidebar from "./MobileSidebar";
+import BellIcon from "/public/bell.svg";
 
 interface UserDetail {
   firstname: string;
@@ -22,6 +25,8 @@ interface UserDetail {
 const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
+  const [showSidebar, setShowSidebar] = useState(false);
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const profilectas = DropDown();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
@@ -41,47 +46,98 @@ const Navbar = () => {
   const themeSwitchHandler = () => {
     toggleTheme();
   };
+
+  const handelSideShow = () => {
+    setShowSidebar(true);
+  };
+
+  const handelSideShowClose = () => {
+    setShowSidebar(false);
+  };
+
   return (
-    <div
-      className={`${styles.navbar} ${theme === "light" && styles.light}`}
-    >
-      {pathName === "internal" ? (
-        <Link href="/internal">
-          <Image
-            className={styles.logo}
-            src={logo}
-            width={45}
-            height={53}
-            alt="logo"
-          />
-        </Link>
-      ) : (
-        <Link href="/">
-          <Image
-            className={styles.logo}
-            src={logo}
-            width={45}
-            height={53}
-            alt="logo"
-          />
-        </Link>
-      )}
+    <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          src={menuIcon}
+          alt="Menu"
+          className={`styles.mobile_menuIcon mobile_view ${iconClass}`}
+          onClick={handelSideShow}
+        />
+        {pathName === "internal" ? (
+          <Link href="/internal">
+            <Image
+              className={`styles.logo_internal`}
+              src={logo}
+              width={40}
+              height={48}
+              alt="logo"
+            />
+          </Link>
+        ) : (
+          <Link href="/">
+            <Image
+              className={styles.logo}
+              src={logo}
+              width={40}
+              height={48}
+              alt="logo"
+            />
+          </Link>
+        )}
+      </div>
 
       <div className={styles.settings}>
-        <div
-          className={styles.circle}
-          style={{ marginRight: "10px" }}
-          onClick={themeSwitchHandler} data-name="Switch Theme"
-        >
-          <Image src={lightModeIcon} alt="theme" />
-        </div>
+        {/* Notification */}
+        {pathName === "internal" && (
+          <div
+            className={`${styles.circle} mobile_view`}
+            style={{ marginRight: "10px" }}
+            data-name="Notification"
+          >
+            <Image src={BellIcon} alt="notification" />
+          </div>
+        )}
+
+        {/* ThemeSwitch */}
+        {pathName === "internal" && (
+          <div
+            className={`${styles.circle} desktop_view tablet_view`}
+            style={{ marginRight: "10px" }}
+            onClick={themeSwitchHandler}
+            data-name="Switch Theme"
+          >
+            <Image src={lightModeIcon} alt="theme" />
+          </div>
+        )}
+
+        {/* Home */}
         {pathName === "internal" && (
           <Link
-            className={styles.circle}
+            href="/"
+            className={`${styles.circle} desktop_view tablet_view`}
             style={{ marginRight: "10px" }}
-            href={"/"} data-name="Home"
+            data-name="Home"
           >
-            <Image src={Home} alt="Home" />
+            <Image src={Home} alt="home" />
+          </Link>
+        )}
+
+        {/* Settings */}
+        {pathName === "internal" && (
+          <Link
+            className={`${styles.circle} mobile_view`}
+            style={{ marginRight: "10px" }}
+            href={"/settings"}
+            data-name="Settings"
+          >
+            <Image src={settingsIcon} alt="settings" />
           </Link>
         )}
 
@@ -89,7 +145,8 @@ const Navbar = () => {
           <Link
             className={styles.circle}
             style={{ marginRight: "10px" }}
-            href={"/internal"} data-name="Internal"
+            href={"/internal"}
+            data-name="Internal"
           >
             <Image src={DoorIcon} alt="internal" />
           </Link>
@@ -100,7 +157,8 @@ const Navbar = () => {
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/widget"} data-name="Widget"
+              href={"/widget"}
+              data-name="Widget"
             >
               <Image src={Spinner} alt="widget" />
             </Link>
@@ -108,7 +166,8 @@ const Navbar = () => {
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/settings"} data-name="Settings"
+              href={"/settings"}
+              data-name="Settings"
             >
               <Image src={settingsIcon} alt="settings" />
             </Link>
@@ -116,8 +175,9 @@ const Navbar = () => {
         )}
         {userDetail && (
           <div
+            className="desktop_view tablet_view"
             style={{
-              display: "flex",
+              // display: "flex",
               gap: "8px",
               cursor: "pointer",
               position: "relative",
@@ -136,7 +196,11 @@ const Navbar = () => {
               <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
             </div>
             {profilectas.isOpen && (
-              <div className={`${styles.userDropdown} ${styles.light}`}>
+              <div
+                className={`${styles.userDropdown} ${
+                  theme === "light" && styles.light
+                }`}
+              >
                 <div className={styles.btns}>Profile</div>
                 <div className={styles.btns} onClick={signOut}>
                   Log Out
@@ -146,6 +210,7 @@ const Navbar = () => {
           </div>
         )}
       </div>
+      {showSidebar && <MobileSidebar onClose={handelSideShowClose} />}
     </div>
   );
 };

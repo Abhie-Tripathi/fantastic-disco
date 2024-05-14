@@ -199,7 +199,7 @@ const Table = ({
     1685, 5175,
   ]);
   const { theme } = useTheme();
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
     edition_id: null,
@@ -310,16 +310,17 @@ const Table = ({
             {eventPerPage.map((event: any) => (
               <tr key={event.id}>
                 <td>
-                  <div className={styles.event_title}>
-                    <Link
-                      href={`/event-analytics/${event.id}`}
-                      style={{ textDecoration: "none", color: "blue" }}
-                    >
-                      {event.name.length > 80
-                        ? event.name.slice(0, 80) + "..."
-                        : event.name}
-                    </Link>
-                  </div>
+                  <Link
+                    href={`/detailpage`}
+                    style={{
+                      textDecoration: "none",
+                      color: theme === "light" ? "black" : "white",
+                    }}
+                  >
+                    {event.name.length > 80
+                      ? event.name.slice(0, 80) + "..."
+                      : event.name}
+                  </Link>
                   <div className={styles.event_organizer}>
                     {event.organizer.name}
                   </div>
@@ -450,12 +451,12 @@ const Table = ({
                       event.yoyGrowth > 0 ? (
                         <div className={styles.text_green}>
                           {event.yoyGrowth}%{" "}
-                          <Image src={UpArrow} alt="up" width={10} className={iconClass} />
+                          <Image src={UpArrow} alt="up" width={10} />
                         </div>
                       ) : (
                         <div className={styles.text_red}>
                           {event.yoyGrowth}%{" "}
-                          <Image src={DownArrow} alt="down" width={10} className={iconClass}  />
+                          <Image src={DownArrow} alt="down" width={10} />
                         </div>
                       )
                     ) : (
@@ -488,12 +489,12 @@ const Table = ({
                       event.reputationSentiment > 0 ? (
                         <div className={styles.text_green}>
                           {event.reputationSentiment}%{" "}
-                          <Image src={UpArrow} alt="up" width={10} className={iconClass} />{" "}
+                          <Image src={UpArrow} alt="up" width={10} />{" "}
                         </div>
                       ) : (
                         <div className={styles.text_red}>
                           {event.reputationSentiment}%{" "}
-                          <Image src={DownArrow} alt="down" width={10} className={iconClass} />{" "}
+                          <Image src={DownArrow} alt="down" width={10} />{" "}
                         </div>
                       )
                     ) : event.stats.rating == undefined ? (
@@ -543,14 +544,18 @@ const Table = ({
                     {bookmarkedEvent.includes(event.id) ? (
                       <BookmarkIcon fillColor={"#ff851b"} />
                     ) : (
-                      <BookmarkIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
+                      <BookmarkIcon
+                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                      />
                     )}
                   </span>
                   <span onClick={() => handlePinEvent(event.id)}>
                     {event.id == pinEvent ? (
                       <PinIcon fillColor={"#ff851b"} />
                     ) : (
-                      <PinIcon fillColor={theme === 'light' ? "#000000" : "#ffffff"} />
+                      <PinIcon
+                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                      />
                     )}
                   </span>
                   {isOpen == event.id && (
@@ -566,7 +571,7 @@ const Table = ({
                             handleModalOpen(event.id, event.edition)
                           }
                         >
-                          <img src="/close.svg" alt="close" />
+                          <Image src="/close.svg" alt="close" />
                         </button>
                       </header>
                       <main className={styles["modal_content"]}>

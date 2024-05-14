@@ -47,12 +47,14 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       <div className={styles.cardDetails}>
         <div className={styles.eventHeader}>
           <div className={styles.eventName}>{eventName}</div>
-          <div className={styles.pills}>
+          <div className='desktop_view' >
+            <div className={styles.pills}>
             {eventCtas.map((item, index) => (
               <div key={index} className={styles.pill}>
                 {item}
               </div>
             ))}
+            </div>
           </div>
         </div>
         <div className={styles.locationAndDateContainer}>
@@ -82,7 +84,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>
             <div
               className={styles.circle}
-              style={{ marginLeft: "-15px", width: "45px", height: "45px" }}
+              style={{ marginLeft: "-15px" }}
               data-name="Ravi Tripathi"
             >
               RT
@@ -95,15 +97,26 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               <Image className={styles.image} src={person2} alt="person2" />
             </div>
           </div>
-          <div className={styles.eventDetails}>
-            <div className={styles.detailContainer}>
-              <div>View Details</div>
-              <Image
-                src={rightArrowIcon}
-                alt="rightArrowIcon"
-                width={50}
-                height={24}
-              />
+          <div className='tablet_view mobile_view' >
+            <div className={styles.pills}>
+              {eventCtas.map((item, index) => (
+                <div key={index} className={styles.pill}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className='desktop_view' >
+            <div className={styles.eventDetails}>
+              <div className={styles.detailContainer}>
+                <div>View Details</div>
+                <Image
+                  src={rightArrowIcon}
+                  alt="rightArrowIcon"
+                  width={50}
+                  height={24}
+                />
+              </div>
             </div>
           </div>
         </div>

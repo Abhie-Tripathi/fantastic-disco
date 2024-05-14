@@ -1,14 +1,13 @@
 .container {
   padding: 30px;
-  background-color: #131313;
   color: white;
   background-color: #131313;
-  min-width: 918px;
+  min-width: 430px;
 }
 
 .container_light {
   background-color: var(--primary-bg-light);
-  color: var(--primary-color-light)
+  color: var(--primary-color-light);
 }
 
 .header_container {
@@ -38,14 +37,16 @@
 
 .linkCard {
   flex: 1;
-  height: 160px;
+  height: 175px;
   border: 1px solid grey;
   box-shadow: 0px 4px 20px 0px #00000008;
   border-radius: 12px;
   position: relative;
-  padding: 25px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow: hidden;
   /* justify-content: space-between; */
 }
 
@@ -54,6 +55,7 @@
   align-items: center;
   font-size: 12px;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .linkCard_tagsInnerContainer {
@@ -109,7 +111,7 @@
   padding: 10px 0px;
   color: #696b83;
   font-size: 14px;
-  line-height: 21px;
+  line-height: 18px;
 }
 
 .divider {
@@ -156,7 +158,6 @@
   background: grey;
 }
 
-
 .notification {
   cursor: pointer;
   font-size: 14px;
@@ -170,7 +171,6 @@
 
 .notification_light:hover {
   background-color: #eeeeee;
-  ;
 }
 
 .viewButton {
@@ -233,8 +233,16 @@
 .event_cards_container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
   padding: 5px 0px;
+  font-size: 14px;
+}
+
+.desktop_trackerCard_container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .eventCard {
@@ -285,11 +293,11 @@
   flex: 1;
 }
 
-.trends_container_header>div {
+.trends_container_header > div {
   flex: 1;
 }
 
-.trends_container_header>button {
+.trends_container_header > button {
   cursor: pointer;
   outline: none;
   border: none;
@@ -324,7 +332,7 @@
   gap: 10px;
 }
 
-.trends_location_container button>span {
+.trends_location_container button > span {
   color: white;
 }
 
@@ -397,21 +405,72 @@
 .savedEvent_light:hover {
   background-color: #e0e0e0;
 }
+
+/* Mobile Styling */
+
+.mobile_eventStats_container {
+  border: 1px solid #6750a4;
+  border-radius: 18px;
+  padding: 3.79px 11.36px 3.79px 11.36px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.mobile_eventCard_title {
+  color: #6750a4;
+  font-size: 15px;
+}
+
+.mobile_trackerCard_container {
+  display: none;
+  justify-content: space-evenly;
+  gap: 10px;
+}
+
 @media screen and (max-width: 1250px) {
-  .header_container{
+  .header_container {
     flex-direction: column;
     gap: 0px;
   }
   .divider {
     height: 0px;
   }
-  .notification_container{
+  .notification_container {
     width: 100%;
   }
 }
 
 @media screen and (max-width: 1200px) {
-  .body_container{
+  .body_container {
     flex-direction: column;
   }
 }
+
+@media screen and (max-width: 800px) {
+  .goto_icon {
+    display: none;
+  }
+  .linkCard_header_title {
+    align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 660px) {
+  .tracker_card {
+    padding: 10px;
+  }
+  .desktop_trackerCard_container {
+    display: none;
+  }
+
+  .mobile_trackerCard_container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .savedEvent {
+    padding: 4px 15px;
+  }
+}
+
+

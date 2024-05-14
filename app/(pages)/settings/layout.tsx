@@ -26,10 +26,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className={styles.tabsContainer}>
           <Link
-            href="/settings"
-            
+            href="/settings/company"
             className={`${styles.tab} ${
-              pathName == "/settings" ? styles.active : ""
+              pathName == "/settings/company" ? styles.active : ""
             }`}
           >
             <div className={`${styles.comapny_container}`}>

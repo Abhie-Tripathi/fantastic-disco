@@ -35,40 +35,69 @@ const Index = () => {
   }, []);
   const [openPopUpIndex, setOpenPopUpIndex] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(null);
-  const [isEdit, setIsedit] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editItems, setEditItems] = useState<any>({});
+  const togglePopUp = (index: any) => {
+    setOpenPopUpIndex((prevIndex) => (prevIndex === index ? null : index));
+    setIsOpen(true);
+  };
+
+  const editCard = (index: any, card: any) => {
+    setOpenEditPopUp((prevIndex) => (prevIndex === index ? null : index));
+    setEditItems(card);
+    setIsEdit(true);
+  };
+
+  const handleEdit = (id: any, newContent: any) => {
+    const updatedCards = staticCardsData.map((card) => {
+      if (card.id === id) {
+        return (card.cardTitle = newContent), (card.text = newContent);
+      }
+      return card;
+    });
+    setCardData(updatedCards);
+    setIsEdit(false);
+    setIsOpen(false)
+  };
+
+  const handleDelete = (id: any) => {
+    setCardData((prevCards) => prevCards.filter((card) => card.id !== id));
+    setIsOpen(false)
+  };
+
   const [staticCardsData, setCardData] = useState([
     {
       id: 0,
-      cardItitle: "Shortlisted",
+      cardTitle: "Shortlisted",
       dotIcon: ThreeDots,
       icon: ShortListedIcon,
       text: " List of all shortlisted events by admin",
     },
     {
       id: 1,
-      cardItitle: "In Process",
+      cardTitle: "In Process",
       dotIcon: ThreeDots,
       icon: TimerIcon,
       text: "List of all the events in negotiations",
     },
     {
       id: 2,
-      cardItitle: "Concierge",
+      cardTitle: "Concierge",
       dotIcon: ThreeDots,
       icon: conciergeIcon,
       text: "EventGeni Support",
     },
     {
       id: 3,
-      cardItitle: "Approved",
+      cardTitle: "Approved",
       dotIcon: ThreeDots,
       icon: ApproveIcon,
-      text: " List of all events finalised afted negotiations",
+      text: "List of all events finalised afted negotiations",
     },
     {
       id: 4,
-      cardItitle: "Declined",
+      cardTitle: "Declined",
       dotIcon: ThreeDots,
       icon: CrossIcon,
       text: " List of all events declined after negotiations",
@@ -76,49 +105,15 @@ const Index = () => {
   ]);
 
   const addCard = () => {
-    const newCardId = Math.random().toString(36).substring(7);
     const newCard = {
-      id: newCardId,
-      cardItitle: "Shortlisted",
+      id: staticCardsData.length,
+      cardTitle: "New Card",
       dotIcon: ThreeDots,
-      icon: ShortListedIcon,
-      text: " List of all shortlisted events by admin",
+      icon: TimerIcon,
+      text: "Description of the new card",
     };
-    // setCardData([...staticCardsData, newCard]);
+    setCardData((prevCards) => [...prevCards, newCard]);
   };
-
-  const togglePopUp = (index: any) => {
-    setOpenPopUpIndex((prevIndex) => (prevIndex === index ? null : index));
-  };
-
-  const editCard = (index: any, card: any) => {
-    console.log("cards", card);
-    setOpenEditPopUp((prevIndex) => (prevIndex === index ? null : index));
-    setEditItems(card);
-    setIsedit(true);
-  };
-
-  const handleEdit = (id: any, newContent: any) => {
-    const updatedCards = staticCardsData.map((card) => {
-      if (card.id === id) {
-        return (card.cardItitle = newContent);
-      }
-      return card;
-    });
-    setCardData(updatedCards);
-  };
-
-
-  // const handleDelete = (id:any) => {
-  //   console.log("ifddd", id)
-  //   setCardData(staticCardsData.filter(card => card.id !== id));
-  // };
-
-  const handleDelete = (id:any) => {
-    setCardData(prevCards => prevCards.filter(card => card.id !== id));
-  };
-
-  console.log("cardssss", staticCardsData)
 
   return (
     <div
@@ -146,36 +141,38 @@ const Index = () => {
           You can manage and configure all the stages present on the outreach
         </div>
         <div className={styles.outreachCard_container}>
-          {staticCardsData?.map((card: any, id: any, key: any) => (
+          {staticCardsData.map((card, index) => (
             <div
-              key={key}
+              key={index}
               className={`${styles.outreachCard} ${
-                id % 2 === 0 ? styles.cardbackgroundColor : ""
+                index % 2 === 0 ? styles.cardbackgroundColor : ""
               }`}
             >
               <div className={styles.cardTopSec}>
                 <Image src={card?.icon} alt="" />
-                <div className={styles.inner_sec}>{card.cardItitle}</div>
+                <div className={styles.inner_sec}>{card.cardTitle}</div>
                 <Image
                   src={ThreeDots}
                   alt="dots"
                   style={{ cursor: "pointer" }}
-                  onClick={() => togglePopUp(id)}
+                  onClick={() => togglePopUp(index)}
                 />
               </div>
-              {openPopUpIndex === id && (
+
+              {isOpen && openPopUpIndex === index && (
                 <div className={styles.popUp}>
-                  {/* Content of the pop-up */}
                   <div
                     className={styles.popUpContent}
-                    onClick={() => editCard(id, card)}
+                    onClick={() => editCard(index, card)}
                     style={{ cursor: "pointer" }}
                   >
                     <Image src={PencilIcon} alt="pen" />
                     Edit
                   </div>
-                  <div className={styles.popUpContent} style={{ cursor: "pointer" }}
-                  // onClick={() => handleDelete(id)}
+                  <div
+                    className={styles.popUpContent}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleDelete(index)}
                   >
                     <Image src={Delete} alt="delete" />
                     Delete
@@ -183,31 +180,44 @@ const Index = () => {
                 </div>
               )}
 
-              {isEdit && openEditPopUp === id && (
+              {isEdit && openEditPopUp === index && (
                 <div className={styles.editPopUp}>
                   <div>
                     <input
-                      value={editItems?.cardItitle}
+                      className={styles.inputBox}
+                      value={editItems?.cardTitle}
                       onChange={(e) =>
                         setEditItems({
                           ...editItems,
-                          cardItitle: e.target.value,
+                          cardTitle: e.target.value,
                         })
                       }
                     />
                   </div>
-                  <div></div>
+
+                  <div>
+                    <input
+                      className={styles.inputBox}
+                      value={editItems?.text}
+                      onChange={(e) =>
+                        setEditItems({
+                          ...editItems,
+                          text: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
 
                   <div className={styles.btn_container}>
                     <div
                       className={styles.btn}
-                      onClick={() => handleEdit(id, editItems)}
+                      onClick={() => handleEdit(index, editItems)}
                     >
                       Save
                     </div>
                     <div
                       className={styles.btn}
-                      onClick={() => setIsedit(false)}
+                      onClick={() => setIsEdit(false)}
                     >
                       Cancel
                     </div>

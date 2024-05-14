@@ -14,7 +14,6 @@
 
 .table_wrapper_light {
   color: black;
-  ;
 }
 
 .table {
@@ -32,7 +31,7 @@
 .table_head_light {
   background-color: var(--secondary-bg-light);
   color: black;
-  border-bottom: 1px solid #ddd
+  border-bottom: 1px solid #ddd;
 }
 
 .table_head_row {
@@ -40,7 +39,7 @@
   text-wrap: nowrap;
 }
 
-.table_head_row>th {
+.table_head_row > th {
   padding: 20px 20px;
   font-weight: 400;
   text-align: start;
@@ -53,25 +52,28 @@
   gap: 10px;
 }
 
-.table_head_row>th:first-child {
+.table_head_row > th:first-child {
   border-radius: 12px 0px 0px 0px;
 }
 
-.table_head_row>th:last-child {
+.table_head_row > th:last-child {
   border-radius: 0px 12px 0px 0px;
 }
 
-.table_body>tr {
+.table_body > tr {
   border-bottom: 1px solid #ddd;
 }
 
-.table_body>tr>td {
+.table_body > tr > td {
   padding: 20px;
 }
 
 .event_title {
-  color: #242424;
   font-weight: 500;
+  color: white;
+}
+.eventTitle_light {
+  color: black;
 }
 
 .event_organizer {
@@ -192,7 +194,7 @@
 }
 
 .table_wrapper::-webkit-scrollbar-thumb {
-  background: #2B233D;
+  background: #2b233d;
 
   border-radius: 12px;
 }
@@ -218,41 +220,40 @@
   /* padding: 20px; */
   right: 100%;
   width: 500px;
-
 }
 
 .badge_success {
-  background-color: #E6FEEF;
+  background-color: #e6feef;
   padding: 8px 24px;
   border-radius: 12px;
-  color: #3CBDA8;
+  color: #3cbda8;
   font-weight: 500;
   font-size: 14px;
 }
 
 .badge_primary {
-  background-color: #EEEAF9;
+  background-color: #eeeaf9;
   padding: 8px 24px;
   border-radius: 12px;
-  color: #6750A4;
+  color: #6750a4;
   font-weight: 500;
   font-size: 14px;
 }
 
 .badge_danger {
-  background-color: #FFEEF0;
+  background-color: #ffeef0;
   padding: 8px 24px;
   border-radius: 12px;
-  color: #DF606E;
+  color: #df606e;
   font-weight: 500;
   font-size: 14px;
 }
 
 .rank_tag {
-  background-color: #FFF6E5;
+  background-color: #fff6e5;
   padding: 6px 16px;
   border-radius: 12px;
-  color: #D5A55E;
+  color: #d5a55e;
   font-weight: 500;
   font-size: 14px;
   text-transform: capitalize;
@@ -319,6 +320,6 @@
   cursor: pointer;
   color: #fff;
   margin-right: 0.5rem;
-  background: #6750A4;
+  background: #6750a4;
   border: none;
 }

@@ -8,15 +8,15 @@
 .closeIcon {
     position: absolute;
     cursor: pointer;
-    right: 3%;
-    top: 5%;
+    right: 10px;
+    top: 10px;
     z-index: 1;
 }
 
 .innerContainer {
     width: 100%;
     display: flex;
-    gap: 50px;
+    gap: 20px;
     height: 85vh;
     justify-content: space-between;
 }
@@ -75,6 +75,7 @@
     .innerContainer {
         flex-direction: column;
         height: fit-content;
+        gap: 20px;
     }
     .containerLeft {
         width: 100%;
@@ -82,9 +83,6 @@
     }
     .containerRight {
         width: 100%;
-    }
-    .closeIcon{
-        top: 2%;
     }
     
 }
