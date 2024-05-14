@@ -1,5 +1,5 @@
 .tag {
-    padding: 5px 20px;
+    padding: 5px 10px;
     border-radius: 20px;
     background: #B8B7EA;
     width: fit-content;
@@ -8,5 +8,9 @@
     gap: 4px;
     font-size: 14px;
     color: #1A1A1A;
+}
+.crossIcon{
+    height: 15px;
+    width: 15px;
     cursor: pointer;
 }

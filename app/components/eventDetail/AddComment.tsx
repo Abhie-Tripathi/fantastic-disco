@@ -123,6 +123,7 @@ export const AddComment = ({
         setAlluser(filtered);
       }
     } else setShowUser(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note]);
   // useEffect(() => {
   //   if (!resultContainer.current) return;
@@ -263,6 +264,8 @@ export const AddComment = ({
       setAlluser(arr);
     }
     // else setShowUser(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
@@ -329,6 +332,7 @@ export const AddComment = ({
       setRec(false);
       setShowUser(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rec]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -365,7 +369,8 @@ export const AddComment = ({
       setRec(false);
       setDisable(false);
     }
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [note]);
   useEffect(()=>{
     if (textareaRef.current) {
@@ -407,6 +412,7 @@ export const AddComment = ({
     if (alluser.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [types, note]);
   console.log(note);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -524,6 +530,7 @@ export const AddComment = ({
     const reply = comments?.find(comment => comment.id == replyId);
     console.log("reply is: "+reply?.text);
     setReplyText(reply?.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[replyId])
  
   

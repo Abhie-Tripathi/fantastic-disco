@@ -1,5 +1,7 @@
+
 import EventTable from "@/app/components/internal/trackers/EventTable/EventTable";
 import React from "react";
+import styles from './savedevent.style.module.css'  
 
 const eventData = [
   {
@@ -77,8 +79,9 @@ const eventData = [
 ];
 
 const SavedEvents = () => {
+  // const pathName = usePathname();
   return (
-    <div>
+    <div className={styles.body}>
       <EventTable eventData={eventData} />
     </div>
   );

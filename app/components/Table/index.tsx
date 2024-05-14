@@ -245,6 +245,7 @@ const Table = ({
     const startInd = (currPage - 1) * itemsPerPage;
     const endInd = startInd + itemsPerPage;
     setEventPerPage(eventData.slice(startInd, endInd));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currPage]);
 
   const handleModalOpen = (eventId: string, editionId: string) => {

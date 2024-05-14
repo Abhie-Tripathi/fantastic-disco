@@ -174,6 +174,7 @@ export const Notes = ({ comments, productId }: Props) => {
       // Handle case when file is not a PDF
       console.log("Please select a PDF file.");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
   // useEffect(() => {
@@ -219,6 +220,7 @@ const [replyName,setReplyName]=useState<string | undefined
     console.log("reply is: "+reply?.text);
     setReplyName(reply?.user.firstname+" "+reply?.user.lastname);
     setReplyText(reply?.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[replyId])
   const handleLike = (id:string,isLiked:boolean) => {
     // Find the comment by id and update its isLiked property

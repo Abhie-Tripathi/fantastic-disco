@@ -265,7 +265,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 <div className={styles.eventFormats}>
                     {EventFormatData.map((format, index) => (
                         <div
-                            key={format}
+                            key={index}
                             className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ''}`}
                             onClick={() => toggleFormatChipSelection(format)}>
                             {format}
