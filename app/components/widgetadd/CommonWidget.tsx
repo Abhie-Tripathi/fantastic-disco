@@ -28,7 +28,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
   const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const [geoInput, setGeoInput] = useState<string>("");
-
+  const [inputTag, setInputTag] = useState<string>("");
   const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData);
 
   const [startDate, setStartDate] = useState<string>();
@@ -59,7 +59,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
   const [promotedEvents, setPromotedEvents] = useState<string[]>([]);
 
   const [currDate, setCurrDate] = useState<string>("");
-
+  const[isTag,setIsTag]=useState(false);
   const promotedEventsLimit = widgetType === "Page" ? 3 : 1;
 
   const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
@@ -179,6 +179,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // console.log(11111111111111111111111111);
+    
     // Generate query string
     const queryString = generateQueryString();
     const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
@@ -242,7 +244,10 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
     return response.json();
   };
-
+  useEffect(()=>{
+    console.log("tag is "+isTag+" "+ inputTag);
+  })
+  
 
   const handleCancel = () => {
     router.push("/widget")

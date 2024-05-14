@@ -12,9 +12,15 @@ const Tags = () => {
   const [inputTag, setInputTag] = useState<string>("");
   const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
-
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && inputTag.length!==0) {
+      event.preventDefault();
+      handleTagsSubmit();
+    }
+  };
   const handleTagsSubmit = () => {
-    if(inputTag){
+    
+    if(inputTag && !tagsList.includes(inputTag)){
       setTagsList([...tagsList, inputTag]);
     }
     setInputTag("");
@@ -39,6 +45,7 @@ const Tags = () => {
             placeholder="Enter Tag"
             className={`${styles.tagInput} ${theme === 'light' && styles.tagInput_light}`}
             value={inputTag}
+            onKeyDown={handleKeyPress}
             onChange={(e) => setInputTag(e.target.value)}
           />
           <button
