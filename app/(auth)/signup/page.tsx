@@ -13,7 +13,7 @@ import { SignUpFormSchema } from "@/types/signup";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 
-const SignIn = () => {
+const SignUp = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { signup } = useAuthContext();
 
@@ -28,7 +28,7 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignUp = async (event:FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData: any = {
       name,
@@ -40,25 +40,25 @@ const SignIn = () => {
       formData.mobileNo = mobileNo;
     }
     try {
-       SignUpFormSchema.parse(formData);
+      SignUpFormSchema.parse(formData);
       setErrors({});
       if (password !== confirmPassword) {
         setErrors({ confirmPassword: "Passwords do not match. Try again" });
         return;
       }
-      
+
       setIsLoading(true);
-      
+
       const response = await signup({
         firstname: name.split(" ")[0],
         lastname: name.split(" ")[1],
         email,
         password,
-        ...(mobileNo.length > 0 ? { phoneNumber: mobileNo } : {})
+        ...(mobileNo.length > 0 ? { phoneNumber: mobileNo } : {}),
       });
       setIsLoading(false);
       console.log(response);
-      
+
       if (!response?.error) {
         // console.log(response)
         setShowVerification(true);
@@ -79,106 +79,98 @@ const SignIn = () => {
       }
     }
   };
-console.log(errors);
+  console.log(errors);
   return (
     <div className={styles.container}>
-      <div className={styles.hero_container}>
-        <div className={styles.heroImage}>
-          {/* <Image src={EventeliLogo} alt="logo" width={65} />
-          <Image src={EventeliText} alt="text" /> */}
-        </div>
-        {/* <div className={styles.heroTitle}>
-          Elevate your event planning with intelligence
-        </div> */}
-      </div>
-
       <Image
         src={LeftBackground}
         alt="leftBackground"
-        className={styles.leftBackground_image}
+        className={`${styles.leftBackground_image} desktop_view tablet_view`}
       />
       <Image
         src={TopRightBackground}
         alt="toprightBackground"
-        className={styles.topRightBackground_image}
+        className={`${styles.topRightBackground_image} desktop_view tablet_view`}
       />
       <Image
         src={BottomRightBackground}
         alt="bottomRightBackground"
-        className={styles.bottomRightBackground}
+        className={`${styles.bottomRightBackground} desktop_view tablet_view`}
       />
 
       {!showVerification && (
         <div className={styles.sub_container}>
-          <Image src={SignUpVisuals} alt="loginvisuals" width={400} />
-        <form onSubmit={handleSignUp}>
-          <div className={styles.form_container}>
-            <div className={styles.form_heading}>Create your account</div>
+          <Image src={SignUpVisuals} alt="loginvisuals" className={styles.image} />
+          <form onSubmit={handleSignUp}>
+            <div className={styles.form_container}>
+              <div className={styles.form_heading}>Sign Up</div>
 
-            <div className={styles.input_container}>
-              <div className={styles.input_title}>Full Name</div>
-              <input
-                className={styles.input}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              {errors.name && <div className={styles.error}>{errors.name}</div>}
-            </div>
+              <div className={styles.input_container}>
+                <div className={styles.input_title}>Full Name</div>
+                <input
+                  className={styles.input}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                {errors.name && (
+                  <div className={styles.error}>{errors.name}</div>
+                )}
+              </div>
 
-            <div className={styles.input_container}>
-              <div className={styles.input_title}>Email</div>
-              <input
-                className={styles.input}
-                value={email}
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {errors.email && (
-                <div className={styles.error}>{errors.email}</div>
-              )}
-            </div>
+              <div className={styles.input_container}>
+                <div className={styles.input_title}>Email</div>
+                <input
+                  className={styles.input}
+                  value={email}
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <div className={styles.error}>{errors.email}</div>
+                )}
+              </div>
 
-            <div className={styles.input_container}>
-              <div className={styles.input_title}>Mobile No</div>
-              <input
-                className={styles.input}
-                value={mobileNo}
-                type="number"
-                onChange={(e) => setMobileNo(e.target.value)}
-              />
-              {errors.mobileNo && (
-                <div className={styles.error}>{errors.mobileNo}</div>
-              )}
-            </div>
+              <div className={styles.input_container}>
+                <div className={styles.input_title}>Mobile No</div>
+                <input
+                  className={styles.input}
+                  value={mobileNo}
+                  type="number"
+                  onChange={(e) => setMobileNo(e.target.value)}
+                />
+                {errors.mobileNo && (
+                  <div className={styles.error}>{errors.mobileNo}</div>
+                )}
+              </div>
 
-            <div className={styles.input_container}>
-              <div className={styles.input_title}>Password</div>
-              <input
-                className={styles.input}
-                value={password}
-                type={passwordVisibility ? "text" : "password"}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Image
-                src={Visibility}
-                alt="visibility"
-                className={styles.visibility_Icon}
-                onClick={() => setPasswordVisibility(!passwordVisibility)}
-              />
-              {errors.password && (
-                <div className={styles.error}>{errors.password}</div>
-              )}
-            </div>
+              <div className={styles.input_container}>
+                <div className={styles.input_title}>Password</div>
+                <input
+                  className={styles.input}
+                  value={password}
+                  type={passwordVisibility ? "text" : "password"}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Image
+                  src={Visibility}
+                  alt="visibility"
+                  className={styles.visibility_Icon}
+                  onClick={() => setPasswordVisibility(!passwordVisibility)}
+                />
+                {errors.password && (
+                  <div className={styles.error}>{errors.password}</div>
+                )}
+              </div>
 
-            <div className={styles.input_container}>
-              <div className={styles.input_title}>Confirm Password</div>
-              <input
-                className={styles.input}
-                value={confirmPassword}
-                type={confirmPasswordVisibility ? "text" : "password"}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              {/* <Image
+              <div className={styles.input_container}>
+                <div className={styles.input_title}>Confirm Password</div>
+                <input
+                  className={styles.input}
+                  value={confirmPassword}
+                  type={confirmPasswordVisibility ? "text" : "password"}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                {/* <Image
                 src={Visibility}
                 alt="visibility"
                 className={styles.visibility_Icon}
@@ -186,33 +178,35 @@ console.log(errors);
                   setConfirmPasswordVisibility(!confirmPasswordVisibility)
                 }
               /> */}
-              {errors.confirmPassword && (
-                <div className={styles.error}>{errors.confirmPassword}</div>
-              )}
-            </div>
+                {errors.confirmPassword && (
+                  <div className={styles.error}>{errors.confirmPassword}</div>
+                )}
+              </div>
 
-            <div className={styles.actions_container}>
-              <button className={styles.button} type="submit">
-                {`${isLoading ? "Loading..." : "Sign Up"} `}
-              </button>
-              <div className={styles.new_account}>
-                Already have an account?
-                <Link href="/signin" className={styles.createNew_link}>
-                  {" "}
-                  Log In
-                </Link>
+              <div className={styles.actions_container}>
+                <button className={styles.button} type="submit">
+                  {`${isLoading ? "Loading..." : "Sign Up"} `}
+                </button>
+                <div className={styles.new_account}>
+                  Already have an account?
+                  <Link href="/signin" className={styles.createNew_link}>
+                    {" "}
+                    Log In
+                  </Link>
+                </div>
+              </div>
+
+              <div className={styles.privacyPolicy}>
+                By signing up, you agree to our
+                <span className={styles.privacyPolicy_hightlighted}>
+                  Terms{" "}
+                </span>
+                and
+                <span className={styles.privacyPolicy_hightlighted}>
+                  Privacy Policy
+                </span>
               </div>
             </div>
-
-            <div className={styles.privacyPolicy}>
-              By signing up, you agree to our
-              <span className={styles.privacyPolicy_hightlighted}>Terms </span>
-              and
-              <span className={styles.privacyPolicy_hightlighted}>
-                Privacy Policy
-              </span>
-            </div>
-          </div>
           </form>
         </div>
       )}
@@ -222,4 +216,4 @@ console.log(errors);
   );
 };
 
-export default SignIn;
+export default SignUp;

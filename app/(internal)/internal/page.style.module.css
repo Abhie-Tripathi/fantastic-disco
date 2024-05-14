@@ -1,8 +1,8 @@
 .container {
-  padding: 30px;
+  padding: 20px;
   color: white;
   background-color: #131313;
-  min-width: 430px;
+  min-width: 400px;
 }
 
 .container_light {
@@ -14,6 +14,10 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.primary_container{
+  width: 100%;
 }
 
 .primary_header {
@@ -33,6 +37,7 @@
   /* align-items: center; */
   gap: 10px;
   padding: 30px 0px;
+  overflow-x: scroll;
 }
 
 .linkCard {
@@ -45,7 +50,7 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  min-width: 170px;
   overflow: hidden;
   /* justify-content: space-between; */
 }
@@ -242,7 +247,7 @@
   display: flex;
   justify-content: space-evenly;
   gap: 10px;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
 }
 
 .eventCard {
@@ -423,7 +428,7 @@
 
 .mobile_trackerCard_container {
   display: none;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   gap: 10px;
 }
 
