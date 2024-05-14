@@ -21,6 +21,7 @@
     padding: 12px 28px 12px 28px;
     position: fixed;
     width: 100%;
+    left:0;
     z-index: 111;
     top: 80px;
 }
