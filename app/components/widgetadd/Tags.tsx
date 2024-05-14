@@ -14,7 +14,9 @@ const Tags = () => {
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
   const handleTagsSubmit = () => {
-    setTagsList([...tagsList, inputTag]);
+    if(inputTag){
+      setTagsList([...tagsList, inputTag]);
+    }
     setInputTag("");
   };
 

@@ -173,7 +173,7 @@
 .textArea {
   display: flex;
   height: 20px;
-  width: 80%;
+  width: 600px;
   background: transparent;
   border: none;
   outline: none;
@@ -190,7 +190,7 @@
   color: white;
 }
 .option:hover {
-  background-color: #303030;
+  background-color: #2B233D;
 }
 .overlay {
   position: fixed;

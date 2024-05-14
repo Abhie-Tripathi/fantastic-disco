@@ -65,6 +65,7 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
     useEffect(() => {
         // if(page>0)
             fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
   return (

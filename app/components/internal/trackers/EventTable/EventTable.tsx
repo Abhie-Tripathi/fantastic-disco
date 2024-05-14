@@ -36,13 +36,36 @@ const EventTable = ({ eventData }: { eventData: any }) => {
     setShowCheckBox(false);
     setSelectedIds([]);
   };
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      // If "Select All" checkbox is checked, select all items
+      const allEventIds = eventData.map((event: any) => event.id);
+      setSelectedIds(allEventIds);
+    } else {
+      // If "Select All" checkbox is unchecked, deselect all items
+      setSelectedIds([]);
+    }
+  };
 
   return (
     <div className={styles.table_container}>
       <div className={styles.table_header_title}>Recently added events</div>
       <div className={styles.table_header_button_container}>
-        <div className={styles.secondary_button} onClick={handleSelectItems}>
-          {showCheckBox ? "Clear Selection" : "Select Items"}
+        <div className={styles.selectButtonsContainer}>
+          <div className={styles.secondary_button} onClick={handleSelectItems}>
+            {showCheckBox ? "Clear Selection" : "Select Items"}
+          </div>
+          {showCheckBox && (
+            <div className={`${styles.selectAllBtn} ${styles.secondary_button}`}>
+              <input
+                type="checkbox"
+                id="selectall"
+                onChange={handleSelectAll}
+                checked={selectedIds.length === eventData.length && eventData.length > 0}
+              />
+              <label htmlFor="selectall">Select All</label>
+            </div>
+          )}
         </div>
         <div className={styles.right_buttons_container}>
           {selectedIds.length > 0 && (
@@ -91,6 +114,7 @@ const EventTable = ({ eventData }: { eventData: any }) => {
                   <input
                     type="checkbox"
                     onChange={(e) => handleCheckboxChange(e, event.id)}
+                    checked={selectedIds.includes(event.id)}
                   />
                 </td>
               )}

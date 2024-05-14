@@ -7,7 +7,7 @@ import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useRouter } from "next/navigation";
 
 interface StickyWidgetProps {
     stickyId: string;
@@ -23,6 +23,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const [fontSize, setFontSize] = useState<string>("")
 
     const [deactivated, setDeactivated] = useState<boolean>(false)
+
+    const router = useRouter()
 
     useEffect(() => {
         setBgColor(data?.bgColor)
@@ -72,6 +74,10 @@ const StickyWidget = (props: StickyWidgetProps) => {
             console.error('An error occurred while updating the resource:', error);
         }
     };
+
+    const handleCancel = ()=>{
+        router.push("/widget")
+    }
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -139,7 +145,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>
-                <button className={styles.cancelBtn} type="button">Cancel</button>
+                <button className={styles.cancelBtn} onClick={handleCancel} type="button">Cancel</button>
             </div>
         </form>
     )

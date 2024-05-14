@@ -4,6 +4,8 @@ import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
 import Image from "next/image";
 import close from "@/public/close.svg";
+import Like from '@/public/thumbsUp.svg';
+import LikeFill from '@/public/thumbsUpFill.svg';
 import person1 from "@/public/person2.svg";
 import Pdf from "/public/pdf.svg";
 // import profileImage from "@/public/profile_Image.jpg";
@@ -14,6 +16,7 @@ import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from "../ButtonView";
 import { useTheme } from "@/context";
 import { useAuthContext } from "@/context";
+import { undefined } from "zod";
 
 interface UserDetail {
   firstname: string;
@@ -29,7 +32,7 @@ export const Notes = ({ comments, productId }: Props) => {
   const { theme } = useTheme();
   const { user, signOut } = useAuthContext();
   const [isDraggingOver, setIsDraggingOver] = useState(true);
-  const [drop, setDrop] = useState(false);
+  const [drop, setDrop]=useState(false);
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
@@ -38,13 +41,14 @@ export const Notes = ({ comments, productId }: Props) => {
   // const [filePreview, setFilePreview] = useState<string | null>(null);
   const [filePreviews, setFilePreviews] = useState<any>([]);
   const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
-  const [replyId, setReplyId] = useState<string | undefined>("");
+  const [replyId,setReplyId]=useState<string|null|undefined>("");
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
   const containerRef = useRef(null);
-  const commentRef = useRef(null);
+  const commentRef=useRef(null);
+  // const replyRef=useRef(null);
   const [note, setNote] = useState<string>("");
   const [height, setHeight] = useState<number | null>(null);
   const [notes, setNotes] = useState<any>(CommentsData);
@@ -58,13 +62,13 @@ export const Notes = ({ comments, productId }: Props) => {
 
   useEffect(() => {
     // if(note!==null)
-    if (commentRef.current) {
+      if (commentRef.current) {
       const height = (commentRef.current as HTMLElement).clientHeight;
-      setHeight(height);
-    }
+    setHeight(height);
+      }
     scrollToBottom();
-  }, [notes]);
-  comments = [...notes];
+  }, [notes.length]);
+
   console.log(comments);
   const addNote = (event: any) => {
     event.preventDefault();
@@ -88,6 +92,10 @@ export const Notes = ({ comments, productId }: Props) => {
           images: filePreviews,
           pdfs: selectedPdfs,
           text: note,
+          replyId:replyId,
+          replyName:replyName,
+          replyText:replyText,
+          likes:0,
           user: {
             id: user?.id,
             firstname: user?.firstname,
@@ -104,19 +112,20 @@ export const Notes = ({ comments, productId }: Props) => {
     }
     setNote("");
     setFiles(null);
+    setReplyId(null);
     // setDrop(true);
     setFilePreviews([]);
     setSelectedPdfs([]);
   };
   console.log(filePreviews);
-  const [files, setFiles] = useState<File | null>(null);
-  const handleDragOver = (event: React.DragEvent) => {
+  const [files, setFiles] = useState<File|null>(null);
+  const handleDragOver = (event:React.DragEvent) => {
     console.log("HandleDragver", event);
     event.preventDefault();
     setIsDraggingOver(true);
   };
 
-  const handleDrop = (event: React.DragEvent) => {
+  const handleDrop = (event:React.DragEvent) => {
     event.preventDefault();
     setFiles(event?.dataTransfer.files[0]);
     setDrop(false);
@@ -125,22 +134,22 @@ export const Notes = ({ comments, productId }: Props) => {
     // console.log(files);
 
     // if (files && files.type === "application/pdf") {
-    // setSelectedPdfs([...selectedPdfs, files.name]);
+    //   setSelectedPdfs([...selectedPdfs, files.name]);
     // }else if(files.type.startsWith('image/')){
-    // setFilePreviews((prevSelectedFiles: File[] | null) => {
-    // if (
-    // prevSelectedFiles === null ||
-    // typeof prevSelectedFiles === "undefined"
-    // ) {
-    // return [files];
-    // } else {
-    // return [...prevSelectedFiles,files];
-    // }
+    //   setFilePreviews((prevSelectedFiles: File[] | null) => {
+    //   if (
+    //     prevSelectedFiles === null ||
+    //     typeof prevSelectedFiles === "undefined"
+    //   ) {
+    //     return [files];
+    //   } else {
+    //     return [...prevSelectedFiles,files];
+    //   }
     // });
     // }
     // else {
-    // // Handle case when file is not a PDF
-    // console.log("Please select a PDF file.");
+    //   // Handle case when file is not a PDF
+    //   console.log("Please select a PDF file.");
     // }
   };
   useEffect(() => {
@@ -165,12 +174,13 @@ export const Notes = ({ comments, productId }: Props) => {
       // Handle case when file is not a PDF
       console.log("Please select a PDF file.");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
   // useEffect(() => {
-  // if (files) {
-  // setDrop(true);
-  // }
+  //   if (files) {
+  //     setDrop(true);
+  //   }
   // }, [files]);
 
   // console.log("drop is "+ drop);
@@ -189,28 +199,75 @@ export const Notes = ({ comments, productId }: Props) => {
       )
     )
   );
-  const onDragEnter = () => {
-    setDrop(true);
+const onDragEnter = () => {
+  setDrop(true);
 
 
-  }
+}
   const onDragLeave = () => {
     setDrop(false);
-
+   
   }
   setTimeout(() => {
     console.log(replyId);
-  }, 1000);
-  const [replyText, setReplyText] = useState<string | undefined
-  >("");
-  useEffect(() => {
+  },1000);
+  const [replyText,setReplyText]=useState<string | undefined
+>("");
+const [replyName,setReplyName]=useState<string | undefined
+>("");
+  useEffect(()=>{
     const reply = comments?.find(comment => comment.id == replyId);
-    console.log("reply is: " + reply?.text);
+    console.log("reply is: "+reply?.text);
+    setReplyName(reply?.user.firstname+" "+reply?.user.lastname);
     setReplyText(reply?.text);
-  }, [replyId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[replyId])
+  const handleLike = (id:string,isLiked:boolean) => {
+    // Find the comment by id and update its isLiked property
+    const updatedComments = notes.map((c:any) => {
+      if (c.id === id  && isLiked) {
+        return { ...c, likes:c.likes+1, isLiked: isLiked };
+      }else if (c.id === id  && !isLiked) {
+        return { ...c, likes:c.likes-1, isLiked: isLiked };
+      }
+      return c;
+    });
+  
+    // Update the state with the new comments array
+    setNotes(updatedComments);
+  };
+  const handleDelete=(id:number)=>{
+    const updatedNotes = notes.filter((comment:any) => comment.id !== id);
+    setNotes(updatedNotes);
+  }
+  const [class1, setClass1]=useState(false);
+  const [chedkedId,setCheckedId]=useState<number|null>(null);
+  const getCommentPos=(event: React.MouseEvent<HTMLDivElement>,id:number)=>{
+    setCheckedId(id);
+    const element=document.getElementById(String(id));
+    // console.log(element+"11111111111111111111111111111111111111111");
+    
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // setClass1(true)
+      setCheckedId(id);
+      setTimeout(() => {
+        // window.scrollTo({
+        //   top: window.scrollY - 100,
+        //   behavior: "smooth"
+        // });
+        setCheckedId(null)
+      //  element.classList.add("your")
+      }, 1000);
+    }
+  
+    // if(element!==null)
+    // window.scrollBy(0, -100); 
+  }
+comments = [...notes];
   return (
     <div className={styles.container}>
-
+     
       {comments ? (
         <div
           className={styles.commentDiv}
@@ -241,12 +298,17 @@ export const Notes = ({ comments, productId }: Props) => {
           <ul className={styles.comments} ref={commentRef}>
             {comments.map((comment) => (
               <li
-                className={comment.replies?.length! > 0 ? styles.thread : ""}
+               className={String(chedkedId)===comment.id ? `${styles.thread} ${styles.your}` : `${styles.thread}`}
                 data-id={comment.id}
                 key={comment.id}
-                id="commentList"
+                id={comment.id}
               >
                 <Comment
+                handleLike={handleLike}
+                getCommentPos={getCommentPos}
+                handleDelete={handleDelete}
+                  replyName={replyName}
+                  replyText={replyText}
                   setReplyId={setReplyId}
                   productId={productId!}
                   comment={comment}
@@ -264,17 +326,24 @@ export const Notes = ({ comments, productId }: Props) => {
           </ul>
         </div>
       ) : null}
-      {replyId &&
+       {replyId &&
         <div className={styles.replyDiv}>
+         
           <div className={styles.outerReplyDiv}>
-            <div className={styles.replyText}>{replyText}</div>
+          <div className={styles.replyText} >
+            <div className={styles.bar}></div>
+          <div className={styles.name}>{replyName}</div>
+            <div className={styles.replyText1}>{replyText}</div>
+            </div>
+            <div onClick={() => setReplyId(null)} className={styles.closeBtn}  >X</div>
           </div>
-          <div ><Image onClick={() => setReplyId(undefined)} className={styles.closeBtn} src={close} alt="close" /></div>
+          
         </div>
-      }
+        }
       <div
-        className={`${styles.notesAdd} ${theme === "light" ? styles.notesAdd_light : ""
-          }`}
+        className={`${styles.notesAdd} ${
+          theme === "light" ? styles.notesAdd_light : ""
+        }`}
       >
         <AddComment
           replyId={replyId}
@@ -289,14 +358,19 @@ export const Notes = ({ comments, productId }: Props) => {
           setSelectedPdfs={setSelectedPdfs}
           commentType={"mainComment"}
         />
-
+        
       </div>
     </div>
   );
 };
 
 interface CommentProps {
-  setReplyId?: any,
+  replyName?:undefined|string,
+  getCommentPos?:any,
+  handleDelete?:any,
+  replyText?:undefined|string,
+  handleLike?:any,
+  setReplyId?:any,
   comment: IComment;
   productId: string;
   superCommentId: string;
@@ -312,9 +386,14 @@ interface CommentProps {
 }
 const Comment = ({
   comment,
+  handleLike,
+  replyText,
   productId,
   setReplyId,
+  replyName,
   setComments,
+  getCommentPos,
+  handleDelete,
   superCommentId,
   userName,
   notes,
@@ -326,6 +405,7 @@ const Comment = ({
   setSelectedPdfs,
 }: CommentProps) => {
   let a = comment.text.split("\n");
+  // const commentRef = useRef(null);
   console.log(a);
   let newArr: string[] = [];
   a.map((item, ind) => {
@@ -340,14 +420,43 @@ const Comment = ({
     }
   });
   console.log(newArr);
-  // const [replyId,setReplyId]=useState("");
-  const handleReply = (id: string) => {
+// const [replyId,setReplyId]=useState("");
+const handleReply=(id:string)=>{
     setReplyId(id);
-  }
+}
+const [isLiked,setIsLiked]=useState(false);
+useEffect(()=>{
+
+},[isLiked])
+const handleLiked=(id:string, isLiked:boolean)=>{
+  // console.log(isLiked);
+  // const updatedIsLiked = !isLiked;
+  setIsLiked(prev=>!prev);
+  handleLike(id, isLiked);
+}
+// useEffect(()=>{
+//   setIsLiked(!isLiked)
+// },[isLiked])
+setTimeout(()=>{
+      console.log(isLiked);
+      
+},5000)
+// useEffect(()=>{
+//   setIsLiked(!isLiked);
+// },[isLiked])
+// const handleLike=(id)=>{
+//   console.log(1);
+  
+//   const newComment={...comment,isLiked:true};
+//   comment=newComment;
+// }
+
+console.log(comment);
+
   const { theme } = useTheme();
   return (
     <>
-      {!arr?.some((ele) => comment.text.includes(ele)) ? (
+      {(!comment.text.includes("wants to recommend")&& !comment.text.includes("wants to #Attend") && !comment.text.includes("wants to #Speak") ) ? (
         <>
           <div className={styles.comment__user}>
             <header>
@@ -361,8 +470,9 @@ const Comment = ({
                 />
               </span>
               <div
-                className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
-                  }`}
+                className={`${styles.comment_name} ${
+                  theme === "light" && styles.comment_name_light
+                }`}
               >
                 <span>
                   {comment.user?.firstname} {comment.user?.lastname}
@@ -388,15 +498,29 @@ const Comment = ({
             commentId={comment.id}
             commentText={comment.text}
           />
-          <div className={styles.text}>
-            <div className={styles.commentText} style={{ color: "grey" }}>
+          <div className={styles.text} style={{ background:comment?.replyId?"#1a1a1a":"none"}}>
+            <div className={styles.commentText} style={{ color: "grey"}}>
               <span>{userName}</span>{" "}
+              {comment?.replyId &&
+                   <div className={styles.replyDiv} onClick={(e)=>getCommentPos(e,comment.replyId)}>
+
+                   <div className={styles.outerReplyDiv}>
+                   <div className={styles.replyText}>
+                     <div className={styles.bar}></div>
+                   <div className={styles.name}>{comment?.replyName}</div>
+                     <div className={styles.replyText1} id={comment.replyId}>{comment?.replyText}</div>
+                     </div>
+                   </div>
+                   
+                 </div>
+                }
               {comment &&
                 comment.text.split("\n").map((item, index) => {
-                  if (item.includes("@")) {
+                  if (item.includes("@") ) {
                     const words = item.split(" ");
                     return (
                       <React.Fragment key={index}>
+                        <div style={{padding:comment?.replyId?"0 10px 20px 20px":'none'}}>
                         {words.map((word, idx) => {
                           if (word.startsWith("@")) {
                             const username = word.substring(1);
@@ -434,12 +558,16 @@ const Comment = ({
                             );
                           } else {
                             return (
-                              <React.Fragment key={idx}>{word} </React.Fragment>
+                              <React.Fragment key={idx}>
+                                {" "}{word}{" "} 
+                                </React.Fragment>
                             );
                           }
                         })}
                         <br />
+                        </div>
                       </React.Fragment>
+
                     );
                   } else {
                     if (item.length === 0 && item) {
@@ -452,15 +580,39 @@ const Comment = ({
                     } else {
                       // If line is not empty, return the line wrapped in a <p> tag
                       return (
-                        <p key={index} style={{ margin: 0 }}>
+                        <>
+                        {comment?.replyId ?(
+                          <>
+                           {/* <div className={styles.replyDiv}>
+
+                           <div className={styles.outerReplyDiv}>
+                           <div className={styles.replyText}>
+                             <div className={styles.bar}></div>
+                           <div className={styles.name}>{comment?.replyName}</div>
+                             <div className={styles.replyText1}>{comment?.replyText}</div>
+                             </div>
+                           </div>
+                           
+                         </div> */}
+                         <p key={index} style={{ margin: 0,padding:"0px 20px" }}>
+                         {item}
+                       </p>
+                       </>
+                        ):(
+                          <p key={index} style={{ margin: 0 }}>
                           {item}
                         </p>
+                        )
+                         
+                     }
+                        
+                        </>
                       );
                     }
                   }
                 })}
             </div>
-            <div className={styles.images}>
+            <div className={styles.images} style={{padding:comment?.replyId?"0px 20px":'none'}}>
               {comment?.images?.map((image, index) => (
                 <div key={index}>
                   <Image
@@ -474,19 +626,20 @@ const Comment = ({
             </div>
             {/* <div style={{ display: "flex", gap: "10px"}}>
 
- {comment?.pdfs?.map((item: any, ind: number) => (
- <div className={styles.pdf} key={ind} style={{ width: "200px", height:"150px",overflow: 'hidden' }}>
- <iframe src={URL.createObjectURL(item)} className={styles.pdf} style={{ border: "none", outline: "none", width: "90%", height: "100%", overflow: "hidden",scrollbarWidth: "thin" }} title="PDF Preview" scrolling="no" />
- </div>
+            {comment?.pdfs?.map((item: any, ind: number) => (
+  <div className={styles.pdf} key={ind} style={{ width: "200px", height:"150px",overflow: 'hidden' }}>
+    <iframe src={URL.createObjectURL(item)} className={styles.pdf} style={{ border: "none", outline: "none", width: "90%", height: "100%", overflow: "hidden",scrollbarWidth: "thin" }} title="PDF Preview" scrolling="no" />
+  </div>
 ))}
 
- </div> */}
-            <div style={{ display: "flex", gap: "10px" }}>
+            </div> */}
+            <div style={{ display: "flex", gap: "10px", padding:comment?.replyId?"0 10px 20px 20px":'none' }}>
               {comment?.pdfs?.map((item: any, ind: number) => (
                 <div
                   key={ind}
-                  className={`${styles.pdf} ${theme === "light" && styles.pdf_light
-                    }`}
+                  className={`${styles.pdf} ${
+                    theme === "light" && styles.pdf_light
+                  }`}
                 >
                   <Image src={Pdf} width={50} height={50} alt="pdf" />
                   <p key={ind} style={{ display: "flex" }}>
@@ -497,8 +650,12 @@ const Comment = ({
             </div>
           </div>
           <div className={styles.options}>
-            <ButtonView view={"upvoteBtn"} />
-            <button onClick={() => handleReply(comment.id)} className={styles.replyBtn}>Reply</button>
+            {/* <ButtonView view={"upvoteBtn"} /> */}
+            <div className={styles.likeSection} onClick={()=>handleLiked(comment.id,!isLiked)}>
+              <div className={styles.like}>{comment?.isLiked?(<Image src={LikeFill} alt="like"/>):(<Image src={Like} alt="like"/>)}</div>
+              <div>{comment?.likes}</div>
+            </div>
+            <button onClick={()=>handleReply(comment.id)} className={styles.replyBtn}>Reply</button>
             {/* <ButtonView view={"replyBtn"} /> */}
             {comment?.user?.createdAt ? (
               <p>
@@ -511,10 +668,11 @@ const Comment = ({
             ) : (
               <p>Mar 20,2024</p>
             )}
-            <ButtonView
+            <button className={styles.replyBtn} onClick={()=>handleDelete(comment.id)}>Delete</button>
+            {/* <ButtonView
               view={"editDeleteButton"}
               commentUserId={comment.user.id}
-            />
+            /> */}
           </div>
           <div className={styles.addMoreCommentSection}>
             <AddComment
@@ -531,13 +689,13 @@ const Comment = ({
               setSelectedPdfs={setSelectedPdfs}
               commentType={"subComment"}
             />
-
+             
           </div>
-
-          <ButtonView
+         
+          {/* <ButtonView
             view={"viewMoreReplies"}
             repliesLength={comment.replies?.length}
-          ></ButtonView>
+          ></ButtonView> */}
           <ul className={styles.replies} id="replyContainer">
             {comment.replies?.map((reply) => {
               return (
@@ -597,12 +755,13 @@ const Comment = ({
                                 <span>
                                   {" "}
                                   @
-                                  {`${comment.user.firstname
-                                    }${comment.user.lastname
-                                      .charAt(0)
-                                      .toLowerCase()}${comment.user.lastname.slice(
-                                        1
-                                      )}`}
+                                  {`${
+                                    comment.user.firstname
+                                  }${comment.user.lastname
+                                    .charAt(0)
+                                    .toLowerCase()}${comment.user.lastname.slice(
+                                    1
+                                  )}`}
                                 </span>
                               </span>
 
@@ -617,7 +776,7 @@ const Comment = ({
                                 key={idx}
                                 href={`#${username}`}
                                 className={`${styles.span} ${theme === 'light' && styles.span_light}`}
-
+                                
                               >
                                 {word}{" "}
                               </a>
@@ -672,40 +831,40 @@ const Comment = ({
             </div>
           </div>
           {/* <div className={styles.options}>
- <ButtonView view={"upvoteBtn"} />
- <ButtonView view={"replyBtn"} />
- <p>Mar 20,2024</p>
- <ButtonView view={"editDeleteButton"} commentUserId={comment.user.id} />
- </div>
- <div className={styles.addMoreCommentSection}>
- <AddComment
- focus
- replyOptions={{ commentId: superCommentId }}
- productId={productId!}
- className={`${styles.active}`}
- repliesLength={comment.replies?.length}
- notes={notes} setNote={setNote} 
- />
- </div>
- <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
- <ul className={styles.replies} id="replyContainer">
- {comment.replies?.map((reply) => {
- return (
- <li
- className={reply.replies?.length! > 0 ? styles.thread : ""}
- key={reply.id}
- >
- <Comment
- comment={reply}
- setComments={setComments!}
- productId={productId}
- superCommentId={superCommentId}
- notes={notes} setNote={setNote} 
- userName={"@Roxette"} />
- </li>
- );
- })}
- </ul> */}
+        <ButtonView view={"upvoteBtn"} />
+        <ButtonView view={"replyBtn"} />
+        <p>Mar 20,2024</p>
+        <ButtonView view={"editDeleteButton"} commentUserId={comment.user.id} />
+      </div>
+      <div className={styles.addMoreCommentSection}>
+        <AddComment
+          focus
+          replyOptions={{ commentId: superCommentId }}
+          productId={productId!}
+          className={`${styles.active}`}
+          repliesLength={comment.replies?.length}
+          notes={notes} setNote={setNote} 
+        />
+      </div>
+      <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
+      <ul className={styles.replies} id="replyContainer">
+        {comment.replies?.map((reply) => {
+          return (
+            <li
+              className={reply.replies?.length! > 0 ? styles.thread : ""}
+              key={reply.id}
+            >
+              <Comment
+                comment={reply}
+                setComments={setComments!}
+                productId={productId}
+                superCommentId={superCommentId}
+                notes={notes} setNote={setNote} 
+                userName={"@Roxette"} />
+            </li>
+          );
+        })}
+      </ul> */}
         </>
       )}
     </>

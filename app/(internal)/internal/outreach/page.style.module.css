@@ -1,6 +1,7 @@
 .bodyContainer {
   height: calc(100vh - 80px);
   background-color: #131313;
+  /* min-width: 600px; */
 }
 .bodyContainer_light {
   background-color: var(--primary-bg-light);

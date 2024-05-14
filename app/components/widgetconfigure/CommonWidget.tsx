@@ -15,6 +15,7 @@ import useFetch from "@/hooks/useFetch";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTheme } from "@/context";
+import { useRouter } from "next/navigation";
 
 interface CommonWidgetProps {
     widgetType: string;
@@ -60,6 +61,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
 
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
+    const router = useRouter();
 
     // This will run as soon as the form opens, So that it can be prefilled with the data
     useEffect(() => {
@@ -253,6 +255,10 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
         return response.json();
     };
+      
+    const handleCancel = ()=>{
+        router.push("/widget")
+    }
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -265,7 +271,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 <div className={styles.eventFormats}>
                     {EventFormatData.map((format, index) => (
                         <div
-                            key={format}
+                            key={index}
                             className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ''}`}
                             onClick={() => toggleFormatChipSelection(format)}>
                             {format}
@@ -394,7 +400,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>
-                <button className={styles.cancelBtn} type="button">Cancel</button>
+                <button className={styles.cancelBtn} type="button" onClick={handleCancel}>Cancel</button>
             </div>
         </form>
     )

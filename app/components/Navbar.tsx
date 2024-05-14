@@ -140,7 +140,7 @@ const Navbar = () => {
         {/* Settings */}
         {pathName === "internal" && (
           <Link
-            className={`${styles.circle} mobile_view`}
+            className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
             href={"/settings"}
             data-name="Settings"

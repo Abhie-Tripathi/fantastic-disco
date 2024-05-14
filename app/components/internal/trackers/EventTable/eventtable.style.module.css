@@ -33,18 +33,19 @@
     gap: 10px;
     align-items: center;
   }
-
-  .primary_button {
-    cursor: pointer;
-    background-color: #6750a4;
-    border: 1px solid #e0e1e4;
-    padding: 8px 15px;
-    color: white;
+  .selectButtonsContainer{
     display: flex;
-    align-items: center;
+    gap: 10px;
+  }
+  .selectAllBtn{
+    display: flex;
     gap: 5px;
-    border-radius: 12px;
-    font-size: 14px;
+  }
+  .selectAllBtn input{
+    cursor: pointer;
+  }
+  .selectAllBtn label{
+    cursor: pointer;
   }
 
   .table {
@@ -77,7 +78,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
+    /* gap: 10px; */
   }
 
   .table_head_row>th:first-child {
