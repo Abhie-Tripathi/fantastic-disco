@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,{useState,useEffect} from "react";
 import styles from "./layout.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
       <div className={`${styles.outerDiv} ${theme === 'light' && styles.outerDiv_light}`}>
         <div className={styles.settingContainer}>
+        
           <Image className={`${iconClass}`} src={SettingIcon} alt="setting icon" />
           <div className={styles.settingFonts}>Setting</div>
           <div className={styles.superAdminFont}> Super Admin</div>
@@ -26,6 +27,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className={styles.tabsContainer}>
           <Link
             href="/settings"
+            
             className={`${styles.tab} ${
               pathName == "/settings" ? styles.active : ""
             }`}
@@ -61,7 +63,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </Link>
 
           <Link
-            href="/settings/configurations"
+             href= "/settings/configurations"
             className={`${styles.tab} ${
               pathName == "/settings/configurations" ? styles.active : ""
             }`}

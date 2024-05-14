@@ -19,6 +19,7 @@ import EmployeeData from "@/public/data/employeeData.json";
 import { revalidateComment } from "@/utils/commentAction";
 import { log } from "util";
 interface Props {
+  replyId?:string|undefined|null,
   productId?: string;
   replyOptions?: replyOptions;
   focus?: boolean;
@@ -59,6 +60,7 @@ export const AddComment = ({
   repliesLength,
   notes,
   note,
+  replyId,
   setNote,
   setFilePreviews,
   filePreviews,
@@ -177,7 +179,9 @@ export const AddComment = ({
       let newNote="";
       if(showUser){
       newNote = note + alluser[focusedIndex].substring(1) + " ";
+      if(note.includes("wants to recommend"))
       setRec(true);
+      else setShowUser(false);
       }
       else newNote = note + type[focusedIndex] + " ";
       setNote(newNote);
@@ -351,12 +355,12 @@ export const AddComment = ({
     if (note?.includes("#attend")) {
       handleSelectAttend();
     }
-    if (note?.includes("/recommend")) {
+    if (note?.includes("#recommend")) {
       handleRecommend(event);
     }
-    if (note?.charAt(note.length - 1) === "@") {
-      handleRecommend(event);
-    }
+    // if (note?.charAt(note.length - 1) === "@") {
+    //   handleRecommend(event);
+    // }
     if (note === "") {
       setRec(false);
       setDisable(false);
@@ -454,12 +458,26 @@ export const AddComment = ({
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
     const selectedFile = event.target.files[0];
+    
     console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
     if (selectedFile && selectedFile.type === "application/pdf") {
       setSelectedPdfs([...selectedPdfs, selectedFile.name]);
-    } else {
+    }else if(selectedFile.type.startsWith('image/')){
+      
+      setFilePreviews((prevSelectedFiles: File[] | null) => {
+      if (
+        prevSelectedFiles === null ||
+        typeof prevSelectedFiles === "undefined"
+      ) {
+        return [event.target.files[0]];
+      } else {
+        return [...prevSelectedFiles, event.target.files[0]];
+      }
+    });
+    }
+    else {
       // Handle case when file is not a PDF
       console.log("Please select a PDF file.");
     }
@@ -475,17 +493,23 @@ export const AddComment = ({
   useEffect(() => {
     console.log(selectedPdfs);
   }, [selectedPdfs]);
-  const pdfSelect = () => {
+  const pdfSelect = (e:any) => {
+    e.preventDefault();
     if (pdfRef.current) {
       const inputElement = pdfRef.current as HTMLInputElement;
       inputElement.click();
     }
+    // if (fileRef.current) {
+    //   const inputElement = fileRef.current as HTMLInputElement;
+    //   inputElement.click();
+    // }
   };
-  const imgUpload = () => {
-    if (fileRef.current) {
-      const inputElement = fileRef.current as HTMLInputElement;
-      inputElement.click();
-    }
+     const imgUpload = (event: React.MouseEvent<HTMLDivElement>) => {
+  event.preventDefault(); // Prevent the default behavior of the click event
+  if (fileRef.current) {
+    const inputElement = fileRef.current as HTMLInputElement;
+    inputElement.click();
+  }
   };
   useEffect(() => {
     if (!resultContainer.current) return;
@@ -494,10 +518,21 @@ export const AddComment = ({
       block: "center",
     });
   }, [focusedIndex]);
+  // const [replyId,setReplyId]=useState(null);
+  const [replyText,setReplyText]=useState<string | undefined>("");
+  useEffect(()=>{
+    const reply = comments?.find(comment => comment.id == replyId);
+    console.log("reply is: "+reply?.text);
+    setReplyText(reply?.text);
+  },[replyId])
+ 
+  
   return (
     <div className={styles.container}>
+      
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
+        
         { commentType === 'mainComment' ? 
         <div className={styles.recommendBtn}>
           <button
@@ -523,7 +558,7 @@ export const AddComment = ({
               theme === "light" && styles.btn1_light
             }`}
           >
-            I want to @Recommend
+            I want to #Recommend
           </button>
         </div>
         : <></>}
@@ -570,10 +605,20 @@ export const AddComment = ({
             rows={4}
             onKeyDown={handleKeyDown1}
           />
-          <button style={{ display: "flex" }} type="submit">
+          <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
+          <button style={{ display: "flex", background:"transparent" }}  className={styles.attachIconContainer} data-name="Add File">
+          <Image
+            className={`${styles.attachIcon} ${iconClass}`}
+            onClick={pdfSelect}
+            src={Drive}
+            alt="drive"
+          />
+          </button>
+          <button style={{ display: "flex", background:"transparent" }}  className={styles.attachIconContainer} data-name="Send" type="submit">
             <Image src={Send} alt="send" className={iconClass} />
           </button>
-
+         
+          </div>
           {/* {employeeDropDown && (
           <div className={styles.employeeDropdown}>
             {filteredEmployees.map((employee: any, key: any) => (
@@ -625,9 +670,10 @@ export const AddComment = ({
         </div>
       </form>
 
-      <div className={styles.attachmentIcon}>
+      <div className={styles.attachmentIcon} style={{display:"none"}}>
         <button
           ref={fileRef}
+         
           onClick={() => setModal()}
           style={{ display: "none" }}
         >
