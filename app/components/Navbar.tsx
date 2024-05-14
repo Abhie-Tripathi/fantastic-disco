@@ -97,7 +97,7 @@ const Navbar = () => {
         {/* Notification */}
         {pathName === "internal" && (
           <div
-            className={`${styles.circle} mobile_view`}
+            className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
             data-name="Notification"
           >
@@ -107,32 +107,36 @@ const Navbar = () => {
 
         {/* ThemeSwitch */}
         {pathName === "internal" && (
-          <div
-            className={`${styles.circle} desktop_view tablet_view`}
-            style={{ marginRight: "10px" }}
-            onClick={themeSwitchHandler}
-            data-name="Switch Theme"
-          >
-            <Image src={lightModeIcon} alt="theme" />
+          <div className="desktop_view tablet_view">
+            <div
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              onClick={themeSwitchHandler}
+              data-name="Switch Theme"
+            >
+              <Image src={lightModeIcon} alt="theme" />
+            </div>
           </div>
         )}
 
         {/* Home */}
         {pathName === "internal" && (
-          <Link
-            href="/"
-            className={`${styles.circle} desktop_view tablet_view`}
-            style={{ marginRight: "10px" }}
-            data-name="Home"
-          >
-            <Image src={Home} alt="home" />
-          </Link>
+          <div className="desktop_view tablet_view">
+            <Link
+              href="/"
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              data-name="Home"
+            >
+              <Image src={Home} alt="home" />
+            </Link>
+          </div>
         )}
 
         {/* Settings */}
         {pathName === "internal" && (
           <Link
-            className={`${styles.circle} mobile_view`}
+            className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
             href={"/settings"}
             data-name="Settings"
@@ -174,10 +178,11 @@ const Navbar = () => {
           </>
         )}
         {userDetail && (
+          <div className="desktop_view tablet_view">
           <div
             className="desktop_view tablet_view"
             style={{
-              // display: "flex",
+              display: "flex",
               gap: "8px",
               cursor: "pointer",
               position: "relative",
@@ -207,6 +212,7 @@ const Navbar = () => {
                 </div>
               </div>
             )}
+          </div>
           </div>
         )}
       </div>
