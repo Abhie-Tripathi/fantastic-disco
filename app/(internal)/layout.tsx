@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
 import Sidebar from "../components/Sidebar";
 import { useTheme } from "@/context";
-import styles from "./layout.module.css";
+import MobileSidebar from "../components/MobileSidebar";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -28,11 +28,11 @@ export default function RootLayout({
       <body>
         <AuthContextProvider>
           <ThemeProvider>
-            <Sidebar />
-            <Navbar />
-            <div style={{ marginTop: "80px", marginLeft: "80px" }}>
-              {children}
+            <div className="desktop_view tablet_view">
+              <Sidebar />
             </div>
+            <Navbar />
+            <div className="body_layout">{children}</div>
           </ThemeProvider>
         </AuthContextProvider>
       </body>

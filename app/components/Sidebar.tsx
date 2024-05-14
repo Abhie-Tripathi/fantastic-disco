@@ -26,10 +26,6 @@ const Sidebar = () => {
       onMouseLeave={() => setShowSidebar(false)}
     >
       <div className={styles.links}>
-        {/* <div className={styles.homebtn}>
-          <Image src={AddIcon} alt="herologo" width={45} />
-          <Image src={AddIcon} alt="herotext" width={144} />
-        </div> */}
         <Link
           href="/internal"
           className={`${styles.link} ${
