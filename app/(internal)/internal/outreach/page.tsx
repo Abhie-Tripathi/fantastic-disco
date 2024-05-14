@@ -84,7 +84,7 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
-    if(window.innerWidth > 768){
+    if(window.innerWidth > 576){
       setTabsVisible('all');
     }
   },[])

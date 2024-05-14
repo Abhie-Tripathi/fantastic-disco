@@ -13,6 +13,7 @@ import Image from "next/image";
 import Tag from "./Tag";
 import useFetch from "@/hooks/useFetch";
 import { useTheme } from "@/context";
+import { useRouter } from "next/navigation";
 
 interface CommonWidgetProps {
   widgetType: string;
@@ -24,7 +25,7 @@ interface PromotedEvent {
 }
 
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const [geoInput, setGeoInput] = useState<string>("");
   const [inputTag, setInputTag] = useState<string>("");
@@ -63,6 +64,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
   const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
 
+  const router = useRouter();
   // To get the todays date to send in date picker comp.
   useEffect(() => {
     const currentDate = new Date();
@@ -138,10 +140,10 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         promotedInput.trim() === ""
           ? []
           : eventData.filter((event: any) =>
-              event._source.name
-                .toLowerCase()
-                .includes(promotedInput.toLowerCase())
-            );
+            event._source.name
+              .toLowerCase()
+              .includes(promotedInput.toLowerCase())
+          );
       setMatchingPromotedEvents(matches);
       setIsPromotedDropdownOpen(promotedInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
@@ -246,6 +248,11 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     console.log("tag is "+isTag+" "+ inputTag);
   })
   
+
+  const handleCancel = () => {
+    router.push("/widget")
+  }
+
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.eventFormatContainer}>
@@ -254,9 +261,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
           {EventFormatData.map((format, index) => (
             <div
               key={format}
-              className={`${styles.eventChip} ${
-                eventFormat.includes(format) ? styles.eventActiveChip : ""
-              }`}
+              className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ""
+                }`}
               onClick={() => toggleFormatChipSelection(format)}
             >
               {format}
@@ -374,9 +380,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
           {ModeData.map((mode, index) => (
             <div
               key={mode}
-              className={`${styles.eventChip} ${
-                modeTags.includes(mode) ? styles.eventActiveChip : ""
-              }`}
+              className={`${styles.eventChip} ${modeTags.includes(mode) ? styles.eventActiveChip : ""
+                }`}
               onClick={() => toggleModeChipSelection(mode)}
             >
               {mode}
@@ -442,9 +447,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
       </div>
       <div className={styles.btns}>
         <button className={styles.submitBtn}>Submit</button>
-        <button className={styles.cancelBtn} type="button">
-          Cancel
-        </button>
+        <button className={styles.cancelBtn} type="button" onClick={handleCancel}>Cancel</button>
       </div>
     </form>
   );
