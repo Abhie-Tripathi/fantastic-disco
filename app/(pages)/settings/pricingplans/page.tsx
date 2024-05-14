@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import styles from "./pricing.module.css";
 import Image from "next/image";
 import BillingIcon from "/public/billingIcon.svg";
+import SettingsSidebar from '@/app/components/settingsSidebar'
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import CurrentPlan from "@/app/components/settings/pricingPlans/currentPlans";
 import { useTheme } from "@/context";
 import AvailablePlans from "@/app/components/settings/pricingPlans/availablePlans";
+import Link from "next/link";
 const Page = () => {
   const [activeTab, setActiveTab] = useState("Current Plan");
   const { theme } = useTheme();
@@ -31,7 +33,10 @@ const Page = () => {
               alt="billing icon"
             />
           </div>
-          <div className={styles.text}>Current Plan</div>
+
+          <Link href="#current_plan" className={styles.text}>
+            Current Plan
+          </Link>
         </div>
         <div
           className={`${styles.comapny_container} ${styles.tabContainer} ${
@@ -44,9 +49,9 @@ const Page = () => {
             src={BillingAccountIcon}
             alt="team icon"
           />
-          <div className={styles.text}>Available Plans</div>
+          <Link href="#our_pricing_plans" className={styles.text}>Available Plans</Link>
         </div>
-      </div>
+      </div> 
 
       <div className={styles.rightContainer}>
         {activeTab === "Current Plan" ? <CurrentPlan /> : ""}

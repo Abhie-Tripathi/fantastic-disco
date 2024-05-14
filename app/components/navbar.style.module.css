@@ -49,6 +49,10 @@
   opacity: 1;
 }
 
+.mobile_menuIcon{
+    display: none;
+}
+
 .userDropdown {
     position: absolute;
     top: 56px;
@@ -71,4 +75,18 @@
 .light{
     color: #131313;
     background-color: var(--secondary-bg-light);
+}
+
+
+.mobile_sidebar{
+    background: purple;
+}
+
+@media screen and (max-width : 500px) {
+    .mobile_menuIcon{
+        display: flex;
+    }
+    .logo_internal{
+        display: none;
+    }
 }
