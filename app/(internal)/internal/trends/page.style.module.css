@@ -2,9 +2,16 @@
   padding: 30px;
   background-color: #131313;
   color: #ffffff;
+  min-width: 370px;
 }
 
 .body_light {
   background-color: var(--primary-bg-light);
   color: var(--primary-color-light);
+}
+
+@media screen and (max-width:576px) {
+  .body {
+    padding: 15px;
+  }
 }

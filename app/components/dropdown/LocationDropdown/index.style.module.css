@@ -458,3 +458,11 @@
   .icons_light{
     filter: invert(1);
   }
+
+@media screen and (max-width:992px) {
+  .container {
+    min-width: unset;
+    max-width: 80vw;
+    left: -80px!important;
+  }
+}
