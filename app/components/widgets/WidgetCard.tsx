@@ -37,13 +37,12 @@ const WidgetCard = ({ data }: any) => {
     } else {
       setWidgetType("Sticky")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     const fetchWidgetData = async () => {
       try {
-        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType.toLowerCase()}`);
+        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType === "Sticky" ? "sticky" : "page"}`);
         const widgetData = await response.json();
         if (widgetType === "Sticky") {
           const active = widgetData.active
@@ -74,7 +73,6 @@ const WidgetCard = ({ data }: any) => {
     fetchWidgetData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [widgetType])
-
   // This function is to extract the categroies, types of the events to show it on the widget card
   const handleAdditionalData = (additionalData: any) => {
     // Function to extract categories and remove duplicates
