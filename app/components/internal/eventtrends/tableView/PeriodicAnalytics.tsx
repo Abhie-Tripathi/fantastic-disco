@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./table.style.module.css";
 
 const eventData = [
@@ -18,6 +19,7 @@ const eventData = [
 const PeriodicAnalytics = () => {
   return (
     <>
+    <div className="desktop_view tablet_view">
       <div className={styles.analytics_header}>
         <span style={{ fontWeight: 500, fontSize: "16px" }}>
           TOTAL FOR THE SELECTED TIME PERIODS (01 MAR 24 - 31 MAR 24)
@@ -58,6 +60,58 @@ const PeriodicAnalytics = () => {
           </tbody>
         </table>
       </div>
+    </div>
+
+    <div className="mobile_view">
+      <div className={styles.mobileTable_container}>
+        <div className={styles.mobile_header}>
+          <div style={{ fontWeight: 500, marginBottom:"10px" }}>
+            TOTAL FOR THE SELECTED TIME PERIODS (01 MAR 24 - 31 MAR 24)
+          </div>
+          <div style={{ fontWeight: "700", marginBottom:"10px" }}>Predicted No of Events</div>
+        </div>
+        <table className={styles.mobile_table}>
+          <tbody>
+          {eventData.map((event, index) => (
+            <React.Fragment key={index}>
+              <tr>
+                <th>Total</th>
+                <td>{event.total}</td>
+              </tr>
+              <tr>
+                <th>Community</th>
+                <td>{event.community}</td>
+              </tr>
+              <tr>
+                <th>Concerts</th>
+                <td>{event.concerts}</td>
+              </tr>
+              <tr>
+                <th>Conference</th>
+                <td>{event.conferences}</td>
+              </tr>
+              <tr>
+                <th>Expos</th>
+                <td>{event.expos}</td>
+              </tr>
+              <tr>
+                <th>Festivals</th>
+                <td>{event.festivals}</td>
+              </tr>
+              <tr>
+                <th>Performance</th>
+                <td>{event.performance}</td>
+              </tr>
+              <tr>
+                <th>Sports</th>
+                <td>{event.sports}</td>
+              </tr>
+            </React.Fragment>
+          ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
     </>
   );
 };
