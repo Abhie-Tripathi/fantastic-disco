@@ -11,7 +11,7 @@ interface TagProps {
 const Tag = ({ name, onRemove  } : TagProps) => {
     return (
         <div className={styles.tag}>
-            <Image src={Cross} alt="Cross" onClick={onRemove}/>
+            <Image src={Cross} alt="Cross" onClick={onRemove} className={styles.crossIcon}/>
             <div>{name}</div>
         </div>
     )
