@@ -51,11 +51,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
       setMatchingEvents(matches);
       setIsEventDropdownOpen(searchInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
-  }, [searchInput, data]);
+  }, [searchInput]);
 
   const handleEventClick = (event: any) => {
-    setIsEventDropdownOpen(false);
     setSelectedEvent(event);
+    setIsEventDropdownOpen(false);
   };
   useEffect(() => {
     setSearchInput(selectedEvent?._source.name || "");
@@ -92,13 +92,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
         return;
       }
       const responseData = await response.json();
-      const { id } = responseData;
+      const { id } = responseData.data;
       setStickyId(id);
-
-      // const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-      // storedWidgets.push({ id, name: "Sticky" });
-      // const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-      // localStorage.setItem('widgets', updatedWidgetsJSON);
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
     }

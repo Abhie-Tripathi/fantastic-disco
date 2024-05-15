@@ -165,14 +165,24 @@ const Navbar = () => {
         )}
 
         {pathName !== "internal" && (
-          <Link
-            className={styles.circle}
-            style={{ marginRight: "10px" }}
-            href={"/internal"}
-            data-name="Internal"
-          >
-            <Image src={DoorIcon} alt="internal" />
-          </Link>
+          <>
+            <div
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              onClick={themeSwitchHandler}
+              data-name="Switch Theme"
+            >
+              <Image src={lightModeIcon} alt="theme" />
+            </div>
+            <Link
+              className={styles.circle}
+              style={{ marginRight: "10px" }}
+              href={"/internal"}
+              data-name="Internal"
+            >
+              <Image src={DoorIcon} alt="internal" />
+            </Link>
+          </>
         )}
 
         {pathName !== "internal" && (

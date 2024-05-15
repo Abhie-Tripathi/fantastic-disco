@@ -15,7 +15,11 @@ type PromotedEvent = {
   endDate: string; // You may want to use Date type if the dates are parsed as Date objects
 };
 
-const WidgetCard = ({ data }: any) => {
+interface WidgetCardProps {
+  data: any; // Replace 'any' with the actual type of your data if possible
+  setDeleteId: React.Dispatch<React.SetStateAction<string>>;
+}
+const WidgetCard = ({ data,setDeleteId}: WidgetCardProps) => {
 
   const propsData = data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
@@ -46,14 +50,14 @@ const WidgetCard = ({ data }: any) => {
         const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType === "Sticky" ? "sticky" : "page"}`);
         const widgetData = await response.json();
         if (widgetType === "Sticky") {
-          const active = widgetData.active
+          const active = widgetData.data.active
           if (active === "true") {
             setActiveState("Active")
           } else {
             setActiveState("Inactive")
           }
         } else {
-          const formBody = JSON.parse(widgetData.body)
+          const formBody = JSON.parse(widgetData.data.body)
           const query = widgetData.query
           if (formBody.active) {
             setActiveState("Active")
@@ -235,7 +239,7 @@ const WidgetCard = ({ data }: any) => {
         </div>
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} />}
+        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} setDeleteId = {setDeleteId} />}
       </div>
     </div>
   )

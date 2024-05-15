@@ -77,10 +77,10 @@ const EventDetail = ({
       }
     >
       <div className={styles.closeIcon} onClick={handleCloseModal}>
-        <Image src={closeIcon} alt="close" />
+        <Image src={closeIcon} alt="close" height={22} width={22} />
       </div>
 
-      <div>
+      <div style={{width:"100%"}}>
         {pathName && pathName === "outreach" && <StatusBar status={status} />}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>

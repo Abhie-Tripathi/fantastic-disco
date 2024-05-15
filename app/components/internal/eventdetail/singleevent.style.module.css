@@ -34,3 +34,10 @@
     padding: 5px 10px;
     font-size: 10px;
 }
+
+@media screen and (max-width: 576px) {
+    .image{
+        height: 120px;
+        width: 160px;
+    }
+}
