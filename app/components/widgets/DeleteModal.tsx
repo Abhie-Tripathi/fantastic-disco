@@ -6,9 +6,10 @@ interface DeleteProps {
     type: string
     id: string
     handleModal : ()=>void
+    setDeleteId?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const DeleteModal = ({ type, id, handleModal}: DeleteProps) => {
+const DeleteModal = ({ type, id, handleModal, setDeleteId}: DeleteProps) => {
 
     const handleDelete = async () => {
         const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
@@ -33,10 +34,12 @@ const DeleteModal = ({ type, id, handleModal}: DeleteProps) => {
         } catch (error) {
             console.error('An error occurred while deleting the widget:', error);
         }
+        // Sending back the id of the widget card to be deleted, so that we can also show live deletion
+        if(setDeleteId){
+            setDeleteId(id)
+        }
         handleModal()
     };
-    
-
 
     return (
         <div className={styles.container}>

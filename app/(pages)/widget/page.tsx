@@ -17,9 +17,13 @@ const Widget = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const widgetsPerPage = 3;
   const { theme } = useTheme()
-  const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
-  const totalPages = Math.ceil(widgets.length / widgetsPerPage);
+  const [deleteId, setDeleteId] = useState("");
 
+  const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
+  let totalPages = 1
+  if(widgets.length > 0){
+    totalPages = Math.ceil(widgets.length / widgetsPerPage);
+  }
   const fetchData = async (type: string): Promise<any[]> => {
     try {
       const response = await fetch(`https://api.eventgeni.com/widgets?type=${type}`);
@@ -67,12 +71,17 @@ const Widget = () => {
     }
     
   }
-
+ // To see the live deletion of widget, else if we use "widget" as dependency array, it will go in infinite loop
+  useEffect(()=>{ 
+    if (deleteId) {
+      window.location.reload(); // Reload the page when deleteId changes
+  }
+  },[deleteId])
 
   return (
     <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light : ""}`}>
       <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light : ""}`}>
-        <div className={Styles.c1left}>Widgets</div>
+        <div className={Styles.c1left}>Widgets <span className={Styles.widgetCount}>{`${widgets.length > 0 ?`(${widgets.length})`:``}`}</span></div>
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
@@ -84,7 +93,7 @@ const Widget = () => {
       {currentWidgets.length > 0 ? (
         currentWidgets.map((item, index) => (
           <div key={index} className={Styles.containerTwo}>
-            <WidgetCard data={item} />
+            <WidgetCard data={item} setDeleteId={setDeleteId} />
           </div>
         ))
       ) : (

@@ -15,7 +15,11 @@ type PromotedEvent = {
   endDate: string; // You may want to use Date type if the dates are parsed as Date objects
 };
 
-const WidgetCard = ({ data }: any) => {
+interface WidgetCardProps {
+  data: any; // Replace 'any' with the actual type of your data if possible
+  setDeleteId: React.Dispatch<React.SetStateAction<string>>;
+}
+const WidgetCard = ({ data,setDeleteId}: WidgetCardProps) => {
 
   const propsData = data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
@@ -235,7 +239,7 @@ const WidgetCard = ({ data }: any) => {
         </div>
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} />}
+        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} setDeleteId = {setDeleteId} />}
       </div>
     </div>
   )
