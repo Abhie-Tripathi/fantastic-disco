@@ -201,7 +201,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     try {
       const responseData = await postData(`${baseURL}/widgets`, formBody);
       console.log("Response data:", responseData);
-      setId(responseData.id);
+      setId(responseData.data.id);
     } catch (error) {
       console.error("Error:", error);
     }
