@@ -84,7 +84,7 @@
   padding-top: 50px;
   z-index: 1;
   color: #ffffff;
-  width: calc(100vw - 80px);
+  width: calc(100vw - 100px);
 }
 
 .modal::-webkit-scrollbar {
