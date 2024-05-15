@@ -89,3 +89,9 @@
     
 }
 
+@media screen and (max-width: 576px) {
+    .containerLeft {
+        padding-right: 0px;
+    }
+}
+
