@@ -12,29 +12,40 @@ import { useTheme } from '@/context'
 const Widget = () => {
 
   const [widgets, setWidgets] = useState<any>();
-  const {theme} = useTheme()
+  const { theme } = useTheme()
   const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
 
-  
+
+
+  const fetchData = async (type: string, offset: number, limit: number): Promise<any[]> => {
+    try {
+      const response = await fetch(`https://api.eventgeni.com/widgets?type=${type}&offset=${offset}&limit=${limit}`);
+      const data = await response.json();
+      return data.data[type + 'Data'];
+    } catch (error) {
+      console.error('Error fetching widgets:', error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllWidgets = async () => {
       try {
-        const responsePage = await fetch('https://api.eventgeni.com/widgets?type=page');
-        const responseSticky = await fetch('https://api.eventgeni.com/widgets?type=sticky');
-        const dataPage = await responsePage.json();
-        const dataSticky = await responseSticky.json();
-        const allWidgets = [...dataPage.data.pageData, ...dataSticky.data.stickyData];
-        setWidgets(allWidgets);
+        const pageWidgets = await fetchData('page', 0, 5);
+        const stickyWidgets = await fetchData('sticky', 0, 5);
+        const allWidgets = [...pageWidgets, ...stickyWidgets];
+        const sortedWidgets = allWidgets.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+        setWidgets(sortedWidgets);
       } catch (error) {
         console.error('Error fetching widgets:', error);
       }
     };
-
-    fetchData();
+    fetchAllWidgets();
   }, []);
+
   return (
-    <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light: ""}`}>
-      <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light:""}`}>
+    <div className={`${Styles.outerContainer} ${theme === 'light' ? Styles.outerContainer_light : ""}`}>
+      <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light : ""}`}>
         <div className={Styles.c1left}>Widgets</div>
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
@@ -45,13 +56,13 @@ const Widget = () => {
         </div>
       </div>
       {widgets?.length > 0 ? (
-        widgets.map((item : any, index : number) => (
+        widgets.map((item: any, index: number) => (
           <div key={index} className={Styles.containerTwo}>
             <WidgetCard data={item} />
           </div>
         ))
       ) : (
-        <SkeletonWidget/>
+        <SkeletonWidget />
       )}
     </div>
   )

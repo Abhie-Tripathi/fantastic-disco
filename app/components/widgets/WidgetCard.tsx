@@ -46,14 +46,14 @@ const WidgetCard = ({ data }: any) => {
         const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType === "Sticky" ? "sticky" : "page"}`);
         const widgetData = await response.json();
         if (widgetType === "Sticky") {
-          const active = widgetData.active
+          const active = widgetData.data.active
           if (active === "true") {
             setActiveState("Active")
           } else {
             setActiveState("Inactive")
           }
         } else {
-          const formBody = JSON.parse(widgetData.body)
+          const formBody = JSON.parse(widgetData.data.body)
           const query = widgetData.query
           if (formBody.active) {
             setActiveState("Active")
