@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./navbar.style.module.css";
 import logo from "/public/croppedlogo.png";
@@ -27,6 +27,7 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   const profilectas = DropDown();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
@@ -54,6 +55,20 @@ const Navbar = () => {
   const handelSideShowClose = () => {
     setShowSidebar(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (sidebarRef.current  && !sidebarRef.current.contains(event.target)) {
+        setShowSidebar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
@@ -182,7 +197,11 @@ const Navbar = () => {
           </>
         )}
         {userDetail && (
-          <div className="desktop_view tablet_view">
+          <div
+            className={`${
+              pathName === "internal" && "desktop_view tablet_view"
+            }`}
+          >
             <div
               style={{
                 display: "flex",
@@ -219,7 +238,13 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      {showSidebar && <MobileSidebar onClose={handelSideShowClose} />}
+      {showSidebar && (
+        <div className={styles.mobile_sideBar_container}>
+          <div ref={sidebarRef}>
+            <MobileSidebar onClose={handelSideShowClose} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

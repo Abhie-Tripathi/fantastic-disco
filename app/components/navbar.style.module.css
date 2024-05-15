@@ -1,93 +1,102 @@
 .navbar {
-    background-color: #1A1A1A;
-    color: #ffffff;
-    /* padding: 12px 28px 12px 28px; */
-    padding: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    width: 100%;
-    z-index: 111;
-    height: 80px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  /* padding: 12px 28px 12px 28px; */
+  padding: 8px;
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  z-index: 111;
+  height: 80px;
 }
 
 .settings {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  right: 0;
 }
 
 .circle {
-    border-radius: 50%;
-    display: flex;
-    background-color: #313131;
-    width: 35px;
-    height: 35px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: white;
-    position: relative;
+  border-radius: 50%;
+  display: flex;
+  background-color: #313131;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  position: relative;
 }
 .circle::before {
-    content: attr(data-name);
-    position: absolute;
-    top:120%;
-    left: 60%;
-    white-space: nowrap;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+  content: attr(data-name);
+  position: absolute;
+  top: 120%;
+  left: 60%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 .circle:hover::before {
   opacity: 1;
 }
 
-.mobile_menuIcon{
-    display: none;
+.mobile_menuIcon {
+  display: none;
 }
 
 .userDropdown {
-    position: absolute;
-    top: 56px;
-    z-index: 11;
-    background: black;
-    color: white;
-    width: 100%;
-    text-align: center;
+  position: absolute;
+  top: 56px;
+  z-index: 11;
+  background: black;
+  color: white;
+  width: 100%;
+  text-align: center;
 }
 
 .btns {
-    padding: 10px 5px;
-    cursor: pointer;
+  padding: 10px 5px;
+  cursor: pointer;
 }
 
 .btns:hover {
-    background-color: #6750A4;
+  background-color: #6750a4;
 }
 
-.light{
-    color: #131313;
-    background-color: var(--secondary-bg-light);
+.light {
+  color: #131313;
+  background-color: var(--secondary-bg-light);
 }
 
-
-.mobile_sidebar{
-    background: purple;
+.mobile_sidebar {
+  background: purple;
 }
 
-@media screen and (max-width : 500px) {
-    .mobile_menuIcon{
-        display: flex;
-    }
-    .logo_internal{
-        display: none;
-    }
+.mobile_sideBar_container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  backdrop-filter: blur(4px);
+  top: 0;
+}
+
+@media screen and (max-width: 500px) {
+  .mobile_menuIcon {
+    display: flex;
+  }
+  .logo_internal {
+    display: none;
+  }
 }
