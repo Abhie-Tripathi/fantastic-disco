@@ -62,7 +62,10 @@ const Widget = () => {
 
   }
   const handleNextPage = () => {
-    setCurrentPage(prevPage => prevPage + 1);
+    if(currentPage !== totalPages){
+      setCurrentPage(prevPage => prevPage + 1);
+    }
+    
   }
 
 
