@@ -81,9 +81,10 @@
   position: absolute;
   top: 75px;
   padding: 20px;
-  padding-top: 90px;
+  padding-top: 50px;
   z-index: 1;
   color: #ffffff;
+  width: calc(100vw - 80px);
 }
 
 .modal::-webkit-scrollbar {
@@ -188,5 +189,8 @@
   .outerCard {
     width: 95%;
     color: #ffffff;
+  }
+  .modal {
+    width: 100%;
   }
 }
