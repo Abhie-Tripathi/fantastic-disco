@@ -51,11 +51,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
       setMatchingEvents(matches);
       setIsEventDropdownOpen(searchInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
-  }, [searchInput, data]);
+  }, [searchInput]);
 
   const handleEventClick = (event: any) => {
-    setIsEventDropdownOpen(false);
     setSelectedEvent(event);
+    setIsEventDropdownOpen(false);
   };
   useEffect(() => {
     setSearchInput(selectedEvent?._source.name || "");

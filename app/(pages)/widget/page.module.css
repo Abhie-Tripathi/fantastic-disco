@@ -31,7 +31,10 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     text-align: left;
-
+}
+.widgetCount{
+    font-weight: 500;
+    margin-left: 5px;
 }
 
 .c1right {
