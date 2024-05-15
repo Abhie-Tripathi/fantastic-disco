@@ -80,10 +80,17 @@
     .containerLeft {
         width: 100%;
         border: none;
+        padding-right: unset;
     }
     .containerRight {
         width: 100%;
     }
     
+}
+
+@media screen and (max-width: 576px) {
+    .containerLeft {
+        padding-right: unset;
+    }
 }
 
