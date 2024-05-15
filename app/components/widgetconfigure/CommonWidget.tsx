@@ -72,9 +72,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     throw new Error('Failed to fetch widget data');
                 }
                 const widgetData = await response.json();
-                parseQueryString(widgetData.query);
-                const formBody = JSON.parse(widgetData.body)
-                console.log(formBody)
+                parseQueryString(widgetData.data.query);
+                const formBody = JSON.parse(widgetData.data.body)
                 setPromotedEventTags(formBody.promotedEventTags)
                 setEventTypeTags(formBody.eventTypeTags)
                 setEventFormat(formBody.eventFormat)
