@@ -252,10 +252,7 @@ const [replyName,setReplyName]=useState<string | undefined
       // setClass1(true)
       setCheckedId(id);
       setTimeout(() => {
-        // window.scrollTo({
-        //   top: window.scrollY - 100,
-        //   behavior: "smooth"
-        // });
+        
         setCheckedId(null)
       //  element.classList.add("your")
       }, 1000);
@@ -327,7 +324,7 @@ comments = [...notes];
         </div>
       ) : null}
        {replyId &&
-        <div className={styles.replyDiv}>
+        <div className={theme==="light"?styles.replyDivLight:styles.replyDiv}>
          
           <div className={styles.outerReplyDiv}>
           <div className={styles.replyText} >
@@ -498,11 +495,11 @@ console.log(comment);
             commentId={comment.id}
             commentText={comment.text}
           />
-          <div className={styles.text} style={{ background:comment?.replyId?"#1a1a1a":"none"}}>
-            <div className={styles.commentText} style={{ color: "grey"}}>
+          <div className={styles.text} style={{ background:comment?.replyId?(theme==="light"?"var(--secondary-bg-light)":"#1a1a1a"):"none"}}>
+            <div className={styles.commentText}>
               <span>{userName}</span>{" "}
               {comment?.replyId &&
-                   <div className={styles.replyDiv} onClick={(e)=>getCommentPos(e,comment.replyId)}>
+                   <div className={theme==="light"?styles.replyDivLight:styles.replyDiv} onClick={(e)=>getCommentPos(e,comment.replyId)}>
 
                    <div className={styles.outerReplyDiv}>
                    <div className={styles.replyText}>
@@ -529,7 +526,7 @@ console.log(comment);
                                 <a
                                   key={idx}
                                   href={`#${username}`}
-                                  style={{ color: "white", fontWeight: "800" }}
+                                  style={{fontWeight: "800" }}
                                 >
                                   {word}{" "}
                                 </a>
@@ -651,9 +648,9 @@ console.log(comment);
           </div>
           <div className={styles.options}>
             {/* <ButtonView view={"upvoteBtn"} /> */}
-            <div className={styles.likeSection} onClick={()=>handleLiked(comment.id,!isLiked)}>
+            <div className={theme==="light" ? styles.likeSectionLight : styles.likeSection} onClick={()=>handleLiked(comment.id,!isLiked)}>
               <div className={styles.like}>{comment?.isLiked?(<Image src={LikeFill} alt="like"/>):(<Image src={Like} alt="like"/>)}</div>
-              <div>{comment?.likes}</div>
+              <div >{comment?.likes}</div>
             </div>
             <button onClick={()=>handleReply(comment.id)} className={styles.replyBtn}>Reply</button>
             {/* <ButtonView view={"replyBtn"} /> */}

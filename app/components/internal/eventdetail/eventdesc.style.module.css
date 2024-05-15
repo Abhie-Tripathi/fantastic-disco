@@ -358,6 +358,36 @@
     margin-bottom: 30px;
 }
 
+@media screen and (max-width: 576px) {
+    .container {
+        padding: 17px 26px;
+    }
+    .dropdown_container {
+        font-size: 8px;
+        padding: 6px 10px;
+    }
+    .statusCard {
+        font-size: 8px;
+    }
+    .statusCard svg {
+        height: 24px;
+    }
+    .outreachStatusContainer{
+        padding: 10px;
+    }
+    .owner_img {
+        height: 32px;
+        width: 32px;
+    }
+    .statusText {
+        gap: 10px;
+    }
+    .dropdown_menu_item {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+}
+
 @media screen and (max-width: 1438px) {
     .eventStats{
         flex-direction: column;

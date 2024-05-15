@@ -487,6 +487,17 @@
   flex-direction: column;
   background-color: #1A1A1A;
 }
+.replyDivLight{
+  background-color: var(--secondary-bg-light);
+  padding: 20px 10px 10px 10px;
+  text-align: left;
+  display: flex;
+  cursor: pointer;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: column;
+}
 .name{
   padding-left: 15px;
   color: rgb(103 80 164);
@@ -535,6 +546,14 @@
   cursor: pointer;
   gap:5px;
   background-color: #1A1A1A;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+.likeSectionLight{
+  display: flex;
+  cursor: pointer;
+  gap:5px;
+  background-color: var(--secondary-bg-light);
   padding: 5px 10px;
   border-radius: 20px;
 }
