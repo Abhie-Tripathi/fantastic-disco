@@ -1,5 +1,9 @@
 .container{
     position: relative;
+    border-radius: 18.93px;
+    border: 1px solid #6650a465;
+    background: linear-gradient(270deg, #0c0c0c 0%, rgba(102, 80, 164, 0.219) 100%);
+    padding: 20px;
 }
 .blur{
     filter: blur(2px);
@@ -34,7 +38,35 @@
     font-weight: 600;
     text-align: left;
 }
-.eventDetail {
+.date_configure_detailContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.date_configureContainer{
+    display: flex;
+}
+.viewDetailsContainer{
+    display: flex;
+    border: 1px solid #6750A4;
+    border-radius: 40px;
+    padding: 3px 6px;
+    align-items: center;
+    gap: 5px;
+}
+.viewDetailsIcon{
+    background-color: #2B233D;
+    border-radius: 10px;
+}
+.viewDetailsHeading{
+    font-size: 15px;
+    color: white;
+}
+.date_configureContainer{
+    display: flex;
+}
+.dateContainer {
     outline: 1px solid transparent;
     margin-left: 20px;
     padding: 3px;
@@ -49,15 +81,16 @@
 
 .date {
     /* font-family: Sora; */
-    font-size: 13.25px;
+    font-size: 13px;
     font-weight: 400;
-    line-height: 19.87px;
-    text-align: left;
+    padding: 5px 10px;
 
 }
 .configure{
     margin-left: 20px;
-    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    padding:0px 5px 0px 5px;
     border-radius: 8px;
     background-color: #313131;
 }
@@ -66,6 +99,8 @@
     background-color: #6750A4;
 }
 .delete{
+    position: absolute;
+    right: 100px;
     margin-left: 20px;
     padding: 3px;
     border-radius: 8px;
@@ -130,7 +165,20 @@
     align-items: center;
     border: 1px solid #1F1F1F;
     border-radius: 12px;
+    /* justify-content: ; */
 
+}
+.type_geoContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.cat_typeContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.format_partContainer{
+    display: flex;
+    justify-content: space-between;
 }
 .type {
     padding: 8px;
@@ -145,12 +193,12 @@
     color: #808080;
 }
 
-.allTypeBtn {
+.typesContainer {
     display: flex;
     gap: 5px;
 }
 
-.typeBtn {
+.typeChip {
     padding: 4px 12px;
     display: flex;
     align-items: center;
@@ -176,3 +224,48 @@
     transform: rotate(-90deg);
     border: 0.95px solid #1F1F1F;
 }
+@media screen and (max-width: 600px) {
+    .cardSec1{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .dateContainer{
+        margin-left: 0px;
+    }
+    .statusBtn{
+        left: 10%;
+        width: fit-content;
+    }
+    .configure span{
+        display: none;
+    }
+    .delete{
+        right: 0;
+    }
+    .cardSec2{
+        flex-direction: column;
+    }
+    .type_geoContainer{
+        width: 100%;   
+    }
+    .cat_typeContainer{
+        width: 100%;   
+    }
+    .format_partContainer{
+        width: 100%;   
+    }
+    .type{
+        width: 50%;
+    }
+    .line{
+        width: 0px;
+        margin: 0px;
+    }
+    .typeChip{
+        width: fit-content;
+    }
+    .typesContainer{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+  }

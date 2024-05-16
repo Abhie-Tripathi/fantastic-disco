@@ -8,6 +8,8 @@
     gap: 30px;
     flex-direction: column;
     align-items: center;
+    width: 100vw;
+    min-width:600px ;
 }
 
 .outerContainer_light{
@@ -71,11 +73,7 @@
     display: flex;
     flex-direction: column;
     width: 90%;
-    padding: 18px;
     gap: 20px;
-    border-radius: 18.93px;
-    border: 1px solid #6650a465;
-    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
     border-image-slice: 1;
     border-image-width: 1;
 }

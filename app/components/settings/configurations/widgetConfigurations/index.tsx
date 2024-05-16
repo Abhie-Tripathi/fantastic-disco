@@ -13,25 +13,30 @@ import PencilIcon from "/public/pencilIcon.svg";
 import Delete from "/public/deleteIconSvg.svg";
 const Index = () => {
   const [widgets, setWidgets] = useState<any>();
+  const fetchData = async (type: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`https://api.eventgeni.com/widgets?type=${type}`);
+      const data = await response.json();
+      return data.data[type + 'Data'];
+    } catch (error) {
+      console.error('Error fetching widgets:', error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllWidgets = async () => {
       try {
-        const responsePage = await fetch(
-          "https://api.eventgeni.com/widgets?type=page"
-        );
-        const responseSticky = await fetch(
-          "https://api.eventgeni.com/widgets?type=sticky"
-        );
-        const dataPage = await responsePage.json();
-        const dataSticky = await responseSticky.json();
-        const allWidgets = [...dataPage, ...dataSticky];
-        setWidgets(allWidgets);
+        const pageWidgets = await fetchData('page');
+        const stickyWidgets = await fetchData('sticky');
+        const allWidgets = [...pageWidgets, ...stickyWidgets];
+        const sortedWidgets = allWidgets.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+        setWidgets(sortedWidgets);
       } catch (error) {
-        console.error("Error fetching widgets:", error);
+        console.error('Error fetching widgets:', error);
       }
     };
-
-    fetchData();
+    fetchAllWidgets();
   }, []);
   const [openPopUpIndex, setOpenPopUpIndex] = useState(null);
   const [openEditPopUp, setOpenEditPopUp] = useState(null);

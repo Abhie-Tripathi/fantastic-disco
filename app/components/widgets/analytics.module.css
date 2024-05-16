@@ -75,3 +75,14 @@
     justify-content: center;
     border: 1px solid #262626;
 }
+@media screen and (max-width: 600px) {
+    .analytics{
+        flex-direction: column;
+    }
+    .analyticsLeft{
+        width: 100%;
+    }
+    .analyticsRight{
+        width: 100%;
+    }
+  }

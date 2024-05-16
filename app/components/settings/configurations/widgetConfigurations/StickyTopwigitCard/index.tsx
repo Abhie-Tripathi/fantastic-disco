@@ -22,7 +22,6 @@ const Index = ({ data }: any) => {
   const [eventTypes, setEventTypes] = useState<string[]>();
   const [countries, setCountries] = useState<string[]>();
   const [promotedEvents, setPromotedEvents] = useState<PromotedEvent[]>([]);
-  console.log("catee", categories);
 
   const handleModal = () => {
     setDeleteModal(!deleteModal);
@@ -41,43 +40,37 @@ const Index = ({ data }: any) => {
   useEffect(() => {
     const fetchWidgetData = async () => {
       try {
-        const response = await fetch(
-          `https://api.eventgeni.com/widgets/${
-            propsData.id
-          }?type=${widgetType.toLowerCase()}`
-        );
+        const response = await fetch(`https://api.eventgeni.com/widgets/${propsData.id}?type=${widgetType === "Sticky" ? "sticky" : "page"}`);
         const widgetData = await response.json();
         if (widgetType === "Sticky") {
-          const active = widgetData.active;
+          const active = widgetData.data.active
           if (active === "true") {
-            setActiveState("Active");
+            setActiveState("Active")
           } else {
-            setActiveState("Inactive");
+            setActiveState("Inactive")
           }
         } else {
-          const formBody = JSON.parse(widgetData.body);
-          const query = widgetData.query;
+          const formBody = JSON.parse(widgetData.data.body)
+          const query = widgetData.query
           if (formBody.active) {
-            setActiveState("Active");
+            setActiveState("Active")
           } else {
-            setActiveState("Inactive");
+            setActiveState("Inactive")
           }
           if (!response.ok) {
-            throw new Error("Failed to fetch widget data");
+            throw new Error('Failed to fetch widget data');
           }
-          const additionalDataResponse = await fetch(
-            `https://api.eventgeni.com/es/find?company=104&${query}`
-          );
+          const additionalDataResponse = await fetch(`https://api.eventgeni.com/es/find?company=104&${query}`);
           const additionalData = await additionalDataResponse.json();
           handleAdditionalData(additionalData);
         }
       } catch (error) {
-        console.error("Error fetching widget data:", error);
+        console.error('Error fetching widget data:', error);
       }
     };
     fetchWidgetData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [widgetType]);
+  }, [widgetType])
 
   // This function is to extract the categroies, types of the events to show it on the widget card
   const handleAdditionalData = (additionalData: any) => {
@@ -188,14 +181,12 @@ const Index = ({ data }: any) => {
           <div className={styles.stickyTopSec}>{widgetType}</div>
           <div className={styles.statusBtn}>
             <div
-              className={`${styles.activeFlag} ${
-                activeState === "Inactive" ? styles.inactiveFlag : ""
-              }`}
+              className={`${styles.activeFlag} ${activeState === "Inactive" ? styles.inactiveFlag : ""
+                }`}
             ></div>
             <div
-              className={`${styles.status} ${
-                activeState === "Inactive" ? styles.inactiveStatus : ""
-              }`}
+              className={`${styles.status} ${activeState === "Inactive" ? styles.inactiveStatus : ""
+                }`}
             >
               {activeState}
             </div>
