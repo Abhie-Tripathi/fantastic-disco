@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
 
 const Trackers = () => {
   return (

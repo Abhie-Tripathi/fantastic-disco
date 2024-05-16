@@ -7,14 +7,15 @@ import DropdownArrow from "/public/downArrow.svg";
 import ChipCircle from "/public/ChipCircle.svg";
 import ActiveChipCircle from "/public/ActiveChipCircle.svg";
 import Slider from "@/app/components/internal/trackers/Slider";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
-import LabelDropdown from "@/app/components/dropdown/LabelDropdown"
-import DateRangeInput from "@/app/components/dropdown/DateRangeInput"
+import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
+import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
 import EventAttendance from "@/app/components/dropdown/EventAttendance";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
-import { createTracker } from "@/app/service/trackerService";
 import { useTheme } from "@/context";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 interface ChipProps {
   state: string[];
@@ -22,10 +23,10 @@ interface ChipProps {
   value: string;
 }
 
-const statusData = ["Active", "Cancelled", "Postponed", "Predicted"];
+const statusData = ["ACTIVE", "CANCELED", "POSTPONED", "PREDICTED", "EXPIRED"];
 
 const Chip = ({ state, setState, value }: ChipProps) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const onClickHandler = () => {
     state.includes(value)
       ? setState(state.filter((existingStatus) => existingStatus !== value))
@@ -33,11 +34,13 @@ const Chip = ({ state, setState, value }: ChipProps) => {
   };
   return (
     <div
-      className={`${styles.chip} ${state.includes(value) ? styles.active : ""} ${theme === 'light' ? styles.chip_light : ""}`}
+      className={`${styles.chip} ${
+        state.includes(value) ? styles.active : ""
+      } ${theme === "light" ? styles.chip_light : ""}`}
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
-        <Image src={ActiveChipCircle} alt="chipcircle"  />
+        <Image src={ActiveChipCircle} alt="chipcircle" />
       ) : (
         <Image src={ChipCircle} alt="chipcircle" />
       )}
@@ -47,11 +50,12 @@ const Chip = ({ state, setState, value }: ChipProps) => {
 };
 
 const CreateTracker = () => {
-  // const searchParams = useSearchParams();
+  const router = useRouter();
   const [openDropdown, setOpenDropdown] = useState("");
   // const [eventStatus, setEventStatus] = useState(searchParams.get("event_status")?.split(",") || []);
   // const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
   // const [dateRange, setDateRange] = useState<string[]>(searchParams.get("date_range")?.split(",") || []);
+  const [trackerName, setTrackerName] = useState("");
   const [eventStatus, setEventStatus] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<string[]>([]);
@@ -76,8 +80,8 @@ const CreateTracker = () => {
   const labelDropdownRef = useRef(null);
   const dateRangeDropdownRef = useRef(null);
   const attendanceDropdownRef = useRef(null);
-  const {theme} = useTheme()
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon';
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -87,38 +91,55 @@ const CreateTracker = () => {
     }
   };
 
-  const activegte = new Date("2024-04-10");
-  const activelte = new Date("2024-04-11");
-
-  const saveTrackerHandler = () => {
-    createTracker({
-      name: "Indigo",
-      parameters: {
+  const saveTrackerHandler = async () => {
+    const formData = {
+      name: trackerName,
+      filterValue: {
         labels: labels,
         category: categories,
-        status: "ACTIVE",
-        city: "London",
-        "active.gte": activegte.toISOString(),
-        "active.lte": activelte.toISOString(),
-        "attendance.gte": "200",
-        "attendance.lte": "2000",
-        "event_rank.gte": "2",
-        "event_rank.lte": "100",
-        "local_rank.gte": "2",
-        "local_rank.lte": "100",
-        "aviation_rank.gte": "2",
-        "aviation_rank.lte": "100",
+        status: eventStatus,
+        city: ["London"],
+        active_gte: new Date(dateRange[0]).toISOString(),
+        active_lte: new Date(dateRange[1]).toISOString(),
+        total_attendance_gte: +attendanceRange[0],
+        total_attendance_lte:
+          attendanceRange[1] === "Unlimited" ? 1000000 : +attendanceRange[1],
+        event_rank_gte: Math.floor(startEventeliRank),
+        event_rank_lte: Math.floor(endEventeliRank),
+        local_rank_gte: Math.floor(startLocalRank),
+        local_rank_lte: Math.floor(endLocalRank),
+        aviation_rank_gte: 2,
+        aviation_rank_lte: 100,
       },
-    }).then((data) => console.log(data));
+    };
+    console.log(formData);
+    const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+    });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (data) {
+      router.replace("/internal/trackers");
+    }
   };
 
   return (
     <div>
       <div className={styles.trackers_container}>
-        <div className={`${styles.trackers_header} ${theme === "light" ? styles.trackers_header_light : ""}`}>
+        <div
+          className={`${styles.trackers_header} ${
+            theme === "light" ? styles.trackers_header_light : ""
+          }`}
+        >
           <input
             className={styles.trackers_header_input}
             placeholder="Tracker Name"
+            onChange={(event) => setTrackerName(event.target.value)}
           />
           <div className={styles.trackers_header_more_button}>
             <Image src={MoreIcon} alt="moreicon" className={iconClass} />
@@ -151,7 +172,11 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
+              <Image
+                src={DropdownArrow}
+                alt="dropdownarrow"
+                className={iconClass}
+              />
             </div>
             {openDropdown == "Category" && (
               <CategoryDropdown
@@ -195,9 +220,17 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
+              <div
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
+              >
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
+                <Image
+                  src={DropdownArrow}
+                  alt="dropdownarrow"
+                  className={iconClass}
+                />
               </div>
             </div>
             {openDropdown == "Labels" && (
@@ -228,9 +261,17 @@ const CreateTracker = () => {
                   <div className={styles.dropdown_placeholder}>--Select--</div>
                 )}
               </div>
-              <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
+              <div
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
+              >
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
+                <Image
+                  src={DropdownArrow}
+                  alt="dropdownarrow"
+                  className={iconClass}
+                />
               </div>
             </div>
             {openDropdown == "Date Range" && (
@@ -257,9 +298,17 @@ const CreateTracker = () => {
               ) : (
                 <div className={styles.dropdown_placeholder}>--Select--</div>
               )}
-               <div className={`${styles.dropdown_choosebutton} ${theme === 'light' ? styles.dropdown_choosebutton_light : ""}`}>
+              <div
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
+              >
                 <div>Choose</div>
-                <Image src={DropdownArrow} alt="dropdownarrow" className={iconClass} />
+                <Image
+                  src={DropdownArrow}
+                  alt="dropdownarrow"
+                  className={iconClass}
+                />
               </div>
             </div>
             {openDropdown == "Attendance" && (
@@ -314,7 +363,11 @@ const CreateTracker = () => {
           </div>
         </div>
 
-        <div className={`${styles.location_tab_container} ${theme === 'light' ? styles.location_tab_container_light : ""}`}>
+        <div
+          className={`${styles.location_tab_container} ${
+            theme === "light" ? styles.location_tab_container_light : ""
+          }`}
+        >
           <div className={`${styles.location_tab} ${styles.active}`}>
             Saved Locations
           </div>
