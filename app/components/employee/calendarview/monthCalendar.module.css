@@ -39,14 +39,6 @@
   font-size: 12px;
 }
 
-.monthCards_container {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-  /* width: 1200px; */
-}
-
 .emptyCard {
   aspect-ratio: 1;
   width: calc((100% - 90px) / 7);
@@ -121,29 +113,18 @@
 .event {
   position: absolute;
   z-index: 1;
-  /* top: 52px; */
   left: 10px;
-  /* white-space: nowrap; */
   font-size: 70%;
-  /* background-color: #E7F8F2; */
   border-radius: 2px;
   padding: 3.5%;
-
-  aspect-ratio: 1;
-  width: calc((100% - 90px) / 7);
-  border-radius: 20px;
-  padding: 15px;
-  color: white;
 }
 
-.event {
+
+.colorStrip{
   position: absolute;
-  z-index: 1;
-  /* top: 52px; */
-  left: 10px;
-  /* white-space: nowrap; */
-  font-size: 70%;
-  /* background-color: #E7F8F2; */
-  border-radius: 2px;
-  padding: 3.5%;
+  left: .5%;
+  z-index: 30;
+  padding: 10.5px;
+  font-size: 12px;
+  width: 100%;
 }

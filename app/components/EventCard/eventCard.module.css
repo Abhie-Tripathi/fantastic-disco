@@ -1,14 +1,29 @@
 .event {
   position: absolute;
   right: 10%;
-  left: 8%;
+  left: .5%;
   z-index: 30;
-  padding: 2.5%;
+  padding: 2%;
   font-size: 12px;
   color: black;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   top: 300%;
+  width: 100%;
+}
+
+.event_new {
+  position: absolute;
+  left: 2px;
+  z-index: 30;
+  padding: 2%;
+  font-size: 12px;
+  color: black;
+  /* border-radius: 4px; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 120%;
 }
