@@ -1,6 +1,7 @@
 .bodyContainer {
   height: calc(100vh - 80px);
   background-color: #131313;
+  /* min-width: 600px; */
 }
 .bodyContainer_light {
   background-color: var(--primary-bg-light);
@@ -80,9 +81,10 @@
   position: absolute;
   top: 75px;
   padding: 20px;
-  padding-top: 90px;
+  padding-top: 50px;
   z-index: 1;
   color: #ffffff;
+  width: calc(100vw - 100px);
 }
 
 .modal::-webkit-scrollbar {
@@ -187,5 +189,8 @@
   .outerCard {
     width: 95%;
     color: #ffffff;
+  }
+  .modal {
+    width: 100%;
   }
 }

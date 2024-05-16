@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./navbar.style.module.css";
 import logo from "/public/croppedlogo.png";
@@ -12,6 +12,9 @@ import Link from "next/link";
 import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
 import Spinner from "/public/Icon.svg";
+import menuIcon from "/public/internal/hamburger.svg";
+import MobileSidebar from "./MobileSidebar";
+import BellIcon from "/public/bell.svg";
 
 interface UserDetail {
   firstname: string;
@@ -22,6 +25,9 @@ interface UserDetail {
 const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
+  const [showSidebar, setShowSidebar] = useState(false);
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   const profilectas = DropDown();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
@@ -41,58 +47,142 @@ const Navbar = () => {
   const themeSwitchHandler = () => {
     toggleTheme();
   };
+
+  const handelSideShow = () => {
+    setShowSidebar(true);
+  };
+
+  const handelSideShowClose = () => {
+    setShowSidebar(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (sidebarRef.current  && !sidebarRef.current.contains(event.target)) {
+        setShowSidebar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div
-      className={`${styles.navbar} ${theme === "light" && styles.light}`}
-    >
-      {pathName === "internal" ? (
-        <Link href="/internal">
+    <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {pathName === "internal" && (
           <Image
-            className={styles.logo}
-            src={logo}
-            width={45}
-            height={53}
-            alt="logo"
+            src={menuIcon}
+            alt="Menu"
+            className={`styles.mobile_menuIcon mobile_view ${iconClass}`}
+            onClick={handelSideShow}
           />
-        </Link>
-      ) : (
-        <Link href="/">
-          <Image
-            className={styles.logo}
-            src={logo}
-            width={45}
-            height={53}
-            alt="logo"
-          />
-        </Link>
-      )}
+        )}
+        {pathName === "internal" ? (
+          <Link href="/internal">
+            <Image
+              className={`styles.logo_internal`}
+              src={logo}
+              width={40}
+              height={48}
+              alt="logo"
+            />
+          </Link>
+        ) : (
+          <Link href="/">
+            <Image
+              className={styles.logo}
+              src={logo}
+              width={40}
+              height={48}
+              alt="logo"
+            />
+          </Link>
+        )}
+      </div>
 
       <div className={styles.settings}>
-        <div
-          className={styles.circle}
-          style={{ marginRight: "10px" }}
-          onClick={themeSwitchHandler} data-name="Switch Theme"
-        >
-          <Image src={lightModeIcon} alt="theme" />
-        </div>
+        {/* Notification */}
+        {pathName === "internal" && (
+          <div className="mobile_view">
+            <div
+              className={`${styles.circle} `}
+              style={{ marginRight: "10px" }}
+              data-name="Notification"
+            >
+              <Image src={BellIcon} alt="notification" />
+            </div>
+          </div>
+        )}
+
+        {/* ThemeSwitch */}
+        {pathName === "internal" && (
+          <div className="desktop_view tablet_view">
+            <div
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              onClick={themeSwitchHandler}
+              data-name="Switch Theme"
+            >
+              <Image src={lightModeIcon} alt="theme" />
+            </div>
+          </div>
+        )}
+
+        {/* Home */}
+        {pathName === "internal" && (
+          <div className="desktop_view tablet_view">
+            <Link
+              href="/"
+              className={`${styles.circle} desktop_view tablet_view`}
+              style={{ marginRight: "10px" }}
+              data-name="Home"
+            >
+              <Image src={Home} alt="home" />
+            </Link>
+          </div>
+        )}
+
+        {/* Settings */}
         {pathName === "internal" && (
           <Link
-            className={styles.circle}
+            className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
-            href={"/"} data-name="Home"
+            href={"/settings"}
+            data-name="Settings"
           >
-            <Image src={Home} alt="Home" />
+            <Image src={settingsIcon} alt="settings" />
           </Link>
         )}
 
         {pathName !== "internal" && (
-          <Link
-            className={styles.circle}
-            style={{ marginRight: "10px" }}
-            href={"/internal"} data-name="Internal"
-          >
-            <Image src={DoorIcon} alt="internal" />
-          </Link>
+          <>
+            <div
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              onClick={themeSwitchHandler}
+              data-name="Switch Theme"
+            >
+              <Image src={lightModeIcon} alt="theme" />
+            </div>
+            <Link
+              className={styles.circle}
+              style={{ marginRight: "10px" }}
+              href={"/internal"}
+              data-name="Internal"
+            >
+              <Image src={DoorIcon} alt="internal" />
+            </Link>
+          </>
         )}
 
         {pathName !== "internal" && (
@@ -100,7 +190,8 @@ const Navbar = () => {
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/widget"} data-name="Widget"
+              href={"/widget"}
+              data-name="Widget"
             >
               <Image src={Spinner} alt="widget" />
             </Link>
@@ -108,7 +199,8 @@ const Navbar = () => {
             <Link
               className={styles.circle}
               style={{ marginRight: "10px" }}
-              href={"/settings"} data-name="Settings"
+              href={"/settings"}
+              data-name="Settings"
             >
               <Image src={settingsIcon} alt="settings" />
             </Link>
@@ -116,36 +208,53 @@ const Navbar = () => {
         )}
         {userDetail && (
           <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            ref={profilectas.dropdownRef}
-            onClick={toggleDropdown}
+            className={`${
+              pathName === "internal" && "desktop_view tablet_view"
+            }`}
           >
-            <div className={styles.circle} data-name="Username">
-              {userDetail?.firstname.charAt(0)}
-              {userDetail?.lastname.charAt(0)}
-            </div>
-            <div className={styles.userDetails}>
-              <div>
-                {userDetail?.firstname} {userDetail?.lastname}
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              ref={profilectas.dropdownRef}
+              onClick={toggleDropdown}
+            >
+              <div className={styles.circle} data-name="Username">
+                {userDetail?.firstname.charAt(0)}
+                {userDetail?.lastname.charAt(0)}
               </div>
-              <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-            </div>
-            {profilectas.isOpen && (
-              <div className={`${styles.userDropdown} ${theme === 'light' && styles.light}`}>
-                <div className={styles.btns}>Profile</div>
-                <div className={styles.btns} onClick={signOut}>
-                  Log Out
+              <div className={styles.userDetails}>
+                <div>
+                  {userDetail?.firstname} {userDetail?.lastname}
                 </div>
+                <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
               </div>
-            )}
+              {profilectas.isOpen && (
+                <div
+                  className={`${styles.userDropdown} ${
+                    theme === "light" && styles.light
+                  }`}
+                >
+                  <div className={styles.btns}>Profile</div>
+                  <div className={styles.btns} onClick={signOut}>
+                    Log Out
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
+      {showSidebar && (
+        <div className={styles.mobile_sideBar_container}>
+          <div ref={sidebarRef}>
+            <MobileSidebar onClose={handelSideShowClose} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

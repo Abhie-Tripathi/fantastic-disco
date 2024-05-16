@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./billing.module.css";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import SettingsSidebar from '@/app/components/settingsSidebar'
 import BillingIcon from "/public/billingIcon.svg";
 import BillingAccountIcon from "/public/billingAccountIcon.svg";
 import BillingDetailsComponent from "@/app/components/settings/billingDetails/BillingDetails";
@@ -15,7 +17,15 @@ interface Section {
 
 
 const Page = () => {
-  const { theme } = useTheme();
+  const {theme}=useTheme();
+  // const [sideValue, setSideValue] = useState<{ text: string; }[]>
+  // const { theme } = useTheme();
+  const sideValue = [
+    { text: "Billing Details" },
+      { text: "Billing Account Management" },
+      {text:"Invoices and Payments"}
+  ];
+  // setSideValue(updatedSideValue);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [activeTab, setActiveTab] = useState("billing_details");
 

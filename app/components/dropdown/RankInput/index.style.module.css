@@ -175,3 +175,14 @@
     display: block;
     background-color: #222;
   }
+
+  @media screen and (max-width:992px) {
+    .container {
+      max-width: 80vw;
+      min-width: unset;
+      overflow-y: auto;
+    }
+    .slider_container {
+      width: 500px;
+    }
+  }

@@ -231,16 +231,32 @@
     gap: 10px;
 }
 
-@media screen and (max-width:1200px) {
+@media screen and (max-width:1400px) {
     .card {
         padding: 15px 10px;
         margin-top: 15px;
-        width: 90%;
+        width: 85%;
     }
     .cardImg{
         width: 200px;
-        height: 150px;
+        height: 160px;
     }
+}
+
+@media screen and (max-width:1200px) {
+    .card {
+        min-width: 800px;
+        z-index: 1;
+    }
+    .cardImg{
+        width: 180px;
+        height: 140px;
+    }
+    /* .cardDetails {
+        gap: 5px;
+        padding-left: 10px;
+        margin-left: 0;
+    } */
 }
 
 @media screen and (max-width:992px) {
@@ -279,6 +295,7 @@
       margin-top: 15px;
       width: 100%;
       z-index: 1;
+      min-width: unset;
     }
     .cardDetails {
       gap: 5px;

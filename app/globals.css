@@ -21,7 +21,7 @@
   --bg: #3a3e42;
   --primary-bg-light: #ffffff;
   --primary-color-light: #000000;
-  --secondary-bg-light:#efecec;
+  --secondary-bg-light: #efecec;
 }
 html,
 body {
@@ -49,13 +49,20 @@ a {
   filter: invert(1);
 }
 
-.mobile_view{
+.body_layout {
+  margin-top: 80px;
+  margin-left: 80px;
+}
+
+.mobile_view {
   display: none;
 }
-.tablet_view{
+
+.tablet_view {
   display: none;
 }
-.desktop_view{
+
+.desktop_view {
   display: none;
 }
 
@@ -65,20 +72,24 @@ a {
   }
 }
 
-@media screen and (min-width: 992px) {
-  .desktop_view{
+@media screen and (min-width: 993px) {
+  .desktop_view {
     display: unset;
   }
 }
 
-@media screen and (min-width: 576px) and (max-width: 992px) {
-  .tablet_view{
+@media screen and (min-width: 577px) and (max-width: 992px) {
+  .tablet_view {
     display: unset;
   }
 }
 
 @media screen and (max-width: 576px) {
-  .mobile_view{
-      display: unset;
+  .mobile_view {
+    display: unset;
+  }
+  .body_layout {
+    margin-top: 80px;
+    margin-left: 0;
   }
 }

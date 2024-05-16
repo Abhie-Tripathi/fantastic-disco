@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./pricing.module.css";
 import Image from "next/image";
 import BillingIcon from "/public/billingIcon.svg";
+import SettingsSidebar from '@/app/components/settingsSidebar'
 import BillingAccountIcon from "/public/currentplans.svg";
 import availablePlansIcon from '/public/availablePlans.svg'
 import CurrentPlan from "@/app/components/settings/pricingPlans/currentPlans";
@@ -82,7 +83,7 @@ const Page = () => {
           />
           <div className={styles.text}>Available Plans</div>
         </div>
-      </div>
+      </div> 
 
       <div className={styles.rightContainer}>
         {activeTab === "current_plan" ? <CurrentPlan /> : ""}

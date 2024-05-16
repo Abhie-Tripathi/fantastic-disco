@@ -7,7 +7,7 @@ import Image from 'next/image'
 import useFetch from '@/hooks/useFetch'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useRouter } from "next/navigation";
 
 interface StickyWidgetProps {
     stickyId: string;
@@ -24,12 +24,14 @@ const StickyWidget = (props: StickyWidgetProps) => {
 
     const [deactivated, setDeactivated] = useState<boolean>(false)
 
+    const router = useRouter()
+
     useEffect(() => {
-        setBgColor(data?.bgColor)
-        setFColor(data?.fgColor)
-        setHeight(data?.height)
-        setFontSize(data?.fontSize)
-        const active = data?.active
+        setBgColor(data?.data.bgColor)
+        setFColor(data?.data.fgColor)
+        setHeight(data?.data.height)
+        setFontSize(data?.data.fontSize)
+        const active = data?.data.active
         if (active === "false") {
             setDeactivated(true)
         } else {
@@ -73,6 +75,10 @@ const StickyWidget = (props: StickyWidgetProps) => {
         }
     };
 
+    const handleCancel = ()=>{
+        router.push("/widget")
+    }
+
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <ToastContainer />
@@ -86,7 +92,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
                     <input
                         type='text'
                         placeholder="Add Event"
-                        value={data?.event}
+                        value={data?.data.event}
                         disabled
                     />
                 </div>
@@ -139,7 +145,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>
-                <button className={styles.cancelBtn} type="button">Cancel</button>
+                <button className={styles.cancelBtn} onClick={handleCancel} type="button">Cancel</button>
             </div>
         </form>
     )

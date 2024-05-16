@@ -1,9 +1,8 @@
 .container {
-  padding: 30px;
-  background-color: #131313;
+  padding: 20px;
   color: white;
   background-color: #131313;
-  min-width: 550px;
+  min-width: 400px;
 }
 
 .container_light {
@@ -15,6 +14,10 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.primary_container{
+  width: 100%;
 }
 
 .primary_header {
@@ -34,11 +37,13 @@
   /* align-items: center; */
   gap: 10px;
   padding: 30px 0px;
+  overflow-x: scroll;
+  scrollbar-width: none;
 }
 
 .linkCard {
   flex: 1;
-  height: 170px;
+  height: 175px;
   border: 1px solid grey;
   box-shadow: 0px 4px 20px 0px #00000008;
   border-radius: 12px;
@@ -46,6 +51,8 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
+  min-width: 170px;
+  overflow: hidden;
   /* justify-content: space-between; */
 }
 
@@ -54,6 +61,7 @@
   align-items: center;
   font-size: 12px;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .linkCard_tagsInnerContainer {
@@ -240,6 +248,7 @@
   display: flex;
   justify-content: space-evenly;
   gap: 10px;
+  /* flex-wrap: wrap; */
 }
 
 .eventCard {
@@ -420,7 +429,7 @@
 
 .mobile_trackerCard_container {
   display: none;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   gap: 10px;
 }
 
@@ -462,9 +471,12 @@
 
   .mobile_trackerCard_container {
     display: flex;
+    flex-wrap: wrap;
   }
 
   .savedEvent {
     padding: 4px 15px;
   }
 }
+
+

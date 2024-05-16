@@ -13,6 +13,7 @@ import Image from "next/image";
 import Tag from "./Tag";
 import useFetch from "@/hooks/useFetch";
 import { useTheme } from "@/context";
+import { useRouter } from "next/navigation";
 
 interface CommonWidgetProps {
   widgetType: string;
@@ -24,10 +25,10 @@ interface PromotedEvent {
 }
 
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const [geoInput, setGeoInput] = useState<string>("");
-
+  const [inputTag, setInputTag] = useState<string>("");
   const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData);
 
   const [startDate, setStartDate] = useState<string>();
@@ -58,11 +59,12 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
   const [promotedEvents, setPromotedEvents] = useState<string[]>([]);
 
   const [currDate, setCurrDate] = useState<string>("");
-
+  const[isTag,setIsTag]=useState(false);
   const promotedEventsLimit = widgetType === "Page" ? 3 : 1;
 
   const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
 
+  const router = useRouter();
   // To get the todays date to send in date picker comp.
   useEffect(() => {
     const currentDate = new Date();
@@ -138,10 +140,10 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
         promotedInput.trim() === ""
           ? []
           : eventData.filter((event: any) =>
-              event._source.name
-                .toLowerCase()
-                .includes(promotedInput.toLowerCase())
-            );
+            event._source.name
+              .toLowerCase()
+              .includes(promotedInput.toLowerCase())
+          );
       setMatchingPromotedEvents(matches);
       setIsPromotedDropdownOpen(promotedInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
@@ -177,6 +179,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // console.log(11111111111111111111111111);
+    
     // Generate query string
     const queryString = generateQueryString();
     const baseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
@@ -199,7 +203,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
     try {
       const responseData = await postData(`${baseURL}/widgets`, formBody);
       console.log("Response data:", responseData);
-      setId(responseData.id);
+      setId(responseData.data.id);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -240,6 +244,14 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
     return response.json();
   };
+  useEffect(()=>{
+    console.log("tag is "+isTag+" "+ inputTag);
+  })
+  
+
+  const handleCancel = () => {
+    router.push("/widget")
+  }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -249,9 +261,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
           {EventFormatData.map((format, index) => (
             <div
               key={format}
-              className={`${styles.eventChip} ${
-                eventFormat.includes(format) ? styles.eventActiveChip : ""
-              }`}
+              className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ""
+                }`}
               onClick={() => toggleFormatChipSelection(format)}
             >
               {format}
@@ -369,9 +380,8 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
           {ModeData.map((mode, index) => (
             <div
               key={mode}
-              className={`${styles.eventChip} ${
-                modeTags.includes(mode) ? styles.eventActiveChip : ""
-              }`}
+              className={`${styles.eventChip} ${modeTags.includes(mode) ? styles.eventActiveChip : ""
+                }`}
               onClick={() => toggleModeChipSelection(mode)}
             >
               {mode}
@@ -437,9 +447,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
       </div>
       <div className={styles.btns}>
         <button className={styles.submitBtn}>Submit</button>
-        <button className={styles.cancelBtn} type="button">
-          Cancel
-        </button>
+        <button className={styles.cancelBtn} type="button" onClick={handleCancel}>Cancel</button>
       </div>
     </form>
   );

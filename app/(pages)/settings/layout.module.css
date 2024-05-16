@@ -10,17 +10,13 @@
 }
 
 .outerDiv {
-    /* padding-top: 20px;
-    padding-left: 20px;
-    background-color: #0D1117;
-    border-bottom: 1px solid #21262D; */
-
     background-color: #0D1117;
     border-bottom: 1px solid #21262D;
     color: #ffffff;
     padding: 12px 28px 12px 28px;
     position: fixed;
     width: 100%;
+    left:0;
     z-index: 111;
     top: 80px;
 }

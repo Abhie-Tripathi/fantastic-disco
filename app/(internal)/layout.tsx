@@ -5,8 +5,6 @@ import { AuthContextProvider, ThemeProvider } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
 import Sidebar from "../components/Sidebar";
-import { useTheme } from "@/context";
-import styles from "./layout.module.css";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -21,18 +19,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { theme } = useTheme();
-  console.log(theme);
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
         <AuthContextProvider>
           <ThemeProvider>
-            <Sidebar />
-            <Navbar />
-            <div style={{ marginTop: "80px", marginLeft: "80px" }}>
-              {children}
+            <div className="desktop_view tablet_view">
+              <Sidebar />
             </div>
+            <Navbar />
+            <div className="body_layout">{children}</div>
           </ThemeProvider>
         </AuthContextProvider>
       </body>

@@ -5,9 +5,9 @@ import SearchIcon from "/public/search.svg";
 import Down from "/public/downArrow.svg";
 import Image from "next/image";
 import useFetch from "@/hooks/useFetch";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
+import { useRouter } from "next/navigation";
 
 interface StickyWidgetProps {
   setWidgetId: React.Dispatch<React.SetStateAction<string>>;
@@ -27,6 +27,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
   const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
   const {theme} = useTheme()
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+
+  const router = useRouter()
 
   const handleColorChange = (event: any) => {
     setBgColor(event.target.value);
@@ -49,11 +51,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
       setMatchingEvents(matches);
       setIsEventDropdownOpen(searchInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
-  }, [searchInput, data]);
+  }, [searchInput]);
 
   const handleEventClick = (event: any) => {
-    setIsEventDropdownOpen(false);
     setSelectedEvent(event);
+    setIsEventDropdownOpen(false);
   };
   useEffect(() => {
     setSearchInput(selectedEvent?._source.name || "");
@@ -90,13 +92,8 @@ const StickyWidget = (props: StickyWidgetProps) => {
         return;
       }
       const responseData = await response.json();
-      const { id } = responseData;
+      const { id } = responseData.data;
       setStickyId(id);
-
-      // const storedWidgets = JSON.parse(localStorage.getItem('widgets') || '[]');
-      // storedWidgets.push({ id, name: "Sticky" });
-      // const updatedWidgetsJSON = JSON.stringify(storedWidgets);
-      // localStorage.setItem('widgets', updatedWidgetsJSON);
     } catch (error) {
       console.error("An error occurred while submitting the form:", error);
     }
@@ -105,6 +102,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
     props.setWidgetId(stickyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stickyId]);
+
+  
+  const handleCancel = ()=>{
+    router.push("/widget")
+}
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <div className={styles.eventNameContainer}>
@@ -192,7 +194,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
       </div>
       <div className={styles.btns}>
         <button className={styles.submitBtn}>Submit</button>
-        <button className={styles.cancelBtn} type="button">
+        <button className={styles.cancelBtn} onClick={handleCancel} type="button">
           Cancel
         </button>
       </div>
