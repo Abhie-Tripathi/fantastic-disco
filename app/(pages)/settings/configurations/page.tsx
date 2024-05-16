@@ -17,7 +17,6 @@ const Page = () => {
       { text: "Outreach Configurations" },
       { text: "Features" }
   ];
-  console.log("1111"+activeTab);
   
   return (
     <div className={styles.container}>
