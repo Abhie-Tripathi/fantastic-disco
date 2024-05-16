@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./MobileSidebar.module.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,187 +39,185 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
     toggleTheme();
   };
 
-  return (
-    <div
-      className={`${styles.container} ${styles.open}} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
-    >
-      <div>
-        <div className={styles.header_container}>
-          <div
-            className={`${styles.link} ${styles.header}`}
-            style={{
-              display: "flex",
-              gap: "18px",
-              position: "relative",
-            }}
-            // ref={profilectas.dropdownRef}
-            // onClick={toggleDropdown}
-          >
-            <div className={styles.circle} data-name="Username">
-              {userDetail?.firstname.charAt(0)}
-              {userDetail?.lastname.charAt(0)}
-              {/* AM */}
-            </div>
-            <div className={styles.userDetails}>
-              <div>
-                {userDetail?.firstname} {userDetail?.lastname}
-                {/* Ashwani M. */}
-              </div>
-              <div style={{ fontSize: "14px" }}>
-                {userDetail?.email}
-                {/* user@email.com */}
-              </div>
-            </div>
-          </div>
-          <span className={styles.closeIcon} onClick={onClose}>
-            X
-          </span>
-        </div>
 
-        <div className={styles.links}>
+  return (
+      <div
+        className={`${styles.container} ${styles.open}} ${
+          theme === "light" ? styles.container_light : ""
+        }`}
+      >
+        <div>
+          <div className={styles.header_container}>
+            <div
+              className={`${styles.link} ${styles.header}`}
+              style={{
+                display: "flex",
+                gap: "18px",
+                position: "relative",
+              }}
+            >
+              <div className={styles.circle}>
+                {userDetail?.firstname.charAt(0)}
+                {userDetail?.lastname.charAt(0)}
+              </div>
+              <div className={styles.userDetails}>
+                <div>
+                  {userDetail?.firstname} {userDetail?.lastname}
+                </div>
+                <div style={{ fontSize: "14px" }}>
+                  {userDetail && userDetail?.email.length > 23
+                    ? userDetail?.email.slice(0, 22) + "..."
+                    : userDetail?.email}
+                </div>
+              </div>
+            </div>
+            <span className={styles.closeIcon} onClick={onClose}>
+              X
+            </span>
+          </div>
+
+          <div className={styles.links}>
+            <Link
+              href="/"
+              className={`${styles.link} ${
+                pathname === "/"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image
+                src={Home}
+                alt="Home"
+                className={`${styles.icons} ${iconClass}`}
+              />
+              <div className={styles.linkName}>Home</div>
+            </Link>
+            <Link
+              href="/internal"
+              className={`${styles.link} ${
+                pathname === "/internal"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image src={Dashboard} alt="dashboard" className={styles.icons} />
+              <div className={styles.linkName}>Dashboard</div>
+            </Link>
+            <Link
+              href="/internal/coordinate"
+              className={`${styles.link} ${
+                pathname === "/internal/coordinate"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image
+                src={DatasetIcon}
+                alt="coordinate"
+                className={styles.icons}
+              />
+              <div className={styles.linkName}>Coordinate</div>
+            </Link>
+            <Link
+              href="/internal/search/events"
+              className={`${styles.link} ${
+                pathname === "/internal/search/events"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image src={Research} alt="location" className={styles.icons} />
+              <div className={styles.linkName}>Research</div>
+            </Link>
+            <Link
+              href="/internal/trackers"
+              className={`${styles.link} ${
+                pathname === "/internal/trackers"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image src={Trend} alt="location" className={styles.icons} />
+              <div className={styles.linkName}>Trackers</div>
+            </Link>
+            <Link
+              href="/internal/outreach"
+              className={`${styles.link} ${
+                pathname === "/internal/outreach"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image src={Exhibit} alt="location" className={styles.icons} />
+              <div className={styles.linkName}>Outreach</div>
+            </Link>
+            <Link
+              href="/internal/trends"
+              className={`${styles.link} ${
+                pathname === "/internal/trends"
+                  ? theme === "light"
+                    ? styles.activeLink_light
+                    : styles.activeLink
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <Image src={Graph} alt="location" className={styles.icons} />
+              <div className={styles.linkName}>Event Trends</div>
+            </Link>
+          </div>
+        </div>
+        <div className={styles.footer}>
           <Link
-            href="/"
+            href="#"
             className={`${styles.link} ${
-              pathname === "/"
+              pathname === "/notification"
                 ? theme === "light"
                   ? styles.activeLink_light
                   : styles.activeLink
                 : ""
             }`}
-            onClick={onClose}
+            onClick={signOut}
           >
             <Image
-              src={Home}
-              alt="Home"
+              src={logoutIcon}
+              alt="logout"
+              width={20}
+              height={20}
               className={`${styles.icons} ${iconClass}`}
             />
-            <div className={styles.linkName}>Home</div>
+            <div className={`${styles.linkName} `}>Logout</div>
           </Link>
-          <Link
-            href="/internal"
-            className={`${styles.link} ${
-              pathname === "/internal"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image src={Dashboard} alt="dashboard" className={styles.icons} />
-            <div className={styles.linkName}>Dashboard</div>
-          </Link>
-          <Link
-            href="/internal/coordinate"
-            className={`${styles.link} ${
-              pathname === "/internal/coordinate"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image
-              src={DatasetIcon}
-              alt="coordinate"
-              className={styles.icons}
-            />
-            <div className={styles.linkName}>Coordinate</div>
-          </Link>
-          <Link
-            href="/internal/search/events"
-            className={`${styles.link} ${
-              pathname === "/internal/search/events"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image src={Research} alt="location" className={styles.icons} />
-            <div className={styles.linkName}>Research</div>
-          </Link>
-          <Link
-            href="/internal/trackers"
-            className={`${styles.link} ${
-              pathname === "/internal/trackers"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image src={Trend} alt="location" className={styles.icons} />
-            <div className={styles.linkName}>Trackers</div>
-          </Link>
-          <Link
-            href="/internal/outreach"
-            className={`${styles.link} ${
-              pathname === "/internal/outreach"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image src={Exhibit} alt="location" className={styles.icons} />
-            <div className={styles.linkName}>Outreach</div>
-          </Link>
-          <Link
-            href="/internal/trends"
-            className={`${styles.link} ${
-              pathname === "/internal/trends"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
-                : ""
-            }`}
-            onClick={onClose}
-          >
-            <Image src={Graph} alt="location" className={styles.icons} />
-            <div className={styles.linkName}>Event Trends</div>
-          </Link>
-        </div>
-      </div>
-      <div className={styles.footer}>
-        <Link
-          href="#"
-          className={`${styles.link} ${
-            pathname === "/notification"
-              ? theme === "light"
-                ? styles.activeLink_light
-                : styles.activeLink
-              : ""
-          }`}
-          onClick={signOut}
-        >
-          <Image
-            src={logoutIcon}
-            alt="logout"
-            width={20}
-            height={20}
-            className={`${styles.icons} ${iconClass}`}
-          />
-          <div className={`${styles.linkName} `}>Logout</div>
-        </Link>
 
-        <div className={styles.link}>
-          <div className={styles.toggle_container}>
-            <label className={styles.switch}>
-              <input type="checkbox" onClick={themeSwitchHandler} />
-              <span className={styles.slider}></span>
-            </label>
+          <div className={styles.link}>
+            <div className={styles.toggle_container}>
+              <label className={styles.switch}>
+                <input type="checkbox" onClick={themeSwitchHandler} />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
+            <span>Light Mode</span>
           </div>
-          <span>Light Mode</span>
         </div>
       </div>
-    </div>
   );
 };
 
