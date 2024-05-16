@@ -124,7 +124,7 @@ const CreateTracker = () => {
     }
 
     if (data) {
-      router.replace("/internals/trackers");
+      router.replace("/internal/tracker");
     }
   };
 
