@@ -5,7 +5,7 @@ const Page = () => {
   const router = useRouter();
   useEffect(() => {
     router.push("/settings/company");
-  }, []);
+  }, [router]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return <></>;
 };

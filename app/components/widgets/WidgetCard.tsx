@@ -98,7 +98,7 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
   const [countries, setCountries] = useState<string[]>()
   const [promotedEvents, setPromotedEvents] = useState<PromotedEvent[]>([]);
   const [widgetType, setWidgetType] = useState<string>('')
-  const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(window.outerWidth);
   const [accordian, setAccordian] = useState(false)
 
 
@@ -108,7 +108,7 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth);
+      setWidth(window.outerWidth);
     };
 
     window.addEventListener('resize', handleResize);
@@ -246,7 +246,10 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
     <div className={Styles.container}>
       <div className={`${Styles.card} ${deleteModal ? Styles.blur : ''}`}>
         <div className={Styles.cardSec1}>
-          <div className={Styles.iconCircle}><Image src={Spinner} alt="icon" /></div>
+          <div className={Styles.spinner_headingContainer}>
+            <div className={Styles.iconCircle}><Image src={Spinner} alt="icon" /></div>
+            <div className={Styles.widgetNameHeading}>{`${widgetType} Widget`}</div>
+          </div>
           <div className={Styles.date_configure_detailContainer}>
             <div className={Styles.date_configureContainer}>
               <div className={Styles.dateContainer}>
@@ -263,7 +266,7 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
                 <span>Configure</span>
               </Link>
             </div>
-            {width <= 600 && <div className={Styles.viewDetailsContainer} onClick={()=>setAccordian(!accordian)}>
+            {width <= 600 && <div className={Styles.viewDetailsContainer} onClick={() => setAccordian(!accordian)}>
               <div className={Styles.viewDetailsHeading}>View Details</div>
               <Image src={DownArrow} alt='down' className={Styles.viewDetailsIcon} />
             </div>}
