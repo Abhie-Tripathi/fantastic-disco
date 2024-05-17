@@ -8,6 +8,8 @@ import Spinner from '/public/Icon.svg'
 import Link from 'next/link'
 import Delete from '/public/delete.svg'
 import DeleteModal from './DeleteModal'
+import PenIcon from '/public/pen.svg'
+import DownArrow from '/public/internal/arrow_drop_down.svg'
 
 type PromotedEvent = {
   name: string;
@@ -19,7 +21,74 @@ interface WidgetCardProps {
   data: any; // Replace 'any' with the actual type of your data if possible
   setDeleteId: React.Dispatch<React.SetStateAction<string>>;
 }
-const WidgetCard = ({ data,setDeleteId}: WidgetCardProps) => {
+
+interface AccordianProps {
+  widgetType: string,
+  countries: string[] | undefined
+  categories: string[] | undefined
+  eventTypes: string[] | undefined
+  promotedEvents: PromotedEvent[]
+}
+
+const AccordianCode = ({ widgetType, countries, categories, eventTypes, promotedEvents }: AccordianProps) => {
+  return (
+    <div>
+      <div className={Styles.cardSec2}>
+        <div className={Styles.type_geoContainer}>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Widget Type</div>
+            <div className={Styles.typeChip}>{widgetType}</div>
+          </div>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Geography</div>
+            <div className={Styles.typesContainer}>
+              {countries?.map((item, key) => (
+                <div key={key} className={Styles.typeChip}>{item.length > 9 ? item.substring(0, 9) + '...' : item}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className={Styles.cat_typeContainer}>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Event Category</div>
+            <div className={Styles.typesContainer}>
+              {categories?.map((item, key) => (
+                <div key={key} className={Styles.typeChip}> {item.length > 9 ? item.substring(0, 9) + '...' : item}</div>
+              ))}
+            </div>
+          </div>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Event Type</div>
+            <div className={Styles.typesContainer}>
+              {eventTypes?.map((item, key) => (
+                <div key={key} className={Styles.typeChip}>{item.length > 9 ? item.substring(0, 9) + '...' : item}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className={Styles.format_partContainer}>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Event Format</div>
+            <div className={Styles.typesContainer}>
+              <div className={Styles.typeChip}>Exhibition</div>
+            </div>
+          </div>
+          <div className={Styles.type}>
+            <div className={Styles.typeHead}>Mode of Participation</div>
+            <div className={Styles.typesContainer}>
+              <div className={Styles.typeChip}>Virtual</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={Styles.cardSec3}>
+        <Analytics promotedEvents={promotedEvents} />
+      </div>
+    </div>
+  )
+}
+
+const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
 
   const propsData = data;
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
@@ -29,18 +98,30 @@ const WidgetCard = ({ data,setDeleteId}: WidgetCardProps) => {
   const [countries, setCountries] = useState<string[]>()
   const [promotedEvents, setPromotedEvents] = useState<PromotedEvent[]>([]);
   const [widgetType, setWidgetType] = useState<string>('')
+  const [width, setWidth] = useState(window.outerWidth);
+  const [accordian, setAccordian] = useState(false)
+
 
   const handleModal = () => {
     setDeleteModal(!deleteModal)
   }
 
   useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.outerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     if (propsData.body) {
       const body = JSON.parse(propsData.body)
       setWidgetType(body.widgetType)
     } else {
       setWidgetType("Sticky")
     }
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -161,85 +242,58 @@ const WidgetCard = ({ data,setDeleteId}: WidgetCardProps) => {
     setPromotedEvents(highlightedEvents)
   };
 
-
-
   return (
     <div className={Styles.container}>
       <div className={`${Styles.card} ${deleteModal ? Styles.blur : ''}`}>
         <div className={Styles.cardSec1}>
-          
-          <div className={Styles.iconCircle}><Image src={Spinner} alt="icon" /></div>
-          <div className={Styles.eventDetail}>
-            <div style={{ display: "flex" }}><Image src={Calendar} alt="calendar" /></div>
-            <div className={Styles.date}>1st Apr 2024</div>
-            <div>-</div>
-            <div className={Styles.date}>30th Apr 2024</div>
+          <div className={Styles.spinner_headingContainer}>
+            <div className={Styles.iconCircle}><Image src={Spinner} alt="icon" /></div>
+            <div className={Styles.widgetNameHeading}>{`${widgetType} Widget`}</div>
           </div>
-          <Link
-            className={Styles.configure}
-            href={`/widget/${propsData.id}?widgetType=${widgetType}`}
-          >
-            Configure
-          </Link>
+          <div className={Styles.date_configure_detailContainer}>
+            <div className={Styles.date_configureContainer}>
+              <div className={Styles.dateContainer}>
+                <div style={{ display: "flex" }}><Image src={Calendar} alt="calendar" /></div>
+                <div className={Styles.date}>1st Apr 2024</div>
+                <div>-</div>
+                <div className={Styles.date}>30th Apr 2024</div>
+              </div>
+              <Link
+                className={Styles.configure}
+                href={`/widget/${propsData.id}?widgetType=${widgetType}`}
+              >
+                <Image src={PenIcon} alt='edit' />
+                <span>Configure</span>
+              </Link>
+            </div>
+            {width <= 600 && <div className={Styles.viewDetailsContainer} onClick={() => setAccordian(!accordian)}>
+              <div className={Styles.viewDetailsHeading}>View Details</div>
+              <Image src={DownArrow} alt='down' className={Styles.viewDetailsIcon} />
+            </div>}
+          </div>
           <Image src={Delete} alt='delete' className={Styles.delete} onClick={handleModal} />
           <div className={Styles.statusBtn}>
             <div className={`${Styles.activeFlag} ${activeState === "Inactive" ? Styles.inactiveFlag : ''}`}></div>
             <div className={`${Styles.status} ${activeState === "Inactive" ? Styles.inactiveStatus : ''}`}>{activeState}</div>
           </div>
         </div>
-        <div className={Styles.cardSec2}>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Widget Type</div>
-            <div className={Styles.typeBtn}>{widgetType}</div>
-          </div>
-          <div className={Styles.line}></div>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Geography</div>
-            {countries?.map((item, key) => (
-              <div key={key} className={Styles.typeBtn}>{item}</div>
-            ))}
-
-          </div>
-          <div className={Styles.line}></div>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Event Category</div>
-            <div className={Styles.allTypeBtn}>
-              {categories?.map((item, key) => (
-                <div key={key} className={Styles.typeBtn}>{item}</div>
-              ))}
-            </div>
-          </div>
-          <div className={Styles.line}></div>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Event Type</div>
-            <div className={Styles.allTypeBtn}>
-              {eventTypes?.map((item, key) => (
-                <div key={key} className={Styles.typeBtn}>{item}</div>
-              ))}
-
-            </div>
-          </div>
-          <div className={Styles.line}></div>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Event Format</div>
-            <div className={Styles.allTypeBtn}>
-              <div className={Styles.typeBtn}>Exhibition</div>
-            </div>
-          </div>
-          <div className={Styles.line}></div>
-          <div className={Styles.type}>
-            <div className={Styles.typeHead}>Mode of Participation</div>
-            <div className={Styles.allTypeBtn}>
-              <div className={Styles.typeBtn}>Virtual</div>
-            </div>
-          </div>
-        </div>
-        <div className={Styles.cardSec3}>
-          <Analytics promotedEvents={promotedEvents} />
-        </div>
+        {width <= 600 ? (accordian &&
+          <AccordianCode widgetType={widgetType}
+            countries={countries}
+            categories={categories}
+            eventTypes={eventTypes}
+            promotedEvents={promotedEvents}
+          />
+        ) :
+          <AccordianCode widgetType={widgetType}
+            countries={countries}
+            categories={categories}
+            eventTypes={eventTypes}
+            promotedEvents={promotedEvents} />
+        }
       </div>
       <div className={Styles.deleteModal}>
-        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} setDeleteId = {setDeleteId} />}
+        {deleteModal && <DeleteModal type={widgetType.toLowerCase()} id={propsData.id} handleModal={handleModal} setDeleteId={setDeleteId} />}
       </div>
     </div>
   )
