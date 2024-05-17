@@ -17,7 +17,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [theme, setTheme] = useState<Theme | null>(null);
-
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
     if (theme === null && storedTheme !== null) {

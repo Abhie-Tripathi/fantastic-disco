@@ -2,15 +2,50 @@
 import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
+import { baseUrl } from "@/constants";
+import { myFetch } from "@/utils/myFetch";
+import Loading from "@/app/components/UI/Loading";
 
 const Trackers = () => {
+  const [trackers, setTrackers] = useState<any[]>([]);
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(
+        `${baseUrl}/tracker?limit=5&offset=${offset}`
+      );
+      console.log(data);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        setTrackers((prevTrackers) => [...prevTrackers, ...data.trackerData]);
+      }
+    };
+
+    fetchData();
+  }, [offset]);
+
+  const handleShowMore = () => {
+    setOffset((prevOffset) => prevOffset + 5);
+  };
+
   return (
     <div className={styles.body}>
       <div className={styles.trackers_card_container}>
-        <TrackerCard />
-        <TrackerCard />
-        <TrackerCard />
-        <TrackerCard />
+        {trackers.length > 0 ? (
+          trackers.map((tracker) => <TrackerCard key={tracker.id} trackerData={tracker} />)
+        ) : (
+          <Loading />
+        )}
+        {trackers.length > 0 && (
+          <div className={styles.btn_showMore} onClick={handleShowMore}>
+            Show More
+          </div>
+        )}
       </div>
     </div>
   );
