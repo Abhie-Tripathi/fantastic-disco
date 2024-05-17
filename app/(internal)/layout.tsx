@@ -21,7 +21,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { theme } = useTheme();
+  const { theme} = useTheme();
   console.log(theme);
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
