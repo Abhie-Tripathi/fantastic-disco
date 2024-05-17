@@ -26,8 +26,8 @@ const TrackerCard = ({ trackerData }: { trackerData: any }) => {
         </div>
 
         <div className={styles.tags_container}>
-          {trackerData.filterValue.category.map((ctg: string) => (
-            <div className={styles.tag}>{ctg}</div>
+          {trackerData.filterValue.category.map((ctg: string, index:number) => (
+            <div key={index} className={styles.tag}>{ctg}</div>
           ))}
         </div>
 

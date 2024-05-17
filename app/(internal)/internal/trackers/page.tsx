@@ -37,7 +37,7 @@ const Trackers = () => {
     <div className={styles.body}>
       <div className={styles.trackers_card_container}>
         {trackers.length > 0 ? (
-          trackers.map((tracker) => <TrackerCard trackerData={tracker} />)
+          trackers.map((tracker) => <TrackerCard key={tracker.id} trackerData={tracker} />)
         ) : (
           <Loading />
         )}
