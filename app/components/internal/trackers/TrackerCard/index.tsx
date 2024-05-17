@@ -5,24 +5,30 @@ import Loading from "@/app/components/UI/Loading";
 import { useTheme } from "@/context";
 const LineChart = lazy(() => import("../LineChart/LineChart"));
 const PolarAreaChart = lazy(() => import("../PolarAreaChart/PolarArea"));
+import { convertToCustomFormat } from "@/utils/dateFormat";
 
-const TrackerCard = () => {
-  const {theme} = useTheme();
+const TrackerCard = ({ trackerData }: { trackerData: any }) => {
+  const { theme } = useTheme();
+
   return (
-    <Link href="/internal/trackers/tracker1" className={`${styles.tracker_card} ${theme === 'light' ? styles.tracker_card_light : ""}`}>
+    <Link
+      href={`/internal/trackers/${trackerData.id}`}
+      className={`${styles.tracker_card} ${
+        theme === "light" ? styles.tracker_card_light : ""
+      }`}
+    >
       <div className={styles.first_container}>
         <div className={styles.trackerinfo_container}>
-          <div className={styles.tracker_title}>
-            Tracker 1 - Events in Bangalore
-          </div>
+          <div className={styles.tracker_title}>{trackerData.name}</div>
           <div className={styles.tracker_description}>
-            Bengaluru Urban, India
+            {trackerData.filterValue.city.join(" , ")}
           </div>
         </div>
 
         <div className={styles.tags_container}>
-          <div className={styles.tag}>Hospitality</div>
-          <div className={styles.tag}>Festivals</div>
+          {trackerData.filterValue.category.map((ctg: string, index:number) => (
+            <div key={index} className={styles.tag}>{ctg}</div>
+          ))}
         </div>
 
         <div className={styles.linegraph_container}>
@@ -40,16 +46,25 @@ const TrackerCard = () => {
       <div className={styles.second_container}>
         <div className={styles.dateRange_container}>
           <div className={styles.dateRange_title}>Date Range</div>
-          <div className={styles.dateRange}>1 Apr - 30 Apr</div>
+          <div className={styles.dateRange}>
+            {convertToCustomFormat(trackerData.filterValue.active_gte)}-{" "}
+            {convertToCustomFormat(trackerData.filterValue.active_lte)}
+          </div>
         </div>
 
         <div className={styles.eventstatus_container}>
           <div className={styles.eventstatus_title}>Event Status:</div>
-          <div className={styles.eventstatus}>Cancelled , Postponed</div>
+          <div className={styles.eventstatus}>
+            {trackerData.filterValue.status.join(" , ")}
+          </div>
         </div>
 
         <div className={styles.piechart_container}>
-          <div className={`${styles.highlighted_stats_container} ${theme === 'light' ? styles.highlighted_stats_container_light : ""}`}>
+          <div
+            className={`${styles.highlighted_stats_container} ${
+              theme === "light" ? styles.highlighted_stats_container_light : ""
+            }`}
+          >
             <div className={styles.highlighted_stats_title}>
               Festivals Cancelled
             </div>

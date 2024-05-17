@@ -27,11 +27,11 @@ const StickyWidget = (props: StickyWidgetProps) => {
     const router = useRouter()
 
     useEffect(() => {
-        setBgColor(data?.bgColor)
-        setFColor(data?.fgColor)
-        setHeight(data?.height)
-        setFontSize(data?.fontSize)
-        const active = data?.active
+        setBgColor(data?.data.bgColor)
+        setFColor(data?.data.fgColor)
+        setHeight(data?.data.height)
+        setFontSize(data?.data.fontSize)
+        const active = data?.data.active
         if (active === "false") {
             setDeactivated(true)
         } else {
@@ -92,7 +92,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
                     <input
                         type='text'
                         placeholder="Add Event"
-                        value={data?.event}
+                        value={data?.data.event}
                         disabled
                     />
                 </div>

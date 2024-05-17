@@ -5,8 +5,6 @@ import { AuthContextProvider, ThemeProvider } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
 import Sidebar from "../components/Sidebar";
-import { useTheme } from "@/context";
-import MobileSidebar from "../components/MobileSidebar";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -21,8 +19,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { theme} = useTheme();
-  console.log(theme);
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>

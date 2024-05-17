@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./navbar.style.module.css";
 import logo from "/public/croppedlogo.png";
@@ -29,6 +29,7 @@ const Navbar = () => {
   
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   const profilectas = DropDown();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
@@ -58,6 +59,20 @@ const Navbar = () => {
     setShowSidebar(false);
     // setHeight("auto");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (sidebarRef.current  && !sidebarRef.current.contains(event.target)) {
+        setShowSidebar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
@@ -154,14 +169,24 @@ const Navbar = () => {
         )}
 
         {pathName !== "internal" && (
-          <Link
-            className={styles.circle}
-            style={{ marginRight: "10px" }}
-            href={"/internal"}
-            data-name="Internal"
-          >
-            <Image src={DoorIcon} alt="internal" />
-          </Link>
+          <>
+            <div
+              className={`${styles.circle}`}
+              style={{ marginRight: "10px" }}
+              onClick={themeSwitchHandler}
+              data-name="Switch Theme"
+            >
+              <Image src={lightModeIcon} alt="theme" />
+            </div>
+            <Link
+              className={styles.circle}
+              style={{ marginRight: "10px" }}
+              href={"/internal"}
+              data-name="Internal"
+            >
+              <Image src={DoorIcon} alt="internal" />
+            </Link>
+          </>
         )}
 
         {pathName !== "internal" && (
@@ -186,7 +211,11 @@ const Navbar = () => {
           </>
         )}
         {userDetail && (
-          <div className="desktop_view tablet_view">
+          <div
+            className={`${
+              pathName === "internal" && "desktop_view tablet_view"
+            }`}
+          >
             <div
               style={{
                 display: "flex",
@@ -223,7 +252,13 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      {showSidebar && <MobileSidebar onClose={handelSideShowClose} />}
+      {showSidebar && (
+        <div className={styles.mobile_sideBar_container}>
+          <div ref={sidebarRef}>
+            <MobileSidebar onClose={handelSideShowClose} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
