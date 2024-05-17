@@ -27,118 +27,121 @@ const Index = () => {
         theme === "light" && styles.container_light
       }`}
     >
-      <div id="current_plan" className={styles.gradient_border}>
-        Current Plan Details
-      </div>
-      <div
-        className={`${styles.firstContainer} ${
-          theme === "light" && styles.firstContainer_light
-        }`}
-      >
-        <div className={styles.billingUsage_container}>
-          <div className={styles.basic_container}>
-            <div className={styles.basic_container_content}>
-              <Image
-                className={`${iconClass}`}
-                src={BasicIcon}
-                alt="basic icon"
-              />
-              <div>Basic</div>
+      <section id="current_plan">
+        <div className={styles.gradient_border}>
+          Current Plan Details
+        </div>
+        <div
+          className={`${styles.firstContainer} ${
+            theme === "light" && styles.firstContainer_light
+          }`}
+        >
+          <div className={styles.billingUsage_container}>
+            <div className={styles.basic_container}>
+              <div className={styles.basic_container_content}>
+                <Image
+                  className={`${iconClass}`}
+                  src={BasicIcon}
+                  alt="basic icon"
+                />
+                <div>Basic</div>
+              </div>
+              <div className={styles.statusBtn}>
+                <div
+                  className={`${styles.activeFlag} ${
+                    activeState === "Inactive" ? styles.inactiveFlag : ""
+                  }`}
+                ></div>
+                <div
+                  className={`${styles.status} ${
+                    activeState === "Inactive" ? styles.inactiveStatus : ""
+                  }`}
+                >
+                  {activeState}
+                </div>
+              </div>
             </div>
-            <div className={styles.statusBtn}>
+            <div className={styles.userSection}>
               <div
-                className={`${styles.activeFlag} ${
-                  activeState === "Inactive" ? styles.inactiveFlag : ""
-                }`}
-              ></div>
-              <div
-                className={`${styles.status} ${
-                  activeState === "Inactive" ? styles.inactiveStatus : ""
+                className={`${styles.includeText} ${
+                  theme === "light" && styles.includeText_light
                 }`}
               >
-                {activeState}
+                Includes upto:
+              </div>
+              <div className={styles.userContent}>
+                <Image src={UserIcon} alt="user icon" />
+                <span className={styles.number}>5</span>
+                <span className={styles.userText}>Users</span>
+              </div>
+              <div className={styles.second_divider}></div>
+              <div className={styles.userContent}>
+                <Image src={TrackerIcon} alt="user icon" />
+                <span className={styles.number}>3</span>
+                <span className={styles.userText}>Trackers</span>
+              </div>
+              <div className={styles.second_divider}></div>
+
+              <div className={styles.userContent}>
+                <Image src={SearchIcon} alt="user icon" />
+                <span className={styles.number}>50</span>
+                <span className={styles.userText}>Searches</span>
               </div>
             </div>
           </div>
-          <div className={styles.userSection}>
+          <span className={styles.divider}></span>
+          <div className={styles.masterCard_sec}>
+            <div>
+              <Image src={MasterCardIcon} alt="master card icon" />
+            </div>
+            <div className={styles.masterCard}>
+              <div>MasterCard</div>
+              <div>**** **** **** 2200</div>
+              <div>Expiry on 20/2025</div>
+            </div>
+          </div>
+          <span className={styles.divider}></span>
+          <div className={styles.planContainer}>
+            <div className={styles.planContainerItems}>
+              <div className={styles.dollar}>$689.00</div>
+              <div
+                className={`${styles.dollarText} ${
+                  theme === "light" && styles.dollarText_light
+                }`}
+              >
+                Next renewal 17 May 2024
+              </div>
+            </div>
             <div
-              className={`${styles.includeText} ${
-                theme === "light" && styles.includeText_light
+              className={`${styles.upgradeIcn} ${
+                theme === "light" && styles.upgradeIcn_light
               }`}
             >
-              Includes upto:
+              <span>Upgrade Plan</span>
+              <span className={styles.icon_background}>
+                <Image src={IncreasingIcon} alt="increasing icon" />
+              </span>
             </div>
-            <div className={styles.userContent}>
-              <Image src={UserIcon} alt="user icon" />
-              <span className={styles.number}>5</span>
-              <span className={styles.userText}>Users</span>
-            </div>
-            <div className={styles.second_divider}></div>
-            <div className={styles.userContent}>
-              <Image src={TrackerIcon} alt="user icon" />
-              <span className={styles.number}>3</span>
-              <span className={styles.userText}>Trackers</span>
-            </div>
-            <div className={styles.second_divider}></div>
+          </div>
+        </div>
 
-            <div className={styles.userContent}>
-              <Image src={SearchIcon} alt="user icon" />
-              <span className={styles.number}>50</span>
-              <span className={styles.userText}>Searches</span>
-            </div>
-          </div>
-        </div>
-        <span className={styles.divider}></span>
-        <div className={styles.masterCard_sec}>
-          <div>
-            <Image src={MasterCardIcon} alt="master card icon" />
-          </div>
-          <div className={styles.masterCard}>
-            <div>MasterCard</div>
-            <div>**** **** **** 2200</div>
-            <div>Expiry on 20/2025</div>
-          </div>
-        </div>
-        <span className={styles.divider}></span>
-        <div className={styles.planContainer}>
-          <div className={styles.planContainerItems}>
-            <div className={styles.dollar}>$689.00</div>
-            <div
-              className={`${styles.dollarText} ${
-                theme === "light" && styles.dollarText_light
-              }`}
-            >
-              Next renewal 17 May 2024
-            </div>
-          </div>
-          <div
-            className={`${styles.upgradeIcn} ${
-              theme === "light" && styles.upgradeIcn_light
-            }`}
-          >
-            <span>Upgrade Plan</span>
-            <span className={styles.icon_background}>
-              <Image src={IncreasingIcon} alt="increasing icon" />
+        <div
+          className={`${styles.unlock_container} ${
+            theme === "light" && styles.unlock_container_light
+          }`}
+        >
+          <div className={styles.bellIcon_container}>
+            <Image className={`${iconClass}`} src={BellIcon} alt="bell icon" />
+            <span>
+              Unlock unlimited features and make the most of our platform by
+              upgrading to our Advanced or Premium plans
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div
-        className={`${styles.unlock_container} ${
-          theme === "light" && styles.unlock_container_light
-        }`}
-      >
-        <div className={styles.bellIcon_container}>
-          <Image className={`${iconClass}`} src={BellIcon} alt="bell icon" />
-          <span>
-            Unlock unlimited features and make the most of our platform by
-            upgrading to our Advanced or Premium plans
-          </span>
-        </div>
-      </div>
-      <div className={styles.fourthDiv}>
-        <div id="our_pricing_plans" className={styles.gradient_border}>
+      <section id="available_plans" className={styles.fourthDiv}>
+        <div className={styles.gradient_border}>
           Our Pricing Plans
         </div>
         <div className={styles.pricingCard_container}>
@@ -238,7 +241,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

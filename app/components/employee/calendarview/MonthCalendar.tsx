@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import styles from "./monthCalendar.module.css";
 import { log } from "console";
@@ -16,6 +17,7 @@ interface Event {
   imageUrl: string;
   duration: number;
   background: string;
+  top: string;
 }
 
 interface DateWithEvent {
@@ -39,14 +41,15 @@ const events: Event[] = [
     description:
       "A food fest including a variety of drinks and food that you will savour for your entire life",
     location: "Delhi",
-    startDate: "3/11/2024",
-    endDate: "3/12/2024",
+    startDate: "3/15/2024",
+    endDate: "3/16/2024",
     tags: ["food", "festival", "drinks", "gathering", "hornok", "horn", "fest"],
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
     duration: 2,
-    background: "rgb(249 196 200)",
+    background: "rgb(249 196 100)",
+    top: "55%",
   },
   {
     id: 2,
@@ -54,8 +57,8 @@ const events: Event[] = [
     description:
       "A food fest including a variety of drinks and food that you will savour for your entire life",
     location: "Gurgaon",
-    startDate: "3/14/2024",
-    endDate: "3/17/2024",
+    startDate: "3/11/2024",
+    endDate: "3/12/2024",
     tags: [
       "food",
       "festival",
@@ -69,6 +72,7 @@ const events: Event[] = [
       "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg",
     duration: 2,
     background: "rgb(183 235 255)",
+    top: "55%",
   },
   {
     id: 3,
@@ -76,14 +80,15 @@ const events: Event[] = [
     description:
       "A area filled with people and canvas boards to paint on. Come and paint your imagination",
     location: "Ney York",
-    startDate: "3/10/2024",
+    startDate: "3/9/2024",
     endDate: "3/12/2024",
     tags: ["paint", "painting", "colors", "color", "fest"],
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg",
-    duration: 2,
+    duration: 3,
     background: "rgb(211 183 248)",
+    top: "35%",
   },
   {
     id: 4,
@@ -91,14 +96,15 @@ const events: Event[] = [
     description:
       "A annual tomato fest in which streets get filled with tomatoes and people throw tomatoes at each other for fun",
     location: "Italy",
-    startDate: "3/7/2024",
-    endDate: "3/8/2024",
+    startDate: "3/12/2024",
+    endDate: "3/18/2024",
     tags: ["tomato", "tomartina", "holi", "gathering", "fight"],
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1",
-    duration: 1,
+    duration: 7,
     background: "rgb(149 126 100)",
+    top: "75%",
   },
   {
     id: 5,
@@ -106,7 +112,7 @@ const events: Event[] = [
     description:
       "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
     location: "Gurgaon",
-    startDate: "3/13/2024",
+    startDate: "3/15/2024",
     endDate: "3/18/2024",
     tags: [
       "movie",
@@ -121,8 +127,9 @@ const events: Event[] = [
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://cdn.choosechicago.com/uploads/2019/06/chicago-film-festival-1800x900.jpg",
-    duration: 5,
+    duration: 4,
     background: "rgb(190 290 155)",
+    top: "35%",
   },
 ];
 
@@ -175,35 +182,9 @@ function formatDateString(dateString: any) {
   return `${formattedDay}/${formattedMonth}/${year}`;
 }
 
-const findDays = (startDate: any, endDate: any, name:string) => {
-  const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const eventsWeekDays = [];
-  const eventStartDate = new Date(startDate);
-  const eventStartEndDate = new Date(endDate);
-  const startDay = eventStartDate.getDay();
-  const endDay = eventStartEndDate.getDay();
-
-  for (let i = startDay; i <= endDay; i++) {
-    const dayName = weekdays[i];
-    eventsWeekDays.push(dayName, name);
-  }
-
-  const formatedStartDate = formatDateString(startDate);
-  const formateEndDate = formatDateString(endDate);
-  console.log("formated_event_datesdd", eventsWeekDays);
-  return eventsWeekDays
-};
-
 const MonthCalendar: React.FC = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
+
   return (
     <div className={styles.container}>
       <div className={styles.dayCards_container}>
@@ -213,8 +194,9 @@ const MonthCalendar: React.FC = () => {
           </div>
         ))}
       </div>
-
       <div className={styles.monthCards_container}>
+        {/* FIRST APPROACH */}
+
         {/* {datesWithEvents.map((dateWithEvent, index) => {
           if (dateWithEvent == "") {
             return <div className={styles.emptyCard}></div>;
@@ -227,8 +209,6 @@ const MonthCalendar: React.FC = () => {
                   {`idx=${index}`}
                 </div>
                 {dateWithEvent.events.map((event) => {
-                  const weekdays = findDays(event.startDate, event.endDate, event.name);
-                  console.log("WEEK_DAYS___", weekdays)
                   const formattedDate = formatDateString(event.startDate);
                   if (
                     formattedDate == dateWithEvent.date.toLocaleDateString()
@@ -266,8 +246,10 @@ const MonthCalendar: React.FC = () => {
           }
         })} */}
 
-        <>
-          {datesWithEvents.map((dateWithEvent, index) => {
+        {/* SECOND APPROACH */}
+
+        {/* <>
+           {datesWithEvents.map((dateWithEvent, index) => {
             if (dateWithEvent === "") {
               return <div className={styles.emptyCard} key={index}></div>;
             } else {
@@ -278,6 +260,7 @@ const MonthCalendar: React.FC = () => {
                   return (
                     <EventCard
                       key={eventIndex}
+                      // top={event.top}
                       top={
                         count > 0
                           ? `${35 + count * 20}%`
@@ -285,6 +268,7 @@ const MonthCalendar: React.FC = () => {
                       }
                       background={event.background}
                       name={event.name}
+
                     />
                   );
                 }
@@ -299,7 +283,174 @@ const MonthCalendar: React.FC = () => {
               );
             }
           })}
-        </>
+        </>  */}
+
+        {/* THIRD APPROACH */}
+
+        {datesWithEvents.map((dateWithEvent, index) => {
+          if (dateWithEvent === "") {
+            return <div className={styles.emptyCard} key={index}></div>;
+          } else {
+            const currentDate = dateWithEvent.date;
+            let count = dateWithEvent.events.length;
+
+            const eventCards = dateWithEvent.events.map((event, eventIndex) => {
+              const eventStartDate = new Date(event.startDate);
+              const eventEndDate = new Date(event.endDate);
+
+              // Get Next day events
+              const nextDay = eventIndex + 1;
+              console.log("next_day", nextDay, event.name);
+              if (currentDate.getTime() === eventStartDate.getTime()) {
+                count = count - 1;
+                console.log("COUNT", count, event.name, event.startDate);
+                if(event.duration === 1){
+                  // -------------- CHECKING FOR ONE DAY EVENT --------------------
+                  return (
+                    <EventCard
+                      styleClass={"stylesClass_A"}
+                      key={eventIndex}
+                      top={event.top}
+                      background={event.background}
+                      l
+                      name={event.name}
+                    />
+                  );
+                }
+                if (event.duration >= 2) {
+                  //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR EVENT CARD STRIP---------------
+                  if (currentDate.getDay() === 6) {
+                    return (
+                      <EventCard
+                        styleClass={"stylesClass_A"}
+                        key={eventIndex}
+                        top={event.top}
+                        background={event.background}
+                        l
+                        name={event.name}
+                      />
+                    );
+                  } else {
+                    console.log(
+                      "countt-------------------------------------------1",
+                      count,
+                      event.name
+                    );
+
+                    return (
+                      <EventCard
+                        styleClass={"stylesClass_B"}
+                        key={eventIndex}
+                        top={event.top}
+                        background={event.background}
+                        name={event.name}
+                      />
+                    );
+                  }
+                } else {
+                  // Render full event card on the start date
+                  console.log(
+                    "countt-------------------------------------------2",
+                    count,
+                    event.name
+                  );
+
+                  return (
+                    <EventCard
+                      styleClass={"styleClass_A"}
+                      key={eventIndex}
+                      top={event.top}
+                      background={event.background}
+                      name={event.name}
+                    />
+                  );
+                }
+              } else if (
+                currentDate > eventStartDate &&
+                currentDate <= eventEndDate
+              ) {
+                // Render only the color strip for subsequent days
+                if (currentDate.getDay() === 6) {
+                  console.log(
+                    "countt-------------------------------------------3",
+                    count,
+                    event.name
+                  );
+                  //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR COLOR STRIP---------------
+                  return (
+                    <div
+                      key={eventIndex}
+                      className={styles.colorStrip}
+                      style={{
+                        backgroundColor: event.background,
+                        top: event.top,
+                      }}
+                    ></div>
+                  );
+                } else if (currentDate.getTime() == eventEndDate.getTime()) {
+                  // --------------------- CKECKING FOR EVENT END DAY ---------------------
+
+                  console.log(
+                    "countt-------------------------------------------4",
+                    count,
+                    event.name
+                  );
+
+                  return (
+                    <div
+                      key={eventIndex}
+                      className={styles.colorStrip}
+                      style={{
+                        backgroundColor: event.background,
+                        top: event.top,
+                        // top: `${
+                        //   count > 0
+                        //     ? `${20 + count * 20}%`
+                        //     : `${35 + count * 40}%`
+                        // }`,
+                        width: "100%",
+                      }}
+                    ></div>
+                    // <>event end day</>
+                  );
+                } else {
+                  console.log(
+                    "countt-------------------------------------------5",
+                    count
+                  );
+
+                  return (
+                    <div
+                      key={eventIndex}
+                      className={styles.colorStrip}
+                      style={{
+                        backgroundColor: event.background,
+                        top: event.top,
+                        width: "120%",
+                      }}
+                    ></div>
+                  );
+                }
+              } else {
+                return null;
+              }
+            });
+
+            return (
+              <div
+                className={`${styles.monthCard} ${
+                  theme === "light" && styles.monthCard_light
+                }`}
+                key={index}
+              >
+                <div className={styles.monthCard_dayno}>
+                  {currentDate.getDate()}
+                </div>
+                {eventCards}
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );

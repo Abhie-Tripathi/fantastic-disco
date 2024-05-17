@@ -33,7 +33,7 @@ const EventAttendance = ({
         <div className={styles.input_container}>
           <div className={styles.input_title}>From</div>
           <input
-            placeholder="0"
+            placeholder='0'
             value={state[0]}
             onChange={(e) => setState([e.target.value, state[1]])}
           />
