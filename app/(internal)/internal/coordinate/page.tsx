@@ -30,7 +30,7 @@ const Page = () => {
   const totalCount = TypeOfEventsCount.reduce((total, item) => total + item.count, 0);
 
   return (
-    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""} ${theme === 'light' ? styles.container_light : ""}`} >
+    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""} ${theme === 'light' ? styles.container_light : ""}`}  >
       {totalCount >= 9 && (
         <div className={styles.innerContainer}>
           {TypeOfEventsCount.map((item, key) => (

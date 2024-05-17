@@ -25,6 +25,8 @@ interface UserDetail {
 const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
+  // console.log("height is "+height);
+  
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const sidebarRef = useRef<HTMLDivElement | null>(null);
@@ -50,10 +52,12 @@ const Navbar = () => {
 
   const handelSideShow = () => {
     setShowSidebar(true);
+    // setHeight("100vh")
   };
 
   const handelSideShowClose = () => {
     setShowSidebar(false);
+    // setHeight("auto");
   };
 
   useEffect(() => {

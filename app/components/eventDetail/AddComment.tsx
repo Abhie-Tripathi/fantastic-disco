@@ -20,6 +20,8 @@ import { revalidateComment } from "@/utils/commentAction";
 import { log } from "util";
 interface Props {
   replyId?:string|undefined|null,
+  setType : any,
+  setInterestType:any,
   productId?: string;
   replyOptions?: replyOptions;
   focus?: boolean;
@@ -54,6 +56,8 @@ export const AddComment = ({
   productId,
   replyOptions,
   focus,
+  setType,
+  setInterestType,
   isEditComment,
   isEditReply,
   className,
@@ -191,14 +195,16 @@ export const AddComment = ({
     // Handle Enter key press
     else if (key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      notes(e);
+      console.log("function called 2 times");
+      return notes(e);
     } else if (key === "Enter" && e.shiftKey) {
       // Prevent default behavior
       e.preventDefault();
       // Handle shift + Enter to add a new line
       setNote((prev) => prev + "\n");
     }
-
+    
+    
     setFocusedIndex(nextIndexCount);
   };
 
@@ -243,7 +249,7 @@ export const AddComment = ({
   //     console.log(notes);
 
   // }
-  // useEffect(() => {
+  // useEffect(() => {I want t
 
   useEffect(() => {
     if (note?.charAt(note.length - 1) === "@") {
@@ -288,6 +294,8 @@ export const AddComment = ({
         userDetail?.lastname.toLowerCase() +
         " wants to #Attend"
     );
+    setType("INTEREST");
+    setInterestType("VISITOR");
     setShowUser(false);
   };
   const handleSelectSpeak = () => {
@@ -298,6 +306,8 @@ export const AddComment = ({
         userDetail?.lastname.toLowerCase() +
         " wants to #Speak"
     );
+    setType("INTEREST");
+    setInterestType("SPEAKER");
     setShowUser(false);
   };
   const handleRecommend = (event: any) => {
@@ -600,7 +610,7 @@ export const AddComment = ({
             </div>
           </>
         )}
-        <div className={styles.addNotes} onKeyDown={handleKeyDown1}>
+        <div className={styles.addNotes}>
           <textarea
             readOnly={disable}
             ref={textareaRef}
