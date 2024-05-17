@@ -69,10 +69,10 @@ export const Notes = ({ comments, productId }: Props) => {
   };
 async function fetchData() {
     const url =
-      `${baseUrl}/comment?eventId=7cd52884-1409-43a4-9dde-01a06bb8faf9&eventGroupId=53cd1194-2e00-43a0-b9dd-20642710815e`;
+      `${baseUrl}/comment?eventId=7cd52884-1409-43a4-9dde-01a06bb8faf9&eventGroupId=53cd1194-2e00-43a0-b9dd-20642710815e&stage=INTERNAL`;
     const { data, error } = await myFetch(url);
     console.log(data);
-    if (data && data.comments[0].stage === "INTERNAL" && urlPath==="coordinate") {
+    if (data && urlPath==="coordinate") {
       setStage("INTERNAL");
       console.log(data);
       // setNotes(data.comments.reverse());
