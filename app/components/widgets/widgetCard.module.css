@@ -1,18 +1,21 @@
-.container{
+.container {
     position: relative;
     border-radius: 18.93px;
     border: 1px solid #6650a465;
     background: linear-gradient(270deg, #0c0c0c 0%, rgba(102, 80, 164, 0.219) 100%);
     padding: 20px;
 }
-.blur{
+
+.blur {
     filter: blur(2px);
 }
-.card{
+
+.card {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
+
 .cardSec1,
 .cardSec3 {
     margin: 0px 18px;
@@ -33,21 +36,28 @@
     justify-content: center;
 }
 
-.heading {
-    /* font-family: Sora; */
-    font-weight: 600;
-    text-align: left;
+.spinner_headingContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-.date_configure_detailContainer{
+
+.widgetNameHeading {
+    font-weight: 600;
+}
+
+.date_configure_detailContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
-.date_configureContainer{
+
+.date_configureContainer {
     display: flex;
 }
-.viewDetailsContainer{
+
+.viewDetailsContainer {
     display: flex;
     border: 1px solid #6750A4;
     border-radius: 40px;
@@ -55,17 +65,21 @@
     align-items: center;
     gap: 5px;
 }
-.viewDetailsIcon{
+
+.viewDetailsIcon {
     background-color: #2B233D;
     border-radius: 10px;
 }
-.viewDetailsHeading{
+
+.viewDetailsHeading {
     font-size: 15px;
     color: white;
 }
-.date_configureContainer{
+
+.date_configureContainer {
     display: flex;
 }
+
 .dateContainer {
     outline: 1px solid transparent;
     margin-left: 20px;
@@ -86,19 +100,22 @@
     padding: 5px 10px;
 
 }
-.configure{
+
+.configure {
     margin-left: 20px;
     display: flex;
     align-items: center;
-    padding:0px 5px 0px 5px;
+    padding: 0px 5px 0px 5px;
     border-radius: 8px;
     background-color: #313131;
 }
-.configure:hover{
+
+.configure:hover {
     transition-duration: .2s;
     background-color: #6750A4;
 }
-.delete{
+
+.delete {
     position: absolute;
     right: 100px;
     margin-left: 20px;
@@ -107,16 +124,19 @@
     background-color: #313131;
     cursor: pointer;
 }
-.delete:hover{
+
+.delete:hover {
     transition-duration: .2s;
     background-color: rgb(218, 99, 99);
 }
-.deleteModal{
+
+.deleteModal {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
+
 .statusBtn {
     position: absolute;
     right: 0px;
@@ -129,6 +149,7 @@
     box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.47px solid transparent;
 }
+
 .activeFlag {
     background-color: #19922C;
     width: 10px;
@@ -143,6 +164,7 @@
     text-align: left;
     color: #0E9B1C;
 }
+
 .inactiveFlag {
     background-color: #d83147;
     width: 10px;
@@ -168,18 +190,22 @@
     /* justify-content: ; */
 
 }
-.type_geoContainer{
+
+.type_geoContainer {
     display: flex;
     justify-content: space-between;
 }
-.cat_typeContainer{
+
+.cat_typeContainer {
     display: flex;
     justify-content: space-between;
 }
-.format_partContainer{
+
+.format_partContainer {
     display: flex;
     justify-content: space-between;
 }
+
 .type {
     padding: 8px;
 }
@@ -224,48 +250,58 @@
     transform: rotate(-90deg);
     border: 0.95px solid #1F1F1F;
 }
-@media screen and (max-width: 600px) {
-    .cardSec1{
+
+@media screen and (max-width: 816px) {
+    .cardSec1 {
         flex-direction: column;
         align-items: flex-start;
     }
-    .dateContainer{
+
+    .dateContainer {
         margin-left: 0px;
     }
-    .statusBtn{
-        left: 10%;
+}
+
+@media screen and (max-width: 600px) {
+    .statusBtn {
+        left: 150px;
         width: fit-content;
     }
-    .configure span{
+
+    .configure span {
         display: none;
     }
-    .delete{
+
+    .delete {
         right: 0;
     }
-    .cardSec2{
+
+    .cardSec2 {
         flex-direction: column;
     }
-    .type_geoContainer{
-        width: 100%;   
+
+    .type_geoContainer {
+        width: 100%;
     }
-    .cat_typeContainer{
-        width: 100%;   
+
+    .cat_typeContainer {
+        width: 100%;
     }
-    .format_partContainer{
-        width: 100%;   
+
+    .format_partContainer {
+        width: 100%;
     }
-    .type{
+
+    .type {
         width: 50%;
     }
-    .line{
-        width: 0px;
-        margin: 0px;
-    }
-    .typeChip{
+
+    .typeChip {
         width: fit-content;
     }
-    .typesContainer{
+
+    .typesContainer {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
-  }
+}
