@@ -14,6 +14,7 @@
 }
 .commentDiv {
   height: 82%;
+  width: 100%;
   overflow-y: scroll;
 }
 

@@ -12,32 +12,10 @@ import {
   RangeCalendar,
 } from "react-aria-components";
 import { useTheme } from "@/context";
+import { convertToCustomFormat } from "@/utils/dateFormat";
 
 interface DateRangePickerProps {
   setState: ([]) => void;
-}
-
-function convertToCustomFormat(dateStr: string) {
-  var dateObject = new Date(dateStr);
-  var day = dateObject.getDate();
-  var monthIndex = dateObject.getMonth();
-  var year = dateObject.getFullYear();
-  var monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  var formattedDate = day + " " + monthNames[monthIndex] + " " + year;
-  return formattedDate;
 }
 
 const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {

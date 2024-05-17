@@ -3,15 +3,19 @@ export const myFetch = async (
     options?: RequestInit | undefined
   ): Promise<{ data?: any | undefined; error?: any | undefined }> => {
     const response = await fetch(url, {
-      ...options,
+      
+      
       credentials: "include",
       mode: "cors",
   
-      headers: {
-        "Content-Type": "application/json",
-      },
+      // headers: {
+      //   "Content-Type" : "application/json"
+      // },
+      ...options
     });
     const result = await response.json();
+    console.log(JSON.stringify(response.headers));
+    
     const { error, data } = result;
     if (error &&
       error.status === 401 &&

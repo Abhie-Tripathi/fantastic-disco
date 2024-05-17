@@ -3,8 +3,11 @@ import { UserResponse } from "./user";
 export interface Comment {
   id: string;
   text: string;
+  content:string;
+  type:string;
   createdAt: string;
   pdfs?:[];
+  upvote:number;
   isLiked?:boolean;
   likes:number;
   replyText?:string;
