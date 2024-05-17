@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./page.style.module.css";
 import Research from "/public/internal/research.svg";
 import Image from "next/image";
@@ -96,6 +96,20 @@ const savedEvents = [
 const Dashboard = () => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const getListOfTrackers = async () => {
+    try {
+      const response = await fetch("https://api.eventgeni.com/tracker");
+      const data = await response.json();
+      console.log("tracker_data", data);
+    } catch (error) {
+      console.error("Error while fetching trackers:", error);
+    }
+  };
+
+  useEffect(() => {
+    getListOfTrackers();
+  }, []);
 
   return (
     <div
