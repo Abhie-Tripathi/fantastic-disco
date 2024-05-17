@@ -121,10 +121,16 @@
 
 
 .colorStrip{
-  position: absolute;
+  /* position: absolute;
   left: .5%;
   z-index: 30;
   padding: 10.5px;
+  font-size: 12px;
+  width: 100%; */
+  position: absolute;
+  left: .5%;
+  z-index: 30;
+  padding: 10px;
   font-size: 12px;
   width: 100%;
 }
