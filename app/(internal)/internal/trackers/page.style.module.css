@@ -63,7 +63,6 @@
     }
 
     .trackers_card_container {
-        /* border: 1px solid red; */
         margin-top: 30px;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -71,6 +70,20 @@
         justify-items: center;
         align-items: center;
     }
+
+    .btn_showMore{
+        border: 1px solid #6750a4;
+        padding: 8px;
+        color: white;
+        background-color: #6750a4;
+        display: inline-block;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .btn_showMore:hover{
+        background-color: #7a5ec6;
+    }
+
     @media screen and (max-width: 1550px) {
         .trackers_card_container {
             grid-template-columns: repeat(1, 1fr);
