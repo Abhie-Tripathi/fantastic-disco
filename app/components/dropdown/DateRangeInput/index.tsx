@@ -4,6 +4,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import Loading from "@/app/components/UI/Loading";
 const DateRangeCalendar = lazy(() => import("./DateRangeCalendar"));
 import { useTheme } from "@/context";
+import { convertToCustomFormat } from "@/utils/dateFormat";
 
 interface DateRangeInputProps {
   className?: string;
@@ -25,7 +26,7 @@ const DateRangeInput = ({
 
   const selectDateHandler = (event: any) => {
     const range = event.target.attributes[0].value;
-    const rangeArray = range.split(',');
+    const rangeArray = range.split(",");
     setState(rangeArray);
     onClose();
   };
@@ -39,29 +40,6 @@ const DateRangeInput = ({
     const formattedStartDate = convertToCustomFormat(currentDate.toISOString());
     const formattedEndDate = convertToCustomFormat(endDate.toISOString());
     return [formattedStartDate, formattedEndDate];
-  };
-
-  const convertToCustomFormat = (dateStr: string) => {
-    const dateObject = new Date(dateStr);
-    const day = dateObject.getDate();
-    const monthIndex = dateObject.getMonth();
-    const year = dateObject.getFullYear();
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const formattedDate = day + " " + monthNames[monthIndex] + " " + year;
-    return formattedDate;
   };
 
   return (
