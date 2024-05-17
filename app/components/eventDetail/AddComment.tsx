@@ -265,7 +265,6 @@ export const AddComment = ({
     }
     // else setShowUser(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
   }, [note]);
   const noteFun = (e: any) => {
     setNote(e.target.value);
