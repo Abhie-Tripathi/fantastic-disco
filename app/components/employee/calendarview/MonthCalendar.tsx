@@ -96,13 +96,13 @@ const events: Event[] = [
     description:
       "A annual tomato fest in which streets get filled with tomatoes and people throw tomatoes at each other for fun",
     location: "Italy",
-    startDate: "3/16/2024",
+    startDate: "3/12/2024",
     endDate: "3/18/2024",
     tags: ["tomato", "tomartina", "holi", "gathering", "fight"],
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1",
-    duration: 3,
+    duration: 7,
     background: "rgb(149 126 100)",
     top: "75%",
   },
@@ -113,7 +113,7 @@ const events: Event[] = [
       "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
     location: "Gurgaon",
     startDate: "3/15/2024",
-    endDate: "3/25/2024",
+    endDate: "3/18/2024",
     tags: [
       "movie",
       "films",
@@ -127,7 +127,7 @@ const events: Event[] = [
     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
     imageUrl:
       "https://cdn.choosechicago.com/uploads/2019/06/chicago-film-festival-1800x900.jpg",
-    duration: 11,
+    duration: 4,
     background: "rgb(190 290 155)",
     top: "35%",
   },
@@ -304,6 +304,19 @@ const MonthCalendar: React.FC = () => {
               if (currentDate.getTime() === eventStartDate.getTime()) {
                 count = count - 1;
                 console.log("COUNT", count, event.name, event.startDate);
+                if(event.duration === 1){
+                  // -------------- CHECKING FOR ONE DAY EVENT --------------------
+                  return (
+                    <EventCard
+                      styleClass={"stylesClass_A"}
+                      key={eventIndex}
+                      top={event.top}
+                      background={event.background}
+                      l
+                      name={event.name}
+                    />
+                  );
+                }
                 if (event.duration >= 2) {
                   //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR EVENT CARD STRIP---------------
                   if (currentDate.getDay() === 6) {
