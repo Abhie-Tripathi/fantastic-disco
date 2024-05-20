@@ -8,6 +8,10 @@ import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvent
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
 import HeroBannerAndList from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndList'
+import HeroBannerAndGrid from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndGrid'
+import HeroBannerAndGridListview from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndGridListview'
+import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView'
+import CaraouselAndListview from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndListview'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
@@ -32,7 +36,7 @@ const Page = () => {
     ];
 
     const pageWidgetWithHighlightedEvents = [
-        { id: "id11", name: "Promoted Events as carousel slider and Rest Events as List" },
+        { id: "pcslv", name: "Promoted Events as carousel slider and Rest Events as List" },
         { id: "id12", name: "Promoted Events as carousel slider and rest Events as Grid" },
         { id: "id13", name: "Promoted Events as carousel slider and rest Events as Grid + List" },
         { id: "id14", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List" },
@@ -108,7 +112,10 @@ const Page = () => {
                         preview==="megv"? "Grid View":
                         preview==="melv"? "List View":
                         preview==="melgv"? "List and Grid view":
-                        preview==="phblv"? "Hero Banner and List view": ""}
+                        preview==="phblv"? "Hero Banner and List view":
+                        preview==="phbgv"? "Hero Banner and Grid view":
+                        preview==="phblgv"? "Hero Banner and List Grid view":
+                        preview==="pcslv"? "Caraousel and List view":""}
                     </div>
                     <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
                 </div>
@@ -118,7 +125,10 @@ const Page = () => {
                             preview === "megv" ? <GridView /> :
                                 preview === "melv" ? <ListView /> :
                                     preview === "melgv" ? <ListAndGridView /> :
-                                    preview === "phblv" ? <HeroBannerAndList />:<></>}
+                                    preview === "phblv" ? <HeroBannerAndList />:
+                                    preview === "phbgv" ? <HeroBannerAndGrid />:
+                                    preview === "phblgv" ? <HeroBannerAndGridListview />:
+                                    preview === "pcslv" ? <CaraouselAndListview/>:<></>}
             </div>}
         </div>
     )
