@@ -1,0 +1,90 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 450px;
+    cursor: pointer;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+}
+
+.banner {
+    height: 40%;
+    width: 300px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card:hover {
+    transition-duration: .2s;
+    filter: drop-shadow(1px 1px 5px rgb(245, 245, 245));
+}
+
+.content {
+    height: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+.tag {
+    background-color: rgb(253, 219, 109);
+    border-radius: 30px;
+    width: fit-content;
+    padding: 5px 20px;
+    font-weight: bold;
+    color: rgb(39, 39, 39);
+    font-size: 20px;
+}
+
+.date {
+    margin-top: 20px;
+    color: white;
+    font-size: 20px;
+
+}
+
+.eventName {
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(96, 63, 240);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.location {
+    font-size: 20px;
+    display: flex;
+    color: white;
+}
+
+.location div {
+    margin-right: 10px;
+}
+
+.btn {
+    margin-top: 10px;
+    display: flex;
+    border: 2px solid rgb(96, 63, 240);
+    border-radius: 20px;
+    width: fit-content;
+    padding: 5px 20px;
+    align-items: center;
+}
+
+.btn div {
+    color: rgb(96, 63, 240);
+    margin-right: 10px;
+}
+
+.btn:hover {
+    transition-duration: .3s;
+    background-color: rgb(96, 63, 240);
+}
+
+.btn:hover div {
+    transition-duration: .3s;
+    color: white;
+}

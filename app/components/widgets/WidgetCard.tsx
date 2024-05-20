@@ -139,7 +139,7 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
           }
         } else {
           const formBody = JSON.parse(widgetData.data.body)
-          const query = widgetData.query
+          const query = await widgetData.data.query
           if (formBody.active) {
             setActiveState("Active")
           } else {
@@ -196,11 +196,12 @@ const WidgetCard = ({ data, setDeleteId }: WidgetCardProps) => {
     };
 
     const extractPromotedEvents = (data: any) => {
+
       return data.reduce((acc: any, item: any) => {
         const event = {
           name: item._source.name,
-          startDate: item._source.start_date, // Assuming the field name is start_date
-          endDate: item._source.end_date, // Assuming the field name is end_date
+          startDate: item._source.start_date, 
+          endDate: item._source.end_date, 
         };
         acc.push(event);
         return acc;
