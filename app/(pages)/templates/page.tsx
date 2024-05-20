@@ -3,8 +3,11 @@ import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import TemplateCard from '@/app/components/TemplateViews/TemplateCard'
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
-import HeroBanner from '@/app/components/TemplateViews/previews/page/HeroBanner'
-import GridView from '@/app/components/TemplateViews/previews/page/GridView'
+import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
+import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
+import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
+import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
+import HeroBannerAndList from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndList'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
@@ -15,16 +18,16 @@ const Page = () => {
     const pageWidgetWithoutHighlighted = [
         { id: "sehb", name: "Single Event as Hero Banner" },
         { id: "megv", name: "Multiple Events as Grid View" },
-        { id: "id3", name: "Multiple Events as List view" },
-        { id: "id4", name: "Multiple Events as Grid and List View" },
+        { id: "melv", name: "Multiple Events as List view" },
+        { id: "melgv", name: "Multiple Events as Grid and List View" },
         { id: "id5", name: "Table View (Multiple Events)" }
     ];
 
     const pageWidgetWithOneHighlightedEvent = [
-        { id: "id6", name: "Promoted Event as Hero Banner and List of Events" },
-        { id: "id7", name: "Promoted Event as Hero Banner and Grid of Events" },
-        { id: "id8", name: "Promoted Event as Hero Banner and List and Grid of Events" },
-        { id: "id9", name: "Table View" },
+        { id: "phblv", name: "Promoted Event as Hero Banner and List of Events" },
+        { id: "phbgv", name: "Promoted Event as Hero Banner and Grid of Events" },
+        { id: "phblgv", name: "Promoted Event as Hero Banner and List and Grid of Events" },
+        { id: "ptv", name: "Table View" },
         { id: "id10", name: "Table View (Multiple Events)" }
     ];
 
@@ -37,9 +40,10 @@ const Page = () => {
         { id: "id16", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List + Grid" }
     ];
 
-    useEffect(()=>{
+    useEffect(() => {
         window.scrollTo(0, 0); // To scroll up when ever page changes
-    },[preview])
+        console.log("preview is", preview)
+    }, [preview])
 
     return (
         <div className={`${styles.body} ${preview.length > 0 ? styles.bodyHeight : ""}`}>
@@ -96,10 +100,25 @@ const Page = () => {
                 </div>
             </div>
             {preview.length > 0 && <div className={styles.previewWindow}>
-                {preview === "stickytop" ? <StickyPreview type="top" setPreview={setPreview} /> :
-                    preview === "stickydown" ? <StickyPreview type="down" setPreview={setPreview}/> : 
-                    preview === "sehb" ? <HeroBanner setPreview={setPreview}/> :
-                    preview === "megv" ? <GridView setPreview={setPreview}/> : <></>}
+                <div className={styles.heading_btnContainer}>
+                    <div className={styles.heading}>
+                        {preview==="stickytop" ? "Sticky Top" :
+                        preview === "stickydown" ? "Sticky Footer" :
+                        preview==="sehb"? "Hero Banner":
+                        preview==="megv"? "Grid View":
+                        preview==="melv"? "List View":
+                        preview==="melgv"? "List and Grid view":
+                        preview==="phblv"? "Hero Banner and List view": ""}
+                    </div>
+                    <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
+                </div>
+                {preview === "stickytop" ? <StickyPreview type="top" /> :
+                    preview === "stickydown" ? <StickyPreview type="down" /> :
+                        preview === "sehb" ? <HeroBanner /> :
+                            preview === "megv" ? <GridView /> :
+                                preview === "melv" ? <ListView /> :
+                                    preview === "melgv" ? <ListAndGridView /> :
+                                    preview === "phblv" ? <HeroBannerAndList />:<></>}
             </div>}
         </div>
     )
