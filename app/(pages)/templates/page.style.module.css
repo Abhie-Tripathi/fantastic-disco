@@ -1,9 +1,17 @@
-.body{
+.bodyHeight{
+    max-height: 90vh;
+    overflow: hidden;
+}
+.templates{
     padding: 30px;
     display: flex;
     flex-direction: column;
     gap: 50px;
 }
+.previewOn{
+    filter: blur(1px);
+}
+
 .widgetHeading{
     color: white;
     font-size: 20px;
@@ -17,6 +25,17 @@
     padding: 5px 10px;
     width: fit-content;
 }
+.pageTemplateTypeOne{
+    position: relative;
+}
+
+.pageTemplateTypeTwo{
+    position: relative;
+}
+.pageTemplateTypeThree{
+    position: relative;
+}
+
 .templateCotntainer{
     margin-top: 15px;
     display: grid;
@@ -24,5 +43,22 @@
     row-gap: 20px;
 }
 .viewAllBtn{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1px solid #ab40f2;
+    padding: 5px 10px;
     margin-top: 5px;
+}
+.previewWindow{ 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 80px;
+    left: 80px;
+    right: 80px;
+    /* transform: translate(-50%,-50%); */
 }
