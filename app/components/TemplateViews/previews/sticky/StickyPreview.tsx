@@ -11,7 +11,7 @@ const StickyPreview = ({ type, setPreview }: StickyProps) => {
         <div className={styles.previewContainer}>
             <div className={styles.heading_btnContainer}>
                 <div className={styles.heading}>{type === "top" ? "Sticky Top" : "Sticky Footer"}</div>
-                <div className={styles.closeBtn} onClick={() => setPreview("")}>X</div>
+                <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
             </div>
             <div className={styles.preview}>
                 <div className={type === "top" ? styles.stickyTop : styles.stickyFooter}>Your Event Name</div>

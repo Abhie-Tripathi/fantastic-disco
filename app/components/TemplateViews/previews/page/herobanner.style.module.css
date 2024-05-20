@@ -1,0 +1,84 @@
+.body {
+    width: 90%;
+    height: 85%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #6750A4;
+}
+
+.heading_btnContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.heading{
+    color: white;
+    padding: 5px 10px;
+    border: 1px solid white;
+    width: fit-content;
+    border-radius: 5px;
+}
+.closeBtn {
+    color: white;
+    background-color: #1a1a1a;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.heroBanner {
+    margin-top: 20px;
+    height:90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eventContainer {
+    width: 80%;  
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px
+}
+
+.eventDetails {
+    width: 50%;
+}
+.name {
+    font-size: 50px;
+    color: rgb(96, 63, 240);
+    margin-top: 20px;
+    font-weight: 800;
+}
+
+.date {
+    background-color: rgb(253, 219, 109);
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: rgb(39, 39, 39);
+    font-size: 20px;
+}
+
+.location {
+    font-size: 20px;
+    margin-top: 60px;
+    margin-bottom: 10px;
+    display: flex;
+    color: white;
+}
+
+.desc {
+    color: white;
+}
+
+.eventImg {
+    margin-top: 10px;
+    filter: drop-shadow(1px 1px 6px rgb(65, 65, 65));
+    width: 300px;
+    height: 300px;
+}

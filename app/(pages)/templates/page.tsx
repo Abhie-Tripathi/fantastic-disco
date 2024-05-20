@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import TemplateCard from '@/app/components/TemplateViews/TemplateCard'
-import StickyPreview from '@/app/components/TemplateViews/previews/StickyPreview'
+import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
+import HeroBanner from '@/app/components/TemplateViews/previews/page/HeroBanner'
+import GridView from '@/app/components/TemplateViews/previews/page/GridView'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
@@ -11,8 +13,8 @@ const Page = () => {
     const [preview, setPreview] = useState("");
 
     const pageWidgetWithoutHighlighted = [
-        { id: "id1", name: "Single Event as Hero Banner" },
-        { id: "id2", name: "Multiple Events as Grid View" },
+        { id: "sehb", name: "Single Event as Hero Banner" },
+        { id: "megv", name: "Multiple Events as Grid View" },
         { id: "id3", name: "Multiple Events as List view" },
         { id: "id4", name: "Multiple Events as Grid and List View" },
         { id: "id5", name: "Table View (Multiple Events)" }
@@ -95,7 +97,9 @@ const Page = () => {
             </div>
             {preview.length > 0 && <div className={styles.previewWindow}>
                 {preview === "stickytop" ? <StickyPreview type="top" setPreview={setPreview} /> :
-                    preview === "stickydown" ? <StickyPreview type="down" setPreview={setPreview}/> : <></>}
+                    preview === "stickydown" ? <StickyPreview type="down" setPreview={setPreview}/> : 
+                    preview === "sehb" ? <HeroBanner setPreview={setPreview}/> :
+                    preview === "megv" ? <GridView setPreview={setPreview}/> : <></>}
             </div>}
         </div>
     )
