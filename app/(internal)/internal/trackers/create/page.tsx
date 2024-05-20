@@ -7,7 +7,7 @@ import DropdownArrow from "/public/downArrow.svg";
 import ChipCircle from "/public/ChipCircle.svg";
 import ActiveChipCircle from "/public/ActiveChipCircle.svg";
 import Slider from "@/app/components/internal/trackers/Slider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
@@ -82,6 +82,10 @@ const CreateTracker = () => {
   const attendanceDropdownRef = useRef(null);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  // const search = useSearchParams();
+  // console.log(search)
+  console.log(router)
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
