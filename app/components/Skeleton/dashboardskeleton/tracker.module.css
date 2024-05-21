@@ -1,0 +1,8 @@
+.skelton_eventCard{
+    background-color:  #c3c3c3;
+    display: flex;
+    /* flex-direction: column; */
+    padding: 10px;
+    align-items: center;
+    border-radius: 8px;
+  }

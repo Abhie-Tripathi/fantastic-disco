@@ -1,0 +1,23 @@
+
+.linkCard {
+    flex: 1;
+    height: 175px;
+    border: 1px solid grey;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-width: 170px;
+    gap: 20px;
+    background-color: #1a1a1a;
+  }
+
+  .inner_card_container{
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+  }
+  
+
+
+ 
