@@ -1,14 +1,13 @@
 export interface eventDataType {
-    id: number;
+    id: string;
     name: string;
-    company: string;
-    description: string;
-    location: string;
+    city: string;
+    orgName: string;
+    country: string;
     startDate: string;
     endDate: string;
-    tags: string[];
-    venue: any;
-    ctas: string[];
-    logo: string;
-    imageUrl: string;
+    duration: string;
+    status: string;
+    userCount: number;
+    users: { name: string; }[];
 }

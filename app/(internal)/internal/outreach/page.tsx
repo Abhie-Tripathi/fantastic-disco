@@ -5,21 +5,27 @@ import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
 import AddEventForm from "@/app/components/outreach/AddEventForm";
+import { enquiryType } from "@/types/outreachEnquiryTypes";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 const Page: React.FC = () => {
-  const [shortlistedTasks, setShortlistedTasks] = useState<string[]>([
-    "How to Practice as an International Doctor in Australia?",
-    "How to Practice as an International Doctor in Usa?",
-    "How to Practice as an International Doctor in India?",
-    "How to Practice as an International Doctor in Canada?",
-  ]);
-  const [outreachTasks, setOutreachTasks] = useState<string[]>([]);
-  const [preFinalisedTasks, setPreFinalisedTasks] = useState<string[]>([]);
+  const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
+  const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
+  const [preFinalisedTasks, setPreFinalisedTasks] = useState<enquiryType[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
 
   const [tabsVisible, setTabsVisible] =useState<string>('shortlist');
+  const [enquiryId, setEnquiryId] = useState<string>('');
+  const [singleEventId, setSingleEventId] = useState<string>('');
+  const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>('');
+  const [statusChanged, setStatusChanged] = useState<boolean>(false);
+
+  const handleRefresh = () => {
+    setStatusChanged(!statusChanged);
+  }
 
   const handleVisibleTab = (item: string) => {
     setTabsVisible(item);
@@ -27,9 +33,10 @@ const Page: React.FC = () => {
 
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
-    taskName: string
+    taskName: enquiryType
   ) => {
-    event.dataTransfer.setData("taskName", taskName);
+    const t_data = JSON.stringify(taskName);
+    event.dataTransfer.setData("taskName", t_data);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -48,20 +55,20 @@ const Page: React.FC = () => {
     target: string
   ) => {
     event.preventDefault();
-    const taskName = event.dataTransfer.getData("taskName");
+    const taskName: enquiryType = JSON.parse(event.dataTransfer.getData("taskName"));
     const source = event.dataTransfer.getData("source_container");
 
     // To prevent adding the task into the same container
     if (target !== source) {
       if (source === "shortlisted") {
         setShortlistedTasks(
-          shortlistedTasks.filter((task) => task !== taskName)
+          shortlistedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
       } else if (source === "outreach") {
-        setOutreachTasks(outreachTasks.filter((task) => task !== taskName));
+        setOutreachTasks(outreachTasks.filter((task) => task.eventId !== taskName.eventId));
       } else if (source === "prefinalised") {
         setPreFinalisedTasks(
-          preFinalisedTasks.filter((task) => task !== taskName)
+          preFinalisedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
       }
 
@@ -75,7 +82,13 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleModal = () => {
+  const handleModal = (eventId: string, enquiryId: string | null = null, enquiryStatus: string | null = null
+    ) => {
+    if(enquiryId!=''){
+      setEnquiryId(enquiryId?enquiryId:'');
+      setSingleEventId(eventId);
+      setCurrentEnquiryStatus(enquiryStatus?enquiryStatus:'');
+    }
     setModalOpen(!modalOpen);
   };
 
@@ -87,7 +100,25 @@ const Page: React.FC = () => {
     if(window.innerWidth > 576){
       setTabsVisible('all');
     }
-  },[])
+    const fetchData = async () => {
+      const shortlistApiData = await myFetch(baseUrl + "/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=0", {
+          method: "GET",
+          headers: headers,
+      });
+      const negoApiData = await myFetch(baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=10&offset=0", {
+        method: "GET",
+        headers: headers,
+      });
+      const confirmApiData = await myFetch(baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=10&offset=0", {
+        method: "GET",
+        headers: headers,
+      });
+      if(shortlistApiData.data) setShortlistedTasks(shortlistApiData.data.enquiryData);
+      if(negoApiData.data) setOutreachTasks(negoApiData.data.enquiryData);
+      if(confirmApiData.data) setPreFinalisedTasks(confirmApiData.data.enquiryData);
+    };
+    fetchData();
+  },[statusChanged])
 
   return (
     <div
@@ -148,8 +179,15 @@ const Page: React.FC = () => {
               <div className={styles.cards} key={index}>
                 <CardTask
                   key={index}
-                  name={task}
+                  name={task.eventName}
                   draggable={true}
+                  eventLocation={''}
+                  eventCompany={task.orgName}
+                  eventStartDate={task.startDate}
+                  eventEndDate={task.endDate}
+                  eventId={task.eventId}
+                  enquiryId={task.enquiryId}
+                  enquiryStatus="SHORTLISTED"
                   onDragStart={(event) => handleDragStart(event, task)}
                   handleModal={handleModal}
                   onClick={openAddModalHandler}
@@ -188,8 +226,15 @@ const Page: React.FC = () => {
               <div className={styles.cards} key={index}>
                 <CardTask
                   key={index}
-                  name={task}
+                  name={task.eventName}
                   draggable={true}
+                  eventLocation={''}
+                  eventCompany={task.orgName}
+                  eventStartDate={task.startDate}
+                  eventEndDate={task.endDate}
+                  eventId={task.eventId}
+                  enquiryId={task.enquiryId}
+                  enquiryStatus="IN NEGOTIATION"
                   onDragStart={(event) => handleDragStart(event, task)}
                   handleModal={handleModal}
                   onClick={openAddModalHandler}
@@ -230,8 +275,15 @@ const Page: React.FC = () => {
               <div className={styles.cards} key={index}>
                 <CardTask
                   key={index}
-                  name={task}
+                  name={task.eventName}
                   draggable={true}
+                  eventLocation={''}
+                  eventCompany={task.orgName}
+                  eventStartDate={task.startDate}
+                  eventEndDate={task.endDate}
+                  eventId={task.eventId}
+                  enquiryId={task.enquiryId}
+                  enquiryStatus="CONFIRMED"
                   onDragStart={(event) => handleDragStart(event, task)}
                   handleModal={handleModal}
                   onClick={openAddModalHandler}
@@ -261,6 +313,10 @@ const Page: React.FC = () => {
             openPocDetails={true}
             closeBtn={true}
             handleModal={handleModal}
+            eventId={singleEventId}
+            enquiryId={enquiryId?enquiryId:''}
+            handleRefresh={handleRefresh}
+            currentEnquiryStatus={currentEnquiryStatus?currentEnquiryStatus:''}
             openEventRequest={false}
           />
         </div>
