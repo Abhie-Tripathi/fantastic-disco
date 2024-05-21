@@ -252,7 +252,7 @@
 }
 
 .eventCard {
-  width: 100px;
+  width: 110px;
   border: 1px solid #dcdfe4;
   background-color: white;
   display: flex;
@@ -260,6 +260,32 @@
   padding: 10px;
   align-items: center;
   border-radius: 8px;
+}
+.skelton_eventCard{
+  width: 110px;
+  /* background-color:  #c3c3c3; */
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  align-items: center;
+  border-radius: 8px;
+}
+.tracker_skeleton{
+  /* background-color: #c3c3c3; */
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  align-items: center;
+}
+
+.event_city{
+  /* background-color: #c3c3c3;  */
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  align-items: center;
 }
 
 .eventCard_title {
