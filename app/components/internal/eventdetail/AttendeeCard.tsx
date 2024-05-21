@@ -9,19 +9,25 @@ import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { useTheme } from '@/context'
 
 interface Props{
-    cardType: string
+    cardType: string,
+    userList?: any,
+    shortlistedUsers?: string[],
+    setShortlistedUsers?: React.Dispatch<React.SetStateAction<string[]>>,
 }
 
 interface User {
     id: string;
     name: string;
-    initials: string;
+    // initials: string;
     selected?: boolean;
 }
 
-const AttendeeCard = ({cardType} : Props) => {
+const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers} : Props) => {
 
-    const [userData, setUserData] = useState<User[]>(UserList);
+    if(!userList){
+        userList = UserList;
+    }
+    const [userData, setUserData] = useState<User[]>(userList);
     const [searchUser, setSearchUser] = useState<string>("");
     const [allSelected, setAllSelected] = useState<boolean>(false);
     const [selectedUserCount, setSelectedUserCount] = useState<number>(0);
@@ -34,7 +40,7 @@ const AttendeeCard = ({cardType} : Props) => {
         setAllSelected(!allSelected);
     }
 
-    const onUserSelect = (user: any) => {
+    const onUserSelect = (user: User) => {
         setUserData(prevUserData => {
             const userIndex = prevUserData.findIndex(item => item.id === user.id);
             
@@ -51,6 +57,11 @@ const AttendeeCard = ({cardType} : Props) => {
     const updateSelectedUserCount = () => {
         const count = userData.filter(user => user.selected).length;
         setSelectedUserCount(count);
+
+        if(shortlistedUsers && setShortlistedUsers){
+            const selectedUserIds = userData.filter(user => user.selected).map(user => user.id);
+            setShortlistedUsers(selectedUserIds);
+        }
     };
 
     useEffect(() => {
@@ -65,10 +76,10 @@ const AttendeeCard = ({cardType} : Props) => {
         }
 
         if (searchUser.trim() !== '') {
-            const matches = UserList.filter(filterUser);
+            const matches = userList.filter(filterUser);
             setUserData(matches);
         } else {
-            setUserData(UserList);
+            setUserData(userList);
         }
     }, [searchUser]);
 
@@ -81,7 +92,7 @@ const AttendeeCard = ({cardType} : Props) => {
                         onChange={handleAllSelect}
                         checked={allSelected}
                     />
-                    {UserList.length} {cardType} Requests
+                    {userList.length} {cardType} Requests
                 </div>
                 <span className={styles.selected_users}>{selectedUserCount} selected</span>
             </div>

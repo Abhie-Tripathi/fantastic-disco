@@ -14,15 +14,17 @@ import { useTheme } from '@/context';
 import UpVoteTag from '@/app/components/internal/coordinate/upVoteTag';
 
 interface YourEventCardProps {
-  eventId: number;
+  eventId: string;
   eventName: string;
-  eventCtas: string[];
+  eventCtas?: string[];
   eventLocation: string;
   eventImage: string
   eventDate: string;
   eventCompany: string;
-  handleModal: () => void;
-  handleShortlistModal: () => void;
+  eventDuration: string;
+  userCount: number;
+  handleModal: (id: string) => void;
+  handleShortlistModal: (eventId: string) => void;
   handleRejectClick: () => void;
 }
 
@@ -32,7 +34,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, handleModal, handleShortlistModal, handleRejectClick }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, eventDuration, userCount, handleModal, handleShortlistModal, handleRejectClick }) => {
   const formattedDate = formatDate(eventDate);
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
@@ -52,7 +54,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
   }
 
   const handleModalOpen = ()=>{
-    handleModal()
+    handleModal(eventId);
   }
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,7 +66,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
     <div className={styles.topContainer} style={{display:"flex"}}>
       <div className={styles.leftContainer}>
         <div className='tablet_view mobile_view'>
-          <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+          <StatusChangeDropdown label='' eventId={eventId} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
         </div>
         <div>
         <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
@@ -81,7 +83,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>Pending</div>
           </div> */}
           <div className='desktop_view'>
-            <StatusChangeDropdown label='' eventId={123} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+            <StatusChangeDropdown label='' eventId={eventId} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
           </div>
         </div>
         <div className={styles.locationAndDateContainer}>
@@ -101,7 +103,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
         <div className='tablet_view mobile_view'>
           <div style={{marginTop: "-50px"}}>
           <div className={styles.total_upvotes}>
-            231
+            {userCount}
             <div style={{display:"flex", paddingTop: "5px"}}>
               <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
               &nbsp;Upvotes
@@ -112,7 +114,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
         <div className='desktop_view'>
         <div style={{display:"flex", gap: "16px", flexWrap: "wrap", marginTop: "15px"}} onClick={handleClickEvent}>
           <div className={styles.total_upvotes}>
-            231
+            {userCount}
             <div style={{display:"flex", paddingTop: "10px"}}>
               <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
               &nbsp;Upvotes

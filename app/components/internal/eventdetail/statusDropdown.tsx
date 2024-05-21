@@ -6,8 +6,8 @@ import { useTheme } from '@/context';
 
 interface PropType {
   label: string;
-  eventId: number;
-  handleShortlistModal: () => void;
+  eventId: string;
+  handleShortlistModal: (eventId: string) => void;
   handleRejectClick: () => void;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
@@ -23,7 +23,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     const target = event.target as HTMLDivElement;
     setIsOpen(false);
     setValue(target.innerText);
-    props.handleShortlistModal();
+    props.handleShortlistModal(props.eventId);
   };
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
