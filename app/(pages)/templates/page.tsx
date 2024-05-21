@@ -11,12 +11,15 @@ import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/Sin
 import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
+import FilterHeader from '@/app/components/TemplateViews/FilterHeader'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
     const [preview, setPreview] = useState("");
+    const [widgetSelected, setWidgetSelected] = useState<string>("All")
+    const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
 
     const pageWidgetWithoutHighlighted = [
         { id: "sehb", name: "Single Event as Hero Banner" },
@@ -50,17 +53,17 @@ const Page = () => {
     ]
 
     useEffect(() => {
-        window.scrollTo(0, 0); // To scroll up when ever page changes
-        console.log("preview is", preview)
+        window.scrollTo(0, 0); // To scroll up when ever page change
     }, [preview])
 
     return (
         <div className={`${styles.body} ${preview.length > 0 ? styles.bodyHeight : ""}`}>
+            <div className={styles.filterContainer}><FilterHeader  setWidgetSelected = {setWidgetSelected} setAccordianItemSelected = {setAccordianItemSelected}/></div>
             <div className={`${styles.templates} ${preview.length > 0 ? styles.previewOn : ""}`}>
-                <div className={styles.pageWidgetTemplates}>
+                {(widgetSelected === "All" ||  widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>
-                    <div className={styles.pageTemplateTypeOne}>
-                        <div className={styles.widgetSubheading}>Without Highlighted Events</div>
+                    {accordianItemSelected.includes("No Highlighted Events") && <div className={styles.pageTemplateTypeOne}>
+                        <div className={styles.widgetSubheading}>No Highlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithoutHighlighted.slice(0, showAllOne ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllOne && index >= 4} id={template.id}
@@ -72,9 +75,9 @@ const Page = () => {
                                 {showAllOne ? 'Hide' : 'View All'}
                             </button>
                         )}
-                    </div>
-                    <div className={styles.pageTemplateTypeTwo}>
-                        <div className={styles.widgetSubheading}>With One Higlighted Event</div>
+                    </div>}
+                    {accordianItemSelected.includes("One Highlighted Event") &&<div className={styles.pageTemplateTypeTwo}>
+                        <div className={styles.widgetSubheading}>One Higlighted Event</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 4} id={template.id} setPreview={setPreview} />
@@ -85,9 +88,9 @@ const Page = () => {
                                 {showAllTwo ? 'Hide' : 'View All'}
                             </button>
                         )}
-                    </div>
-                    <div className={styles.pageTemplateTypeThree}>
-                        <div className={styles.widgetSubheading}>With Multiple Higlighted Events</div>
+                    </div>}
+                    {accordianItemSelected.includes("Multiple Highlighted Events") &&  <div className={styles.pageTemplateTypeThree}>
+                        <div className={styles.widgetSubheading}>Multiple Higlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithHighlightedEvents.slice(0, showAllThree ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllThree && index >= 4} setPreview={setPreview} id={template.id} />
@@ -98,23 +101,23 @@ const Page = () => {
                                 {showAllThree ? 'Hide' : 'View All'}
                             </button>
                         )}
-                    </div>
-                </div>
-                <div className={styles.sectionWidgetTemplates}>
+                    </div>}
+                </div> }
+                {(widgetSelected === "All" ||  widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
                     <div className={styles.widgetHeading}>Section Widget</div>
                     <div className={styles.templateContainer}>
                             {sectionWidgetEvents.map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={false} setPreview={setPreview} id={template.id} />
                             ))}
                         </div>
-                </div>
-                <div className={styles.stickyWidgetTemplates}>
+                </div>}
+                {(widgetSelected === "All" ||  widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
                     <div className={styles.templateContainer}>
                         <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={setPreview} />
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={setPreview} />
                     </div>
-                </div>
+                </div>}
             </div>
             {preview.length > 0 && <div className={styles.previewWindow}>
                 <div className={styles.heading_btnContainer}>
