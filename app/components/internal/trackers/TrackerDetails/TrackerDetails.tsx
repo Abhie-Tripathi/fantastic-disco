@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import styles from './trackerdetails.style.module.css';
+import styles from "./trackerdetails.style.module.css";
 import Slider from "../Slider";
 import { Line, PolarArea } from "react-chartjs-2";
 import "chart.js/auto";
 import EventTable from "../EventTable/EventTable";
 import { useTheme } from "@/context";
-import CalendarIcon from '/public/calendar.svg'
+import CalendarIcon from "/public/calendar.svg";
 import Image from "next/image";
+import { convertToCustomFormat } from "@/utils/dateFormat";
 
 const eventData = [
   {
@@ -77,7 +78,7 @@ const eventData = [
   },
 ];
 
-const TrackerDetails = () => {
+const TrackerDetails = ({ trackerDetail }: { trackerDetail: any }) => {
   const [startEventeliRank, setStartEventeliRank] = useState(34);
   const [endEventeliRank, setEndEventeliRank] = useState(76);
 
@@ -181,23 +182,34 @@ const TrackerDetails = () => {
         <div className={styles.detailsCard}>
           <div className={styles.card_header}>
             <div className={styles.detail_title}>Tracker Details</div>
-            <div className={styles.tracker_name}>
-              Events in Bangalore
-            </div>
+            <div className={styles.tracker_name}>{trackerDetail.name}</div>
           </div>
           <div className={styles.location_dateContainer}>
-            <div className={styles.locationContainer}>Bengaluru, India</div>
+            <div className={styles.locationContainer}>
+              {trackerDetail.filterValue.city.join(" , ")}
+            </div>
             <div className={styles.dateContainer}>
               <Image src={CalendarIcon} alt="cal" />
-              <span className={styles.date_value}>1 Apr 2024 - 30 Apr 2024</span>
+              <span className={styles.date_value}>
+                {convertToCustomFormat(trackerDetail.filterValue.active_gte)}{" "}
+                &nbsp; - &nbsp;
+                {convertToCustomFormat(trackerDetail.filterValue.active_lte)}
+              </span>
             </div>
           </div>
           <div className={styles.category_statusContainer}>
             <div className={styles.category_container}>
-              <div className={styles.subcontainer_detail__title}>Event Category</div>
+              <div className={styles.subcontainer_detail__title}>
+                Event Category
+              </div>
               <div className={styles.category_values}>
-                <div className={styles.chips_value}>Hospitality</div>
-                <div className={styles.chips_value}>Festivals</div>
+                {trackerDetail.filterValue.category.map(
+                  (ctg: string, index: number) => (
+                    <div key={index} className={styles.chips_value}>
+                      {ctg}
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div className={styles.statusContainer}>
@@ -205,8 +217,13 @@ const TrackerDetails = () => {
                 Event Status
               </div>
               <div className={styles.status_values}>
-                <div className={styles.chips_value}>Cancelled</div>
-                <div className={styles.chips_value}>Postpones</div>
+                {trackerDetail.filterValue.status.map(
+                  (state: string, index: number) => (
+                    <div key={index} className={styles.chips_value}>
+                      {state}
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -215,12 +232,15 @@ const TrackerDetails = () => {
               <span className={styles.subcontainer_detail__title}>
                 Attendance
               </span>
-              <span className={styles.detail_value}>2,00,000-5,00,000</span>
+              <span className={styles.detail_value}>
+                {trackerDetail.filterValue.total_attendance_gte} &nbsp; - &nbsp;
+                {trackerDetail.filterValue.total_attendance_lte}
+              </span>
             </div>
             <div className={styles.label_container}>
               <div className={styles.label_title}>Labels</div>
               <div className={styles.labels}>
-                Politics, parade, nightlife
+                {trackerDetail.filterValue.labels.join(" , ")}
               </div>
             </div>
           </div>
@@ -233,8 +253,8 @@ const TrackerDetails = () => {
               <Slider
                 disabled
                 StatsName="Eventeli Ranking"
-                startValue={startEventeliRank}
-                endValue={endEventeliRank}
+                startValue={trackerDetail.filterValue.event_rank_gte}
+                endValue={trackerDetail.filterValue.event_rank_lte}
                 onEndValueChange={setEndEventeliRank}
                 onStartValueChange={setStartEventeliRank}
                 Range="0-100"
@@ -242,8 +262,8 @@ const TrackerDetails = () => {
               <Slider
                 disabled
                 StatsName="Local Ranking"
-                startValue={startLocalRank}
-                endValue={endLocalRank}
+                startValue={trackerDetail.filterValue.local_rank_gte}
+                endValue={trackerDetail.filterValue.local_rank_lte}
                 onEndValueChange={setEndLocalRank}
                 onStartValueChange={setStartLocalRank}
                 Range="0-100"
@@ -262,7 +282,11 @@ const TrackerDetails = () => {
         </div>
       </div>
 
-      <div className={`${styles.overview_container} ${theme === 'light' ? styles.overview_container_light : ""}`}>
+      <div
+        className={`${styles.overview_container} ${
+          theme === "light" ? styles.overview_container_light : ""
+        }`}
+      >
         <div className={styles.trackerContainer}>
           <div className={styles.overview_header}>
             <div className={styles.overview_title_container}>

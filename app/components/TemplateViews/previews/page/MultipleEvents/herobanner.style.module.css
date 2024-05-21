@@ -1,0 +1,58 @@
+
+.heroBanner {
+    margin-top: 20px;
+    height:100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eventContainer {
+    width: 80%;  
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px
+}
+
+.eventDetails {
+    width: 50%;
+}
+.name {
+    font-size: 50px;
+    color: rgb(96, 63, 240);
+    margin-top: 20px;
+    font-weight: 800;
+}
+
+.date {
+    background-color: rgb(253, 219, 109);
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: rgb(39, 39, 39);
+    font-size: 20px;
+}
+
+.location {
+    font-size: 20px;
+    margin-top: 60px;
+    margin-bottom: 10px;
+    display: flex;
+    color: white;
+}
+
+.desc {
+    color: white;
+}
+
+.eventImg {
+    margin-top: 10px;
+    filter: drop-shadow(1px 1px 6px rgb(65, 65, 65));
+    width: 300px;
+    height: 300px;
+}
