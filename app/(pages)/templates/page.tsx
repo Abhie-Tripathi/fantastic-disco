@@ -7,11 +7,10 @@ import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEve
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
-import HeroBannerAndList from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndList'
-import HeroBannerAndGrid from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndGrid'
-import HeroBannerAndGridListview from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndGridListview'
-import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView'
-import CaraouselAndListview from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndListview'
+import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndViews'
+import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
+import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
+import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
@@ -37,12 +36,18 @@ const Page = () => {
 
     const pageWidgetWithHighlightedEvents = [
         { id: "pcslv", name: "Promoted Events as carousel slider and Rest Events as List" },
-        { id: "id12", name: "Promoted Events as carousel slider and rest Events as Grid" },
-        { id: "id13", name: "Promoted Events as carousel slider and rest Events as Grid + List" },
+        { id: "pcsgv", name: "Promoted Events as carousel slider and rest Events as Grid" },
+        { id: "pcslgv", name: "Promoted Events as carousel slider and rest Events as Grid + List" },
         { id: "id14", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List" },
         { id: "id15", name: "Promoted Events as Normal list (Flex Column) and Rest Events as Grid" },
         { id: "id16", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List + Grid" }
     ];
+
+    const sectionWidgetEvents = [
+        {id : "tscv", name : "Top Section of page as Caraousel View"},
+        {id : "tshs", name : "Top Section of page as Horizontal Scroll"},
+        {id : "lsvs", name : "Left Section of page as Vertical Scroll"}
+    ]
 
     useEffect(() => {
         window.scrollTo(0, 0); // To scroll up when ever page changes
@@ -56,7 +61,7 @@ const Page = () => {
                     <div className={styles.widgetHeading}>Page Widget</div>
                     <div className={styles.pageTemplateTypeOne}>
                         <div className={styles.widgetSubheading}>Without Highlighted Events</div>
-                        <div className={styles.templateCotntainer}>
+                        <div className={styles.templateContainer}>
                             {pageWidgetWithoutHighlighted.slice(0, showAllOne ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllOne && index >= 4} id={template.id}
                                     setPreview={setPreview} />
@@ -70,7 +75,7 @@ const Page = () => {
                     </div>
                     <div className={styles.pageTemplateTypeTwo}>
                         <div className={styles.widgetSubheading}>With One Higlighted Event</div>
-                        <div className={styles.templateCotntainer}>
+                        <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 4} id={template.id} setPreview={setPreview} />
                             ))}
@@ -83,7 +88,7 @@ const Page = () => {
                     </div>
                     <div className={styles.pageTemplateTypeThree}>
                         <div className={styles.widgetSubheading}>With Multiple Higlighted Events</div>
-                        <div className={styles.templateCotntainer}>
+                        <div className={styles.templateContainer}>
                             {pageWidgetWithHighlightedEvents.slice(0, showAllThree ? undefined : 4).map((template, index) => (
                                 <TemplateCard key={index} name={template.name} isHidden={!showAllThree && index >= 4} setPreview={setPreview} id={template.id} />
                             ))}
@@ -95,9 +100,17 @@ const Page = () => {
                         )}
                     </div>
                 </div>
+                <div className={styles.sectionWidgetTemplates}>
+                    <div className={styles.widgetHeading}>Section Widget</div>
+                    <div className={styles.templateContainer}>
+                            {sectionWidgetEvents.map((template, index) => (
+                                <TemplateCard key={index} name={template.name} isHidden={false} setPreview={setPreview} id={template.id} />
+                            ))}
+                        </div>
+                </div>
                 <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
-                    <div className={styles.templateCotntainer}>
+                    <div className={styles.templateContainer}>
                         <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={setPreview} />
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={setPreview} />
                     </div>
@@ -115,20 +128,30 @@ const Page = () => {
                         preview==="phblv"? "Hero Banner and List view":
                         preview==="phbgv"? "Hero Banner and Grid view":
                         preview==="phblgv"? "Hero Banner and List Grid view":
-                        preview==="pcslv"? "Caraousel and List view":""}
+                        preview==="pcslv"? "Caraousel and List view":
+                        preview==="pcsgv"? "Caraousel and Grid view":
+                        preview==="pcslgv"? "Caraousel and List Grid view":
+                        preview==="tscv"? "Top Section Caraousel view":
+                        preview==="tshs"? "Top Section Horizontal Scroll view":
+                        preview==="lsvs"? "Left Section Veritcal Scroll view":""}
                     </div>
                     <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
                 </div>
                 {preview === "stickytop" ? <StickyPreview type="top" /> :
-                    preview === "stickydown" ? <StickyPreview type="down" /> :
-                        preview === "sehb" ? <HeroBanner /> :
-                            preview === "megv" ? <GridView /> :
-                                preview === "melv" ? <ListView /> :
-                                    preview === "melgv" ? <ListAndGridView /> :
-                                    preview === "phblv" ? <HeroBannerAndList />:
-                                    preview === "phbgv" ? <HeroBannerAndGrid />:
-                                    preview === "phblgv" ? <HeroBannerAndGridListview />:
-                                    preview === "pcslv" ? <CaraouselAndListview/>:<></>}
+                preview === "stickydown" ? <StickyPreview type="down" /> :
+                preview === "sehb" ? <HeroBanner /> :
+                preview === "megv" ? <GridView /> :
+                preview === "melv" ? <ListView /> :
+                preview === "melgv" ? <ListAndGridView /> :
+                preview === "phblv" ? <HeroBannerAndViews type='list'/>:
+                preview === "phbgv" ? <HeroBannerAndViews type='grid'/>:
+                preview === "phblgv" ? <HeroBannerAndViews type='listandgrid'/>:
+                preview === "pcslv" ? <CaraouselAndViews type='list'/>:
+                preview === "pcsgv" ? <CaraouselAndViews type='grid'/>:
+                preview === "pcslgv" ? <CaraouselAndViews type='listandgrid'/>:
+                preview === "tscv" ? <CaraouselTop/>:
+                preview === "tshs" ? <ScrollView type='top'/>:
+                preview === "lsvs" ? <ScrollView type='left'/>:<></>}
             </div>}
         </div>
     )

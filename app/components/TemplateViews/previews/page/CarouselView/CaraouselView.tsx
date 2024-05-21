@@ -26,17 +26,15 @@ const CaraouselView = () => {
             >
                 &lt;
             </button>
-            <div className={styles.slider}>
-                <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                    {banners.map((banner, index) => (
-                        <div
-                            className={`${styles.banner} ${index === currentIndex ? styles.active : styles.inactive}`}
-                            key={index}
-                        >
-                            {banner}
-                        </div>
-                    ))}
-                </div>
+            <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+                {banners.map((banner, index) => (
+                    <div
+                        className={`${styles.banner} ${index === currentIndex ? styles.active : styles.inactive}`}
+                        key={index}
+                    >
+                        {banner}
+                    </div>
+                ))}
             </div>
             <button
                 className={styles.navButton}

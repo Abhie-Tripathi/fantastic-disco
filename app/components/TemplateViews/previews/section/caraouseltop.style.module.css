@@ -1,0 +1,14 @@
+.body{
+    margin-top: 20px;
+    height: 90%;
+    background-color: rgb(217, 217, 217);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.heading{
+    color: black;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 20px;
+    height: 150vh;
+}
