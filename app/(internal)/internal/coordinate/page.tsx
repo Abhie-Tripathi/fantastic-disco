@@ -8,18 +8,45 @@ import TypeOfEventsCount from '@/public/data/TypeOfEventsCount.json'
 import { useTheme } from '@/context'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 const Page = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const [shortlistModalOpen, setShortlistModalOpen] = useState(false)
+  const [shortlistModalData, setShortlistModalData] = useState({})
   const {theme} = useTheme()
+  const [singleEventId, setSingleEventId] = useState<string>('');
 
-  const handleModal = () => {
-    setModalOpen(!modalOpen)
+  const handleModal = (eventId: string) => {
+    setModalOpen(!modalOpen);
+    setSingleEventId(eventId);
   }
-  const handleShortlistModal = () => {
-    setShortlistModalOpen(!shortlistModalOpen)
+  const handleShortlistModal = (eventId: string) => {
+    if(eventId && eventId != '') 
+      fetchInterestData(eventId);
+    else
+      setShortlistModalOpen(!shortlistModalOpen);
   }
+
+  const fetchInterestData = async(eventId: string) => {
+    try {
+      const apiUrl = baseUrl + "/userInterest/" + eventId;
+      const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+      });
+      if(apiData.data) {
+        apiData.data.eventId = eventId;
+        setShortlistModalData(apiData.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setShortlistModalOpen(!shortlistModalOpen);
+    }
+  }
+
   const handleRejectClick = () => {
     toast.error(
       <div>Rejected! <button onClick={() => console.log("undo action")}>UNDO</button></div>, {
@@ -42,12 +69,12 @@ const Page = () => {
         </div>)}
       {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />}
       {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light : ""}`}>
-        <EventDetail openEventDetails={true} openEventRequest={false} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} />
+        <EventDetail openEventDetails={true} openEventRequest={false} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} eventId={singleEventId} />
       </div>}
 
       {shortlistModalOpen && 
         <div className={`${theme === 'light' ? styles.modal_light : ""}`}>
-          <ShortlistModal handleShortlistModal={handleShortlistModal} />
+          <ShortlistModal handleShortlistModal={handleShortlistModal} shortlistModalData={shortlistModalData}  />
         </div>
       }
       <ToastContainer />

@@ -8,8 +8,8 @@
     "data": {
         "events": [
             {
-                "id": 13039,
-                "name": "MAGIC LAS VEGAS",
+                "id": "1b27ff90-1a46-4f49-85eb-607b4d510eb1",
+                "name": "Carbon Forward Conference",
                 "zhName": null,
                 "verified": null,
                 "frequency": "Bi-annual",
@@ -233,8 +233,8 @@
                 "rankType": "global"
             },
             {
-                "id": 918,
-                "name": "Texworld Paris",
+                "id": "0038c5e9-6ddd-451c-9ab1-c7c79890bc02",
+                "name": "AI in Finance Summit",
                 "zhName": null,
                 "verified": null,
                 "frequency": "Bi-annual",
@@ -458,8 +458,8 @@
                 "rankType": "category"
             },
             {
-                "id": 1685,
-                "name": "MEDICA",
+                "id": "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
+                "name": "Finance Leaders' Conference",
                 "zhName": null,
                 "verified": null,
                 "frequency": null,
@@ -650,8 +650,8 @@
                 "opportunityScore": null
             },
             {
-                "id": 3284,
-                "name": "Arab Health",
+                "id": "5ea3b89a-b3b8-407b-a501-645d96bf84d9",
+                "name": "ExCred Americas",
                 "zhName": null,
                 "verified": null,
                 "frequency": "Annual",
@@ -828,8 +828,8 @@
                 "opportunityScore": null
             },
             {
-                "id": 6646,
-                "name": "Texworld",
+                "id": "9306f250-0bed-4a0f-b7de-1f587e623f33",
+                "name": "Investival Showcase",
                 "zhName": null,
                 "verified": null,
                 "frequency": "Bi-annual",

@@ -8,18 +8,22 @@ import attendeeIcon from "/public/internal/attendee.svg";
 import exhibitorIcon from "/public/internal/exhibitor.svg";
 import speakerIcon from "/public/internal/speaker.svg";
 import sponsorIcon from "/public/internal/sponsor.svg";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { useState } from "react";
-import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 interface Props {
-  handleShortlistModal: () => void;
+  handleShortlistModal: (eventId: string) => void;
+  shortlistModalData: any;
 }
 
-const ShortlistModal = ({ handleShortlistModal }: Props) => {
+const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => {
+  const { user } = useAuthContext();
+
   const closeModal = () => {
-    handleShortlistModal();
+    handleShortlistModal('');
   };
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -36,6 +40,32 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
       [item]: !prevState[item],
     }));
   };
+
+  const [shortlistedVisitors, setShortlistedVisitors] = useState<string[]>([]);
+  const [shortlistedSpeaker, setShortlistedSpeaker] = useState<string[]>([]);
+
+  const handleSubmit = async() => {
+    if(user){
+      let payloadData = {
+        entityId: shortlistModalData.eventId,
+        status: "SHORTLISTED",
+        id: shortlistedVisitors.concat(shortlistedSpeaker).join(), // multiple userInterest id's
+        modifiedBy: user.id,
+        enquiryStatus:"SHORTLISTED",
+      };
+      try {
+        const apiUrl = baseUrl + "/userInterest";
+        const apiData = await myFetch(apiUrl, {
+          method: "PATCH",
+          headers: headers,
+          body: JSON.stringify(payloadData),
+        });
+        closeModal();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  }
 
   return (
     <div className={styles["modalContainer"]}>
@@ -64,13 +94,9 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
                 className={iconClass}
               />
               Attendee
-              <Image
-                src={tickIcon}
-                alt=""
-                width={13}
-                height={13}
-                className={iconClass}
-              />
+              {shortlistModalData.participent.visitors.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
             </span>
             <span className={styles["tag_item"]}>
               <Image
@@ -81,13 +107,9 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
                 className={iconClass}
               />
               Speaker
-              <Image
-                src={tickIcon}
-                alt=""
-                width={13}
-                height={13}
-                className={iconClass}
-              />
+              {shortlistModalData.participent.speakers.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
             </span>
             <span className={styles["tag_item"]}>
               <Image
@@ -98,6 +120,9 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
                 className={iconClass}
               />
               Exhibitors
+              {shortlistModalData.participent.exhibitors.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
             </span>
             <span className={styles["tag_item"]}>
               <Image
@@ -108,6 +133,9 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
                 className={iconClass}
               />
               Sponsors
+              {shortlistModalData.participent.sponsors.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
             </span>
           </div>
           <div className={styles["total_attendee"]}>
@@ -147,18 +175,22 @@ const ShortlistModal = ({ handleShortlistModal }: Props) => {
             </div>
 
             <div className={styles.moddleText}>
-              50 People have shown interest
+              {shortlistModalData.stats.uniqueUser} People have shown interest
             </div>
-            <div className={styles.markListBtn}>Mark as Shortlisted</div>
+            <div className={styles.markListBtn} onClick={handleSubmit}>Mark as Shortlisted</div>
           </div>
           <div className={styles.main_section}>
-            <AttendeeCard cardType={"Attendee"} />
-            <AttendeeCard cardType={"Speaker"} />
+            {shortlistModalData.participent.visitors.length > 0 &&
+              <AttendeeCard cardType={"Attendee"} userList={shortlistModalData.participent.visitors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+            }
+            {shortlistModalData.participent.speakers.length > 0 &&
+              <AttendeeCard cardType={"Speaker"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
+            }
           </div>
         </main>
-        <footer className={styles.modal_footer}>
+        {/* <footer className={styles.modal_footer}>
           <span className={styles.submitBtn}>Mark as Shortlisted</span>
-        </footer>
+        </footer> */}
       </div>
     </div>
   );
