@@ -1,12 +1,17 @@
+.body{
+    padding: 50px;
+}
 .bodyHeight{
     max-height: 90vh;
     overflow: hidden;
 }
 .templates{
-    padding: 30px;
     display: flex;
     flex-direction: column;
     gap: 50px;
+}
+.filterContainer{
+    margin-bottom: 20px;
 }
 .previewOn{
     filter: blur(1px);
