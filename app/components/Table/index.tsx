@@ -9,12 +9,15 @@ import StarIcon from "/public/internal/rating_star.svg";
 import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
+import closeIcon from "/public/close.svg";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 interface FormDataType {
-  edition_id?: string | number | null;
+  entityId_id?: string | number | null;
   markedInterest?: string | null;
 }
 
@@ -194,15 +197,15 @@ const Table = ({
   const [eventPerPage, setEventPerPage] = useState([]);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(eventData.length / itemsPerPage);
-  const [pinEvent, setPinEvent] = useState<string | number>(918);
-  const [bookmarkedEvent, setBookmarkedEvent] = useState<number[]>([
-    1685, 5175,
+  const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
+  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([
+    "9306f250-0bed-4a0f-b7de-1f587e623f33", "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
   ]);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
-    edition_id: null,
+    entityId_id: null,
     markedInterest: null,
   });
   const handleChangeIntent = (
@@ -214,30 +217,40 @@ const Table = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let payloadData = {
-      edition_id: formData?.edition_id,
-      markedInterest: formData?.markedInterest,
-      userId: "15602471",
-      companyId: 1725,
-    };
-    const response = await fetch(`/api/research/markInterest`, {
-      method: "POST",
-      body: JSON.stringify(payloadData),
-    });
-    const apiResponse = await response.json();
+    if(formData.entityId_id && formData.markedInterest && formData.markedInterest != 'bookmark'){
+      let payloadData = {
+        source: "GTM",
+        entityId: formData?.entityId_id,
+        interest: formData?.markedInterest,
+      };
+      try {
+        const apiUrl = baseUrl + "/userInterest";
+        const apiData = await myFetch(apiUrl, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payloadData),
+        });
 
-    if (apiResponse.status.code == 1) {
-      if (formData.markedInterest == "bookmark") {
-        toast.success("Event bookmarked successfully!", {
-          position: "top-center",
-          autoClose: 2000,
-        });
-      } else
-        toast.success("Interest marked successfully!", {
-          position: "top-center",
-          autoClose: 2000,
-        });
-      setIsOpen(null);
+        if (apiData.data.message == "Entry Created") {
+          if (formData.markedInterest == "bookmark") {
+            toast.success('Event bookmarked successfully!', {
+              position: 'bottom-right',
+              autoClose: 2000,
+              closeButton: false,
+              hideProgressBar: true,
+            });
+          } else
+            toast.success("Interest marked successfully!", {
+              position: "bottom-right",
+              autoClose: 2000,
+              closeButton: false,
+              hideProgressBar: true,
+            });
+          setIsOpen(null);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
   };
 
@@ -251,17 +264,19 @@ const Table = ({
   const handleModalOpen = (eventId: string, editionId: string) => {
     setIsOpen((prev) => (prev == eventId ? null : eventId));
     if (isOpen != eventId) {
-      setFormData({ ...formData, edition_id: editionId });
+      setFormData({ ...formData, entityId_id: eventId });
     } else {
-      setFormData({ edition_id: null, markedInterest: null });
+      setFormData({ entityId_id: null, markedInterest: null });
     }
   };
 
   const handlePinEvent = (eventId: string) => {
     setPinEvent(eventId);
-    toast.success("Event pinned successfully!", {
-      position: "top-center",
+    toast.success('Event pinned successfully!', {
+      position: 'bottom-right',
       autoClose: 2000,
+      closeButton: false,
+      hideProgressBar: true,
     });
   };
 
@@ -572,7 +587,7 @@ const Table = ({
                             handleModalOpen(event.id, event.edition)
                           }
                         >
-                          <Image src="/close.svg" alt="close" />
+                          <Image src={closeIcon} alt="clock" width={16} height={16} />
                         </button>
                       </header>
                       <main className={styles["modal_content"]}>
@@ -593,7 +608,7 @@ const Table = ({
                               <input
                                 className={styles["form-check-input"]}
                                 type="radio"
-                                defaultValue="visitor"
+                                defaultValue="VISITOR"
                                 name={"interest"}
                                 id="customradio2"
                                 onChange={handleChangeIntent}
@@ -604,7 +619,7 @@ const Table = ({
                               <input
                                 className={styles["form-check-input"]}
                                 type="radio"
-                                defaultValue="speaker"
+                                defaultValue="SPEAKER"
                                 name={"interest"}
                                 id="customradio3"
                                 onChange={handleChangeIntent}
@@ -615,7 +630,7 @@ const Table = ({
                               <input
                                 className={styles["form-check-input"]}
                                 type="radio"
-                                defaultValue="exhibitor"
+                                defaultValue="EXHIBITOR"
                                 name={"interest"}
                                 id="customradio4"
                                 onChange={handleChangeIntent}
@@ -626,7 +641,7 @@ const Table = ({
                               <input
                                 className={styles["form-check-input"]}
                                 type="radio"
-                                defaultValue="sponsor"
+                                defaultValue="SPONSOR"
                                 name={"interest"}
                                 id="customradio5"
                                 onChange={handleChangeIntent}

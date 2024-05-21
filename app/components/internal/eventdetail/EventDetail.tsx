@@ -14,20 +14,30 @@ import { usePathname } from "next/navigation";
 import closeIcon from "/public/close.svg";
 import Image from "next/image";
 import EventRequest from "./EventRequest";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
+import { number } from "zod";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
   id: number;
   imageUrl: string;
   name: string;
   description: string;
+  enquiryId?: string;
 }
 interface Props {
   openEventDetails: boolean;
   openOrganiserDetails: boolean;
   openPocDetails: boolean;
   closeBtn: boolean;
-  openEventRequest:boolean
-  handleModal: () => void;
+  openEventRequest:boolean;
+  handleModal: (id: string) => void;
+  eventId: string,
+  enquiryId?: string,
+  currentEnquiryStatus?: string,
+  handleRefresh?: () => void,
 }
 
 const EventDetail = ({
@@ -37,11 +47,16 @@ const EventDetail = ({
   closeBtn,
   openEventRequest,
   handleModal,
+  eventId,
+  enquiryId,
+  currentEnquiryStatus,
+  handleRefresh,
 }: Props) => {
   const [meet, setMeet] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
+  const [singleEventData, setSingleEventData] = useState<EventData>();
 
   const singledata: EventData = {
     id: 12,
@@ -50,11 +65,45 @@ const EventDetail = ({
     name: "Great Indian Food Festival",
     description:
       "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
+      // enquiryId: singleEventData[0].enquiryId,
   };
 
   const [status, setStatus] = useState<number>(1);
-  const handleStatusChange = (changeStatusTo: number) => {
+  const statusValues: { [key: string]: string } = {
+    "1": "SHORTLISTED",
+    "2": "IN_NEGO",
+    "10": "CONFIRMED",
+    "12": "CANCELED",
+  };
+  const handleStatusChange = async(changeStatusTo: number) => {
     setStatus(changeStatusTo);
+    if(enquiryId && enquiryId != ''){
+      let payloadData = {
+        enquiryId: enquiryId,
+        enquiryStatus: statusValues[changeStatusTo],
+      };
+      try {
+        const apiUrl = baseUrl + "/userInterest/enquiry";
+        const apiData = await myFetch(apiUrl, {
+          method: "PATCH",
+          headers: headers,
+          body: JSON.stringify(payloadData),
+        });
+        if(apiData.data.message === "Data updated"){
+          if(handleRefresh)
+            handleRefresh();
+          toast.success('Enquiry status updated!', {
+            position: 'bottom-right',
+            autoClose: 2000,
+            closeButton: false,
+            hideProgressBar: true,
+          });
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -63,11 +112,35 @@ const EventDetail = ({
       rightContainerRef.current.style.height = leftContainerHeight + "px";
       console.log(leftContainerHeight);
     }
+    const fetchEventData = async() => {
+      try {
+        const apiUrl = 'https://api.eventgeni.com/event/'+eventId;
+        const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+        });
+        if(apiData.data){
+          const eventsData = apiData.data.event;
+          setSingleEventData({
+            id: eventsData.id,
+            imageUrl:
+              "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
+            name: eventsData.title,
+            description: eventsData.description,
+          });
+        }
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    if(eventId != '')
+      fetchEventData();
   }, []);
 
   const handleCloseModal = () => {
     if (handleModal) {
-      handleModal();
+      handleModal('');
     }
   };
   return (
@@ -86,20 +159,26 @@ const EventDetail = ({
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
               <OwnerList label="test" eventId={123} />
-              <StatusChangeDropdown
-                label=""
-                eventId={123}
-                handleStatusChange={handleStatusChange}
-              />
+              {pathName && pathName === "outreach" &&
+                <StatusChangeDropdown
+                  label=""
+                  eventId={123}
+                  handleStatusChange={handleStatusChange}
+                  currentValue={currentEnquiryStatus?currentEnquiryStatus:''}
+                />
+              }
             </div>
-            {singledata && <SingleEvent {...singledata} />}
-            <EventDescription
-              description={singledata.description}
-              open={openEventDetails} speakers={true} shortlist={false}
-            />
+            {singleEventData &&
+            <>
+              <SingleEvent {...singleEventData} />
+              <EventDescription
+                description={singleEventData.description}
+                open={openEventDetails} speakers={true} shortlist={false}
+              />
+            </>
+            }
             <EventRequest
               open={openEventRequest}
-              description={singledata.description}
             />
             <Organiser open={openOrganiserDetails} />
             <EventPoc open={openPocDetails} />
@@ -110,6 +189,7 @@ const EventDetail = ({
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
