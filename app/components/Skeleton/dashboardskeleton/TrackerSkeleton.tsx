@@ -4,15 +4,53 @@ import styles from "./tracker.module.css";
 
 const TrackerSkeleton = () => {
   return (
-    <div>
-      <div className={styles.skelton_eventCard}>
+    <div className={styles.tracker_outer_card}>
+      <Skeleton animation="wave" variant="rectangular" width={"60%"} height={25} />
+      <div className={styles.outer_container}>
+        <div className={styles.inner_container}>
+          <div>
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={100}
+              height={100}
+            />
+          </div>
+          <div>
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={100}
+              height={100}
+            />
+          </div>
+          <div>
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={100}
+              height={100}
+            />
+          </div>
+        </div>
+        <div>
+          <Skeleton
+            animation="wave"
+            variant="circular"
+            width={100}
+            height={100}
+          />
+        </div>
+      </div>
+
+      {/* <div className={styles.skelton_eventCard}>
         <Skeleton
           animation="wave"
           variant="rectangular"
           width="100%"
           height={100}
         />
-      </div>
+      </div> */}
 
       {/* {Array.from({ length: 3 }).map((_, index) => (
         <>

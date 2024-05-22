@@ -89,6 +89,9 @@
   right: 0;
   bottom: 0;
 }
+.linkCard_tagsName{
+  display: flex;
+}
 
 .linkCard_header {
   display: flex;

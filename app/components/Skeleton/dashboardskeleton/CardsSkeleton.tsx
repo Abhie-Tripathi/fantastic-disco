@@ -69,3 +69,68 @@ const CardsSkeleton = () => {
 };
 
 export default CardsSkeleton;
+
+
+// import React from "react";
+// import { Skeleton } from "@mui/material";
+// import styles from "./cardSkeleton.module.css";
+
+// const CardsSkeleton = () => {
+//   return (
+//     <div className={styles.card_skeleton_container}>
+//       <div className={styles.innerContainer}>
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//       </div>
+//       <div className={styles.innerContainer}>
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//       </div>
+//       <div className={styles.innerContainer}>
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//         <Skeleton
+//           animation="wave"
+//           variant="rectangular"
+//           className={styles.skeletonItem}
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CardsSkeleton;

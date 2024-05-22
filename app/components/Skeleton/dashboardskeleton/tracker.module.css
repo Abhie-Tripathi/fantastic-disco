@@ -1,8 +1,22 @@
-.skelton_eventCard{
-    background-color:  #c3c3c3;
-    display: flex;
-    /* flex-direction: column; */
-    padding: 10px;
-    align-items: center;
-    border-radius: 8px;
-  }
+.tracker_outer_card {
+  padding: 10px;
+  background-color: #1a1a1a;
+
+}
+
+.skelton_eventCard {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.outer_container {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.inner_container {
+  display: flex;
+  gap: 10px;
+}
