@@ -8,6 +8,7 @@ export interface eventDataType {
     endDate: string;
     duration: string;
     status: string;
+    enquiryId: string;
     userCount: number;
     users: { name: string; }[];
 }
