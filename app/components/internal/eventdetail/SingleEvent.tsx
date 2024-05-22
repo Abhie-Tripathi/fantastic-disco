@@ -5,7 +5,7 @@ import WorkIcon from '/public/work.svg'
 import { useTheme } from '@/context';
 
 interface EventData {
-    id: number;
+    id: string;
     imageUrl: string;
     name: string;
     description: string;

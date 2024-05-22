@@ -15,6 +15,7 @@ import UpVoteTag from '@/app/components/internal/coordinate/upVoteTag';
 
 interface YourEventCardProps {
   eventId: string;
+  enquiryId: string;
   eventName: string;
   eventCtas?: string[];
   eventLocation: string;
@@ -23,9 +24,9 @@ interface YourEventCardProps {
   eventCompany: string;
   eventDuration: string;
   userCount: number;
+  currentEnquiryStatus: string;
   handleModal: (id: string) => void;
-  handleShortlistModal: (eventId: string) => void;
-  handleRejectClick: () => void;
+  handleShortlistModal: (eventId: string, enquiryId: string) => void;
 }
 
 const formatDate = (dateString: string): string => {
@@ -34,7 +35,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, eventDuration, userCount, handleModal, handleShortlistModal, handleRejectClick }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, eventDuration, userCount, currentEnquiryStatus, handleModal, handleShortlistModal }) => {
   const formattedDate = formatDate(eventDate);
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
@@ -66,7 +67,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
     <div className={styles.topContainer} style={{display:"flex"}}>
       <div className={styles.leftContainer}>
         <div className='tablet_view mobile_view'>
-          <StatusChangeDropdown label='' eventId={eventId} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+          <StatusChangeDropdown label='' eventId={eventId} enquiryId={enquiryId} currentEnquiryStatus={currentEnquiryStatus} handleShortlistModal={handleShortlistModal} />
         </div>
         <div>
         <Image src={eventImage} alt="eventImage" width={238} height={192} className={styles.cardImg} />
@@ -83,7 +84,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, eventName, event
             <div>Pending</div>
           </div> */}
           <div className='desktop_view'>
-            <StatusChangeDropdown label='' eventId={eventId} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />
+            <StatusChangeDropdown label='' eventId={eventId} enquiryId={enquiryId} currentEnquiryStatus={currentEnquiryStatus} handleShortlistModal={handleShortlistModal} />
           </div>
         </div>
         <div className={styles.locationAndDateContainer}>
