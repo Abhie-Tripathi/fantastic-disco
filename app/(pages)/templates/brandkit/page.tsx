@@ -27,7 +27,12 @@ const Page = () => {
                     <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
                 </div>
                 <ButtonsModal />
+                <div className={styles.btnContainer}>
+                    <button type='button' className={styles.cancelBtn}>Cancel</button>
+                    <button type='button' className={styles.submitBtn}>Save Changes</button>
+                </div>
             </div>}
+
         </div>
     )
 }

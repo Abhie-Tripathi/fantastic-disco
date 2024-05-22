@@ -47,24 +47,23 @@ const PrimaryButtonConfig = () => {
                 </div>
                 <label className={styles.label}>
                     Font Size:
-                    <input type="text" value={fontSize} onChange={(e) => setFontSize(e.target.value)} />
+                    <input type="text" className={styles.inputContainer} value={fontSize} onChange={(e) => setFontSize(e.target.value)} />
                 </label>
                 <label className={styles.label}>
                     Padding:
-                    <input type="text" value={padding} onChange={(e) => setPadding(e.target.value)} />
+                    <input type="text" className={styles.inputContainer} value={padding} onChange={(e) => setPadding(e.target.value)} />
                 </label>
-
-
                 <label className={styles.label}>
                     Border Radius:
-                    <input type="text" value={borderRadius} onChange={(e) => setBorderRadius(e.target.value)} />
+                    <input type="text" className={styles.inputContainer} value={borderRadius} onChange={(e) => setBorderRadius(e.target.value)} />
                 </label>
 
                 <label className={styles.label}>
                     Border Width:
-                    <input type="text" value={borderWidth} onChange={(e) => setBorderWidth(e.target.value)} />
+                    <input type="text" className={styles.inputContainer} value={borderWidth} onChange={(e) => setBorderWidth(e.target.value)} />
                 </label>
             </div>
+            
         </div >
     )
 }

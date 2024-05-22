@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './buttonsmodal.style.module.css'
 import PrimaryButtonConfig from './PrimaryButtonConfig'
-import PrimaryButton from './PrimaryButton'
+import SecondaryButtonConfig from './SecondaryButtonConfig'
 
 const ButtonsModal = () => {
     const [activeBtn, setActiveBtn] = useState("primary")
@@ -19,7 +19,7 @@ const ButtonsModal = () => {
             <div className={styles.configurations}>
                 <div className={styles.configHeading}>Cofigurations</div>
                 <div className={styles.btnConfigure}>
-                    {activeBtn === "primary" ? <PrimaryButtonConfig/> : <></>}
+                    {activeBtn === "primary" ? <PrimaryButtonConfig/> : <SecondaryButtonConfig/>}
                 </div>
             </div>
         </div>
