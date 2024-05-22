@@ -6,9 +6,10 @@ interface TemplateCardProps {
   isHidden : boolean;
   id : string;
   setPreview: (id: string) => void;
+  desc? : string;
 }
 
-const TemplateCard = ({ name, isHidden, id, setPreview }: TemplateCardProps) => {
+const TemplateCard = ({ name, isHidden, id, setPreview, desc }: TemplateCardProps) => {
   return (
     <div className={`${styles.card} ${isHidden ? styles.hiddenCard : ""}`}>
       <div className={styles.placeHolder}>
@@ -16,7 +17,8 @@ const TemplateCard = ({ name, isHidden, id, setPreview }: TemplateCardProps) => 
           <div className={styles.previewBtn} onClick={()=>setPreview(id)}>Preview</div>
         </div>
       </div>
-      <div className={styles.cardHeading}>{name}</div>
+      <div className={styles.cardHeading} style={desc ? {fontSize : 14} : {fontSize: 12}}>{name}</div>
+      <div className={styles.cardDesc}>{desc}</div>
     </div>
   )
 }
