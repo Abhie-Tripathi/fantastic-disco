@@ -71,7 +71,11 @@
     position: relative;
 }
 
-@media screen and (max-width: 1490px) {
+.modalContainer {
+    width: calc(100vw - 130px);
+}
+
+@media screen and (max-width: 768px) {
     .innerContainer {
         flex-direction: column;
         height: fit-content;
@@ -92,6 +96,9 @@
 @media screen and (max-width: 576px) {
     .containerLeft {
         padding-right: 0px;
+    }
+    .modalContainer {
+        width: 100%;
     }
 }
 

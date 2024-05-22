@@ -17,9 +17,10 @@ import { baseUrl, headers } from "@/constants";
 interface Props {
   handleShortlistModal: (eventId: string) => void;
   shortlistModalData: any;
+  handleRefresh: () => void;
 }
 
-const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => {
+const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh }: Props) => {
   const { user } = useAuthContext();
 
   const closeModal = () => {
@@ -46,6 +47,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
 
   const handleSubmit = async() => {
     if(user){
+      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0){
       let payloadData = {
         entityId: shortlistModalData.eventId,
         status: "SHORTLISTED",
@@ -60,9 +62,28 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
           headers: headers,
           body: JSON.stringify(payloadData),
         });
+        handleRefresh();
         closeModal();
       } catch (error) {
         console.error('Error fetching data:', error);
+      }
+      }else{
+        let payloadData = {
+          enquiryId: shortlistModalData.enquiryId,
+          enquiryStatus:"SHORTLISTED"
+        };
+        try {
+          const apiUrl = baseUrl + "/userInterest/enquiry";
+          const apiData = await myFetch(apiUrl, {
+            method: "PATCH",
+            headers: headers,
+            body: JSON.stringify(payloadData),
+          });
+          handleRefresh();
+          closeModal();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
       }
     }
   }
