@@ -10,13 +10,14 @@ import { baseUrl, headers } from "@/constants";
 interface Props{
     handleModal : (id: string) => void,
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
+    cardUpdated: boolean;
 }
 
-const Internal = ({handleModal, handleShortlistModal} : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated} : Props) => {
     let prevDate: any = null;
 
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
 
     const handleScrollEnd = () => {
@@ -68,10 +69,18 @@ const Internal = ({handleModal, handleShortlistModal} : Props) => {
     }, [handleScrollEnd]);
 
     useEffect(() => {
-        // if(page>0)
+        if(page>0)
             fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
+
+    useEffect(() => {
+        console.log('cardUpdated',cardUpdated, page);
+        if(page == 1)
+            fetchData();
+        else 
+            setPage(1);
+    }, [cardUpdated]);
 
   return (
     <div className={styles.scrollContainer} ref={divRef} >

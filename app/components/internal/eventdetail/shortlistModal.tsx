@@ -17,9 +17,10 @@ import { baseUrl, headers } from "@/constants";
 interface Props {
   handleShortlistModal: (eventId: string) => void;
   shortlistModalData: any;
+  handleRefresh: () => void;
 }
 
-const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => {
+const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh }: Props) => {
   const { user } = useAuthContext();
 
   const closeModal = () => {
@@ -61,6 +62,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
           headers: headers,
           body: JSON.stringify(payloadData),
         });
+        handleRefresh();
         closeModal();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -77,6 +79,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
             headers: headers,
             body: JSON.stringify(payloadData),
           });
+          handleRefresh();
           closeModal();
         } catch (error) {
           console.error('Error fetching data:', error);

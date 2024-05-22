@@ -18,6 +18,10 @@ const Page = () => {
   const {theme} = useTheme()
   const [singleEventId, setSingleEventId] = useState<string>('');
 
+  const [cardUpdated, setCardUpdated] = useState<boolean>(false);
+  const handleRefresh = () => {
+    setCardUpdated(!cardUpdated);
+  }
   const handleModal = (eventId: string) => {
     setModalOpen(!modalOpen);
     setSingleEventId(eventId);
@@ -61,14 +65,14 @@ const Page = () => {
             </div>
           ))}
         </div>)}
-      {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} />}
+      {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} cardUpdated={cardUpdated} />}
       {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light : ""}`}>
         <EventDetail openEventDetails={true} openEventRequest={false} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} eventId={singleEventId} />
       </div>}
 
       {shortlistModalOpen && 
         <div className={`${theme === 'light' ? styles.modal_light : ""}`}>
-          <ShortlistModal handleShortlistModal={handleShortlistModal} shortlistModalData={shortlistModalData}  />
+          <ShortlistModal handleShortlistModal={handleShortlistModal} shortlistModalData={shortlistModalData} handleRefresh={handleRefresh} />
         </div>
       }
       <ToastContainer />
