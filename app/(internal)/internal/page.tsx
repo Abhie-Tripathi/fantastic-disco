@@ -31,6 +31,12 @@ interface SavedEvent {
   id: string;
 }
 
+interface Outreach {
+  pending: Number;
+  shortlisted: Number;
+  Prefinal: Number;
+}
+
 interface CordinateType {
   totalEvent: string;
   stats: {
@@ -123,11 +129,15 @@ const Dashboard = () => {
   const [trackerList, setTrackerList] = useState([]);
   const [savedEvantsList, setSavedEventsList] = useState<SavedEvent[]>([]);
   const [cordinateData, setCordinateData] = useState<CordinateType>();
+  const [outReachData, setOutReachData] = useState<Outreach[]>([]);
+  const [pendingEvent, setPendingEvents] = useState("");
+  const [shortlisted, setShortListed] = useState("");
+  const [prefinal, setPrefinal] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   useEffect(() => {
     const getListOfTrackers = async () => {
-      // setIsLoading(true);
       try {
         const data: any = await myFetch(`${baseUrl}/tracker`);
         setTrackerList(data?.data?.trackerData);
@@ -142,7 +152,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getSavedEvents = async () => {
-      // setIsLoading(true);
       try {
         const data = await myFetch(`${baseUrl}/tracker/saved-events`);
         console.log("sade", data?.data);
@@ -158,7 +167,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getCordinateList = async () => {
-      // setIsLoading(true);
       try {
         const data = await myFetch(`${baseUrl}/userInterest/totalParticipent`);
         console.log("cordinate", data?.data);
@@ -180,18 +188,17 @@ const Dashboard = () => {
           myFetch(`${baseUrl}/userInterest/enquiry?status=IN_NEGO`),
           myFetch(`${baseUrl}/userInterest/enquiry?status=CONFIRMED`),
         ]);
-        console.log(
-          "outreach_data",
-          response1?.data?.enquiryData,
-          response2?.data?.enquiryData,
-          response3?.data?.enquiryData
-        );
+        setPendingEvents(response1?.data?.enquiryData.length);
+        setShortListed(response2?.data?.enquiryData?.length);
+        setPrefinal(response3?.data?.enquiryData?.length);
       } catch (error) {
         console.error("Error while fetching outreach list:", error);
       }
     };
     getOutReachData();
   }, []);
+
+  console.log("outreach", outReachData);
 
   const getImageSrc = (status: any) => {
     switch (status) {
@@ -222,7 +229,96 @@ const Dashboard = () => {
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
-          <div className={styles.linkCard_container}>
+          {isLoading ? (
+            <>
+              <SkeletonCards />
+            </>
+          ) : (
+            <div className={styles.linkCard_container}>
+              <Link href={`internal/search/events`} className={styles.linkCard}>
+                <div className={styles.linkCard_header}>
+                  <div className={styles.linkCard_header_title}>
+                    <Image src={Research} alt="search" />
+                    <span>Continue Research</span>
+                  </div>
+                  <Image
+                    src={GotoIcon}
+                    alt="goto"
+                    className={`${iconClass} ${styles.goto_icon}`}
+                  />
+                </div>
+
+                <div className={styles.linkCard_heading}>
+                  <span>Bengaluru</span>
+                </div>
+
+                <div className={styles.linkCard_description}>
+                  <div>
+                    <span>Bengaluru, Karnataka, India(1.34mi radius)</span>
+                  </div>
+                </div>
+                <div className={styles.linkCard_tagsOuterContainer}></div>
+              </Link>
+
+              <Link href={"internal/outreach"} className={styles.linkCard}>
+                <div className={styles.linkCard_header}>
+                  <div className={styles.linkCard_header_title}>
+                    <Image src={ExhibitIcon} alt="search" />
+                    <span>Outreach</span>
+                  </div>
+                  <Image
+                    src={GotoIcon}
+                    alt="goto"
+                    className={`${iconClass} ${styles.goto_icon}`}
+                  />
+                </div>
+
+                <div className={styles.linkCard_heading}></div>
+
+                <div className={styles.linkCard_description}>
+                  <div className={styles.outreach_count}>
+                    <span>Pending events to look at: {pendingEvent}</span>
+                    <span>Shortlisted Events: {shortlisted}</span>
+                    <span>Pre Finalised Events: {prefinal}</span>
+                  </div>
+                </div>
+                <div className={styles.linkCard_tagsOuterContainer}></div>
+              </Link>
+
+              <Link
+                href={"/internal/trackers/create"}
+                className={styles.linkCard}
+              >
+                <div className={styles.linkCard_header}>
+                  <div className={styles.linkCard_header_title}>
+                    <Image src={Trend} alt="search" />
+                    <span>Create Tracker</span>
+                  </div>
+                  <Image
+                    src={GotoIcon}
+                    alt="goto"
+                    className={`${iconClass} ${styles.goto_icon}`}
+                  />
+                </div>
+
+                <div
+                  key={"card.title"}
+                  className={styles.linkCard_heading}
+                ></div>
+
+                <div className={styles.linkCard_description}>
+                  <div>
+                    Track key events in real-time to make informed decisions and
+                    seize opportunities as they arise.
+                  </div>
+                </div>
+                <div className={styles.linkCard_tagsOuterContainer}></div>
+              </Link>
+            </div>
+          )}
+
+          {/* Old One */}
+          {/* <div className={styles.linkCard_container}>
             {isLoading ? (
               <SkeletonCards />
             ) : (
@@ -255,17 +351,11 @@ const Dashboard = () => {
                     ))}
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}>
-                    {/* {card.tags.map((tag, key) => (
-                    <div className={styles.linkCard_tagsInnerContainer} key={key}>
-                      <div className={styles.linkCard_tagsName} >{tag.name}</div>
-                      <div className={styles.linkCard_tagsCount} >{tag.count}</div>
-                    </div>
-                  ))} */}
                   </div>
                 </Link>
               ))
             )}
-          </div>
+          </div> */}
         </div>
         <span className={styles.divider}></span>
         <div className={styles.notification_container}>
@@ -486,25 +576,30 @@ const Dashboard = () => {
               </>
             ) : (
               <Link href={"/internal/coordinate"} className={styles.linkCard}>
-              <div className={styles.linkCard_header}>
-                <div className={styles.linkCard_header_title}>
-                  <Image src={DatasetIcon} alt="data" className={iconClass} />
-                  <span>Coordiante</span>
-                </div>
-                <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
-              </div>
-              <div className={styles.linkCard_description}>
-                <div>Total Events : 8</div>
-              </div>
-              <div className={styles.linkCard_tagsOuterContainer}>
-                {coordinateCardTags.map((tag, key) => (
-                  <div className={styles.linkCard_tagsInnerContainer} key={key}>
-                    <div className={styles.linkCard_tagsName}>{tag.name}</div>
-                    <div className={styles.linkCard_tagsCount}>{tag.count}</div>
+                <div className={styles.linkCard_header}>
+                  <div className={styles.linkCard_header_title}>
+                    <Image src={DatasetIcon} alt="data" className={iconClass} />
+                    <span>Coordiante</span>
                   </div>
-                ))}
-              </div>
-            </Link>
+                  <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
+                </div>
+                <div className={styles.linkCard_description}>
+                  <div>Total Events : 8</div>
+                </div>
+                <div className={styles.linkCard_tagsOuterContainer}>
+                  {coordinateCardTags.map((tag, key) => (
+                    <div
+                      className={styles.linkCard_tagsInnerContainer}
+                      key={key}
+                    >
+                      <div className={styles.linkCard_tagsName}>{tag.name}</div>
+                      <div className={styles.linkCard_tagsCount}>
+                        {tag.count}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Link>
             )}
           </div>
         </div>

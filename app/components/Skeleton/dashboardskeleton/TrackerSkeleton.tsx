@@ -5,7 +5,7 @@ import styles from "./tracker.module.css";
 const TrackerSkeleton = () => {
   return (
     <div className={styles.tracker_outer_card}>
-      <Skeleton animation="wave" variant="rectangular" width={"60%"} height={25} />
+      <Skeleton animation="wave" variant="rectangular" width={"50%"} height={25} />
       <div className={styles.outer_container}>
         <div className={styles.inner_container}>
           <div>
