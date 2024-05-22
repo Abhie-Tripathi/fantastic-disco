@@ -41,6 +41,12 @@
   scrollbar-width: none;
 }
 
+.outreach_count{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .linkCard {
   flex: 1;
   height: 175px;
@@ -54,6 +60,8 @@
   min-width: 170px;
   overflow: hidden;
   /* justify-content: space-between; */
+  /* max-width: 250px; */
+
 }
 
 .linkCard_tagsOuterContainer {
