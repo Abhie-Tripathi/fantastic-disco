@@ -9,15 +9,15 @@ import { baseUrl, headers } from "@/constants";
 
 interface Props{
     handleModal : (id: string) => void,
-    handleShortlistModal: (eventId: string) => void
-    handleRejectClick: () => void
+    handleShortlistModal: (eventId: string, enquiryId: string) => void;
+    cardUpdated: boolean;
 }
 
-const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated} : Props) => {
     let prevDate: any = null;
 
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
 
     const handleScrollEnd = () => {
@@ -69,10 +69,18 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
     }, [handleScrollEnd]);
 
     useEffect(() => {
-        // if(page>0)
+        if(page>0)
             fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
+
+    useEffect(() => {
+        console.log('cardUpdated',cardUpdated, page);
+        if(page == 1)
+            fetchData();
+        else 
+            setPage(1);
+    }, [cardUpdated]);
 
   return (
     <div className={styles.scrollContainer} ref={divRef} >
@@ -88,6 +96,7 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.id}
+                    enquiryId={item.enquiryId}
                     eventName={item.name}
                     eventLocation={item.city}
                     eventImage={"https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"}
@@ -95,9 +104,9 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
                     eventCompany={item.orgName}
                     eventDuration={item.duration}
                     userCount={item.userCount}
+                    currentEnquiryStatus={item.status}
                     handleModal={handleModal}
                     handleShortlistModal={handleShortlistModal}
-                    handleRejectClick={handleRejectClick}
                 />
             </div>
         );

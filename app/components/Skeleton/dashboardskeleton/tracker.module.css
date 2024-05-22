@@ -1,0 +1,22 @@
+.tracker_outer_card {
+  padding: 10px;
+  background-color: #1a1a1a;
+
+}
+
+.skelton_eventCard {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.outer_container {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.inner_container {
+  display: flex;
+  gap: 10px;
+}
