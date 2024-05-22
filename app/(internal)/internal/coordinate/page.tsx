@@ -22,14 +22,14 @@ const Page = () => {
     setModalOpen(!modalOpen);
     setSingleEventId(eventId);
   }
-  const handleShortlistModal = (eventId: string) => {
+  const handleShortlistModal = (eventId: string, enquiryId: string = '') => {
     if(eventId && eventId != '') 
-      fetchInterestData(eventId);
+      fetchInterestData(eventId, enquiryId);
     else
       setShortlistModalOpen(!shortlistModalOpen);
   }
 
-  const fetchInterestData = async(eventId: string) => {
+  const fetchInterestData = async(eventId: string, enquiryId: string) => {
     try {
       const apiUrl = baseUrl + "/userInterest/" + eventId;
       const apiData = await myFetch(apiUrl, {
@@ -38,6 +38,7 @@ const Page = () => {
       });
       if(apiData.data) {
         apiData.data.eventId = eventId;
+        apiData.data.enquiryId = enquiryId;
         setShortlistModalData(apiData.data);
       }
     } catch (error) {
@@ -47,13 +48,6 @@ const Page = () => {
     }
   }
 
-  const handleRejectClick = () => {
-    toast.error(
-      <div>Rejected! <button onClick={() => console.log("undo action")}>UNDO</button></div>, {
-      position: 'top-center',
-      autoClose: 2000,
-    });
-  }
   const totalCount = TypeOfEventsCount.reduce((total, item) => total + item.count, 0);
 
   return (
@@ -67,7 +61,7 @@ const Page = () => {
             </div>
           ))}
         </div>)}
-      {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} handleRejectClick={handleRejectClick} />}
+      {!modalOpen && <Internal handleModal={handleModal} handleShortlistModal={handleShortlistModal} />}
       {modalOpen && <div className={`${styles.modal} ${theme === 'light' ? styles.modal_light : ""}`}>
         <EventDetail openEventDetails={true} openEventRequest={false} openOrganiserDetails={false} openPocDetails={false} closeBtn={true} handleModal={handleModal} eventId={singleEventId} />
       </div>}

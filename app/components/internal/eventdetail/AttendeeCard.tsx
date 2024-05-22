@@ -18,6 +18,9 @@ interface Props{
 interface User {
     id: string;
     name: string;
+    designation: string;
+    profilePicture: string;
+    status: string;
     // initials: string;
     selected?: boolean;
 }
@@ -35,7 +38,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
     const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
     const handleAllSelect = () => {
-        const updatedUserData = userData.map(user => ({ ...user, selected: !allSelected }));
+        const updatedUserData = userData.map(user => ({ ...user, status: (user.status=='PENDING')?'SHORTLISTED':'PENDING' }));
         setUserData(updatedUserData);
         setAllSelected(!allSelected);
     }
@@ -46,7 +49,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
             
             if (userIndex !== -1) {
                 const updatedUserData = [...prevUserData];
-                updatedUserData[userIndex] = { ...updatedUserData[userIndex], selected: (user.selected?!user.selected:true) };
+                updatedUserData[userIndex] = { ...updatedUserData[userIndex], status: (user.status=='PENDING')?'SHORTLISTED':'PENDING' };
                 return updatedUserData;
             }
             
@@ -55,11 +58,11 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
     }
 
     const updateSelectedUserCount = () => {
-        const count = userData.filter(user => user.selected).length;
+        const count = userData.filter(user => (user.status=='SHORTLISTED')).length;
         setSelectedUserCount(count);
 
         if(shortlistedUsers && setShortlistedUsers){
-            const selectedUserIds = userData.filter(user => user.selected).map(user => user.id);
+            const selectedUserIds = userData.filter(user => (user.status=='SHORTLISTED')).map(user => user.id);
             setShortlistedUsers(selectedUserIds);
         }
     };
@@ -112,7 +115,9 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                         <CheckboxInput
                             id={'abc'}
                             onChange={() => onUserSelect(user)}
-                            checked={(user.selected !== undefined)? user.selected :false}
+                            checked={ 
+                                (user.status == 'SHORTLISTED')? true : false
+                            }
                         />
                         <span className={styles.imgContainer}>
                             <Image className={styles.userImage} src={userImageIcon} alt="user" />

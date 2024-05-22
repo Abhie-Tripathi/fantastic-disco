@@ -9,11 +9,10 @@ import { baseUrl, headers } from "@/constants";
 
 interface Props{
     handleModal : (id: string) => void,
-    handleShortlistModal: (eventId: string) => void
-    handleRejectClick: () => void
+    handleShortlistModal: (eventId: string, enquiryId: string) => void;
 }
 
-const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props) => {
+const Internal = ({handleModal, handleShortlistModal} : Props) => {
     let prevDate: any = null;
 
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
@@ -88,6 +87,7 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.id}
+                    enquiryId={item.enquiryId}
                     eventName={item.name}
                     eventLocation={item.city}
                     eventImage={"https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"}
@@ -95,9 +95,9 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
                     eventCompany={item.orgName}
                     eventDuration={item.duration}
                     userCount={item.userCount}
+                    currentEnquiryStatus={item.status}
                     handleModal={handleModal}
                     handleShortlistModal={handleShortlistModal}
-                    handleRejectClick={handleRejectClick}
                 />
             </div>
         );

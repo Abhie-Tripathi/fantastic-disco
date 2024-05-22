@@ -21,7 +21,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
-  id: number;
+  id: string;
+  eventGroupId: string,
   imageUrl: string;
   name: string;
   description: string;
@@ -58,15 +59,15 @@ const EventDetail = ({
   const pathName = usePathname().split("/")[2];
   const [singleEventData, setSingleEventData] = useState<EventData>();
 
-  const singledata: EventData = {
-    id: 12,
-    imageUrl:
-      "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
-    name: "Great Indian Food Festival",
-    description:
-      "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
-      // enquiryId: singleEventData[0].enquiryId,
-  };
+  // const singledata: EventData = {
+  //   id: 12,
+  //   imageUrl:
+  //     "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
+  //   name: "Great Indian Food Festival",
+  //   description:
+  //     "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
+  //     // enquiryId: singleEventData[0].enquiryId,
+  // };
 
   const [status, setStatus] = useState<number>(1);
   const statusValues: { [key: string]: string } = {
@@ -123,6 +124,7 @@ const EventDetail = ({
           const eventsData = apiData.data.event;
           setSingleEventData({
             id: eventsData.id,
+            eventGroupId: eventsData.eventGroupId,
             imageUrl:
               "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
             name: eventsData.title,
@@ -153,7 +155,7 @@ const EventDetail = ({
         <Image src={closeIcon} alt="close" height={22} width={22} />
       </div>
 
-      <div style={{width:"100%"}}>
+      <div className={styles.modalContainer}>
         {pathName && pathName === "outreach" && <StatusBar status={status} />}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
@@ -185,7 +187,9 @@ const EventDetail = ({
             <Follower />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-            <Notes />
+          {singleEventData &&
+            <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId}/>
+          }
           </div>
         </div>
       </div>

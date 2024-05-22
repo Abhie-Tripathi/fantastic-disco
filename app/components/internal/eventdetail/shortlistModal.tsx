@@ -46,6 +46,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
 
   const handleSubmit = async() => {
     if(user){
+      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0){
       let payloadData = {
         entityId: shortlistModalData.eventId,
         status: "SHORTLISTED",
@@ -63,6 +64,23 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData }: Props) => 
         closeModal();
       } catch (error) {
         console.error('Error fetching data:', error);
+      }
+      }else{
+        let payloadData = {
+          enquiryId: shortlistModalData.enquiryId,
+          enquiryStatus:"SHORTLISTED"
+        };
+        try {
+          const apiUrl = baseUrl + "/userInterest/enquiry";
+          const apiData = await myFetch(apiUrl, {
+            method: "PATCH",
+            headers: headers,
+            body: JSON.stringify(payloadData),
+          });
+          closeModal();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
       }
     }
   }
