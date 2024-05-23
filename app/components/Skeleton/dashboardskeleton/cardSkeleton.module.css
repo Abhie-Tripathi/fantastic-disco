@@ -1,12 +1,6 @@
-.card_skeleton_container {
-    /* display: flex; */
-    /* gap: 30px; */
-    /* padding: 20px; */
-
+/* .card_skeleton_container {
     display: flex;
-    /* align-items: center; */
     gap: 25px;
-    /* padding: 30px 0px; */
 }
 
 .innerContainer {
@@ -18,5 +12,86 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    justify-content: center;
+    align-items: center;
+} */
 
-}
+
+
+.linkCard_container {
+    display: flex;
+    gap: 10px;
+    padding: 30px 0;
+  }
+  
+  .linkCard {
+    flex: 1;
+    height: 175px;
+    border: 1px solid grey;
+    box-shadow: 0px 4px 20px 0px #00000008;
+    border-radius: 12px;
+    position: relative;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-width: 170px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    justify-content: center;
+    align-items: center;
+
+  }
+  
+ 
+  .skeletonContent {
+    width: 100%;
+    height: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .skeletonFooter {
+    width: 100%;
+    height: 30px;
+    margin-top: auto;
+  }
+  
+  /* Responsive adjustments for different screen sizes */
+  
+  /* For tablets and larger screens */
+  @media (min-width: 600px) {
+    .linkCard {
+      min-width: 200px;
+    }
+  
+    .skeletonHeader {
+      height: 35px;
+    }
+  
+    .skeletonContent {
+      height: 25px;
+    }
+  
+    .skeletonFooter {
+      height: 35px;
+    }
+  }
+  
+  /* For mobile screens */
+  @media (max-width: 600px) {
+    .linkCard {
+      min-width: 150px;
+    }
+  
+    .skeletonHeader {
+      height: 25px;
+    }
+  
+    .skeletonContent {
+      height: 15px;
+    }
+  
+    .skeletonFooter {
+      height: 25px;
+    }
+  }
+  
