@@ -84,6 +84,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
         } else {
             setUserData(userList);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchUser]);
 
     return(

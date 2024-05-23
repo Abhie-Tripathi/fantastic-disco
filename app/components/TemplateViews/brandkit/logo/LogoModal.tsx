@@ -58,9 +58,10 @@ const LogoModal = () => {
                 <div className={styles.line}></div>
                 <div className={styles.logoPlaceholder} style={{ borderRadius: `${borderRadius}%` }}>
                     {uploadedImage ? (
-                        <img
+                        <Image
                             src={uploadedImage as string}
                             alt="Uploaded Logo"
+                            width={10} height={10}
                             className={`${styles.logo} ${styles[imageSize]}`}
                             style={{ borderRadius: `${borderRadius}%` }}
                         />

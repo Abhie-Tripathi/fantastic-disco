@@ -35,6 +35,7 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
     };
     useEffect(()=>{
         setAccordianItemSelected(selectedAccordionItems)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selectedAccordionItems])
 
     return (
