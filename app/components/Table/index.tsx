@@ -195,9 +195,11 @@ const Table = ({
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
-  const [eventPerPage, setEventPerPage] = useState([]);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(eventData.length / itemsPerPage);
+  const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
+  // const itemsPerPage = 10;
+  // const totalPages = Math.ceil(eventData.length / itemsPerPage);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
   const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([
     "9306f250-0bed-4a0f-b7de-1f587e623f33", "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
@@ -261,7 +263,7 @@ const Table = ({
     const endInd = startInd + itemsPerPage;
     // setEventPerPage(eventData.slice(startInd, endInd));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage]);
+  }, [currPage, itemsPerPage]);
 
   const handleModalOpen = (eventId: string) => {
     setIsOpen((prev) => (prev == eventId ? null : eventId));
@@ -282,21 +284,29 @@ const Table = ({
     });
   };
 
+  const handlePageItems = (event:React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    setItemsPerPage(parseInt(event.target.value));
+  }
+
   const fetchEventsData = async() => {
     try {
-      const apiUrl = baseUrl + "/event/search?sortBy=score&sortType=desc";
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}`;
       // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
       const apiData = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
       });
-      console.log('apiData', apiData);
       if(apiData.data) {
-        setEventPerPage(apiData.data.events);
+        if(currPage === 1) {
+          setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
+          setEventPerPage(apiData.data.events);
+        }else{
+          setEventPerPage(apiData.data.events);
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
     }
   }
 
@@ -469,7 +479,7 @@ const Table = ({
                 </td>
                 {showInsights.eventRank && (
                   <td>
-                    {event.rank ? (
+                    {event.rank?.globalRank ? (
                       <>
                         {getEventRank(event.rank.globalRank)}
                         <span className={styles.rank_tag}>
@@ -704,7 +714,7 @@ const Table = ({
           <div>Showing</div>
           <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
-            <select name="" id="" className={styles.pagination_noOfPage}>
+            <select onChange={handlePageItems} name="" id="" className={styles.pagination_noOfPage}>
               <option value="10">10</option>
               <option value="15">15</option>
               <option value="20">20</option>
