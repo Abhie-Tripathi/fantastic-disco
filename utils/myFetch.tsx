@@ -4,6 +4,7 @@ export const myFetch = async (
   ): Promise<{ data?: any | undefined; error?: any | undefined }> => {
     const response = await fetch(url, {
       
+      ...options,
       
       credentials: "include",
       mode: "cors",
@@ -11,7 +12,6 @@ export const myFetch = async (
       // headers: {
       //   "Content-Type" : "application/json"
       // },
-      ...options
     });
     const result = await response.json();
     console.log(JSON.stringify(response.headers));

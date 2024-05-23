@@ -18,6 +18,9 @@ import Image from "next/image";
 import EmployeeData from "@/public/data/employeeData.json";
 import { revalidateComment } from "@/utils/commentAction";
 import { log } from "util";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
+import { Select } from "react-aria-components";
 interface Props {
   replyId?:string|undefined|null,
   setType : any,
@@ -66,6 +69,7 @@ export const AddComment = ({
   note,
   replyId,
   setNote,
+  setSuggest,
   setFilePreviews,
   filePreviews,
   selectedPdfs,
@@ -85,6 +89,7 @@ export const AddComment = ({
   const isReply = isEditComment || isEditReply ? false : !!commentId;
   const [noten, setNoten] = useState<string>("");
   const [showUser, setShowUser] = useState(false);
+ 
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [rec, setRec] = useState<boolean>(false);
   const [mention, setMention] = useState("");
@@ -95,40 +100,54 @@ export const AddComment = ({
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef(null);
   const pdfRef = useRef(null);
+  const[apiUserData,setApiUserData]=useState();
+  const [users, setUsers] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultContainer = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-  // useEffect(() => {
-  //   const trimmedNote = noten.trim(); // Trim whitespace from the beginning and end of the input
-  //   if (trimmedNote.startsWith("@") || trimmedNote.includes(" @")) { // Check if "@" is at the start or preceded by a space
-  //     setShowUser(true);
-  //     const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim(); // Extract text after the last "@" symbol
-  //     if (searchTerm) {
-  //       const filtered = alluser.filter((employee) =>
-  //         employee.toLowerCase().includes(searchTerm.toLowerCase())
-  //       );
-  //       setAlluser(filtered);
-  //     }
-  //   }
-  // }, [note, alluser]);
   useEffect(() => {
-    const trimmedNote = note?.trim();
-    if (trimmedNote?.includes("@")) {
+    const url = `${baseUrl}/auth/users`;
+    getAllUser(url);
+  }, []);
+
+  // Function to fetch users from the API
+  const getAllUser = async (url: string) => {
+    const { data, error } = await myFetch(url);
+    if (data) {
+      setApiUserData(data);
+      const usernames = data.map((item: any) => "@" + item.firstname + item.lastname);
+      setUsers(usernames);
+    }
+  };
+
+  // Effect to handle note changes and filter users
+  useEffect(() => {
+    const trimmedNote = note.trim();
+    console.log(trimmedNote);
+
+    if (trimmedNote.includes("@")) {
       // setShowUser(true);
-      const searchTerm = trimmedNote
-        .substring(trimmedNote.lastIndexOf("@") + 1)
-        .trim();
+      const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
+      console.log('searchTerm:', searchTerm);
+
       if (searchTerm) {
-        const filtered = alluser?.filter((user) => {
+        const filtered = users.filter((user) => {
           return user.toLowerCase().includes(searchTerm.toLowerCase());
         });
+       
+        console.log('filtered:', filtered);
         setAlluser(filtered);
+      } else {
+        setAlluser(users);
       }
-    } else setShowUser(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [note]);
+    } else {
+      setShowUser(false);
+      setAlluser([]);
+    }
+  }, [note, users]);
+
   // useEffect(() => {
   //   if (!resultContainer.current) return;
 
@@ -183,19 +202,30 @@ export const AddComment = ({
       e.preventDefault();
       let newNote="";
       if(showUser){
-      newNote = note + alluser[focusedIndex].substring(1) + " ";
-      if(note.includes("wants to recommend"))
+        const lastAtIndex = note.lastIndexOf("@");
+        if(alluser[focusedIndex]){
+      newNote = note.substring(0, lastAtIndex + 1)  + alluser[focusedIndex].substring(1) + " ";
+      const selectedUser = apiUserData?.find((user:any) => `${user.firstname}${user.lastname}` ===  alluser[focusedIndex].substring(1));
+        console.log(selectedUser);
+        
+      //  setSuggest(selectedUser.id);
+        }else newNote=note
+      if(note.includes("wants to recommend")){
       setRec(true);
+      }
       else setShowUser(false);
       }
-      else newNote = note + type[focusedIndex] + " ";
+      else{ 
+        newNote = note + type[focusedIndex] + " ";
+        if(type[focusedIndex]==="attend") setInterestType("VISITOR");
+        else setInterestType("SPEAKER");
+      }
       setNote(newNote);
       // setRec(true);
     }
     // Handle Enter key press
     else if (key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      console.log("function called 2 times");
       return notes(e);
     } else if (key === "Enter" && e.shiftKey) {
       // Prevent default behavior
@@ -255,19 +285,19 @@ export const AddComment = ({
     if (note?.charAt(note.length - 1) === "@") {
       console.log(comments);
       setShowUser(true);
-      let arr = Array.from(
-        new Set(
-          comments?.map(
-            (comment) =>
-              "@" +
-              comment?.user?.firstname +
-              comment?.user?.lastname.toLowerCase()
-          )
-        )
-      );
-      console.log(arr);
+      // let arr = Array.from(
+      //   new Set(
+      //     comments?.map(
+      //       (comment) =>
+      //         "@" +
+      //         comment?.user?.firstname +
+      //         comment?.user?.lastname.toLowerCase()
+      //     )
+      //   )
+      // );
+      // console.log(arr);
 
-      setAlluser(arr);
+      // setAlluser(arr);
     }
     // else setShowUser(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -277,16 +307,28 @@ export const AddComment = ({
     
   };
   // },[note])
-  const handleSelectRecommendation = (name: String) => {
-    if (!note.includes(name)) {
-      setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
-      showTypes(false);
-      setShowUser(false);
-      // setMention("");
-      setRec(true);
-    }
+
+    const handleSelectRecommendation = (e:any,name: String) => {
+      console.log(name);
+      if (!note.includes(name)) {
+        setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
+        showTypes(false);
+        setShowUser(false);
+        const selectedUser = apiUserData?.find((user:any) => `@${user.firstname}${user.lastname}` === name);
+        console.log(apiUserData);
+        
+       setSuggest(selectedUser.id);
+        
+        
+          
+        setType("RECOMMEND");
+        // setMention("");
+        setRec(true);
+        
+      }
+    };
     // console.log(1);
-  };
+  
   const handleSelectAttend = () => {
     setNote(
       "@" +
@@ -312,6 +354,7 @@ export const AddComment = ({
   };
   const handleRecommend = (event: any) => {
     event.preventDefault();
+    
     let arr = Array.from(
       new Set(
         comments?.map(
@@ -322,7 +365,7 @@ export const AddComment = ({
         )
       )
     );
-    setAlluser(arr);
+    // setAlluser(arr);
     setNote(
       note.substring(0, note.lastIndexOf("/")) +
         `@${
@@ -334,6 +377,8 @@ export const AddComment = ({
     // }
     if (textareaRef?.current) textareaRef.current.focus();
     setShowUser(true);
+    setType("RECOMMEND");
+
   };
   useEffect(() => {
     if (rec === true) {
@@ -402,8 +447,9 @@ export const AddComment = ({
   const [disable, setDisable] = useState(false);
   const handleSelectType = (event: any, ele: string) => {
     console.log(ele);
-
     if (type.includes(ele)) {
+      if(ele==="Speak") setInterestType("SPEAKER");
+      else setInterestType("VISITOR")
       setNote((prev) => prev + ele);
       // handleKeyDown1(event);
       showTypes(false);
@@ -420,6 +466,8 @@ export const AddComment = ({
     }
     if (alluser.some((type) => note?.includes(type)) && textareaRef.current) {
       textareaRef.current.focus();
+      console.log(textareaRef);
+      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [types, note]);
@@ -431,7 +479,25 @@ export const AddComment = ({
   // const handleFileChange = (event: any) => {
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
-    setFilePreviews((prevSelectedFiles: File[] | null) => {
+    const selectedFile = event.target.files[0];
+    console.log(event.target.files[0]);
+    
+    console.log(URL.createObjectURL(selectedFile));
+
+    // Check if the selected file is a PDF
+    if (selectedFile && selectedFile.type === "application/pdf") {
+      // setSelectedPdfs([...selectedPdfs, selectedFile]);
+      const file = Array.from(selectedFile);
+      setSelectedPdfs((prevSelectedFiles:any) => {
+        if (!prevSelectedFiles || prevSelectedFiles.length === 0) {
+          return file;
+        } else {
+          return [...prevSelectedFiles, ...file];
+        }
+      });
+    }else if(selectedFile.type.startsWith('image/')){
+      
+      setFilePreviews((prevSelectedFiles: File[] | null) => {
       if (
         prevSelectedFiles === null ||
         typeof prevSelectedFiles === "undefined"
@@ -441,6 +507,12 @@ export const AddComment = ({
         return [...prevSelectedFiles, event.target.files[0]];
       }
     });
+    }
+    else {
+      // Handle case when file is not a PDF
+      console.log("Please select a PDF file.");
+    }
+    // setFilePreviews([event.target.files[0]])
   };
 
   const handleUpload = () => {
@@ -472,13 +544,16 @@ export const AddComment = ({
   };
   // const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
   const pdfUpload = (event: any) => {
+    console.log(11111111111111);
+    
     const selectedFile = event.target.files[0];
+    console.log(event.target.files[0]);
     
     console.log(URL.createObjectURL(selectedFile));
 
     // Check if the selected file is a PDF
     if (selectedFile && selectedFile.type === "application/pdf") {
-      setSelectedPdfs([...selectedPdfs, selectedFile.name]);
+      setSelectedPdfs([...selectedPdfs, selectedFile]);
     }else if(selectedFile.type.startsWith('image/')){
       
       setFilePreviews((prevSelectedFiles: File[] | null) => {
@@ -542,6 +617,9 @@ export const AddComment = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[replyId])
  
+  console.log(selectedPdfs);
+  console.log(alluser);
+  
   
   return (
     <div className={styles.container}>
@@ -579,11 +657,11 @@ export const AddComment = ({
         </div>
         : <></>}
         <div style={{ display: "flex", gap: "10px" }}>
-          {selectedPdfs?.map((item: string, ind: number) => (
+          {selectedPdfs?.map((item: File, ind: number) => (
             <div key={ind} className={styles.pdf}>
               <Image src={Pdf} width={50} height={50} alt="pdf" />
               <p key={ind} style={{ display: "flex" }}>
-                {item}
+                {item.name}
               </p>
             </div>
           ))}
@@ -594,17 +672,22 @@ export const AddComment = ({
               {filePreviews.map((filePreview: any, index: number) => (
                 <div className={styles.fileDiv} key={index}>
                   <Image
+                  style={{borderRadius:"5px"}}
                     src={URL.createObjectURL(filePreview)}
                     width={80}
                     height={80}
                     alt="File Preview"
                   />
+                  <div className={styles.closeOuter}>
                   <Image
                     className={styles.close}
+                    width={20}
+                    height={20}
                     src={Close}
                     onClick={() => removeImg(index)}
                     alt="close"
                   />
+                  </div>
                 </div>
               ))}
             </div>
@@ -647,16 +730,16 @@ export const AddComment = ({
 
           {showUser && (
             // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
-            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "" }}>
               {alluser.map((ele, ind) => (
                 <div
                   ref={ind === focusedIndex ? resultContainer : null}
                   style={{
-                    backgroundColor: ind === focusedIndex ? "#2B233D" : "",
+                    backgroundColor: ind === focusedIndex ? "rgb(103 80 164)" : "",
                   }}
                   className={styles.option}
                   key={ind}
-                  onMouseDown={() => handleSelectRecommendation(ele)}
+                  onMouseDown={(e) => handleSelectRecommendation(e, ele)}
                 >
                   {ele}
                 </div>
@@ -664,14 +747,15 @@ export const AddComment = ({
             </div>
           )}
           {types && (
-            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "" }}>
+
               {type.map((ele, ind) => (
                 <div
                   key={ind}
                   className={styles.option}
                   ref={ind === focusedIndex ? resultContainer : null}
                   style={{
-                    backgroundColor: ind === focusedIndex ? "#2B233D" : "",
+                    backgroundColor: ind === focusedIndex ? "rgb(103 80 164)" : "",
                   }}
                   onMouseDown={(e) => handleSelectType(e, ele)}
                 >
@@ -697,7 +781,7 @@ export const AddComment = ({
         </button>
         <input
           type="file"
-          onChange={handleFileChange}
+          onChange={pdfUpload}
           ref={fileRef}
           style={{ display: "none" }}
         />
