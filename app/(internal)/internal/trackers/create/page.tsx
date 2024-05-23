@@ -34,9 +34,8 @@ const Chip = ({ state, setState, value }: ChipProps) => {
   };
   return (
     <div
-      className={`${styles.chip} ${
-        state.includes(value) ? styles.active : ""
-      } ${theme === "light" ? styles.chip_light : ""}`}
+      className={`${styles.chip} ${state.includes(value) ? styles.active : ""
+        } ${theme === "light" ? styles.chip_light : ""}`}
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
@@ -52,7 +51,6 @@ const Chip = ({ state, setState, value }: ChipProps) => {
 const CreateTracker = () => {
   const router = useRouter();
   const [openDropdown, setOpenDropdown] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
   // const [eventStatus, setEventStatus] = useState(searchParams.get("event_status")?.split(",") || []);
   // const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
   // const [dateRange, setDateRange] = useState<string[]>(searchParams.get("date_range")?.split(",") || []);
@@ -83,6 +81,8 @@ const CreateTracker = () => {
   const attendanceDropdownRef = useRef(null);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const [isSaving, setIsSaving] = useState<boolean>(false)
 
   // const search = useSearchParams();
   // console.log(search)
@@ -117,6 +117,16 @@ const CreateTracker = () => {
         aviation_rank_lte: 100,
       },
     };
+    if (
+      categories.length === 0 ||
+      labels.length === 0 ||
+      dateRange.length === 0 ||
+      eventStatus.length === 0
+    ) {
+      console.log("Please, Fill all the details");
+      return;
+    }
+    setIsSaving(true);
 
     if (
       categories.length === 0 ||
@@ -137,14 +147,14 @@ const CreateTracker = () => {
         "Content-Type": "application/json",
       },
     });
-
     if (error) {
       console.log(error);
       setIsSaving(false);
+      setIsSaving(false);
       return;
     }
-
     if (data) {
+      setIsSaving(false);
       setIsSaving(false);
       router.replace("/internal/trackers");
     }
@@ -154,9 +164,8 @@ const CreateTracker = () => {
     <div>
       <div className={styles.trackers_container}>
         <div
-          className={`${styles.trackers_header} ${
-            theme === "light" ? styles.trackers_header_light : ""
-          }`}
+          className={`${styles.trackers_header} ${theme === "light" ? styles.trackers_header_light : ""
+            }`}
         >
           <input
             className={styles.trackers_header_input}
@@ -171,6 +180,7 @@ const CreateTracker = () => {
             className={`${styles.trackers_header_newtracker_button} ${
               isSaving && styles.newtracker_button_disable
             }`}
+           
           >
             <div>{isSaving ? "Saving..." : "Save Tracker"}</div>
           </button>
@@ -245,9 +255,8 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -286,9 +295,8 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -323,9 +331,8 @@ const CreateTracker = () => {
                 <div className={styles.dropdown_placeholder}>--Select--</div>
               )}
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -388,9 +395,8 @@ const CreateTracker = () => {
         </div>
 
         <div
-          className={`${styles.location_tab_container} ${
-            theme === "light" ? styles.location_tab_container_light : ""
-          }`}
+          className={`${styles.location_tab_container} ${theme === "light" ? styles.location_tab_container_light : ""
+            }`}
         >
           <div className={`${styles.location_tab} ${styles.active}`}>
             Saved Locations

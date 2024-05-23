@@ -296,9 +296,9 @@
   transition: all 0.3s;
 }
 
-.modal_header .close:hover img {
+/* .modal_header .close:hover img {
   transform: scale(1.1);
-}
+} */
 
 .form-check {
   padding-bottom: 10px;

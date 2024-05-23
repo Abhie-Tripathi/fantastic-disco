@@ -51,6 +51,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
       setMatchingEvents(matches);
       setIsEventDropdownOpen(searchInput.trim() !== ""); // Set dropdown open only if searchInput is not empty
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
 
   const handleEventClick = (event: any) => {
@@ -59,6 +60,7 @@ const StickyWidget = (props: StickyWidgetProps) => {
   };
   useEffect(() => {
     setSearchInput(selectedEvent?._source.name || "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEvent]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

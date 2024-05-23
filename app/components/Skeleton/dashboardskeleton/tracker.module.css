@@ -1,0 +1,42 @@
+.tracker_outer_card {
+  padding: 10px;
+  background-color: #1a1a1a;
+
+}
+
+.skelton_eventCard {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.outer_container {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.inner_container {
+  display: flex;
+  gap: 10px;
+}
+
+.item_container_for_mobile {
+  display: none;
+  gap: 10px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 665px) {
+  .inner_container {
+    display: none;
+    gap: 10px;
+  }
+
+  .item_container_for_mobile {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+
+}

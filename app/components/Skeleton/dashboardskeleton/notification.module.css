@@ -1,0 +1,18 @@
+.card_skeleton_container {
+    display: flex;
+    gap: 30px;
+    /* padding: 16px; */
+    background-color: #1a1a1a;
+    border: 1px solid grey;
+    margin-top: 10px;
+    border-radius: 8px;
+
+}
+
+.innerContainer {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
