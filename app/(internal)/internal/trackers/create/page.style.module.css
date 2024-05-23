@@ -34,7 +34,7 @@
   background-color: #1a1a1a;
 }
 
-.trackers_header_light{
+.trackers_header_light {
   background-color: var(--secondary-bg-light);
   color: var(--primary-color-light);
 }
@@ -80,6 +80,11 @@
   font-size: inherit;
 }
 
+.newtracker_button_disable {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .form_container {
   display: flex;
   gap: 100px;
@@ -92,7 +97,6 @@
   flex-direction: column;
   gap: 30px;
 }
-
 
 .input_title {
   color: inherit;
@@ -134,7 +138,7 @@
   gap: 5px;
 }
 
-.chip_light{
+.chip_light {
   background-color: var(--primary-bg-light);
   color: inherit;
 }
@@ -157,10 +161,10 @@
   border-radius: 8px;
   box-shadow: 0px 0px 12px 0px #2020200d;
   border: 1px solid #ececf9;
-  background-color:#1a1a1a;
+  background-color: #1a1a1a;
 }
 
-.dropdown_choosebutton_light{
+.dropdown_choosebutton_light {
   background-color: var(--secondary-bg-light);
   color: var(--primary-color-light);
 }
@@ -187,7 +191,7 @@
   gap: 10px;
 }
 
-.location_tab_container_light{
+.location_tab_container_light {
   background-color: var(--secondary-bg-light);
 }
 
@@ -250,9 +254,9 @@
 
 .tag {
   padding: 5px 10px;
-  background-color: #EADDFF;
+  background-color: #eaddff;
   border-radius: 12px;
-  color: #59478C;
+  color: #59478c;
   font-family: 500;
 }
 

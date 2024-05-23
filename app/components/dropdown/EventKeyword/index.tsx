@@ -8,26 +8,21 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useTheme } from "@/context";
 
 interface EventKeywordProps {
-  className?: string;
-  dropdownRef: React.MutableRefObject<null>;
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
-  onClose: () => void;
+  // onClose: () => void;
 }
 
 const EventKeyword = ({
-  className,
-  dropdownRef,
   state,
   setState,
-  onClose,
+  // onClose,
 }: EventKeywordProps) => {
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
   const [eventKeyword, setEventKeyword] = useState<string[]>(state);
   const {theme} = useTheme()
 
-  useClickOutside(dropdownRef, () => onClose());
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
@@ -49,12 +44,12 @@ const EventKeyword = ({
 
   const handleSaveData = () => {
     setState(eventKeyword);
-    onClose();
+    // onClose();
   };
 
   return (
     <div>
-      <div className={`${styles.container} ${className} ${theme === 'light' ? styles.container_light : ""}`}>
+      <div className={`${styles.container}  ${theme === 'light' ? styles.container_light : ""}`}>
         <div className={styles.header}>
           <div className={styles.tabs_container}>
             <div
@@ -74,7 +69,7 @@ const EventKeyword = ({
               Keywords excluded
             </div>
           </div>
-          <div className={styles.header_button} onClick={() => onClose()}>
+          <div className={styles.header_button}>
             <Image src={CloseIcon} width={20} height={20} alt="close" />
           </div>
         </div>

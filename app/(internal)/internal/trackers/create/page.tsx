@@ -86,7 +86,7 @@ const CreateTracker = () => {
 
   // const search = useSearchParams();
   // console.log(search)
-  console.log(router)
+  console.log(router);
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -127,6 +127,19 @@ const CreateTracker = () => {
       return;
     }
     setIsSaving(true);
+
+    if (
+      categories.length === 0 ||
+      labels.length === 0 ||
+      dateRange.length === 0 ||
+      eventStatus.length === 0
+    ) {
+      console.log("Please, Fill all the details");
+      return;
+    }
+
+    setIsSaving(true);
+
     const { data, error } = await myFetch(`${baseUrl}/tracker`, {
       method: "POST",
       body: JSON.stringify(formData),
@@ -137,9 +150,11 @@ const CreateTracker = () => {
     if (error) {
       console.log(error);
       setIsSaving(false);
+      setIsSaving(false);
       return;
     }
     if (data) {
+      setIsSaving(false);
       setIsSaving(false);
       router.replace("/internal/trackers");
     }
@@ -165,6 +180,7 @@ const CreateTracker = () => {
             className={`${styles.trackers_header_newtracker_button} ${
               isSaving && styles.newtracker_button_disable
             }`}
+           
           >
             <div>{isSaving ? "Saving..." : "Save Tracker"}</div>
           </button>
@@ -252,11 +268,11 @@ const CreateTracker = () => {
             </div>
             {openDropdown == "Labels" && (
               <LabelDropdown
-                className={styles.category_dropdown}
+                // className={styles.category_dropdown}
                 state={labels}
                 setState={setLabels}
-                dropdownRef={labelDropdownRef}
-                onClose={() => setOpenDropdown("")}
+                // dropdownRef={labelDropdownRef}
+                // onClose={() => setOpenDropdown("")}
               />
             )}
           </div>

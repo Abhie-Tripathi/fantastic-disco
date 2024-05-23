@@ -1,11 +1,9 @@
 import React, { useRef, useState } from "react";
 import styles from "./rankinput.module.css";
 import ReactSlider from "react-slider";
-import useClickOutside from "@/hooks/useClickOutside";
 
 interface RankInputProps {
-  className?: string
-  dropdownRef: React.MutableRefObject<null>;
+  className?: string;
   selectedEventRank: number[];
   setSelectedEventRank: ([]) => void;
   selectedLocalRank: number[];
@@ -17,7 +15,6 @@ interface RankInputProps {
 
 const RankInput = ({
   className,
-  dropdownRef,
   selectedEventRank,
   setSelectedEventRank,
   selectedLocalRank,
@@ -26,8 +23,6 @@ const RankInput = ({
   setSelectedAviationRank,
   onClose,
 }: RankInputProps) => {
-  useClickOutside(dropdownRef, () => onClose());
-
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
