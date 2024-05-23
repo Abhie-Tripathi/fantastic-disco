@@ -4,6 +4,7 @@ import styles from './page.style.module.css'
 import TemplateCard from '@/app/components/TemplateViews/TemplateCard'
 import ButtonsModal from '@/app/components/TemplateViews/brandkit/buttons/ButtonsModal'
 import ColorModal from '@/app/components/TemplateViews/brandkit/color/ColorModal'
+import LogoModal from '@/app/components/TemplateViews/brandkit/logo/LogoModal'
 
 const Page = () => {
 
@@ -25,9 +26,12 @@ const Page = () => {
             {preview.length > 0 && <div className={styles.modal}>
                     <div className={styles.modalHeading}>
                         {preview === "button" ? "Buttons" :
-                        preview === "color" ? "Colors" : ""}
+                        preview === "color" ? "Colors" : 
+                        preview === "logo"? "Logo" :""}
                     </div>
-                {preview === "button" ? <ButtonsModal /> : <ColorModal/>}
+                {preview === "button" ? <ButtonsModal /> :
+                preview === "color" ?  <ColorModal/> : 
+                preview === "logo" ?  <LogoModal/> : <></>}
                 <div className={styles.btnContainer}>
                     <button type='button' className={styles.cancelBtn} onClick={() => setPreview("")}>Cancel</button>
                     <button type='button' className={styles.submitBtn}>Save Changes</button>

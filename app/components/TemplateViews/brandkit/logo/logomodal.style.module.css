@@ -1,0 +1,128 @@
+.body{
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    border: 1px solid rgb(79, 79, 79);
+}
+.input_btnsContainer{
+    width: 40%;
+    margin: 10px;
+}
+.input{
+    background-color: #6750A466;
+    border-left: 5px solid #6750a4;
+    padding: 20px;
+    height: fit-content;
+}
+.fileInput {
+    display: none;
+}
+.uploadBtn{
+    background-color: #1a1a1a;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+}
+.uploadBtn:hover{
+    transition-duration: .2s;
+    background-color: black;
+}
+.borderRadius{
+    margin-top: 20px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.borderRadius input{
+    padding: 5px;
+    font-size: 13px;
+    color: white;
+    border: 1px solid #6750a4;
+    border-radius: 5px;
+}
+.borderRadius input:focus{
+    outline: none;
+}
+.previewCard{
+    margin: 10px;
+    width: 70%;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid rgb(105, 105, 105);
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+}
+.btnContainer{
+    margin-top: 20px;
+    border: 1px solid #6750a4;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+.btnContainer button{
+    padding: 5px 10px;
+    width: fit-content;
+    font-size: 13px;
+    color: white;
+    background-color: #6750a4;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btnContainer button:hover{
+    background: none;
+    border: 1px solid #6750a4;
+}
+.btnContainer .activeBtn{
+    background: none;
+    border: 1px solid #6750a4;
+}
+.line{
+    width: 90%;
+    background-color: rgb(81, 81, 81);
+    border-radius:3px;
+    height: 20px;
+}
+.logoPlaceholder {
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+  .dummyLogo{
+    border: 1px solid white;
+    height: 30px;
+    width: 30px;
+    font-size: 10px;
+  }
+  .logo {
+    border-radius: 50%;
+  }
+  
+  .small {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .medium {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .large {
+    width: 50px;
+    height: 50px;
+  }
