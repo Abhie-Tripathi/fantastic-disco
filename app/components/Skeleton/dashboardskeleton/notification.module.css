@@ -1,7 +1,7 @@
 .card_skeleton_container {
     display: flex;
     gap: 30px;
-    padding: 20px;
+    /* padding: 16px; */
     background-color: #1a1a1a;
     border: 1px solid grey;
     margin-top: 10px;
@@ -10,7 +10,7 @@
 }
 
 .innerContainer {
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;

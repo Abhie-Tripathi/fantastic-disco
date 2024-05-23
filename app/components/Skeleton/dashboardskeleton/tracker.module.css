@@ -21,4 +21,22 @@
   gap: 10px;
 }
 
+.item_container_for_mobile {
+  display: none;
+  gap: 10px;
+}
+
 /* Responsive adjustments */
+@media screen and (max-width: 665px) {
+  .inner_container {
+    display: none;
+    gap: 10px;
+  }
+
+  .item_container_for_mobile {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+
+}

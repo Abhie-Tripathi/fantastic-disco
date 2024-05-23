@@ -5,7 +5,12 @@ import styles from "./tracker.module.css";
 const TrackerSkeleton = () => {
   return (
     <div className={styles.tracker_outer_card}>
-      <Skeleton animation="wave" variant="rectangular" width={"50%"} height={25} />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width={"50%"}
+        height={25}
+      />
       <div className={styles.outer_container}>
         <div className={styles.inner_container}>
           <div>
@@ -33,6 +38,12 @@ const TrackerSkeleton = () => {
             />
           </div>
         </div>
+        <div className={styles.item_container_for_mobile}>
+          <Skeleton animation="wave" variant="rounded" width={80} height={30} />
+          <Skeleton animation="wave" variant="rounded" width={80} height={30} />
+          <Skeleton animation="wave" variant="rounded" width={80} height={30} />
+        </div>
+
         <div>
           <Skeleton
             animation="wave"
@@ -42,37 +53,6 @@ const TrackerSkeleton = () => {
           />
         </div>
       </div>
-
-      {/* <div className={styles.skelton_eventCard}>
-        <Skeleton
-          animation="wave"
-          variant="rectangular"
-          width="100%"
-          height={100}
-        />
-      </div> */}
-
-      {/* {Array.from({ length: 3 }).map((_, index) => (
-        <>
-          <div key={index}>
-            <Skeleton
-              animation="wave"
-              variant="rectangular"
-              width="100%"
-              height={100}
-            />
-          </div>
-        </>
-      ))} */}
-
-      {/* <div className={styles.tracker_skeleton}>
-        <Skeleton
-          animation="wave"
-          variant="circular"
-          width={100}
-          height={100}
-        />
-      </div> */}
     </div>
   );
 };
