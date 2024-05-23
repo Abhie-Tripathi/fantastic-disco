@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
+import {EventTableType} from "@/types/ListViewTable";
 
 interface FormDataType {
   entityId_id?: string | number | null;
@@ -48,9 +49,9 @@ interface eventSizeItemType {
   };
 }
 
-function listProducts(data: ProductsType[]) {
-  const names = data.map((item) => item.name);
-  const formattedString = names.join(" | ");
+function listProducts(data: string[]) {
+  // const names = data.map((item) => item.name);
+  const formattedString = data.join(" | ");
   return formattedString;
 }
 
@@ -169,8 +170,8 @@ function getEstimatedExhibitors(item: estimatedExhibitorType): string {
   return result;
 }
 
-function getEventRating(item: ratingItemType): string {
-  let averageRating = item.stats.rating;
+function getEventRating(item: string) {
+  let averageRating = parseFloat(item);
   if (averageRating !== undefined && averageRating !== null) {
     if (averageRating >= 4.5) {
       return "4.5 - 5.0";
@@ -194,9 +195,11 @@ const Table = ({
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
-  const [eventPerPage, setEventPerPage] = useState([]);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(eventData.length / itemsPerPage);
+  const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
+  // const itemsPerPage = 10;
+  // const totalPages = Math.ceil(eventData.length / itemsPerPage);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
   const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([
     "9306f250-0bed-4a0f-b7de-1f587e623f33", "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
@@ -255,13 +258,14 @@ const Table = ({
   };
 
   useEffect(() => {
+    fetchEventsData();
     const startInd = (currPage - 1) * itemsPerPage;
     const endInd = startInd + itemsPerPage;
-    setEventPerPage(eventData.slice(startInd, endInd));
+    // setEventPerPage(eventData.slice(startInd, endInd));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage]);
+  }, [currPage, itemsPerPage]);
 
-  const handleModalOpen = (eventId: string, editionId: string) => {
+  const handleModalOpen = (eventId: string) => {
     setIsOpen((prev) => (prev == eventId ? null : eventId));
     if (isOpen != eventId) {
       setFormData({ ...formData, entityId_id: eventId });
@@ -279,6 +283,32 @@ const Table = ({
       hideProgressBar: true,
     });
   };
+
+  const handlePageItems = (event:React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    setItemsPerPage(parseInt(event.target.value));
+  }
+
+  const fetchEventsData = async() => {
+    try {
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}`;
+      // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
+      const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+      });
+      if(apiData.data) {
+        if(currPage === 1) {
+          setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
+          setEventPerPage(apiData.data.events);
+        }else{
+          setEventPerPage(apiData.data.events);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
 
   if (eventPerPage.length === 0) {
     return <Loading />;
@@ -323,7 +353,7 @@ const Table = ({
           </thead>
 
           <tbody className={styles.table_body}>
-            {eventPerPage.map((event: any) => (
+            {eventPerPage.map((event: EventTableType) => (
               <tr key={event.id}>
                 <td>
                   <Link
@@ -343,7 +373,7 @@ const Table = ({
                 </td>
                 <td>
                   <span
-                    {...(event.status === "Cancelled"
+                    {...((event.status && event.status === "Cancelled")
                       ? { "data-toggle": "tooltip", title: "Cancelled" }
                       : null)}
                     style={{ whiteSpace: "nowrap" }}
@@ -373,7 +403,7 @@ const Table = ({
                   </span>
                 </td>
                 <td>
-                  {event.location.cityId !== 1 && event.onlineEvent === 1 ? (
+                  {event.location.cityId !== '1' && event.format === 'ONLINE' ? (
                     event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
                       event.location.venueName.length > 15 ? (
@@ -403,12 +433,12 @@ const Table = ({
                     ) : (
                       event.location.venueName
                     )
-                  ) : event.location.cityId === 1 &&
-                    (event.onlineEvent === 1 ||
-                      event.location.venueId === null) ? (
+                  ) : event.location.cityId === '1' &&
+                    (event.format === 'ONLINE' ||
+                      event.location.venueName !== undefined) ? (
                     "Online"
-                  ) : event.location.cityId !== 1 &&
-                    event.location.venueId === null ? (
+                  ) : event.location.cityId !== '1' &&
+                    event.location.venueName !== undefined ? (
                     <span data-toggle="tooltip" title="To be announced">
                       TBA
                     </span>
@@ -418,20 +448,20 @@ const Table = ({
                 <td>{event.location.countryName}</td>
                 {showInsights.eventKeywords && (
                   <td>
-                    {event.product.length == 0 ? (
+                    {event.eventKeywords.length == 0 ? (
                       <>-</>
-                    ) : event.product.length == 1 ? (
-                      event.product[0].name
+                    ) : event.eventKeywords.length == 1 ? (
+                      event.eventKeywords[0]
                     ) : (
                       <>
-                        {event.product[0].name}&nbsp;
+                        {event.eventKeywords[0]}&nbsp;
                         <a
                           className={styles["products-list"]}
                           href="javascript:void(0)"
                           data-toggle="tooltip"
-                          title={listProducts(event.product)}
+                          title={listProducts(event.eventKeywords)}
                         >
-                          +{event.product.length - 1}
+                          +{event.eventKeywords.length - 1}
                         </a>
                       </>
                     )}
@@ -439,9 +469,9 @@ const Table = ({
                 )}
                 <td>
                   {/* Finance & Banking */}
-                  {event.category && event.category.length > 0 ? (
+                  {event.categories !== undefined && event.categories.length > 0 ? (
                     <span style={{ textTransform: "capitalize" }}>
-                      {event.category[0].name}
+                      {event.categories[0].name}
                     </span>
                   ) : (
                     "-"
@@ -449,11 +479,11 @@ const Table = ({
                 </td>
                 {showInsights.eventRank && (
                   <td>
-                    {event.eventRank ? (
+                    {event.rank?.globalRank ? (
                       <>
-                        {getEventRank(event.eventRank)}
+                        {getEventRank(event.rank.globalRank)}
                         <span className={styles.rank_tag}>
-                          {event.rankType}
+                          Global
                         </span>
                       </>
                     ) : (
@@ -463,27 +493,28 @@ const Table = ({
                 )}
                 {showInsights.growth && (
                   <td>
-                    {event.yoyGrowth && event.yoyGrowth != 0 ? (
-                      event.yoyGrowth > 0 ? (
+                    {event.interestsGrowth && event.interestsGrowth != 0 ? (
+                      event.interestsGrowth > 0 ? (
                         <div className={styles.text_green}>
-                          {event.yoyGrowth}%{" "}
+                          {event.interestsGrowth}%{" "}
                           <Image src={UpArrow} alt="up" width={10} />
                         </div>
                       ) : (
                         <div className={styles.text_red}>
-                          {event.yoyGrowth}%{" "}
+                          {event.interestsGrowth}%{" "}
                           <Image src={DownArrow} alt="down" width={10} />
                         </div>
                       )
                     ) : (
                       <></>
                     )}
-                    {event.ex_ed_leads_following && (
-                      <>{getGrowthRange(event.ex_ed_leads_following)}</>
-                    )}
-                    {(event.yoyGrowth == undefined || event.yoyGrowth == 0) &&
-                      (event.ex_ed_leads_following == undefined ||
-                        event.ex_ed_leads_following == 0) &&
+                    {event.interestsGrowthRange && 
+                      // <>{getGrowthRange(event.interestsGrowthRange)}</>
+                      event.interestsGrowthRange
+                    }
+                    {(event.interestsGrowth == undefined || event.interestsGrowth == 0) &&
+                      (event.interestsGrowthRange == undefined ||
+                        event.interestsGrowthRange == 0) &&
                       "-"}
                   </td>
                 )}
@@ -491,9 +522,9 @@ const Table = ({
                   <td>
                     {event.stats.rating !== undefined &&
                       event.stats.rating !== null &&
-                      event.stats.rating > 0 && (
+                      event.stats.rating > '0' && (
                         <>
-                          {getEventRating(event)}
+                          {getEventRating(event.stats.rating)}
                           &nbsp;
                           <Image src={StarIcon} alt="star" width={14} />
                         </>
@@ -527,25 +558,27 @@ const Table = ({
                       : "-"}
                   </td>
                 )}
-                {showInsights.eventSize && <td>{getEventSize(event)}</td>}
+                {showInsights.eventSize && <td>
+                  {/* {getEventSize(event)} */}
+                  {event.eventSize ? event.eventSize : '-'}
+                  </td>}
                 {showInsights.estExhibit && (
-                  <td>{getEstimatedExhibitors(event)}</td>
+                  <td>
+                    {/* {getEstimatedExhibitors(event)} */}
+                    -
+                  </td>
                 )}
                 {showInsights.global && (
                   <td>
-                    {event.internationalAudience !== undefined &&
-                    event.internationalAudience !== null ? (
-                      event.internationalAudience > 90 ? (
+                    {event["internationalAudience%"] !== undefined ? (
+                      event["internationalAudience%"] == 'High' ? (
                         <span className={styles.badge_success}>High</span>
-                      ) : event.internationalAudience >= 60 &&
-                        event.internationalAudience <= 90 ? (
+                      ) : event["internationalAudience%"] == 'Medium' ? (
                         <span className={styles.badge_primary}>Medium</span>
-                      ) : (
+                      ) : event["internationalAudience%"] == 'Low' ? (
                         <span className={styles.badge_danger}>Low</span>
-                      )
-                    ) : (
-                      <span className={styles.badge_danger}>Low</span>
-                    )}
+                      ) : <></>
+                    ) : <></>}
                   </td>
                 )}
                 <td
@@ -555,7 +588,7 @@ const Table = ({
                 >
                   <span
                     className={styles.save_image_container}
-                    onClick={() => handleModalOpen(event.id, event.edition)}
+                    onClick={() => handleModalOpen(event.id)}
                   >
                     {bookmarkedEvent.includes(event.id) ? (
                       <BookmarkIcon fillColor={"#ff851b"} />
@@ -584,7 +617,7 @@ const Table = ({
                         <button
                           className={styles["close"]}
                           onClick={() =>
-                            handleModalOpen(event.id, event.edition)
+                            handleModalOpen(event.id)
                           }
                         >
                           <Image src={closeIcon} alt="clock" width={16} height={16} />
@@ -608,7 +641,7 @@ const Table = ({
                               <input
                                 className={styles["form-check-input"]}
                                 type="radio"
-                                defaultValue="VISITOR"
+                                defaultValue="ATTENDEE"
                                 name={"interest"}
                                 id="customradio2"
                                 onChange={handleChangeIntent}
@@ -681,7 +714,7 @@ const Table = ({
           <div>Showing</div>
           <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
-            <select name="" id="" className={styles.pagination_noOfPage}>
+            <select onChange={handlePageItems} name="" id="" className={styles.pagination_noOfPage}>
               <option value="10">10</option>
               <option value="15">15</option>
               <option value="20">20</option>
