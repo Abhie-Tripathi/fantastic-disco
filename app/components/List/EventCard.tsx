@@ -55,8 +55,7 @@ const EventCard = ({ data }: EventCardProps) => {
     >
       <div className={styles.eventCard_header}>
         <Link href={"/detailpage"} className={styles.title_dateContainer}>
-          <Link
-            href={`/detailpage`}
+          <div
             style={{
               textDecoration: "none",
               color: theme === "light" ? "black" : "white",
@@ -64,7 +63,7 @@ const EventCard = ({ data }: EventCardProps) => {
             className={styles.eventTitle}
           >
             {data.eventName}{" "}
-          </Link>
+          </div>
           <div className={styles.eventDate}>
             {formatDate(data.startDate)} - {formatDate(data.endDate)}
           </div>

@@ -52,6 +52,7 @@ const Chip = ({ state, setState, value }: ChipProps) => {
 const CreateTracker = () => {
   const router = useRouter();
   const [openDropdown, setOpenDropdown] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   // const [eventStatus, setEventStatus] = useState(searchParams.get("event_status")?.split(",") || []);
   // const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
   // const [dateRange, setDateRange] = useState<string[]>(searchParams.get("date_range")?.split(",") || []);
@@ -85,7 +86,7 @@ const CreateTracker = () => {
 
   // const search = useSearchParams();
   // console.log(search)
-  console.log(router)
+  console.log(router);
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -116,18 +117,35 @@ const CreateTracker = () => {
         aviation_rank_lte: 100,
       },
     };
-    console.log(formData);
+
+    if (
+      categories.length === 0 ||
+      labels.length === 0 ||
+      dateRange.length === 0 ||
+      eventStatus.length === 0
+    ) {
+      console.log("Please, Fill all the details");
+      return;
+    }
+
+    setIsSaving(true);
+
     const { data, error } = await myFetch(`${baseUrl}/tracker`, {
       method: "POST",
       body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (error) {
       console.log(error);
+      setIsSaving(false);
       return;
     }
 
     if (data) {
+      setIsSaving(false);
       router.replace("/internal/trackers");
     }
   };
@@ -150,9 +168,11 @@ const CreateTracker = () => {
           </div>
           <button
             onClick={saveTrackerHandler}
-            className={styles.trackers_header_newtracker_button}
+            className={`${styles.trackers_header_newtracker_button} ${
+              isSaving && styles.newtracker_button_disable
+            }`}
           >
-            <div>Save Tracker</div>
+            <div>{isSaving ? "Saving..." : "Save Tracker"}</div>
           </button>
         </div>
       </div>
@@ -239,11 +259,11 @@ const CreateTracker = () => {
             </div>
             {openDropdown == "Labels" && (
               <LabelDropdown
-                className={styles.category_dropdown}
+                // className={styles.category_dropdown}
                 state={labels}
                 setState={setLabels}
-                dropdownRef={labelDropdownRef}
-                onClose={() => setOpenDropdown("")}
+                // dropdownRef={labelDropdownRef}
+                // onClose={() => setOpenDropdown("")}
               />
             )}
           </div>
