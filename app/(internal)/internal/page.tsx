@@ -19,7 +19,6 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@mui/material";
 import TrackerSkeleton from "@/app/components/Skeleton/dashboardskeleton/TrackerSkeleton";
 import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/SavedEventsSkeleton";
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
@@ -28,58 +27,20 @@ import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/No
 
 interface SavedEvent {
   title: string;
-  id: string;
+  eventGroupId: string;
 }
 
 interface Outreach {
-  pending: Number;
-  shortlisted: Number;
-  Prefinal: Number;
+  pending: number;
+  shortlisted: number;
+  Prefinal: number;
 }
 
 interface CordinateType {
-  totalEvent: string;
-  stats: {
-    attendee: Number;
-    speakers: Number;
-    sponsors: Number;
-    exhibitors: Number;
-  };
+  id: number;
+  name: string;
+  count: string;
 }
-const cardsData = [
-  {
-    icon: Research,
-    title: "Continue Research",
-    heading: "Bengaluru",
-    description: ["Bengaluru, Karnataka, India (1.34 mi radius)"],
-    link: "/internal/search/events",
-    tags: [],
-    // backgroundIcon: SearchBackground,
-  },
-  {
-    icon: ExhibitIcon,
-    title: "Outreach",
-    heading: "",
-    description: [
-      "Pending events to look at : 3",
-      "Shortlisted Events : 3",
-      "Pre Finalised Events : 1",
-    ],
-    link: "/internal/outreach",
-    tags: [],
-    // backgroundIcon: NotificationBackground,
-  },
-  {
-    icon: Trend,
-    title: "Create tracker",
-    heading: "",
-    description: [
-      "Track key events in real-time to make informed decisions and seize opportunities as they arise.",
-    ],
-    link: "/internal/trackers/create",
-    tags: [],
-  },
-];
 
 const trackerCardsData = [
   {
@@ -99,14 +60,6 @@ const trackerCardsData = [
   },
 ];
 
-const coordinateCardTags = [
-  { name: "Exhibitors", count: 1 },
-  { name: "Sponsors", count: 3 },
-  { name: "Speakers", count: 3 },
-  { name: "Attendee", count: 1 },
-  // { totalEvents: 2 },
-];
-
 const notifications = [
   "@Walterwhite recommended you as a Speaker for Las vegas Event",
   "@Gusfring recommended you as a Atendee for Pollos Event",
@@ -115,24 +68,17 @@ const notifications = [
   "@Asackshra recommended you as a Speaker for Las vegas Event",
 ];
 
-const savedEvents = [
-  "Horn Ok Food Festival",
-  "Theatre Festival",
-  "Film Festival",
-  "Auto Expo",
-  "TED X",
-];
-
 const Dashboard = () => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [trackerList, setTrackerList] = useState([]);
   const [savedEvantsList, setSavedEventsList] = useState<SavedEvent[]>([]);
-  const [cordinateData, setCordinateData] = useState<CordinateType>();
+  const [cordinateData, setCordinateData] = useState<CordinateType[]>([]);
   const [outReachData, setOutReachData] = useState<Outreach[]>([]);
   const [pendingEvent, setPendingEvents] = useState("");
   const [shortlisted, setShortListed] = useState("");
   const [prefinal, setPrefinal] = useState("");
+  const [totalEvent, setTotalEvents] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -150,18 +96,19 @@ const Dashboard = () => {
     getListOfTrackers();
   }, []);
 
+  const getSavedEvents = async () => {
+    try {
+      const data = await myFetch(`${baseUrl}/tracker/saved-events`);
+      console.log("saved_events", data?.data);
+      setSavedEventsList(data?.data?.savedEvents);
+    } catch (error) {
+      console.error("Error while fetching saved events:", error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getSavedEvents = async () => {
-      try {
-        const data = await myFetch(`${baseUrl}/tracker/saved-events`);
-        console.log("sade", data?.data);
-        setSavedEventsList(data?.data?.savedEvents);
-      } catch (error) {
-        console.error("Error while fetching saved events:", error);
-      } finally {
-        // setIsLoading(false);
-      }
-    };
     getSavedEvents();
   }, []);
 
@@ -169,8 +116,10 @@ const Dashboard = () => {
     const getCordinateList = async () => {
       try {
         const data = await myFetch(`${baseUrl}/userInterest/totalParticipent`);
-        console.log("cordinate", data?.data);
-        setCordinateData(data.data);
+        console.log("cordinate", data?.data?.slice(1, data?.data.length));
+        // setCordinateData(data.data[]);
+        setTotalEvents(data?.data[0]?.totalEvent);
+        setCordinateData(data?.data?.slice(1, data?.data.length));
       } catch (error) {
         console.error("Error while fetching cordinate list:", error);
       } finally {
@@ -198,8 +147,6 @@ const Dashboard = () => {
     getOutReachData();
   }, []);
 
-  console.log("outreach", outReachData);
-
   const getImageSrc = (status: any) => {
     switch (status) {
       case "ACTIVE":
@@ -213,12 +160,18 @@ const Dashboard = () => {
     }
   };
 
-  const unsavedEvent = (id: string) => {
-    const remainingItem = savedEvantsList.filter((item) => item.id !== id);
-    setSavedEventsList(remainingItem);
+  const unsavedEvent = async (id: string) => {
+    try {
+      const response = await myFetch(`${baseUrl}/tracker/saved-events/${id}`, {
+        method: "DELETE",
+      });
+      if (response) {
+        getSavedEvents();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
-
-  console.log("cordinateData", cordinateData);
 
   return (
     <div
@@ -557,7 +510,7 @@ const Dashboard = () => {
                     <div>{event.title}</div>
                     <div
                       onClick={() => {
-                        unsavedEvent(event.id);
+                        unsavedEvent(event?.eventGroupId);
                       }}
                     >
                       <BookmarkIcon fillColor={"#ff851b"} />
@@ -584,20 +537,23 @@ const Dashboard = () => {
                   <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
                 </div>
                 <div className={styles.linkCard_description}>
-                  <div>Total Events : 8</div>
+                  <div>Total Events : {totalEvent}</div>
                 </div>
                 <div className={styles.linkCard_tagsOuterContainer}>
-                  {coordinateCardTags.map((tag, key) => (
-                    <div
-                      className={styles.linkCard_tagsInnerContainer}
-                      key={key}
-                    >
-                      <div className={styles.linkCard_tagsName}>{tag.name}</div>
-                      <div className={styles.linkCard_tagsCount}>
-                        {tag.count}
+                  {cordinateData &&
+                    cordinateData?.map((tag, key) => (
+                      <div
+                        className={styles.linkCard_tagsInnerContainer}
+                        key={key}
+                      >
+                        <div className={styles.linkCard_tagsName}>
+                          {tag.name}
+                        </div>
+                        <div className={styles.linkCard_tagsCount}>
+                          {tag.count}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </Link>
             )}
