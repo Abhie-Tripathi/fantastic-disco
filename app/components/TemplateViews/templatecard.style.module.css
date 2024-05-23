@@ -21,8 +21,11 @@
     position: relative;
 }
 .cardHeading{
-    font-size: 12px;
     color: white;
+}
+.cardDesc{
+    font-size: 12px;
+    color: rgb(210, 209, 209);
 }
 .placeHolder .previewBtnContainer{
     display: none;
