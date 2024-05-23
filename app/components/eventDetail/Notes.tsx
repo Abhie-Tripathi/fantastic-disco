@@ -362,6 +362,7 @@ async function fetchData() {
 
   useEffect(() => {
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   setTimeout(() => {
     console.log("data is: " + notes);

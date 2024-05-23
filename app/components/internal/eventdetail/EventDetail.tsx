@@ -138,6 +138,7 @@ const EventDetail = ({
     }
     if(eventId != '')
       fetchEventData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => {
