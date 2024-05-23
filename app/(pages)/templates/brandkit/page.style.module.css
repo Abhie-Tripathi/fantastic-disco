@@ -1,5 +1,4 @@
 .body{
-    margin: 40px;
     padding: 20px;
     background-color: #1a1a1a;
     border-radius: 10px;
@@ -25,23 +24,11 @@
     padding: 20px;
     border-radius: 10px;
     width: 850px;
-    height: 500px;
+    /* height: 500px; */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-.heading_btnContainer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.closeBtn{
-    color: black;
-    background-color: rgb(241, 229, 229);
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
 }
 .modalHeading{
     color: white;

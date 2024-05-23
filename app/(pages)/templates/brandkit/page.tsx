@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import TemplateCard from '@/app/components/TemplateViews/TemplateCard'
 import ButtonsModal from '@/app/components/TemplateViews/brandkit/buttons/ButtonsModal'
+import ColorModal from '@/app/components/TemplateViews/brandkit/color/ColorModal'
 
 const Page = () => {
 
@@ -22,13 +23,13 @@ const Page = () => {
                 </div>
             </div>
             {preview.length > 0 && <div className={styles.modal}>
-                <div className={styles.heading_btnContainer}>
-                    <div className={styles.modalHeading}>Buttons</div>
-                    <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
-                </div>
-                <ButtonsModal />
+                    <div className={styles.modalHeading}>
+                        {preview === "button" ? "Buttons" :
+                        preview === "color" ? "Colors" : ""}
+                    </div>
+                {preview === "button" ? <ButtonsModal /> : <ColorModal/>}
                 <div className={styles.btnContainer}>
-                    <button type='button' className={styles.cancelBtn}>Cancel</button>
+                    <button type='button' className={styles.cancelBtn} onClick={() => setPreview("")}>Cancel</button>
                     <button type='button' className={styles.submitBtn}>Save Changes</button>
                 </div>
             </div>}
