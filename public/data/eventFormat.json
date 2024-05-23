@@ -1,1 +1,19 @@
-["Online", "Offline", "Hybrid"]
+[
+  { "name": "All", "slug": "all" },
+  {
+    "name": "Online / Virtual",
+    "slug": "online"
+  },
+  {
+    "name": "Offline",
+    "slug": "offline"
+  },
+  {
+    "name": "Hybrid",
+    "slug": "hybrid"
+  },
+  {
+    "name": "In-Person",
+    "slug": "inperson"
+  }
+]

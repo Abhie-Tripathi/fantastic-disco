@@ -11,6 +11,7 @@ interface PropType {
   label: string;
   eventId: number;
   handleStatusChange: (arg: number) => void;
+  currentValue: string;
 }
 
 const statusValues: { [key: string]: number } = {
@@ -22,7 +23,7 @@ const statusValues: { [key: string]: number } = {
 
 const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState("SHORTLISTED");
+  const [value, setValue] = useState(props.currentValue);
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);
   };

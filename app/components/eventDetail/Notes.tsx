@@ -24,11 +24,13 @@ interface UserDetail {
   lastname: string;
 }
 interface Props {
+  eventId?: string;
+  eventGroupId?: string;
   productId?: string | undefined;
   comments?: IComment[];
 }
 
-export const Notes = ({ comments, productId }: Props) => {
+export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
   const { theme } = useTheme();
   const urlPath=usePathname().split('/')[2]
   const { user, signOut } = useAuthContext();

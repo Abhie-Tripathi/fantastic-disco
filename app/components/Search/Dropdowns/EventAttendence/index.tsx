@@ -1,10 +1,8 @@
 import React, { use, useRef } from "react";
 import styles from "./eventAttendance.module.css";
-import useClickOutside from "@/hooks/useClickOutside";
 
 interface EventAttendanceProps {
   className?: string
-  dropdownRef: React.MutableRefObject<null>;
   state: string[];
   setState: ([]) => void;
   onClose: () => void;
@@ -12,13 +10,10 @@ interface EventAttendanceProps {
 
 const EventAttendance = ({
   className,
-  dropdownRef,
   state,
   setState,
   onClose,
 }: EventAttendanceProps) => {
-  const menuNode = useRef(null);
-  useClickOutside(dropdownRef, () => onClose());
 
   return (
     <div className={`${styles.container} ${className}`}>

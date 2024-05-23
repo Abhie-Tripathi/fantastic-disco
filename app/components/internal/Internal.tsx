@@ -4,37 +4,43 @@ import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import eventData from '@/public/data/demoEvent.json'
 import { eventDataType } from "../../../types/coordinateEventType";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 interface Props{
-    handleModal : () => void,
-    handleShortlistModal: () => void
-    handleRejectClick: () => void
+    handleModal : (id: string) => void,
+    handleShortlistModal: (eventId: string, enquiryId: string) => void;
+    cardUpdated: boolean;
 }
 
-const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated} : Props) => {
     let prevDate: any = null;
 
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
 
     const handleScrollEnd = () => {
-        setPage(prevPage => prevPage + 1);
+        setTimeout(() => {
+            setPage(prevPage => prevPage + 1);
+        }, 1000);
     };
 
     const fetchData = async () => {
         console.log('fetching data... page=', page);
-        if(page==1){
-            setEventData1(eventData);
-        }
-        else if(page>1){
-            // setEventData1(prevData => [...prevData, ...eventData]);
-            setEventData1(prevData => {
-                const newData = eventData.filter(newEvent => {
-                    return !prevData.some(prevEvent => prevEvent.id === newEvent.id);
-                });
-                return [...prevData, ...newData];
+        if(page > 0) {
+            const apiUrl = baseUrl + "/userInterest?status=PENDING&limit=10&offset=" + (page-1)*10;
+            const apiData = await myFetch(apiUrl, {
+                method: "GET",
+                headers: headers,
             });
+            if(apiData.data) {
+                if(page==1){
+                    setEventData1(apiData.data.enquiry);
+                }else if(page>1){
+                    setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
+                }
+            }
         }
     };
 
@@ -63,10 +69,19 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
     }, [handleScrollEnd]);
 
     useEffect(() => {
-        // if(page>0)
+        if(page>0)
             fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
+
+    useEffect(() => {
+        console.log('cardUpdated',cardUpdated, page);
+        if(page == 1)
+            fetchData();
+        else 
+            setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cardUpdated]);
 
   return (
     <div className={styles.scrollContainer} ref={divRef} >
@@ -82,15 +97,17 @@ const Internal = ({handleModal, handleShortlistModal, handleRejectClick} : Props
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.id}
+                    enquiryId={item.enquiryId}
                     eventName={item.name}
-                    eventCtas={item.ctas}
-                    eventLocation={item.location}
-                    eventImage={item.imageUrl}
+                    eventLocation={item.city}
+                    eventImage={"https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"}
                     eventDate={item.startDate}
-                    eventCompany={item.company}
+                    eventCompany={item.orgName}
+                    eventDuration={item.duration}
+                    userCount={item.userCount}
+                    currentEnquiryStatus={item.status}
                     handleModal={handleModal}
                     handleShortlistModal={handleShortlistModal}
-                    handleRejectClick={handleRejectClick}
                 />
             </div>
         );

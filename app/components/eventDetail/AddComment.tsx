@@ -423,8 +423,7 @@ export const AddComment = ({
       setRec(false);
       setDisable(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note]);
   useEffect(()=>{
     if (textareaRef.current) {

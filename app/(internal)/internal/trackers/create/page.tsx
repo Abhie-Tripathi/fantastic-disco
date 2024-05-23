@@ -7,7 +7,7 @@ import DropdownArrow from "/public/downArrow.svg";
 import ChipCircle from "/public/ChipCircle.svg";
 import ActiveChipCircle from "/public/ActiveChipCircle.svg";
 import Slider from "@/app/components/internal/trackers/Slider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
@@ -34,9 +34,8 @@ const Chip = ({ state, setState, value }: ChipProps) => {
   };
   return (
     <div
-      className={`${styles.chip} ${
-        state.includes(value) ? styles.active : ""
-      } ${theme === "light" ? styles.chip_light : ""}`}
+      className={`${styles.chip} ${state.includes(value) ? styles.active : ""
+        } ${theme === "light" ? styles.chip_light : ""}`}
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
@@ -83,6 +82,12 @@ const CreateTracker = () => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
+  const [isSaving, setIsSaving] = useState<boolean>(false)
+
+  // const search = useSearchParams();
+  // console.log(search)
+  console.log(router);
+
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
       setOpenDropdown(value);
@@ -112,18 +117,45 @@ const CreateTracker = () => {
         aviation_rank_lte: 100,
       },
     };
-    console.log(formData);
-    const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
+    if (
+      categories.length === 0 ||
+      labels.length === 0 ||
+      dateRange.length === 0 ||
+      eventStatus.length === 0
+    ) {
+      console.log("Please, Fill all the details");
+      return;
+    }
+    setIsSaving(true);
 
-    if (error) {
-      console.log(error);
+    if (
+      categories.length === 0 ||
+      labels.length === 0 ||
+      dateRange.length === 0 ||
+      eventStatus.length === 0
+    ) {
+      console.log("Please, Fill all the details");
       return;
     }
 
+    setIsSaving(true);
+
+    const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (error) {
+      console.log(error);
+      setIsSaving(false);
+      setIsSaving(false);
+      return;
+    }
     if (data) {
+      setIsSaving(false);
+      setIsSaving(false);
       router.replace("/internal/trackers");
     }
   };
@@ -132,9 +164,8 @@ const CreateTracker = () => {
     <div>
       <div className={styles.trackers_container}>
         <div
-          className={`${styles.trackers_header} ${
-            theme === "light" ? styles.trackers_header_light : ""
-          }`}
+          className={`${styles.trackers_header} ${theme === "light" ? styles.trackers_header_light : ""
+            }`}
         >
           <input
             className={styles.trackers_header_input}
@@ -146,9 +177,12 @@ const CreateTracker = () => {
           </div>
           <button
             onClick={saveTrackerHandler}
-            className={styles.trackers_header_newtracker_button}
+            className={`${styles.trackers_header_newtracker_button} ${
+              isSaving && styles.newtracker_button_disable
+            }`}
+           
           >
-            <div>Save Tracker</div>
+            <div>{isSaving ? "Saving..." : "Save Tracker"}</div>
           </button>
         </div>
       </div>
@@ -221,9 +255,8 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -235,11 +268,11 @@ const CreateTracker = () => {
             </div>
             {openDropdown == "Labels" && (
               <LabelDropdown
-                className={styles.category_dropdown}
+                // className={styles.category_dropdown}
                 state={labels}
                 setState={setLabels}
-                dropdownRef={labelDropdownRef}
-                onClose={() => setOpenDropdown("")}
+                // dropdownRef={labelDropdownRef}
+                // onClose={() => setOpenDropdown("")}
               />
             )}
           </div>
@@ -262,9 +295,8 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -299,9 +331,8 @@ const CreateTracker = () => {
                 <div className={styles.dropdown_placeholder}>--Select--</div>
               )}
               <div
-                className={`${styles.dropdown_choosebutton} ${
-                  theme === "light" ? styles.dropdown_choosebutton_light : ""
-                }`}
+                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
+                  }`}
               >
                 <div>Choose</div>
                 <Image
@@ -364,9 +395,8 @@ const CreateTracker = () => {
         </div>
 
         <div
-          className={`${styles.location_tab_container} ${
-            theme === "light" ? styles.location_tab_container_light : ""
-          }`}
+          className={`${styles.location_tab_container} ${theme === "light" ? styles.location_tab_container_light : ""
+            }`}
         >
           <div className={`${styles.location_tab} ${styles.active}`}>
             Saved Locations

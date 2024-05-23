@@ -1,0 +1,6 @@
+[
+    {"name":"Free","slug":"free"},
+    {"name":"Paid","slug":"paid"},
+    {"name":"By Invite","slug":"invite"},
+    {"name":"By a Member","slug":"member"}
+]

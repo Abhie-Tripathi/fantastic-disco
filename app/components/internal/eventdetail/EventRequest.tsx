@@ -7,10 +7,9 @@ import PeopleIcon from "/public/people.svg";
 import AttendeeCard from "./AttendeeCard";
 interface DetailsProps {
   open: boolean;
-  description: string;
 }
 
-const EventRequest = ({ description, open }: DetailsProps) => {
+const EventRequest = ({ open }: DetailsProps) => {
   console.log("openene", open);
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();

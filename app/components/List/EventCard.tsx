@@ -54,7 +54,7 @@ const EventCard = ({ data }: EventCardProps) => {
       onClick={() => setAccordian(!accordian)}
     >
       <div className={styles.eventCard_header}>
-        <Link href={"/detailpage"} className={styles.title_dateContainer}>
+        <div className={styles.title_dateContainer}>
           <Link
             href={`/detailpage`}
             style={{
@@ -68,7 +68,7 @@ const EventCard = ({ data }: EventCardProps) => {
           <div className={styles.eventDate}>
             {formatDate(data.startDate)} - {formatDate(data.endDate)}
           </div>
-        </Link>
+        </div>
         <div className={styles.minorDetailsContainer}>
           <div className={styles.eventOrganiser}>{data.organiser}</div>
           <div className={styles.eventFeeContainer}>

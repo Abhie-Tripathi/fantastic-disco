@@ -1,14 +1,13 @@
 "use client";
-import React, { useRef, useState } from "react";
-import styles from "./index.style.module.css";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
+import styles from "./locationDropdown.module.css";
+import { LocationType } from "@/types/location";
 import Image from "next/image";
-import SearchIcon from "/public/search.svg";
+import SearchIcon from "/public/location_search.svg";
 import AddIcon from "/public/add.svg";
 import CloseIcon from "/public/close.svg";
-// import MapPlaceId from "/public/map-placeid.png";
-// import MapRadius from "/public/map-radius.png";
-import useClickOutside from "@/hooks/useClickOutside";
-import { useTheme } from "@/context";
+import MapPlaceId from "/public/map-placeid.png";
+import MapRadius from "/public/map-radius.png";
 
 const searchResults = [
   {
@@ -27,7 +26,7 @@ const searchResults = [
 
 interface LocationDropdown {
   className?: string;
-  dropdownRef: React.MutableRefObject<null>;
+  dropdownRef?: React.MutableRefObject<null>;
   state: string[];
   setState: ([]: string[]) => void;
   onClose: () => void;
@@ -35,7 +34,6 @@ interface LocationDropdown {
 
 const LocationDropdown = ({
   className,
-  dropdownRef,
   state,
   setState,
   onClose,
@@ -45,8 +43,6 @@ const LocationDropdown = ({
   const [addLocationModal, setAddLocationModal] = useState(false);
   const [locationType, setLocationType] = useState("");
   const [activeTab, setActiveTab] = useState("Saved Location");
-  const { theme } = useTheme();
-  const iconClass = theme === 'light' ? styles.icons_light : styles.icon
 
   const handleCheckboxChange = (value: string) => {
     const isChecked = checkedValues.includes(value);
@@ -60,8 +56,6 @@ const LocationDropdown = ({
   //   props.handleCheckboxChange("Location", checkedValues);
   // }, [checkedValues]);
 
-  useClickOutside(dropdownRef, () => onClose());
-
   const selectLocationHandler = (e: any, result: any) => {
     setState([result.location_title]);
     onClose();
@@ -69,11 +63,7 @@ const LocationDropdown = ({
 
   return (
     <div>
-      <div
-        className={`${styles.container} ${className} ${
-          theme === "light" ? styles.container_light : ""
-        }`}
-      >
+      <div className={`${styles.container} ${className}`}>
         <div className={styles.header}>
           <div className={styles.header_title}>LOCATIONS</div>
 
@@ -120,7 +110,7 @@ const LocationDropdown = ({
             </div>
 
             <div className={styles.input_container}>
-              <Image src={SearchIcon} alt="searchicon" className={iconClass} />
+              <Image src={SearchIcon} alt="searchicon" />
               <input
                 placeholder="Search location name or tags"
                 className={styles.location_input}
@@ -150,7 +140,7 @@ const LocationDropdown = ({
               className={styles.add_location_button}
               onClick={() => setAddLocationModal(true)}
             >
-              <Image src={AddIcon} alt="add" width={24} height={24} className={iconClass} />
+              <Image src={AddIcon} alt="add" width={24} height={24} />
               <div>Add Locations</div>
             </div>
           </div>
@@ -159,7 +149,7 @@ const LocationDropdown = ({
         {activeTab == "City, State, Country, etc." && (
           <div className={styles.location_search_input}>
             <div className={styles.input_container}>
-              <Image src={SearchIcon} alt="searchicon" className={iconClass} />
+              <Image src={SearchIcon} alt="searchicon" />
               <input
                 placeholder="Search For a Location"
                 className={styles.location_input}
@@ -209,7 +199,7 @@ const LocationDropdown = ({
                     <div className={styles.addLocationModal_option_example}>
                       e.g., stores, hotels, restaurants, or offices
                     </div>
-                    {/* <Image src={MapPlaceId} alt="mapplaceid" width={160} /> */}
+                    <Image src={MapPlaceId} alt="mapplaceid" width={160} />
                   </div>
                 </label>
 
@@ -227,14 +217,14 @@ const LocationDropdown = ({
                     <div className={styles.addLocationModal_option_example}>
                       e.g., Seattle, California or United States
                     </div>
-                    {/* <Image src={MapRadius} alt="mapplaceid" width={160} /> */}
+                    <Image src={MapRadius} alt="mapplaceid" width={160} />
                   </div>
                 </label>
               </div>
               {
                 <div className={styles.radius_location_form}>
                   <div className={styles.address_input_container}>
-                    <Image src={SearchIcon} alt="searchicon" className={iconClass} />
+                    <Image src={SearchIcon} alt="searchicon" />
                     <input placeholder="Address or Business - e.g. Hilton Times Square" />
                   </div>
                   <div className={styles.radius_lat_long_container}>
