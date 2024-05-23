@@ -11,6 +11,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <div className={styles.navbar}>
                 <Link href={"/templates/library"} className={`${styles.navItem} ${pathName === "/templates/library" ? styles.activeLink : ""}`}>Designs</Link>
                 <Link href={"/templates/brandkit"} className={`${styles.navItem} ${pathName === "/templates/brandkit" ? styles.activeLink : ""}`}>Brand Kit</Link>
+                <Link href={"/templates/palette"} className={`${styles.navItem} ${pathName === "/templates/palette" ? styles.activeLink : ""}`}>Color Palette</Link>
+                
             </div>
             {children}
         </div>
