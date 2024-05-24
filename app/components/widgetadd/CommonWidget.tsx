@@ -28,7 +28,7 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
   const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const [geoInput, setGeoInput] = useState<string>("");
-  const [inputTag, setInputTag] = useState<string>("");
+  // const [inputTag, setInputTag] = useState<string>("");
   const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData);
 
   const [startDate, setStartDate] = useState<string>();
@@ -179,7 +179,6 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log(11111111111111111111111111);
     
     // Generate query string
     const queryString = generateQueryString();
@@ -244,10 +243,6 @@ const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
 
     return response.json();
   };
-  useEffect(()=>{
-    console.log("tag is "+isTag+" "+ inputTag);
-  })
-  
 
   const handleCancel = () => {
     router.push("/widget")
