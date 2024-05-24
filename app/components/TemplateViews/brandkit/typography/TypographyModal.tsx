@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './typography.style.module.css'
 import FontPreviewSelect from './FontPreviewSelect';
 import HeadingSizeConfig from './HeadingSizeConfig';
@@ -40,7 +40,6 @@ const TypographyModal = () => {
       <div className={styles.fontConfigContainer}>
         {activeBtn === "fonttype" ? <FontPreviewSelect setSelectedFont={setSelectedFont} /> : <HeadingSizeConfig selectedFont={selectedFont} type={activeBtn} setPrimaryFontSize = {setPrimaryFontSize} setSecondaryFontSize = {setSecondaryFontSize} setDescFontSize = {setDescFontSize} />}
       </div>
-
     </div>
   );
 }

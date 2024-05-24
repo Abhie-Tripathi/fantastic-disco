@@ -20,7 +20,7 @@ const HeadingSizeConfig = ({selectedFont, type, setPrimaryFontSize, setSecondary
         }else{
             setFontSize(16)
         }
-    },[])
+    },[type])
 
     useEffect(()=>{
         if(type === "Primary"){
