@@ -42,7 +42,7 @@ import RangeSlider from "@/app/components/UI/Slider";
 // const Map = lazy(() => import("@/components/Map"));
 
 //JSON Data files:
-import eventFormatData from "../../../../../public/data/eventFormat.json";
+import eventFormatData from "../../../../../public/data/advanceFilterFormat.json";
 import eventFrequencyData from "../../../../../public/data/eventFrequency.json";
 import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
