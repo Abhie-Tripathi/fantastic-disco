@@ -1,9 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./monthCalendar.module.css";
 import { log } from "console";
 import EventCard from "@/app/components/EventCard";
 import { useTheme } from "@/context";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 interface Event {
   id: number;
@@ -184,6 +186,27 @@ function formatDateString(dateString: any) {
 
 const MonthCalendar: React.FC = () => {
   const { theme } = useTheme();
+  const [monthEvents, setMonthEvents] = useState();
+
+  const fetchEventsData = async() => {
+    try {
+      const apiUrl = `${baseUrl}/event/search?groupBy=2024-03-01,2024-03-30`;
+      const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+      });
+      if(apiData.data) {
+        // console.log('apiData.data',apiData.data);
+        setMonthEvents(apiData.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchEventsData();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -286,7 +309,7 @@ const MonthCalendar: React.FC = () => {
         </>  */}
 
         {/* THIRD APPROACH */}
-
+        {/* {console.log('datesWithEvents',datesWithEvents)} */}
         {datesWithEvents.map((dateWithEvent, index) => {
           if (dateWithEvent === "") {
             return <div className={styles.emptyCard} key={index}></div>;
