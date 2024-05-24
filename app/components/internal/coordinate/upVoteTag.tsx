@@ -36,7 +36,7 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
       <div className='desktop_view'>
         <div className={styles.circles}>
           <>
-          { userList && userList.map((item, index) => {
+          { userList && userList.slice(0, 3).map((item, index) => {
               return (
                 <div key={index} className={`${styles.circle} ${index>0? styles.imageOverlap:''}`} style={{ width: "25px", height: "25px" }} data-name={item.name}>
                   {getInitials(item.name)}
