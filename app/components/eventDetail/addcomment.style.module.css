@@ -173,7 +173,7 @@
 .textArea {
   display: flex;
   height: 20px;
-  width: 600px;
+  width: 90%;
   background: transparent;
   border: none;
   outline: none;
@@ -187,10 +187,11 @@
 }
 .option {
   padding: 10px 5px;
-  color: white;
+  /* color: white; */
 }
 .option:hover {
-  background-color: #2B233D;
+  background-color: rgb(103 80 164);
+
 }
 .overlay {
   position: fixed;
@@ -220,19 +221,67 @@
 }
 .fileDiv {
   position: relative;
+  border-radius: 20px;
+  transition: border-radius 0.3s ease; /* Smooth transition for border-radius */
 }
-.close {
+
+.closeOuter {
   position: absolute;
-  right: 0;
-  cursor: pointer;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  /* transition: backdrop-filter 0.3s ease; Smooth transition for backdrop-filter */
 }
+
+.closeOuter:hover {
+  backdrop-filter: blur(1px);
+}
+
+.close {
+  display: none;
+  transition: display 0.3s ease, opacity 0.3s ease; /* Smooth transition for visibility and opacity */
+  opacity: 0; /* Start with zero opacity */
+}
+
+.fileDiv:hover .close {
+  display: block;
+  opacity: 1; /* Fully visible when hovered */
+  background: white;
+  cursor: pointer;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 8px;
+  
+  /* transition: opacity 0.3s ease; Smooth transition for opacity */
+}
+
+.fileDiv:hover .closeOuter {
+  border-top-left-radius: 10px;
+  transition: border-radius 0.3s ease; /* Smooth transition for border-radius */
+}
+
 .pdf {
   display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 5px;
-  border-radius: 10px;
-  border: 1px solid white;
+    background: rgb(103 80 164);
+    position: relative;
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+    /* border-radius: 10px; */
+}
+.pdfClose{
+  display: none;
+  cursor: pointer;
+}
+.pdf:hover .pdfClose{
+  color: transparent;
+    background: white;
+    display: flex;
+    justify-content: end;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius:5px;
+   border-bottom-right-radius: 5px;
 }
 .btn1 {
   padding: 12px;

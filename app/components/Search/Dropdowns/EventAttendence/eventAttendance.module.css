@@ -1,63 +1,67 @@
 .container {
-    position: absolute;
-    top: 45px;
-    z-index: 2;
-    width: 300px;
-    left: 0px;
-    background-color: white;
-  }
-  
-  .header_container {
-    padding: 24px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .header_title {
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    line-height: 1.1428571429;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-  }
-  
-  .header_button {
-    cursor: pointer;
-    font-weight: 600;
-    color: #4d1bf3;
-    text-transform: uppercase;
-    line-height: 1.8181818182;
-    letter-spacing: 0.1em;
-    font-size: 11px;
-  }
-  
-  .sub_container {
-    margin: 0px 24px 24px 24px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .input_container > input {
-    height: 36px;
-    width: 100%;
-    padding: 0px 14px;
-    font: 400 12px / 28px IBM Plex Sans, Arial, Helvetica, sans-serif;
-    color: #222;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .separator {
-    display: inline-block;
-    width: 12px;
-    height: 0;
-    border-top: 1px solid #9ba5af;
-    margin: 40px 10px 10px 6px;
-  }
-  
-  .input_title {
-    font: 400 12px / 18px IBM Plex Sans, Arial, Helvetica, sans-serif;
-    color: #9ba5af;
-    margin: 0 0 4px 0;
-  }
+  width: 300px;
+  background-color: #131313;
+  color: white;
+  filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+}
+
+.header_container {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header_title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1.1428571429;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.header_button {
+  cursor: pointer;
+  font-weight: 600;
+  color: #4d1bf3;
+  text-transform: uppercase;
+  line-height: 1.8181818182;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+}
+
+.sub_container {
+  padding: 0px 24px 24px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.input_container > input {
+  height: 36px;
+  width: 100%;
+  padding: 0px 14px;
+  color: #222;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.separator {
+  display: inline-block;
+  width: 12px;
+  height: 0;
+  border-top: 1px solid #9ba5af;
+  margin: 40px 10px 10px 6px;
+}
+
+.input_title {
+  font: 400 12px / 18px IBM Plex Sans, Arial, Helvetica, sans-serif;
+  color: #9ba5af;
+  margin: 0 0 4px 0;
+}
+
+.input_title input{
+  font-size: inherit;
+  font-family: inherit;
+}

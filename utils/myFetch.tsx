@@ -6,13 +6,13 @@ export const myFetch = async (
     ...options,
     credentials: "include",
     mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
   const result = await response.json();
+  console.log(JSON.stringify(response.headers));
+
   const { error, data } = result;
-  if (error &&
+  if (
+    error &&
     error.status === 401 &&
     error.message === "Incorrect or Expired Cookies"
   ) {
