@@ -24,6 +24,7 @@ interface PromotedEvent {
   name: string;
 }
 
+
 const CommonWidget = ({ widgetType, setId }: CommonWidgetProps) => {
   const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'

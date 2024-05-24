@@ -252,6 +252,7 @@
   cursor: pointer;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 8px;
+  
   /* transition: opacity 0.3s ease; Smooth transition for opacity */
 }
 
@@ -262,11 +263,25 @@
 
 .pdf {
   display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 5px;
-  border-radius: 10px;
-  border: 1px solid white;
+    background: rgb(103 80 164);
+    position: relative;
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+    /* border-radius: 10px; */
+}
+.pdfClose{
+  display: none;
+  cursor: pointer;
+}
+.pdf:hover .pdfClose{
+  color: transparent;
+    background: white;
+    display: flex;
+    justify-content: end;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius:5px;
+   border-bottom-right-radius: 5px;
 }
 .btn1 {
   padding: 12px;

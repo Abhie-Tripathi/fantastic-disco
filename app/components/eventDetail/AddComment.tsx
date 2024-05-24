@@ -24,6 +24,7 @@ import { Select } from "react-aria-components";
 interface Props {
   replyId?:string|undefined|null,
   setType : any,
+  setSuggest:any,
   setInterestType:any,
   productId?: string;
   replyOptions?: replyOptions;
@@ -46,6 +47,7 @@ interface Props {
 interface User {
   firstname: string;
   lastname: string;
+  id:number;
 }
 interface replyOptions {
   commentId: string;
@@ -53,6 +55,10 @@ interface replyOptions {
 interface UserDetail {
   firstname: string;
   email: string;
+  lastname: string;
+}
+interface User {
+  firstname: string;
   lastname: string;
 }
 export const AddComment = ({
@@ -100,7 +106,7 @@ export const AddComment = ({
   const formRef = useRef<HTMLFormElement>(null);
   const fileRef = useRef(null);
   const pdfRef = useRef(null);
-  const[apiUserData,setApiUserData]=useState();
+  const[apiUserData,setApiUserData]=useState<User[]>();
   const [users, setUsers] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultContainer = useRef<HTMLDivElement>(null);
@@ -208,7 +214,7 @@ export const AddComment = ({
       const selectedUser = apiUserData?.find((user:any) => `${user.firstname}${user.lastname}` ===  alluser[focusedIndex].substring(1));
         console.log(selectedUser);
         
-      //  setSuggest(selectedUser.id);
+       setSuggest(selectedUser?.id);
         }else newNote=note
       if(note.includes("wants to recommend")){
       setRec(true);
@@ -317,7 +323,7 @@ export const AddComment = ({
         const selectedUser = apiUserData?.find((user:any) => `@${user.firstname}${user.lastname}` === name);
         console.log(apiUserData);
         
-       setSuggest(selectedUser.id);
+       setSuggest(selectedUser?.id);
         
         
           
@@ -579,6 +585,14 @@ export const AddComment = ({
 
     setFilePreviews(filteredImg);
   };
+  const removePdf=(id:number)=>{
+    const filteredImg = selectedPdfs.filter(
+      (item: any, ind: number) => ind !== id
+    );
+    console.log(filteredImg);
+
+    setSelectedPdfs(filteredImg);
+  }
   useEffect(() => {
     console.log(selectedPdfs);
   }, [selectedPdfs]);
@@ -662,6 +676,9 @@ export const AddComment = ({
               <p key={ind} style={{ display: "flex" }}>
                 {item.name}
               </p>
+              <div className={styles.closeOuter} style={{paddingRight:"5px"}}>
+                <Image src={Close} alt="close" width={20} height={20} className={styles.pdfClose} onClick={()=>removePdf(ind)}/>
+                </div>
             </div>
           ))}
         </div>

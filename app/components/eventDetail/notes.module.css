@@ -604,7 +604,9 @@
  /* position: absolute;
  z-index: 111; */
 }
-.cont{}
+.cont{
+  min-height:700px ;
+}
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;
     border-radius: 12px;

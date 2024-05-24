@@ -1,6 +1,10 @@
 import { UserResponse } from "./user";
 
 export interface Comment {
+  CommentFiles?:[
+    Attachment:[]
+  ];
+  created:Date;
   id: string;
   text: string;
   content:string;

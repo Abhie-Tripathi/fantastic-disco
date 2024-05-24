@@ -29,7 +29,14 @@ interface Props {
   productId?: string | undefined;
   comments?: IComment[];
 }
-
+interface Reply{
+  content?:string;
+  user:{
+    firstname?:string;
+    lastname?:string;
+  }
+  id?:string;
+}
 export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
   const { theme } = useTheme();
   const urlPath=usePathname().split('/')[2]
@@ -66,13 +73,13 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
     setUserDetail(user);
   }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
-  const containerRef: RefObject<HTMLDivElement>  = useRef(null);
+  const containerRef :any  = useRef(null);
   const commentRef = useRef(null);
   // const replyRef=useRef(null);
   const [note, setNote] = useState<string>("");
   const [isReply,setIsReply]=useState(false);
   const [height, setHeight] = useState<number | null>(null);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<any[]>([]);
   const isInitialMount = useRef(true);
   const scrollToBottom = () => {
     if (containerRef.current) {
@@ -83,7 +90,7 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
   };
 async function fetchData() {
     const url =
-      `${baseUrl}/comment?eventId=760ef4d4-5ba7-4ab9-a2bb-b13da84c0dd5&eventGroupId=c8c31bca-efb0-48c6-a3ea-8571b3b196d2&stage=INTERNAL&offset=${page}&limit=10`;
+      `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=INTERNAL&offset=${page}&limit=10`;
     const { data, error } = await myFetch(url);
     console.log(data);
     if (data && urlPath==="coordinate") {
@@ -201,8 +208,8 @@ async function fetchData() {
       console.log(replyName);
       
       const dataToSend = {
-        "eventId": "760ef4d4-5ba7-4ab9-a2bb-b13da84c0dd5",
-        "eventGroupId": "c8c31bca-efb0-48c6-a3ea-8571b3b196d2",
+        "eventId": eventId,
+        "eventGroupId": eventGroupId,
         "stage": "INTERNAL",
         "type": type,
         "content": note,
@@ -389,8 +396,8 @@ async function fetchData() {
   const [replyText, setReplyText] = useState<string | undefined>("");
   const [replyName, setReplyName] = useState<string | undefined>("");
   useEffect(() => {
-    const reply = comments?.find((comment) => comment.id == replyId);
-    console.log("reply is: " + reply?.text);
+    const reply:Reply = notes?.find((comment) => comment.id == replyId);
+    // console.log("reply is: " + reply?.text);
     setReplyName(reply?.user.firstname + " " + reply?.user.lastname);
     setReplyText(reply?.content);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -513,14 +520,15 @@ async function fetchData() {
       console.log(data);
 
       // Collect new items to add to the array
-      const newItems = data.map(item => "@" + item.firstname + item.lastname);
+      const newItems = data.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+  
 
       // Use functional form to update state
       setUserArr(prevArr => [...prevArr, ...newItems]);
     }
   };
-  console.log(notes);
-  
+console.log(notes);
+
   return (
     <div className={styles.container}>
       {notes ? (
@@ -551,7 +559,7 @@ async function fetchData() {
             onDrop={handleDrop}
           ></div>
           <ul className={styles.comments} ref={commentRef}>
-            {notes.map((comment) => (
+            {notes.map((comment:IComment) => (
               <li
                 className={
                   String(chedkedId) === comment.id
@@ -573,7 +581,7 @@ async function fetchData() {
                   setReplyId={setReplyId}
                   productId={productId!}
                   comment={comment}
-                  superCommentId={comment.id}
+                  superCommentId={comment?.id}
                   notes={notes}
                   setNote={setNote}
                   filePreviews={filePreviews}
@@ -637,11 +645,12 @@ interface CommentProps {
   replyText?: undefined | string;
   handleLike?: any;
   setReplyId?: any;
+  userArr:string[];
   comment: IComment;
   productId: string;
   superCommentId: string;
   userName?: string;
-  notes: () => void;
+  notes: any[];
   setNote: React.Dispatch<React.SetStateAction<string>>;
   arr?: string[];
   setFilePreviews: any;
@@ -697,6 +706,7 @@ const Comment = ({
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
+  const d=`@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
     setIsReply(true);
@@ -723,6 +733,10 @@ const Comment = ({
   // }
   
   console.log(arr);
+  setTimeout(()=>{
+    console.log(comment);
+  },5000)
+
 
   const { theme } = useTheme();
   return (
@@ -908,7 +922,7 @@ const Comment = ({
                   }
                 })}
             </div>
-            {comment?.images &&
+            {/* {comment?.images &&
             <div
             className={styles.images}
             style={{ padding: comment?.replyId ? "0px 20px" : "none" }}
@@ -943,20 +957,21 @@ const Comment = ({
                 <p key={ind} style={{ display: "flex" }}>
                   {item}
                 </p>
+                
               </div>
             ))}
           </div>
-            }
+            } */}
             
      
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}
             >
-              {comment?.CommentFiles?.map((item, index) => (
+              {comment?.CommentFiles?.map((item:any, index) => (
                 (item.Attachment && item?.Attachment[0]?.fileType==="IMAGE"?(
                 <div key={index}>
-                  <img
+                  <Image
                     style={{borderRadius:"5px"}}
                     src={item?.Attachment[0]?.filePath}
                     alt={item.name}
@@ -971,7 +986,7 @@ const Comment = ({
                 >
                   <Image src={Pdf} width={50} height={50} alt="pdf" />
                   <p key={index} style={{ display: "flex" }}>
-                    {item.FileName}
+                    {item.Attachment &&  item?.Attachment[0]?.fileName}
                   </p>
                 </div>)
                 )
@@ -1085,6 +1100,7 @@ const Comment = ({
                   key={reply.id}
                 >
                   <Comment
+                  userArr={userArr}
                    setIsReply={setIsReply}
                     comment={reply}
                     setComments={setComments!}
@@ -1151,7 +1167,7 @@ const Comment = ({
                               </p>
                             </div>
                           </header>;
-                          if (userArr?.includes("@" + username)) {
+                          if (userArr?.includes("@" + username)||d==="@"+username) {
                             return (
                               <a
                                 key={idx}
@@ -1188,10 +1204,10 @@ const Comment = ({
                           );
                         }
                       })}
-                      {comment?.user?.createdAt && (
+                      {comment?.created && (
                         <span style={{ paddingLeft: "5px" }}>
                           on{" "}
-                          {new Date(comment.user.createdAt).toLocaleDateString(
+                          {new Date(comment?.created).toLocaleDateString(
                             "en-US",
                             {
                               month: "short",
