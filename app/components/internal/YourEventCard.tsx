@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './yourEventCard.style.module.css'
 import UserIcon from '/public/user.svg';
 import calendarIcon from '/public/calendar.svg';
@@ -12,6 +12,8 @@ import StatusChangeDropdown from '@/app/components/internal/eventdetail/statusDr
 import upArrow from '/public/internal/up_arrow.svg';
 import { useTheme } from '@/context';
 import UpVoteTag from '@/app/components/internal/coordinate/upVoteTag';
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
 
 interface YourEventCardProps {
   eventId: string;
@@ -25,6 +27,8 @@ interface YourEventCardProps {
   eventDuration: string;
   userCount: number;
   currentEnquiryStatus: string;
+  upvote: any;
+  enquiryActivity: any;
   handleModal: (id: string) => void;
   handleShortlistModal: (eventId: string, enquiryId: string) => void;
 }
@@ -35,7 +39,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, eventDuration, userCount, currentEnquiryStatus, handleModal, handleShortlistModal }) => {
+const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, eventName, eventCtas, eventLocation, eventImage, eventDate, eventCompany, eventDuration, userCount, currentEnquiryStatus, upvote, enquiryActivity, handleModal, handleShortlistModal }) => {
   const formattedDate = formatDate(eventDate);
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
@@ -47,11 +51,33 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
     Exhibiting: false,
   });
 
-  const handleVoteClick = (item: keyof typeof voteStatus) => {
-    setVoteStatus(prevState => ({
-      ...prevState,
-      [item]: !prevState[item]
-    }));
+  const [interestedUsers, setInterestedUsers] = useState<any>({
+    attendee: [],
+    speakers: [],
+    sponsors: [],
+    exhibitors: [],
+  });
+
+  const handleVoteClick = async(item: keyof typeof voteStatus) => {
+    let payloadData = {
+      source: "GTM",
+      like: !voteStatus[item]?1:0,
+      for: item.toUpperCase(),
+    };
+    try {
+      const apiUrl = baseUrl + "/userInterest/"+enquiryId+"/activity";
+      const apiData = await myFetch(apiUrl, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payloadData),
+      });
+      setVoteStatus(prevState => ({
+        ...prevState,
+        [item]: !prevState[item]
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   const handleModalOpen = ()=>{
@@ -61,6 +87,35 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   }
+  
+  useEffect(() => {
+    setVoteStatus({
+      Attending: upvote[1]['ATTENDING'] == 1 ? true : false,
+      Speaking: upvote[1]['SPEAKING'] == 1 ? true : false,
+      Sponsoring: upvote[1]['SPONSORING'] == 1 ? true : false,
+      Exhibiting: upvote[1]['EXHIBITING'] == 1 ? true : false,
+    });
+    const fetchInterestedUsers = async() => {
+      try {
+        const apiUrl = `${baseUrl}/userInterest/${eventId}`;
+        const apiData = await myFetch(apiUrl, {
+            method: "GET",
+            headers: headers,
+        });
+        if(apiData.data) {
+          setInterestedUsers({
+            attendee: apiData.data.participent.attendee,
+            speakers: apiData.data.participent.speakers,
+            sponsors: apiData.data.participent.sponsors,
+            exhibitors: apiData.data.participent.exhibitors,
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchInterestedUsers();
+  }, []);
 
   return (
     <div className={styles.card} onClick={handleModalOpen}>
@@ -104,7 +159,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
         <div className='tablet_view mobile_view'>
           <div style={{marginTop: "-50px"}}>
           <div className={styles.total_upvotes}>
-            {userCount}
+            {upvote[0].like}
             <div style={{display:"flex", paddingTop: "5px"}}>
               <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
               &nbsp;Upvotes
@@ -115,16 +170,16 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
         <div className='desktop_view'>
         <div style={{display:"flex", gap: "16px", flexWrap: "wrap", marginTop: "15px"}} onClick={handleClickEvent}>
           <div className={styles.total_upvotes}>
-            {userCount}
+            {upvote[0].like}
             <div style={{display:"flex", paddingTop: "10px"}}>
               <Image src={upArrow} alt="up"  width={16} height={16} className={'icons_light'} />
               &nbsp;Upvotes
             </div>
           </div>
-          <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} voteCount={12} handleVoteClick={handleVoteClick} />
-          <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />
-          <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} voteCount={15} handleVoteClick={handleVoteClick} />
-          <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} voteCount={112} handleVoteClick={handleVoteClick} />
+          <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.attendee} />
+          <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.speakers} />
+          <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.sponsors} />
+          <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.exhibitors} />
         </div>
         </div>
         {/* 
@@ -151,10 +206,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
       <div className={styles.bottomContainer}>
         <div className='tablet_view mobile_view'>
           <div style={{display:"flex", gap: "6px", paddingTop:"15px"}} onClick={handleClickEvent}>
-            <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} voteCount={12} handleVoteClick={handleVoteClick} />
-            <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} voteCount={6} handleVoteClick={handleVoteClick} />
-            <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} voteCount={15} handleVoteClick={handleVoteClick} />
-            <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} voteCount={112} handleVoteClick={handleVoteClick} />
+            <UpVoteTag type='Attending' status={voteStatus.Attending?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.attendee} />
+            <UpVoteTag type='Speaking' status={voteStatus.Speaking?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.speakers} />
+            <UpVoteTag type='Sponsoring' status={voteStatus.Sponsoring?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.sponsors} />
+            <UpVoteTag type='Exhibiting' status={voteStatus.Exhibiting?'voted':''} handleVoteClick={handleVoteClick} userList={interestedUsers.exhibitors} />
           </div>
         </div>
       </div>
