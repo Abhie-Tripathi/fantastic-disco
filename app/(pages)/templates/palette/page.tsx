@@ -7,6 +7,8 @@ import UploadIcon1 from '/public/drive.svg'
 
 const Page = () => {
     const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
+    const [companyWebsite, setCompanyWebsite] = useState<string>("");
+    const [colors, setColors] = useState<string[]>([]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -18,6 +20,19 @@ const Page = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    const handleGenerateColors = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/extract-colors?url=${encodeURIComponent(companyWebsite)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setColors(data.colors);
+        } catch (error) {
+            console.error('Error fetching colors:', error);
+        }
+    }
 
     return (
         <div className={styles.body}>
@@ -33,6 +48,18 @@ const Page = () => {
                             <span>Upload Screenshot</span>
                         </label>
                     </div>
+                    <div className={styles.generatedColorContainer}>
+                        <div className={styles.generateColorInput}>
+                            <input type="text" placeholder="Enter Your Website Url" value={companyWebsite} onChange={(e) => setCompanyWebsite(e.target.value)} />
+                            <button className={styles.generateBtn} onClick={handleGenerateColors}>Generate</button>
+                        </div>
+                        <div className={styles.generatedPalleteContainer}>
+                            {colors.map((color,key)=>(
+                                <div className={styles.generatedColor} style={{backgroundColor : color}} key={key}></div>
+                            ))}
+                        </div>
+                    </div>
+
                     <Palette src={imageSrc as string} crossOrigin="anonymous" format="hex" colorCount={3}>
                         {({ data, loading, error }) => (
                             <div className={styles.colorsContainer}>

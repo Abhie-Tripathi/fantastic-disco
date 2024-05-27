@@ -9,13 +9,17 @@ const config = {
           'palmbeach.floridaweekly.com',
           'images.ladepeche.fr',
           'cdn.choosechicago.com',
-          'api.eventgeni.com'
+          'api.eventgeni.com',
+          'logo.clearbit.com'
         ],
   },
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
   reactStrictMode: false,
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  }
 
 };
 
