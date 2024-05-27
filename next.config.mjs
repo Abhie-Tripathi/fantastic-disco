@@ -17,9 +17,6 @@ const config = {
     missingSuspenseWithCSRBailout: false,
   },
   reactStrictMode: false,
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  }
 
 };
 
