@@ -57,7 +57,13 @@ const EventDetail = ({
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
+  const [stage,setStage]=useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData>();
+  const urlPath=usePathname().split('/')[2]
+  useEffect(()=>{
+    if(urlPath==="outreach") setStage("OUTREACH");
+    else if(urlPath==="coordinate") setStage("INTERNAL")
+  },[])
 
   // const singledata: EventData = {
   //   id: 12,
@@ -189,7 +195,7 @@ const EventDetail = ({
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
           {singleEventData &&
-            <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId}/>
+            <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId} stage={stage}/>
           }
           </div>
         </div>

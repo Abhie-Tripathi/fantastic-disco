@@ -27,7 +27,7 @@ const EmployeePage: React.FC = () => {
 
   return (
     <div className={isAddeventOpen ? styles.body : ""}>
-      <div className={`${styles.eventsBody} ${theme === 'light' ? styles.light : ""}`}>
+      <div className={styles.eventsBody}>
         <EmployeeNavbar handleAddEvent={handleAddEvent} />
         <ViewBtns handleSelectedData={handleSelectedData} />
         {selectedView === "list" && <ListView />}

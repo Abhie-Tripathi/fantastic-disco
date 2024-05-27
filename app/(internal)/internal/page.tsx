@@ -175,9 +175,7 @@ const Dashboard = () => {
 
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={styles.container}
     >
       <div className={styles.header_container}>
         <div className={styles.primary_container}>

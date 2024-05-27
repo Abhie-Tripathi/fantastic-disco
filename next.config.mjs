@@ -12,6 +12,9 @@ const config = {
           'api.eventgeni.com'
         ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   reactStrictMode: false,
 
 };

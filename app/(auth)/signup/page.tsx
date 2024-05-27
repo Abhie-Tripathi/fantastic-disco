@@ -12,6 +12,8 @@ import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const SignUp = () => {
   const [showVerification, setShowVerification] = useState(false);
@@ -61,6 +63,7 @@ const SignUp = () => {
 
       if (!response?.error) {
         // console.log(response)
+        generateOtp();
         setShowVerification(true);
       } else {
         setErrors({ confirmPassword: response.error });
@@ -79,6 +82,16 @@ const SignUp = () => {
       }
     }
   };
+  const generateOtp=async()=>{
+    const url=`${baseUrl}/auth/customer/verify/generate`
+    const {data,error}=await myFetch(url,{
+      method:"POST"
+    })
+    if(data) console.log(data);
+    else console.log(error);
+    
+    
+  }
   console.log(errors);
   return (
     <div className={styles.container}>
@@ -189,7 +202,7 @@ const SignUp = () => {
                 </button>
                 <div className={styles.new_account}>
                   Already have an account?
-                  <Link href="/signin" className={styles.createNew_link}>
+                  <Link href="/signin" className={styles.createNew_link} >
                     {" "}
                     Log In
                   </Link>

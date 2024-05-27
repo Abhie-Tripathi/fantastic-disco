@@ -223,7 +223,7 @@ export const AddComment = ({
       }
       else{ 
         newNote = note + type[focusedIndex] + " ";
-        if(type[focusedIndex]==="attend") setInterestType("VISITOR");
+        if(type[focusedIndex]==="attend") setInterestType("ATTENDEE");
         else setInterestType("SPEAKER");
       }
       setNote(newNote);
@@ -343,7 +343,7 @@ export const AddComment = ({
         " wants to #Attend"
     );
     setType("INTEREST");
-    setInterestType("VISITOR");
+    setInterestType("ATTENDEE");
     setShowUser(false);
   };
   const handleSelectSpeak = () => {
@@ -454,7 +454,7 @@ export const AddComment = ({
     console.log(ele);
     if (type.includes(ele)) {
       if(ele==="Speak") setInterestType("SPEAKER");
-      else setInterestType("VISITOR")
+      else setInterestType("ATTENDEE")
       setNote((prev) => prev + ele);
       // handleKeyDown1(event);
       showTypes(false);
@@ -685,7 +685,7 @@ export const AddComment = ({
         {filePreviews && (
           <>
             <div className={styles.filePreview}>
-              {filePreviews.map((filePreview: any, index: number) => (
+              {filePreviews.map((filePreview:any, index: number) => (
                 <div className={styles.fileDiv} key={index}>
                   <Image
                   style={{borderRadius:"5px"}}
@@ -884,3 +884,15 @@ export const AddComment = ({
     </div>
   );
 };
+
+
+
+
+// eventId: 10e3242c-e027-41dc-ba10-9167ed7cedaa
+// eventGroupId: 9a470fc2-80c5-4105-9824-ebc4c01aae2e
+// stage: INTERNAL
+// type: RECOMMEND
+// content: @Ravitripathi wants to recommend @piyush12patel12 for #Speak 
+// source: GTM
+// interestType: SPEAKER
+// recommendUserId: 6e78d288-93a4-4474-8862-a789361fb7db
