@@ -101,7 +101,7 @@ const LogoModal = () => {
                         logoUrl.length > 0 ? (<Image
                             src={logoUrl as string}
                             alt="Uploaded Logo"
-                            width={50} height={50}
+                            width={100} height={100}
                             className={`${styles.logo} ${styles[imageSize]}`}
                             style={{ borderRadius: `${borderRadius}%` }} />
                         ) :
