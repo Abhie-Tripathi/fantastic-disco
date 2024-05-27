@@ -14,6 +14,9 @@ const config = {
         ],
   },
   reactStrictMode: false,
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  }
 
 };
 
