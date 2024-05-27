@@ -113,6 +113,7 @@ const Page = () => {
                 </div>}
                 {(widgetSelected === "All" ||  widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
+                    <div className ={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
                     <div className={styles.templateContainer}>
                         <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={setPreview} />
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={setPreview} />
