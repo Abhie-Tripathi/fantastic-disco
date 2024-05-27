@@ -29,7 +29,7 @@ body {
   overflow-x: hidden;
 }
 
-body {
+body[data-theme='dark'] {
   display: contents;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -39,7 +39,10 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
-
+body[data-theme='light']{
+  background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+}
 a {
   color: inherit;
   text-decoration: none;

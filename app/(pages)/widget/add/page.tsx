@@ -23,9 +23,7 @@ const Page = () => {
   return (
     <div className={styles.body}>
       <div
-        className={`${styles.container} ${
-          theme === "light" && styles.container_light
-        }`}
+        className={`${styles.container}`}
       >
         {previewState === "Side Preview" && (
           <div className={`${styles.configurationForm} ${theme === 'light' && styles.configurationForm_light}`}>

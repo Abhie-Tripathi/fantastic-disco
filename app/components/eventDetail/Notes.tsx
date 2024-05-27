@@ -17,6 +17,7 @@ import { useAuthContext } from "@/context";
 import { number, undefined } from "zod";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { transcode } from "buffer";
 
 interface UserDetail {
   firstname: string;
@@ -28,6 +29,7 @@ interface Props {
   eventGroupId?: string;
   productId?: string | undefined;
   comments?: IComment[];
+  stage?:string;
 }
 interface Reply{
   content?:string;
@@ -37,7 +39,7 @@ interface Reply{
   }
   id?:string;
 }
-export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
+export const Notes = ({eventId, eventGroupId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath=usePathname().split('/')[2]
   const { user, signOut } = useAuthContext();
@@ -49,7 +51,7 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
   const [isDraggingOver, setIsDraggingOver] = useState(true);
   const [drop, setDrop] = useState(false);
   const [type,setType]=useState("MESSAGE");
-  const [stage,setStage]=useState("");
+  // const [stage,setStage]=useState("");
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
@@ -68,7 +70,7 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
 
 
 
-
+  
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
@@ -89,13 +91,22 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
     }
   };
 async function fetchData() {
+ 
     const url =
-      `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=INTERNAL&offset=${page}&limit=10`;
+      `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
+      
     const { data, error } = await myFetch(url);
     console.log(data);
-    if (data && urlPath==="coordinate") {
+    if (data && urlPath==="coordinate" ) {
       // setNotes([]);
-      setStage("INTERNAL");
+      console.log(data);
+      // setNotes(data.comments.reverse());
+      if(data.comments?.length>0)
+        setNotes(prevNotes => [...data.comments.reverse(),...prevNotes]);
+    }
+    if (data && urlPath==="outreach") {
+      // setNotes([]);
+      
       console.log(data);
       // setNotes(data.comments.reverse());
       if(data.comments?.length>0)
@@ -172,36 +183,36 @@ async function fetchData() {
     ) {
       event.preventDefault();
       console.log("number of hits");
-      const updatedNotes = [
-        ...notes,
-        {
-          id: Date.now().toString(),
-          images: filePreviews,
-          pdfs: selectedPdfs,
-          content: note,
-          parentCommentId: replyId,
-          userLiked:false,
-          upvote: 0,
-          _count:{
-            Commentlikes:0,
-          },
-          parent:{
-            content:replyText,
-            user:{
-              firstname:replyName?.split(" ")[0],
-              lastname:replyName?.split(" ")[1],
-            }
-          },
-          type:type,
-          user: {
-            id: user?.id,
-            firstname: user?.firstname,
-            lastname: user?.lastname,
-            email: user?.email,
-            createdAt: new Date(),
-          },
-        },
-      ];
+      // const updatedNotes = [
+      //   ...notes,
+      //   {
+      //     id: Date.now().toString(),
+      //     images: filePreviews,
+      //     pdfs: selectedPdfs,
+      //     content: note,
+      //     parentCommentId: replyId,
+      //     userLiked:false,
+      //     upvote: 0,
+      //     _count:{
+      //       Commentlikes:0,
+      //     },
+      //     parent:{
+      //       content:replyText,
+      //       user:{
+      //         firstname:replyName?.split(" ")[0],
+      //         lastname:replyName?.split(" ")[1],
+      //       }
+      //     },
+      //     type:type,
+      //     user: {
+      //       id: user?.id,
+      //       firstname: user?.firstname,
+      //       lastname: user?.lastname,
+      //       email: user?.email,
+      //       createdAt: new Date(),
+      //     },
+      //   },
+      // ];
       // setNotes(notes);
       console.log(selectedPdfs);
       
@@ -210,7 +221,7 @@ async function fetchData() {
       const dataToSend = {
         "eventId": eventId,
         "eventGroupId": eventGroupId,
-        "stage": "INTERNAL",
+        "stage": stage,
         "type": type,
         "content": note,
         "source": "GTM",
@@ -270,14 +281,28 @@ async function fetchData() {
       // }
     });
     if(data){
-      setNotes(prevNotes=>[...prevNotes, data.data]);
+      const newData=transformData(data.data);
+      
+      setNotes(prevNotes=>[...prevNotes, newData]);
     }
       if (!error){
         console.log(data);
         setScrolling(false);
       }
       else console.log(error);
+      setType("MESSAGE")
   }
+  const transformData = (data: any) => {
+    
+      const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
+        ...file,
+        Attachment: [file.Attachment],
+      }))
+      return {
+        ...data,
+        CommentFiles: transformedCommentFiles,
+      };
+  };
   useEffect(() => {
     if(scrolling===false){
       requestAnimationFrame(() => {
@@ -493,9 +518,9 @@ async function fetchData() {
   useEffect(() => {
     fetchData();
   }, [page]);
-  setTimeout(() => {
-    console.log("data is: " + notes);
-  }, 5000);
+  // setTimeout(() => {
+  //   console.log("data is: " + notes);
+  // }, 5000);
   useEffect(() => {
     if (data.length !== 0) {
       setNotes(data);
@@ -528,7 +553,6 @@ async function fetchData() {
     }
   };
 console.log(notes);
-
   return (
     <div className={styles.container}>
       {notes ? (
@@ -698,6 +722,11 @@ const Comment = ({
   // });
   // console.log(newArr);
   // const [replyId,setReplyId]=useState("");
+  const scroll = () => {
+    console.log(document.documentElement.scrollHeight);
+    
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  };
   const { user, signOut } = useAuthContext();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
@@ -709,6 +738,7 @@ const Comment = ({
   const d=`@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
+    scroll();
     setIsReply(true);
   };
   const [isLiked, setIsLiked] = useState(false);
@@ -734,7 +764,7 @@ const Comment = ({
   
   console.log(arr);
   setTimeout(()=>{
-    console.log(comment);
+    console.log(comment?.CommentFiles);
   },5000)
 
 
@@ -962,13 +992,16 @@ const Comment = ({
             ))}
           </div>
             } */}
-            
-     
+            {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
+              <div key={index}>{item.Attachment.fileName}</div>
+            ))}
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}
             >
-              {comment?.CommentFiles?.map((item:any, index) => (
+              
+              {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
+               
                 (item.Attachment && item?.Attachment[0]?.fileType==="IMAGE"?(
                 <div key={index}>
                   <Image
@@ -989,8 +1022,9 @@ const Comment = ({
                     {item.Attachment &&  item?.Attachment[0]?.fileName}
                   </p>
                 </div>)
-                )
+              )
               ))}
+              
             </div>
             {/* <div style={{ display: "flex", gap: "10px"}}>
 
@@ -1227,8 +1261,11 @@ const Comment = ({
               })}
               
             </div>
+            
           </div>
+          
         </>
+        
       )}
     </>
   );

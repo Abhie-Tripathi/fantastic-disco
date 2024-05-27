@@ -155,7 +155,7 @@ const Search = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<Loading/>}>
       <div className={styles.container}>
         <div className={styles.searchbar}>
           <input
@@ -1103,7 +1103,7 @@ const Search = () => {
           /> */}
         </Suspense>
       )}
-    </>
+    </Suspense>
   );
 };
 export default Search;
