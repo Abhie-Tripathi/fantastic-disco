@@ -11,4 +11,6 @@ export interface eventDataType {
     enquiryId: string;
     userCount: number;
     users: { name: string; }[];
+    upvote: any;
+    enquiryActivity: any;
 }
