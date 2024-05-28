@@ -8,6 +8,8 @@ import AddIcon from "/public/add.svg";
 import CloseIcon from "/public/close.svg";
 import MapPlaceId from "/public/map-placeid.png";
 import MapRadius from "/public/map-radius.png";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const searchResults = [
   {
@@ -40,30 +42,75 @@ const LocationDropdown = ({
 }: LocationDropdown) => {
   const menuNode = useRef(null);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
-  const [addLocationModal, setAddLocationModal] = useState(false);
-  const [locationType, setLocationType] = useState("");
-  const [activeTab, setActiveTab] = useState("Saved Location");
+  // const [addLocationModal, setAddLocationModal] = useState(false);
+  // const [locationType, setLocationType] = useState("");
+  // const [activeTab, setActiveTab] = useState("Saved Location");
+  const [cityData, setCityData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [countryData, setCountryData] = useState([]);
 
-  const handleCheckboxChange = (value: string) => {
-    const isChecked = checkedValues.includes(value);
-    if (isChecked) {
-      setCheckedValues(checkedValues.filter((val) => val !== value));
-    } else {
-      setCheckedValues([...checkedValues, value]);
+  const [inputText, setInputText] = useState("");
+  const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
+
+  useEffect(() => {
+    setState(selectedLocation);
+  }, [selectedLocation]);
+
+  const inputChangeHandler = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setInputText(event.target.value);
+    try {
+      const data = await Promise.all([
+        myFetch(`${baseUrl}/location/suggestion?q=${inputText}`),
+        myFetch(`${baseUrl}/location/country?name=${inputText}`),
+      ]);
+
+      setCityData(data[0].data.city);
+      setStateData(data[0].data.state);
+      setCountryData(data[1].data);
+    } catch (error) {
+      console.error("Error fetching location data:", error);
     }
   };
-  // useEffect(() => {
-  //   props.handleCheckboxChange("Location", checkedValues);
-  // }, [checkedValues]);
 
-  const selectLocationHandler = (e: any, result: any) => {
-    setState([result.location_title]);
-    onClose();
+  const locationSelectHandler = (arg1: string, arg2?: string) => {
+    let name;
+
+    if (arg2 === undefined) {
+      name = arg1;
+    } else {
+      name = `${arg1}, ${arg2}`;
+    }
+    if (!selectedLocation.includes(name)) {
+      setSelectedLocations((prev) => [...prev, name]);
+    }
+    setState(selectedLocation);
+  };
+
+  const removeSelectionHandler = (name: string) => {
+    setSelectedLocations((prev) => prev.filter((item) => item !== name));
   };
 
   return (
     <div>
       <div className={`${styles.container} ${className}`}>
+        <div className={styles.keywords_container}>
+          {selectedLocation.length > 0 &&
+            selectedLocation.map((data, index) => (
+              <div className={styles.keyword_chip} key={0}>
+                <span>{data}</span>
+                <Image
+                  src={CloseIcon}
+                  width={20}
+                  height={20}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => removeSelectionHandler(data)}
+                />
+              </div>
+            ))}
+        </div>
         <div className={styles.header}>
           <div className={styles.header_title}>LOCATIONS</div>
 
@@ -72,7 +119,7 @@ const LocationDropdown = ({
           </div>
         </div>
 
-        <div className={styles.tabs_container}>
+        {/* <div className={styles.tabs_container}>
           <div
             className={`${styles.tab} ${
               activeTab == "Saved Location" ? styles.active : ""
@@ -97,9 +144,9 @@ const LocationDropdown = ({
           >
             Center Point & Radius
           </div>
-        </div>
+        </div> */}
 
-        {activeTab == "Saved Location" && (
+        {/* {activeTab == "Saved Location" && (
           <div className={styles.saved_locations}>
             <div className={styles.slider_container}>
               <label className={styles.slider_label}>
@@ -144,29 +191,59 @@ const LocationDropdown = ({
               <div>Add Locations</div>
             </div>
           </div>
-        )}
+        )} */}
 
-        {activeTab == "City, State, Country, etc." && (
-          <div className={styles.location_search_input}>
-            <div className={styles.input_container}>
-              <Image src={SearchIcon} alt="searchicon" />
-              <input
-                placeholder="Search For a Location"
-                className={styles.location_input}
-              />
-            </div>
+        {/* {activeTab == "City, State, Country, etc." && ( */}
+        <div className={styles.location_search_input}>
+          <div className={styles.input_container}>
+            <Image src={SearchIcon} alt="searchicon" />
+            <input
+              placeholder="Search For a Location"
+              className={styles.location_input}
+              onChange={inputChangeHandler}
+            />
           </div>
-        )}
+        </div>
 
-        {activeTab == "Center Point & Radius" && (
+        {cityData.map((data: any) => (
+          <div
+            className={styles.resultData_list}
+            onClick={() => locationSelectHandler(data.name, data.state)}
+            key={data.id}
+          >
+            {data?.name}, {data?.state}
+          </div>
+        ))}
+
+        {stateData.map((data: any) => (
+          <div
+            className={styles.resultData_list}
+            onClick={() => locationSelectHandler(data.state, data.country)}
+            key={data.id}
+          >
+            {data?.state}, {data?.country}
+          </div>
+        ))}
+
+        {countryData.map((data: any) => (
+          <div
+            className={styles.resultData_list}
+            onClick={() => locationSelectHandler(data.name)}
+            key={data.id}
+          >
+            {data?.name}
+          </div>
+        ))}
+
+        {/* {activeTab == "Center Point & Radius" && (
           <div className={styles.point_radius_input_container}>
             <input placeholder="Radius" />
             <input placeholder="Latitude" />
             <input placeholder="Longitude" />
           </div>
-        )}
+        )} */}
       </div>
-      {addLocationModal && (
+      {/* {addLocationModal && (
         <div className={styles.addLocationModal_container}>
           <div className={styles.addLocationModal}>
             <div className={styles.addLocationModal_header}>
@@ -263,7 +340,7 @@ const LocationDropdown = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
