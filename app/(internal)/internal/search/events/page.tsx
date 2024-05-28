@@ -17,6 +17,7 @@ import RankInput from "@/app/components/Search/Dropdowns/RankInput";
 import EventAttendance from "@/app/components/Search/Dropdowns/EventAttendence";
 import EventStatus from "@/app/components/Search/Dropdowns/EventStatus";
 import ExportModal from "@/app/components/Search/ExportModal";
+// import { insightsScore } from "@/public/data/researchData";
 
 import List from "@/app/components/List";
 import Loading from "@/app/components/UI/Loading";
@@ -40,6 +41,15 @@ import RangeSlider from "@/app/components/UI/Slider";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
+const Calendar = lazy(
+  () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
+);
+const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
+const Table = lazy(() => import("@/app/components/Table"));
+
+interface InsightsType {
+  [key: string]: boolean;
+}
 
 //JSON Data files:
 import eventFormatData from "../../../../../public/data/advanceFilterFormat.json";
@@ -125,6 +135,7 @@ const Search = () => {
     };
     fetchData();
   }, []);
+  const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
 
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
@@ -175,6 +186,20 @@ const Search = () => {
     }
     router.push(`/search/events?${params.toString()}`);
   };
+
+  useEffect(() => {
+    setSelectedInsights({
+      eventSize: true,
+      eventKeywords: true,
+      global: true,
+      reptSent: true,
+      eventRank: true,
+      matchScore: true,
+      estExhibit: true,
+      growth: true,
+      repeatSent: true,
+    });
+  }, []);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -1114,10 +1139,17 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView === "list" && <List />}
+            {selectedView === "list" && 
+              // <List />
+              <Suspense fallback={<Loading />}>
+                <Table
+                  showInsights={selectedInsights}
+                />
+              </Suspense>
+            }
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
-                {/* <Calendar eventData={eventData} /> */}
+                <Calendar />
               </Suspense>
             )}
           </div>
@@ -1133,6 +1165,7 @@ const Search = () => {
               height: "90vh",
             }}
           /> */}
+          <Map />
         </Suspense>
       )}
     </Suspense>
