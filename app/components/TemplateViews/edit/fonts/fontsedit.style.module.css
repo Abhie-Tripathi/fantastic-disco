@@ -5,12 +5,15 @@
 }
 .dropdownContainer{
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .dropdownHeadingContainer{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
+    width: 70%;
     border: 1px solid white;
     padding: 5px 10px;
     border-radius: 10px;
@@ -42,6 +45,17 @@
 .accordianContainer{
     border: 1px solid rgb(77, 77, 77);
     border-radius: 10px;
-    padding: 10px;
     cursor: pointer;
+}
+.heading{
+    padding: 10px;
+}
+.accordian{
+    margin-top: 10px;
+    padding: 10px;
+}
+.accordian label{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

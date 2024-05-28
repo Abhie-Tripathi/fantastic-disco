@@ -22,7 +22,7 @@ const EditModal = () => {
                 <label>
                     Card Radius:
                     <input
-                        type="range"
+                        type="range"    
                         min="0"
                         max="50"
                         value={cardRadius}
