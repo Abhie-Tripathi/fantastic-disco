@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./page.style.module.css";
 import MoreIcon from "/public/dots.svg";
@@ -34,8 +34,9 @@ const Chip = ({ state, setState, value }: ChipProps) => {
   };
   return (
     <div
-      className={`${styles.chip} ${state.includes(value) ? styles.active : ""
-        } ${theme === "light" ? styles.chip_light : ""}`}
+      className={`${styles.chip} ${
+        state.includes(value) ? styles.active : ""
+      } ${theme === "light" ? styles.chip_light : ""}`}
       onClick={onClickHandler}
     >
       {state.includes(value) ? (
@@ -82,11 +83,28 @@ const CreateTracker = () => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
-  const [isSaving, setIsSaving] = useState<boolean>(false)
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   // const search = useSearchParams();
   // console.log(search)
   console.log(router);
+  const [categoryData, setCatgeoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setCatgeoryData(data);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleOnOpenDropdown = (value: string) => {
     if (openDropdown == "") {
@@ -164,8 +182,9 @@ const CreateTracker = () => {
     <div>
       <div className={styles.trackers_container}>
         <div
-          className={`${styles.trackers_header} ${theme === "light" ? styles.trackers_header_light : ""
-            }`}
+          className={`${styles.trackers_header} ${
+            theme === "light" ? styles.trackers_header_light : ""
+          }`}
         >
           <input
             className={styles.trackers_header_input}
@@ -180,7 +199,6 @@ const CreateTracker = () => {
             className={`${styles.trackers_header_newtracker_button} ${
               isSaving && styles.newtracker_button_disable
             }`}
-           
           >
             <div>{isSaving ? "Saving..." : "Save Tracker"}</div>
           </button>
@@ -219,6 +237,7 @@ const CreateTracker = () => {
                 setState={setCategories}
                 dropdownRef={categoryDropdownRef}
                 onClose={() => setOpenDropdown("")}
+                categoryData={categoryData}
               />
             )}
           </div>
@@ -255,8 +274,9 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
-                  }`}
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
               >
                 <div>Choose</div>
                 <Image
@@ -295,8 +315,9 @@ const CreateTracker = () => {
                 )}
               </div>
               <div
-                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
-                  }`}
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
               >
                 <div>Choose</div>
                 <Image
@@ -331,8 +352,9 @@ const CreateTracker = () => {
                 <div className={styles.dropdown_placeholder}>--Select--</div>
               )}
               <div
-                className={`${styles.dropdown_choosebutton} ${theme === "light" ? styles.dropdown_choosebutton_light : ""
-                  }`}
+                className={`${styles.dropdown_choosebutton} ${
+                  theme === "light" ? styles.dropdown_choosebutton_light : ""
+                }`}
               >
                 <div>Choose</div>
                 <Image
@@ -395,8 +417,9 @@ const CreateTracker = () => {
         </div>
 
         <div
-          className={`${styles.location_tab_container} ${theme === "light" ? styles.location_tab_container_light : ""
-            }`}
+          className={`${styles.location_tab_container} ${
+            theme === "light" ? styles.location_tab_container_light : ""
+          }`}
         >
           <div className={`${styles.location_tab} ${styles.active}`}>
             Saved Locations

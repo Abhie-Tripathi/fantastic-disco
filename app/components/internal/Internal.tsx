@@ -106,6 +106,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated} : Props) => {
                     eventDuration={item.duration}
                     userCount={item.userCount}
                     currentEnquiryStatus={item.status}
+                    upvote={item.upvote}
+                    enquiryActivity={item.enquiryActivity}
                     handleModal={handleModal}
                     handleShortlistModal={handleShortlistModal}
                 />

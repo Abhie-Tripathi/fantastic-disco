@@ -13,10 +13,10 @@ const config = {
           'logo.clearbit.com'
         ],
   },
-  reactStrictMode: false,
   experimental: {
     missingSuspenseWithCSRBailout: false,
-  }
+  },
+  reactStrictMode: false,
 
 };
 

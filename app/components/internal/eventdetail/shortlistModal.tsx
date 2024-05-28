@@ -115,7 +115,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 className={iconClass}
               />
               Attendee
-              {shortlistModalData.participent.visitors.length > 0 &&
+              {shortlistModalData.participent.attendee?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
             </span>
@@ -128,7 +128,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 className={iconClass}
               />
               Speaker
-              {shortlistModalData.participent.speakers.length > 0 &&
+              {shortlistModalData.participent.speakers?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
             </span>
@@ -141,7 +141,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 className={iconClass}
               />
               Exhibitors
-              {shortlistModalData.participent.exhibitors.length > 0 &&
+              {shortlistModalData.participent.exhibitors?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
             </span>
@@ -154,7 +154,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 className={iconClass}
               />
               Sponsors
-              {shortlistModalData.participent.sponsors.length > 0 &&
+              {shortlistModalData.participent.sponsors?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
             </span>
@@ -201,10 +201,10 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
             <div className={styles.markListBtn} onClick={handleSubmit}>Mark as Shortlisted</div>
           </div>
           <div className={styles.main_section}>
-            {shortlistModalData.participent.visitors.length > 0 &&
-              <AttendeeCard cardType={"Attendee"} userList={shortlistModalData.participent.visitors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+            {shortlistModalData.participent.attendee?.length > 0 &&
+              <AttendeeCard cardType={"Attendee"} userList={shortlistModalData.participent.attendee} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
             }
-            {shortlistModalData.participent.speakers.length > 0 &&
+            {shortlistModalData.participent.speakers?.length > 0 &&
               <AttendeeCard cardType={"Speaker"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
             }
           </div>

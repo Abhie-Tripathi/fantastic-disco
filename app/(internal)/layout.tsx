@@ -1,7 +1,8 @@
 "use client";
 import { Inter } from "next/font/google";
 import "./../globals.css";
-import { AuthContextProvider, ThemeProvider } from "@/context";
+import styles from './layout.module.css';
+import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
 import Sidebar from "../components/Sidebar";
@@ -19,14 +20,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
         <AuthContextProvider>
           <ThemeProvider>
-            <div className="desktop_view tablet_view">
+            
+                    <div className="desktop_view tablet_view">
+
               <Sidebar />
-            </div>
+              </div>
+            
             <Navbar />
             <div className="body_layout">{children}</div>
           </ThemeProvider>

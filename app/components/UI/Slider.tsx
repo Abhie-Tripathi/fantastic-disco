@@ -33,9 +33,9 @@ const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
               />
               <SliderThumb className={styles.thumb} />
 
-              {marks.map((mark) => (
+              {marks.map((mark, index) => (
                 <div
-                  key={mark}
+                  key={index}
                   className={styles.mark}
                   style={{
                     left: `${(mark / 100) * 100}%`,
@@ -44,6 +44,23 @@ const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
                   <span className={styles.markLabel}>{mark}</span>
                 </div>
               ))}
+
+              {/* {breakpoints && breakpoints.map((mark, index) => {
+                const key = Object.keys(mark)[0];
+                const value = mark[key];
+
+                return (
+                  <div
+                    key={index}
+                    className={styles.mark}
+                    style={{
+                      left: `${key}%`,
+                    }}
+                  >
+                    <span className={styles.markLabel}>{value}</span>
+                  </div>
+                );
+              })} */}
             </>
           )}
         </SliderTrack>

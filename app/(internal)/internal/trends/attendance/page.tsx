@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 // import DownArrow from "/public/arrow_drop_down.svg";
 // import Check from "/public/Check.svg";
@@ -11,6 +11,8 @@ import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
 import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
 import RankInput from "@/app/components/dropdown/RankInput";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const EventTrends = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -21,6 +23,23 @@ const EventTrends = () => {
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
+  const [categoryData, setCatgeoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setCatgeoryData(data);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleDropdownClick = (dropdownName: string) => {
     setOpenDropdown((prevDropdown) =>
@@ -56,6 +75,7 @@ const EventTrends = () => {
                 state={selectedCategories}
                 setState={setSelectedCategories}
                 onClose={() => setOpenDropdown("")}
+                categoryData={categoryData}
               />
             )}
           </div>

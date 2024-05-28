@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./categoryDropdown.module.css";
-import { categories } from "@/public/data/categories";
 import CheckboxInput from "../../UI/CheckBoxInput";
 
 interface CategoryDropdownProps {
-  className?: string
+  className?: string;
   dropdownRef?: React.MutableRefObject<null>;
   state: string[];
   setState: ([]) => void;
   onClose?: () => void;
+  categoryData: any;
 }
 
-const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
+const CategoryDropdown = ({
+  state,
+  setState,
+  categoryData,
+}: CategoryDropdownProps) => {
   const onClickHandler = (value: string) => {
     state.includes(value)
       ? setState(state.filter((data) => data !== value))
@@ -30,15 +34,15 @@ const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
     });
   }
 
-  const attendedCategories = categories[0].attended!.map(
-    (category) => category.slug
+  const attended = categoryData.attendedCategories!.map(
+    (category: any) => category.slug
   );
-  const nonAttendedCategories = categories[1].nonAttended!.map(
-    (category) => category.slug
+  const nonAttended = categoryData.nonAttendedCategories!.map(
+    (category: any) => category.slug
   );
 
-  const unscheduledCategories = categories[2].unscheduled!.map(
-    (category) => category.slug
+  const unscheduled = categoryData.unscheduledCategories!.map(
+    (category: any) => category.slug
   );
 
   const selectAllHandler = (categories: string[]) => {
@@ -49,7 +53,6 @@ const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
     }
   };
 
-
   return (
     <div className={styles.container}>
       <div>
@@ -58,12 +61,12 @@ const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
           <li key="selectAllAttended">
             <CheckboxInput
               id="selectAllAttended"
-              onChange={() => selectAllHandler(attendedCategories)}
-              checked={containsSubarray(attendedCategories)}
+              onChange={() => selectAllHandler(attended)}
+              checked={containsSubarray(attended)}
             />
             <label htmlFor="selectAllAttended">Select All</label>
           </li>
-          {categories[0]?.attended?.map((attendedCategory) => {
+          {categoryData?.attendedCategories?.map((attendedCategory: any) => {
             return (
               <li key={attendedCategory.slug}>
                 <CheckboxInput
@@ -85,25 +88,27 @@ const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
           <li key="selectAllNonAttended">
             <CheckboxInput
               id="selectAllNonAttended"
-              onChange={() => selectAllHandler(nonAttendedCategories)}
-              checked={containsSubarray(nonAttendedCategories)}
+              onChange={() => selectAllHandler(nonAttended)}
+              checked={containsSubarray(nonAttended)}
             />
             <label htmlFor="selectAllNonAttended">Select All</label>
           </li>
-          {categories[1].nonAttended?.map((nonAttendedCategory, key) => {
-            return (
-              <li key={nonAttendedCategory.slug}>
-                <CheckboxInput
-                  id={nonAttendedCategory.slug}
-                  onChange={() => onClickHandler(nonAttendedCategory.slug)}
-                  checked={state.includes(nonAttendedCategory.slug)}
-                />
-                <label htmlFor={nonAttendedCategory.slug}>
-                  {nonAttendedCategory.name}
-                </label>
-              </li>
-            );
-          })}
+          {categoryData?.nonAttendedCategories?.map(
+            (nonAttendedCategory: any) => {
+              return (
+                <li key={nonAttendedCategory.slug}>
+                  <CheckboxInput
+                    id={nonAttendedCategory.slug}
+                    onChange={() => onClickHandler(nonAttendedCategory.slug)}
+                    checked={state.includes(nonAttendedCategory.slug)}
+                  />
+                  <label htmlFor={nonAttendedCategory.slug}>
+                    {nonAttendedCategory.name}
+                  </label>
+                </li>
+              );
+            }
+          )}
         </ul>
       </div>
 
@@ -113,25 +118,27 @@ const CategoryDropdown = ({ state, setState }: CategoryDropdownProps) => {
           <li key="selectAllUnscheduled">
             <CheckboxInput
               id="selectAllUnscheduled"
-              onChange={() => selectAllHandler(unscheduledCategories)}
-              checked={containsSubarray(unscheduledCategories)}
+              onChange={() => selectAllHandler(unscheduled)}
+              checked={containsSubarray(unscheduled)}
             />
             <label htmlFor="selectAllUnscheduled">Select All</label>
           </li>
-          {categories[2].unscheduled?.map((unscheduledCategory, key) => {
-            return (
-              <li key={unscheduledCategory.slug}>
-                <CheckboxInput
-                  id={unscheduledCategory.slug}
-                  onChange={() => onClickHandler(unscheduledCategory.slug)}
-                  checked={state.includes(unscheduledCategory.slug)}
-                />
-                <label htmlFor={unscheduledCategory.slug}>
-                  {unscheduledCategory.name}
-                </label>
-              </li>
-            );
-          })}
+          {categoryData?.unscheduledCategories?.map(
+            (unscheduledCategory: any) => {
+              return (
+                <li key={unscheduledCategory.slug}>
+                  <CheckboxInput
+                    id={unscheduledCategory.slug}
+                    onChange={() => onClickHandler(unscheduledCategory.slug)}
+                    checked={state.includes(unscheduledCategory.slug)}
+                  />
+                  <label htmlFor={unscheduledCategory.slug}>
+                    {unscheduledCategory.name}
+                  </label>
+                </li>
+              );
+            }
+          )}
         </ul>
       </div>
     </div>
