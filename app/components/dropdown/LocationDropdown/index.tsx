@@ -209,7 +209,7 @@ const LocationDropdown = ({
           <div
             className={styles.resultData_list}
             onClick={() => locationSelectHandler(data.name, data.state)}
-            id={data.id}
+            key={data.id}
           >
             {data?.name}, {data?.state}
           </div>
@@ -219,7 +219,7 @@ const LocationDropdown = ({
           <div
             className={styles.resultData_list}
             onClick={() => locationSelectHandler(data.state, data.country)}
-            id={data.id}
+            key={data.id}
           >
             {data?.state}, {data?.country}
           </div>
@@ -229,7 +229,7 @@ const LocationDropdown = ({
           <div
             className={styles.resultData_list}
             onClick={() => locationSelectHandler(data.name)}
-            id={data.id}
+            key={data.id}
           >
             {data?.name}
           </div>
