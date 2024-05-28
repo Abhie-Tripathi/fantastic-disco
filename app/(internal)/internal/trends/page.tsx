@@ -11,7 +11,7 @@ const Page = () => {
     const {theme} = useTheme();
 
     return (
-        <div className={`${styles.body} ${theme === 'light' && styles.body_light}`}>
+        <div className={styles.body}>
             <div className={styles.navbar}>
                 <Navbar setActiveChipY={setActiveChipY} setActiveChipX={setActiveChipX} />
             </div>

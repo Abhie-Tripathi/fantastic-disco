@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./notes.module.css";
+import { useSearchParams } from "next/navigation";
 import { AddComment } from "./AddComment";
 import { Comment as IComment } from "../../../types/comment";
 import Image from "next/image";
@@ -9,10 +10,6 @@ import { usePathname } from "next/navigation";
 import LikeFill from "@/public/thumbsUpFill.svg";
 import person1 from "@/public/person2.svg";
 import Pdf from "/public/pdf.svg";
-// import profileImage from "@/public/profile_Image.jpg";
-// import CommentProfileImage from "@/public/profile_Image.jpg";
-// import { EditComment } from "./EditComment";
-// import { text } from "stream/consumers";
 import CommentsData from "@/public/data/commentsData.json";
 import ButtonView from "../ButtonView";
 import { useTheme } from "@/context";
@@ -20,6 +17,7 @@ import { useAuthContext } from "@/context";
 import { number, undefined } from "zod";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { transcode } from "buffer";
 
 interface UserDetail {
   firstname: string;
@@ -31,16 +29,29 @@ interface Props {
   eventGroupId?: string;
   productId?: string | undefined;
   comments?: IComment[];
+  stage?:string;
 }
-
-export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
+interface Reply{
+  content?:string;
+  user:{
+    firstname?:string;
+    lastname?:string;
+  }
+  id?:string;
+}
+export const Notes = ({eventId, eventGroupId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath=usePathname().split('/')[2]
   const { user, signOut } = useAuthContext();
+  // const searchParams = useSearchParams();
+  const [suggest,setSuggest]=useState();
+  
+  // console.log(searchParams);
+  
   const [isDraggingOver, setIsDraggingOver] = useState(true);
   const [drop, setDrop] = useState(false);
   const [type,setType]=useState("MESSAGE");
-  const [stage,setStage]=useState("");
+  // const [stage,setStage]=useState("");
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
@@ -50,18 +61,28 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
   const wrapperRef = useRef(null);
   // const [filePreview, setFilePreview] = useState<string | null>(null);
   const [filePreviews, setFilePreviews] = useState<any>([]);
-  const [selectedPdfs, setSelectedPdfs] = useState<string[]>([]);
-  const [replyId, setReplyId] = useState<string | null | undefined>("");
+  const [selectedPdfs, setSelectedPdfs] = useState<any>([]);
+  const [replyId, setReplyId] = useState<string | null>(null);
+
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+
+
+  
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
-  const containerRef = useRef(null);
+  const containerRef :any  = useRef(null);
   const commentRef = useRef(null);
   // const replyRef=useRef(null);
   const [note, setNote] = useState<string>("");
+  const [isReply,setIsReply]=useState(false);
   const [height, setHeight] = useState<number | null>(null);
-  const [notes, setNotes] = useState<any>(CommentsData);
+  const [notes, setNotes] = useState<any[]>([]);
+  const isInitialMount = useRef(true);
   const scrollToBottom = () => {
     if (containerRef.current) {
       (containerRef.current as HTMLElement).scrollTop = (
@@ -70,25 +91,77 @@ export const Notes = ({eventId, eventGroupId, comments, productId }: Props) => {
     }
   };
 async function fetchData() {
+ 
     const url =
-      `${baseUrl}/comment?eventId=7cd52884-1409-43a4-9dde-01a06bb8faf9&eventGroupId=53cd1194-2e00-43a0-b9dd-20642710815e&stage=INTERNAL`;
+      `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
+      
     const { data, error } = await myFetch(url);
     console.log(data);
-    if (data && urlPath==="coordinate") {
-      setStage("INTERNAL");
+    if (data && urlPath==="coordinate" ) {
+      // setNotes([]);
       console.log(data);
       // setNotes(data.comments.reverse());
-      setNotes(data.comments.reverse());
+      if(data.comments?.length>0)
+        setNotes(prevNotes => [...data.comments.reverse(),...prevNotes]);
+    }
+    if (data && urlPath==="outreach") {
+      // setNotes([]);
+      
+      console.log(data);
+      // setNotes(data.comments.reverse());
+      if(data.comments?.length>0)
+        setNotes(prevNotes => [...data.comments.reverse(),...prevNotes]);
     }
   }
+  // const isInitialMount = useRef(true);
+  // const commentRef=useRef();
+  const [scrolling,setScrolling]=useState(false);
   useEffect(() => {
-    // if(note!==null)
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleInfiniteScroll);
+
+      return () => {
+        container.removeEventListener('scroll', handleInfiniteScroll);
+      };
+    }
+  }, []);
+
+  const handleInfiniteScroll = async () => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const isAtTop = container.scrollTop === 0;
+      console.log('Client Height:', container.clientHeight);
+      console.log('Scroll Height:', container.scrollHeight);
+      console.log('Scroll Top:', container.scrollTop);
+
+      // Your infinite scroll logic here
+      if (isAtTop) {
+        setPage(page+10);
+        setScrolling(true);
+        // Trigger data fetch or any action you want to perform on scroll end
+      }
+    }
+  };
+  useEffect(() => {
+    if(note!==null)
+      if (isInitialMount.current) {
+        console.log(1111);
+        
+        // Skip the effect on the initial mount
+        isInitialMount.current = false;
+      }
+      else{
     if (commentRef.current) {
       const height = (commentRef.current as HTMLElement).clientHeight;
       setHeight(height);
+      console.log(111111111);
+      
+      // scrollToBottom();
     }
-    scrollToBottom();
-  }, [notes.length]);
+    // scrollToBottom();
+  }
+  }, [notes?.length]);
 
   console.log(comments);
   const addNote = async (event: any) => {
@@ -110,43 +183,60 @@ async function fetchData() {
     ) {
       event.preventDefault();
       console.log("number of hits");
-      const updatedNotes = [
-        ...notes,
-        {
-          id: Date.now().toString(),
-          images: filePreviews,
-          pdfs: selectedPdfs,
-          content: note,
-          replyId: replyId,
-          replyName: replyName,
-          replyText: replyText,
-          upvote: 0,
-          type:type,
-          user: {
-            id: user?.id,
-            firstname: user?.firstname,
-            lastname: user?.lastname,
-            email: user?.email,
-            createdAt: new Date(),
-          },
-        },
-      ];
-      setNotes(notes);
+      // const updatedNotes = [
+      //   ...notes,
+      //   {
+      //     id: Date.now().toString(),
+      //     images: filePreviews,
+      //     pdfs: selectedPdfs,
+      //     content: note,
+      //     parentCommentId: replyId,
+      //     userLiked:false,
+      //     upvote: 0,
+      //     _count:{
+      //       Commentlikes:0,
+      //     },
+      //     parent:{
+      //       content:replyText,
+      //       user:{
+      //         firstname:replyName?.split(" ")[0],
+      //         lastname:replyName?.split(" ")[1],
+      //       }
+      //     },
+      //     type:type,
+      //     user: {
+      //       id: user?.id,
+      //       firstname: user?.firstname,
+      //       lastname: user?.lastname,
+      //       email: user?.email,
+      //       createdAt: new Date(),
+      //     },
+      //   },
+      // ];
+      // setNotes(notes);
+      console.log(selectedPdfs);
+      
+      console.log(replyName);
       
       const dataToSend = {
-        "eventId": "7cd52884-1409-43a4-9dde-01a06bb8faf9",
-        "eventGroupId": "53cd1194-2e00-43a0-b9dd-20642710815e",
-        "stage": "INTERNAL",
+        "eventId": eventId,
+        "eventGroupId": eventGroupId,
+        "stage": stage,
         "type": type,
         "content": note,
-        
         "source": "GTM",
-        ...(type !== 'MESSAGE' && { "interestType": interestType })
+        ...(type !== 'MESSAGE' && { "interestType": interestType }),
+        ...(type==="RECOMMEND"&&{
+            "recommendUserId":suggest
+        }),
+        ...(replyId!==null && {
+          "parentCommentId":replyId
+        } )
       };
       postNote(dataToSend);
-
-      scrollToBottom();
-      setNotes(updatedNotes);
+      // console.log(dataToSend.files);
+     
+      // setNotes(updatedNotes);
       console.log(note);
       // scrollToBottom();
     }
@@ -159,9 +249,29 @@ async function fetchData() {
   };
   const postNote=async(dataToSend:{})=>{
     const formData = new FormData();
-    const url = `${baseUrl}/comment`;
+    for (let i = 0; i < filePreviews.length; i++) {
+      formData.append('files', filePreviews[i]);
+    }
+    // console.log(selectedPdfs[0]);
+    // formData.append('files',files);
+    for (let i = 0; i < selectedPdfs.length; i++) {
+      formData.append('files', selectedPdfs[i]);
+    }
+    let url="";
+    if(replyId===null){
+    url = `${baseUrl}/comment`;
+    }else{
+      url=`${baseUrl}/comment/reply`
+    }
+    // formData.append("eventId","7cd52884-1409-43a4-9dde-01a06bb8faf9")
+    // formData.append("eventGroupId", "53cd1194-2e00-43a0-b9dd-20642710815e")
+    // formData.append("stage","INTERNAL")
+    // formData.append("content", note)
+    // formData.append("type",type);
+    // formData.append("files",{...filePreviews});
+    // formData.append("source","GTM");
     Object.keys(dataToSend).forEach(key => {
-      formData.append(key , dataToSend[key as  keyof typeof dataToSend]);
+      formData.append(key , dataToSend[key as  keyof typeof dataToSend])
     });
     const { data, error } = await myFetch(url, {
       method: "POST",
@@ -170,13 +280,39 @@ async function fetchData() {
       //   "Content-Type": "multipart/form-data"
       // }
     });
-    
-      if (!error)
+    if(data){
+      const newData=transformData(data.data);
+      
+      setNotes(prevNotes=>[...prevNotes, newData]);
+    }
+      if (!error){
         console.log(data);
+        setScrolling(false);
+      }
       else console.log(error);
+      setType("MESSAGE")
   }
+  const transformData = (data: any) => {
+    
+      const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
+        ...file,
+        Attachment: [file.Attachment],
+      }))
+      return {
+        ...data,
+        CommentFiles: transformedCommentFiles,
+      };
+  };
+  useEffect(() => {
+    if(scrolling===false){
+      requestAnimationFrame(() => {
+        scrollToBottom();
+      });
+    }
+  }, [notes]);
+
   console.log(filePreviews);
-  const [files, setFiles] = useState<File | null>(null);
+  const [files, setFiles] = useState<any | null>(null);
   const handleDragOver = (event: React.DragEvent) => {
     console.log("HandleDragver", event);
     event.preventDefault();
@@ -186,6 +322,8 @@ async function fetchData() {
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setFiles(event?.dataTransfer.files[0]);
+    // console.log(event?.dataTransfer.files[0]);
+    
     setDrop(false);
     // if (!files) return; // Exit early if files is null or undefined
     // // setDrop(true);
@@ -216,7 +354,21 @@ async function fetchData() {
     console.log(files);
 
     if (files && files.type === "application/pdf") {
-      setSelectedPdfs([...selectedPdfs, files.name]);
+      // console.log(files);
+      
+      // setSelectedPdfs([...selectedPdfs, files]);
+      // const file = [files]
+      // console.log(file);
+      
+      setSelectedPdfs((prevSelectedFiles:File[] | null) => {
+        if (!prevSelectedFiles || prevSelectedFiles.length === 0) {
+          // console.log(file);
+          
+          return [files];
+        } else {
+          return [...prevSelectedFiles, files];
+        }
+      });
     } else if (files.type.startsWith("image/")) {
       setFilePreviews((prevSelectedFiles: File[] | null) => {
         if (
@@ -248,7 +400,7 @@ async function fetchData() {
     }, 1000);
   });
 
-  comments = [...notes];
+  // comments = [...notes];
   let arr = Array.from(
     new Set(
       comments?.map(
@@ -269,8 +421,8 @@ async function fetchData() {
   const [replyText, setReplyText] = useState<string | undefined>("");
   const [replyName, setReplyName] = useState<string | undefined>("");
   useEffect(() => {
-    const reply = comments?.find((comment) => comment.id == replyId);
-    console.log("reply is: " + reply?.text);
+    const reply:Reply = notes?.find((comment) => comment.id == replyId);
+    // console.log("reply is: " + reply?.text);
     setReplyName(reply?.user.firstname + " " + reply?.user.lastname);
     setReplyText(reply?.content);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -279,10 +431,11 @@ async function fetchData() {
     // Find the comment by id and update its isLiked property
     likedFun(id,isLiked)
     const updatedComments = notes.map((c: any) => {
-      if (c.id === id && isLiked) {
-        return { ...c, upvote: c.upvote + 1, isLiked: isLiked };
-      } else if (c.id === id && !isLiked) {
-        return { ...c, upvote: c.upvote - 1, isLiked: isLiked };
+      if (c.id === id) {
+        return { ...c, _count: {
+          ...c._count,
+          Commentlikes: c._count?.Commentlikes + (!isLiked ? 1 : -1),
+        }, userLiked: !isLiked };
       }
       return c;
     });
@@ -291,14 +444,16 @@ async function fetchData() {
     setNotes(updatedComments);
   };
   const likedFun=async(id:string, isLiked:boolean)=>{
-      const url=`${baseUrl}/comment/${id}/upvote/${isLiked ? 'up' : 'down'}`;
-      const { data, error } = await myFetch(url, {
-        method: "POST"
-      });
+    const url=`${baseUrl}/comment/${id}/interest`;
+    const { data, error } = await myFetch(url, {
+      method:"POST"
+    })
   }
   // 22b0588a-7207-4e25-a0e7-1134c05fdf52
   // up
   const handleDelete = (id: number) => {
+    console.log(id);
+    
     const updatedNotes = notes.filter((comment: any) => comment.id !== id);
     deleteComment(id);
     setNotes(updatedNotes);
@@ -362,21 +517,45 @@ async function fetchData() {
 
   useEffect(() => {
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  setTimeout(() => {
-    console.log("data is: " + notes);
-  }, 5000);
+  }, [page]);
+  // setTimeout(() => {
+  //   console.log("data is: " + notes);
+  // }, 5000);
   useEffect(() => {
     if (data.length !== 0) {
       setNotes(data);
     }
   }, [data]);
   // fetchData();
-  comments = [...notes];
+ 
+  // comments = [...notes];
+  setTimeout(() => {
+    console.log(selectedPdfs);
+  }, 5000);
+  useEffect(()=>{
+    const url=`${baseUrl}/auth/users`
+   getAllUser(url);
+  },[])
+  const [userArr, setUserArr] = useState<string[]>([]);
+
+  const getAllUser = async (url: string) => {
+    const { data, error } = await myFetch(url);
+    
+    if (data) {
+      console.log(data);
+
+      // Collect new items to add to the array
+      const newItems = data.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+  
+
+      // Use functional form to update state
+      setUserArr(prevArr => [...prevArr, ...newItems]);
+    }
+  };
+console.log(notes);
   return (
     <div className={styles.container}>
-      {comments ? (
+      {notes ? (
         <div
           className={styles.commentDiv}
           ref={containerRef}
@@ -404,7 +583,7 @@ async function fetchData() {
             onDrop={handleDrop}
           ></div>
           <ul className={styles.comments} ref={commentRef}>
-            {comments.map((comment) => (
+            {notes.map((comment:IComment) => (
               <li
                 className={
                   String(chedkedId) === comment.id
@@ -416,6 +595,8 @@ async function fetchData() {
                 id={comment.id}
               >
                 <Comment
+                userArr={userArr}
+                setIsReply={setIsReply}
                   handleLike={handleLike}
                   getCommentPos={getCommentPos}
                   handleDelete={handleDelete}
@@ -424,7 +605,7 @@ async function fetchData() {
                   setReplyId={setReplyId}
                   productId={productId!}
                   comment={comment}
-                  superCommentId={comment.id}
+                  superCommentId={comment?.id}
                   notes={notes}
                   setNote={setNote}
                   filePreviews={filePreviews}
@@ -448,6 +629,7 @@ async function fetchData() {
               <div className={styles.name}>{replyName}</div>
               <div className={styles.replyText1}>{replyText}</div>
             </div>
+            
             <div onClick={() => setReplyId(null)} className={styles.closeBtn}>
               X
             </div>
@@ -459,6 +641,7 @@ async function fetchData() {
           }`}
       >
         <AddComment
+        setSuggest={setSuggest}
           replyId={replyId}
           setType={setType}
           setInterestType={setInterestType}
@@ -480,16 +663,18 @@ async function fetchData() {
 
 interface CommentProps {
   replyName?: undefined | string;
+  setIsReply:any;
   getCommentPos?: any;
   handleDelete?: any;
   replyText?: undefined | string;
   handleLike?: any;
   setReplyId?: any;
+  userArr:string[];
   comment: IComment;
   productId: string;
   superCommentId: string;
   userName?: string;
-  notes: () => void;
+  notes: any[];
   setNote: React.Dispatch<React.SetStateAction<string>>;
   arr?: string[];
   setFilePreviews: any;
@@ -500,6 +685,7 @@ interface CommentProps {
 }
 const Comment = ({
   comment,
+  userArr,
   handleLike,
   replyText,
   productId,
@@ -508,6 +694,7 @@ const Comment = ({
   setComments,
   getCommentPos,
   handleDelete,
+  setIsReply,
   superCommentId,
   userName,
   notes,
@@ -535,16 +722,29 @@ const Comment = ({
   // });
   // console.log(newArr);
   // const [replyId,setReplyId]=useState("");
+  const scroll = () => {
+    console.log(document.documentElement.scrollHeight);
+    
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  };
+  const { user, signOut } = useAuthContext();
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+    user ? user : null
+  );
+  
+  useEffect(() => {
+    setUserDetail(user);
+  }, [user]);
+  const d=`@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
+    scroll();
+    setIsReply(true);
   };
   const [isLiked, setIsLiked] = useState(false);
   useEffect(() => { }, [isLiked]);
-  const handleLiked = (id: string, isLiked: boolean) => {
-    // console.log(isLiked);
-    // const updatedIsLiked = !isLiked;
-    setIsLiked((prev) => !prev);
-    handleLike(id, isLiked);
+  const handleLiked = (id: string, isLiked: boolean, ) => {
+    handleLike(id,isLiked)
   };
   // useEffect(()=>{
   //   setIsLiked(!isLiked)
@@ -561,8 +761,12 @@ const Comment = ({
   //   const newComment={...comment,isLiked:true};
   //   comment=newComment;
   // }
+  
+  console.log(arr);
+  setTimeout(()=>{
+    console.log(comment?.CommentFiles);
+  },5000)
 
-  console.log(comment);
 
   const { theme } = useTheme();
   return (
@@ -612,7 +816,7 @@ const Comment = ({
           <div
             className={styles.text}
             style={{
-              background: comment?.replyId
+              background: comment?.parentCommentId
                 ? theme === "light"
                   ? "var(--secondary-bg-light)"
                   : "#1a1a1a"
@@ -621,19 +825,24 @@ const Comment = ({
           >
             <div className={styles.commentText}>
               <span>{userName}</span>{" "}
-              {comment?.replyId && (
+              {comment?.parentCommentId && (
                 <div
                   className={
                     theme === "light" ? styles.replyDivLight : styles.replyDiv
                   }
-                  onClick={(e) => getCommentPos(e, comment.replyId)}
+                  onClick={(e) => getCommentPos(e, comment.parentCommentId)}
                 >
                   <div className={styles.outerReplyDiv}>
                     <div className={styles.replyText}>
                       <div className={styles.bar}></div>
+                      {comment.parentCommentId!==null?
+                      <div className={styles.name}>{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
+                      :
                       <div className={styles.name}>{comment?.replyName}</div>
-                      <div className={styles.replyText1} id={comment.replyId}>
-                        {comment?.replyText}
+                      }
+                      
+                      <div className={styles.replyText1} id={comment.parent?.id}>
+                        {comment?.parent?.content}
                       </div>
                     </div>
                   </div>
@@ -647,7 +856,7 @@ const Comment = ({
                       <React.Fragment key={index}>
                         <div
                           style={{
-                            padding: comment?.replyId
+                            padding: comment?.parentCommentId
                               ? "0 10px 20px 20px"
                               : "none",
                           }}
@@ -655,7 +864,7 @@ const Comment = ({
                           {words.map((word, idx) => {
                             if (word.startsWith("@")) {
                               const username = word.substring(1);
-                              if (arr?.includes("@" + username)) {
+                              if (userArr?.includes("@" + username)) {
                                 return (
                                   <a
                                     key={idx}
@@ -712,7 +921,7 @@ const Comment = ({
                       // If line is not empty, return the line wrapped in a <p> tag
                       return (
                         <>
-                          {comment?.replyId ? (
+                          {comment?.parentCommentId ? (
                             <>
                               {/* <div className={styles.replyDiv}>
 
@@ -743,20 +952,79 @@ const Comment = ({
                   }
                 })}
             </div>
+            {/* {comment?.images &&
+            <div
+            className={styles.images}
+            style={{ padding: comment?.replyId ? "0px 20px" : "none" }}
+          >
+            {comment?.images?.map((image, index) => (
+              <div key={index}>
+                <Image
+                  src={URL.createObjectURL(image)}
+                  alt={image.name}
+                  width={200}
+                  height={150}
+                />
+              </div>
+            ))}
+          </div>
+            }
+            {comment?.pdfs&&
+            <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              padding: comment?.replyId ? "0 10px 20px 20px" : "none",
+            }}
+          >
+            {comment?.pdfs?.map((item: any, ind: number) => (
+              <div
+                key={ind}
+                className={`${styles.pdf} ${theme === "light" && styles.pdf_light
+                  }`}
+              >
+                <Image src={Pdf} width={50} height={50} alt="pdf" />
+                <p key={ind} style={{ display: "flex" }}>
+                  {item}
+                </p>
+                
+              </div>
+            ))}
+          </div>
+            } */}
+            {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
+              <div key={index}>{item.Attachment.fileName}</div>
+            ))}
             <div
               className={styles.images}
-              style={{ padding: comment?.replyId ? "0px 20px" : "none" }}
+              style={{ padding: comment?.parent ? "10px 20px" : "none" }}
             >
-              {comment?.images?.map((image, index) => (
+              
+              {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
+               
+                (item.Attachment && item?.Attachment[0]?.fileType==="IMAGE"?(
                 <div key={index}>
                   <Image
-                    src={URL.createObjectURL(image)}
-                    alt={image.name}
+                    style={{borderRadius:"5px"}}
+                    src={item?.Attachment[0]?.filePath}
+                    alt={item.name}
                     width={200}
                     height={150}
                   />
-                </div>
+                </div>):(
+                <div
+                  key={index}
+                  className={`${styles.pdf} ${theme === "light" && styles.pdf_light
+                    }`}
+                >
+                  <Image src={Pdf} width={50} height={50} alt="pdf" />
+                  <p key={index} style={{ display: "flex" }}>
+                    {item.Attachment &&  item?.Attachment[0]?.fileName}
+                  </p>
+                </div>)
+              )
               ))}
+              
             </div>
             {/* <div style={{ display: "flex", gap: "10px"}}>
 
@@ -767,14 +1035,14 @@ const Comment = ({
 ))}
 
       </div> */}
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 gap: "10px",
                 padding: comment?.replyId ? "0 10px 20px 20px" : "none",
               }}
             >
-              {comment?.pdfs?.map((item: any, ind: number) => (
+              {comment?.CommentFiles?.map((item: any, ind: number) => (
                 <div
                   key={ind}
                   className={`${styles.pdf} ${theme === "light" && styles.pdf_light
@@ -782,11 +1050,11 @@ const Comment = ({
                 >
                   <Image src={Pdf} width={50} height={50} alt="pdf" />
                   <p key={ind} style={{ display: "flex" }}>
-                    {item}
+                    {item.FileName}
                   </p>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className={styles.options}>
             {/* <ButtonView view={"upvoteBtn"} /> */}
@@ -794,16 +1062,16 @@ const Comment = ({
               className={
                 theme === "light" ? styles.likeSectionLight : styles.likeSection
               }
-              onClick={() => handleLiked(comment.id, !isLiked)}
+              onClick={() => handleLiked(comment.id, comment?.userLiked)}
             >
               <div className={styles.like}>
-                {comment?.isLiked ? (
+                {comment?.userLiked ? (
                   <Image src={LikeFill} alt="like" />
                 ) : (
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div>{comment?.upvote}</div>
+              <div>{comment._count && comment?._count.Commentlikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
@@ -812,9 +1080,9 @@ const Comment = ({
               Reply
             </button>
             {/* <ButtonView view={"replyBtn"} /> */}
-            {comment?.user?.createdAt ? (
+            {comment?.created ? (
               <p>
-                {new Date(comment.user.createdAt).toLocaleDateString("en-US", {
+                {new Date(comment.created).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",
                   year: "numeric",
@@ -823,12 +1091,15 @@ const Comment = ({
             ) : (
               <p>Mar 20,2024</p>
             )}
+            {userDetail?.firstname===comment.user.firstname&&userDetail?.lastname===comment.user.lastname &&
             <button
-              className={styles.replyBtn}
-              onClick={() => handleDelete(comment.id)}
-            >
-              Delete
-            </button>
+            className={styles.replyBtn}
+            onClick={() => handleDelete(comment.id)}
+          >
+            Delete
+          </button>
+            }
+            
             {/* <ButtonView
         view={"editDeleteButton"}
         commentUserId={comment.user.id}
@@ -863,6 +1134,8 @@ const Comment = ({
                   key={reply.id}
                 >
                   <Comment
+                  userArr={userArr}
+                   setIsReply={setIsReply}
                     comment={reply}
                     setComments={setComments!}
                     productId={productId}
@@ -928,7 +1201,7 @@ const Comment = ({
                               </p>
                             </div>
                           </header>;
-                          if (arr?.includes("@" + username)) {
+                          if (userArr?.includes("@" + username)||d==="@"+username) {
                             return (
                               <a
                                 key={idx}
@@ -965,10 +1238,10 @@ const Comment = ({
                           );
                         }
                       })}
-                      {comment?.user?.createdAt && (
+                      {comment?.created && (
                         <span style={{ paddingLeft: "5px" }}>
                           on{" "}
-                          {new Date(comment.user.createdAt).toLocaleDateString(
+                          {new Date(comment?.created).toLocaleDateString(
                             "en-US",
                             {
                               month: "short",
@@ -986,457 +1259,14 @@ const Comment = ({
                   return <p key={index}>{item || "\u00A0"}</p>;
                 }
               })}
+              
             </div>
+            
           </div>
-          {/* <div className={styles.options}>
-  <ButtonView view={"upvoteBtn"} />
-  <ButtonView view={"replyBtn"} />
-  <p>Mar 20,2024</p>
-  <ButtonView view={"editDeleteButton"} commentUserId={comment.user.id} />
-</div>
-<div className={styles.addMoreCommentSection}>
-  <AddComment
-    focus
-    replyOptions={{ commentId: superCommentId }}
-    productId={productId!}
-    className={`${styles.active}`}
-    repliesLength={comment.replies?.length}
-    notes={notes} setNote={setNote} 
-  />
-</div>
-<ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
-<ul className={styles.replies} id="replyContainer">
-  {comment.replies?.map((reply) => {
-    return (
-      <li
-        className={reply.replies?.length! > 0 ? styles.thread : ""}
-        key={reply.id}
-      >
-        <Comment
-          comment={reply}
-          setComments={setComments!}
-          productId={productId}
-          superCommentId={superCommentId}
-          notes={notes} setNote={setNote} 
-          userName={"@Roxette"} />
-      </li>
-    );
-  })}
-</ul> */}
+          
         </>
+        
       )}
     </>
   );
 };
-
-// {(!comment.text.includes("wants to recommend")&& !comment.text.includes("wants to #Attend") && !comment.text.includes("wants to #Speak") ) ? (
-//   <>
-//     <div className={styles.comment__user}>
-//       <header>
-//         <span className={styles.imgContainer}>
-//           <Image
-//             width={50}
-//             height={50}
-//             className={styles.userImage}
-//             src={person1}
-//             alt=""
-//           />
-//         </span>
-//         <div
-//           className={`${styles.comment_name} ${
-//             theme === "light" && styles.comment_name_light
-//           }`}
-//         >
-//           <span>
-//             {comment.user?.firstname} {comment.user?.lastname}
-//             <span>
-//               {" "}
-//               @
-//               {`${comment.user.firstname}${comment.user.lastname
-//                 .charAt(0)
-//                 .toLowerCase()}${comment.user.lastname.slice(1)}`}
-//             </span>
-//           </span>
-
-//           <p className={styles.designationText}>
-//             Founder and leadership at Nityo Infotech
-//           </p>
-//         </div>
-//       </header>
-//     </div>
-
-//     <ButtonView
-//       view={"cancelBtn"}
-//       productId={productId}
-//       commentId={comment.id}
-//       commentText={comment.text}
-//     />
-//     <div className={styles.text} style={{ background:comment?.replyId?(theme==="light"?"var(--secondary-bg-light)":"#1a1a1a"):"none"}}>
-//       <div className={styles.commentText}>
-//         <span>{userName}</span>{" "}
-//         {comment?.replyId &&
-//              <div className={theme==="light"?styles.replyDivLight:styles.replyDiv} onClick={(e)=>getCommentPos(e,comment.replyId)}>
-
-//              <div className={styles.outerReplyDiv}>
-//              <div className={styles.replyText}>
-//                <div className={styles.bar}></div>
-//              <div className={styles.name}>{comment?.replyName}</div>
-//                <div className={styles.replyText1} id={comment.replyId}>{comment?.replyText}</div>
-//                </div>
-//              </div>
-
-//            </div>
-//           }
-//         {comment &&
-//           comment.text.split("\n").map((item, index) => {
-//             if (item.includes("@") ) {
-//               const words = item.split(" ");
-//               return (
-//                 <React.Fragment key={index}>
-//                   <div style={{padding:comment?.replyId?"0 10px 20px 20px":'none'}}>
-//                   {words.map((word, idx) => {
-//                     if (word.startsWith("@")) {
-//                       const username = word.substring(1);
-//                       if (arr?.includes("@" + username)) {
-//                         return (
-//                           <a
-//                             key={idx}
-//                             href={`#${username}`}
-//                             style={{fontWeight: "800" }}
-//                           >
-//                             {word}{" "}
-//                           </a>
-//                         );
-//                       } else {
-//                         return (
-//                           <React.Fragment key={idx}>
-//                             {word}{" "}
-//                           </React.Fragment>
-//                         );
-//                       }
-//                     } else if (word.startsWith("#")) {
-//                       return (
-//                         <React.Fragment key={idx}>
-//                           <span
-//                             style={{
-//                               backgroundColor: "#2B233D",
-//                               color: "white",
-//                               padding: "0px 4px",
-//                               borderRadius: "10px",
-//                             }}
-//                           >
-//                             {word}
-//                           </span>
-//                         </React.Fragment>
-//                       );
-//                     } else {
-//                       return (
-//                         <React.Fragment key={idx}>
-//                           {" "}{word}{" "}
-//                           </React.Fragment>
-//                       );
-//                     }
-//                   })}
-//                   <br />
-//                   </div>
-//                 </React.Fragment>
-
-//               );
-//             } else {
-//               if (item.length === 0 && item) {
-//                 // If line is empty, return an empty <p> tag with a unique key
-//                 return (
-//                   <p key={index} style={{ margin: 0 }}>
-//                     &nbsp;
-//                   </p>
-//                 );
-//               } else {
-//                 // If line is not empty, return the line wrapped in a <p> tag
-//                 return (
-//                   <>
-//                   {comment?.replyId ?(
-//                     <>
-//                      {/* <div className={styles.replyDiv}>
-
-//                      <div className={styles.outerReplyDiv}>
-//                      <div className={styles.replyText}>
-//                        <div className={styles.bar}></div>
-//                      <div className={styles.name}>{comment?.replyName}</div>
-//                        <div className={styles.replyText1}>{comment?.replyText}</div>
-//                        </div>
-//                      </div>
-
-//                    </div> */}
-//                    <p key={index} style={{ margin: 0,padding:"0px 20px" }}>
-//                    {item}
-//                  </p>
-//                  </>
-//                   ):(
-//                     <p key={index} style={{ margin: 0 }}>
-//                     {item}
-//                   </p>
-//                   )
-
-//                }
-
-//                   </>
-//                 );
-//               }
-//             }
-//           })}
-//       </div>
-//       <div className={styles.images} style={{padding:comment?.replyId?"0px 20px":'none'}}>
-//         {comment?.images?.map((image, index) => (
-//           <div key={index}>
-//             <Image
-//               src={URL.createObjectURL(image)}
-//               alt={image.name}
-//               width={200}
-//               height={150}
-//             />
-//           </div>
-//         ))}
-//       </div>
-//       {/* <div style={{ display: "flex", gap: "10px"}}>
-
-//       {comment?.pdfs?.map((item: any, ind: number) => (
-// <div className={styles.pdf} key={ind} style={{ width: "200px", height:"150px",overflow: 'hidden' }}>
-// <iframe src={URL.createObjectURL(item)} className={styles.pdf} style={{ border: "none", outline: "none", width: "90%", height: "100%", overflow: "hidden",scrollbarWidth: "thin" }} title="PDF Preview" scrolling="no" />
-// </div>
-// ))}
-
-//       </div> */}
-//       <div style={{ display: "flex", gap: "10px", padding:comment?.replyId?"0 10px 20px 20px":'none' }}>
-//         {comment?.pdfs?.map((item: any, ind: number) => (
-//           <div
-//             key={ind}
-//             className={`${styles.pdf} ${
-//               theme === "light" && styles.pdf_light
-//             }`}
-//           >
-//             <Image src={Pdf} width={50} height={50} alt="pdf" />
-//             <p key={ind} style={{ display: "flex" }}>
-//               {item}
-//             </p>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//     <div className={styles.options}>
-//       {/* <ButtonView view={"upvoteBtn"} /> */}
-//       <div className={theme==="light" ? styles.likeSectionLight : styles.likeSection} onClick={()=>handleLiked(comment.id,!isLiked)}>
-//         <div className={styles.like}>{comment?.isLiked?(<Image src={LikeFill} alt="like"/>):(<Image src={Like} alt="like"/>)}</div>
-//         <div >{comment?.likes}</div>
-//       </div>
-//       <button onClick={()=>handleReply(comment.id)} className={styles.replyBtn}>Reply</button>
-//       {/* <ButtonView view={"replyBtn"} /> */}
-//       {comment?.user?.createdAt ? (
-//         <p>
-//           {new Date(comment.user.createdAt).toLocaleDateString("en-US", {
-//             month: "short",
-//             day: "2-digit",
-//             year: "numeric",
-//           })}
-//         </p>
-//       ) : (
-//         <p>Mar 20,2024</p>
-//       )}
-//       <button className={styles.replyBtn} onClick={()=>handleDelete(comment.id)}>Delete</button>
-//       {/* <ButtonView
-//         view={"editDeleteButton"}
-//         commentUserId={comment.user.id}
-//       /> */}
-//     </div>
-//     <div className={styles.addMoreCommentSection}>
-//       <AddComment
-//         focus
-//         replyOptions={{ commentId: superCommentId }}
-//         productId={productId!}
-//         className={`${styles.active}`}
-//         repliesLength={comment.replies?.length}
-//         notes={notes}
-//         setNote={setNote}
-//         filePreviews={filePreviews}
-//         setFilePreviews={setFilePreviews}
-//         selectedPdfs={selectedPdfs}
-//         setSelectedPdfs={setSelectedPdfs}
-//         commentType={"subComment"}
-//       />
-
-//     </div>
-
-//     {/* <ButtonView
-//       view={"viewMoreReplies"}
-//       repliesLength={comment.replies?.length}
-//     ></ButtonView> */}
-//     <ul className={styles.replies} id="replyContainer">
-//       {comment.replies?.map((reply) => {
-//         return (
-//           <li
-//             className={reply.replies?.length! > 0 ? styles.thread : ""}
-//             key={reply.id}
-//           >
-//             <Comment
-//               comment={reply}
-//               setComments={setComments!}
-//               productId={productId}
-//               superCommentId={superCommentId}
-//               notes={notes}
-//               setNote={setNote}
-//               filePreviews={filePreviews}
-//               setFilePreviews={setFilePreviews}
-//               selectedPdfs={selectedPdfs}
-//               setSelectedPdfs={setSelectedPdfs}
-//               userName={"@Roxette"}
-//             />
-//           </li>
-//         );
-//       })}
-//     </ul>
-//   </>
-// ) : (
-//   <>
-//     <div className={styles.comment__user}></div>
-//     <ButtonView
-//       view={"cancelBtn"}
-//       productId={productId}
-//       commentId={comment.id}
-//       commentText={comment.text}
-//     />
-//     <div className={styles.text1}>
-//       <span className={styles.imgContainer}>
-//         <Image width={30} height={30} src={person1} alt="" />
-//       </span>
-//       <div className={styles.commentText1}>
-//         <span>{userName}</span>{" "}
-//         {comment.text.split("\n").map((item, index) => {
-//           if (item.includes("@")) {
-//             const words = item.split(" ");
-//             return (
-//               <React.Fragment key={index}>
-//                 {words.map((word, idx) => {
-//                   if (word.startsWith("@")) {
-//                     const username = word.substring(1);
-//                     <header>
-//                       <div
-//                         className={styles.comment_name}
-//                         style={{ color: "grey" }}
-//                       >
-//                         <span>
-//                           {comment.user?.firstname}{" "}
-//                           {comment.user?.lastname}
-//                           <span>
-//                             {" "}
-//                             @
-//                             {`${
-//                               comment.user.firstname
-//                             }${comment.user.lastname
-//                               .charAt(0)
-//                               .toLowerCase()}${comment.user.lastname.slice(
-//                               1
-//                             )}`}
-//                           </span>
-//                         </span>
-
-//                         <p className={styles.designationText}>
-//                           Founder and leadership at Nityo Infotech
-//                         </p>
-//                       </div>
-//                     </header>;
-//                     if (arr?.includes("@" + username)) {
-//                       return (
-//                         <a
-//                           key={idx}
-//                           href={`#${username}`}
-//                           className={`${styles.span} ${theme === 'light' && styles.span_light}`}
-
-//                         >
-//                           {word}{" "}
-//                         </a>
-//                       );
-//                     } else {
-//                       return (
-//                         <React.Fragment key={idx}>{word} </React.Fragment>
-//                       );
-//                     }
-//                   } else if (word.startsWith("#")) {
-//                     return (
-//                       <React.Fragment key={idx}>
-//                         <span
-//                           style={{
-//                             backgroundColor: "#2B233D",
-//                             color: "white",
-//                             padding: "4px",
-//                             borderRadius: "10px",
-//                           }}
-//                         >
-//                           {word}
-//                         </span>
-//                       </React.Fragment>
-//                     );
-//                   } else {
-//                     return (
-//                       <React.Fragment key={idx}>{word} </React.Fragment>
-//                     );
-//                   }
-//                 })}
-//                 {comment?.user?.createdAt && (
-//                   <span style={{ paddingLeft: "5px" }}>
-//                     on{" "}
-//                     {new Date(comment.user.createdAt).toLocaleDateString(
-//                       "en-US",
-//                       {
-//                         month: "short",
-//                         day: "2-digit",
-//                         year: "numeric",
-//                       }
-//                     )}
-//                   </span>
-//                 )}
-
-//                 <br />
-//               </React.Fragment>
-//             );
-//           } else {
-//             return <p key={index}>{item || "\u00A0"}</p>;
-//           }
-//         })}
-//       </div>
-//     </div>
-//     {/* <div className={styles.options}>
-//   <ButtonView view={"upvoteBtn"} />
-//   <ButtonView view={"replyBtn"} />
-//   <p>Mar 20,2024</p>
-//   <ButtonView view={"editDeleteButton"} commentUserId={comment.user.id} />
-// </div>
-// <div className={styles.addMoreCommentSection}>
-//   <AddComment
-//     focus
-//     replyOptions={{ commentId: superCommentId }}
-//     productId={productId!}
-//     className={`${styles.active}`}
-//     repliesLength={comment.replies?.length}
-//     notes={notes} setNote={setNote}
-//   />
-// </div>
-// <ButtonView view={"viewMoreReplies"} repliesLength={comment.replies?.length}></ButtonView>
-// <ul className={styles.replies} id="replyContainer">
-//   {comment.replies?.map((reply) => {
-//     return (
-//       <li
-//         className={reply.replies?.length! > 0 ? styles.thread : ""}
-//         key={reply.id}
-//       >
-//         <Comment
-//           comment={reply}
-//           setComments={setComments!}
-//           productId={productId}
-//           superCommentId={superCommentId}
-//           notes={notes} setNote={setNote}
-//           userName={"@Roxette"} />
-//       </li>
-//     );
-//   })}
-// </ul> */}
-//   </>
-// )}

@@ -1,22 +1,44 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import OtpInput from "react-otp-input";
 import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
 import { useRouter } from "next/navigation";
+import { baseUrl } from "@/constants";
 
 const Verification = () => {
   const router = useRouter();
+  const [time,setTime]=useState(36);
   const [code, setCode] = useState("");
 
   const confirmHandler = () => {
+    // verifyOtp();
     if (code == "0000") {
       router.push("/");
     }
   };
-
+  // const verifyOtp=async()=>{
+  //   const url=`${baseUrl}`
+  // }
+  useEffect(()=>{
+    let timer:any=null;
+    if(time>=0){
+      if(time>0){
+   timer = setTimeout(() => {
+    setTime(prev=>prev-1);
+  }, 1000);
+}
+else return ()=>clearTimeout(timer);
+    }
+  },[time])
+  console.log(time);
+  const resend=()=>{
+    if(time===0){
+      setTime(36);
+    } 
+  }
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
@@ -72,7 +94,7 @@ const Verification = () => {
             </div>
           </div>
           <div className={styles.resendButton_container}>
-            00 : 36 <span className={styles.resend_button}>Resend</span>
+            00 : {time>9?time:`0${time}`} <span className={styles.resend_button} onClick={()=>resend()} style={{cursor: time===0?"pointer":"default"}}>Resend</span>
           </div>
         </div>
       </div>

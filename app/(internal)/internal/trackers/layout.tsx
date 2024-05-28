@@ -13,7 +13,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useTheme()
 
   return (
-    <div className={`${styles.container} ${theme === 'light' ? styles.container_light : ""}`}>
+    <div className={`${styles.container}`}>
       <div className={styles.header_container}>
         <div className={styles.tab_container}>
           <Link

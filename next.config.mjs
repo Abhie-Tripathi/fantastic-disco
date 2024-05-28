@@ -8,8 +8,13 @@ const config = {
           'miro.medium.com',
           'palmbeach.floridaweekly.com',
           'images.ladepeche.fr',
-          'cdn.choosechicago.com'
+          'cdn.choosechicago.com',
+          'api.eventgeni.com',
+          'logo.clearbit.com'
         ],
+  },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
   },
   reactStrictMode: false,
 

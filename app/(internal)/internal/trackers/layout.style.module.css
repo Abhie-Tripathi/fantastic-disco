@@ -1,13 +1,8 @@
 .container {
-  padding: 30px 0px;
-  background-color: #131313;
-  color: #ffffff;
+  padding: 30px 15px;
+  /* background-color: #131313;
+  color: #ffffff; */
   min-width: 810px;
-}
-
-.container_light {
-  background-color: var(--primary-bg-light);
-  color: var(--primary-color-light);
 }
 
 .header_container {

@@ -50,7 +50,7 @@ const LocationDropdown = ({
   const [countryData, setCountryData] = useState([]);
 
   const [inputText, setInputText] = useState("");
-  const [selectedLocation, setSelectedLocations] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
 
   useEffect(() => {
     setState(selectedLocation);
