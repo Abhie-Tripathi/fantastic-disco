@@ -47,6 +47,8 @@ import eventFrequencyData from "../../../../../public/data/eventFrequency.json";
 import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -103,6 +105,24 @@ const Search = () => {
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
+
+  const [categoryData, setCatgeoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setCatgeoryData(data);
+      }
+    };
+    fetchData();
+  }, []);
 
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
@@ -206,6 +226,7 @@ const Search = () => {
                   <CategoryDropdown
                     state={selectedCategories}
                     setState={setSelectedCategories}
+                    categoryData={categoryData}
                   />
                 </Dialog>
               </Popover>
@@ -217,9 +238,15 @@ const Search = () => {
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Location
-                      <span className={styles.input_selected_title}>
-                        {selectedLocations[0]}
-                      </span>
+                      {selectedLocations?.length > 1 ? (
+                        <span className={styles.input_selected_no}>
+                          {selectedLocations.length}
+                        </span>
+                      ) : (
+                        <span className={styles.input_selected_title}>
+                          {selectedLocations[0]}
+                        </span>
+                      )}
                     </div>
                     <Image
                       src={DropIcon}
@@ -431,9 +458,9 @@ const Search = () => {
             </button>
           </div>
         </div>
-        {showRecentSearches && (
-          <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-        )}
+        {/* {showRecentSearches && (
+          // <RecentSearches setShowRecentSearches={setShowRecentSearches} />
+        )} */}
 
         {/*   ADVANCE FILTER SECTION */}
         {showAdvanceFilter && (
@@ -955,8 +982,9 @@ const Search = () => {
                   <Button>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>User Ratings
-                        {selectedUserRatings?.length > 1 ? (
+                        <div className={styles.input_title}>
+                          User Ratings
+                          {selectedUserRatings?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedUserRatings.length}
                             </span>
