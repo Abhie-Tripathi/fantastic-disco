@@ -12,6 +12,8 @@ import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/Mult
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import FilterHeader from '@/app/components/TemplateViews/FilterHeader'
+import EditModal from '@/app/components/TemplateViews/edit/EditModal'
+import Link from 'next/link'
 
 const Page = () => {
     const [showAllOne, setShowAllOne] = useState(false);
@@ -20,6 +22,7 @@ const Page = () => {
     const [preview, setPreview] = useState("");
     const [widgetSelected, setWidgetSelected] = useState<string>("All")
     const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+    const [editModal, setEditModal] = useState<boolean>(false)
 
     const pageWidgetWithoutHighlighted = [
         { id: "sehb", name: "Single Event as Hero Banner" },
@@ -47,9 +50,9 @@ const Page = () => {
     ];
 
     const sectionWidgetEvents = [
-        {id : "tscv", name : "Top Section of page as Caraousel View"},
-        {id : "tshs", name : "Top Section of page as Horizontal Scroll"},
-        {id : "lsvs", name : "Left Section of page as Vertical Scroll"}
+        { id: "tscv", name: "Top Section of page as Caraousel View" },
+        { id: "tshs", name: "Top Section of page as Horizontal Scroll" },
+        { id: "lsvs", name: "Left Section of page as Vertical Scroll" }
     ]
 
     useEffect(() => {
@@ -58,16 +61,15 @@ const Page = () => {
 
     return (
         <div className={`${styles.body} ${preview.length > 0 ? styles.bodyHeight : ""}`}>
-            <div className={styles.filterContainer}><FilterHeader  setWidgetSelected = {setWidgetSelected} setAccordianItemSelected = {setAccordianItemSelected}/></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} /></div>
             <div className={`${styles.templates} ${preview.length > 0 ? styles.previewOn : ""}`}>
-                {(widgetSelected === "All" ||  widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
+                {(widgetSelected === "All" || widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>
                     {accordianItemSelected.includes("No Highlighted Events") && <div className={styles.pageTemplateTypeOne}>
                         <div className={styles.widgetSubheading}>No Highlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithoutHighlighted.slice(0, showAllOne ? undefined : 4).map((template, index) => (
-                                <TemplateCard key={index} name={template.name} isHidden={!showAllOne && index >= 4} id={template.id}
-                                    setPreview={setPreview} />
+                                <TemplateCard key={index} name={template.name} isHidden={!showAllOne && index >= 4} id={template.id} setPreview={setPreview} setEditModal={setEditModal} />
                             ))}
                         </div>
                         {pageWidgetWithoutHighlighted.length > 4 && (
@@ -76,11 +78,11 @@ const Page = () => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("One Highlighted Event") &&<div className={styles.pageTemplateTypeTwo}>
+                    {accordianItemSelected.includes("One Highlighted Event") && <div className={styles.pageTemplateTypeTwo}>
                         <div className={styles.widgetSubheading}>One Higlighted Event</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 4).map((template, index) => (
-                                <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 4} id={template.id} setPreview={setPreview} />
+                                <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 4} id={template.id} setPreview={setPreview} setEditModal={setEditModal} />
                             ))}
                         </div>
                         {pageWidgetWithOneHighlightedEvent.length > 4 && (
@@ -89,11 +91,11 @@ const Page = () => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("Multiple Highlighted Events") &&  <div className={styles.pageTemplateTypeThree}>
+                    {accordianItemSelected.includes("Multiple Highlighted Events") && <div className={styles.pageTemplateTypeThree}>
                         <div className={styles.widgetSubheading}>Multiple Higlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithHighlightedEvents.slice(0, showAllThree ? undefined : 4).map((template, index) => (
-                                <TemplateCard key={index} name={template.name} isHidden={!showAllThree && index >= 4} setPreview={setPreview} id={template.id} />
+                                <TemplateCard key={index} name={template.name} isHidden={!showAllThree && index >= 4} setPreview={setPreview} id={template.id} setEditModal={setEditModal} />
                             ))}
                         </div>
                         {pageWidgetWithHighlightedEvents.length > 4 && (
@@ -102,61 +104,71 @@ const Page = () => {
                             </button>
                         )}
                     </div>}
-                </div> }
-                {(widgetSelected === "All" ||  widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
+                </div>}
+                {(widgetSelected === "All" || widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
                     <div className={styles.widgetHeading}>Section Widget</div>
                     <div className={styles.templateContainer}>
-                            {sectionWidgetEvents.map((template, index) => (
-                                <TemplateCard key={index} name={template.name} isHidden={false} setPreview={setPreview} id={template.id} />
-                            ))}
-                        </div>
+                        {sectionWidgetEvents.map((template, index) => (
+                            <TemplateCard key={index} name={template.name} isHidden={false} setPreview={setPreview} id={template.id} setEditModal={setEditModal} />
+                        ))}
+                    </div>
                 </div>}
-                {(widgetSelected === "All" ||  widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
+                {(widgetSelected === "All" || widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
-                    <div className ={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
                     <div className={styles.templateContainer}>
-                        <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={setPreview} />
-                        <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={setPreview} />
+                        <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={setPreview} setEditModal={setEditModal} />
+                        <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={setPreview} setEditModal={setEditModal} />
                     </div>
                 </div>}
             </div>
             {preview.length > 0 && <div className={styles.previewWindow}>
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>
-                        {preview==="stickytop" ? "Sticky Top" :
-                        preview === "stickydown" ? "Sticky Footer" :
-                        preview==="sehb"? "Hero Banner":
-                        preview==="megv"? "Grid View":
-                        preview==="melv"? "List View":
-                        preview==="melgv"? "List and Grid view":
-                        preview==="phblv"? "Hero Banner and List view":
-                        preview==="phbgv"? "Hero Banner and Grid view":
-                        preview==="phblgv"? "Hero Banner and List Grid view":
-                        preview==="pcslv"? "Caraousel and List view":
-                        preview==="pcsgv"? "Caraousel and Grid view":
-                        preview==="pcslgv"? "Caraousel and List Grid view":
-                        preview==="tscv"? "Top Section Caraousel view":
-                        preview==="tshs"? "Top Section Horizontal Scroll view":
-                        preview==="lsvs"? "Left Section Veritcal Scroll view":""}
+                        {preview === "stickytop" ? "Sticky Top" :
+                            preview === "stickydown" ? "Sticky Footer" :
+                                preview === "sehb" ? "Hero Banner" :
+                                    preview === "megv" ? "Grid View" :
+                                        preview === "melv" ? "List View" :
+                                            preview === "melgv" ? "List and Grid view" :
+                                                preview === "phblv" ? "Hero Banner and List view" :
+                                                    preview === "phbgv" ? "Hero Banner and Grid view" :
+                                                        preview === "phblgv" ? "Hero Banner and List Grid view" :
+                                                            preview === "pcslv" ? "Caraousel and List view" :
+                                                                preview === "pcsgv" ? "Caraousel and Grid view" :
+                                                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                                                        preview === "tscv" ? "Top Section Caraousel view" :
+                                                                            preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                                                                preview === "lsvs" ? "Left Section Veritcal Scroll view" : ""}
                     </div>
+                    <Link href={`/templates/edit/${preview}`}  className={styles.nextBtn}>Select & Proceed</Link>
                     <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
                 </div>
                 {preview === "stickytop" ? <StickyPreview type="top" /> :
-                preview === "stickydown" ? <StickyPreview type="down" /> :
-                preview === "sehb" ? <HeroBanner /> :
-                preview === "megv" ? <GridView /> :
-                preview === "melv" ? <ListView /> :
-                preview === "melgv" ? <ListAndGridView /> :
-                preview === "phblv" ? <HeroBannerAndViews type='list'/>:
-                preview === "phbgv" ? <HeroBannerAndViews type='grid'/>:
-                preview === "phblgv" ? <HeroBannerAndViews type='listandgrid'/>:
-                preview === "pcslv" ? <CaraouselAndViews type='list'/>:
-                preview === "pcsgv" ? <CaraouselAndViews type='grid'/>:
-                preview === "pcslgv" ? <CaraouselAndViews type='listandgrid'/>:
-                preview === "tscv" ? <CaraouselTop/>:
-                preview === "tshs" ? <ScrollView type='top'/>:
-                preview === "lsvs" ? <ScrollView type='left'/>:<></>}
+                    preview === "stickydown" ? <StickyPreview type="down" /> :
+                        preview === "sehb" ? <HeroBanner /> :
+                            preview === "megv" ? <GridView /> :
+                                preview === "melv" ? <ListView /> :
+                                    preview === "melgv" ? <ListAndGridView /> :
+                                        preview === "phblv" ? <HeroBannerAndViews type='list' /> :
+                                            preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
+                                                preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
+                                                    preview === "pcslv" ? <CaraouselAndViews type='list' /> :
+                                                        preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
+                                                            preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                                                preview === "tscv" ? <CaraouselTop /> :
+                                                                    preview === "tshs" ? <ScrollView type='top' /> :
+                                                                        preview === "lsvs" ? <ScrollView type='left' /> : <></>}
+
             </div>}
+            {editModal &&
+                <div className={styles.editModal}>
+                    <div className={styles.heading_btnContainer}>
+                        <div className={styles.heading}>Edit</div>
+                        <div className={styles.closeBtn} onClick={() => setEditModal(false)}>x</div>
+                    </div>
+                    <EditModal />
+                </div>}
         </div>
     )
 }

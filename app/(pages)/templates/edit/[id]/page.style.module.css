@@ -1,0 +1,15 @@
+.body{
+    display: flex;
+    height: 80vh;
+    gap: 10px;
+}
+.editSettings{
+    width: 30%;
+}
+.preview{
+    width: 70%;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 20px;
+    height:94%;
+}
