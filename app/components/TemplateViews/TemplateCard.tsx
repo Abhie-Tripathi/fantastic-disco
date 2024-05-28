@@ -7,16 +7,22 @@ interface TemplateCardProps {
   id : string;
   setPreview: (id: string) => void;
   desc? : string;
-  setEditModal: (value: boolean) => void;
+  setEditModal?: (value: boolean) => void;
 }
 
 const TemplateCard = ({ name, isHidden, id, setPreview, desc,setEditModal }: TemplateCardProps) => {
+
+  const handleModal = ()=>{
+    if(setEditModal){
+      setEditModal(true)
+    }
+  }
   return (
     <div className={`${styles.card} ${isHidden ? styles.hiddenCard : ""}`}>
       <div className={styles.placeHolder}>
         <div className={styles.btnContainer}>
           <div className={styles.previewBtn} onClick={()=>setPreview(id)}>Preview</div>
-          <div className={styles.editBtn} onClick={()=>setEditModal(true)}>Edit</div>
+          <div className={styles.editBtn} onClick={handleModal}>Edit</div>
         </div>
       </div>
       <div className={styles.cardHeading} style={desc ? {fontSize : 14} : {fontSize: 12}}>{name}</div>
