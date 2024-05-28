@@ -1142,6 +1142,7 @@ const Search = () => {
               height: "90vh",
             }}
           /> */}
+          <Map />
         </Suspense>
       )}
     </>
