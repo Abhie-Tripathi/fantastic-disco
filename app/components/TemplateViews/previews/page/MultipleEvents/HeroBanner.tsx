@@ -5,18 +5,18 @@ import Image from 'next/image'
 
 
 interface HeroBannerProps {
-    cardRadius: number;
-    cardBgColor: string;
-    eventNameColor: string;
-    eventNameSize: number;
-    dateFontSize: number;
-    locationFontSize: number;
-    btnBgColor: string;
-    btnFontColor: string;
-    btnBorderWidth: number;
-    btnBorderColor: string;
-    btnRadius: number;
-    btnFontSize: number;
+    cardRadius?: number;
+    cardBgColor?: string;
+    eventNameColor?: string;
+    eventNameSize?: number;
+    dateFontSize?: number;
+    locationFontSize?: number;
+    btnBgColor?: string;
+    btnFontColor?: string;
+    btnBorderWidth?: number;
+    btnBorderColor?: string;
+    btnRadius?: number;
+    btnFontSize?: number;
 }
 
 const HeroBanner: React.FC<HeroBannerProps> = ({
