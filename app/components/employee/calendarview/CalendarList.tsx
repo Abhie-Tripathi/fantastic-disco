@@ -11,7 +11,14 @@ import FestivalIcon from "/public/festivalIcon.svg";
 import { formatDateRange } from "@/utils/dateFormat";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
+import { useTheme } from "@/context";
 
+interface eventDataType {
+  name: string;
+  startDate: string;
+  endDate: string;
+  location: {cityName: string};
+}
 interface Props{
   filters: string;
   startDate: string;
@@ -19,7 +26,8 @@ interface Props{
 }
 
 const EventListCard = (event: any) => {
-  // console.log('event',event);
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={styles.eventListCard}>
       <div className={styles.eventListCard_title}>{event.event.name}</div>
@@ -32,7 +40,7 @@ const EventListCard = (event: any) => {
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
           <div className={styles.eventListCard_category}>
-            <Image src={FestivalIcon} alt="festival" />
+            <Image className={iconClass} src={FestivalIcon} alt="festival" />
             {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
           </div>
           <span style={{ color: "grey" }}>|</span>
@@ -50,7 +58,9 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
   const [showList, setShowList] = useState(false);
   const [fullView, setFullView] = useState(true);
 
-  const [eventData, setEventData] = useState<any>();
+  const [eventData, setEventData] = useState<eventDataType[]>();
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const fetchEventsData = async() => {
     try {
@@ -70,7 +80,8 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
 
   useEffect(() => {
     if(startDate != ''){
-      fetchEventsData();
+      if(startDate !== '0')
+        fetchEventsData();
       setShowList(true);
     }
   }, [startDate]);
@@ -86,7 +97,7 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
             EVENTS LIST
           </button> */}
           <div
-            className={`${styles.eventList} ${showList ? styles.active : ""}`}
+            className={`${styles.eventList} ${showList ? styles.active : ""} ${theme === 'light' && styles.eventList_light}`}
           >
             <div className={styles.eventList_header}>
               <span>Results</span>
@@ -99,6 +110,7 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
               {eventData && eventData?.map((event, key) => (
                 <EventListCard key={key} event={event} />
               ))}
+              {eventData && eventData.length == 0 && 'No events'}
             </div>
           </div>
         </div>

@@ -30,11 +30,15 @@ interface Event2 {
   id: number;
   name: string;
   startDate: string;
-  enddate: string;
+  endDate: string;
   background?: string;
   top?: string;
   duration?: number;
 }
+
+interface monthEventsType {
+  [date: string]: {event: Event2[], totalEvent: number}
+}{}
 
 interface DateWithEvent {
   date: Date;
@@ -225,11 +229,11 @@ function formatDate(dateString: any) {
   return `${year}-${month}-${day}`;
 }
 
-function getDurationInDays(startDate: any, endDate: any) {
+function getDurationInDays(startDate:  Date | string | number, endDate:  Date | string | number) {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  const differenceInMilliseconds = Math.abs(end - start);
+  const differenceInMilliseconds = Math.abs(Number(end) - Number(start));
 
   const differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
 
@@ -238,7 +242,8 @@ function getDurationInDays(startDate: any, endDate: any) {
 
 const MonthCalendar: React.FC = () => {
   const { theme } = useTheme();
-  const [monthEvents, setMonthEvents] = useState<Event2[]>();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+  const [monthEvents, setMonthEvents] = useState<monthEventsType>();
 
   const [year, setYear] = useState<number>(0);
   const [month, setMonth] = useState<number>(0);
@@ -273,13 +278,14 @@ const MonthCalendar: React.FC = () => {
     var datesWithEventsTmp2 =  monthDatesArray.map((date: any) => {
       if (date === "") return "";
       else {
-        let c_date = formatDate(date);
-        var filteredEvents = [];
+        let c_date: string = formatDate(date);
+        var filteredEvents: any = [];
         if(monthEvents && monthEvents[c_date] && monthEvents[c_date].event.length > 0){
-          filteredEvents = monthEvents[c_date].event.sort((a, b) => {
-            return new Date(a.enddate) - new Date(b.enddate);
-          });
-          filteredEvents.map((event, index)=>{
+          // filteredEvents = monthEvents[c_date].event.sort((a, b) => {
+          //   return new Date(a.endDate) - new Date(b.endDate);
+          // });
+          filteredEvents = monthEvents[c_date].event;
+          filteredEvents.map((event: any, index: number)=>{
             if(index==0){
               event['background'] = "rgb(249 196 100)";
               event['top']= "35%";
@@ -294,7 +300,7 @@ const MonthCalendar: React.FC = () => {
           })
         }
 
-        return { date: date, events: filteredEvents, totalEvent: monthEvents[c_date]?.totalEvent };
+        return { date: date, events: filteredEvents, totalEvent: monthEvents ? monthEvents[c_date]?.totalEvent :0 };
       }
     });
 
@@ -314,7 +320,11 @@ const MonthCalendar: React.FC = () => {
   const [eventListDate, setEventListDate] = useState<string>('');
 
   const handleListOpen = (date: Date) => {
-    setEventListDate(formatDate(date));
+    let d = formatDate(date);
+    if(d === eventListDate)
+      setEventListDate('0');
+    else
+      setEventListDate(d);
   }
 
   useEffect(() => {
@@ -338,7 +348,7 @@ const MonthCalendar: React.FC = () => {
   <>
     <div className={styles.control_buttons_container}>
       <button onClick={prevButtonHandler}>
-        <Image src={LeftArrow} width={28} alt="leftarrow" />
+        <Image className={iconClass} src={LeftArrow} width={28} alt="leftarrow" />
       </button>
       <div>
         {month > 0 &&
@@ -346,7 +356,7 @@ const MonthCalendar: React.FC = () => {
         }
       </div>
       <button onClick={nextButtonHandler}>
-        <Image src={RightArrow} width={28} alt="rightarrow" />
+        <Image className={iconClass} src={RightArrow} width={28} alt="rightarrow" />
       </button>
     </div>
     <div className={styles.container}>
@@ -449,14 +459,14 @@ const MonthCalendar: React.FC = () => {
         </>  */}
 
         {/* THIRD APPROACH */}
-        {datesWithEvents && datesWithEvents.map((dateWithEvent, index) => {
+        {datesWithEvents && datesWithEvents.map((dateWithEvent: any, index: number) => {
           if (dateWithEvent === "") {
             return <div className={styles.emptyCard} key={index}></div>;
           } else {
             const currentDate = dateWithEvent.date;
             let count = dateWithEvent.events.length;
 
-            const eventCards = dateWithEvent.events.map((event, eventIndex) => {
+            const eventCards = dateWithEvent.events.map((event: any, eventIndex: number) => {
               const eventStartDate = new Date(event.startDate);
               const eventEndDate = new Date(event.endDate);
 
@@ -611,7 +621,7 @@ const MonthCalendar: React.FC = () => {
                 </div>
                 {eventCards}
                 { dateWithEvent.totalEvent > 3 &&
-                  <div onClick={()=>handleListOpen(currentDate)} style={{position:"absolute", top:"85%", cursor:"pointer"}}>+{dateWithEvent.totalEvent - 3} more</div>
+                  <div onClick={()=>handleListOpen(currentDate)} style={{position:"absolute", top:"85%", cursor:"pointer", fontSize:"14px"}}>+{dateWithEvent.totalEvent - 3} more</div>
                 }
               </div>
             );

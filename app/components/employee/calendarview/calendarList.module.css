@@ -23,12 +23,16 @@
 
 .eventList {
     display: none;
-    max-width: 350px;
+    width: 30vw;
     /* height: 80vh; */
     height: calc(100vh - 80px);
     background-color: #1a1a1a;
     padding: 0px 20px;
     overflow: hidden;
+}
+
+.eventList_light {
+    background-color: #FFFFFF;
 }
 
 .eventList.active {
@@ -43,7 +47,7 @@
 }
 
 .eventList_header span {
-    color: white;
+    /* color: white; */
     font-size: 14px;
     font-weight: 500;
 }
@@ -74,7 +78,7 @@
 
 .eventListCard_title {
     font-weight: 500;
-    color: white;
+    /* color: white; */
     font-size: 14px;
 }
 
