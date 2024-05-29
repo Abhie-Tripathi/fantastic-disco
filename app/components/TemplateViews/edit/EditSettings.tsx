@@ -11,12 +11,15 @@ const EditSettings = () => {
     const [eventNameSize, setEventNameSize] = useState<number>(18);
     const [typeBgColor, setTypeBgColor] = useState<string>('#eeeeee');
     const [typeFontSize, setTypeFontSize] = useState<number>(14);
+    const [dateFontSize, setDateFontSize] = useState<number>(14);
+    const [locationFontSize, setLocationFontSize] = useState<number>(14);
     const [dateLocationColor, setDateLocationColor] = useState<string>('#333333');
     const [btnBgColor, setBtnBgColor] = useState<string>('#9968c4');
     const [btnFontColor, setBtnFontColor] = useState<string>('#ffffff');
     const [btnBorderWidth, setBtnBorderWidth] = useState<number>(1);
     const [btnBorderColor, setBtnBorderColor] = useState<string>('#9968c4');
     const [btnRadius, setBtnRadius] = useState<number>(5);
+    const [btnFontSize, setBtnFontSize] = useState<number>(16);
     const [bgColor, setBgColor] = useState<string>("#9968c4")
 
     const handleModal = (modalType: string) => {
@@ -32,7 +35,7 @@ const EditSettings = () => {
             {!activeModal && (
                 <div className={styles.editContainer}>
                     <div className={styles.container} onClick={() => handleModal("color")}>Colors</div>
-                    <div className={styles.container} onClick={() => handleModal("radius")}>Border Radius</div>
+                    <div className={styles.container} onClick={() => handleModal("radius")}>Borders</div>
                     <div className={styles.container} onClick={() => handleModal("font")}>Fonts</div>
                 </div>
             )}
@@ -48,7 +51,7 @@ const EditSettings = () => {
             {activeModal === "radius" && (
                 <div className={styles.modal}>
                     <div className={styles.heading_btnContainer}>
-                        <div className={styles.heading}>Radius</div>
+                        <div className={styles.heading}>Borders</div>
                         <div className={styles.backBtn} onClick={handleBack}>Back</div>
                     </div>
                 </div>
@@ -59,7 +62,7 @@ const EditSettings = () => {
                         <div className={styles.heading}>Fonts</div>
                         <div className={styles.backBtn} onClick={handleBack}>Back</div>
                     </div>
-                    <FontsEdit/>        
+                    <FontsEdit setEventNameSize = {setEventNameSize} setBtnFontSize = {setBtnFontSize} setDateFontSize={setDateFontSize} setLocationFontSize = {setLocationFontSize} />        
                 </div>
             )}
         </div>

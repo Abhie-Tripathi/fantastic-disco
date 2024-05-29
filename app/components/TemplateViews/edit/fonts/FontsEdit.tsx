@@ -3,7 +3,15 @@ import styles from './fontsedit.style.module.css'
 import Image from 'next/image';
 import DropdownIcon from '/public/dropDown.svg'
 
-const FontsEdit = () => {
+
+interface FontProps {
+  setEventNameSize: (value: number) => void,
+  setBtnFontSize: (value: number) => void,
+  setDateFontSize: (value: number) => void,
+  setLocationFontSize: (value: number) => void,
+}
+
+const FontsEdit = (props : FontProps) => {
   const fontOptions = [
     'Arial',
     'Helvetica',
@@ -34,6 +42,27 @@ const FontsEdit = () => {
     setAccordian(value)
   }
 
+  const handleEventNameSize = (e:any)=>{
+    setEventNameSize(e.target.value)
+    props.setEventNameSize(e.target.value)
+  }
+  const handleDateSize = (e:any)=>{
+    setDateFontSize(e.target.value)
+    props.setDateFontSize(e.target.value)
+  }
+
+  const handleLocationSize = (e:any)=>{
+    setLocationFontSize(e.target.value)
+    props.setLocationFontSize(e.target.value)
+  }
+
+  const handleButtonSize = (e:any)=>{
+    setEventButtonFontSize(e.target.value)
+    props.setBtnFontSize(e.target.value)
+  }
+
+
+
   return (
     <div className={styles.body}>
       <div className={styles.dropdownContainer}>
@@ -60,7 +89,7 @@ const FontsEdit = () => {
               min="0"
               max="50"
               value={eventNameSize}
-              onChange={(e) => setEventNameSize(Number(e.target.value))}
+              onChange={(e) => handleEventNameSize(e)}
             />
             <span>{eventNameSize}px</span>
           </label>
@@ -75,7 +104,7 @@ const FontsEdit = () => {
             min="0"
             max="50"
             value={eventButtonFontSize}
-            onChange={(e) => setEventButtonFontSize(Number(e.target.value))}
+            onChange={(e) => handleButtonSize(e)}
           />
           <span>{eventButtonFontSize}px</span>
         </label></div>}
@@ -89,7 +118,7 @@ const FontsEdit = () => {
             min="0"
             max="50"
             value={dateFontSize}
-            onChange={(e) => setDateFontSize(Number(e.target.value))}
+            onChange={(e) =>handleDateSize(e)}
           />
           <span>{dateFontSize}px</span>
         </label></div>}
@@ -103,7 +132,7 @@ const FontsEdit = () => {
             min="0"
             max="50"
             value={locationFontSize}
-            onChange={(e) => setLocationFontSize(Number(e.target.value))}
+            onChange={(e) => handleLocationSize(e)}
           />
           <span>{locationFontSize}px</span>
         </label></div>}
