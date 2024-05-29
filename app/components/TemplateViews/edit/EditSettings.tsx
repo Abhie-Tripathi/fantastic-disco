@@ -1,27 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './editsettings.style.module.css'
 import ColorsEdit from './colors/ColorsEdit';
 import FontsEdit from './fonts/FontsEdit';
+import BordersEdit from './borders/BordersEdit';
 
-const EditSettings = () => {
+interface EditProps{
+    setCardRadius: (value: number) => void,
+    setCardBgColor: (value: string) => void,
+    setEventNameColor: (value: string) => void,
+    setEventNameSize: (value: number) => void,
+    setDateFontSize: (value: number) => void,
+    setLocationFontSize: (value: number) => void,
+    setBtnBgColor: (value: string) => void,
+    setBtnFontColor: (value: string) => void,
+    setBtnBorderWidth: (value: number) => void,
+    setBtnBorderColor: (value: string) => void,
+    setBtnRadius: (value: number) => void,
+    setBtnFontSize: (value: number) => void,
+    setBgColor: (value: string) => void,
+}
+
+const EditSettings = (props : EditProps) => {
     const [activeModal, setActiveModal] = useState<string | null>(null);
-    const [cardRadius, setCardRadius] = useState<number>(10);
-    const [cardBgColor, setCardBgColor] = useState<string>('#688bc4');
-    const [eventNameColor, setEventNameColor] = useState<string>('#000000');
-    const [eventNameSize, setEventNameSize] = useState<number>(18);
-    const [typeBgColor, setTypeBgColor] = useState<string>('#eeeeee');
-    const [typeFontSize, setTypeFontSize] = useState<number>(14);
-    const [dateFontSize, setDateFontSize] = useState<number>(14);
-    const [locationFontSize, setLocationFontSize] = useState<number>(14);
-    const [dateLocationColor, setDateLocationColor] = useState<string>('#333333');
-    const [btnBgColor, setBtnBgColor] = useState<string>('#9968c4');
-    const [btnFontColor, setBtnFontColor] = useState<string>('#ffffff');
-    const [btnBorderWidth, setBtnBorderWidth] = useState<number>(1);
-    const [btnBorderColor, setBtnBorderColor] = useState<string>('#9968c4');
-    const [btnRadius, setBtnRadius] = useState<number>(5);
-    const [btnFontSize, setBtnFontSize] = useState<number>(16);
-    const [bgColor, setBgColor] = useState<string>("#9968c4")
-
     const handleModal = (modalType: string) => {
         setActiveModal(modalType);
     };
@@ -35,7 +35,7 @@ const EditSettings = () => {
             {!activeModal && (
                 <div className={styles.editContainer}>
                     <div className={styles.container} onClick={() => handleModal("color")}>Colors</div>
-                    <div className={styles.container} onClick={() => handleModal("radius")}>Borders</div>
+                    <div className={styles.container} onClick={() => handleModal("border")}>Borders</div>
                     <div className={styles.container} onClick={() => handleModal("font")}>Fonts</div>
                 </div>
             )}
@@ -45,15 +45,16 @@ const EditSettings = () => {
                         <div className={styles.heading}>Colors</div>
                         <div className={styles.backBtn} onClick={handleBack}>Back</div>
                     </div>
-                    <ColorsEdit setBgColor = {setBgColor} setCardBgColor = {setCardBgColor} setBtnBgColor = {setBtnBgColor} setBtnBorderColor = {setBtnBorderColor} setEventNameColor = {setEventNameColor} setBtnFontColor = {setBtnFontColor} />   
+                    <ColorsEdit setBgColor = {props.setBgColor} setCardBgColor = {props.setCardBgColor} setBtnBgColor = {props.setBtnBgColor} setBtnBorderColor = {props.setBtnBorderColor} setEventNameColor = {props.setEventNameColor} setBtnFontColor = {props.setBtnFontColor} />   
                 </div>
             )}
-            {activeModal === "radius" && (
+            {activeModal === "border" && (
                 <div className={styles.modal}>
                     <div className={styles.heading_btnContainer}>
                         <div className={styles.heading}>Borders</div>
                         <div className={styles.backBtn} onClick={handleBack}>Back</div>
                     </div>
+                    <BordersEdit setCardRadius={props.setCardRadius} setBtnBorderWidth = {props.setBtnBorderWidth} setBtnRadius = {props.setBtnRadius}/>  
                 </div>
             )}
             {activeModal === "font" && (
@@ -62,7 +63,7 @@ const EditSettings = () => {
                         <div className={styles.heading}>Fonts</div>
                         <div className={styles.backBtn} onClick={handleBack}>Back</div>
                     </div>
-                    <FontsEdit setEventNameSize = {setEventNameSize} setBtnFontSize = {setBtnFontSize} setDateFontSize={setDateFontSize} setLocationFontSize = {setLocationFontSize} />        
+                    <FontsEdit setEventNameSize = {props.setEventNameSize} setBtnFontSize = {props.setBtnFontSize} setDateFontSize={props.setDateFontSize} setLocationFontSize = {props.setLocationFontSize} />        
                 </div>
             )}
         </div>
