@@ -64,11 +64,18 @@ const Search = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
+  const [categorySlug,setCategorySlug] = useState<string[]>(
+    searchParams.get("categories")?.split(",") || []
+  );
+
   const [selectedLocations, setSelectedLocations] = useState<string[]>(
     searchParams.get("location")?.split(",") || []
   );
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
+  );
+  const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
+    searchParams.get("eventKeywords")?.split(",") || []
   );
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
@@ -125,6 +132,7 @@ const Search = () => {
     };
     fetchData();
   }, []);
+  console.log(selectedUserRatings);
 
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
@@ -173,8 +181,74 @@ const Search = () => {
       params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
       params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
     }
+    if (selectedEventFormat.length > 0) {
+      params.set("eventFormat", selectedEventFormat.join(","));
+    }
+    if (selectedEntry.length > 0) {
+      params.set("eventEntry", selectedEntry.join(","));
+    }
+
     router.push(`/search/events?${params.toString()}`);
   };
+
+  console.log(selectedDateRange);
+  const filters: { [key: string]: any } = {};
+
+  if (searchInput) {
+    filters.eventName = searchInput;
+  }
+
+  if (selectedCategories.length > 0) {
+    filters.eventCategory = selectedCategories;
+  }
+
+  if (selectedLocations.length > 0) {
+    filters.eventRegion = selectedLocations;
+  }
+
+  if (selectedEventRank[0] !== 0 || selectedEventRank[1] !== 100) {
+    filters.eventRank = selectedEventRank;
+  }
+
+  if (selectedDateRange[0]) {
+    filters.startDate = [
+      new Date(selectedDateRange[0]).toISOString().split("T")[0],
+      new Date(selectedDateRange[1]).toISOString().split("T")[0],
+    ];
+  }
+
+  if (selectedDateRange[1]) {
+    filters.endDate = [
+      new Date(selectedDateRange[0]).toISOString().split("T")[0],
+      new Date(selectedDateRange[1]).toISOString().split("T")[0],
+    ];
+  }
+
+  if (selectedEventStatus.length > 0) {
+    filters.eventStatus = selectedEventStatus;
+  }
+
+  if (selectedEventFormat.length > 0) {
+    filters.eventFormat = selectedEventFormat;
+  }
+
+  if (selectedEntry.length > 0) {
+    filters.eventEntry = selectedEntry;
+  }
+
+  if (selectedEventKeywords.length > 0) {
+    filters.eventKeywords = selectedEventKeywords;
+  }
+
+  if (selectedUserRatings.length > 0) {
+    filters.eventRating = selectedUserRatings;
+  }
+
+  if (selectedExhibitScore.length > 0) {
+    filters.eventSize = selectedExhibitScore;
+  }
+
+  console.log(filters);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -204,13 +278,13 @@ const Search = () => {
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Category
-                      {selectedCategories?.length > 1 ? (
+                      {categorySlug?.length > 1 ? (
                         <span className={styles.input_selected_no}>
-                          {selectedCategories.length}
+                          {categorySlug.length}
                         </span>
                       ) : (
                         <span className={styles.input_selected_title}>
-                          {selectedCategories[0]}
+                          {categorySlug[0]}
                         </span>
                       )}
                     </div>
@@ -229,6 +303,8 @@ const Search = () => {
                     state={selectedCategories}
                     setState={setSelectedCategories}
                     categoryData={categoryData}
+                    categorySlug={categorySlug}
+                    setCategorySlug={setCategorySlug}
                   />
                 </Dialog>
               </Popover>
@@ -646,13 +722,13 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Keywords
-                          {selectedLabels?.length > 1 ? (
+                          {selectedEventKeywords?.length > 1 ? (
                             <span className={styles.input_selected_no}>
-                              {selectedLabels.length}
+                              {selectedEventKeywords.length}
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedLabels[0]}
+                              {selectedEventKeywords[0]}
                             </span>
                           )}
                         </div>
@@ -668,8 +744,8 @@ const Search = () => {
                   <Popover>
                     <Dialog>
                       <EventKeyword
-                        state={selectedLabels}
-                        setState={setSelectedLabels}
+                        state={selectedEventKeywords}
+                        setState={setSelectedEventKeywords}
                       />
                     </Dialog>
                   </Popover>
@@ -1104,7 +1180,9 @@ const Search = () => {
             <ModalOverlay isDismissable className={styles.modalOverlay}>
               <Modal>
                 <Dialog>
-                  {({ close }) => <ExportModal onClose={close} />}
+                  {({ close }) => (
+                    <ExportModal onClose={close} filterValue={filters} />
+                  )}
                 </Dialog>
               </Modal>
             </ModalOverlay>

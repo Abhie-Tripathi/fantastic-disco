@@ -23,6 +23,14 @@ const RankInput = ({
   setSelectedAviationRank,
   onClose,
 }: RankInputProps) => {
+  const handleChange = () => {
+    if (selectedEventRank.length > 0) {
+      setSelectedEventRank([0, 100]);
+    } else {
+      setSelectedEventRank([]);
+    }
+  };
+
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
@@ -33,7 +41,11 @@ const RankInput = ({
       <div className={styles.sub_container}>
         <div className={styles.slider_container}>
           <label className={styles.checkbox_label}>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              onChange={handleChange}
+              checked={selectedEventRank.length > 0}
+            />
             <span className={styles.checkbox}></span>
           </label>
           <div className={styles.checkbox_title}>Event Rank</div>

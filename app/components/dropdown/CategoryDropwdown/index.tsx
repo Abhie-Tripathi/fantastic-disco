@@ -7,7 +7,9 @@ interface CategoryDropdownProps {
   className?: string;
   dropdownRef?: React.MutableRefObject<null>;
   state: string[];
-  setState: ([]) => void;
+  setState: (ids: string[]) => void;
+  categorySlug?: string[];
+  setCategorySlug?: (slugs: string[]) => void;
   onClose?: () => void;
   categoryData?: any;
 }
@@ -16,18 +18,26 @@ interface CategoryDropdownProps {
 const CategoryDropdown = ({
   state,
   setState,
+  categorySlug,
+  setCategorySlug,
   categoryData,
 }: CategoryDropdownProps) => {
   const {theme} = useTheme()
-  const onClickHandler = (value: string) => {
-    state.includes(value)
-      ? setState(state.filter((data) => data !== value))
-      : setState([...state, value]);
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
+
+  const onClickHandler = (id: string, slug: string) => {
+    if (state.includes(id)) {
+      setState(state.filter((data) => data !== id));
+      setSelectedSlugs(selectedSlugs.filter((data) => data !== slug));
+    } else {
+      setState([...state, id]);
+      setSelectedSlugs([...selectedSlugs, slug]);
+    }
   };
 
   function containsSubarray(childArray: string[]) {
-    if (childArray.length === 0) return true; // An empty array is always a subarray
-    if (childArray.length > state.length) return false; // Child array can't be longer than the parent array
+    if (childArray.length === 0) return true;
+    if (childArray.length > state.length) return false;
 
     return state.some((_, index) => {
       if (index + childArray.length > state.length) return false;
@@ -48,13 +58,24 @@ const CategoryDropdown = ({
     (category: any) => category.slug
   );
 
-  const selectAllHandler = (categories: string[]) => {
-    if (containsSubarray(categories)) {
-      setState(state.filter((category) => !categories.includes(category)));
+  const selectAllHandler = (categories: any[]) => {
+    const categoryIds = categories.map((category) => category.id);
+    const categorySlugs = categories.map((category) => category.slug);
+
+    if (containsSubarray(categoryIds)) {
+      setState(state.filter((id) => !categoryIds.includes(id)));
+      setSelectedSlugs(
+        selectedSlugs.filter((slug) => !categorySlugs.includes(slug))
+      );
     } else {
-      setState([...state, ...categories]);
+      setState([...state, ...categoryIds]);
+      setSelectedSlugs([...selectedSlugs, ...categorySlugs]);
     }
   };
+
+  useEffect(() => {
+    setCategorySlug && setCategorySlug(selectedSlugs);
+  }, [selectedSlugs]);
 
   return (
     <div className={styles.container} style={{background: theme==="light"?"#F7F7F9":""}}>
@@ -64,18 +85,20 @@ const CategoryDropdown = ({
           <li key="selectAllAttended">
             <CheckboxInput
               id="selectAllAttended"
-              onChange={() => selectAllHandler(attended)}
+              onChange={() => selectAllHandler(categoryData.attendedCategories)}
               checked={containsSubarray(attended)}
             />
             <label htmlFor="selectAllAttended">Select All</label>
           </li>
           {categoryData?.attendedCategories?.map((attendedCategory: any) => {
             return (
-              <li key={attendedCategory.slug}>
+              <li key={attendedCategory.id}>
                 <CheckboxInput
-                  id={attendedCategory.slug}
-                  onChange={() => onClickHandler(attendedCategory.slug)}
-                  checked={state.includes(attendedCategory.slug)}
+                  id={attendedCategory.id}
+                  onChange={() =>
+                    onClickHandler(attendedCategory.id, attendedCategory.slug)
+                  }
+                  checked={state.includes(attendedCategory.id)}
                 />
                 <label htmlFor={attendedCategory.slug}>
                   {attendedCategory.name}
@@ -91,7 +114,9 @@ const CategoryDropdown = ({
           <li key="selectAllNonAttended">
             <CheckboxInput
               id="selectAllNonAttended"
-              onChange={() => selectAllHandler(nonAttended)}
+              onChange={() =>
+                selectAllHandler(categoryData.nonAttendedCategories)
+              }
               checked={containsSubarray(nonAttended)}
             />
             <label htmlFor="selectAllNonAttended">Select All</label>
@@ -99,11 +124,16 @@ const CategoryDropdown = ({
           {categoryData?.nonAttendedCategories?.map(
             (nonAttendedCategory: any) => {
               return (
-                <li key={nonAttendedCategory.slug}>
+                <li key={nonAttendedCategory.id}>
                   <CheckboxInput
-                    id={nonAttendedCategory.slug}
-                    onChange={() => onClickHandler(nonAttendedCategory.slug)}
-                    checked={state.includes(nonAttendedCategory.slug)}
+                    id={nonAttendedCategory.id}
+                    onChange={() =>
+                      onClickHandler(
+                        nonAttendedCategory.id,
+                        nonAttendedCategory.slug
+                      )
+                    }
+                    checked={state.includes(nonAttendedCategory.id)}
                   />
                   <label htmlFor={nonAttendedCategory.slug}>
                     {nonAttendedCategory.name}
@@ -121,7 +151,9 @@ const CategoryDropdown = ({
           <li key="selectAllUnscheduled">
             <CheckboxInput
               id="selectAllUnscheduled"
-              onChange={() => selectAllHandler(unscheduled)}
+              onChange={() =>
+                selectAllHandler(categoryData.unscheduledCategories)
+              }
               checked={containsSubarray(unscheduled)}
             />
             <label htmlFor="selectAllUnscheduled">Select All</label>
@@ -129,11 +161,16 @@ const CategoryDropdown = ({
           {categoryData?.unscheduledCategories?.map(
             (unscheduledCategory: any) => {
               return (
-                <li key={unscheduledCategory.slug}>
+                <li key={unscheduledCategory.id}>
                   <CheckboxInput
-                    id={unscheduledCategory.slug}
-                    onChange={() => onClickHandler(unscheduledCategory.slug)}
-                    checked={state.includes(unscheduledCategory.slug)}
+                    id={unscheduledCategory.id}
+                    onChange={() =>
+                      onClickHandler(
+                        unscheduledCategory.id,
+                        unscheduledCategory.slug
+                      )
+                    }
+                    checked={state.includes(unscheduledCategory.id)}
                   />
                   <label htmlFor={unscheduledCategory.slug}>
                     {unscheduledCategory.name}

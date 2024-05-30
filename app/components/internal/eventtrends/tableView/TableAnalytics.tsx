@@ -5,7 +5,8 @@ import Image from "next/image";
 import styles from "./table.style.module.css";
 // import diagonalArrowIcon from "/public/.svg";
 import EventData from "@/public/data/trendsEventData.json";
-import sortIcon from "/public/sort.png";
+import descSort from "/public/internal/sort_down_arrow.svg";
+import ascSort from "/public/internal/sort_up_arrow.svg";
 
 const TableAnalytics = () => {
   const [eventData, setEventData] = useState(EventData);
@@ -64,7 +65,10 @@ const TableAnalytics = () => {
                   <span>Date</span>
                   {sortingKey === "date" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -77,7 +81,10 @@ const TableAnalytics = () => {
                   <span>Total</span>
                   {sortingKey === "total" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -90,7 +97,10 @@ const TableAnalytics = () => {
                   <span>Community</span>
                   {sortingKey === "community" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -103,7 +113,10 @@ const TableAnalytics = () => {
                   <span>Concerts</span>
                   {sortingKey === "concerts" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -111,12 +124,15 @@ const TableAnalytics = () => {
               <th>
                 <div
                   className={styles.table_column_heading}
-                  onClick={() => sortHandler("conferences")}
+                  onClick={() => sortHandler("conference")}
                 >
                   <span>Conference</span>
                   {sortingKey === "conference" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -129,7 +145,10 @@ const TableAnalytics = () => {
                   <span>Expos</span>
                   {sortingKey === "expos" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -142,7 +161,10 @@ const TableAnalytics = () => {
                   <span>Festivals</span>
                   {sortingKey === "festivals" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -153,9 +175,14 @@ const TableAnalytics = () => {
                   onClick={() => sortHandler("performance")}
                 >
                   <span>Performance</span>
-                  {/* <span>
-                    // <Image src={sortIcon} alt="Sort" />
-                  </span> */}
+                  <span>
+                    {sortingKey === "performance" && (
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
+                    )}
+                  </span>
                 </div>
               </th>
               <th>
@@ -166,7 +193,10 @@ const TableAnalytics = () => {
                   <span>Sports</span>
                   {sortingKey === "sports" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
@@ -176,7 +206,10 @@ const TableAnalytics = () => {
                   <span>Events</span>
                   {sortingKey === "events" && (
                     <span>
-                      {/* <Image src={sortIcon} alt="Sort" /> */}
+                      <Image
+                        src={sortingOrder === "ASC" ? ascSort : descSort}
+                        alt="Sort"
+                      />
                     </span>
                   )}
                 </div>
