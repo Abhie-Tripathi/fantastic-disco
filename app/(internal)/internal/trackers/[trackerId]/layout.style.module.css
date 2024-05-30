@@ -1,0 +1,16 @@
+.bar{
+    padding: 18px 40px;
+    background-color: #F8F8F8;
+    display: flex;
+    justify-content: space-between;
+}
+.leftNav{
+    color:#6750A4;
+    font-size: 18px;
+    font-weight: 700;
+}
+.rightNav{
+    color:#696B83;
+    font-size: 14px;
+    font-weight: 500;
+}

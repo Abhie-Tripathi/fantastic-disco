@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./categoryDropdown.module.css";
 import CheckboxInput from "../../UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface CategoryDropdownProps {
   className?: string;
@@ -8,14 +9,16 @@ interface CategoryDropdownProps {
   state: string[];
   setState: ([]) => void;
   onClose?: () => void;
-  categoryData: any;
+  categoryData?: any;
 }
+
 
 const CategoryDropdown = ({
   state,
   setState,
   categoryData,
 }: CategoryDropdownProps) => {
+  const {theme} = useTheme()
   const onClickHandler = (value: string) => {
     state.includes(value)
       ? setState(state.filter((data) => data !== value))
@@ -54,7 +57,7 @@ const CategoryDropdown = ({
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"#F7F7F9":""}}>
       <div>
         <div className={styles.heading}>Attended</div>
         <div className={styles.list}>

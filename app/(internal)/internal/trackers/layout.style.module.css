@@ -3,15 +3,19 @@
   /* background-color: #131313;
   color: #ffffff; */
   min-width: 810px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+
 }
 
 .header_container {
   display: flex;
   align-items: center;
-  padding-left: 60px;
-  padding-right: 60px;
+  /* padding-left: 60px;
+  padding-right: 60px; */
   justify-content: space-between;
-  border-bottom: 1px solid #333333;
+  /* border-bottom: 1px solid #333333; */
 }
 
 

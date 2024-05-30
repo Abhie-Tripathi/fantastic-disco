@@ -1,11 +1,13 @@
 .container {
   display: flex;
+  outline: none;
+  border: none;
   gap: 30px;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   z-index: 1;
   background-color: #131313;
   padding: 20px 20px;
-  color: white;
+  color: inherit;
 }
 .heading {
   white-space: nowrap;

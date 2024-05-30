@@ -17,34 +17,58 @@ const TrackerPage = () => {
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
   const trackerId = trackerParams[trackerParams.length - 1];
-
-  const editTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("edit", "true")
-    router.push(`/internal/trackers/create?${params.toString()}`);
-  };
+  const [trackerSection,setTrackerSection]=useState("Tracked Events");
+  // const editTrackerHandler = () => {
+  //   const params = new URLSearchParams(searchParams);
+  //   params.set("edit", "true")
+  //   router.push(`/internal/trackers/create?${params.toString()}`);
+  // };
 
   const { theme } = useTheme();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
-      if (error) {
-        console.log(error);
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
+  //     if (error) {
+  //       console.log(error);
+  //       return;
+  //     }
 
-      if (data) {
-        setTrackerDetail(data.tracker);
-        console.log(data);
-      }
-    };
-    fetchData();
-  }, [trackerId]);
+  //     if (data) {
+  //       setTrackerDetail(data.tracker);
+  //       console.log(data);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [trackerId]);
 
   return (
     <>
-      {trackerDetail ? (
+    <div className={styles.container}>
+      <div className={styles.containerLeft}>
+        <div className={styles.leftContainer}>
+          <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
+            Tracked Events
+          </div>
+          <div className={`${styles.heading} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+            Tracker Configurations
+          </div>
+          <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
+          Notes & Discussions
+          </div>
+          <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
+          Saved Events
+          </div>
+          <div className={`${styles.heading} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+          Manage Access
+          </div>
+        </div>
+      </div>
+      <div className={styles.containerRight}>
+        {/* {trackerType === "All Trackers" && <Trackers/>} */}
+      </div>
+    </div>
+      {/* {trackerDetail ? (
         <div>
           <div className={styles.trackers_container}>
             <div
@@ -72,7 +96,7 @@ const TrackerPage = () => {
         </div>
       ) : (
         <Loading />
-      )}
+      )} */}
     </>
   );
 };

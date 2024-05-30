@@ -23,18 +23,22 @@
   --primary-color-light: #000000;
   --secondary-bg-light: #efecec;
 }
+html{
+  
+}
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  /* display: contents; */
   /* background-color: #131313;
   color: #FFFFFF; */
 }
 body[data-theme='dark'] {
-  background-color: #131313;
-  color: #FFFFFF;
+  color: #ffffff;
+  background: #131313;
 }
-body[data-theme='light']{
+body[data-theme='light']{ 
   background-color: var(--primary-bg-light);
     color: var(--primary-color-light);
 }
