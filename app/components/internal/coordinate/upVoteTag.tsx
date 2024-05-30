@@ -9,11 +9,20 @@ import { useTheme } from '@/context';
 interface voteProps {
   type: "Sponsoring" | "Speaking" | "Exhibiting" | "Attending",
   status?: string,
-  voteCount: number,
+  userList: [{name: string}]
   handleVoteClick: (item:"Sponsoring" | "Speaking" | "Exhibiting" | "Attending")=> void,
 }
 
-const UpVoteTag: React.FC<voteProps> = ({type, status, voteCount, handleVoteClick}) => {
+function getInitials(name: string) {
+  const words = name.split(" ");
+  let initials = "";
+  words.forEach(word => {
+    initials += word.charAt(0).toUpperCase();
+  });
+  return initials;
+}
+
+const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick}) => {
 
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
@@ -26,16 +35,19 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, voteCount, handleVoteClic
     <div className={styles.main} >
       <div className='desktop_view'>
         <div className={styles.circles}>
-          <div className={styles.circle} data-name="John Doe">
-            <Image className={styles.image} src={person1} alt="person1" width={25} height={25} />
-          </div>
-          <div className={styles.circle} style={{ marginLeft: "-8px", width: "25px", height: "25px" }} data-name="Ravi Tripathi">
-            RT
-          </div>
-          <div className={styles.circle} style={{ marginLeft: "-8px" }} data-name="Jane Smith">
-            <Image className={styles.image} src={person2} alt="person2" width={25} height={25} />
-          </div>
-          <span>&nbsp;&nbsp; +{voteCount}</span>
+          <>
+          { userList && userList.slice(0, 3).map((item, index) => {
+              return (
+                <div key={index} className={`${styles.circle} ${index>0? styles.imageOverlap:''}`} style={{ width: "25px", height: "25px" }} data-name={item.name}>
+                  {getInitials(item.name)}
+                </div>
+              )
+            })
+          }
+          { userList && userList.length > 3 && 
+            <span>&nbsp;&nbsp; +{userList?.length - 3}</span>
+          }
+          </>
         </div>
       </div>
       <div className={`${styles.vote_tags} ${status=='voted'?styles.upVoted:''}`} onClick={upVote}>

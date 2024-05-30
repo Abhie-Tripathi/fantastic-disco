@@ -7,6 +7,7 @@ import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
 import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
+import { myFetch } from "@/utils/myFetch";
 
 const Verification = () => {
   const router = useRouter();
@@ -14,14 +15,31 @@ const Verification = () => {
   const [code, setCode] = useState("");
 
   const confirmHandler = () => {
-    // verifyOtp();
-    if (code == "0000") {
-      router.push("/");
-    }
+    verifyOtp();
+    // if (code == "0000") {
+    //   router.push("/");
+    // }
   };
-  // const verifyOtp=async()=>{
-  //   const url=`${baseUrl}`
-  // }
+  const verifyOtp=async()=>{
+    const url=`${baseUrl}/auth/customer/verify`
+    // console.log(Number(code));
+    
+    const dataToSend={
+      otpCode:code,
+    }
+    const {data,error}=await myFetch(url,{
+      method:"POST",
+      body:JSON.stringify(dataToSend),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if(data)
+   console.log(data);
+  else console.log(error);
+  
+   
+  }
   useEffect(()=>{
     let timer:any=null;
     if(time>=0){

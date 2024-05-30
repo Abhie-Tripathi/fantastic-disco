@@ -1,4 +1,4 @@
-
+/* 
 .tab_container {
   display: flex;
   align-items: center;
@@ -69,4 +69,44 @@
 }
 .trackerDetailsContainer{
   padding: 20px 50px;
+} */
+
+
+
+
+.container{
+  display:flex;
+  gap:10px;
+  padding: 20px;
+}
+.containerLeft{
+  /* border-left: 2px solid #ECECF9; */
+  width: 20%;
+}
+.containerRight{
+  width: 80%;
+}
+.leftContainer{
+  display: flex;
+  flex-direction: column;
+  /* gap: 10px; */
+}
+.heading{
+  color: #696B83;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-left: 2px solid #ECECF9;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.active{
+  color:#6750A4;
+  border-left: 2px solid #6750A4;
+  
+}
+.img{
+  fill:red;
 }

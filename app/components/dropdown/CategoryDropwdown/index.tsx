@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./categoryDropdown.module.css";
 import CheckboxInput from "../../UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface CategoryDropdownProps {
   className?: string;
@@ -10,8 +11,9 @@ interface CategoryDropdownProps {
   categorySlug?: string[];
   setCategorySlug?: (slugs: string[]) => void;
   onClose?: () => void;
-  categoryData: any;
+  categoryData?: any;
 }
+
 
 const CategoryDropdown = ({
   state,
@@ -20,6 +22,7 @@ const CategoryDropdown = ({
   setCategorySlug,
   categoryData,
 }: CategoryDropdownProps) => {
+  const {theme} = useTheme()
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
 
   const onClickHandler = (id: string, slug: string) => {
@@ -75,7 +78,7 @@ const CategoryDropdown = ({
   }, [selectedSlugs]);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"#F7F7F9":""}}>
       <div>
         <div className={styles.heading}>Attended</div>
         <div className={styles.list}>
