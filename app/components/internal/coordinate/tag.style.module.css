@@ -1,5 +1,8 @@
 .main {
   font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .circles {
@@ -68,6 +71,10 @@
 
 .upVoted {
   background: #665A88;
+}
+
+.imageOverlap {
+  margin-left: -8px;
 }
 
 @media screen and (max-width:1200px) {

@@ -1,12 +1,14 @@
 .container {
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   gap: 20px;
-  min-width: 644px;
+  width: 644px;
   z-index: 1;
   background-color: #131313;
   border-top: none;
   /* border-radius: 10px; */
   color: white;
+  max-height: 350px;
+  overflow-y: scroll;
 }
 .header {
   display: flex;
@@ -170,7 +172,7 @@
 .input_container {
   margin-top: 20px;
   padding: 0 15px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.363);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -440,3 +442,34 @@
 .closeIcon {
   cursor: pointer;
 }
+
+.resultData_list{
+  padding: 15px;
+  background-color: #1a1a1a;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+
+.keywords_container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px;
+ }
+ 
+ .keyword_chip {
+  padding: 4px 7px 4px 7px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  color: #6750a4;
+  font-weight: 500;
+ }
+ 
+ .closeChip {
+  cursor: pointer;
+ }
+ 

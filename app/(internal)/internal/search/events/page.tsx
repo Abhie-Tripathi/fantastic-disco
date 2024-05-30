@@ -47,6 +47,10 @@ import eventFrequencyData from "../../../../../public/data/eventFrequency.json";
 import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
+import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
+import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -104,6 +108,24 @@ const Search = () => {
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
 
+  const [categoryData, setCatgeoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setCatgeoryData(data);
+      }
+    };
+    fetchData();
+  }, []);
+
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -155,7 +177,7 @@ const Search = () => {
   };
 
   return (
-    <Suspense fallback={<Loading/>}>
+    <Suspense fallback={<Loading />}>
       <div className={styles.container}>
         <div className={styles.searchbar}>
           <input
@@ -206,6 +228,7 @@ const Search = () => {
                   <CategoryDropdown
                     state={selectedCategories}
                     setState={setSelectedCategories}
+                    categoryData={categoryData}
                   />
                 </Dialog>
               </Popover>
@@ -217,9 +240,15 @@ const Search = () => {
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Location
-                      <span className={styles.input_selected_title}>
-                        {selectedLocations[0]}
-                      </span>
+                      {selectedLocations?.length > 1 ? (
+                        <span className={styles.input_selected_no}>
+                          {selectedLocations.length}
+                        </span>
+                      ) : (
+                        <span className={styles.input_selected_title}>
+                          {selectedLocations[0]}
+                        </span>
+                      )}
                     </div>
                     <Image
                       src={DropIcon}
@@ -315,7 +344,7 @@ const Search = () => {
                   <div className={styles.input_title}>
                     Dates
                     {selectedDateRange.length > 0 &&
-                      selectedDateRange[0] !== null ? (
+                    selectedDateRange[0] !== null ? (
                       <span className={styles.input_selected_title}>
                         {`${convertISOToOriginalFormat(
                           selectedDateRange[0]
@@ -383,8 +412,9 @@ const Search = () => {
                       Event Attendance
                       {selectedEventAttendanceRange[0] !== undefined ? (
                         <span className={styles.input_selected_title}>
-                          {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                            }`}
+                          {`${selectedEventAttendanceRange[0]} - ${
+                            selectedEventAttendanceRange[1] || "Unlimited"
+                          }`}
                         </span>
                       ) : (
                         ""
@@ -430,9 +460,9 @@ const Search = () => {
             </button>
           </div>
         </div>
-        {showRecentSearches && (
-          <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-        )}
+        {/* {showRecentSearches && (
+          // <RecentSearches setShowRecentSearches={setShowRecentSearches} />
+        )} */}
 
         {/*   ADVANCE FILTER SECTION */}
         {showAdvanceFilter && (
@@ -442,22 +472,25 @@ const Search = () => {
                 <div className={styles.advanceFilterBtns}>
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
-                    className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                      }`}
+                    className={`${styles.listBtn} ${
+                      selectedAdvFilter === "AP" ? styles.active : ""
+                    }`}
                   >
                     Advanced Details
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("IS")}
-                    className={`${styles.mapBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                      }`}
+                    className={`${styles.mapBtn} ${
+                      selectedAdvFilter === "IS" ? styles.active : ""
+                    }`}
                   >
                     Insights and Score
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("AI")}
-                    className={`${styles.calendarBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                      }`}
+                    className={`${styles.calendarBtn} ${
+                      selectedAdvFilter === "AI" ? styles.active : ""
+                    }`}
                   >
                     Audience Intel
                   </button>
@@ -691,8 +724,9 @@ const Search = () => {
                           Branded Event
                           {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
+                              {`${selectedEventAttendanceRange[0]} - ${
+                                selectedEventAttendanceRange[1] || "Unlimited"
+                              }`}
                             </span>
                           ) : (
                             ""
@@ -736,7 +770,7 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedTrustScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -769,8 +803,8 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
-                              // checked={}
+                                onChange={() => {}}
+                                // checked={}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -799,7 +833,7 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedReptScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -827,23 +861,17 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          {selectedCategories?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedCategories.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedCategories[0]}
-                            </span>
-                          )}
+                          <span className={styles.input_selected_title}>
+                            {selectedMaturity} %
+                          </span>
                         </div>
                         <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
-                              // checked={}
+                                onChange={() => {}}
+                                // checked={}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -854,7 +882,7 @@ const Search = () => {
                   </Button>
                   <Popover>
                     <Dialog>
-                      <RangeSlider
+                      <MaturitySlider
                         state={selectedMaturity}
                         setState={setSelectedMaturity}
                       />
@@ -884,7 +912,7 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedINScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -897,7 +925,7 @@ const Search = () => {
                   <Popover>
                     <Dialog>
                       {({ close }) => (
-                        <RangeSlider
+                        <IntScoreSlider
                           state={selectedINScore}
                           setState={setSelectedINScore}
                         />
@@ -924,7 +952,7 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedInboundScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -950,7 +978,8 @@ const Search = () => {
                   <Button>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>User Ratings
+                        <div className={styles.input_title}>
+                          User Ratings
                           {selectedUserRatings?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedUserRatings.length}
@@ -967,7 +996,7 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedUserRatings.length !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1042,22 +1071,25 @@ const Search = () => {
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}
-                className={`${styles.listBtn} ${selectedView === "list" ? styles.active : ""
-                  }`}
+                className={`${styles.listBtn} ${
+                  selectedView === "list" ? styles.active : ""
+                }`}
               >
                 List
               </button>
               <button
                 onClick={() => setSelectedView("map")}
-                className={`${styles.mapBtn} ${selectedView === "map" ? styles.active : ""
-                  }`}
+                className={`${styles.mapBtn} ${
+                  selectedView === "map" ? styles.active : ""
+                }`}
               >
                 Map
               </button>
               <button
                 onClick={() => setSelectedView("calendar")}
-                className={`${styles.calendarBtn} ${selectedView === "calendar" ? styles.active : ""
-                  }`}
+                className={`${styles.calendarBtn} ${
+                  selectedView === "calendar" ? styles.active : ""
+                }`}
               >
                 Calendar
               </button>

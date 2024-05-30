@@ -54,6 +54,7 @@ const Pages = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const [selectedView, setSelectedView] = useState("list");
+  const [categoryData, setCatgeoryData] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
@@ -205,6 +206,7 @@ const Pages = () => {
               <Dialog>
                 <CategoryDropdown
                   state={selectedCategories}
+                  categoryData={categoryData}
                   setState={setSelectedCategories}
                 />
               </Dialog>

@@ -1,0 +1,34 @@
+.colorEditsContainer{
+    display: flex;
+    flex-direction: column;
+}
+.colorContainer{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    justify-content: space-between;
+}
+.colorInputWrapper {
+    margin-left: 20px;
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.colorInputWrapper input[type=color] {
+    cursor: pointer;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
