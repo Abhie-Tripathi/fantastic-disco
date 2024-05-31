@@ -24,6 +24,11 @@
   color: black;
 }
 
+.exportType_backArrow{
+  padding: 9px 0 0 18px;
+  cursor: pointer;
+}
+
 .exportType_modal_header {
   padding: 20px 24px;
   display: flex;
@@ -94,6 +99,8 @@
   width: 644px;
   background-color: #000000;
   color: #ffffff;
+  max-height: 420px;
+  overflow-y: scroll;
 }
 
 .exportedfiles_modal_light {
@@ -182,7 +189,7 @@
 .exportedfile_controls {
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 1fr 24px 24px;
+  /* grid-template-columns: 1fr 24px 24px; */
   grid-auto-flow: column;
   align-items: center;
 }

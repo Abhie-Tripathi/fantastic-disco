@@ -1,0 +1,75 @@
+.cardOne{
+    display: flex; 
+    justify-content: space-between;
+}
+.cardTwo{
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+.location{
+    font-size: 14px;
+    font-weight: 500;
+    color: #696B83;
+}
+.container{
+    width: 40%;
+    height: 200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 12px;
+    border:1px solid #ECECF9;
+    box-shadow: 2px 2px 8px 0px #BCBCBC66;
+}
+.heading{
+    font-size: 16px;
+    font-weight: 600;
+}
+.cardThree{
+    display: flex;
+    width: 100%;
+    padding-top: 5px;
+    height: 100px;
+    gap: 10px;
+    }
+.cardThreeLeft{
+    display: flex;
+    gap:5px;
+    width: 70%;
+}
+.cardType{
+    display: flex;
+    width: 33%;
+    flex-direction: column;
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 6px;
+    gap:5px;
+    align-items: center;
+    justify-content: center;
+    border: 0.39px solid #DCDFE4
+}
+.new{
+    color:#6750A4;
+    display: flex;
+    gap:5px;
+    border-bottom: 0.39px solid #DCDFE4;
+    padding-bottom: 10px;
+    font-size: 10px;
+    font-weight: 500;
+}
+.number{
+    font-size: 14px;
+    font-weight: 700;
+}
+.events{
+    color:#454459;
+    font-size: 10px;
+    font-weight: 300;
+}
+.lineChart{
+    width: 30%;
+    height: 100%;
+}

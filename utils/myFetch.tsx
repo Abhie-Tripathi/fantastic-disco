@@ -8,7 +8,8 @@ export const myFetch = async (
     mode: "cors",
   });
   const result = await response.json();
-  console.log(JSON.stringify(response.headers));
+  console.log(response)
+  // console.log(JSON.stringify(response.headers));
 
   const { error, data } = result;
   if (
