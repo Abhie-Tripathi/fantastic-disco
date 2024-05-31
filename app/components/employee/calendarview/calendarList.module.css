@@ -1,0 +1,157 @@
+.event_list_button {
+    cursor: pointer;
+    position: absolute;
+    left: -130px;
+    top: 25px;
+    background-color: #6750A4;
+    border-radius: 12px 0px 0px 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 12px 24px;
+}
+
+.eventList_container {
+    /* position: absolute; */
+    right: -20px;
+    /* top: 0px; */
+    /* bottom: 0px; */
+    z-index: 10;
+    position: fixed;
+    top: 80px;
+}
+
+.eventList {
+    display: none;
+    width: 30vw;
+    /* height: 80vh; */
+    height: calc(100vh - 80px);
+    background-color: #1a1a1a;
+    padding: 0px 20px;
+    overflow: hidden;
+}
+
+.eventList_light {
+    background-color: #FFFFFF;
+}
+
+.eventList.active {
+    display: block;
+}
+
+.eventList_header {
+    padding: 15px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.eventList_header span {
+    /* color: white; */
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.eventList_header button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+
+.eventList_list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    padding-bottom: 80px;
+    overflow-y: scroll;
+}
+
+
+.eventListCard {
+    border: 1px solid #303030;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.eventListCard_title {
+    font-weight: 500;
+    /* color: white; */
+    font-size: 14px;
+}
+
+.eventListCard_location {
+    padding-top: 8px;
+    /* color: #696b83; */
+    color: grey;
+    font-size: 14px;
+}
+
+.eventListCard_date {
+    padding-top: 6px;
+    font-size: 14px;
+    /* color: #696b83; */
+    color: grey;
+}
+
+.eventListCard_footer {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.eventListCard_footer_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.eventListCard_category {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.eventListCard_category span {
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.eventListCard_label {
+    background-color: #f6edff;
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: #604a98;
+    font-size: 12px;
+}
+
+.eventListCard_footer a {
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    font-family: inherit;
+    background-color: #6750a4;
+    padding: 8px 15px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+}
+
+.eventList_list::-webkit-scrollbar {
+    width: 5px;
+    position: absolute;
+    right: 10px;
+}
+
+.eventList_list::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+.eventList_list::-webkit-scrollbar-thumb {
+    background: #6750a4;
+    border-radius: 10px;
+}
