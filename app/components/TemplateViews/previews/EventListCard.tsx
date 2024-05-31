@@ -5,7 +5,33 @@ import locationIcon from "/public/location.svg";
 import placeholder from '/public/placeholder.png'
 import Image from 'next/image';
 
-const EventListCard = () => {
+interface CardProps {
+    cardRadius?: number;
+    cardBgColor?: string;
+    eventNameColor?: string;
+    eventNameSize?: number;
+    dateFontSize?: number;
+    locationFontSize?: number;
+    btnBgColor?: string;
+    btnFontColor?: string;
+    btnBorderWidth?: number;
+    btnBorderColor?: string;
+    btnRadius?: number;
+    btnFontSize?: number;
+}
+
+const EventListCard = ({ cardRadius,
+    cardBgColor,
+    eventNameColor,
+    eventNameSize,
+    dateFontSize,
+    locationFontSize,
+    btnBgColor,
+    btnFontColor,
+    btnBorderWidth,
+    btnBorderColor,
+    btnRadius,
+    btnFontSize }: CardProps) => {
     return (
         <div className={styles.card}>
             <div className={styles.cardImg_container}>
@@ -20,15 +46,8 @@ const EventListCard = () => {
             <div className={styles.cardDetails}>
                 <div className={styles.eventHeader}>
                     <div className={styles.eventName}>Event Name</div>
-                    <div className='desktop_view' >
-                        {/* <div className={styles.pills}>
-                            {eventCtas.map((item, index) => (
-                                <div key={index} className={styles.pill}>
-                                    {item}
-                                </div>
-                            ))}
-                        </div> */}
-                    </div>
+                    {/* <div className='desktop_view' >
+                    </div> */}
                 </div>
                 <div className={styles.eventDesc}>
                     Event Description
