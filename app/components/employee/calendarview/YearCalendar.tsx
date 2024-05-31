@@ -168,11 +168,11 @@ const YearCalendar: React.FC = () => {
                   return (
                     <div key={index} className={`${styles.dayCard} ${theme === 'light' ? styles.dayCard_light : ""}`}>
                       {(date as Date).getDate()}
-                      <div onClick={() => handleListOpen(date as Date)} className={styles.eventsCount} >
-                        {(eventCountArr && eventCountArr[formatDate(date)]) ?
-                          eventCountArr[formatDate(date)]['totalEvent'] : 0
-                        }
-                      </div>
+                      {(eventCountArr && eventCountArr[formatDate(date)] && eventCountArr[formatDate(date)]['totalEvent'] > 0) &&
+                        <div onClick={() => handleListOpen(date as Date)} className={styles.eventsCount} >
+                          {eventCountArr[formatDate(date)]['totalEvent']}
+                        </div>
+                      }
                     </div>
                   );
                 }

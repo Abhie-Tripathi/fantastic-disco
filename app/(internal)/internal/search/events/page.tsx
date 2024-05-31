@@ -6,7 +6,8 @@ import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 
 import SearchIcon from "/public/search.svg";
-import DropIcon from "/public/internal/dropdown_arrow.svg";
+// import DropIcon from "/public/internal/dropdown_arrow.svg";
+import DropIcon from "/public/downArrow.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
 
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
@@ -38,6 +39,7 @@ import EventAdvFilter from "@/app/components/dropdown/EventAdvFilter";
 import EventKeyword from "@/app/components/dropdown/EventKeyword";
 import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
+import { useTheme } from '@/context'
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -65,6 +67,8 @@ import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const {theme} = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [selectedView, setSelectedView] = useState("list");
   const [searchInput, setSearchInput] = useState("");
@@ -218,13 +222,13 @@ const Search = () => {
             Recent searches
           </div>
           <button onClick={searchHandler}>
-            <Image src={SearchIcon} alt="search" />
+            <Image src={SearchIcon} alt="search" className={iconClass} />
           </button>
         </div>
         <div className={styles.sub_container}>
           <div className={styles.inputdropdowns_container}>
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -244,6 +248,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -260,7 +265,7 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -280,6 +285,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -298,7 +304,7 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -318,6 +324,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -333,7 +340,7 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>Rank</div>
@@ -342,6 +349,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -364,7 +372,8 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button className={styles.input_container}>
+              <Button className={styles.dropdown_button}>
+                <div className={styles.input_container}>
                 <div className={styles.input}>
                   <div className={styles.input_title}>
                     Dates
@@ -381,7 +390,8 @@ const Search = () => {
                       ""
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                  <Image src={DropIcon} alt="dropicon" width={20} height={20} className={iconClass} />
+                </div>
                 </div>
               </Button>
               <Popover>
@@ -395,7 +405,7 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -415,6 +425,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -430,7 +441,7 @@ const Search = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button>
+              <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -450,6 +461,7 @@ const Search = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
+                      className={iconClass}
                     />
                   </div>
                 </div>
@@ -492,9 +504,9 @@ const Search = () => {
         {/*   ADVANCE FILTER SECTION */}
         {showAdvanceFilter && (
           <div>
-            <div className={styles.viewContainer}>
+            <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
               <div className={styles.viewTypeButtons_container}>
-                <div className={styles.advanceFilterBtns}>
+                <div className={`${styles.advanceFilterBtns} ${theme === "light" ? styles.advanceFilterBtns_light : ""}`}>
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
                     className={`${styles.listBtn} ${
@@ -527,7 +539,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
               <div className={styles.inputdropdowns_container}>
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -547,6 +559,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -563,7 +576,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -583,6 +596,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -599,7 +613,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -619,6 +633,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -635,7 +650,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -651,6 +666,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -666,7 +682,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -686,6 +702,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -701,7 +718,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -721,6 +738,7 @@ const Search = () => {
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -778,7 +796,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -841,7 +859,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -881,7 +899,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -921,7 +939,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
               <div className={styles.inputdropdowns_container_AI}>
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -960,7 +978,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1000,7 +1018,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1044,7 +1062,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1091,8 +1109,8 @@ const Search = () => {
           </div>
         )}
 
-        <div className={styles.viewContainer}>
-          <div className={styles.viewTypeButtons_container}>
+        <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
+          <div className={`${styles.viewTypeButtons_container} ${theme === "light" ? styles.viewTypeButtons_light : ""}`}>
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}

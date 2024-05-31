@@ -60,14 +60,16 @@
   }
   
   .eventCard {
-    height: 68px;
+    /* height: 68px; */
+    height: 70px;
     border-radius: 8px;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
     position: relative;
     background-color: #1A1A1A;
+    justify-content: space-around;
   }
 
   .eventCard_light{
@@ -102,4 +104,76 @@
     /* color: #6d28d9; */
     font-weight: 500;
     font-size: 14px;
+    cursor: pointer;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
+
+  .event_title::before {
+    content: attr(data-name);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    white-space: pre-wrap;
+    /* transform: translateX(-50%); */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    z-index: 1;
+  }
+  .event_title:hover::before {
+    opacity: 0.8;
+  }
+
+  .control_buttons_container {
+    /* position: absolute; */
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .control_buttons_container button {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .control_buttons_container div {
+    font-size: 24px;
+    font-weight: 500;
+    /* color: #222; */
+    width: 25%;
+    text-align: center;
+  }
+
+  .event_list_button {
+    cursor: pointer;
+    position: absolute;
+    left: -130px;
+    top: 25px;
+    background-color: #6750A4;
+    border-radius: 12px 0px 0px 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 12px 24px;
+}
+
+.eventList_container {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    /* bottom: 0px; */
+    z-index: 10;
+}
