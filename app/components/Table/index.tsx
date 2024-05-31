@@ -187,10 +187,10 @@ function getEventRating(item: string) {
 }
 
 const Table = ({
-  eventData,
+  // eventData,
   showInsights,
 }: {
-  eventData: any;
+  // eventData: any;
   showInsights: any;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);

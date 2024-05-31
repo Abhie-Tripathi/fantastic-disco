@@ -1,9 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./monthCalendar.module.css";
 import { log } from "console";
 import EventCard from "@/app/components/EventCard";
 import { useTheme } from "@/context";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
+import Image from "next/image";
+import LeftArrow from "/public/leftArrow.svg";
+import RightArrow from "/public/rightArrow.svg";
+import CalendarList from "./CalendarList";
 
 interface Event {
   id: number;
@@ -20,10 +26,25 @@ interface Event {
   top: string;
 }
 
+interface Event2 {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  background?: string;
+  top?: string;
+  duration?: number;
+}
+
+interface monthEventsType {
+  [date: string]: {event: Event2[], totalEvent: number}
+}{}
+
 interface DateWithEvent {
   date: Date;
   events: Event[];
 }
+
 const days = [
   "SUNDAY",
   "MONDAY",
@@ -32,6 +53,21 @@ const days = [
   "THURSDAY",
   "FRIDAY",
   "SATURDAY",
+];
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const events: Event[] = [
@@ -149,14 +185,16 @@ function generateMonthArray(year: number, month: number) {
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
-    monthArray.push(new Date(year, month - 1, day));
+    monthArray.push(new Date(year, month - 1, day, 5, 30, 0, 0));
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return monthArray;
 }
-const year = 2024;
-const month = 3;
+
+/*
+const [year, setYear] = useState<number>(2024);
+const [month, setMonth] = useState<number>(3);
 const monthDatesArray = generateMonthArray(year, month);
 const datesWithEvents = monthDatesArray.map((date: any) => {
   if (date === "") return "";
@@ -170,6 +208,7 @@ const datesWithEvents = monthDatesArray.map((date: any) => {
     return { date: date, events: filteredEvents };
   }
 });
+*/
 
 function formatDateString(dateString: any) {
   const [month, day, year] = dateString.split("/");
@@ -182,10 +221,144 @@ function formatDateString(dateString: any) {
   return `${formattedDay}/${formattedMonth}/${year}`;
 }
 
+function formatDate(dateString: any) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getDurationInDays(startDate:  Date | string | number, endDate:  Date | string | number) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const differenceInMilliseconds = Math.abs(Number(end) - Number(start));
+
+  const differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+  return differenceInDays+1;
+}
+
 const MonthCalendar: React.FC = () => {
   const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+  const [monthEvents, setMonthEvents] = useState<monthEventsType>();
+
+  const [year, setYear] = useState<number>(0);
+  const [month, setMonth] = useState<number>(0);
+  const [datesWithEvents, setDatesWithEvents] = useState<any>();
+
+  const fetchEventsData = async() => {
+    try {
+      let apiMonth = '';
+      if(month==0) return;
+      else {
+        if(month<9){
+          apiMonth = '0'+month;
+        }else
+          apiMonth = month.toString();
+      }
+      const apiUrl = `${baseUrl}/event/search?groupBy=${year}-${apiMonth}-01,${year}-${apiMonth}-31`;
+      const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+      });
+      if(apiData.data) {
+        setMonthEvents(apiData.data);
+        // setupCalendar();
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  const setupCalendar = () => {
+    const monthDatesArray = generateMonthArray(year, month);
+    var datesWithEventsTmp2 =  monthDatesArray.map((date: any) => {
+      if (date === "") return "";
+      else {
+        let c_date: string = formatDate(date);
+        var filteredEvents: any = [];
+        if(monthEvents && monthEvents[c_date] && monthEvents[c_date].event.length > 0){
+          // filteredEvents = monthEvents[c_date].event.sort((a, b) => {
+          //   return new Date(a.endDate) - new Date(b.endDate);
+          // });
+          filteredEvents = monthEvents[c_date].event;
+          filteredEvents.map((event: any, index: number)=>{
+            if(index==0){
+              event['background'] = "rgb(249 196 100)";
+              event['top']= "35%";
+            }else if(index == 1){
+              event['background'] = "rgb(190 290 155)";
+              event['top']= "52.5%";
+            }else{
+              event['background'] = "rgb(183 235 255)";
+              event['top']= "70%";
+            }
+            event['duration']= getDurationInDays(event['startDate'], event['endDate']);
+          })
+        }
+
+        return { date: date, events: filteredEvents, totalEvent: monthEvents ? monthEvents[c_date]?.totalEvent :0 };
+      }
+    });
+
+    setDatesWithEvents(datesWithEventsTmp2);
+  }
+
+  const prevButtonHandler = () => {
+    if(month > 1)
+      setMonth(month-1);
+  }
+
+  const nextButtonHandler = () => {
+    if(month < 12)
+      setMonth(month+1);
+  }
+
+  const [eventListDate, setEventListDate] = useState<string>('');
+
+  const handleListOpen = (date: Date) => {
+    let d = formatDate(date);
+    if(d === eventListDate)
+      setEventListDate('0');
+    else
+      setEventListDate(d);
+  }
+
+  useEffect(() => {
+    if(month > 0)
+      setupCalendar();
+  }, [monthEvents]);
+
+  useEffect(() => {
+    var date = new Date();
+    setMonth(date.getMonth()+1);
+    setYear(date.getFullYear());
+  }, []);
+
+  useEffect(() => {
+    if(month > 0) {
+      fetchEventsData();
+    }
+  }, [month]);
 
   return (
+  <>
+    <div className={styles.control_buttons_container}>
+      <button onClick={prevButtonHandler}>
+        <Image className={iconClass} src={LeftArrow} width={28} alt="leftarrow" />
+      </button>
+      <div>
+        {month > 0 &&
+          months[month-1] + ' ' + year
+        }
+      </div>
+      <button onClick={nextButtonHandler}>
+        <Image className={iconClass} src={RightArrow} width={28} alt="rightarrow" />
+      </button>
+    </div>
     <div className={styles.container}>
       <div className={styles.dayCards_container}>
         {days.map((day) => (
@@ -286,21 +459,20 @@ const MonthCalendar: React.FC = () => {
         </>  */}
 
         {/* THIRD APPROACH */}
-
-        {datesWithEvents.map((dateWithEvent, index) => {
+        {datesWithEvents && datesWithEvents.map((dateWithEvent: any, index: number) => {
           if (dateWithEvent === "") {
             return <div className={styles.emptyCard} key={index}></div>;
           } else {
             const currentDate = dateWithEvent.date;
             let count = dateWithEvent.events.length;
 
-            const eventCards = dateWithEvent.events.map((event, eventIndex) => {
+            const eventCards = dateWithEvent.events.map((event: any, eventIndex: number) => {
               const eventStartDate = new Date(event.startDate);
               const eventEndDate = new Date(event.endDate);
 
               // Get Next day events
               const nextDay = eventIndex + 1;
-              console.log("next_day", nextDay, event.name);
+              // console.log("next_day", currentDate, eventStartDate, eventEndDate, event.duration, dateWithEvent.totalEvent);
               if (currentDate.getTime() === eventStartDate.getTime()) {
                 count = count - 1;
                 console.log("COUNT", count, event.name, event.startDate);
@@ -314,6 +486,7 @@ const MonthCalendar: React.FC = () => {
                       background={event.background}
                       l
                       name={event.name}
+                      singleDayEvent={true}
                     />
                   );
                 }
@@ -366,8 +539,8 @@ const MonthCalendar: React.FC = () => {
                   );
                 }
               } else if (
-                currentDate > eventStartDate &&
-                currentDate <= eventEndDate
+                currentDate.getTime() > eventStartDate.getTime() &&
+                currentDate.getTime() <= eventEndDate.getTime()
               ) {
                 // Render only the color strip for subsequent days
                 if (currentDate.getDay() === 6) {
@@ -447,12 +620,17 @@ const MonthCalendar: React.FC = () => {
                   {currentDate.getDate()}
                 </div>
                 {eventCards}
+                { dateWithEvent.totalEvent > 3 &&
+                  <div onClick={()=>handleListOpen(currentDate)} style={{position:"absolute", top:"85%", cursor:"pointer", fontSize:"14px"}}>+{dateWithEvent.totalEvent - 3} more</div>
+                }
               </div>
             );
           }
         })}
       </div>
     </div>
+    <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate}/>
+  </>
   );
 };
 
