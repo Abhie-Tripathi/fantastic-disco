@@ -1,13 +1,13 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import styles from './page.style.module.css'
-import TemplateCard from '@/app/components/TemplateViews/TemplateCard'
+import React, { useState } from 'react'
+import styles from './brandkit.style.module.css'
+import TemplateCard from '@/app/components/TemplateViews/designs/TemplateCard'
 import ButtonsModal from '@/app/components/TemplateViews/brandkit/buttons/ButtonsModal'
 import ColorModal from '@/app/components/TemplateViews/brandkit/color/ColorModal'
 import LogoModal from '@/app/components/TemplateViews/brandkit/logo/LogoModal'
 import TypographyModal from '@/app/components/TemplateViews/brandkit/typography/TypographyModal'
 
-const Page = () => {
+const BrandKit = () => {
 
     const [preview, setPreview] = useState("")
 
@@ -46,4 +46,4 @@ const Page = () => {
     )
 }
 
-export default Page
+export default BrandKit

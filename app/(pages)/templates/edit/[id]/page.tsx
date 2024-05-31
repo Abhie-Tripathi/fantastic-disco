@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import { ParsedUrlQuery } from 'querystring';
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'

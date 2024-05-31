@@ -1,0 +1,33 @@
+.layout{
+    padding: 10px;
+}
+.navbar{
+    display: flex;
+    gap: 20px;
+    width:100%;
+    border-bottom: 1px solid rgb(133, 133, 133);
+    margin-bottom: 20px;
+}
+.navItem{
+    color: white;
+    cursor: pointer;
+}
+.active{
+    border-bottom: 3px solid #6750a4;
+}
+.body{
+    display: flex;
+    gap: 5px;
+}
+.editWindow{
+    width: 50%;
+    height: 80vh;
+    overflow-y: scroll;
+}
+.previewWindow{
+    width: 50%;
+    border: 1px solid white;
+    border-radius: 10px;
+    height: 80vh;
+    overflow-y: scroll;
+}

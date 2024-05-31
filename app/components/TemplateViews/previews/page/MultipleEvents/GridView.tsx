@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './gridview.style.module.css'
-import EventCard from '../../../EventCard'
+import EventCard from '../../EventCard';
 
 interface EditProps {
     cardRadius?: number;
