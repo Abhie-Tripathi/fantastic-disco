@@ -45,6 +45,19 @@ interface DateWithEvent {
   events: Event[];
 }
 
+interface EventColorMap {
+  [eventId: string]: string;
+}
+
+const backgroundColors = ['#6D28D9', '#B45309', '#0369A1', '#047857', '#BE123C'];
+
+function getRandomColor() {
+  const randomIndex = Math.floor(Math.random() * backgroundColors.length);
+  return backgroundColors[randomIndex];
+}
+
+const eventIdColorMap: EventColorMap = {};
+
 const days = [
   "SUNDAY",
   "MONDAY",
@@ -287,14 +300,22 @@ const MonthCalendar: React.FC = () => {
           filteredEvents = monthEvents[c_date].event;
           filteredEvents.map((event: any, index: number)=>{
             if(index==0){
-              event['background'] = "rgb(249 196 100)";
+              // event['background'] = "rgb(249 196 100)";
               event['top']= "35%";
             }else if(index == 1){
-              event['background'] = "rgb(190 290 155)";
+              // event['background'] = "rgb(190 290 155)";
               event['top']= "52.5%";
             }else{
-              event['background'] = "rgb(183 235 255)";
+              // event['background'] = "rgb(183 235 255)";
               event['top']= "70%";
+            }
+
+            if(eventIdColorMap.hasOwnProperty(event.id)){
+              event['background'] = eventIdColorMap[event.id];
+            }else{
+              const newColor = getRandomColor();
+              eventIdColorMap[event.id] = newColor;
+              event['background'] = newColor;
             }
             event['duration']= getDurationInDays(event['startDate'], event['endDate']);
           })
