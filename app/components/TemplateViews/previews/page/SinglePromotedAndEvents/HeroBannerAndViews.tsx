@@ -5,16 +5,18 @@ import ListView from '../MultipleEvents/ListView';
 import GridView from '../MultipleEvents/GridView';
 import ListAndGridView from '../MultipleEvents/ListAndGridView';
 
-interface Props{
-    type : string;
+interface Props {
+    type: string;
 }
 
-const HeroBannerAndViews = ({type} : Props) => {
+const HeroBannerAndViews = ({ type }: Props) => {
     return (
         <div className={styles.body}>
-            <HeroBanner/>
-            {type === "list" ?<ListView/>:
-            type==="grid" ? <GridView/> : <ListAndGridView/>}
+            <div className={styles.heroBanner}><HeroBanner /></div>
+            <div className={styles.bottomView}>
+                {type === "list" ? <ListView /> :
+                type === "grid" ? <GridView /> :
+                <ListAndGridView />}</div>
         </div>
     )
 }

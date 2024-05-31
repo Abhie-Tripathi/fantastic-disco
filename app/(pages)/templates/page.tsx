@@ -51,24 +51,22 @@ const Page = () => {
           {activeNavItem === "Palette" && <GeneratePalette />}
         </div>
         <div className={styles.previewWindow}>
-          <div className={styles.heading_btnContainer}>
-            <div className={styles.heading}>
-              {preview === "stickytop" ? "Sticky Top" :
-                preview === "stickydown" ? "Sticky Footer" :
-                  preview === "sehb" ? "Hero Banner" :
-                    preview === "megv" ? "Grid View" :
-                      preview === "melv" ? "List View" :
-                        preview === "melgv" ? "List and Grid view" :
-                          preview === "phblv" ? "Hero Banner and List view" :
-                            preview === "phbgv" ? "Hero Banner and Grid view" :
-                              preview === "phblgv" ? "Hero Banner and List Grid view" :
-                                preview === "pcslv" ? "Caraousel and List view" :
-                                  preview === "pcsgv" ? "Caraousel and Grid view" :
-                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
-                                      preview === "tscv" ? "Top Section Caraousel view" :
-                                        preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                          preview === "lsvs" ? "Left Section Veritcal Scroll view" : ""}
-            </div>
+          <div className={styles.heading}>
+            {preview === "stickytop" ? "Sticky Top" :
+              preview === "stickydown" ? "Sticky Footer" :
+                preview === "sehb" ? "Hero Banner" :
+                  preview === "megv" ? "Grid View" :
+                    preview === "melv" ? "List View" :
+                      preview === "melgv" ? "List and Grid view" :
+                        preview === "phblv" ? "Hero Banner and List view" :
+                          preview === "phbgv" ? "Hero Banner and Grid view" :
+                            preview === "phblgv" ? "Hero Banner and List Grid view" :
+                              preview === "pcslv" ? "Caraousel and List view" :
+                                preview === "pcsgv" ? "Caraousel and Grid view" :
+                                  preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                    preview === "tscv" ? "Top Section Caraousel view" :
+                                      preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" : ""}
           </div>
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
