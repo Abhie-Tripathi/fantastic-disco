@@ -16,7 +16,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
-  const [preview, setPreview] = useState("");
+  const [preview, setPreview] = useState("sehb");
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
