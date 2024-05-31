@@ -56,8 +56,8 @@ const Page = ({ params }: Props) => {
         {params.id === "stickytop" ? <StickyPreview type="top" /> :
           params.id === "stickydown" ? <StickyPreview type="down" /> :
             params.id === "sehb" ? <HeroBanner cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}  /> :
-              params.id === "megv" ? <GridView /> :
-                params.id === "melv" ? <ListView /> :
+              params.id === "megv" ? <GridView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                params.id === "melv" ? <ListView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
                   params.id === "melgv" ? <ListAndGridView /> :
                     params.id === "phblv" ? <HeroBannerAndViews type='list' /> :
                       params.id === "phbgv" ? <HeroBannerAndViews type='grid' /> :
