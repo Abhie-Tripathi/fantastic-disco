@@ -18,3 +18,8 @@
 .activeNavItem{
     background-color: #6750a4;
 }
+.activeWindow{
+    margin-top: 10px;
+    border: 1px solid rgb(95, 95, 95);
+    border-radius: 5px;
+}

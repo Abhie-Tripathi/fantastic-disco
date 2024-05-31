@@ -17,6 +17,19 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
   const [preview, setPreview] = useState("sehb");
+  const [cardRadius, setCardRadius] = useState<number>(10);
+  const [cardBgColor, setCardBgColor] = useState<string>('#688bc4');
+  const [eventNameColor, setEventNameColor] = useState<string>('#000000');
+  const [eventNameSize, setEventNameSize] = useState<number>(18);
+  const [dateFontSize, setDateFontSize] = useState<number>(15)
+  const [locationFontSize, setLocationFontSize] = useState<number>(15)
+  const [btnBgColor, setBtnBgColor] = useState<string>('#9968c4');
+  const [btnFontColor, setBtnFontColor] = useState<string>('#ffffff');
+  const [btnBorderWidth, setBtnBorderWidth] = useState<number>(1);
+  const [btnBorderColor, setBtnBorderColor] = useState<string>('#9968c4');
+  const [btnRadius, setBtnRadius] = useState<number>(5);
+  const [btnFontSize, setBtnFontSize] = useState<number>(15);
+  const [bgColor, setBgColor] = useState<string>("#9968c4")
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -47,7 +60,20 @@ const Page = () => {
       <div className={styles.body}>
         <div className={styles.editWindow}>
           {activeNavItem === "Designs" && <Designs setPreview={setPreview} />}
-          {activeNavItem === "BrandKit" && <BrandKit />}
+          {activeNavItem === "BrandKit" && <BrandKit 
+            setDateFontSize={setDateFontSize}
+            setLocationFontSize={setLocationFontSize}
+            setCardRadius={setCardRadius}
+            setCardBgColor={setCardBgColor}
+            setEventNameColor={setEventNameColor}
+            setEventNameSize={setEventNameSize}
+            setBtnBgColor={setBtnBgColor}
+            setBtnFontColor={setBtnFontColor}
+            setBtnBorderWidth={setBtnBorderWidth}
+            setBtnBorderColor={setBtnBorderColor}
+            setBtnRadius={setBtnRadius}
+            setBtnFontSize={setBtnFontSize}
+            setBgColor={setBgColor} />}
           {activeNavItem === "Palette" && <GeneratePalette />}
         </div>
         <div className={styles.previewWindow}>
@@ -71,7 +97,7 @@ const Page = () => {
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
               preview === "stickydown" ? <StickyPreview type="down" /> :
-                preview === "sehb" ? <HeroBanner /> :
+                preview === "sehb" ? <HeroBanner cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                   preview === "megv" ? <GridView /> :
                     preview === "melv" ? <ListView /> :
                       preview === "melgv" ? <ListAndGridView /> :

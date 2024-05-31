@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import styles from './design.style.module.css'
 import TemplateCard from './TemplateCard'
 import FilterHeader from './FilterHeader'
-import EditModal from '@/app/components/TemplateViews/edit/EditModal'
 import ExpandIcon from '/public/expandAll.svg'
 import Image from 'next/image'
 
@@ -74,7 +73,7 @@ const Designs = (props : Props) => {
                         <div className={styles.widgetSubheading}>One Higlighted Event</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 3).map((template, index) => (
-                                <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 3} id={template.id} setPreview={props.setPreview} setEditModal={setEditModal} />
+                                <TemplateCard key={index} name={template.name} isHidden={!showAllTwo && index >= 3} id={template.id} setPreview={props.setPreview} setEditModal={setEditModal}/>
                             ))}
                         </div>
                         {pageWidgetWithOneHighlightedEvent.length > 3 && (
@@ -101,7 +100,7 @@ const Designs = (props : Props) => {
                     <div className={styles.widgetHeading}>Section Widget</div>
                     <div className={styles.templateContainer}>
                         {sectionWidgetEvents.map((template, index) => (
-                            <TemplateCard key={index} name={template.name} isHidden={false} setPreview={props.setPreview} id={template.id} setEditModal={setEditModal} />
+                            <TemplateCard key={index} name={template.name} isHidden={false} setPreview={props.setPreview} id={template.id} setEditModal={setEditModal}/>
                         ))}
                     </div>
                 </div>}
@@ -115,14 +114,6 @@ const Designs = (props : Props) => {
                 </div>}
             </div>
            
-            {editModal &&
-                <div className={styles.editModal}>
-                    <div className={styles.heading_btnContainer}>
-                        <div className={styles.heading}>Edit</div>
-                        <div className={styles.closeBtn} onClick={() => setEditModal(false)}>x</div>
-                    </div>
-                    <EditModal />
-                </div>}
         </div>
     )
 }
