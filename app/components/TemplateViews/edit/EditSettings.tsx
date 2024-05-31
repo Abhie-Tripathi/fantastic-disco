@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import styles from './editsettings.style.module.css'
 import ColorsEdit from './colors/ColorsEdit';
 import FontsEdit from './fonts/FontsEdit';
@@ -37,6 +37,7 @@ const EditSettings = (props : EditProps) => {
                     <div className={styles.container} onClick={() => handleModal("color")}>Colors</div>
                     <div className={styles.container} onClick={() => handleModal("border")}>Borders</div>
                     <div className={styles.container} onClick={() => handleModal("font")}>Fonts</div>
+                    <div className={styles.container}>Auto Generate</div>
                 </div>
             )}
             {activeModal === "color" && (
