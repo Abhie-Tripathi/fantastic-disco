@@ -461,12 +461,21 @@
 // };
 
 // export default CreateTracker;
-import React from 'react'
+import React,{useEffect} from 'react'
 import styles from "./page.style.module.css";
 import Image from 'next/image';
 import userOne from '/public/userOne.svg'
 import Filters from "@/app/components/internal/trackers/Filters"
 const page = () => {
+  useEffect(() => {
+   
+    //  if(document.body.classList.contains(styles.bodyOverflowHidden))
+    //   document.body.classList.remove(styles.bodyOverflowHidden);
+     if(document.body.style.height==='100vh'){
+      document.body.style.height="";
+     }
+  
+  }, []);
   return (
     <div className={styles.container}>
       <div className={styles.topContainer}>

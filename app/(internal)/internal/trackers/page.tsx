@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
@@ -85,6 +85,8 @@ const data=[
   };
   const modalOpen = () => {
     setShowModal(true);
+    console.log(document.body.style);
+    
     document.body.style.height = '100vh';
    
     document.body.style.width = '100%';
@@ -101,6 +103,8 @@ const data=[
       document.body.style.overflow = 'auto';
     }
   };
+  
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -120,7 +124,7 @@ const data=[
     //     )}
     //   </div>
     // </div>
-   <div className={styles.outerContainer}>
+   <div className={styles.outerContainer} >
  <div className={styles.header_container}>
         <div className={styles.tab_container}>
           <Link
