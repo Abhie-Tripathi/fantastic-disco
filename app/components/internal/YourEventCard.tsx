@@ -115,6 +115,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({ eventId, enquiryId, event
       }
     }
     fetchInterestedUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

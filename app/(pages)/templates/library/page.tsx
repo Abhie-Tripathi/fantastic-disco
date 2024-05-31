@@ -144,6 +144,7 @@ const Page = () => {
                     <Link href={`/templates/edit/${preview}`}  className={styles.nextBtn}>Select & Proceed</Link>
                     <div className={styles.closeBtn} onClick={() => setPreview("")}>x</div>
                 </div>
+                <div className={styles.preview}>
                 {preview === "stickytop" ? <StickyPreview type="top" /> :
                     preview === "stickydown" ? <StickyPreview type="down" /> :
                         preview === "sehb" ? <HeroBanner /> :
@@ -158,7 +159,9 @@ const Page = () => {
                                                             preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
                                                                 preview === "tscv" ? <CaraouselTop /> :
                                                                     preview === "tshs" ? <ScrollView type='top' /> :
-                                                                        preview === "lsvs" ? <ScrollView type='left' /> : <></>}
+                                                                        preview === "lsvs" ? 
+                                                                        <ScrollView type='left' /> : <></>}
+                                                                        </div>
 
             </div>}
             {editModal &&

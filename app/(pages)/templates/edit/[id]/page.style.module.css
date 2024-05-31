@@ -6,7 +6,7 @@
 .editSettings{
     width: 30%;
 }
-.preview{
+.previewContainer{
     width: 70%;
     border: 1px solid white;
     border-radius: 10px;

@@ -29,33 +29,33 @@ interface Props {
   eventGroupId?: string;
   productId?: string | undefined;
   comments?: IComment[];
-  stage?:string;
+  stage?: string;
 }
-interface Reply{
-  content?:string;
-  user:{
-    firstname?:string;
-    lastname?:string;
+interface Reply {
+  content?: string;
+  user: {
+    firstname?: string;
+    lastname?: string;
   }
-  id?:string;
+  id?: string;
 }
-export const Notes = ({eventId, eventGroupId, comments, productId, stage }: Props) => {
+export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
-  const urlPath=usePathname().split('/')[2]
+  const urlPath = usePathname().split('/')[2]
   const { user, signOut } = useAuthContext();
   // const searchParams = useSearchParams();
-  const [suggest,setSuggest]=useState();
-  
+  const [suggest, setSuggest] = useState();
+
   // console.log(searchParams);
-  
+
   const [isDraggingOver, setIsDraggingOver] = useState(true);
   const [drop, setDrop] = useState(false);
-  const [type,setType]=useState("MESSAGE");
+  const [type, setType] = useState("MESSAGE");
   // const [stage,setStage]=useState("");
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
-  const [interestType,setInterestType]=useState("");
+  const [interestType, setInterestType] = useState("");
   const [data, setData] = useState([]);
   const [username, setUserName] = useState([]);
   const wrapperRef = useRef(null);
@@ -70,16 +70,16 @@ export const Notes = ({eventId, eventGroupId, comments, productId, stage }: Prop
 
 
 
-  
+
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
   productId = "017bb854-12d5-4350-aa29-feb4790d06cc";
-  const containerRef :any  = useRef(null);
+  const containerRef: any = useRef(null);
   const commentRef = useRef(null);
   // const replyRef=useRef(null);
   const [note, setNote] = useState<string>("");
-  const [isReply,setIsReply]=useState(false);
+  const [isReply, setIsReply] = useState(false);
   const [height, setHeight] = useState<number | null>(null);
   const [notes, setNotes] = useState<any[]>([]);
   const isInitialMount = useRef(true);
@@ -90,33 +90,33 @@ export const Notes = ({eventId, eventGroupId, comments, productId, stage }: Prop
       ).scrollHeight;
     }
   };
-async function fetchData() {
- 
+  async function fetchData() {
+
     const url =
       `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
-      
+
     const { data, error } = await myFetch(url);
     console.log(data);
-    if (data && urlPath==="coordinate" ) {
+    if (data && urlPath === "coordinate") {
       // setNotes([]);
       console.log(data);
       // setNotes(data.comments.reverse());
-      if(data.comments?.length>0)
-        setNotes(prevNotes => [...data.comments.reverse(),...prevNotes]);
+      if (data.comments?.length > 0)
+        setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
-    if (data && urlPath==="outreach") {
+    if (data && urlPath === "outreach") {
       // setNotes([]);
-      
+
       console.log(data);
       // setNotes(data.comments.reverse());
-      if(data.comments?.length>0)
-        setNotes(prevNotes => [...data.comments.reverse(),...prevNotes]);
+      if (data.comments?.length > 0)
+        setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
     else setNotes(CommentsData );
   }
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();
-  const [scrolling,setScrolling]=useState(false);
+  const [scrolling, setScrolling] = useState(false);
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
@@ -126,6 +126,7 @@ async function fetchData() {
         container.removeEventListener('scroll', handleInfiniteScroll);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInfiniteScroll = async () => {
@@ -138,38 +139,39 @@ async function fetchData() {
 
       // Your infinite scroll logic here
       if (isAtTop) {
-        setPage(page+10);
+        setPage(page + 10);
         setScrolling(true);
         // Trigger data fetch or any action you want to perform on scroll end
       }
     }
   };
   useEffect(() => {
-    if(note!==null)
+    if (note !== null)
       if (isInitialMount.current) {
         console.log(1111);
-        
+
         // Skip the effect on the initial mount
         isInitialMount.current = false;
       }
-      else{
-    if (commentRef.current) {
-      const height = (commentRef.current as HTMLElement).clientHeight;
-      setHeight(height);
-      console.log(111111111);
-      
-      // scrollToBottom();
-    }
-    // scrollToBottom();
-  }
+      else {
+        if (commentRef.current) {
+          const height = (commentRef.current as HTMLElement).clientHeight;
+          setHeight(height);
+          console.log(111111111);
+
+          // scrollToBottom();
+        }
+        // scrollToBottom();
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notes?.length]);
 
   console.log(comments);
   const addNote = async (event: any) => {
     event.preventDefault();
     // console.log(notes);
- 
-    
+
+
     // const { user } = useAuthContext();
     const len = CommentsData?.length;
     const id = Date.now().toString();
@@ -216,9 +218,9 @@ async function fetchData() {
       // ];
       // setNotes(notes);
       console.log(selectedPdfs);
-      
+
       console.log(replyName);
-      
+
       const dataToSend = {
         "eventId": eventId,
         "eventGroupId": eventGroupId,
@@ -227,16 +229,16 @@ async function fetchData() {
         "content": note,
         "source": "GTM",
         ...(type !== 'MESSAGE' && { "interestType": interestType }),
-        ...(type==="RECOMMEND"&&{
-            "recommendUserId":suggest
+        ...(type === "RECOMMEND" && {
+          "recommendUserId": suggest
         }),
-        ...(replyId!==null && {
-          "parentCommentId":replyId
-        } )
+        ...(replyId !== null && {
+          "parentCommentId": replyId
+        })
       };
       postNote(dataToSend);
       // console.log(dataToSend.files);
-     
+
       // setNotes(updatedNotes);
       console.log(note);
       // scrollToBottom();
@@ -248,7 +250,7 @@ async function fetchData() {
     setFilePreviews([]);
     setSelectedPdfs([]);
   };
-  const postNote=async(dataToSend:{})=>{
+  const postNote = async (dataToSend: {}) => {
     const formData = new FormData();
     for (let i = 0; i < filePreviews.length; i++) {
       formData.append('files', filePreviews[i]);
@@ -258,11 +260,11 @@ async function fetchData() {
     for (let i = 0; i < selectedPdfs.length; i++) {
       formData.append('files', selectedPdfs[i]);
     }
-    let url="";
-    if(replyId===null){
-    url = `${baseUrl}/comment`;
-    }else{
-      url=`${baseUrl}/comment/reply`
+    let url = "";
+    if (replyId === null) {
+      url = `${baseUrl}/comment`;
+    } else {
+      url = `${baseUrl}/comment/reply`
     }
     // formData.append("eventId","7cd52884-1409-43a4-9dde-01a06bb8faf9")
     // formData.append("eventGroupId", "53cd1194-2e00-43a0-b9dd-20642710815e")
@@ -272,7 +274,7 @@ async function fetchData() {
     // formData.append("files",{...filePreviews});
     // formData.append("source","GTM");
     Object.keys(dataToSend).forEach(key => {
-      formData.append(key , dataToSend[key as  keyof typeof dataToSend])
+      formData.append(key, dataToSend[key as keyof typeof dataToSend])
     });
     const { data, error } = await myFetch(url, {
       method: "POST",
@@ -281,35 +283,36 @@ async function fetchData() {
       //   "Content-Type": "multipart/form-data"
       // }
     });
-    if(data){
-      const newData=transformData(data.data);
-      
-      setNotes(prevNotes=>[...prevNotes, newData]);
+    if (data) {
+      const newData = transformData(data.data);
+
+      setNotes(prevNotes => [...prevNotes, newData]);
     }
-      if (!error){
-        console.log(data);
-        setScrolling(false);
-      }
-      else console.log(error);
-      setType("MESSAGE")
+    if (!error) {
+      console.log(data);
+      setScrolling(false);
+    }
+    else console.log(error);
+    setType("MESSAGE")
   }
   const transformData = (data: any) => {
-    
-      const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
-        ...file,
-        Attachment: [file.Attachment],
-      }))
-      return {
-        ...data,
-        CommentFiles: transformedCommentFiles,
-      };
+
+    const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
+      ...file,
+      Attachment: [file.Attachment],
+    }))
+    return {
+      ...data,
+      CommentFiles: transformedCommentFiles,
+    };
   };
   useEffect(() => {
-    if(scrolling===false){
+    if (scrolling === false) {
       requestAnimationFrame(() => {
         scrollToBottom();
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notes]);
 
   console.log(filePreviews);
@@ -324,7 +327,7 @@ async function fetchData() {
     event.preventDefault();
     setFiles(event?.dataTransfer.files[0]);
     // console.log(event?.dataTransfer.files[0]);
-    
+
     setDrop(false);
     // if (!files) return; // Exit early if files is null or undefined
     // // setDrop(true);
@@ -356,15 +359,15 @@ async function fetchData() {
 
     if (files && files.type === "application/pdf") {
       // console.log(files);
-      
+
       // setSelectedPdfs([...selectedPdfs, files]);
       // const file = [files]
       // console.log(file);
-      
-      setSelectedPdfs((prevSelectedFiles:File[] | null) => {
+
+      setSelectedPdfs((prevSelectedFiles: File[] | null) => {
         if (!prevSelectedFiles || prevSelectedFiles.length === 0) {
           // console.log(file);
-          
+
           return [files];
         } else {
           return [...prevSelectedFiles, files];
@@ -422,7 +425,7 @@ async function fetchData() {
   const [replyText, setReplyText] = useState<string | undefined>("");
   const [replyName, setReplyName] = useState<string | undefined>("");
   useEffect(() => {
-    const reply:Reply = notes?.find((comment) => comment.id == replyId);
+    const reply: Reply = notes?.find((comment) => comment.id == replyId);
     // console.log("reply is: " + reply?.text);
     setReplyName(reply?.user.firstname + " " + reply?.user.lastname);
     setReplyText(reply?.content);
@@ -430,13 +433,15 @@ async function fetchData() {
   }, [replyId]);
   const handleLike = (id: string, isLiked: boolean) => {
     // Find the comment by id and update its isLiked property
-    likedFun(id,isLiked)
+    likedFun(id, isLiked)
     const updatedComments = notes.map((c: any) => {
       if (c.id === id) {
-        return { ...c, _count: {
-          ...c._count,
-          Commentlikes: c._count?.Commentlikes + (!isLiked ? 1 : -1),
-        }, userLiked: !isLiked };
+        return {
+          ...c, _count: {
+            ...c._count,
+            Commentlikes: c._count?.Commentlikes + (!isLiked ? 1 : -1),
+          }, userLiked: !isLiked
+        };
       }
       return c;
     });
@@ -444,25 +449,25 @@ async function fetchData() {
     // Update the state with the new comments array
     setNotes(updatedComments);
   };
-  const likedFun=async(id:string, isLiked:boolean)=>{
-    const url=`${baseUrl}/comment/${id}/interest`;
+  const likedFun = async (id: string, isLiked: boolean) => {
+    const url = `${baseUrl}/comment/${id}/interest`;
     const { data, error } = await myFetch(url, {
-      method:"POST"
+      method: "POST"
     })
   }
   // 22b0588a-7207-4e25-a0e7-1134c05fdf52
   // up
   const handleDelete = (id: number) => {
     console.log(id);
-    
+
     const updatedNotes = notes.filter((comment: any) => comment.id !== id);
     deleteComment(id);
     setNotes(updatedNotes);
   };
-  const deleteComment=async(id:number)=>{
+  const deleteComment = async (id: number) => {
     const url = `${baseUrl}/comment/${id}`;
-    const {data,error}=await myFetch(url,{
-      method:"DELETE"
+    const { data, error } = await myFetch(url, {
+      method: "DELETE"
     })
   }
   const [class1, setClass1] = useState(false);
@@ -513,8 +518,8 @@ async function fetchData() {
   //     }
   //   }
   // fetchData();
-  
-  
+
+
 
   useEffect(() => {
     fetchData();
@@ -528,32 +533,32 @@ async function fetchData() {
     }
   }, [data]);
   // fetchData();
- 
+
   // comments = [...notes];
   setTimeout(() => {
     console.log(selectedPdfs);
   }, 5000);
-  useEffect(()=>{
-    const url=`${baseUrl}/auth/users`
-   getAllUser(url);
-  },[])
+  useEffect(() => {
+    const url = `${baseUrl}/auth/users`
+    getAllUser(url);
+  }, [])
   const [userArr, setUserArr] = useState<string[]>([]);
 
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
-    
+
     if (data) {
       console.log(data);
 
       // Collect new items to add to the array
       const newItems = data.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-  
+
 
       // Use functional form to update state
       setUserArr(prevArr => [...prevArr, ...newItems]);
     }
   };
-console.log(notes);
+  console.log(notes);
   return (
     <div className={styles.container}>
       {notes ? (
@@ -584,7 +589,7 @@ console.log(notes);
             onDrop={handleDrop}
           ></div>
           <ul className={styles.comments} ref={commentRef}>
-            {notes.map((comment:IComment) => (
+            {notes.map((comment: IComment) => (
               <li
                 className={
                   String(chedkedId) === comment.id
@@ -596,8 +601,8 @@ console.log(notes);
                 id={comment.id}
               >
                 <Comment
-                userArr={userArr}
-                setIsReply={setIsReply}
+                  userArr={userArr}
+                  setIsReply={setIsReply}
                   handleLike={handleLike}
                   getCommentPos={getCommentPos}
                   handleDelete={handleDelete}
@@ -630,7 +635,7 @@ console.log(notes);
               <div className={styles.name}>{replyName}</div>
               <div className={styles.replyText1}>{replyText}</div>
             </div>
-            
+
             <div onClick={() => setReplyId(null)} className={styles.closeBtn}>
               X
             </div>
@@ -642,7 +647,7 @@ console.log(notes);
           }`}
       >
         <AddComment
-        setSuggest={setSuggest}
+          setSuggest={setSuggest}
           replyId={replyId}
           setType={setType}
           setInterestType={setInterestType}
@@ -664,13 +669,13 @@ console.log(notes);
 
 interface CommentProps {
   replyName?: undefined | string;
-  setIsReply:any;
+  setIsReply: any;
   getCommentPos?: any;
   handleDelete?: any;
   replyText?: undefined | string;
   handleLike?: any;
   setReplyId?: any;
-  userArr:string[];
+  userArr: string[];
   comment: IComment;
   productId: string;
   superCommentId: string;
@@ -725,18 +730,18 @@ const Comment = ({
   // const [replyId,setReplyId]=useState("");
   const scroll = () => {
     console.log(document.documentElement.scrollHeight);
-    
+
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
   };
   const { user, signOut } = useAuthContext();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
-  
+
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-  const d=`@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
+  const d = `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
     scroll();
@@ -744,8 +749,8 @@ const Comment = ({
   };
   const [isLiked, setIsLiked] = useState(false);
   useEffect(() => { }, [isLiked]);
-  const handleLiked = (id: string, isLiked: boolean, ) => {
-    handleLike(id,isLiked)
+  const handleLiked = (id: string, isLiked: boolean,) => {
+    handleLike(id, isLiked)
   };
   // useEffect(()=>{
   //   setIsLiked(!isLiked)
@@ -762,11 +767,11 @@ const Comment = ({
   //   const newComment={...comment,isLiked:true};
   //   comment=newComment;
   // }
-  
+
   console.log(arr);
-  setTimeout(()=>{
+  setTimeout(() => {
     console.log(comment?.CommentFiles);
-  },5000)
+  }, 5000)
 
 
   const { theme } = useTheme();
@@ -836,12 +841,12 @@ const Comment = ({
                   <div className={styles.outerReplyDiv}>
                     <div className={styles.replyText}>
                       <div className={styles.bar}></div>
-                      {comment.parentCommentId!==null?
-                      <div className={styles.name}>{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
-                      :
-                      <div className={styles.name}>{comment?.replyName}</div>
+                      {comment.parentCommentId !== null ?
+                        <div className={styles.name}>{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
+                        :
+                        <div className={styles.name}>{comment?.replyName}</div>
                       }
-                      
+
                       <div className={styles.replyText1} id={comment.parent?.id}>
                         {comment?.parent?.content}
                       </div>
@@ -993,39 +998,39 @@ const Comment = ({
             ))}
           </div>
             } */}
-            {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
+            {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
               <div key={index}>{item.Attachment.fileName}</div>
             ))}
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}
             >
-              
-              {comment.CommentFiles && comment?.CommentFiles?.map((item:any, index) => (
-               
-                (item.Attachment && item?.Attachment[0]?.fileType==="IMAGE"?(
-                <div key={index}>
-                  <Image
-                    style={{borderRadius:"5px"}}
-                    src={item?.Attachment[0]?.filePath}
-                    alt={item.name}
-                    width={200}
-                    height={150}
-                  />
-                </div>):(
-                <div
-                  key={index}
-                  className={`${styles.pdf} ${theme === "light" && styles.pdf_light
-                    }`}
-                >
-                  <Image src={Pdf} width={50} height={50} alt="pdf" />
-                  <p key={index} style={{ display: "flex" }}>
-                    {item.Attachment &&  item?.Attachment[0]?.fileName}
-                  </p>
-                </div>)
-              )
+
+              {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
+
+                (item.Attachment && item?.Attachment[0]?.fileType === "IMAGE" ? (
+                  <div key={index}>
+                    <Image
+                      style={{ borderRadius: "5px" }}
+                      src={item?.Attachment[0]?.filePath}
+                      alt={item.name}
+                      width={200}
+                      height={150}
+                    />
+                  </div>) : (
+                  <div
+                    key={index}
+                    className={`${styles.pdf} ${theme === "light" && styles.pdf_light
+                      }`}
+                  >
+                    <Image src={Pdf} width={50} height={50} alt="pdf" />
+                    <p key={index} style={{ display: "flex" }}>
+                      {item.Attachment && item?.Attachment[0]?.fileName}
+                    </p>
+                  </div>)
+                )
               ))}
-              
+
             </div>
             {/* <div style={{ display: "flex", gap: "10px"}}>
 
@@ -1092,15 +1097,15 @@ const Comment = ({
             ) : (
               <p>Mar 20,2024</p>
             )}
-            {userDetail?.firstname===comment.user.firstname&&userDetail?.lastname===comment.user.lastname &&
-            <button
-            className={styles.replyBtn}
-            onClick={() => handleDelete(comment.id)}
-          >
-            Delete
-          </button>
+            {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname &&
+              <button
+                className={styles.replyBtn}
+                onClick={() => handleDelete(comment.id)}
+              >
+                Delete
+              </button>
             }
-            
+
             {/* <ButtonView
         view={"editDeleteButton"}
         commentUserId={comment.user.id}
@@ -1135,8 +1140,8 @@ const Comment = ({
                   key={reply.id}
                 >
                   <Comment
-                  userArr={userArr}
-                   setIsReply={setIsReply}
+                    userArr={userArr}
+                    setIsReply={setIsReply}
                     comment={reply}
                     setComments={setComments!}
                     productId={productId}
@@ -1202,7 +1207,7 @@ const Comment = ({
                               </p>
                             </div>
                           </header>;
-                          if (userArr?.includes("@" + username)||d==="@"+username) {
+                          if (userArr?.includes("@" + username) || d === "@" + username) {
                             return (
                               <a
                                 key={idx}
@@ -1260,13 +1265,13 @@ const Comment = ({
                   return <p key={index}>{item || "\u00A0"}</p>;
                 }
               })}
-              
+
             </div>
-            
+
           </div>
-          
+
         </>
-        
+
       )}
     </>
   );
