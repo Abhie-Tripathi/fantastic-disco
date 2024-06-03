@@ -10,7 +10,7 @@ const index = () => {
      <div className={styles.allCat1}>
       <div className={styles.allCat}>
       {data1.map((item,id)=>(
-      <div style={{width:"120px"}}>
+      <div key={id} style={{width:"120px"}}>
       <label >
        <input
          
@@ -28,7 +28,7 @@ const index = () => {
      
       <div className={styles.allCat}>
       {data2.map((item,id)=>(
-      <div style={{width:"120px"}}>
+      <div key={id}  style={{width:"120px"}}>
       <label >
        <input
          
@@ -45,7 +45,7 @@ const index = () => {
       </div>
       <div className={styles.allCat}>
       {data3.map((item,id)=>(
-      <div style={{width:"120px"}}>
+      <div key={id} style={{width:"120px"}}>
       <label >
        <input
          

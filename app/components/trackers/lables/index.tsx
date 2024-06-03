@@ -6,8 +6,8 @@ const index = () => {
     <div className={styles.container}>
       <div className={styles.heading}>Lables</div>
       <div className={styles.labels}>
-        {lables.map((label)=>(
-            <div className={styles.label}>{label}</div>
+        {lables.map((label, id)=>(
+            <div key={id} className={styles.label}>{label}</div>
         ))}
       </div>
     </div>
