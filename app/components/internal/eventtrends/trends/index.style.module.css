@@ -110,6 +110,14 @@
   gap: 15px 25px;
 }
 
+.input_selected_title {
+  padding-left: 4px;
+  font-size: 10px;
+  color: #4d1bf3;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
 @media screen and (max-width: 1300px) {
   .inputdropdowns_container {
     grid-template-columns: repeat(3, minmax(0px, 245px));

@@ -9,6 +9,20 @@
   padding: 20px 20px;
   color: inherit;
 }
+.containerConfig{
+  display: flex;
+  outline: none;
+  border: none;
+  gap: 30px;
+  border-bottom: 1px solid #EBEBEB;
+  border-left: 1px solid #EBEBEB;
+  border-right: 1px solid #EBEBEB;
+  /* filter: drop-shadow(1px 1px 5px rgb(216, 216, 216)); */
+  /* z-index: 1; */
+  background-color: #131313;
+  padding: 10px 20px 20px 20px;
+  color: inherit;
+}
 .heading {
   white-space: nowrap;
   font-size: 14px;

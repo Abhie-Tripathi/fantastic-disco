@@ -190,7 +190,7 @@ const Table = ({
   // eventData,
   showInsights,
 }: {
-  // eventData: any;
+  eventData?: any;
   showInsights: any;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);

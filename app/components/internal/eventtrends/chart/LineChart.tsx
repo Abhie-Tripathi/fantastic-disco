@@ -1,6 +1,5 @@
 import { Line } from "react-chartjs-2";
 import styles from "./linechart.style.module.css";
-import Data from "@/public/data/chartData.json";
 import Chart from "chart.js/auto";
 import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-date-fns";
@@ -8,17 +7,27 @@ import "chartjs-adapter-date-fns";
 Chart.register(LinearScale, TimeScale);
 
 interface GraphProps {
-  activeChipY: string,
-  activeChipX: string
+  activeChipY: string;
+  activeChipX: string;
+  groupedData: any;
 }
 
-const LineChart = ({ activeChipX, activeChipY }: GraphProps) => {
+const LineChart = ({ activeChipX, activeChipY, groupedData }: GraphProps) => {
+  const { groupingByDate }: any = groupedData;
+
+  const labels = Object.keys(groupingByDate);
+  const data = labels.map((date) =>
+    groupingByDate[date].reduce(
+      (total: any, event: any) => total + event.attendance,
+      0
+    )
+  );
   const chartData: any = {
-    labels: Data.map((data) => data.date),
+    labels: labels,
     datasets: [
       {
-        label: "Users Gained ",
-        data: Data.map((data) => data.attendance),
+        label: "Total Attendance ",
+        data: data,
         backgroundColor: ["rgb(255 207 215)"],
         borderColor: "rgb(253,29,133)",
         borderWidth: 2,
@@ -43,10 +52,10 @@ const LineChart = ({ activeChipX, activeChipY }: GraphProps) => {
                 display: true,
                 text: activeChipY,
               },
-              min: 0,
-              max: 80000,
+              min: Math.min(...data) - 10,
+              max: Math.max(...data) + 10,
               ticks: {
-                stepSize: 20000,
+                stepSize: 5,
               },
             },
             x: {
@@ -59,7 +68,7 @@ const LineChart = ({ activeChipX, activeChipY }: GraphProps) => {
                 unit: "day",
               },
               ticks: {
-                stepSize: 3,
+                source: "auto",
               },
               grid: {
                 display: false, // Hide the vertical grid lines
