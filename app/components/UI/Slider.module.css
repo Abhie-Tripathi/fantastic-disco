@@ -6,7 +6,8 @@
   height: 70px;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   background-color: #131313;
-  color: white;
+  color: inherit;
+  border-radius: 6px;
 }
 .slider {
   width: 250px;
@@ -38,7 +39,8 @@
   transform: translateY(-50%);
   width: 100%;
   border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.4);
+  /* background-color: rgba(255, 255, 255, 0.4); */
+  background: #F7F7F9;
 }
 
 .fill {
@@ -51,8 +53,8 @@
 }
 
 .thumb {
-  height: 15px;
-  width: 15px;
+  height: 20px;
+  width: 20px;
   top: 50%;
   border-radius: 9999px;
   background-color: #6750a4;
@@ -72,15 +74,15 @@
   position: absolute;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  height: 6px;
-  width: 6px;
+  height: 10px;
+  width: 10px;
   border-radius: 50%;
-  background: white;
+  background: #F7F7F9;
 }
 
 .markLabel {
   position: absolute;
-  top: 10px;
-  color: white;
+  top: 15px;
+  /* color: white; */
   font-size: 0.75rem;
 }

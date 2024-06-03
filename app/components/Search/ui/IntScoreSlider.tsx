@@ -1,6 +1,7 @@
 import React from "react";
 import { Slider, SliderTrack, SliderThumb } from "react-aria-components";
 import styles from "@/app/components/UI/Slider.module.css";
+import { useTheme } from "@/context";
 
 interface RangeSliderProps {
   state: number;
@@ -8,6 +9,7 @@ interface RangeSliderProps {
 }
 
 const IntScoreSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
+  const {theme} = useTheme()
   const breakpoints = [
     { 0: "Local" },
     { 33: "National" },
@@ -16,7 +18,7 @@ const IntScoreSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
   ];
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <Slider
         defaultValue={state}
         onChange={setState}

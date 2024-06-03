@@ -10,6 +10,7 @@ import MapPlaceId from "/public/map-placeid.png";
 import MapRadius from "/public/map-radius.png";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { useTheme } from "@/context";
 
 const searchResults = [
   {
@@ -41,6 +42,7 @@ const LocationDropdown = ({
   onClose,
 }: LocationDropdown) => {
   const menuNode = useRef(null);
+  const {theme} = useTheme()
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   // const [addLocationModal, setAddLocationModal] = useState(false);
   // const [locationType, setLocationType] = useState("");
@@ -94,7 +96,7 @@ const LocationDropdown = ({
 
   return (
     <div>
-      <div className={`${styles.container} ${className}`}>
+      <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
         <div className={styles.keywords_container}>
           {selectedLocation.length > 0 &&
             selectedLocation.map((data, index) => (
@@ -195,7 +197,7 @@ const LocationDropdown = ({
 
         {/* {activeTab == "City, State, Country, etc." && ( */}
         <div className={styles.location_search_input}>
-          <div className={styles.input_container}>
+          <div className={styles.input_container} style={{background: theme==="light"?"#F7F7F9":""}} >
             <Image src={SearchIcon} alt="searchicon" />
             <input
               placeholder="Search For a Location"
@@ -207,7 +209,7 @@ const LocationDropdown = ({
 
         {cityData.map((data: any) => (
           <div
-            className={styles.resultData_list}
+            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => locationSelectHandler(data.name, data.state)}
             key={data.id}
           >
@@ -217,7 +219,7 @@ const LocationDropdown = ({
 
         {stateData.map((data: any) => (
           <div
-            className={styles.resultData_list}
+            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => locationSelectHandler(data.state, data.country)}
             key={data.id}
           >
@@ -227,7 +229,7 @@ const LocationDropdown = ({
 
         {countryData.map((data: any) => (
           <div
-            className={styles.resultData_list}
+            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => locationSelectHandler(data.name)}
             key={data.id}
           >

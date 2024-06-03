@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import styles from "./eventstatus.module.css";
 import useClickOutside from "@/hooks/useClickOutside";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface EventStatusProps {
   state: string[];
@@ -11,6 +12,7 @@ interface EventStatusProps {
 const EventStatusData = ["Active", "Cancelled", "Postponed", "Predicted"];
 
 const EventStatus = ({ state, setState }: EventStatusProps) => {
+  const {theme} = useTheme();
   const onClickHandler = (value: string) => {
     console.log(value);
     state.includes(value)
@@ -19,7 +21,7 @@ const EventStatus = ({ state, setState }: EventStatusProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <div className={styles.sub_container}>
         {EventStatusData.map((eventStatus) => (
           <div key={eventStatus} className={styles.checkbox_container}>

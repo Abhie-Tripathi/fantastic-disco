@@ -40,6 +40,9 @@ export interface EventTableType {
         exhibitingLeads: number;
         sponsoringLeads: number;
         speakingLeads: number;
+        eventFollower: number;
+        estimatedExhibitor: number;
+        estimatedVisitor: number;
     };
     internationalAudience: string;
 }

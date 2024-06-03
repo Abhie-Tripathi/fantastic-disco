@@ -565,7 +565,7 @@ const Table = ({
                 {showInsights.estExhibit && (
                   <td>
                     {/* {getEstimatedExhibitors(event)} */}
-                    -
+                    {event.stats?.estimatedExhibitor ? event.stats?.estimatedExhibitor : '-'}
                   </td>
                 )}
                 {showInsights.global && (

@@ -78,7 +78,7 @@ const CategoryDropdown = ({
   }, [selectedSlugs]);
 
   return (
-    <div className={styles.container} style={{background: theme==="light"?"#F7F7F9":""}}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <div>
         <div className={styles.heading}>Attended</div>
         <div className={styles.list}>
