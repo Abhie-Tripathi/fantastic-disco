@@ -1,5 +1,5 @@
 import React, {useState } from 'react'
-import styles from './editsettings.style.module.css'
+import styles from './customize.style.module.css'
 import ColorsEdit from './colors/ColorsEdit';
 import FontsEdit from './fonts/FontsEdit';
 import BordersEdit from './borders/BordersEdit';
@@ -20,7 +20,7 @@ interface EditProps{
     setBgColor: (value: string) => void,
 }
 
-const EditSettings = (props : EditProps) => {
+const Customize = (props : EditProps) => {
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const handleModal = (modalType: string) => {
         setActiveModal(modalType);
@@ -71,4 +71,4 @@ const EditSettings = (props : EditProps) => {
     )
 }
 
-export default EditSettings
+export default Customize

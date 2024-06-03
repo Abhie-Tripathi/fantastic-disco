@@ -23,7 +23,7 @@ const CategoryDropdown = ({
   setCategorySlug,
   categoryData,
 }: CategoryDropdownProps) => {
-  const {theme} = useTheme()
+  const { theme } = useTheme()
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
   const getPath=usePathname().split('/');
   const last=getPath[getPath.length-1];
@@ -77,10 +77,11 @@ const CategoryDropdown = ({
 
   useEffect(() => {
     setCategorySlug && setCategorySlug(selectedSlugs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSlugs]);
 
   return (
-    <div className={styles.container} style={{background: theme==="light"?"#F7F7F9":""}}>
+    <div className={styles.container} style={{ background: theme === "light" ? "#F7F7F9" : "" }}>
       <div>
         <div className={styles.heading}>Attended</div>
         <div className={styles.list}>

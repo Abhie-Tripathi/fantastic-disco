@@ -1,0 +1,25 @@
+.body{
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+}
+.nav{
+    display: flex;
+    gap: 20px;
+}
+.navItem{
+    font-size: 14px;
+    padding: 5px 10px;
+    color: white;
+    border: 1px solid #6750a4;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.activeNavItem{
+    background-color: #6750a4;
+}
+.activeWindow{
+    margin-top: 10px;
+    border: 1px solid rgb(95, 95, 95);
+    border-radius: 5px;
+}

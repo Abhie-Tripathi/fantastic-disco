@@ -1,3 +1,6 @@
+.carousel{
+  position: relative;
+}
 .innerSlider {
   display: flex;
   width: 100%;

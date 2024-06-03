@@ -22,7 +22,7 @@
     display: flex;
     align-items: center;
 }
-.navbar .btns .calendar{
+/* .navbar .btns .calendar{
     border: 1px solid #808081;
     border-radius: 12px;
     padding: 5px 24px;
@@ -32,7 +32,7 @@
 .navbar .btns .calendar:hover{
     transition-duration: .2s;
     background-color: #808081;
-}
+} */
 .navbar .btns .settings{
     margin-right: 12px;
 }

@@ -1,13 +1,13 @@
 "use client";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import styles from "./locationDropdown.module.css";
-import { LocationType } from "@/types/location";
+// import { LocationType } from "@/types/location";
 import Image from "next/image";
 import SearchIcon from "/public/location_search.svg";
 import AddIcon from "/public/add.svg";
 import CloseIcon from "/public/close.svg";
-import MapPlaceId from "/public/map-placeid.png";
-import MapRadius from "/public/map-radius.png";
+// import MapPlaceId from "/public/map-placeid.png";
+// import MapRadius from "/public/map-radius.png";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 
@@ -54,6 +54,7 @@ const LocationDropdown = ({
 
   useEffect(() => {
     setState(selectedLocation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
 
   const inputChangeHandler = async (

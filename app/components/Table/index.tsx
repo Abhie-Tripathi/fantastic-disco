@@ -187,7 +187,7 @@ function getEventRating(item: string) {
 }
 
 const Table = ({
-  eventData,
+  // eventData,
   showInsights,
 }: {
   eventData?: any;
