@@ -7,6 +7,7 @@ import {
   SliderThumb,
 } from "react-aria-components";
 import styles from "./Slider.module.css";
+import { useTheme } from "@/context";
 
 interface RangeSliderProps {
   state: number;
@@ -15,9 +16,10 @@ interface RangeSliderProps {
 
 const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
   const marks = [0, 50, 100];
+  const {theme} = useTheme()
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <Slider
         defaultValue={state}
         onChange={setState}

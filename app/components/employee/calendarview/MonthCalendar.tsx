@@ -48,7 +48,7 @@ interface EventColorMap {
   [eventId: string]: string;
 }
 
-const backgroundColors = ['#6D28D9', '#B45309', '#0369A1', '#047857', '#BE123C'];
+const backgroundColors = ['#EFE3FF', '#FFE4E6', '#E6F6FC', '#FEF5E6', '#E7F8F2'];
 
 function getRandomColor() {
   const randomIndex = Math.floor(Math.random() * backgroundColors.length);

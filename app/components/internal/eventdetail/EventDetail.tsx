@@ -17,8 +17,8 @@ import EventRequest from "./EventRequest";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { number } from "zod";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
   id: string;
@@ -201,7 +201,7 @@ const EventDetail = ({
           </div>
         </div>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
