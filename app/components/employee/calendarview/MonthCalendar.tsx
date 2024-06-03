@@ -1,14 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import styles from "./monthCalendar.module.css";
-import { log } from "console";
 import EventCard from "@/app/components/EventCard";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Image from "next/image";
-import LeftArrow from "/public/leftArrow.svg";
-import RightArrow from "/public/rightArrow.svg";
+import LeftArrow from "/public/leftarrow.svg";
+import RightArrow from "/public/rightarrow.svg";
 import CalendarList from "./CalendarList";
 
 interface Event {

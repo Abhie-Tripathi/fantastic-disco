@@ -40,7 +40,7 @@ const Page: React.FC = () => {
                                 </li>
                             ))}
                         </ul>
-                        <Link href={"/templates/library"} className={styles.nextBtn}>
+                        <Link href={"/templates"} className={styles.nextBtn}>
                             <div>Add Widget</div>
                             <Image src={RightArrow} alt='right'/>
                         </Link>
