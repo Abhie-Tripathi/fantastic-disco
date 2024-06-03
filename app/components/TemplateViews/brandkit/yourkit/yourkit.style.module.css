@@ -1,0 +1,54 @@
+.body{
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+}
+.blurContainer{
+    filter: blur(2px);
+}
+.templates{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.modal{
+    background-color: #1a1a1a;
+    filter: drop-shadow(1px 1px 5px rgb(47, 47, 47));
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 850px;
+    border: 1px solid rgb(119, 119, 119);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.modalHeading{
+    color: white;
+    padding: 5px 10px;
+    border: 1px solid white;
+    width: fit-content;
+    border-radius: 5px;
+}
+.btnContainer{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+.btnContainer button{
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+}
+.cancelBtn{
+    background:none;
+    color: white;
+}
+.submitBtn{
+    background-color: #6750A4;
+    color: white;
+}

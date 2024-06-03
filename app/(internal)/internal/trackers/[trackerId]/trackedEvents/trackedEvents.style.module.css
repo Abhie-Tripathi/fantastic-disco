@@ -1,0 +1,104 @@
+.top{
+    padding: 24px 16px;
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.eventStatus{
+    background-color: #FBF8FF;
+    width:100%;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+}
+.container{
+    display:flex;
+    gap:20px;
+    flex-direction: column;
+}
+.eventStatusLeft{
+    display: flex;
+    gap:10px;
+}
+.eventStatusBtn{
+    color:#424242;
+    padding: 12px 24px;
+    background-color: #ffffff;
+}
+.eventStatusRight{
+    color:#6750A4;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.active{
+    background: #6750A4;
+    color: #ffffff;
+}
+.lineChart{
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+.data{
+    width: 80%;
+}
+.data canvas{
+    height: 250px;
+}
+.topLeft{
+    align-items: center;
+    display: flex;
+    justify-content: space-between; 
+}
+.topFirst{
+    display: flex;
+    justify-content: space-between;
+}
+.topFirstLeft, .topFirstRight{
+    display: flex;
+    flex-direction: column;
+}
+.overView{
+    font-size: 18px;
+    font-weight: 700;
+}
+.overViewContent{
+    color:#696B83;
+    font-size: 14px;
+    font-weight: 500;
+}
+.totalEvent{
+    font-size: 14px;
+    font-weight: 600;
+}
+.transition{
+    transition: transform 1s ease-in-out;
+}
+  
+  .transition {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 1s ease-in-out;
+  }
+  
+  .transitionOpen {
+    max-height: 450px;
+  }
+  
+  .topFirst {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    /* Your other styles */
+  }
+  
+  .eventStatus {
+    display: flex;
+    justify-content: space-between;
+    /* Your other styles */
+  }
+  

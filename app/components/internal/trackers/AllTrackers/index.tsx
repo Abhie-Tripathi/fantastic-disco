@@ -73,8 +73,9 @@ const index = () => {
     ],
   };
   return (
-    <Link href="/internal/trackers/1">
+    
       <div className={styles.container}>
+        <Link href="/internal/trackers/1/trackedEvents">
         <div className={styles.cardOne}>
           <div className={styles.heading}>Events in Bangalore</div>
           <Image src={GoTo} alt="goTo" />
@@ -106,9 +107,9 @@ const index = () => {
             <Line data={lineData} options={lineOptions} />
           </div>
         </div>
-
-      </div>
     </Link>
+      </div>
+  
   )
 }
 

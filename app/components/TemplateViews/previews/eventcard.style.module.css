@@ -1,0 +1,62 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 450px;
+    cursor: pointer;
+}
+
+.banner {
+    height: 40%;
+    width: 300px;
+}
+
+.card:hover {
+    transition-duration: .2s;
+    filter: drop-shadow(1px 1px 5px rgb(245, 245, 245));
+}
+
+.content {
+    height: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+.tag {
+    background-color: rgb(253, 219, 109);
+    border-radius: 30px;
+    width: fit-content;
+    padding: 5px 20px;
+    font-weight: bold;
+    color: rgb(39, 39, 39);
+    font-size: 20px;
+}
+
+.date {
+    margin-top: 20px;
+}
+
+.eventName {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.location {
+    display: flex;
+}
+
+.location div {
+    margin-right: 10px;
+}
+
+.btn {
+    margin-top: 10px;
+    display: flex;
+    width: fit-content;
+    padding: 5px 20px;
+    align-items: center;
+}

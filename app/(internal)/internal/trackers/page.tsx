@@ -1,12 +1,11 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
-import Add from '/public/Add.svg';
-import Add1 from "/public/add.svg";
+import Add from '/public/add.svg';
 import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
 import Template from '/public/template.svg';
@@ -85,6 +84,8 @@ const data=[
   };
   const modalOpen = () => {
     setShowModal(true);
+    console.log(document.body.style);
+    
     document.body.style.height = '100vh';
    
     document.body.style.width = '100%';
@@ -101,6 +102,8 @@ const data=[
       document.body.style.overflow = 'auto';
     }
   };
+  
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -120,7 +123,7 @@ const data=[
     //     )}
     //   </div>
     // </div>
-   <div className={styles.outerContainer}>
+   <div className={styles.outerContainer} >
  <div className={styles.header_container}>
         <div className={styles.tab_container}>
           <Link
@@ -144,7 +147,7 @@ const data=[
           >
            
             New Tracker
-            <Image src={Add1} alt="addicon" />
+            <Image src={Add} alt="add" />
           </Link>
           <div className={styles.trackers_header_more_button}>
             <Image src={MoreIcon} alt="moreicon" />

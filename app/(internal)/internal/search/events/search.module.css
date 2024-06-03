@@ -13,7 +13,7 @@
 .searchbar {
   border: 1px solid #d9d9d9;
   /* background-color: #f7f7f9; */
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
 }
 
 .recentSearches_button {
-  background-color: white;
+  background-color: #f7f7f9;
   color: #6750a4;
   cursor: pointer;
   border-radius: 6px;
@@ -110,6 +110,12 @@
   border: none;
   cursor: pointer;
 }
+
+.viewTypeButtons_light button {
+  background: white;
+  color: inherit;
+}
+
 .viewTypeButtons button.active {
   background-color: #6750a4;
   border-radius: 4px;
@@ -131,6 +137,12 @@
   border: none;
   cursor: pointer;
 }
+
+.advanceFilterBtns_light button {
+  background: white;
+  color: inherit;
+}
+
 .advanceFilterBtns button.active {
   border: 1px solid #6750a4;
   border-radius: 4px;
@@ -152,9 +164,13 @@
   border: 1px solid #efefef;
   white-space: nowrap;
   padding: 10px 15px;
-  color: white;
+  /* color: white; */
   /* background-color: white; */
   /* border-radius: 6px; */
+}
+
+.dropdown_button {
+  color: inherit;
 }
 
 .createtracker_button {
@@ -216,6 +232,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.viewContainer_light {
+  background-color: #FBF8FF;
 }
 
 .exportedno_container {

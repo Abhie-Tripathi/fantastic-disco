@@ -33,7 +33,7 @@ interface Props {
   openOrganiserDetails: boolean;
   openPocDetails: boolean;
   closeBtn: boolean;
-  openEventRequest:boolean;
+  openEventRequest: boolean;
   handleModal: (id: string) => void;
   eventId: string,
   enquiryId?: string,
@@ -57,13 +57,14 @@ const EventDetail = ({
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
-  const [stage,setStage]=useState<string>("");
+  const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData>();
-  const urlPath=usePathname().split('/')[2]
-  useEffect(()=>{
-    if(urlPath==="outreach") setStage("OUTREACH");
-    else if(urlPath==="coordinate") setStage("INTERNAL")
-  },[])
+  const urlPath = usePathname().split('/')[2]
+  useEffect(() => {
+    if (urlPath === "outreach") setStage("OUTREACH");
+    else if (urlPath === "coordinate") setStage("INTERNAL")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // const singledata: EventData = {
   //   id: 12,
@@ -82,9 +83,9 @@ const EventDetail = ({
     "10": "CONFIRMED",
     "12": "CANCELED",
   };
-  const handleStatusChange = async(changeStatusTo: number) => {
+  const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
-    if(enquiryId && enquiryId != ''){
+    if (enquiryId && enquiryId != '') {
       let payloadData = {
         enquiryId: enquiryId,
         enquiryStatus: statusValues[changeStatusTo],
@@ -96,8 +97,8 @@ const EventDetail = ({
           headers: headers,
           body: JSON.stringify(payloadData),
         });
-        if(apiData.data.message === "Data updated"){
-          if(handleRefresh)
+        if (apiData.data.message === "Data updated") {
+          if (handleRefresh)
             handleRefresh();
           toast.success('Enquiry status updated!', {
             position: 'bottom-right',
@@ -119,14 +120,14 @@ const EventDetail = ({
       rightContainerRef.current.style.height = leftContainerHeight + "px";
       console.log(leftContainerHeight);
     }
-    const fetchEventData = async() => {
+    const fetchEventData = async () => {
       try {
-        const apiUrl = 'https://api.eventgeni.com/event/'+eventId;
+        const apiUrl = 'https://api.eventgeni.com/event/' + eventId;
         const apiData = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
         });
-        if(apiData.data){
+        if (apiData.data) {
           const eventsData = apiData.data.event;
           setSingleEventData({
             id: eventsData.id,
@@ -137,14 +138,14 @@ const EventDetail = ({
             description: eventsData.description,
           });
         }
-  
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     }
-    if(eventId != '')
+    if (eventId != '')
       fetchEventData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => {
@@ -173,18 +174,18 @@ const EventDetail = ({
                   label=""
                   eventId={123}
                   handleStatusChange={handleStatusChange}
-                  currentValue={currentEnquiryStatus?currentEnquiryStatus:''}
+                  currentValue={currentEnquiryStatus ? currentEnquiryStatus : ''}
                 />
               }
             </div>
             {singleEventData &&
-            <>
-              <SingleEvent {...singleEventData} />
-              <EventDescription
-                description={singleEventData.description}
-                open={openEventDetails} speakers={true} shortlist={false}
-              />
-            </>
+              <>
+                <SingleEvent {...singleEventData} />
+                <EventDescription
+                  description={singleEventData.description}
+                  open={openEventDetails} speakers={true} shortlist={false}
+                />
+              </>
             }
             <EventRequest
               open={openEventRequest}
@@ -194,9 +195,9 @@ const EventDetail = ({
             <Follower />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-          {singleEventData &&
-            <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId} stage={stage}/>
-          }
+            {singleEventData &&
+              <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId} stage={stage} />
+            }
           </div>
         </div>
       </div>
