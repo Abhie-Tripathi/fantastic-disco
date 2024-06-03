@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./categoryDropdown.module.css";
 import CheckboxInput from "../../UI/CheckBoxInput";
 import { useTheme } from "@/context";
+import { usePathname } from "next/navigation";
 
 interface CategoryDropdownProps {
   className?: string;
@@ -24,7 +25,8 @@ const CategoryDropdown = ({
 }: CategoryDropdownProps) => {
   const {theme} = useTheme()
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
-
+  const getPath=usePathname().split('/');
+  const last=getPath[getPath.length-1];
   const onClickHandler = (id: string, slug: string) => {
     if (state.includes(id)) {
       setState(state.filter((data) => data !== id));
@@ -47,14 +49,14 @@ const CategoryDropdown = ({
     });
   }
 
-  const attended = categoryData.attendedCategories!.map(
+  const attended = categoryData?.attendedCategories!.map(
     (category: any) => category.slug
   );
-  const nonAttended = categoryData.nonAttendedCategories!.map(
+  const nonAttended = categoryData?.nonAttendedCategories!.map(
     (category: any) => category.slug
   );
 
-  const unscheduled = categoryData.unscheduledCategories!.map(
+  const unscheduled = categoryData?.unscheduledCategories!.map(
     (category: any) => category.slug
   );
 

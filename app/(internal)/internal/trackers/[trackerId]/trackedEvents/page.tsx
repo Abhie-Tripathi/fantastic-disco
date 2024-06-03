@@ -1,7 +1,7 @@
 "use client"
 import React,{useEffect, useState} from 'react'
 import Expand from '/public/expand_more.svg';
-import Table from '../savedEvent/page';
+import Table from '../savedEvents/page';
 import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";

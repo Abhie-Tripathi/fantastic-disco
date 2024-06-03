@@ -13,9 +13,17 @@ function Location({ fillColor }:{fillColor:string}) {
   )
 }
 const Layout = ({ children }: { children: React.ReactNode }) => {
-//   const pathName = usePathname();
+  const pathName = usePathname().split('/');
+  const last=pathName[pathName.length-1];
 const router = useRouter()
 const [trackerSection,setTrackerSection]=useState("Tracked Events");
+useEffect(()=>{
+  if(last==="trackedEvents") setTrackerSection("Tracked Events")
+  if(last==="trackedConfiguration") setTrackerSection("Tracker Configurations")
+  if(last==="notesDiscussion") setTrackerSection("Notes & Discussions")
+  if(last==="savedEvents") setTrackerSection("Saved Events")
+  if(last==="manageAccess") setTrackerSection("Manage Access")
+},[])
 console.log(trackerSection);
   return (
     <div className={`${styles.container}`}>
@@ -48,7 +56,7 @@ console.log(trackerSection);
           Notes & Discussions
           </div>
           </Link>
-          <Link href='/internal/trackers/1/savedEvent'>
+          <Link href='/internal/trackers/1/savedEvents'>
           <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
           Saved Events
           </div>
