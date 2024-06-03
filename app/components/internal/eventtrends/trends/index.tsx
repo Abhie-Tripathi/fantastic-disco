@@ -3,27 +3,34 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.style.module.css";
 import styles1 from "@/app/(internal)/internal/search/events/search.module.css";
 import DropIcon from "/public/internal/dropdown_arrow.svg";
-// import DownArrow from "/public/arrow_drop_down.svg";
-// import Check from "/public/Check.svg";
 import Image from "next/image";
 import PeriodicAnalytics from "@/app/components/internal/eventtrends/tableView/PeriodicAnalytics";
 import TableAnalytics from "@/app/components/internal/eventtrends/tableView/TableAnalytics";
 import LineChart from "@/app/components/internal/eventtrends/chart/LineChart";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
-import DateRangeInput from "@/app/components/dropdown/DateRangeInput";
 import RankInput from "@/app/components/Search/Dropdowns/RankInput";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, baseUrl2 } from "@/constants";
 import { Button, Dialog, MenuTrigger, Popover } from "react-aria-components";
 import DateRange from "@/app/components/dropdown/DateRange";
-import { useSearchParams } from "next/navigation";
+import { convertToCustomFormat } from "@/utils/dateFormat";
+import { convertISOToOriginalFormat } from "@/utils/date";
 
 interface EventTrendsProps {
   activeChipY: string;
   activeChipX: string;
 }
 
+interface Event {
+  slug: string;
+  attendance: number;
+  categoryName: string;
+}
+
+interface GroupingByDate {
+  [date: string]: Event[];
+}
 const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [categorySlug, setCategorySlug] = useState<string[]>([]);
@@ -36,7 +43,8 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
     []
   );
   const [categoryData, setCatgeoryData] = useState([]);
-  // const searchParams = useSearchParams();
+  const [resultData, setResultData] = useState<any>();
+  const [unparsedData, setUnparsedData] = useState<any>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,24 +62,15 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
     fetchData();
   }, []);
 
-  //   Params : {
-  //     category : 'expos,festivals', // comma separated category slug
-  //     city : 'London,Chicago', // comma separated city names
-  //     active_gte : '2024-04-01T00:00:00.000Z', // event start date in iso format
-  //     active_lte : '2024-04-30T23:59:59.999Z', // event end date in iso format
-  //     event_rank_gte : 0, // event rank lower bound
-  //     event_rank_lte : 100, // event rank upper bound
-  //    }
-
-  // console.log("EventRank", activeChipX,activeChipY);
   const searchHandler = () => {
-    let query = "?";
+    let query = "";
     if (selectedCategories.length > 0) {
       query += "category=" + selectedCategories.join(",");
     }
-    if (selectedLocations.length > 0) {
-      query += "&city=" + selectedLocations.join(",");
-    }
+    // if (selectedLocations.length > 0) {
+    // query += "&city=" + selectedLocations.join(",");
+    query += "&city=london,chicago";
+    // }
     if (selectedDateRange.length > 0) {
       query += "&active_gte=" + selectedDateRange[0];
       query += "&active_lte=" + selectedDateRange[1];
@@ -85,13 +84,12 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
   };
 
   const fetchData = async (query: string) => {
-    console.log(baseUrl2);
     const { data, error } = await myFetch(
-      `https://api.eventeli.com/trend/${
+      `${baseUrl}/trend/${
         activeChipY === "Predicted Attendance"
           ? "predicted-attendance"
           : "predicted-number-of-events"
-      }/${query}`
+      }?${query}`
     );
     if (error) {
       console.log("Something went wrong");
@@ -99,8 +97,30 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
     }
 
     if (data) {
-      console.log(data);
+      setUnparsedData(data);
+      const updatedResult = dateFormatter(data);
+      setResultData(updatedResult);
     }
+  };
+
+  const dateFormatter = (data: GroupingByDate) => {
+    const { predictedAttendance } = data;
+    const { groupingByDate }: any = predictedAttendance;
+
+    const updatedGroupingByDate: any = {};
+
+    Object.entries(groupingByDate).forEach(([dateString, events]) => {
+      const formattedDate = convertToCustomFormat(dateString);
+      updatedGroupingByDate[formattedDate] = events;
+    });
+
+    return {
+      ...data,
+      predictedAttendance: {
+        ...predictedAttendance,
+        groupingByDate: updatedGroupingByDate,
+      },
+    };
   };
 
   return (
@@ -113,13 +133,13 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
                     Category
-                    {selectedCategories?.length > 1 ? (
+                    {categorySlug?.length > 1 ? (
                       <span className={styles1.input_selected_no}>
-                        {selectedCategories.length}
+                        {categorySlug.length}
                       </span>
                     ) : (
                       <span className={styles1.input_selected_title}>
-                        {selectedCategories[0]}
+                        {categorySlug[0]}
                       </span>
                     )}
                   </div>
@@ -177,7 +197,21 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
             <Button>
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
-                  <div className={styles1.input_title}>Dates</div>
+                  <div className={styles1.input_title}>
+                    Dates{" "}
+                    {selectedDateRange.length > 0 &&
+                    selectedDateRange[0] !== null ? (
+                      <span className={styles.input_selected_title}>
+                        {`${convertISOToOriginalFormat(
+                          selectedDateRange[0]
+                        )} - ${convertISOToOriginalFormat(
+                          selectedDateRange[1]
+                        )}`}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   <Image src={DropIcon} alt="dropicon" width={20} height={20} />
                 </div>
               </div>
@@ -224,32 +258,38 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
           </div>
           <div className={styles.clearfilters_button}>Clear</div>
         </div>
-        {/* <div className={styles.filter_buttons_container}>
-          <div className={styles.apply_button} onClick={searchHandler}>
-            <div>Apply</div>
+      </div>
+
+      {unparsedData && (
+        <div className={styles.inner_container}>
+          <div
+            className={`${styles.predictedAttendence_container} ${styles.chartContainer}`}
+          >
+            <LineChart
+              activeChipX={activeChipX}
+              activeChipY={activeChipY}
+              groupedData={unparsedData.predictedAttendance}
+            />
           </div>
-          <div className={styles.clearfilters_button}>Clear Filters</div>
-        </div> */}
-      </div>
+        </div>
+      )}
 
-      <div className={styles.inner_container}>
-        <div
-          className={`${styles.predictedAttendence_container} ${styles.chartContainer}`}
-        >
-          <LineChart activeChipX={activeChipX} activeChipY={activeChipY} />
-        </div>
-      </div>
-
-      <div className={styles.inner_container}>
-        <div className={styles.predictedAttendence_container}>
-          <PeriodicAnalytics />
-        </div>
-      </div>
-      <div className={styles.inner_container}>
-        <div className={styles.predictedAttendence_container}>
-          <TableAnalytics />
-        </div>
-      </div>
+      {resultData && (
+        <>
+          <div className={styles.inner_container}>
+            <div className={styles.predictedAttendence_container}>
+              <PeriodicAnalytics
+                predictedData={resultData.predictedAttendance.total}
+              />
+            </div>
+          </div>
+          <div className={styles.inner_container}>
+            <div className={styles.predictedAttendence_container}>
+              <TableAnalytics groupedData={resultData.predictedAttendance} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
