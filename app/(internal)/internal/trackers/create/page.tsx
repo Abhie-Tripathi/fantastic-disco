@@ -466,7 +466,7 @@ import styles from "./page.style.module.css";
 import Image from 'next/image';
 import userOne from '/public/userOne.svg'
 import Filters from "@/app/components/internal/trackers/Filters"
-const page = () => {
+const Page = () => {
   useEffect(() => {
    
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -503,5 +503,5 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
 
