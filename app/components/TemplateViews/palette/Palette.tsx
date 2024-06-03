@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from 'react'
-import styles from './page.style.module.css'
+import styles from './palette.style.module.css'
 import { Palette } from 'color-thief-react';
 import Image from 'next/image';
 import UploadIcon1 from '/public/drive.svg'
 
-const Page = () => {
+const GeneratePalette = () => {
     const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
     const [companyWebsite, setCompanyWebsite] = useState<string>("");
     const [colors, setColors] = useState<string[]>([]);
@@ -80,4 +80,4 @@ const Page = () => {
 
 }
 
-export default Page
+export default GeneratePalette

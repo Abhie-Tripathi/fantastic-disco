@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from './herobanner.style.module.css'
 import placeholder from '/public/placeholder.png'
 import Image from 'next/image'
 
 
-interface HeroBannerProps {
+interface EditProps {
     cardRadius?: number;
     cardBgColor?: string;
     eventNameColor?: string;
@@ -19,7 +19,7 @@ interface HeroBannerProps {
     btnFontSize?: number;
 }
 
-const HeroBanner: React.FC<HeroBannerProps> = ({
+const HeroBanner: React.FC<EditProps> = ({
     cardRadius,
     cardBgColor,
     eventNameColor,

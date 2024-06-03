@@ -9,7 +9,7 @@ interface Props {
 
 const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) => {
 
-    const [activeFilter, setActiveFilter] = useState("All")
+    const [activeFilter, setActiveFilter] = useState("Page")
     const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
     const [selectedAccordionItems, setSelectedAccordionItems] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events']);
 
@@ -21,9 +21,9 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
             setAccordionOpen(false);
         }
         // If we wont do this, page will not show anything when All is selected (If Page is nothing selected)
-        if(activeFilter === 'All'){
-            setSelectedAccordionItems(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
-        }
+        // if(activeFilter === 'All'){
+        //     setSelectedAccordionItems(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+        // }
     }, [activeFilter, setWidgetSelected]);
 
     const toggleAccordionItem = (item: string) => {
@@ -42,7 +42,7 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
         <div className={styles.body}>
             <div className={styles.filters}>
                 <div>Select Widget : </div>
-                <div className={`${styles.filter} ${activeFilter === "All" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("All")}>All</div>
+                {/* <div className={`${styles.filter} ${activeFilter === "All" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("All")}>All</div> */}
                 <div className={`${styles.filter} ${activeFilter === "Page" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Page")}>Page</div>
                 <div className={`${styles.filter} ${activeFilter === "Section" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Section")}>Section</div>
                 <div className={`${styles.filter} ${activeFilter === "Sticky" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Sticky")}>Sticky</div>
