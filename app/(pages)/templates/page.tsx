@@ -98,11 +98,11 @@ const Page = () => {
             {preview === "stickytop" ? <StickyPreview type="top" /> :
               preview === "stickydown" ? <StickyPreview type="down" /> :
                 preview === "sehb" ? <HeroBanner cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
-                  preview === "megv" ? <GridView /> :
-                    preview === "melv" ? <ListView /> :
+                  preview === "megv" ? <GridView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
+                    preview === "melv" ? <ListView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
                       preview === "melgv" ? <ListAndGridView /> :
-                        preview === "phblv" ? <HeroBannerAndViews type='list' /> :
-                          preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
+                        preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
+                          preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
                             preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
                               preview === "pcslv" ? <CaraouselAndViews type='list' /> :
                                 preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
@@ -114,6 +114,7 @@ const Page = () => {
           </div>
 
         </div>
+        <button className={styles.submitBtn} type="button">Next</button>
       </div>
     </div>
   );

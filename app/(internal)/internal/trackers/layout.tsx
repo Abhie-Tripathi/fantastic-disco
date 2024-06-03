@@ -4,9 +4,9 @@ import styles from "./layout.style.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/context";
-import Image from "next/image";
-import MoreIcon from "/public/dots.svg";
-import Add from "/public/add.svg";
+// import Image from "next/image";
+// import MoreIcon from "/public/dots.svg";
+// import Add from "/public/add.svg";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathName = usePathname();

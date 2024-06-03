@@ -26,7 +26,6 @@
     flex-direction: column;
     justify-content: space-between;
     padding-left: 20px;
-    color: white;
   }
   
   .eventHeader {
@@ -36,11 +35,10 @@
   }
   
   .eventName {
-    font-size: 24px;
     /* color: white; */
   }
   
-  .pills {
+  /* .pills {
     display: flex;
     align-items: center;
     gap: 7px;
@@ -57,9 +55,12 @@
     border-radius: 40px;
     font-size: 10px;
     width: fit-content;
+  } */
+  .location_date_btnContainer{
+    display: flex;
+    justify-content: space-between;
   }
-  
-  .locationAndDateContainer {
+  .location_dateContainer {
     display: flex;
   }
   
@@ -79,7 +80,6 @@
   .eventDate {
     display: flex;
     align-items: center;
-    font-size: 8px;
     background-color: #313131;
     padding: 3px 6px;
     border-radius: 5px;
@@ -89,8 +89,10 @@
   .eventDate img {
     margin-right: 7px;
   }
-  
-  .card_footer {
+  .registerBtn{
+    padding: 5px 10px;
+  }
+  /* .card_footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -140,7 +142,6 @@
   .eventDetails {
     color: white;
     bottom: 0;
-    /* width: 30%; */
   }
   
   .detailContainer {
@@ -208,7 +209,7 @@
   
   .circle:hover::before {
     opacity: 1;
-  }
+  } */
   
   /* @media screen and (max-width:1000px) {
       .card{

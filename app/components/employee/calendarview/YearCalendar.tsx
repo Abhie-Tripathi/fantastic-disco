@@ -127,6 +127,7 @@ const YearCalendar: React.FC = () => {
     if (eventCountArr && Object.keys(eventCountArr).length > 0) {
       countEventsMonthWise();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventCountArr]);
 
   useEffect(() => {
@@ -135,6 +136,7 @@ const YearCalendar: React.FC = () => {
     } else if (year > 0) {
       fetchEventsData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year]);
 
   return (

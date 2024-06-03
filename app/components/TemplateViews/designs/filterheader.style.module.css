@@ -20,6 +20,21 @@
     background-color: #6750a4;
     transition-duration: .2s;
 }
+.multipleContainer{
+    padding: 5px 10px;
+    width: fit-content;
+    border: 1px solid #6750a4;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.multipleContainer input{
+    cursor: pointer;
+}
+.multipleContainer label{
+    cursor: pointer;
+}
 .activeBtn{
     background-color: #6750a4;
 }

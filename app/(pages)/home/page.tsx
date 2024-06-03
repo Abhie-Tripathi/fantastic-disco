@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styles from './page.style.module.css';
 import Link from 'next/link';
-import RightArrow from '/public/rightarrow.svg'
+import RightArrow from '/public/rightArrow.svg'
 import Image from 'next/image';
 
 interface Event {
@@ -40,7 +40,7 @@ const Page: React.FC = () => {
                                 </li>
                             ))}
                         </ul>
-                        <Link href={"/templates/library"} className={styles.nextBtn}>
+                        <Link href={"/templates"} className={styles.nextBtn}>
                             <div>Add Widget</div>
                             <Image src={RightArrow} alt='right'/>
                         </Link>
