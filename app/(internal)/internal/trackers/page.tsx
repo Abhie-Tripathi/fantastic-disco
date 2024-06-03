@@ -5,8 +5,7 @@ import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
-import Add from '/public/Add.svg';
-import Add1 from "/public/add.svg";
+import Add from '/public/add.svg';
 import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
 import Template from '/public/template.svg';
@@ -144,7 +143,7 @@ const data=[
           >
            
             New Tracker
-            <Image src={Add1} alt="addicon" />
+            <Image src={Add} alt="add" />
           </Link>
           <div className={styles.trackers_header_more_button}>
             <Image src={MoreIcon} alt="moreicon" />

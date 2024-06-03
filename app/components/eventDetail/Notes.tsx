@@ -522,6 +522,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
   // setTimeout(() => {
   //   console.log("data is: " + notes);

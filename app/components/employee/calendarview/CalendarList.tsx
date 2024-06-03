@@ -17,9 +17,9 @@ interface eventDataType {
   name: string;
   startDate: string;
   endDate: string;
-  location: {cityName: string};
+  location: { cityName: string };
 }
-interface Props{
+interface Props {
   filters: string;
   startDate: string;
   endDate: string;
@@ -54,7 +54,7 @@ const EventListCard = (event: any) => {
   );
 };
 
-const CalendarList = ({filters, startDate, endDate}:Props) => {
+const CalendarList = ({ filters, startDate, endDate }: Props) => {
   const [showList, setShowList] = useState(false);
   const [fullView, setFullView] = useState(true);
 
@@ -62,15 +62,15 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
-  const fetchEventsData = async() => {
+  const fetchEventsData = async () => {
     try {
       // const apiUrl = `${baseUrl}/event/search?groupBy=2024-03-01,2024-03-30`;
       const apiUrl = `https://api.eventgeni.com/event/search?startDate=2013-01-01,${startDate}&endDate=${startDate},2090-01-01`;
       const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
+        method: "GET",
+        headers: headers,
       });
-      if(apiData.data) {
+      if (apiData.data) {
         setEventData(apiData.data.events);
       }
     } catch (error) {
@@ -79,14 +79,15 @@ const CalendarList = ({filters, startDate, endDate}:Props) => {
   }
 
   useEffect(() => {
-    if(startDate != ''){
-      if(startDate !== '0')
+    if (startDate != '') {
+      if (startDate !== '0')
         fetchEventsData();
       setShowList(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate]);
 
-  return(
+  return (
     <>
       {fullView && (
         <div className={styles.eventList_container}>

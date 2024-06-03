@@ -6,8 +6,8 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Image from "next/image";
-import LeftArrow from "/public/leftarrow.svg";
-import RightArrow from "/public/rightarrow.svg";
+import LeftArrow from "/public/leftArrow.svg";
+import RightArrow from "/public/rightArrow.svg";
 import CalendarList from "./CalendarList";
 
 interface Event {
@@ -36,8 +36,8 @@ interface Event2 {
 }
 
 interface monthEventsType {
-  [date: string]: {event: Event2[], totalEvent: number}
-}{}
+  [date: string]: { event: Event2[], totalEvent: number }
+}{ }
 
 interface DateWithEvent {
   date: Date;
@@ -241,7 +241,7 @@ function formatDate(dateString: any) {
   return `${year}-${month}-${day}`;
 }
 
-function getDurationInDays(startDate:  Date | string | number, endDate:  Date | string | number) {
+function getDurationInDays(startDate: Date | string | number, endDate: Date | string | number) {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
@@ -249,7 +249,7 @@ function getDurationInDays(startDate:  Date | string | number, endDate:  Date | 
 
   const differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
 
-  return differenceInDays+1;
+  return differenceInDays + 1;
 }
 
 const MonthCalendar: React.FC = () => {
@@ -261,22 +261,22 @@ const MonthCalendar: React.FC = () => {
   const [month, setMonth] = useState<number>(0);
   const [datesWithEvents, setDatesWithEvents] = useState<any>();
 
-  const fetchEventsData = async() => {
+  const fetchEventsData = async () => {
     try {
       let apiMonth = '';
-      if(month==0) return;
+      if (month == 0) return;
       else {
-        if(month<9){
-          apiMonth = '0'+month;
-        }else
+        if (month < 9) {
+          apiMonth = '0' + month;
+        } else
           apiMonth = month.toString();
       }
       const apiUrl = `${baseUrl}/event/search?groupBy=${year}-${apiMonth}-01,${year}-${apiMonth}-31`;
       const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
+        method: "GET",
+        headers: headers,
       });
-      if(apiData.data) {
+      if (apiData.data) {
         setMonthEvents(apiData.data);
         // setupCalendar();
       }
@@ -287,40 +287,40 @@ const MonthCalendar: React.FC = () => {
 
   const setupCalendar = () => {
     const monthDatesArray = generateMonthArray(year, month);
-    var datesWithEventsTmp2 =  monthDatesArray.map((date: any) => {
+    var datesWithEventsTmp2 = monthDatesArray.map((date: any) => {
       if (date === "") return "";
       else {
         let c_date: string = formatDate(date);
         var filteredEvents: any = [];
-        if(monthEvents && monthEvents[c_date] && monthEvents[c_date].event.length > 0){
+        if (monthEvents && monthEvents[c_date] && monthEvents[c_date].event.length > 0) {
           // filteredEvents = monthEvents[c_date].event.sort((a, b) => {
           //   return new Date(a.endDate) - new Date(b.endDate);
           // });
           filteredEvents = monthEvents[c_date].event;
-          filteredEvents.map((event: any, index: number)=>{
-            if(index==0){
+          filteredEvents.map((event: any, index: number) => {
+            if (index == 0) {
               // event['background'] = "rgb(249 196 100)";
-              event['top']= "35%";
-            }else if(index == 1){
+              event['top'] = "35%";
+            } else if (index == 1) {
               // event['background'] = "rgb(190 290 155)";
-              event['top']= "52.5%";
-            }else{
+              event['top'] = "52.5%";
+            } else {
               // event['background'] = "rgb(183 235 255)";
-              event['top']= "70%";
+              event['top'] = "70%";
             }
 
-            if(eventIdColorMap.hasOwnProperty(event.id)){
+            if (eventIdColorMap.hasOwnProperty(event.id)) {
               event['background'] = eventIdColorMap[event.id];
-            }else{
+            } else {
               const newColor = getRandomColor();
               eventIdColorMap[event.id] = newColor;
               event['background'] = newColor;
             }
-            event['duration']= getDurationInDays(event['startDate'], event['endDate']);
+            event['duration'] = getDurationInDays(event['startDate'], event['endDate']);
           })
         }
 
-        return { date: date, events: filteredEvents, totalEvent: monthEvents ? monthEvents[c_date]?.totalEvent :0 };
+        return { date: date, events: filteredEvents, totalEvent: monthEvents ? monthEvents[c_date]?.totalEvent : 0 };
       }
     });
 
@@ -328,69 +328,71 @@ const MonthCalendar: React.FC = () => {
   }
 
   const prevButtonHandler = () => {
-    if(month > 1)
-      setMonth(month-1);
+    if (month > 1)
+      setMonth(month - 1);
   }
 
   const nextButtonHandler = () => {
-    if(month < 12)
-      setMonth(month+1);
+    if (month < 12)
+      setMonth(month + 1);
   }
 
   const [eventListDate, setEventListDate] = useState<string>('');
 
   const handleListOpen = (date: Date) => {
     let d = formatDate(date);
-    if(d === eventListDate)
+    if (d === eventListDate)
       setEventListDate('0');
     else
       setEventListDate(d);
   }
 
   useEffect(() => {
-    if(month > 0)
+    if (month > 0)
       setupCalendar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthEvents]);
 
   useEffect(() => {
     var date = new Date();
-    setMonth(date.getMonth()+1);
+    setMonth(date.getMonth() + 1);
     setYear(date.getFullYear());
   }, []);
 
   useEffect(() => {
-    if(month > 0) {
+    if (month > 0) {
       fetchEventsData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
   return (
-  <>
-    <div className={styles.control_buttons_container}>
-      <button onClick={prevButtonHandler}>
-        <Image className={iconClass} src={LeftArrow} width={28} alt="leftarrow" />
-      </button>
-      <div>
-        {month > 0 &&
-          months[month-1] + ' ' + year
-        }
+    <>
+      <div className={styles.control_buttons_container}>
+        <button onClick={prevButtonHandler}>
+          <Image className={iconClass} src={LeftArrow} width={28} alt="leftarrow" />
+        </button>
+        <div>
+          {month > 0 &&
+            months[month - 1] + ' ' + year
+          }
+        </div>
+        <button onClick={nextButtonHandler}>
+          <Image className={iconClass} src={RightArrow} width={28} alt="rightarrow" />
+        </button>
       </div>
-      <button onClick={nextButtonHandler}>
-        <Image className={iconClass} src={RightArrow} width={28} alt="rightarrow" />
-      </button>
-    </div>
-    <div className={styles.container}>
-      <div className={styles.dayCards_container}>
-        {days.map((day) => (
-          <div key={day} className={styles.dayCard}>
-            <div className={styles.day_title}>{day}</div>
-          </div>
-        ))}
-      </div>
-      <div className={styles.monthCards_container}>
-        {/* FIRST APPROACH */}
+      <div className={styles.container}>
+        <div className={styles.dayCards_container}>
+          {days.map((day) => (
+            <div key={day} className={styles.dayCard}>
+              <div className={styles.day_title}>{day}</div>
+            </div>
+          ))}
+        </div>
+        <div className={styles.monthCards_container}>
+          {/* FIRST APPROACH */}
 
-        {/* {datesWithEvents.map((dateWithEvent, index) => {
+          {/* {datesWithEvents.map((dateWithEvent, index) => {
           if (dateWithEvent == "") {
             return <div className={styles.emptyCard}></div>;
           } else {
@@ -439,9 +441,9 @@ const MonthCalendar: React.FC = () => {
           }
         })} */}
 
-        {/* SECOND APPROACH */}
+          {/* SECOND APPROACH */}
 
-        {/* <>
+          {/* <>
            {datesWithEvents.map((dateWithEvent, index) => {
             if (dateWithEvent === "") {
               return <div className={styles.emptyCard} key={index}></div>;
@@ -478,41 +480,26 @@ const MonthCalendar: React.FC = () => {
           })}
         </>  */}
 
-        {/* THIRD APPROACH */}
-        {datesWithEvents && datesWithEvents.map((dateWithEvent: any, index: number) => {
-          if (dateWithEvent === "") {
-            return <div className={styles.emptyCard} key={index}></div>;
-          } else {
-            const currentDate = dateWithEvent.date;
-            let count = dateWithEvent.events.length;
+          {/* THIRD APPROACH */}
+          {datesWithEvents && datesWithEvents.map((dateWithEvent: any, index: number) => {
+            if (dateWithEvent === "") {
+              return <div className={styles.emptyCard} key={index}></div>;
+            } else {
+              const currentDate = dateWithEvent.date;
+              let count = dateWithEvent.events.length;
 
-            const eventCards = dateWithEvent.events.map((event: any, eventIndex: number) => {
-              const eventStartDate = new Date(event.startDate);
-              const eventEndDate = new Date(event.endDate);
+              const eventCards = dateWithEvent.events.map((event: any, eventIndex: number) => {
+                const eventStartDate = new Date(event.startDate);
+                const eventEndDate = new Date(event.endDate);
 
-              // Get Next day events
-              const nextDay = eventIndex + 1;
-              // console.log("next_day", currentDate, eventStartDate, eventEndDate, event.duration, dateWithEvent.totalEvent);
-              if (currentDate.getTime() === eventStartDate.getTime()) {
-                count = count - 1;
-                console.log("COUNT", count, event.name, event.startDate);
-                if(event.duration === 1){
-                  // -------------- CHECKING FOR ONE DAY EVENT --------------------
-                  return (
-                    <EventCard
-                      styleClass={"stylesClass_A"}
-                      key={eventIndex}
-                      top={event.top}
-                      background={event.background}
-                      l
-                      name={event.name}
-                      singleDayEvent={true}
-                    />
-                  );
-                }
-                if (event.duration >= 2) {
-                  //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR EVENT CARD STRIP---------------
-                  if (currentDate.getDay() === 6) {
+                // Get Next day events
+                const nextDay = eventIndex + 1;
+                // console.log("next_day", currentDate, eventStartDate, eventEndDate, event.duration, dateWithEvent.totalEvent);
+                if (currentDate.getTime() === eventStartDate.getTime()) {
+                  count = count - 1;
+                  console.log("COUNT", count, event.name, event.startDate);
+                  if (event.duration === 1) {
+                    // -------------- CHECKING FOR ONE DAY EVENT --------------------
                     return (
                       <EventCard
                         styleClass={"stylesClass_A"}
@@ -521,18 +508,51 @@ const MonthCalendar: React.FC = () => {
                         background={event.background}
                         l
                         name={event.name}
+                        singleDayEvent={true}
                       />
                     );
+                  }
+                  if (event.duration >= 2) {
+                    //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR EVENT CARD STRIP---------------
+                    if (currentDate.getDay() === 6) {
+                      return (
+                        <EventCard
+                          styleClass={"stylesClass_A"}
+                          key={eventIndex}
+                          top={event.top}
+                          background={event.background}
+                          l
+                          name={event.name}
+                        />
+                      );
+                    } else {
+                      console.log(
+                        "countt-------------------------------------------1",
+                        count,
+                        event.name
+                      );
+
+                      return (
+                        <EventCard
+                          styleClass={"stylesClass_B"}
+                          key={eventIndex}
+                          top={event.top}
+                          background={event.background}
+                          name={event.name}
+                        />
+                      );
+                    }
                   } else {
+                    // Render full event card on the start date
                     console.log(
-                      "countt-------------------------------------------1",
+                      "countt-------------------------------------------2",
                       count,
                       event.name
                     );
 
                     return (
                       <EventCard
-                        styleClass={"stylesClass_B"}
+                        styleClass={"styleClass_A"}
                         key={eventIndex}
                         top={event.top}
                         background={event.background}
@@ -540,117 +560,98 @@ const MonthCalendar: React.FC = () => {
                       />
                     );
                   }
+                } else if (
+                  currentDate.getTime() > eventStartDate.getTime() &&
+                  currentDate.getTime() <= eventEndDate.getTime()
+                ) {
+                  // Render only the color strip for subsequent days
+                  if (currentDate.getDay() === 6) {
+                    console.log(
+                      "countt-------------------------------------------3",
+                      count,
+                      event.name
+                    );
+                    //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR COLOR STRIP---------------
+                    return (
+                      <div
+                        key={eventIndex}
+                        className={styles.colorStrip}
+                        style={{
+                          backgroundColor: event.background,
+                          top: event.top,
+                        }}
+                      ></div>
+                    );
+                  } else if (currentDate.getTime() == eventEndDate.getTime()) {
+                    // --------------------- CKECKING FOR EVENT END DAY ---------------------
+
+                    console.log(
+                      "countt-------------------------------------------4",
+                      count,
+                      event.name
+                    );
+
+                    return (
+                      <div
+                        key={eventIndex}
+                        className={styles.colorStrip}
+                        style={{
+                          backgroundColor: event.background,
+                          top: event.top,
+                          // top: `${
+                          //   count > 0
+                          //     ? `${20 + count * 20}%`
+                          //     : `${35 + count * 40}%`
+                          // }`,
+                          width: "100%",
+                        }}
+                      ></div>
+                      // <>event end day</>
+                    );
+                  } else {
+                    console.log(
+                      "countt-------------------------------------------5",
+                      count
+                    );
+
+                    return (
+                      <div
+                        key={eventIndex}
+                        className={styles.colorStrip}
+                        style={{
+                          backgroundColor: event.background,
+                          top: event.top,
+                          width: "120%",
+                        }}
+                      ></div>
+                    );
+                  }
                 } else {
-                  // Render full event card on the start date
-                  console.log(
-                    "countt-------------------------------------------2",
-                    count,
-                    event.name
-                  );
-
-                  return (
-                    <EventCard
-                      styleClass={"styleClass_A"}
-                      key={eventIndex}
-                      top={event.top}
-                      background={event.background}
-                      name={event.name}
-                    />
-                  );
+                  return null;
                 }
-              } else if (
-                currentDate.getTime() > eventStartDate.getTime() &&
-                currentDate.getTime() <= eventEndDate.getTime()
-              ) {
-                // Render only the color strip for subsequent days
-                if (currentDate.getDay() === 6) {
-                  console.log(
-                    "countt-------------------------------------------3",
-                    count,
-                    event.name
-                  );
-                  //  ------------------------------CHECKING EVENT DAY IS SATURDAY FOR COLOR STRIP---------------
-                  return (
-                    <div
-                      key={eventIndex}
-                      className={styles.colorStrip}
-                      style={{
-                        backgroundColor: event.background,
-                        top: event.top,
-                      }}
-                    ></div>
-                  );
-                } else if (currentDate.getTime() == eventEndDate.getTime()) {
-                  // --------------------- CKECKING FOR EVENT END DAY ---------------------
+              });
 
-                  console.log(
-                    "countt-------------------------------------------4",
-                    count,
-                    event.name
-                  );
-
-                  return (
-                    <div
-                      key={eventIndex}
-                      className={styles.colorStrip}
-                      style={{
-                        backgroundColor: event.background,
-                        top: event.top,
-                        // top: `${
-                        //   count > 0
-                        //     ? `${20 + count * 20}%`
-                        //     : `${35 + count * 40}%`
-                        // }`,
-                        width: "100%",
-                      }}
-                    ></div>
-                    // <>event end day</>
-                  );
-                } else {
-                  console.log(
-                    "countt-------------------------------------------5",
-                    count
-                  );
-
-                  return (
-                    <div
-                      key={eventIndex}
-                      className={styles.colorStrip}
-                      style={{
-                        backgroundColor: event.background,
-                        top: event.top,
-                        width: "120%",
-                      }}
-                    ></div>
-                  );
-                }
-              } else {
-                return null;
-              }
-            });
-
-            return (
-              <div
-                className={`${styles.monthCard} ${
-                  theme === "light" && styles.monthCard_light
-                }`}
-                key={index}
-              >
-                <div className={styles.monthCard_dayno}>
-                  {currentDate.getDate()}
+              return (
+                <div
+                  className={`${styles.monthCard} ${theme === "light" && styles.monthCard_light
+                    }`}
+                  key={index}
+                >
+                  <div className={styles.monthCard_dayno}>
+                    {currentDate.getDate()}
+                  </div>
+                  {eventCards}
+                  {dateWithEvent.totalEvent > 3 &&
+                    <div onClick={() => handleListOpen(currentDate)} style={{ position: "absolute", top: "85%", cursor: "pointer", fontSize: "14px" }}>+{dateWithEvent.totalEvent - 3} more</div>
+                  }
                 </div>
-                {eventCards}
-                { dateWithEvent.totalEvent > 3 &&
-                  <div onClick={()=>handleListOpen(currentDate)} style={{position:"absolute", top:"85%", cursor:"pointer", fontSize:"14px"}}>+{dateWithEvent.totalEvent - 3} more</div>
-                }
-              </div>
-            );
-          }
-        })}
+              );
+            }
+          })}
+        </div>
       </div>
-    </div>
-    <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate}/>
-  </>
+      <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate} />
+    </>
   );
 };
 

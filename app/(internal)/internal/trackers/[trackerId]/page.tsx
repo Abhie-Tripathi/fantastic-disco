@@ -2,13 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import styles from "./page.style.module.css";
-import Image from "next/image";
-import MoreIcon from "/public/dots.svg";
-import TrackerDetails from "@/app/components/internal/trackers/TrackerDetails/TrackerDetails";
+// import Image from "next/image";
+// import MoreIcon from "/public/dots.svg";
+// import TrackerDetails from "@/app/components/internal/trackers/TrackerDetails/TrackerDetails";
 import { useTheme } from "@/context";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import Loading from "@/app/components/UI/Loading";
+// import { myFetch } from "@/utils/myFetch";
+// import { baseUrl } from "@/constants";
+// import Loading from "@/app/components/UI/Loading";
 
 const TrackerPage = () => {
   const router = useRouter();

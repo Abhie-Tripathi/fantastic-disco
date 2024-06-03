@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styles from './page.style.module.css';
 import Link from 'next/link';
-import RightArrow from '/public/rightarrow.svg'
+import RightArrow from '/public/rightArrow.svg'
 import Image from 'next/image';
 
 interface Event {

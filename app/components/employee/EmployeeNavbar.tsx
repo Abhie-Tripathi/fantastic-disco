@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './employeeNavbar.module.css';
 import swapIcon from '/public/swap.svg';
-import addIcon from '/public/Add.svg';
+import addIcon from '/public/add.svg';
 import CalendarIcon from '/public/calendar.svg';
 import Image from 'next/image';
 import { useTheme } from '@/context';
