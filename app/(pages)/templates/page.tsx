@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
@@ -30,10 +30,25 @@ const Page = () => {
   const [btnRadius, setBtnRadius] = useState<number>(5);
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
+  const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
+  const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
   };
+
+  useEffect(() => {
+    // If multiple widget checkbox is on, we will keep adding the widgets
+    if (multipleWidgetOn) {
+      setSelectedWidgets((prevWidgets) => {
+        // Check if preview is already present in the widgets
+        if (!prevWidgets.includes(preview)) {
+          return [...prevWidgets, preview];
+        }
+        return prevWidgets;
+      });
+    }
+  }, [preview]);
 
   return (
     <div className={styles.layout}>
@@ -59,7 +74,7 @@ const Page = () => {
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
-          {activeNavItem === "Designs" && <Designs setPreview={setPreview} />}
+          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn = {multipleWidgetOn} widgetsLength = {selectedWidgets.length}/>}
           {activeNavItem === "BrandKit" && <BrandKit 
             setDateFontSize={setDateFontSize}
             setLocationFontSize={setLocationFontSize}

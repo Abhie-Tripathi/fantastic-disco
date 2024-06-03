@@ -5,9 +5,13 @@ import styles from './filterheader.style.module.css'
 interface Props {
     setWidgetSelected: React.Dispatch<React.SetStateAction<string>>;
     setAccordianItemSelected: React.Dispatch<React.SetStateAction<string[]>>;
+    setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
+    multipleWidgetOn :  boolean;
+    widgetsLength :  number;
 }
 
-const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) => {
+
+const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected, setMultipleWidgetOn, multipleWidgetOn, widgetsLength }: Props) => {
 
     const [activeFilter, setActiveFilter] = useState("Page")
     const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
@@ -46,8 +50,9 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
                 <div className={`${styles.filter} ${activeFilter === "Section" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Section")}>Section</div>
                 <div className={`${styles.filter} ${activeFilter === "Sticky" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Sticky")}>Sticky</div>
                 <div className={styles.multipleContainer}>
-                    <input type="checkbox" id='multiple' className={styles.multipleInput} />
+                    <input type="checkbox" id='multiple' className={styles.multipleInput} onChange={()=>setMultipleWidgetOn(!multipleWidgetOn)} />
                     <label htmlFor="multiple">Select Multiple Widgets</label>
+                    <div className={styles.widgetCount}>{widgetsLength}</div>
                 </div>
             </div>
             {accordionOpen && (
