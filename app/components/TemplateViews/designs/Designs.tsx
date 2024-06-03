@@ -23,7 +23,7 @@ const Designs = (props : Props) => {
         { id: "sehb", name: "Single Event as Hero Banner" },
         { id: "megv", name: "Multiple Events as Grid View" },
         { id: "melv", name: "Multiple Events as List view" },
-        { id: "melgv", name: "Multiple Events as Grid and List View" },
+        // { id: "melgv", name: "Multiple Events as Grid and List View" },
         { id: "id5", name: "Table View (Multiple Events)" }
     ];
 
