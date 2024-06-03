@@ -1,0 +1,15 @@
+.container{
+    display: flex;
+    border: 1px solid #EBEBEB;
+    justify-content: space-evenly;
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 14px;
+    height: 40%;
+    gap:10px;
+}
+.location{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

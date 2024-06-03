@@ -112,6 +112,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       if (data.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
+    else setNotes(CommentsData );
   }
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();

@@ -1,0 +1,81 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.containerTop{
+    display: flex;
+    width:100%;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #F7F7F9;
+    padding:12px;
+}
+.containerTopLeft{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.trackerType{
+    display: flex;
+    flex-direction: column;
+}
+.heading{
+    color:#6750A4;
+    font-weight: 700;
+    font-size: 18px;
+}
+.content{
+    color:#777777;
+    font-size: 12px;
+    font-weight: 400;
+}
+.containerTopRight button{
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 24px;
+    background-color: #6750A4;
+    color: white;
+    border-radius: 12px;
+}
+.containerTopTwo{
+    padding: 4px 27px;
+    border: 0.5px solid #D9D9D9;
+    border-radius: 12px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    font-size: 16px;
+}
+.innerContainer{
+    display: grid;
+    grid-template-columns: calc(45% - 5px) calc(55% - 5px);
+    width: 100%;
+    gap: 10px;
+}
+.innerContainerLeft{
+    /* width:40%; */
+}
+.innerContainerRight{
+    display: flex;
+    /* width: 50%; */
+    height: 100%;
+    gap:10px;
+    flex-direction: column;
+}
+.advanceHead{
+    font-size: 16px;
+    font-weight: 600;
+}
+.advanceContent{
+    color:#777777;
+    padding-top: 10px;
+    font-size: 12px;
+    font-weight: 400;
+}
+.line{
+    width: 100%;
+    /* border-bottom: 2px solid black; */
+    border: 1px solid #E0E0E080
+}

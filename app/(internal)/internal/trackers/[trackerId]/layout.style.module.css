@@ -14,3 +14,44 @@
     font-size: 14px;
     font-weight: 500;
 }
+.containerBottom{
+    display:flex;
+    gap:10px;
+    padding: 20px;
+  }
+  .containerLeft{
+    /* border-left: 2px solid #ECECF9; */
+    width: 20%;
+  }
+  .containerRight{
+    width: 80%;
+  }
+  .leftContainer{
+    display: flex;
+    flex-direction: column;
+    /* gap: 10px; */
+  }
+  .heading{
+    color: #696B83;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-left: 2px solid #ECECF9;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 1s ease-in-out, border-left 1s ease-in-out;
+  }
+  .active{
+    color:#6750A4;
+    border-left: 2px solid #6750A4;
+    
+   
+  }
+  
+  .rightNavInner {
+    display: flex;
+    align-items: center;
+  }
+ 
