@@ -9,6 +9,7 @@ import {
   Heading,
   RangeCalendar,
 } from "react-aria-components";
+import { useTheme } from "@/context";
 
 const rangeButtons = [
   "Any",
@@ -32,9 +33,10 @@ function convertToISOFormat(dateString: string) {
 }
 
 const DateRange = ({ state, setState }: DateRangeProps) => {
+const {theme} = useTheme()
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <RangeCalendar
         aria-label="input dates"
         className={styles.picker_container}

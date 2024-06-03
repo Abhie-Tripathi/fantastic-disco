@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import starIcon from "/public/internal/star.svg";
 import Image from "next/image";
+import { useTheme } from "@/context";
 
 interface LabelDropdownProps {
   state: string[];
@@ -10,6 +11,7 @@ interface LabelDropdownProps {
 }
 
 const UserRatings = ({ state, setState }: LabelDropdownProps) => {
+  const {theme} = useTheme();
   const onClickHandler = (value: string) => {
     state.includes(value)
       ? setState(state.filter((data) => data !== value))
@@ -17,7 +19,7 @@ const UserRatings = ({ state, setState }: LabelDropdownProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <ul className={styles.list}>
         <li>
           <CheckboxInput
