@@ -114,6 +114,7 @@ const Page = () => {
           </div>
 
         </div>
+        <button className={styles.submitBtn} type="button">Next</button>
       </div>
     </div>
   );

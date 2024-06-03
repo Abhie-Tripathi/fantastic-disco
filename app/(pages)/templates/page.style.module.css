@@ -21,7 +21,7 @@
 }
 .editWindow{
     width: 50%;
-    height: 80vh;
+    height: 75vh;
     overflow-y: scroll;
 }
 .previewWindow{
@@ -37,4 +37,13 @@
     height: 90%;
     align-items: center;
     justify-content: center;
+}
+.submitBtn{
+    position: absolute;
+    bottom: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    background-color: #6750a4;
+    left: 46%;
 }

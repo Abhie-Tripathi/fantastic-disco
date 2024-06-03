@@ -18,6 +18,8 @@ const Designs = (props : Props) => {
     const [widgetSelected, setWidgetSelected] = useState<string>("All")
     const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
     const [editModal, setEditModal] = useState<boolean>(false)
+    const [selectedWidgets, setSelectedWidget] = useState<string[]>([])
+    const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
 
     const pageWidgetWithoutHighlighted = [
         { id: "sehb", name: "Single Event as Hero Banner" },
@@ -113,7 +115,6 @@ const Designs = (props : Props) => {
                     </div>
                 </div>}
             </div>
-           
         </div>
     )
 }
