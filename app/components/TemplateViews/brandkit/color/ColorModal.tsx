@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styles from './colormodal.style.module.css'
 import PrimaryColorConfig from './PrimaryColorConfig'
 import SecondaryColorConfig from './SecondaryColorConfig'
-import GeneratePalette from '../../palette/Palette'
+import GeneratePalette from '../palette/Palette'
 
 const ColorModal = () => {
     const [activeBtn, setActiveBtn] = useState("primary")
