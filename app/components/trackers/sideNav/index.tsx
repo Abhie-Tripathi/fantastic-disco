@@ -3,7 +3,7 @@ import React,{useState, useEffect} from 'react'
 import { usePathname, useRouter } from "next/navigation";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
-const index = () => {
+const Index = () => {
     const pathName = usePathname().split('/');
     const last=pathName[pathName.length-1];
   const router = useRouter()
@@ -48,4 +48,4 @@ console.log(trackerSection);
   )
 }
 
-export default index
+export default Index
