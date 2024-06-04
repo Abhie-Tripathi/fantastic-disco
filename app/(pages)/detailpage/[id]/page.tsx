@@ -48,7 +48,7 @@ const Page = () => {
         navigator.clipboard.writeText(textToCopy);
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>)=>{
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
     }
 
@@ -56,24 +56,25 @@ const Page = () => {
         <div className={styles.body}>
             <div className={styles.leftContainer}>
                 <div className={styles.headerContainer}>
-                    <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={250} height={250} className={styles.poster} />
-                    <div className={styles.name_categoryContainer}>
-                        <div className={styles.eventName}>Painting Fest</div>
-                        <div className={styles.categoryContainer}>
-                            <Image src={FestIcon} alt='fest' />
-                            <div className={styles.category}>Tradeshow</div>
-                        </div>
-                    </div>
+                    <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={450} height={250} className={styles.poster} />
+
                 </div>
 
                 <div className={styles.tags}>{tags.map((tag, key) => (
                     <div key={key} className={styles.tag}>{tag}</div>
                 ))}
                 </div>
-                <EventDescription open={true} description={description} speakers={false} shortlist={false} />
-                <Organiser open={true} />
+                <EventDescription open={false} description={description} speakers={false} shortlist={false} />
+                <Organiser open={false} />
             </div>
             <div className={styles.rightContainer}>
+                <div className={styles.name_categoryContainer}>
+                    <div className={styles.eventName}>Painting Fest</div>
+                    <div className={styles.categoryContainer}>
+                        <Image src={FestIcon} alt='fest' />
+                        <div className={styles.category}>Tradeshow</div>
+                    </div>
+                </div>
                 <div className={styles.datesContainer}>
                     <div className={styles.eventDetails_dateTime_heading}>
                         Date & Time
@@ -90,56 +91,34 @@ const Page = () => {
                             TIME ZONE: -0500 (AMERICA/NEW_YORK)
                         </div>
                     </div>
-                    <div className={styles.eventDetails_dates_container}>
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                    </div>
                 </div>
-                <div className={styles.venueContainer}>
-                    <div>
-                        <div className={styles.venueHeading}>VENUE</div>
-                        <div className={styles.venueName}>The Konzerthaus Berlin</div>
-                        <div className={styles.venueLocation}>Gendarmenmarkt square</div>
-                    </div>
-                    <div className={styles.venueButton}>
-                        <Image src={RightArrowIcon} alt='arrow' />
-                        <div>Search this venue</div>
-                    </div>
-                </div>
-                <div className={styles.register_shareContainer}>
-                    <form className={styles.registerContainer} onSubmit={handleSubmit}>
-                        <div className={styles.registerHeading}>One Click Register</div>
-                        <div className={styles.input_btnContainer}>
-                            <input type='text' placeholder='Enter your Email' className={styles.registerInput} />
-                            <button type='button' className={styles.registerBtn}>Register</button>
-                        </div>
-                    </form>
-                    <div className={styles.shareContainer}>
-                        <div className={styles.shareHeading}>Share</div>
-                        <div className={styles.shareIconContainer}>
-                            <Link href={getShareLink('facebook')} target="_blank" >
-                                <Image src={facebookIcon} alt="clock" width={30} height={30} />
-                            </Link>
-                            <Link href={getShareLink('twitter')} target="_blank" >
-                                <Image src={xIcon} alt="clock" width={30} height={30} />
-                            </Link>
-                            <Link href={getShareLink('linkedin')} target="_blank" >
-                                <Image src={linkedinIcon} alt="clock" width={30} height={30} />
-                            </Link>
-                            <Link href={getShareLink('instagram')} target="_blank" >
-                                <Image src={instagramIcon} alt="clock" width={30} height={30} />
-                            </Link>
-                            {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
-                                <Image src={CopyIcon} alt='copy' className={styles.copyIcon} />
-                            </div>}
-                            {copyClick && <div className={styles.copyContainer} data-name="Copied">
-                                <Image src={TickIcon} alt='copied' className={styles.copyIcon} width={30} height={30} />
-                            </div>}
-                        </div>
+                <form className={styles.registerContainer} onSubmit={handleSubmit}>
+                    <div className={styles.registerHeading}>One Click Register</div>
+                    <input type='text' placeholder='Enter your Name' className={styles.registerInput} />
+                    <input type='text' placeholder='Enter your Email' className={styles.registerInput} />
+                    <button type='button' className={styles.registerBtn}>Register</button>
+                </form>
+                <div className={styles.shareContainer}>
+                    <div className={styles.shareHeading}>Share</div>
+                    <div className={styles.shareIconContainer}>
+                        <Link href={getShareLink('facebook')} target="_blank" >
+                            <Image src={facebookIcon} alt="clock" width={30} height={30} />
+                        </Link>
+                        <Link href={getShareLink('twitter')} target="_blank" >
+                            <Image src={xIcon} alt="clock" width={30} height={30} />
+                        </Link>
+                        <Link href={getShareLink('linkedin')} target="_blank" >
+                            <Image src={linkedinIcon} alt="clock" width={30} height={30} />
+                        </Link>
+                        <Link href={getShareLink('instagram')} target="_blank" >
+                            <Image src={instagramIcon} alt="clock" width={30} height={30} />
+                        </Link>
+                        {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
+                            <Image src={CopyIcon} alt='copy' className={styles.copyIcon} />
+                        </div>}
+                        {copyClick && <div className={styles.copyContainer} data-name="Copied">
+                            <Image src={TickIcon} alt='copied' className={styles.copyIcon} width={30} height={30} />
+                        </div>}
                     </div>
                 </div>
             </div>
