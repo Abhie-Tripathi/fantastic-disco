@@ -35,6 +35,12 @@
 .multipleContainer label{
     cursor: pointer;
 }
+.multipleContainer .widgetCount{
+    font-size: 10px;
+    background-color: black;
+    padding: 5px;
+    border-radius: 10px;
+}
 .activeBtn{
     background-color: #6750a4;
 }

@@ -5,10 +5,10 @@
   z-index: 1;
   background-color: #131313;
   border-top: none;
-  /* border-radius: 10px; */
-  color: white;
+  border-radius: 6px;
+  color: inherit;
   max-height: 350px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .header {
   display: flex;
@@ -170,12 +170,14 @@
 }
 
 .input_container {
-  margin-top: 20px;
+  /* margin-top: 20px; */
   padding: 0 15px;
   border: 1px solid rgba(255, 255, 255, 0.363);
   display: flex;
   align-items: center;
   gap: 10px;
+  background-color: #1a1a1a;
+  border-radius: 6px;
 }
 
 .input_selected_location {
@@ -191,6 +193,7 @@
   font-size: 16px;
   outline: none;
   border: none;
+  background: transparent;
 }
 
 .searchResults_container {
@@ -450,6 +453,9 @@
   cursor: pointer;
 }
 
+.resultData_list_light {
+  background-color: #F7F7F9;
+}
 
 .keywords_container {
   display: flex;

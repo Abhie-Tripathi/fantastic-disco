@@ -8,6 +8,7 @@
   background-color: #131313;
   padding: 20px 20px;
   color: inherit;
+  border-radius: 6px;
 }
 .containerConfig{
   display: flex;

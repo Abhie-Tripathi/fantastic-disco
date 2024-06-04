@@ -8,6 +8,8 @@ import AddEventForm from "@/app/components/outreach/AddEventForm";
 import { enquiryType } from "@/types/outreachEnquiryTypes";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
@@ -74,10 +76,13 @@ const Page: React.FC = () => {
 
       if (target === "shortlisted") {
         setShortlistedTasks([...shortlistedTasks, taskName]);
+        changeEnquiryStatus('SHORTLISTED', taskName.enquiryId);
       } else if (target === "outreach") {
         setOutreachTasks([...outreachTasks, taskName]);
+        changeEnquiryStatus('IN_NEGO', taskName.enquiryId);
       } else if (target === "prefinalised") {
         setPreFinalisedTasks([...preFinalisedTasks, taskName]);
+        changeEnquiryStatus('CONFIRMED', taskName.enquiryId);
       }
     }
   };
@@ -94,6 +99,34 @@ const Page: React.FC = () => {
 
   const openAddModalHandler = () => {
     setAddEventModal((prev) => !prev);
+  };
+
+  const changeEnquiryStatus = async(changeStatusTo: string, enquiry_id: string) => {
+    if(enquiry_id && enquiry_id != ''){
+      let payloadData = {
+        enquiryId: enquiry_id,
+        enquiryStatus: changeStatusTo,
+      };
+      try {
+        const apiUrl = baseUrl + "/userInterest/enquiry";
+        const apiData = await myFetch(apiUrl, {
+          method: "PATCH",
+          headers: headers,
+          body: JSON.stringify(payloadData),
+        });
+        if(apiData.data.message === "Data updated"){
+          toast.success('Enquiry status updated!', {
+            position: 'bottom-right',
+            autoClose: 2000,
+            closeButton: false,
+            hideProgressBar: true,
+          });
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -338,6 +371,7 @@ const Page: React.FC = () => {
           <AddEventForm />
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

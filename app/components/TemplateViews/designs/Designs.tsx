@@ -8,6 +8,9 @@ import Image from 'next/image'
 
 interface Props{
     setPreview: (id: string) => void;
+    setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
+    multipleWidgetOn :  boolean;
+    widgetsLength :  number;
 }
 
 const Designs = (props : Props) => {
@@ -18,8 +21,7 @@ const Designs = (props : Props) => {
     const [widgetSelected, setWidgetSelected] = useState<string>("All")
     const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
     const [editModal, setEditModal] = useState<boolean>(false)
-    const [selectedWidgets, setSelectedWidget] = useState<string[]>([])
-    const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
+
 
     const pageWidgetWithoutHighlighted = [
         { id: "sehb", name: "Single Event as Hero Banner" },
@@ -54,7 +56,7 @@ const Designs = (props : Props) => {
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} /></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} setMultipleWidgetOn = {props.setMultipleWidgetOn} multipleWidgetOn = {props.multipleWidgetOn} widgetsLength = {props.widgetsLength}/></div>
             <div className={`${styles.templates}`}>
                 {(widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>

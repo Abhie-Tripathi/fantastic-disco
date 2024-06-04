@@ -1,5 +1,5 @@
 'use client'
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import React, { Suspense, lazy} from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
 import EventDescription from '@/app/components/internal/eventdetail/EventDescription'
@@ -16,24 +16,6 @@ const Page = () => {
     const description = "Unleash your creativity and immerse yourself in the world of art at the Painting Fest in New York. This vibrant celebration brings together artists, painters, and art enthusiasts from all walks of life to celebrate the joy of creation. Whether you're a seasoned artist or a novice, the festival offers a welcoming space to express yourself and explore new artistic horizons. From live painting demonstrations to interactive workshops, there's something for everyone to enjoy. Join us for a weekend filled with color, inspiration, and community as we come together to paint the town red, blue, and every color of the rainbow."
 
     const Map = lazy(() => import("@/app/components/staticDetailPage/Map"));
-
-    // const locationContainerRef = useRef<HTMLDivElement>(null);
-    // const [mapContainerWidth, setMapContainerWidth] = useState<number>(0);
-    // useEffect(() => {
-    //     const updateContainerWidth = () => {
-    //       if (locationContainerRef.current) {
-    //         const width = locationContainerRef.current.offsetWidth; 
-    //         setMapContainerWidth(width); 
-    //       }
-    //     };
-
-    //     updateContainerWidth();
-    //     window.addEventListener("resize", updateContainerWidth);
-    //     return () => {
-    //       window.removeEventListener("resize", updateContainerWidth);
-    //     };
-
-    //   },[]); 
     return (
         <div className={styles.body}>
             <div className={styles.leftContainer}>
