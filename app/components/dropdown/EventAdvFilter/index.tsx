@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import styles from "./EventAdvFilter.module.css";
 import CheckboxInput from "../../UI/CheckBoxInput";
+import { useTheme } from "@/context";
 
 interface LabelDropdownProps {
   state: string[];
@@ -9,6 +10,7 @@ interface LabelDropdownProps {
 }
 
 const EventAdvFilter = ({ state, setState, data }: LabelDropdownProps) => {
+  const {theme} = useTheme()
   const onClickHandler = (value: string) => {
     state.includes(value)
       ? setState(state.filter((data) => data !== value))
@@ -16,7 +18,7 @@ const EventAdvFilter = ({ state, setState, data }: LabelDropdownProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <ul className={styles.list}>
         {data.map((item: any) => (
           <li key={item.slug}>

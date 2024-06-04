@@ -1,32 +1,25 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
-import { UserResponse } from "../types/user"
+import { UserResponse } from "../types/user";
 import { SignUpResponse, SignInResponse } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname } from "next/navigation";
-
 
 type authContextType = {
   user: UserResponse | null;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
-  
 };
 
 const authContextDefaultValues: authContextType = {
   user: null,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
-  signOut: () => { },
+  signOut: () => {},
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -35,7 +28,7 @@ export const AuthContext = createContext<authContextType>(
 
 export const AuthContextProvider = ({ children }: any) => {
   const pathName = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false)
+  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
   const router = useRouter();
@@ -44,7 +37,7 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const signup = async (userDto: SignUpDTO) => {
-    console.log(userDto)
+    console.log(userDto);
     const url = baseUrl + authEndpoints.signup;
     console.log(url);
     const { error, data }: SignUp = await myFetch(url, {
@@ -112,7 +105,7 @@ export const AuthContextProvider = ({ children }: any) => {
     if (user) {
       setUser(JSON.parse(user).user);
     } else {
-      if (pathName !== "/signup") {
+      if (pathName !== "/signup" && pathName !== "/forgot-password") {
         router.push("/signin");
       }
     }

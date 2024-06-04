@@ -2,8 +2,8 @@
   width: var(--trigger-width);
   background-color: #131313;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
-  /* border-radius: 12px; */
-  color: white;
+  border-radius: 6px;
+  color: inherit;
 }
 
 .header_container {

@@ -3,9 +3,10 @@
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   height: 350px;
   background-color: #131313;
-  color: white;
+  color: inherit;
   padding: 15px;
   overflow: scroll;
+  border-radius: 6px;
 }
 
 .container::-webkit-scrollbar {
@@ -13,7 +14,7 @@
 }
 
 .search {
-  /* border: 1px solid #d9d9d9; */
+  border: 1px solid #d9d9d9;
   /* background-color: #f7f7f9; */
   background-color: #1a1a1a;
   color: #a1a2a2;
@@ -29,6 +30,7 @@
   background: transparent;
   border: none;
   outline: none;
+  width: 100%;
 }
 
 .list {
