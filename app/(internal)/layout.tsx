@@ -20,9 +20,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  if(document.body.style.height==='100vh'){
-    document.body.style.height="auto";
-  }
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
