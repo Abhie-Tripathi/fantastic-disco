@@ -80,7 +80,7 @@ const Page = () => {
           className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("Filter")}
         >
-          Filter
+          Filter Events
         </div>
         <div
           className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
