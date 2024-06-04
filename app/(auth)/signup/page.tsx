@@ -82,17 +82,22 @@ const SignUp = () => {
       }
     }
   };
-  const generateOtp=async()=>{
-    const url=`${baseUrl}/auth/customer/verify/generate`
-    const {data,error}=await myFetch(url,{
-      method:"POST"
-    })
-    if(data) console.log(data);
-    else console.log(error);
-    
-    
-  }
+
+  const generateOtp = async () => {
+    const url = `${baseUrl}/auth/customer/verify/generate`;
+    const { data, error } = await myFetch(url, {
+      method: "POST",
+    });
+    if (data) console.log(data);
+    if (error) {
+      console.log(error);
+      return;
+    }
+  };
   console.log(errors);
+  const obj = {
+    email: email,
+  };
   return (
     <div className={styles.container}>
       <Image
@@ -113,7 +118,11 @@ const SignUp = () => {
 
       {!showVerification && (
         <div className={styles.sub_container}>
-          <Image src={SignUpVisuals} alt="loginvisuals" className={styles.image} />
+          <Image
+            src={SignUpVisuals}
+            alt="loginvisuals"
+            className={styles.image}
+          />
           <form onSubmit={handleSignUp}>
             <div className={styles.form_container}>
               <div className={styles.form_heading}>Sign Up</div>
@@ -202,7 +211,7 @@ const SignUp = () => {
                 </button>
                 <div className={styles.new_account}>
                   Already have an account?
-                  <Link href="/signin" className={styles.createNew_link} >
+                  <Link href="/signin" className={styles.createNew_link}>
                     {" "}
                     Log In
                   </Link>
@@ -224,7 +233,7 @@ const SignUp = () => {
         </div>
       )}
 
-      {showVerification && <Verification />}
+      {showVerification && <Verification params={obj} />}
     </div>
   );
 };

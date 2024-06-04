@@ -137,7 +137,7 @@ const SignIn = () => {
               </div>
             </div>
 
-            <div className={styles.forgot_password_link}>Forgot Password?</div>
+            <Link href="/forgot-password" className={styles.forgot_password_link}>Forgot Password?</Link>
           </div>
         </form>
       </div>
