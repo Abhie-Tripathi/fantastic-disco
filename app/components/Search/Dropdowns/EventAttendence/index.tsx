@@ -1,5 +1,6 @@
 import React, { use, useRef } from "react";
 import styles from "./eventAttendance.module.css";
+import { useTheme } from "@/context";
 
 interface EventAttendanceProps {
   className?: string
@@ -14,9 +15,10 @@ const EventAttendance = ({
   setState,
   onClose,
 }: EventAttendanceProps) => {
+  const {theme} = useTheme();
 
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Event Attendance</div>
         <div className={styles.header_button} onClick={() => onClose()}>

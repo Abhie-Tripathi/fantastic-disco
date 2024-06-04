@@ -1,8 +1,9 @@
 .container {
   width: 300px;
   background-color: #131313;
-  color: white;
+  color: inherit;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+  border-radius: 6px;
 }
 
 .header_container {

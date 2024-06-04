@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import styles from "./rankinput.module.css";
 import ReactSlider from "react-slider";
+import { useTheme } from "@/context";
 
 interface RankInputProps {
   className?: string;
@@ -23,6 +24,7 @@ const RankInput = ({
   setSelectedAviationRank,
   onClose,
 }: RankInputProps) => {
+  const {theme} = useTheme();
   const handleChange = () => {
     if (selectedEventRank.length > 0) {
       setSelectedEventRank([0, 100]);
@@ -32,7 +34,7 @@ const RankInput = ({
   };
 
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
       <div className={styles.header}>
         <div className={styles.header_button} onClick={() => onClose()}>
           Done
