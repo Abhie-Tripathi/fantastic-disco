@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
-import GeneratePalette from "@/app/components/TemplateViews/palette/Palette";
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
@@ -65,12 +64,6 @@ const Page = () => {
         >
           Brand Kit
         </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Palette" ? styles.active : ""}`}
-          onClick={() => handleNavItemClick("Palette")}
-        >
-          Generate Palette
-        </div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
@@ -89,7 +82,6 @@ const Page = () => {
             setBtnRadius={setBtnRadius}
             setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Palette" && <GeneratePalette />}
         </div>
         <div className={styles.previewWindow}>
           <div className={styles.heading}>

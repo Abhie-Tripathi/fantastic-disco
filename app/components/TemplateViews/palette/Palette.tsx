@@ -4,6 +4,7 @@ import styles from './palette.style.module.css'
 import { Palette } from 'color-thief-react';
 import Image from 'next/image';
 import UploadIcon1 from '/public/drive.svg'
+import { baseUrl } from '@/constants'
 
 const GeneratePalette = () => {
     const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
@@ -23,12 +24,12 @@ const GeneratePalette = () => {
 
     const handleGenerateColors = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/extract-colors?url=${encodeURIComponent(companyWebsite)}`);
+            const response = await fetch(`${baseUrl}/export/color?website=${encodeURIComponent(companyWebsite)}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setColors(data.colors);
+            setColors(data);
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
@@ -51,6 +52,7 @@ const GeneratePalette = () => {
                     <div className={styles.generatedColorContainer}>
                         <div className={styles.generateColorInput}>
                             <input type="text" placeholder="Enter Your Website Url" value={companyWebsite} onChange={(e) => setCompanyWebsite(e.target.value)} />
+                            <div className={styles.exampleDiv}>for ex : https://www.website.com</div>
                             <button className={styles.generateBtn} onClick={handleGenerateColors}>Generate</button>
                         </div>
                         <div className={styles.generatedPalleteContainer}>
