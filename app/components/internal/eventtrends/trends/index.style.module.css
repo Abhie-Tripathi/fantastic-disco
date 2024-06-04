@@ -13,6 +13,23 @@
   position: relative;
 }
 
+.filters_container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn_container {
+  display: inline-flex;
+  right: 77px;
+  gap: 10px;
+  position: absolute;
+}
+
+.input_container_btns {
+  width: 22%;
+}
+
 .dropdown_title {
   color: inherit;
 }
@@ -63,7 +80,7 @@
   align-items: center;
   gap: 5px;
   border-radius: 100px;
-  padding: 4px 17px;
+  padding: 8px 35px;
   font-weight: 500;
   background-color: #6750a4;
   color: white;
@@ -75,7 +92,7 @@
   border: 1px solid #6750a4;
   border-radius: 100px;
   font-weight: 500;
-  padding: 12px 20px;
+  padding: 8px 35px;
   color: #6750a4;
 }
 
@@ -104,10 +121,9 @@
 }
 
 .inputdropdowns_container {
-  display: grid;
-  /* grid-template-columns: repeat(5, minmax(0px, 245px)); */
-  grid-template-columns: 230px 230px 230px 230px 85px 85px;
-  gap: 15px 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 
 .input_selected_title {

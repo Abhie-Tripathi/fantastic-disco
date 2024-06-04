@@ -6,19 +6,15 @@ import EventTrends from "@/app/components/internal/eventtrends/trends";
 import { useTheme } from "@/context";
 
 const Page = () => {
-  const [activeChipY, setActiveChipY] = useState("Predicted Attendance");
-  const [activeChipX, setActiveChipX] = useState("Date");
+  const [activeChip, setActiveChip] = useState("Predicted Attendance");
   const { theme } = useTheme();
 
   return (
     <div className={styles.body}>
       <div className={styles.navbar}>
-        <Navbar
-          setActiveChipY={setActiveChipY}
-          setActiveChipX={setActiveChipX}
-        />
+        <Navbar setActiveChip={setActiveChip} />
       </div>
-      <EventTrends activeChipX={activeChipX} activeChipY={activeChipY} />
+      <EventTrends activeChip={activeChip} />
     </div>
   );
 };
