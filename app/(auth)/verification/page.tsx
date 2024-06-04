@@ -9,54 +9,73 @@ import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 
-const Verification = () => {
+interface VerificationProps {
+  params: {
+    email: string;
+  };
+}
+
+const Verification: React.FC<VerificationProps> = ({ params }) => {
   const router = useRouter();
-  const [time,setTime]=useState(36);
+  const [time, setTime] = useState(30);
   const [code, setCode] = useState("");
 
   const confirmHandler = () => {
     verifyOtp();
-    // if (code == "0000") {
-    //   router.push("/");
-    // }
   };
-  const verifyOtp=async()=>{
-    const url=`${baseUrl}/auth/customer/verify`
-    // console.log(Number(code));
-    
-    const dataToSend={
-      otpCode:code,
-    }
-    const {data,error}=await myFetch(url,{
-      method:"POST",
-      body:JSON.stringify(dataToSend),
+
+  const verifyOtp = async () => {
+    const url = `${baseUrl}/auth/customer/verify`;
+
+    const dataToSend = {
+      email: params?.email,
+      otpCode: code,
+    };
+    const { data, error } = await myFetch(url, {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
       headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if(data)
-   console.log(data);
-  else console.log(error);
-  
-   
-  }
-  useEffect(()=>{
-    let timer:any=null;
-    if(time>=0){
-      if(time>0){
-   timer = setTimeout(() => {
-    setTime(prev=>prev-1);
-  }, 1000);
-}
-else return ()=>clearTimeout(timer);
+        "Content-Type": "application/json",
+      },
+    });
+    if (data) {
+      console.log(data);
+      if (data.isVerified) router.push("/");
     }
-  },[time])
-  console.log(time);
-  const resend=()=>{
-    if(time===0){
-      setTime(36);
-    } 
-  }
+    if (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  const generateOtp = async () => {
+    const url = `${baseUrl}/auth/customer/verify/generate`;
+    const { data, error } = await myFetch(url, {
+      method: "POST",
+    });
+    if (data) console.log(data);
+    if (error) {
+      console.log(error);
+      return;
+    }
+  };
+  useEffect(() => {
+    let timer: any = null;
+    if (time >= 0) {
+      if (time > 0) {
+        timer = setTimeout(() => {
+          setTime((prev) => prev - 1);
+        }, 1000);
+      } else return () => clearTimeout(timer);
+    }
+  }, [time]);
+
+  const resend = () => {
+    if (time === 0) {
+      setTime(30);
+    }
+    generateOtp();
+  };
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
@@ -112,7 +131,16 @@ else return ()=>clearTimeout(timer);
             </div>
           </div>
           <div className={styles.resendButton_container}>
-            00 : {time>9?time:`0${time}`} <span className={styles.resend_button} onClick={()=>resend()} style={{cursor: time===0?"pointer":"default"}}>Resend</span>
+            {time !== 0 && <span>00 : {time > 9 ? time : `0${time}`}</span>}
+            {time === 0 && (
+              <span
+                className={styles.resend_button}
+                onClick={() => resend()}
+                style={{ cursor: time === 0 ? "pointer" : "default" }}
+              >
+                Resend
+              </span>
+            )}
           </div>
         </div>
       </div>
