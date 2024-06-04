@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import styles from "./page.style.module.css";
 import WidgetBtns from "../../../components/widgetadd/WidgetBtns";
 import StickyWidget from "../../../components/widgetadd/StickyWidget";

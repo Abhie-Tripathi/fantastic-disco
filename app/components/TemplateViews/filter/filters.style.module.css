@@ -1,0 +1,35 @@
+.body {
+    /* background: #0F0F0F; */
+    min-height: 100vh;
+    font-family: var(--font-inter);
+  }
+  
+  .container_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
+
+  .configurationForm {
+    background-color: #1A1A1A;
+    border-radius: 12px;
+    padding: 42px;
+  }
+
+  .configurationForm_light{
+    background-color: var(--secondary-bg-light);
+    color: var(--primary-color-light);
+  }
+  
+  @media screen and (max-width: 1360px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+    }
+    .configurationForm {
+      width: 90%;
+    }
+    .previewSection {
+      margin-top: 30px;
+      width: 90%;
+    }
+  }

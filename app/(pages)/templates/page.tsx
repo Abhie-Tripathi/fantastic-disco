@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
-import GeneratePalette from "@/app/components/TemplateViews/palette/Palette";
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
@@ -13,6 +12,7 @@ import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/Sin
 import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
+import Filters from "@/app/components/TemplateViews/filter/Filters";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -50,26 +50,34 @@ const Page = () => {
     }
   }, [preview]);
 
+  const handleStep = ()=>{
+    if(activeNavItem === "Designs"){
+      setActiveNavItem("BrandKit")
+    }else if(activeNavItem === "BrandKit"){
+      setActiveNavItem("Filter")
+    }
+  }
+
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
         <div
-          className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : ""}`}
+          className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("Designs")}
         >
           Designs
         </div>
         <div
-          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : ""}`}
+          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("BrandKit")}
         >
           Brand Kit
         </div>
         <div
-          className={`${styles.navItem} ${activeNavItem === "Palette" ? styles.active : ""}`}
-          onClick={() => handleNavItemClick("Palette")}
+          className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : ""}`}
+          onClick={() => handleNavItemClick("Filter")}
         >
-          Generate Palette
+          Filter
         </div>
       </div>
       <div className={styles.body}>
@@ -89,7 +97,7 @@ const Page = () => {
             setBtnRadius={setBtnRadius}
             setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Palette" && <GeneratePalette />}
+            {activeNavItem === "Filter" && <Filters/>}
         </div>
         <div className={styles.previewWindow}>
           <div className={styles.heading}>
@@ -129,7 +137,7 @@ const Page = () => {
           </div>
 
         </div>
-        <button className={styles.submitBtn} type="button">Next</button>
+        <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
       </div>
     </div>
   );
