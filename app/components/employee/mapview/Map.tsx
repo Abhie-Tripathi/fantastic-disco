@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.module.css";
@@ -10,15 +10,18 @@ import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
-
-
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl, headers } from "@/constants";
+import {EventTableType} from "@/types/ListViewTable";
 
 const EventListCard = (event: any) => {
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={styles.eventListCard}>
       <div className={styles.eventListCard_title}>{event.event.name}</div>
       <div className={styles.eventListCard_location}>
-        {event?.event?.location}
+        {event.event?.location?.cityName}
       </div>
       <div className={styles.eventListCard_date}>
         {formatDateRange(event?.event?.startDate, event?.event?.endDate)}
@@ -26,7 +29,7 @@ const EventListCard = (event: any) => {
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
           <div className={styles.eventListCard_category}>
-            <Image src={FestivalIcon} alt="festival" />
+            <Image className={iconClass} src={FestivalIcon} alt="festival" />
             {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
           </div>
           <span style={{ color: "grey" }}>|</span>
@@ -42,9 +45,10 @@ const EventListCard = (event: any) => {
 
 const Map = () => {
   const { theme } = useTheme();
-  const [selectedPlace, setSelectedPlace] = useState<number | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<number | string | null>(null);
   const [showList, setShowList] = useState(false);
   const [fullView, setFullView] = useState(true);
+  const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
 
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
@@ -53,6 +57,27 @@ const Map = () => {
     height: fullView ? "80vh" : "350px",
     zoom: 2,
   });
+
+  const fetchEventsData = async() => {
+    try {
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=20&offset=0`;
+      const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+      });
+      if(apiData.data) {
+        setEventPerPage(apiData.data.events);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchEventsData();
+  }, []);
+
+
   return (
     <div className={styles.map}>
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
@@ -68,12 +93,12 @@ const Map = () => {
           setViewport(viewport);
         }}
       >
-        {eventData.map((event) => (
+        {eventPerPage && eventPerPage.map((event) => (
           <div key={event.id}>
             <Marker
               key={event.id}
-              latitude={event.venue[0].lat}
-              longitude={event.venue[0].lng}
+              latitude={event.location.geoCordinates.longitude}
+              longitude={event.location.geoCordinates.latitude}
             >
               <button
                 className={styles.map_event_button}
@@ -88,20 +113,20 @@ const Map = () => {
             {selectedPlace == event.id ? (
               <Popup
                 className={styles.popup}
-                latitude={event.venue[0].lat}
-                longitude={event.venue[0].lng}
+                latitude={event.location.geoCordinates.longitude}
+                longitude={event.location.geoCordinates.latitude}
                 onClose={() => {
                   setSelectedPlace(null);
                 }}
               >
                 <div className={styles.event_details_popup}>
                   <Link
-                    href={event.imageUrl}
+                    href={event.url}
                     className={styles.event_details_popup_link}
                   >
                     {event.name}
                   </Link>
-                  <div className={styles.event_country}>{event.location}</div>
+                  <div className={styles.event_country}>{event.location.countryName}</div>
                   <div className={styles.event_datetime}>
                     Wed, 6 Mar 2024 (1 day)
                   </div>
@@ -109,7 +134,7 @@ const Map = () => {
                 <div className={styles.event_details_action}>
                   <Link
                     className={styles.event_view_details}
-                    href={event.imageUrl}
+                    href={event.url}
                   >
                     View Full Details
                   </Link>
@@ -142,7 +167,7 @@ const Map = () => {
             </div>
 
             <div className={styles.eventList_list}>
-              {eventData?.map((event, key) => (
+              {eventPerPage?.map((event, key) => (
                 <EventListCard key={key} event={event} />
               ))}
             </div>
