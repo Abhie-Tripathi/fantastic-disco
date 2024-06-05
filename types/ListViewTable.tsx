@@ -2,6 +2,7 @@ export interface EventTableType {
     id: string;
     name: string;
     status: string;
+    url: string;
     startDate: string;
     endDate: string;
     format: string;
