@@ -3,6 +3,7 @@ import styles from './listview.style.module.css'
 import EventListCard from '../../EventListCard';
 
 interface EditProps {
+    bgColor? :string;
     cardRadius?: number;
     cardBgColor?: string;
     eventNameColor?: string;

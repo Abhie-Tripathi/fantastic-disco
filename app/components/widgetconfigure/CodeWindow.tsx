@@ -63,10 +63,10 @@ const CodeWindow = ({ widgetId, type }: CodeProps) => {
                     {code}
                 </SyntaxHighlighter>
             )}
-            <div className={styles.backBtnContainer} onClick={handleBack}>
+            {/* <div className={styles.backBtnContainer} onClick={handleBack}>
                 <Image src={BackIcon} alt='back'/>
                 <div>Back</div>
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -49,6 +49,7 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected, setMultiple
                 <div className={`${styles.filter} ${activeFilter === "Page" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Page")}>Page</div>
                 <div className={`${styles.filter} ${activeFilter === "Section" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Section")}>Section</div>
                 <div className={`${styles.filter} ${activeFilter === "Sticky" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Sticky")}>Sticky</div>
+                <div className={`${styles.filter} ${activeFilter === "Popup" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Popup")}>Popup</div>
                 <div className={styles.multipleContainer}>
                     <input type="checkbox" id='multiple' className={styles.multipleInput} onChange={()=>setMultipleWidgetOn(!multipleWidgetOn)} />
                     <label htmlFor="multiple">Select Multiple Widgets</label>
