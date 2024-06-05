@@ -116,6 +116,13 @@ const Designs = (props : Props) => {
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={props.setPreview} setEditModal={setEditModal} />
                     </div>
                 </div>}
+                {(widgetSelected === "Popup") && <div className={styles.popupWidgetTemplates}>
+                    <div className={styles.widgetHeading}>Popup Widget</div>
+                    <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.templateContainer}>
+                        <TemplateCard name="Pop-up" isHidden={false} id="popup" setPreview={props.setPreview} setEditModal={setEditModal} />
+                    </div>
+                </div>}
             </div>
         </div>
     )

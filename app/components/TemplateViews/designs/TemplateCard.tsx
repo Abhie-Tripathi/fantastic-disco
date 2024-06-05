@@ -10,13 +10,7 @@ interface TemplateCardProps {
   setEditModal?: (value: boolean) => void;
 }
 
-const TemplateCard = ({ name, isHidden, id, setPreview, desc, setEditModal }: TemplateCardProps) => {
-
-  const handleModal = ()=>{
-    if(setEditModal){
-      setEditModal(true)
-    }
-  }
+const TemplateCard = ({ name, isHidden, id, setPreview, desc }: TemplateCardProps) => {
   return (
     <div className={`${styles.card} ${isHidden ? styles.hiddenCard : ""}`}>
       <div className={styles.placeHolder}>

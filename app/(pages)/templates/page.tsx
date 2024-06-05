@@ -14,6 +14,7 @@ import CaraouselTop from '@/app/components/TemplateViews/previews/section/Caraou
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
+import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -125,7 +126,8 @@ const Page = () => {
                                   preview === "pcslgv" ? "Caraousel and List Grid view" :
                                     preview === "tscv" ? "Top Section Caraousel view" :
                                       preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" : ""}
+                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" : 
+                                        preview === "popup" ? "Pop-up" : ""}
           </div>
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
@@ -143,7 +145,8 @@ const Page = () => {
                                     preview === "tscv" ? <CaraouselTop /> :
                                       preview === "tshs" ? <ScrollView type='top' /> :
                                         preview === "lsvs" ?
-                                          <ScrollView type='left' /> : <></>}
+                                          <ScrollView type='left' /> :
+                                          preview === "popup" ? <Popup/> : <></>}
           </div>
 
         </div>
