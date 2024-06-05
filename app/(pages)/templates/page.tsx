@@ -146,7 +146,7 @@ const Page = () => {
                                       preview === "tshs" ? <ScrollView type='top' /> :
                                         preview === "lsvs" ?
                                           <ScrollView type='left' /> :
-                                          preview === "popup" ? <Popup/> : <></>}
+                                          preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
 
         </div>
