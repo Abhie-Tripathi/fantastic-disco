@@ -58,7 +58,7 @@ const Page = () => {
       setActiveNavItem("BrandKit")
     } else if (activeNavItem === "BrandKit") {
       setActiveNavItem("Filter")
-    } else if(activeNavItem === "Filter"){
+    } else if (activeNavItem === "Filter") {
       setActiveNavItem("Code")
     }
   }
@@ -93,7 +93,7 @@ const Page = () => {
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
-          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn={multipleWidgetOn} widgetsLength={selectedWidgets.length} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected}/>}
+          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn={multipleWidgetOn} widgetsLength={selectedWidgets.length} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
           {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
             setLocationFontSize={setLocationFontSize}
@@ -106,7 +106,7 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize}
+            setBtnFontSize={setBtnFontSize} 
             setBgColor={setBgColor} />}
           {activeNavItem === "Filter" && <Filters widgetSelected={widgetSelected} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
@@ -127,8 +127,8 @@ const Page = () => {
                                   preview === "pcslgv" ? "Caraousel and List Grid view" :
                                     preview === "tscv" ? "Top Section Caraousel view" :
                                       preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" : 
-                                        preview === "popup" ? "Pop-up" : ""}
+                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                          preview === "popup" ? "Pop-up" : ""}
           </div>
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
