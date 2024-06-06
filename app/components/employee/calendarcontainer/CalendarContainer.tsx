@@ -6,7 +6,7 @@ import WeekCalendar from  '../calendarview/WeekCalendar'
 import { useTheme } from '@/context'
 
 interface CalendarContainerProps {
-    queryString: string;
+    queryString?: string;
 }
 
 const CalendarContainer = (props: CalendarContainerProps) => {
@@ -23,9 +23,9 @@ const CalendarContainer = (props: CalendarContainerProps) => {
                 <button onClick={() => handleCalendar("month")} className={`${styles.monthBtn} ${selectedCalendar === 'month' ? styles.activeCalendarBtn : ''}`}>Month</button>
                 <button onClick={() => handleCalendar("year")} className={`${styles.yearBtn} ${selectedCalendar === 'year' ? styles.activeCalendarBtn : ''}`}>Year</button>
             </div>
-            {selectedCalendar === "month" && <MonthCalendar queryString={props.queryString} />}
-            {selectedCalendar === "year" && <YearCalendar queryString={props.queryString} />}
-            {selectedCalendar === "week" && <WeekCalendar queryString={props.queryString} />}
+            {selectedCalendar === "month" && <MonthCalendar queryString={props.queryString ? props.queryString : ''} />}
+            {selectedCalendar === "year" && <YearCalendar queryString={props.queryString ? props.queryString : ''} />}
+            {selectedCalendar === "week" && <WeekCalendar queryString={props.queryString ? props.queryString : ''} />}
         </div>
     )
 }

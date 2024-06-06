@@ -44,7 +44,7 @@ const EventListCard = (event: any) => {
 };
 
 interface MapProps {
-  queryString: string;
+  queryString?: string;
 }
 
 const Map = (props: MapProps) => {
