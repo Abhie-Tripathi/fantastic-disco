@@ -11,6 +11,8 @@ interface Props{
     setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
     multipleWidgetOn :  boolean;
     widgetsLength :  number;
+    setWidgetSelected :  React.Dispatch<React.SetStateAction<string>>;
+    widgetSelected : string;
 }
 
 const Designs = (props : Props) => {
@@ -18,7 +20,7 @@ const Designs = (props : Props) => {
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
     // const [preview, setPreview] = useState("");
-    const [widgetSelected, setWidgetSelected] = useState<string>("All")
+    // const [widgetSelected, setWidgetSelected] = useState<string>("")
     const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
     const [editModal, setEditModal] = useState<boolean>(false)
 
@@ -56,9 +58,9 @@ const Designs = (props : Props) => {
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} setMultipleWidgetOn = {props.setMultipleWidgetOn} multipleWidgetOn = {props.multipleWidgetOn} widgetsLength = {props.widgetsLength}/></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} setMultipleWidgetOn = {props.setMultipleWidgetOn} multipleWidgetOn = {props.multipleWidgetOn} widgetsLength = {props.widgetsLength}/></div>
             <div className={`${styles.templates}`}>
-                {(widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
+                {(props.widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>
                     {accordianItemSelected.includes("No Highlighted Events") && <div className={styles.pageTemplateTypeOne}>
                         <div className={styles.widgetSubheading}>No Highlighted Events</div>
@@ -100,7 +102,7 @@ const Designs = (props : Props) => {
                         )}
                     </div>}
                 </div>}
-                {(widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
+                {(props.widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
                     <div className={styles.widgetHeading}>Section Widget</div>
                     <div className={styles.templateContainer}>
                         {sectionWidgetEvents.map((template, index) => (
@@ -108,7 +110,7 @@ const Designs = (props : Props) => {
                         ))}
                     </div>
                 </div>}
-                {(widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
+                {(props.widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
                     <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
                     <div className={styles.templateContainer}>
@@ -116,7 +118,7 @@ const Designs = (props : Props) => {
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={props.setPreview} setEditModal={setEditModal} />
                     </div>
                 </div>}
-                {(widgetSelected === "Popup") && <div className={styles.popupWidgetTemplates}>
+                {(props.widgetSelected === "Popup") && <div className={styles.popupWidgetTemplates}>
                     <div className={styles.widgetHeading}>Popup Widget</div>
                     <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
                     <div className={styles.templateContainer}>

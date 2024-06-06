@@ -45,7 +45,8 @@ const Popup = ({
                         borderWidth: `${btnBorderWidth}px`, 
                         borderColor: btnBorderColor, 
                         borderRadius: `${btnRadius}px`, 
-                        fontSize: `${btnFontSize}px` 
+                        fontSize: `${btnFontSize}px` ,
+                        borderStyle : "solid"
                     }}
                 >
                     Register
