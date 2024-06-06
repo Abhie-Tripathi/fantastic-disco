@@ -10,7 +10,7 @@ import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import closeIcon from "/public/close.svg";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
@@ -740,7 +740,6 @@ const Table = ({
           Next
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

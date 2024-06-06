@@ -61,9 +61,11 @@ import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { myFetch } from "@/utils/myFetch";
+import { saveTracker } from "@/utils/saveTracker";
 import { baseUrl } from "@/constants";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
+import { toast, ToastContainer } from "react-toastify";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -152,28 +154,59 @@ const Search = () => {
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
 
   const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
+    const trackerFilters: any ={};
     if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
+      trackerFilters.category = selectedCategories;
     }
     if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
+      trackerFilters.labels = selectedLabels;
     }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
+    if (selectedEventStatus.length > 0) {
+      trackerFilters.status = selectedEventStatus;
     }
+    if (selectedLocations.length > 0) {
+      trackerFilters.city = ["London"]
+    }
+    if (selectedDateRange[0] && selectedDateRange[1]) {
+      trackerFilters.active_gte = new Date(selectedDateRange[0]).toISOString();
+      trackerFilters.active_lte = new Date(selectedDateRange[1]).toISOString();
+    }
+
     if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+      trackerFilters.total_attendance_gte = +selectedEventAttendanceRange[0];
+      trackerFilters.total_attendance_lte = selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : +selectedEventAttendanceRange[1];
     }
-    router.push(`/trackers/create?${params.toString()}`);
+    if (selectedEventRank[0] !== 0 || selectedEventRank[1] !== 100) {
+      trackerFilters.event_rank_gte = Math.floor(selectedEventRank[0]);
+      trackerFilters.event_rank_lte = Math.floor(selectedEventRank[1]);
+    }
+    
+    if (selectedLocalRank[0] !== 0 || selectedLocalRank[1] !== 100) {
+      trackerFilters.local_rank_gte = Math.floor(selectedLocalRank[0]);
+      trackerFilters.local_rank_lte = Math.floor(selectedLocalRank[1]);
+    }
+    if (selectedAviationRank[0] !== 0 || selectedAviationRank[1] !== 100) {
+      trackerFilters.aviation_rank_gte = Math.floor(selectedAviationRank[0]);
+      trackerFilters.aviation_rank_lte = Math.floor(selectedAviationRank[1]);
+    }
+
+    saveTracker({trackerName: 'Default Tracker', filters: trackerFilters}).then((value) => {
+      if(value !== undefined) {
+        toast.success('Tracker created successfully!', {
+          position: 'bottom-right',
+          autoClose: 2000,
+          // closeButton: false,
+          hideProgressBar: true,
+        });
+      }else{
+        toast.error("Tracker not created!", {
+          position: 'bottom-right',
+          autoClose: 2000,
+          // closeButton: false,
+          hideProgressBar: true,
+        });
+      }
+    });
   };
 
   const searchHandler = () => {
@@ -1497,6 +1530,7 @@ const Search = () => {
           <Map queryString={urlQueryString} />
         </Suspense>
       )}
+      <ToastContainer />
     </Suspense>
   );
 };
