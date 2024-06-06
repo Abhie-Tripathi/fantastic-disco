@@ -6,7 +6,7 @@ import YourEvent from './yourevents/YourEvent';
 
 const Filters = () => {
     const { theme } = useTheme();
-    const [activeNavItem, setActiveNavItem] = useState<string>("YourKit");
+    const [activeNavItem, setActiveNavItem] = useState<string>("yourevents");
 
     const handleNavItemClick = (item: string) => {
         setActiveNavItem(item);
