@@ -38,6 +38,7 @@ const SignUp = () => {
       password,
       confirmPassword,
     };
+    console.log(formData);
     if (mobileNo.length > 0) {
       formData.mobileNo = mobileNo;
     }
@@ -49,11 +50,16 @@ const SignUp = () => {
         return;
       }
 
+      if (name.split(" ")[1] === undefined || name.split(" ")[1].length === 0) {
+        setErrors({ name: "Please Enter Full Name" });
+        return;
+      }
+
       setIsLoading(true);
 
       const response = await signup({
         firstname: name.split(" ")[0],
-        lastname: name.split(" ")[1],
+        lastname: name.split(" ")[1] === undefined ? " " : name.split(" ")[1],
         email,
         password,
         ...(mobileNo.length > 0 ? { phoneNumber: mobileNo } : {}),
@@ -62,7 +68,6 @@ const SignUp = () => {
       console.log(response);
 
       if (!response?.error) {
-        // console.log(response)
         generateOtp();
         setShowVerification(true);
       } else {
@@ -206,7 +211,7 @@ const SignUp = () => {
               </div>
 
               <div className={styles.actions_container}>
-                <button className={styles.button} type="submit">
+                <button className={`${styles.button} ${isLoading && styles.disable}`} type="submit">
                   {`${isLoading ? "Loading..." : "Sign Up"} `}
                 </button>
                 <div className={styles.new_account}>

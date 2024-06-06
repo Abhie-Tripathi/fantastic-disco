@@ -20,14 +20,17 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
   const { signin } = useAuthContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const signinHandler = async (event: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     try {
       SignInFormSchema.parse({ email, password });
       setErrors({});
+      setIsLoading(true);
       const response = await signin({ email, password });
       console.log(response);
+      setIsLoading(false);
       if (response?.error) {
         setErrors({ password: response.error });
       } else {
@@ -126,7 +129,7 @@ const SignIn = () => {
 
             <div className={styles.actions_container}>
               <button className={styles.button} type="submit">
-                Sign In
+                {isLoading ? "Signing In..." : "Sign In"}
               </button>
               <div className={styles.new_account}>
                 Do not have an account?
@@ -137,7 +140,12 @@ const SignIn = () => {
               </div>
             </div>
 
-            <Link href="/forgot-password" className={styles.forgot_password_link}>Forgot Password?</Link>
+            <Link
+              href="/forgot-password"
+              className={styles.forgot_password_link}
+            >
+              Forgot Password?
+            </Link>
           </div>
         </form>
       </div>
