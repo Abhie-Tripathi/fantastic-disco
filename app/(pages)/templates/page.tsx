@@ -13,6 +13,8 @@ import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/Mult
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import Filters from "@/app/components/TemplateViews/filter/Filters";
+import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
+import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -32,6 +34,7 @@ const Page = () => {
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
   const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
+  const [widgetSelected, setWidgetSelected] = useState<string>("");
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -50,11 +53,13 @@ const Page = () => {
     }
   }, [preview]);
 
-  const handleStep = ()=>{
-    if(activeNavItem === "Designs"){
+  const handleStep = () => {
+    if (activeNavItem === "Designs") {
       setActiveNavItem("BrandKit")
-    }else if(activeNavItem === "BrandKit"){
+    } else if (activeNavItem === "BrandKit") {
       setActiveNavItem("Filter")
+    } else if (activeNavItem === "Filter") {
+      setActiveNavItem("Code")
     }
   }
 
@@ -68,22 +73,28 @@ const Page = () => {
           Designs
         </div>
         <div
-          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" ? styles.completed : "")}`}
+          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("BrandKit")}
         >
           Brand Kit
         </div>
         <div
-          className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : ""}`}
+          className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("Filter")}
         >
-          Filter
+          Filter Events
+        </div>
+        <div
+          className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
+          onClick={() => handleNavItemClick("Code")}
+        >
+          Code
         </div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
-          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn = {multipleWidgetOn} widgetsLength = {selectedWidgets.length}/>}
-          {activeNavItem === "BrandKit" && <BrandKit 
+          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn={multipleWidgetOn} widgetsLength={selectedWidgets.length} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
+          {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
             setLocationFontSize={setLocationFontSize}
             setCardRadius={setCardRadius}
@@ -95,9 +106,10 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize}
+            setBtnFontSize={setBtnFontSize} 
             setBgColor={setBgColor} />}
-            {activeNavItem === "Filter" && <Filters/>}
+          {activeNavItem === "Filter" && <Filters widgetSelected={widgetSelected} />}
+          {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>
           <div className={styles.heading}>
@@ -115,17 +127,18 @@ const Page = () => {
                                   preview === "pcslgv" ? "Caraousel and List Grid view" :
                                     preview === "tscv" ? "Top Section Caraousel view" :
                                       preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" : ""}
+                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                          preview === "popup" ? "Pop-up" : ""}
           </div>
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
               preview === "stickydown" ? <StickyPreview type="down" /> :
-                preview === "sehb" ? <HeroBanner cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
-                  preview === "megv" ? <GridView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
-                    preview === "melv" ? <ListView cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
+                preview === "sehb" ? <HeroBanner cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                  preview === "megv" ? <GridView cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                    preview === "melv" ? <ListView cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                       preview === "melgv" ? <ListAndGridView /> :
-                        preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
-                          preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/> :
+                        preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                          preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                             preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
                               preview === "pcslv" ? <CaraouselAndViews type='list' /> :
                                 preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
@@ -133,7 +146,8 @@ const Page = () => {
                                     preview === "tscv" ? <CaraouselTop /> :
                                       preview === "tshs" ? <ScrollView type='top' /> :
                                         preview === "lsvs" ?
-                                          <ScrollView type='left' /> : <></>}
+                                          <ScrollView type='left' /> :
+                                          preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
 
         </div>

@@ -27,7 +27,7 @@ const Page = () => {
       >
         {previewState === "Side Preview" && (
           <div className={`${styles.configurationForm} ${theme === 'light' && styles.configurationForm_light}`}>
-            <WidgetBtns type={type} setType={setType} />
+            <WidgetBtns/>
             <div className={styles.dropdown_container}>
               {type === "Sticky" && <StickyWidget setWidgetId={setWidgetId} />}
               {type === "Section" && (

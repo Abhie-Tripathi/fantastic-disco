@@ -4,8 +4,6 @@ import styles from './page.style.module.css'
 import Image from 'next/image'
 import EventDescription from '@/app/components/internal/eventdetail/EventDescription'
 import Organiser from '@/app/components/internal/eventdetail/Organiser'
-import DateCard from '@/app/components/staticDetailPage/DateCard'
-import RightArrowIcon from "/public/rightbigarrow.svg"
 import FestIcon from '/public/festival.svg'
 import facebookIcon from '/public/facebook_icon.svg';
 import instagramIcon from '/public/instagram_icon.svg';
@@ -14,6 +12,7 @@ import xIcon from '/public/x_icon.svg';
 import Link from 'next/link'
 import CopyIcon from '/public/page.svg'
 import TickIcon from '/public/tick.svg'
+import Script from 'next/script'
 
 const Page = () => {
     const tags = ["#paint", "#art", "#fest", "#fest", "#fest", "#fest", "#fest"]
@@ -54,6 +53,8 @@ const Page = () => {
 
     return (
         <div className={styles.body}>
+            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js' />
+            <popup-widget/>
             <div className={styles.leftContainer}>
                 <div className={styles.headerContainer}>
                     <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={450} height={250} className={styles.poster} />
