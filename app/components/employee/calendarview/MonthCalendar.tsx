@@ -252,7 +252,11 @@ function getDurationInDays(startDate: Date | string | number, endDate: Date | st
   return differenceInDays + 1;
 }
 
-const MonthCalendar: React.FC = () => {
+interface MonthCalendarProps {
+  queryString: string;
+}
+
+const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [monthEvents, setMonthEvents] = useState<monthEventsType>();
@@ -271,7 +275,7 @@ const MonthCalendar: React.FC = () => {
         } else
           apiMonth = month.toString();
       }
-      const apiUrl = `${baseUrl}/event/search?groupBy=${year}-${apiMonth}-01,${year}-${apiMonth}-31`;
+      const apiUrl = `${baseUrl}/event/search?groupBy=${year}-${apiMonth}-01,${year}-${apiMonth}-31&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
         method: "GET",
         headers: headers,
@@ -364,7 +368,7 @@ const MonthCalendar: React.FC = () => {
       fetchEventsData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month]);
+  }, [month, props.queryString]);
 
   return (
     <>
