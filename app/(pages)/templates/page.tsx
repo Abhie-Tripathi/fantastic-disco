@@ -108,7 +108,7 @@ const Page = () => {
             setBtnRadius={setBtnRadius}
             setBtnFontSize={setBtnFontSize} 
             setBgColor={setBgColor} />}
-          {activeNavItem === "Filter" && <Filters widgetSelected={widgetSelected} />}
+          {activeNavItem === "Filter" && <Filters  />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>

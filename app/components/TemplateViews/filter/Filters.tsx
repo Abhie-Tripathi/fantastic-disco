@@ -1,30 +1,27 @@
 import React, { useState } from 'react'
 import styles from './filters.style.module.css'
-import WidgetBtns from "../../../components/widgetadd/WidgetBtns";
-import StickyWidget from "../../../components/widgetadd/StickyWidget";
-import SectionWidget from "../../../components/widgetadd/SectionWidget";
-import PageWidget from "@/app/components/widgetadd/PageWidget";
 import { useTheme } from "@/context";
+import AddEventModal from '../../AddEventModal';
+import YourEvent from './yourevents/YourEvent';
 
-interface FilterProps{
-    widgetSelected : string; // We are accepting this prop because we only want to show the form of the selected widget
-}
-
-const Filters = ({widgetSelected} : FilterProps) => {
-    // const [type, setType] = useState<string>("Sticky");
-    const [widgetId, setWidgetId] = useState<string>("");
+const Filters = () => {
     const { theme } = useTheme();
+    const [activeNavItem, setActiveNavItem] = useState<string>("YourKit");
+
+    const handleNavItemClick = (item: string) => {
+        setActiveNavItem(item);
+    };
+
     return (
         <div className={styles.body}>
-            <div className={`${styles.configurationForm} ${theme === 'light' && styles.configurationForm_light}`}>
-                <WidgetBtns widgetSelected ={widgetSelected} />
-                <div className={styles.dropdown_container}>
-                    {widgetSelected === "Sticky" && <StickyWidget setWidgetId={setWidgetId} />}
-                    {widgetSelected === "Section" && (
-                        <SectionWidget setWidgetId={setWidgetId} />
-                    )}
-                    {widgetSelected === "Page" && <PageWidget setWidgetId={setWidgetId} />}
-                </div>
+            <div className={styles.nav}>
+                <div className={`${styles.navItem} ${activeNavItem === "yourevents" ? styles.activeNavItem : ""}`} onClick={() => handleNavItemClick("yourevents")}>Your Events</div>
+                <div className={`${styles.navItem} ${activeNavItem === "select" ? styles.activeNavItem : ""}`} onClick={() => handleNavItemClick("select")}>Select Events</div>
+                <div className={`${styles.navItem} ${activeNavItem === "add" ? styles.activeNavItem : ""}`} onClick={() => handleNavItemClick("add")}>Add Event</div>
+            </div>
+            <div className={styles.activeWindow}>
+                {activeNavItem === "add" && <AddEventModal style='column'/>}
+                {activeNavItem === "yourevents" && <YourEvent/>}
             </div>
         </div>
     );

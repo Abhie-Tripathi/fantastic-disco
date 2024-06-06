@@ -22,7 +22,11 @@ interface ImageState {
     file: File | null;
 }
 
-const AddEventModal = () => {
+interface Props{
+    style? : string;
+}
+
+const AddEventModal = (props : Props) => {
 
     const [searchInput, setSearchInput] = useState<string>("");
     const [matchingEvents, setMatchingEvents] = useState<any[]>([]);
@@ -158,7 +162,7 @@ const AddEventModal = () => {
     }, [description, location])
     return (
         <div className={styles.bodyContainer}>
-            <form className={styles.form}>
+            <form className={styles.form} style={props.style === "column" ? {flexDirection : "column"} : {flexDirection : "row"}}>
                 <div className={styles.formFieldsContainer}>
                     <div className={styles.search}>
                         <div className={styles.searchContainer}>
