@@ -189,9 +189,11 @@ function getEventRating(item: string) {
 const Table = ({
   // eventData,
   showInsights,
+  queryString,
 }: {
   eventData?: any;
   showInsights: any;
+  queryString: string;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
@@ -263,7 +265,7 @@ const Table = ({
     const endInd = startInd + itemsPerPage;
     // setEventPerPage(eventData.slice(startInd, endInd));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage, itemsPerPage]);
+  }, [currPage, itemsPerPage, queryString]);
 
   const handleModalOpen = (eventId: string) => {
     setIsOpen((prev) => (prev == eventId ? null : eventId));
@@ -291,7 +293,7 @@ const Table = ({
 
   const fetchEventsData = async() => {
     try {
-      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}`;
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}&${queryString}`;
       // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
       const apiData = await myFetch(apiUrl, {
           method: "GET",

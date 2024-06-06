@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './calendarContainer.module.css'
 import MonthCalendar from '../calendarview/MonthCalendar'
 import YearCalendar from '../calendarview/YearCalendar'
 import WeekCalendar from  '../calendarview/WeekCalendar'
 import { useTheme } from '@/context'
 
-const CalendarContainer = () => {
+interface CalendarContainerProps {
+    queryString: string;
+}
+
+const CalendarContainer = (props: CalendarContainerProps) => {
     const {theme} = useTheme()
     const [selectedCalendar, setSelectedCalendar] = useState("month")
     const handleCalendar = (value:string) => {
@@ -19,9 +23,9 @@ const CalendarContainer = () => {
                 <button onClick={() => handleCalendar("month")} className={`${styles.monthBtn} ${selectedCalendar === 'month' ? styles.activeCalendarBtn : ''}`}>Month</button>
                 <button onClick={() => handleCalendar("year")} className={`${styles.yearBtn} ${selectedCalendar === 'year' ? styles.activeCalendarBtn : ''}`}>Year</button>
             </div>
-            {selectedCalendar === "month" && <MonthCalendar />}
-            {selectedCalendar === "year" && <YearCalendar />}
-            {selectedCalendar === "week" && <WeekCalendar />}
+            {selectedCalendar === "month" && <MonthCalendar queryString={props.queryString} />}
+            {selectedCalendar === "year" && <YearCalendar queryString={props.queryString} />}
+            {selectedCalendar === "week" && <WeekCalendar queryString={props.queryString} />}
         </div>
     )
 }

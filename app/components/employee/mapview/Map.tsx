@@ -43,7 +43,11 @@ const EventListCard = (event: any) => {
   );
 };
 
-const Map = () => {
+interface MapProps {
+  queryString: string;
+}
+
+const Map = (props: MapProps) => {
   const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | string | null>(null);
   const [showList, setShowList] = useState(false);
@@ -60,7 +64,7 @@ const Map = () => {
 
   const fetchEventsData = async() => {
     try {
-      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=20&offset=0`;
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=20&offset=0&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
@@ -75,7 +79,7 @@ const Map = () => {
 
   useEffect(() => {
     fetchEventsData();
-  }, []);
+  }, [props.queryString]);
 
 
   return (
