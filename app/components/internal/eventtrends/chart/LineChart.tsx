@@ -13,16 +13,16 @@ interface GraphProps {
 
 const LineChart = ({ activeChip, groupedData }: GraphProps) => {
   const { groupingByDate }: any = groupedData;
-  console.log(groupingByDate)
 
   const labels = Object.keys(groupingByDate);
-  console.log(labels)
+  console.log(labels);
   const data = labels.map((date) =>
     groupingByDate[date].reduce(
       (total: any, event: any) => total + event.attendance,
       0
     )
   );
+
   const chartData: any = {
     labels: labels,
     datasets: [
@@ -53,10 +53,10 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
                 display: true,
                 text: activeChip,
               },
-              min: Math.min(...data) - 10,
-              max: Math.max(...data) + 10,
+              min: Math.min(...data),
+              max: Math.max(...data),
               ticks: {
-                stepSize: 5,
+                source: "auto",
               },
             },
             x: {
