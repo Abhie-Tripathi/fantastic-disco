@@ -16,7 +16,7 @@ import { Button, Dialog, MenuTrigger, Popover } from "react-aria-components";
 import DateRange from "@/app/components/dropdown/DateRange";
 import { convertToCustomFormat } from "@/utils/dateFormat";
 import { convertISOToOriginalFormat } from "@/utils/date";
-import { useToast } from "@/hooks/useToast";
+import { showToast } from "@/utils/showToast";
 import { useSearchParams, useRouter } from "next/navigation";
 
 interface EventTrendsProps {
@@ -123,7 +123,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       selectedLocalRank.length === 0 ||
       selectedAviationRank.length === 0
     ) {
-      useToast("error", "Please select all the filters first");
+      showToast("error", "Please select all the filters first");
       return;
     }
     const { data, error } = await myFetch(

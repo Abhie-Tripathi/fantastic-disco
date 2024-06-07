@@ -4,7 +4,6 @@ import Navbar from "@/app/components/internal/eventtrends/Navbar";
 import styles from "./page.style.module.css";
 import EventTrends from "@/app/components/internal/eventtrends/trends";
 import { useTheme } from "@/context";
-import { useToast } from "@/hooks/useToast";
 
 const Page = () => {
   const [activeChip, setActiveChip] = useState("Predicted Attendance");

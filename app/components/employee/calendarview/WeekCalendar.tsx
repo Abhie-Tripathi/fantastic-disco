@@ -229,7 +229,11 @@ function fillPosition(event: any) {
   }
 }
 
-const WeekCalendar = () => {
+interface WeekCalendarProps {
+  queryString: string;
+}
+
+const WeekCalendar = (props: WeekCalendarProps) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
@@ -356,7 +360,7 @@ const WeekCalendar = () => {
     try {
       let start = weekDates[0].isoDate.substring(0, 10);
       let end = weekDates[6].isoDate.substring(0, 10);
-      const apiUrl = `${baseUrl}/event/search?groupBy=${start},${end}`;
+      const apiUrl = `${baseUrl}/event/search?groupBy=${start},${end}&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
         method: "GET",
         headers: headers,
@@ -428,7 +432,7 @@ const WeekCalendar = () => {
 
   useEffect(() => {
     fetchEventsData();
-  }, [weekDates]);
+  }, [weekDates, props.queryString]);
 
   useEffect(() => {
     if (Object.keys(apiResult).length > 0) {

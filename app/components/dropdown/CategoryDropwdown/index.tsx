@@ -10,7 +10,7 @@ interface CategoryDropdownProps {
   state: string[];
   setState: (ids: string[]) => void;
   categorySlug: string[];
-  setCategorySlug?: (slugs: string[]) => void;
+  setCategorySlug?: any;
   onClose?: () => void;
   categoryData?: any;
 }

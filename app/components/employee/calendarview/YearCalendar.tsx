@@ -65,7 +65,11 @@ function generateYearArray(year: number): MonthObject[] {
 
 const initialMonthCounts: number[] = new Array(12).fill(0);
 
-const YearCalendar: React.FC = () => {
+interface YearCalendarProps {
+  queryString: string;
+}
+
+const YearCalendar: React.FC<YearCalendarProps> = (props) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
@@ -100,7 +104,7 @@ const YearCalendar: React.FC = () => {
 
   const fetchEventsData = async () => {
     try {
-      const apiUrl = `${baseUrl}/event/search?groupBy=${year}-01-01,${year}-12-31`;
+      const apiUrl = `${baseUrl}/event/search?groupBy=${year}-01-01,${year}-12-31&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
         method: "GET",
         headers: headers,
@@ -137,7 +141,7 @@ const YearCalendar: React.FC = () => {
       fetchEventsData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year]);
+  }, [year, props.queryString]);
 
   return (
     <>
