@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           className={`${styles.heading} `}
           onClick={() => selectChipHandler("No of Events")}
         >
-          No of Events
+          No. of Events
         </div>
       </div>
     </div>

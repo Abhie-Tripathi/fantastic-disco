@@ -142,6 +142,11 @@
   border: none;
 }
 
+.disable{
+  cursor: not-allowed;
+  background-color: #a68fe7;
+}
+
 .new_account {
   text-align: center;
   padding: 20px 0px;

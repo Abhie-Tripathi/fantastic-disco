@@ -117,15 +117,15 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                   className={styles.table_column_heading}
                   onClick={() => sortHandler("date")}
                 >
-                  <span>Date</span>
-                  {sortingKey === "date" && (
-                    <span>
+                  <div>Date</div>
+                  <div className={styles.sortImg}>
+                    {sortingKey === "date" && (
                       <Image
                         src={sortingOrder === "ASC" ? ascSort : descSort}
                         alt="Sort"
                       />
-                    </span>
-                  )}
+                    )}
+                  </div>
                 </div>
               </th>
               <th>
@@ -133,15 +133,15 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                   className={styles.table_column_heading}
                   onClick={() => sortHandler("total")}
                 >
-                  <span>Total</span>
-                  {sortingKey === "total" && (
-                    <span>
+                  <div>Total</div>
+                  <div className={styles.sortImg}>
+                    {sortingKey === "total" && (
                       <Image
                         src={sortingOrder === "ASC" ? ascSort : descSort}
                         alt="Sort"
                       />
-                    </span>
-                  )}
+                    )}
+                  </div>
                 </div>
               </th>
               {objectValues.map((item: any, index: number) => (
@@ -150,15 +150,15 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                     className={styles.table_column_heading}
                     onClick={() => sortHandler(item.slug)}
                   >
-                    <span>{item.categoryName}</span>
-                    {sortingKey === item.slug && (
-                      <span>
+                    <div>{item.categoryName}</div>
+                    <div className={styles.sortImg}>
+                      {sortingKey === item.slug && (
                         <Image
                           src={sortingOrder === "ASC" ? ascSort : descSort}
                           alt="Sort"
                         />
-                      </span>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </th>
               ))}

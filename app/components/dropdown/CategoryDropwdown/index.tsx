@@ -9,8 +9,8 @@ interface CategoryDropdownProps {
   dropdownRef?: React.MutableRefObject<null>;
   state: string[];
   setState: (ids: string[]) => void;
-  categorySlug?: string[];
-  setCategorySlug?: (slugs: string[]) => void;
+  categorySlug: string[];
+  setCategorySlug?: any;
   onClose?: () => void;
   categoryData?: any;
 }
@@ -24,7 +24,7 @@ const CategoryDropdown = ({
   categoryData,
 }: CategoryDropdownProps) => {
   const { theme } = useTheme()
-  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>(categorySlug);
   const getPath=usePathname().split('/');
   const last=getPath[getPath.length-1];
   const onClickHandler = (id: string, slug: string) => {

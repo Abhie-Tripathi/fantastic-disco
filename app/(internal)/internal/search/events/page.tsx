@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./search.module.css";
@@ -39,7 +39,8 @@ import EventAdvFilter from "@/app/components/dropdown/EventAdvFilter";
 import EventKeyword from "@/app/components/dropdown/EventKeyword";
 import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
-import { useTheme } from '@/context'
+import { useTheme } from "@/context";
+import CloseIcon from "/public/close.svg";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -60,14 +61,16 @@ import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { myFetch } from "@/utils/myFetch";
+import { saveTracker } from "@/utils/saveTracker";
 import { baseUrl } from "@/constants";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
+import { toast, ToastContainer } from "react-toastify";
 
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [selectedView, setSelectedView] = useState("list");
@@ -78,7 +81,7 @@ const Search = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
-  const [categorySlug,setCategorySlug] = useState<string[]>(
+  const [categorySlug, setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
 
@@ -118,10 +121,15 @@ const Search = () => {
   const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
     searchParams.get("rating")?.split(",") || []
   );
-
+  const [rankToggles, setRankToggles] = useState({
+    isEventRank: false,
+    isLocalRank: false,
+    isAviationRank: false,
+  });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
+  const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedTrustScore, setSelectedTrustScore] = useState(0);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState(0);
@@ -150,28 +158,65 @@ const Search = () => {
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
 
   const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
+    const trackerFilters: any = {};
     if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
+      trackerFilters.category = selectedCategories;
     }
     if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
+      trackerFilters.labels = selectedLabels;
     }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
+    if (selectedEventStatus.length > 0) {
+      trackerFilters.status = selectedEventStatus;
     }
+    if (selectedLocations.length > 0) {
+      trackerFilters.city = ["London"];
+    }
+    if (selectedDateRange[0] && selectedDateRange[1]) {
+      trackerFilters.active_gte = new Date(selectedDateRange[0]).toISOString();
+      trackerFilters.active_lte = new Date(selectedDateRange[1]).toISOString();
+    }
+
     if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+      trackerFilters.total_attendance_gte = +selectedEventAttendanceRange[0];
+      trackerFilters.total_attendance_lte =
+        selectedEventAttendanceRange[1] === "Unlimited"
+          ? 1000000
+          : +selectedEventAttendanceRange[1];
     }
-    router.push(`/trackers/create?${params.toString()}`);
+    if (selectedEventRank[0] !== 0 || selectedEventRank[1] !== 100) {
+      trackerFilters.event_rank_gte = Math.floor(selectedEventRank[0]);
+      trackerFilters.event_rank_lte = Math.floor(selectedEventRank[1]);
+    }
+
+    if (selectedLocalRank[0] !== 0 || selectedLocalRank[1] !== 100) {
+      trackerFilters.local_rank_gte = Math.floor(selectedLocalRank[0]);
+      trackerFilters.local_rank_lte = Math.floor(selectedLocalRank[1]);
+    }
+    if (selectedAviationRank[0] !== 0 || selectedAviationRank[1] !== 100) {
+      trackerFilters.aviation_rank_gte = Math.floor(selectedAviationRank[0]);
+      trackerFilters.aviation_rank_lte = Math.floor(selectedAviationRank[1]);
+    }
+
+    saveTracker({
+      trackerName: "Default Tracker",
+      filters: trackerFilters,
+    }).then((value) => {
+      if (value !== undefined) {
+        toast.success("Tracker created successfully!", {
+          position: "bottom-right",
+          autoClose: 2000,
+          // closeButton: false,
+          hideProgressBar: true,
+        });
+      } else {
+        toast.error("Tracker not created!", {
+          position: "bottom-right",
+          autoClose: 2000,
+          // closeButton: false,
+          hideProgressBar: true,
+        });
+      }
+    });
   };
 
   const searchHandler = () => {
@@ -203,26 +248,162 @@ const Search = () => {
       params.set("eventEntry", selectedEntry.join(","));
     }
 
-    router.push(`/search/events?${params.toString()}`);
+    // router.push(`/search/events?${params.toString()}`);
+    createQueryString();
+  };
+
+  const [urlQueryString, setUrlQueryString] = useState<string>("");
+
+  const createQueryString = () => {
+    const queryString: { [key: string]: any } = {};
+
+    // Event Ids
+    if (Object.keys(selectedEvents).length > 0) {
+      queryString.eventId = Object.keys(selectedEvents);
+    }
+
+    // Category
+    if (selectedCategories.length > 0) {
+      queryString.eventCategory = selectedCategories;
+    }
+
+    // Location
+    if (selectedLocations.length > 0) {
+      queryString.eventRegion = selectedLocations;
+    }
+
+    // Labels
+    if (selectedLabels.length > 0) {
+      queryString.labels = selectedLabels;
+    }
+
+    // Rank
+    if (selectedEventRank[0] !== 0 || selectedEventRank[1] !== 100) {
+      queryString.eventRank = selectedEventRank;
+    }
+
+    // Dates
+    if (selectedDateRange[0]) {
+      queryString.startDate = [
+        new Date(selectedDateRange[0]).toISOString().split("T")[0],
+        new Date(selectedDateRange[1]).toISOString().split("T")[0],
+      ];
+    }
+
+    if (selectedDateRange[1]) {
+      queryString.endDate = [
+        new Date(selectedDateRange[0]).toISOString().split("T")[0],
+        new Date(selectedDateRange[1]).toISOString().split("T")[0],
+      ];
+    }
+
+    // Event Status
+    if (selectedEventStatus.length > 0) {
+      queryString.eventStatus = selectedEventStatus;
+    }
+
+    // Event ATTENDANCE
+    if (selectedEventAttendanceRange.length > 0) {
+      queryString.eventAttendanceRange = selectedEventAttendanceRange;
+    }
+
+    // Event Format
+    if (selectedEventFormat.length > 0) {
+      queryString.eventFormat = selectedEventFormat;
+    }
+
+    // Event Frequency
+    if (selectedEventFrequency.length > 0) {
+      queryString.eventFrequency = selectedEventFrequency;
+    }
+
+    // Event Entry
+    if (selectedEntry.length > 0) {
+      queryString.eventEntry = selectedEntry;
+    }
+
+    // Event Edition
+    if (selectedEventEdition > 0) {
+      queryString.eventEdition = selectedEventEdition;
+    }
+
+    // Event Keywords
+    if (selectedEventKeywords.length > 0) {
+      queryString.eventKeywords = selectedEventKeywords;
+    }
+
+    // Event Ranking
+    if (selectedEventRanking.length > 0) {
+      queryString.eventRanking = selectedEventRanking;
+    }
+
+    // Branded Event
+    if (selectedBrandedEvent) {
+      queryString.brandedEvent = selectedBrandedEvent;
+    }
+
+    // Trust Score
+    if (selectedTrustScore > 0) {
+      queryString.trustScore = selectedTrustScore;
+    }
+
+    // Event Series
+    if (selectedEventSeries) {
+      queryString.eventSeries = selectedEventSeries;
+    }
+
+    // Reputation Score
+    if (selectedReptScore > 0) {
+      queryString.reputationScore = selectedReptScore;
+    }
+
+    // Maturity
+    if (selectedMaturity > 0) {
+      queryString.maturity = selectedMaturity;
+    }
+
+    // Int. Score
+    if (selectedINScore > 0) {
+      queryString.maturity = selectedINScore;
+    }
+
+    // Inbound Score
+    if (selectedInboundScore > 0) {
+      queryString.maturity = selectedInboundScore;
+    }
+
+    // User Ratings
+    if (selectedUserRatings.length > 0) {
+      queryString.eventRating = selectedUserRatings;
+    }
+
+    // Estimated Exhibit Score
+    if (selectedExhibitScore.length > 0) {
+      queryString.eventSize = selectedExhibitScore;
+    }
+
+    let query = new URLSearchParams(queryString);
+    const finalQueryString = query.toString();
+    setUrlQueryString(finalQueryString);
   };
 
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
-  }
+  };
 
   useEffect(() => {
-    const modalStatus = document.body.getAttribute('popover-status');
+    const modalStatus = document.body.getAttribute("popover-status");
 
-    if(modalStatus && modalStatus == 'close'){
-      document.body.setAttribute('popover-status', 'open');
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
-    }else{
-      document.body.setAttribute('popover-status', 'close');
+    if (modalStatus && modalStatus == "close") {
+      document.body.setAttribute("popover-status", "open");
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.paddingRight = "";
+    } else {
+      document.body.setAttribute("popover-status", "close");
     }
     return () => {
-      document.body.removeAttribute('your-attribute');
+      document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
 
@@ -285,6 +466,57 @@ const Search = () => {
 
   console.log(filters);
 
+  const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [text, setText] = useState("");
+  const [selectedEvents, setSelectedEvents] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const [isSearchResultOpen, setSearchResultOpen] = useState<boolean>(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  const handleSearchInput = async (text: string) => {
+    if (text) {
+      const { data, error } = await myFetch(
+        `${baseUrl}/event/search?eventName=${text}`
+      );
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setSearchResult(data.events);
+      }
+    } else {
+      setSearchResult([]);
+    }
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    setSearchInput(event.target.value);
+    setText(inputValue);
+    setSearchResultOpen(true);
+  };
+
+  const eventSelectHandler = (eventId: string, eventName: string) => {
+    if (!selectedEvents[eventId]) {
+      setSelectedEvents((prev) => {
+        return { ...prev, [eventId]: eventName };
+      });
+    }
+  };
+
+  const removeSelectionHandler = (eventId: string) => {
+    setSelectedEvents((prev) => {
+      const updatedEvents = { ...prev };
+      delete updatedEvents[eventId];
+      return updatedEvents;
+    });
+  };
+
   useEffect(() => {
     setSelectedInsights({
       eventSize: true,
@@ -297,31 +529,89 @@ const Search = () => {
       growth: true,
       repeatSent: true,
     });
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setSearchResultOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(() => {
+      handleSearchInput(searchInput);
+    }, 500);
+    return () => clearTimeout(debounceTimeout);
+  }, [text]);
 
   return (
     <Suspense fallback={<Loading />}>
       <div className={styles.container}>
-        <div className={styles.searchbar}>
-          <input
-            type="text"
-            placeholder="Search Events"
-            onChange={(e) => setSearchInput(e.target.value)}
-            value={searchInput}
-          ></input>
-          <div
-            className={styles.recentSearches_button}
-            onClick={() => setShowRecentSearches(!showRecentSearches)}
-          >
-            Recent searches
+        <div className={styles.searchContainer}>
+          <div className={styles.searchbar}>
+            <input
+              type="text"
+              placeholder="Search Events"
+              // onChange={(e) => setSearchInput(e.target.value)}
+              onChange={handleSearchChange}
+              value={searchInput}
+            ></input>
+            <div
+              className={styles.recentSearches_button}
+              onClick={() => setShowRecentSearches(!showRecentSearches)}
+            >
+              Recent searches
+            </div>
+            <button onClick={searchHandler}>
+              <Image src={SearchIcon} alt="search" className={iconClass} />
+            </button>
           </div>
-          <button onClick={searchHandler}>
-            <Image src={SearchIcon} alt="search" className={iconClass} />
-          </button>
+
+          {Object.keys(selectedEvents).length > 0 && (
+            <div className={styles.eventName_container}>
+              {Object.entries(selectedEvents).map(
+                ([eventId, eventName], index) => (
+                  <div className={styles.eventName_chip} key={0}>
+                    <span>{eventName}</span>
+                    <Image
+                      src={CloseIcon}
+                      width={20}
+                      height={20}
+                      alt="close"
+                      className={styles.closeChip}
+                      onClick={() => removeSelectionHandler(eventId)}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          )}
         </div>
+        {isSearchResultOpen && searchResult && searchResult.length > 0 && (
+          <div ref={triggerRef} className={styles.resultContainer}>
+            {searchResult.map((item) => (
+              <div
+                key={item.id}
+                className={styles.resultData_list}
+                onClick={() => eventSelectHandler(item.id, item.name)}
+              >
+                {item.name}
+              </div>
+            ))}
+          </div>
+        )}
         <div className={styles.sub_container}>
           <div className={styles.inputdropdowns_container}>
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -349,18 +639,18 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <CategoryDropdown
-                    state={selectedCategories}
-                    setState={setSelectedCategories}
-                    categoryData={categoryData}
-                    categorySlug={categorySlug}
-                    setCategorySlug={setCategorySlug}
-                  />
+                <CategoryDropdown
+                  state={selectedCategories}
+                  setState={setSelectedCategories}
+                  categoryData={categoryData}
+                  categorySlug={categorySlug}
+                  setCategorySlug={setCategorySlug}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -387,15 +677,19 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
+                <Dialog className={styles.dialogBorder}>
+                  {({ close }) => (
                     <LocationDropdown
                       state={selectedLocations}
                       setState={setSelectedLocations}
                       onClose={close}
                     />
+                  )}
+                </Dialog>
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -423,19 +717,36 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <LabelDropdown
-                    state={selectedLabels}
-                    setState={setSelectedLabels}
-                  />
+                <LabelDropdown
+                  state={selectedLabels}
+                  setState={setSelectedLabels}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
-                    <div className={styles.input_title}>Rank</div>
+                    <div className={styles.input_title}>
+                      Rank
+                      {rankToggles.isEventRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                        </span>
+                      )}
+                      {rankToggles.isLocalRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                        </span>
+                      )}
+                      {rankToggles.isAviationRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                        </span>
+                      )}
+                    </div>
                     <Image
                       src={DropIcon}
                       alt="dropicon"
@@ -447,6 +758,8 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
+                <Dialog className={styles.dialogBorder}>
+                  {({ close }) => (
                     <RankInput
                       selectedEventRank={selectedEventRank}
                       setSelectedEventRank={setSelectedEventRank}
@@ -454,45 +767,55 @@ const Search = () => {
                       setSelectedLocalRank={setSelectedLocalRank}
                       selectedAviationRank={selectedAviationRank}
                       setSelectedAviationRank={setSelectedAviationRank}
+                      rankToggles={rankToggles}
+                      setRankToggles={setRankToggles}
                       onClose={close}
                     />
+                  )}
+                </Dialog>
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Dates
-                    {selectedDateRange.length > 0 &&
-                    selectedDateRange[0] !== null ? (
-                      <span className={styles.input_selected_title}>
-                        {`${convertISOToOriginalFormat(
-                          selectedDateRange[0]
-                        )} - ${convertISOToOriginalFormat(
-                          selectedDateRange[1]
-                        )}`}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                  <div className={styles.input}>
+                    <div className={styles.input_title}>
+                      Dates
+                      {selectedDateRange.length > 0 &&
+                      selectedDateRange[0] !== null ? (
+                        <span className={styles.input_selected_title}>
+                          {`${convertISOToOriginalFormat(
+                            selectedDateRange[0]
+                          )} - ${convertISOToOriginalFormat(
+                            selectedDateRange[1]
+                          )}`}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={20}
+                      height={20}
+                      className={iconClass}
+                    />
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} className={iconClass} />
-                </div>
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <DateRange
-                    state={selectedDateRange}
-                    setState={setSelectedDateRange}
-                  />
+                <DateRange
+                  state={selectedDateRange}
+                  setState={setSelectedDateRange}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -520,15 +843,15 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <EventStatus
-                    state={selectedEventStatus}
-                    setState={setSelectedEventStatus}
-                  />
+                <EventStatus
+                  state={selectedEventStatus}
+                  setState={setSelectedEventStatus}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -555,11 +878,15 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
+                <Dialog className={styles.dialogBorder}>
+                  {({ close }) => (
                     <EventAttendance
                       state={selectedEventAttendanceRange}
                       setState={setSelectedEventAttendanceRange}
                       onClose={close}
                     />
+                  )}
+                </Dialog>
               </Popover>
             </MenuTrigger>
           </div>
@@ -588,9 +915,17 @@ const Search = () => {
         {/*   ADVANCE FILTER SECTION */}
         {showAdvanceFilter && (
           <div>
-            <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
+            <div
+              className={`${styles.viewContainer} ${
+                theme === "light" ? styles.viewContainer_light : ""
+              }`}
+            >
               <div className={styles.viewTypeButtons_container}>
-                <div className={`${styles.advanceFilterBtns} ${theme === "light" ? styles.advanceFilterBtns_light : ""}`}>
+                <div
+                  className={`${styles.advanceFilterBtns} ${
+                    theme === "light" ? styles.advanceFilterBtns_light : ""
+                  }`}
+                >
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
                     className={`${styles.listBtn} ${
@@ -622,7 +957,7 @@ const Search = () => {
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
               <div className={styles.inputdropdowns_container}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -650,16 +985,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventFormat}
-                        setState={setSelectedEventFormat}
-                        data={eventFormatData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventFormat}
+                      setState={setSelectedEventFormat}
+                      data={eventFormatData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -687,16 +1022,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventFrequency}
-                        setState={setSelectedEventFrequency}
-                        data={eventFrequencyData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventFrequency}
+                      setState={setSelectedEventFrequency}
+                      data={eventFrequencyData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -724,16 +1059,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEntry}
-                        setState={setSelectedEntry}
-                        data={eventEntryData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEntry}
+                      setState={setSelectedEntry}
+                      data={eventEntryData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -757,15 +1092,15 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <RangeSlider
-                        state={selectedEventEdition}
-                        setState={setSelectedEventEdition}
-                      />
+                    <RangeSlider
+                      state={selectedEventEdition}
+                      setState={setSelectedEventEdition}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -792,16 +1127,18 @@ const Search = () => {
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
-                      <EventKeyword
-                        state={selectedEventKeywords}
-                        setState={setSelectedEventKeywords}
-                      />
-                    {/* </Dialog> */}
+                    <Dialog className={styles.dialogBorder}>
+                      {({ close }) => (
+                        <EventKeyword
+                          state={selectedEventKeywords}
+                          setState={setSelectedEventKeywords}
+                        />
+                      )}
+                    </Dialog>
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -829,11 +1166,11 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventRanking}
-                        setState={setSelectedEventRanking}
-                        data={eventRankData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventRanking}
+                      setState={setSelectedEventRanking}
+                      data={eventRankData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
@@ -843,7 +1180,7 @@ const Search = () => {
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
               <div className={styles.inputdropdowns_container}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -879,7 +1216,7 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -915,7 +1252,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -926,8 +1263,10 @@ const Search = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
-                                // checked={}
+                                onChange={() => {
+                                  setSelectedEventSeries((prev) => !prev);
+                                }}
+                                checked={selectedEventSeries}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -938,7 +1277,7 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -974,7 +1313,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1001,10 +1340,10 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <MaturitySlider
-                        state={selectedMaturity}
-                        setState={setSelectedMaturity}
-                      />
+                    <MaturitySlider
+                      state={selectedMaturity}
+                      setState={setSelectedMaturity}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
@@ -1014,7 +1353,7 @@ const Search = () => {
             {/* AUDIENCE INTEL */}
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
               <div className={styles.inputdropdowns_container_AI}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1049,7 +1388,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1085,7 +1424,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1125,7 +1464,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1157,11 +1496,11 @@ const Search = () => {
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                        <EventAdvFilter
-                          state={selectedExhibitScore}
-                          setState={setSelectedExhibitScore}
-                          data={eventExhibitScoreData}
-                        />
+                    <EventAdvFilter
+                      state={selectedExhibitScore}
+                      setState={setSelectedExhibitScore}
+                      data={eventExhibitScoreData}
+                    />
                   </Popover>
                 </MenuTrigger>
               </div>
@@ -1169,8 +1508,16 @@ const Search = () => {
           </div>
         )}
 
-        <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
-          <div className={`${styles.viewTypeButtons_container} ${theme === "light" ? styles.viewTypeButtons_light : ""}`}>
+        <div
+          className={`${styles.viewContainer} ${
+            theme === "light" ? styles.viewContainer_light : ""
+          }`}
+        >
+          <div
+            className={`${styles.viewTypeButtons_container} ${
+              theme === "light" ? styles.viewTypeButtons_light : ""
+            }`}
+          >
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}
@@ -1219,17 +1566,18 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView === "list" && 
+            {selectedView === "list" && (
               // <List />
               <Suspense fallback={<Loading />}>
                 <Table
                   showInsights={selectedInsights}
+                  queryString={urlQueryString}
                 />
               </Suspense>
-            }
+            )}
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
-                <Calendar />
+                <Calendar queryString={urlQueryString} />
               </Suspense>
             )}
           </div>
@@ -1245,9 +1593,10 @@ const Search = () => {
               height: "90vh",
             }}
           /> */}
-          <Map />
+          <Map queryString={urlQueryString} />
         </Suspense>
       )}
+      <ToastContainer />
     </Suspense>
   );
 };

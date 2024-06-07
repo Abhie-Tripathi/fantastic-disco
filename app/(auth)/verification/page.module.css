@@ -30,6 +30,23 @@
   max-width: 450px;
 }
 
+.error {
+  font-size: 12px;
+  margin-top: -25px;
+  color: #f15050;
+  margin-left: 10px;
+}
+
+.disable {
+  cursor: not-allowed;
+  background-color: #a68fe7;
+}
+
+.disable_text {
+  color: #a68fe7;
+  cursor: not-allowed;
+}
+
 .message {
   color: #6750a4;
   background-color: #eeeaf9;
