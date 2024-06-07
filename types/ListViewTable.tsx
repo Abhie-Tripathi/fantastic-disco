@@ -1,6 +1,7 @@
 export interface EventTableType {
     id: string;
     name: string;
+    eventGroupId: string;
     status: string;
     url: string;
     startDate: string;
