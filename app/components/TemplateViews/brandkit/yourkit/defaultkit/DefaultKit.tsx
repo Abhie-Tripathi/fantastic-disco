@@ -6,18 +6,22 @@ import ColorModal from '@/app/components/TemplateViews/brandkit/color/ColorModal
 import LogoModal from '@/app/components/TemplateViews/brandkit/logo/LogoModal'
 import TypographyModal from '@/app/components/TemplateViews/brandkit/typography/TypographyModal'
 
-const DefaultKit = () => {
+interface KitProps {
+    kitName: string;
+}
+
+const DefaultKit = ({ kitName }: KitProps) => {
     const [preview, setPreview] = useState("")
+
+    // According to the kit selected, we can call the api to fetch the saved Customizations according to the Kits
     return (
         <div>
-            <div className={`${styles.container} ${preview.length > 0 ? styles.blurContainer : ""}`}>
-                <div className={styles.templates}>
-                    <TemplateCard name='Buttons' id='button' isHidden={false} setPreview={setPreview} desc='Customize button styles according to your website' />
-                    <TemplateCard name='Colors' id='color' isHidden={false} setPreview={setPreview} desc='Create a color palette according to your website' />
-                    <TemplateCard name='Social Links' id='link' isHidden={false} setPreview={setPreview} desc='Customize social link icons' />
-                    <TemplateCard name='Brand Logo' id='logo' isHidden={false} setPreview={setPreview} desc='Customize and Add your brand logo' />
-                    <TemplateCard name='Typography' id='font' isHidden={false} setPreview={setPreview} desc='Text Styling for diff texts' />
-                </div>
+            <div className={`${styles.templates} ${preview.length > 0 ? styles.blurContainer : ""}`}>
+                <TemplateCard name='Buttons' id='button' isHidden={false} setPreview={setPreview} desc='Customize button styles according to your website' />
+                <TemplateCard name='Colors' id='color' isHidden={false} setPreview={setPreview} desc='Create a color palette according to your website' />
+                <TemplateCard name='Social Links' id='link' isHidden={false} setPreview={setPreview} desc='Customize social link icons' />
+                <TemplateCard name='Brand Logo' id='logo' isHidden={false} setPreview={setPreview} desc='Customize and Add your brand logo' />
+                <TemplateCard name='Typography' id='font' isHidden={false} setPreview={setPreview} desc='Text Styling for diff texts' />
             </div>
             {preview.length > 0 && <div className={styles.modal}>
                 <div className={styles.modalHeading}>

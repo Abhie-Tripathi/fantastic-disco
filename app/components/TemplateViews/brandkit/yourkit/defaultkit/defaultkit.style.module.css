@@ -2,10 +2,11 @@
     filter: blur(2px);
 }
 .templates{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* justify-content: space-between; */
+    /* flex-wrap: wrap; */
+    row-gap: 20px;
 }
 .modal{
     background-color: #1a1a1a;

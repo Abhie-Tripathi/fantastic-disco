@@ -23,7 +23,9 @@ const YourKit = () => {
                     <div className={styles.kitName}>Kit Name</div>
                     <div className={styles.backBtn} onClick={handleBack}>Back</div>
                 </div>
-                {activeKit === "default" ? <DefaultKit/> :<></>}
+                {activeKit === "default" ? <DefaultKit kitName="default"/> :
+                activeKit === "kit2" ? <DefaultKit kitName='kit2'/> :
+                activeKit === "kit3" ? <DefaultKit kitName='kit3'/> :<></>}
 
             </div>}
         </div>

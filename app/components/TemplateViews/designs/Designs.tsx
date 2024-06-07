@@ -8,9 +8,9 @@ import Image from 'next/image'
 
 interface Props{
     setPreview: (id: string) => void;
-    setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
-    multipleWidgetOn :  boolean;
-    widgetsLength :  number;
+    // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
+    // multipleWidgetOn :  boolean;
+    // widgetsLength :  number;
     setWidgetSelected :  React.Dispatch<React.SetStateAction<string>>;
     widgetSelected : string;
 }
@@ -58,7 +58,7 @@ const Designs = (props : Props) => {
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} setMultipleWidgetOn = {props.setMultipleWidgetOn} multipleWidgetOn = {props.multipleWidgetOn} widgetsLength = {props.widgetsLength}/></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected}/></div>
             <div className={`${styles.templates}`}>
                 {(props.widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>

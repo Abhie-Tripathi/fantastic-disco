@@ -33,25 +33,25 @@ const Page = () => {
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
-  const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
+  // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
   };
 
-  useEffect(() => {
-    // If multiple widget checkbox is on, we will keep adding the widgets
-    if (multipleWidgetOn) {
-      setSelectedWidgets((prevWidgets) => {
-        // Check if preview is already present in the widgets
-        if (!prevWidgets.includes(preview)) {
-          return [...prevWidgets, preview];
-        }
-        return prevWidgets;
-      });
-    }
-  }, [preview]);
+  // useEffect(() => {
+  //   // If multiple widget checkbox is on, we will keep adding the widgets
+  //   if (multipleWidgetOn) {
+  //     setSelectedWidgets((prevWidgets) => {
+  //       // Check if preview is already present in the widgets
+  //       if (!prevWidgets.includes(preview)) {
+  //         return [...prevWidgets, preview];
+  //       }
+  //       return prevWidgets;
+  //     });
+  //   }
+  // }, [preview]);
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -66,6 +66,7 @@ const Page = () => {
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
+        <div className={styles.heading}>Add Widget : </div>
         <div
           className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
           onClick={() => handleNavItemClick("Designs")}
@@ -90,10 +91,11 @@ const Page = () => {
         >
           Code
         </div>
+        <div></div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
-          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setMultipleWidgetOn={setMultipleWidgetOn} multipleWidgetOn={multipleWidgetOn} widgetsLength={selectedWidgets.length} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
+          {activeNavItem === "Designs" && <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
           {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
             setLocationFontSize={setLocationFontSize}
