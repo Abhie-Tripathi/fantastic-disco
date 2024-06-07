@@ -20,8 +20,9 @@ const Designs = (props : Props) => {
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
     // const [preview, setPreview] = useState("");
-    // const [widgetSelected, setWidgetSelected] = useState<string>("")
-    const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+    const [widgetSelected, setWidgetSelected] = useState<string>("")
+    // const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+    const [showHighlightedTemplates, setShowHighlihtedTemplates] = useState<boolean>(false)
     const [editModal, setEditModal] = useState<boolean>(false)
 
 
@@ -58,11 +59,13 @@ const Designs = (props : Props) => {
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected}/></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setShowHighlihtedTemplates = {setShowHighlihtedTemplates} showHighlightedTemplates = {showHighlightedTemplates} /></div>
             <div className={`${styles.templates}`}>
                 {(props.widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>
-                    {accordianItemSelected.includes("No Highlighted Events") && <div className={styles.pageTemplateTypeOne}>
+                    {/* {accordianItemSelected.includes("No Highlighted Events") &&  */}
+                    {!showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeOne}>
                         <div className={styles.widgetSubheading}>No Highlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithoutHighlighted.slice(0, showAllOne ? undefined : 3).map((template, index) => (
@@ -75,7 +78,9 @@ const Designs = (props : Props) => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("One Highlighted Event") && <div className={styles.pageTemplateTypeTwo}>
+                    {/* {accordianItemSelected.includes("One Highlighted Event") &&  */}
+                    {showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeTwo}>
                         <div className={styles.widgetSubheading}>One Higlighted Event</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 3).map((template, index) => (
@@ -88,7 +93,9 @@ const Designs = (props : Props) => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("Multiple Highlighted Events") && <div className={styles.pageTemplateTypeThree}>
+                    {/* {accordianItemSelected.includes("Multiple Highlighted Events") &&  */}
+                    {showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeThree}>
                         <div className={styles.widgetSubheading}>Multiple Higlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithHighlightedEvents.slice(0, showAllThree ? undefined : 3).map((template, index) => (

@@ -4,14 +4,16 @@ import styles from './filterheader.style.module.css'
 
 interface Props {
     setWidgetSelected: React.Dispatch<React.SetStateAction<string>>;
-    setAccordianItemSelected: React.Dispatch<React.SetStateAction<string[]>>;
+    // setAccordianItemSelected: React.Dispatch<React.SetStateAction<string[]>>;
+    setShowHighlihtedTemplates : React.Dispatch<React.SetStateAction<boolean>>;
     // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
     // multipleWidgetOn :  boolean;
     // widgetsLength :  number;
+    showHighlightedTemplates :  boolean;
 }
 
 
-const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) => {
+const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighlightedTemplates }: Props) => {
 
     const [activeFilter, setActiveFilter] = useState("Page")
     const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
@@ -37,10 +39,10 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
                 : [...prevSelected, item]
         );
     };
-    useEffect(() => {
-        setAccordianItemSelected(selectedAccordionItems)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedAccordionItems])
+    // useEffect(() => {
+    //     setAccordianItemSelected(selectedAccordionItems)
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [selectedAccordionItems])
 
     return (
         <div className={styles.body}>
@@ -58,7 +60,7 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
             </div>
             {accordionOpen && (
                 <div className={styles.accordion}>
-                    {['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'].map(
+                    {/* {['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'].map(
                         (item) => (
                             <div
                                 key={item}
@@ -69,7 +71,11 @@ const FilterHeader = ({ setWidgetSelected, setAccordianItemSelected }: Props) =>
                                 {item}
                             </div>
                         )
-                    )}
+                    )} */}
+                    <div className={styles.highlightedCheckbox}>
+                        <input type="checkbox" id='promoted' onChange={()=>setShowHighlihtedTemplates(!showHighlightedTemplates)}/>
+                        <label htmlFor="promoted">Show Highlighted Event Templates</label>
+                    </div>
                 </div>
             )}
         </div>
