@@ -16,6 +16,8 @@ import { Button, Dialog, MenuTrigger, Popover } from "react-aria-components";
 import DateRange from "@/app/components/dropdown/DateRange";
 import { convertToCustomFormat } from "@/utils/dateFormat";
 import { convertISOToOriginalFormat } from "@/utils/date";
+import { useToast } from "@/hooks/useToast";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface EventTrendsProps {
   activeChip: string;
@@ -31,16 +33,31 @@ interface GroupingByDate {
   [date: string]: Event[];
 }
 const EventTrends = ({ activeChip }: EventTrendsProps) => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [categorySlug, setCategorySlug] = useState<string[]>([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    searchParams.get("categories")?.split(",") || []
+  );
+  const [categorySlug, setCategorySlug] = useState<string[]>(
+    searchParams.get("categories")?.split(",") || []
+  );
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedDateRange, setSelectedDateRange] = useState<string[]>([]);
 
-  const [selectedEventRank, setSelectedEventRank] = useState<number[]>([]);
-  const [selectedLocalRank, setSelectedLocalRank] = useState<number[]>([]);
-  const [selectedAviationRank, setSelectedAviationRank] = useState<number[]>(
-    []
-  );
+  const [selectedEventRank, setSelectedEventRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [selectedLocalRank, setSelectedLocalRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [selectedAviationRank, setSelectedAviationRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [rankToggles, setRankToggles] = useState({
+    isEventRank: false,
+    isLocalRank: false,
+    isAviationRank: false,
+  });
   const [categoryData, setCatgeoryData] = useState([]);
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
@@ -73,12 +90,15 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
   const searchHandler = () => {
     let query = "";
+    const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
       query += "category=" + selectedCategories.join(",");
+      params.set("category", selectedCategories.join(","));
     }
     // if (selectedLocations.length > 0) {
     // query += "&city=" + selectedLocations.join(",");
     query += "&city=london,chicago";
+    // params.set("city", selectedLocations?.join(","));
     // }
     if (selectedDateRange.length > 0) {
       query += "&active_gte=" + selectedDateRange[0];
@@ -87,12 +107,25 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     if (selectedEventRank.length > 0) {
       query += "&event_rank_gte=" + selectedEventRank[0];
       query += "&event_rank_lte=" + selectedEventRank[1];
+      params.set("active_gte", selectedDateRange[0]);
+      params.set("active_lte", selectedDateRange[1]);
     }
     console.log(query);
     fetchData(query);
+    // router.push(`/internal/trends?${params.toString()}`);
   };
 
   const fetchData = async (query: string) => {
+    if (
+      selectedCategories.length === 0 ||
+      selectedDateRange.length === 0 ||
+      selectedEventRank.length === 0 ||
+      selectedLocalRank.length === 0 ||
+      selectedAviationRank.length === 0
+    ) {
+      useToast("error", "Please select all the filters first");
+      return;
+    }
     const { data, error } = await myFetch(
       `${baseUrl}/trend/${
         activeChip === "Predicted Attendance"
@@ -137,7 +170,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       <div className={styles.filters_container}>
         <div className={styles.inputdropdowns_container}>
           <MenuTrigger>
-            <Button className={styles.input_container_btns}>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -170,7 +205,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button className={styles.input_container_btns}>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -203,7 +240,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button className={styles.input_container_btns}>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -238,10 +277,29 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button className={styles.input_container_btns}>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
-                  <div className={styles1.input_title}>Rank</div>
+                  <div className={styles1.input_title}>
+                    Rank
+                    {rankToggles.isEventRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                      </span>
+                    )}
+                    {rankToggles.isLocalRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                      </span>
+                    )}
+                    {rankToggles.isAviationRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                      </span>
+                    )}
+                  </div>
                   <Image src={DropIcon} alt="dropicon" width={20} height={20} />
                 </div>
               </div>
@@ -256,6 +314,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     setSelectedLocalRank={setSelectedLocalRank}
                     selectedAviationRank={selectedAviationRank}
                     setSelectedAviationRank={setSelectedAviationRank}
+                    rankToggles={rankToggles}
+                    setRankToggles={setRankToggles}
                     onClose={close}
                   />
                 )}

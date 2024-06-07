@@ -24,7 +24,7 @@
 }
 
 .navbar_light {
-  background-color: var(--secondary-bg-light);
+  /* background-color: var(--secondary-bg-light); */
   color: var(--primary-color-light);
 }
 .yAxis {

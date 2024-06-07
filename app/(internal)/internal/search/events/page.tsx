@@ -39,7 +39,7 @@ import EventAdvFilter from "@/app/components/dropdown/EventAdvFilter";
 import EventKeyword from "@/app/components/dropdown/EventKeyword";
 import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
-import { useTheme } from '@/context'
+import { useTheme } from "@/context";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -67,7 +67,7 @@ import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [selectedView, setSelectedView] = useState("list");
@@ -78,7 +78,7 @@ const Search = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
-  const [categorySlug,setCategorySlug] = useState<string[]>(
+  const [categorySlug, setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
 
@@ -118,6 +118,11 @@ const Search = () => {
   const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
     searchParams.get("rating")?.split(",") || []
   );
+  const [rankToggles, setRankToggles] = useState({
+    isEventRank: false,
+    isLocalRank: false,
+    isAviationRank: false,
+  });
 
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
@@ -209,20 +214,20 @@ const Search = () => {
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
-  }
+  };
 
   useEffect(() => {
-    const modalStatus = document.body.getAttribute('popover-status');
+    const modalStatus = document.body.getAttribute("popover-status");
 
-    if(modalStatus && modalStatus == 'close'){
-      document.body.setAttribute('popover-status', 'open');
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
-    }else{
-      document.body.setAttribute('popover-status', 'close');
+    if (modalStatus && modalStatus == "close") {
+      document.body.setAttribute("popover-status", "open");
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.paddingRight = "";
+    } else {
+      document.body.setAttribute("popover-status", "close");
     }
     return () => {
-      document.body.removeAttribute('your-attribute');
+      document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
 
@@ -321,7 +326,7 @@ const Search = () => {
         </div>
         <div className={styles.sub_container}>
           <div className={styles.inputdropdowns_container}>
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -349,18 +354,18 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <CategoryDropdown
-                    state={selectedCategories}
-                    setState={setSelectedCategories}
-                    categoryData={categoryData}
-                    categorySlug={categorySlug}
-                    setCategorySlug={setCategorySlug}
-                  />
+                <CategoryDropdown
+                  state={selectedCategories}
+                  setState={setSelectedCategories}
+                  categoryData={categoryData}
+                  categorySlug={categorySlug}
+                  setCategorySlug={setCategorySlug}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -387,15 +392,15 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
-                    <LocationDropdown
-                      state={selectedLocations}
-                      setState={setSelectedLocations}
-                      onClose={close}
-                    />
+                <LocationDropdown
+                  state={selectedLocations}
+                  setState={setSelectedLocations}
+                  onClose={close}
+                />
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -423,19 +428,36 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <LabelDropdown
-                    state={selectedLabels}
-                    setState={setSelectedLabels}
-                  />
+                <LabelDropdown
+                  state={selectedLabels}
+                  setState={setSelectedLabels}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
-                    <div className={styles.input_title}>Rank</div>
+                    <div className={styles.input_title}>
+                      Rank
+                      {rankToggles.isEventRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                        </span>
+                      )}
+                      {rankToggles.isLocalRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                        </span>
+                      )}
+                      {rankToggles.isAviationRank && (
+                        <span className={styles.input_selected_title}>
+                          [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                        </span>
+                      )}
+                    </div>
                     <Image
                       src={DropIcon}
                       alt="dropicon"
@@ -447,52 +469,60 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
-                    <RankInput
-                      selectedEventRank={selectedEventRank}
-                      setSelectedEventRank={setSelectedEventRank}
-                      selectedLocalRank={selectedLocalRank}
-                      setSelectedLocalRank={setSelectedLocalRank}
-                      selectedAviationRank={selectedAviationRank}
-                      setSelectedAviationRank={setSelectedAviationRank}
-                      onClose={close}
-                    />
+                <RankInput
+                  selectedEventRank={selectedEventRank}
+                  setSelectedEventRank={setSelectedEventRank}
+                  selectedLocalRank={selectedLocalRank}
+                  setSelectedLocalRank={setSelectedLocalRank}
+                  selectedAviationRank={selectedAviationRank}
+                  setSelectedAviationRank={setSelectedAviationRank}
+                  rankToggles={rankToggles}
+                  setRankToggles={setRankToggles}
+                  onClose={close}
+                />
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Dates
-                    {selectedDateRange.length > 0 &&
-                    selectedDateRange[0] !== null ? (
-                      <span className={styles.input_selected_title}>
-                        {`${convertISOToOriginalFormat(
-                          selectedDateRange[0]
-                        )} - ${convertISOToOriginalFormat(
-                          selectedDateRange[1]
-                        )}`}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                  <div className={styles.input}>
+                    <div className={styles.input_title}>
+                      Dates
+                      {selectedDateRange.length > 0 &&
+                      selectedDateRange[0] !== null ? (
+                        <span className={styles.input_selected_title}>
+                          {`${convertISOToOriginalFormat(
+                            selectedDateRange[0]
+                          )} - ${convertISOToOriginalFormat(
+                            selectedDateRange[1]
+                          )}`}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={20}
+                      height={20}
+                      className={iconClass}
+                    />
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} className={iconClass} />
-                </div>
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <DateRange
-                    state={selectedDateRange}
-                    setState={setSelectedDateRange}
-                  />
+                <DateRange
+                  state={selectedDateRange}
+                  setState={setSelectedDateRange}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -520,15 +550,15 @@ const Search = () => {
               </Button>
               <Popover className={styles.filterPopover}>
                 {/* <Dialog> */}
-                  <EventStatus
-                    state={selectedEventStatus}
-                    setState={setSelectedEventStatus}
-                  />
+                <EventStatus
+                  state={selectedEventStatus}
+                  setState={setSelectedEventStatus}
+                />
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen} >
+            <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -555,11 +585,11 @@ const Search = () => {
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
-                    <EventAttendance
-                      state={selectedEventAttendanceRange}
-                      setState={setSelectedEventAttendanceRange}
-                      onClose={close}
-                    />
+                <EventAttendance
+                  state={selectedEventAttendanceRange}
+                  setState={setSelectedEventAttendanceRange}
+                  onClose={close}
+                />
               </Popover>
             </MenuTrigger>
           </div>
@@ -588,9 +618,17 @@ const Search = () => {
         {/*   ADVANCE FILTER SECTION */}
         {showAdvanceFilter && (
           <div>
-            <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
+            <div
+              className={`${styles.viewContainer} ${
+                theme === "light" ? styles.viewContainer_light : ""
+              }`}
+            >
               <div className={styles.viewTypeButtons_container}>
-                <div className={`${styles.advanceFilterBtns} ${theme === "light" ? styles.advanceFilterBtns_light : ""}`}>
+                <div
+                  className={`${styles.advanceFilterBtns} ${
+                    theme === "light" ? styles.advanceFilterBtns_light : ""
+                  }`}
+                >
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
                     className={`${styles.listBtn} ${
@@ -622,7 +660,7 @@ const Search = () => {
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
               <div className={styles.inputdropdowns_container}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -650,16 +688,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventFormat}
-                        setState={setSelectedEventFormat}
-                        data={eventFormatData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventFormat}
+                      setState={setSelectedEventFormat}
+                      data={eventFormatData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -687,16 +725,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventFrequency}
-                        setState={setSelectedEventFrequency}
-                        data={eventFrequencyData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventFrequency}
+                      setState={setSelectedEventFrequency}
+                      data={eventFrequencyData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -724,16 +762,16 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEntry}
-                        setState={setSelectedEntry}
-                        data={eventEntryData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEntry}
+                      setState={setSelectedEntry}
+                      data={eventEntryData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -757,15 +795,15 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <RangeSlider
-                        state={selectedEventEdition}
-                        setState={setSelectedEventEdition}
-                      />
+                    <RangeSlider
+                      state={selectedEventEdition}
+                      setState={setSelectedEventEdition}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -793,15 +831,15 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventKeyword
-                        state={selectedEventKeywords}
-                        setState={setSelectedEventKeywords}
-                      />
+                    <EventKeyword
+                      state={selectedEventKeywords}
+                      setState={setSelectedEventKeywords}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -829,11 +867,11 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <EventAdvFilter
-                        state={selectedEventRanking}
-                        setState={setSelectedEventRanking}
-                        data={eventRankData}
-                      />
+                    <EventAdvFilter
+                      state={selectedEventRanking}
+                      setState={setSelectedEventRanking}
+                      data={eventRankData}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
@@ -843,7 +881,7 @@ const Search = () => {
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
               <div className={styles.inputdropdowns_container}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -879,7 +917,7 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -915,7 +953,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -938,7 +976,7 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -974,7 +1012,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1001,10 +1039,10 @@ const Search = () => {
                   </Button>
                   <Popover className={styles.filterPopover}>
                     {/* <Dialog> */}
-                      <MaturitySlider
-                        state={selectedMaturity}
-                        setState={setSelectedMaturity}
-                      />
+                    <MaturitySlider
+                      state={selectedMaturity}
+                      setState={setSelectedMaturity}
+                    />
                     {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
@@ -1014,7 +1052,7 @@ const Search = () => {
             {/* AUDIENCE INTEL */}
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
               <div className={styles.inputdropdowns_container_AI}>
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1049,7 +1087,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1085,7 +1123,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1125,7 +1163,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen} >
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1157,11 +1195,11 @@ const Search = () => {
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                        <EventAdvFilter
-                          state={selectedExhibitScore}
-                          setState={setSelectedExhibitScore}
-                          data={eventExhibitScoreData}
-                        />
+                    <EventAdvFilter
+                      state={selectedExhibitScore}
+                      setState={setSelectedExhibitScore}
+                      data={eventExhibitScoreData}
+                    />
                   </Popover>
                 </MenuTrigger>
               </div>
@@ -1169,8 +1207,16 @@ const Search = () => {
           </div>
         )}
 
-        <div className={`${styles.viewContainer} ${theme === "light" ? styles.viewContainer_light : ""}`}>
-          <div className={`${styles.viewTypeButtons_container} ${theme === "light" ? styles.viewTypeButtons_light : ""}`}>
+        <div
+          className={`${styles.viewContainer} ${
+            theme === "light" ? styles.viewContainer_light : ""
+          }`}
+        >
+          <div
+            className={`${styles.viewTypeButtons_container} ${
+              theme === "light" ? styles.viewTypeButtons_light : ""
+            }`}
+          >
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}
@@ -1219,14 +1265,12 @@ const Search = () => {
           <div className={styles.message}>No Events</div>
         ) : (
           <div className={styles.dataView}>
-            {selectedView === "list" && 
+            {selectedView === "list" && (
               // <List />
               <Suspense fallback={<Loading />}>
-                <Table
-                  showInsights={selectedInsights}
-                />
+                <Table showInsights={selectedInsights} />
               </Suspense>
-            }
+            )}
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
                 <Calendar />
