@@ -165,6 +165,7 @@
     border-radius: 2px;
     text-align: center;
     color: inherit;
+    background-color: inherit;
     font-weight: 600;
     outline: none;
   }
