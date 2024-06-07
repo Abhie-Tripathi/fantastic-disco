@@ -29,7 +29,6 @@ const BrandKit = (props : EditProps) => {
         setActiveNavItem(item);
     };
 
-
     return (
         <div className={styles.body}>
             <div className={styles.nav}>
