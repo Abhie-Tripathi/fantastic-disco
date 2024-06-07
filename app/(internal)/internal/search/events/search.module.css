@@ -169,9 +169,8 @@
   border: 1px solid #efefef;
   white-space: nowrap;
   padding: 10px 15px;
-  /* color: white; */
-  /* background-color: white; */
-  /* border-radius: 6px; */
+  color: inherit;
+  background-color: inherit;
 }
 
 .dropdown_button {
