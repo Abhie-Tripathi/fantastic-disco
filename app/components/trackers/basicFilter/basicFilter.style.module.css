@@ -83,14 +83,15 @@
     transform: rotate(45deg);
   }
   .allCat{
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     flex-direction: column;
   }
   .allCat1{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    /* grid-template-columns: repeat(3, 1fr); */
+    /* gap: 20px; */
   }
   .heading{
     color:#6750A4;

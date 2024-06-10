@@ -18,6 +18,12 @@
     gap:20px;
     flex-direction: column;
 }
+.containerOne{
+    display:flex;
+    gap:20px;
+    width: 100%;
+    /* flex-direction: column; */
+}
 .eventStatusLeft{
     display: flex;
     gap:10px;

@@ -2,7 +2,9 @@
 import React from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
-
+import Back from '/public/back.svg';
+import Link from "next/link";
+import Image from "next/image";
 // import { useTheme } from "@/context/theme";
 // import Image from "next/image";
 // import MoreIcon from "/public/dots.svg";
@@ -17,6 +19,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className={`${styles.container}`} style={{position:"relative"}}>
         <div className={styles.bar}>
             <div className={styles.leftNav}>
+              <Link href='/internal/trackers'>
+              <Image style={{display:"flex"}}src={Back} alt="back"/>
+              </Link>
             Events in Bangalore
             </div>
             <div className={styles.rightNav}>

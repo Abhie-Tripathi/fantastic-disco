@@ -1,12 +1,14 @@
 import React from 'react'
-import styles from './lables.style.module.css'
-const index = () => {
+import styles from './labels.style.module.css'
+const index = ({labels}:any) => {
     const lables=["Tags","Airport","Animal","Aeson","Sea","Curise","National","Hybrid","Hybrid"];
+    console.log(labels);
+    
   return (
     <div className={styles.container}>
-      <div className={styles.heading}>Lables</div>
+      <div className={styles.heading}>Labels</div>
       <div className={styles.labels}>
-        {lables.map((label, id)=>(
+        {labels && labels.map((label, id)=>(
             <div key={id} className={styles.label}>{label}</div>
         ))}
       </div>

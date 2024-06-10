@@ -8,7 +8,7 @@ import Location from '/public/location_on.svg'
 import GoTo from '/public/goTo.svg'
 import Vectore6 from '/public/newVector.svg'
 import Link from 'next/link';
-const index = () => {
+const index = ({item}:any) => {
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -72,12 +72,17 @@ const index = () => {
       },
     ],
   };
+  console.log(item);
+  
   return (
     
       <div className={styles.container}>
-        <Link href="/internal/trackers/1/trackedEvents">
+       <Link href={{
+                        pathname: `/internal/trackers/${item.id}/trackedEvents`,
+                        // query: { data: JSON.stringify(item) }
+                    }}>
         <div className={styles.cardOne}>
-          <div className={styles.heading}>Events in Bangalore</div>
+          <div className={styles.heading}>{item.name}</div>
           <Image src={GoTo} alt="goTo" />
         </div>
         <div className={styles.cardTwo}>

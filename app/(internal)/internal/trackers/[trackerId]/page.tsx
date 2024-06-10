@@ -45,6 +45,7 @@ const TrackerPage = () => {
   return (
     <>
     <div className={styles.container}>
+     
       <div className={styles.containerLeft}>
         <div className={styles.leftContainer}>
           <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>

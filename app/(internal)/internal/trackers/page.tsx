@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
+import Back from '/public/back.svg';
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
 import Add from '/public/add.svg';
@@ -10,6 +11,14 @@ import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
 import Template from '/public/template.svg';
 import People from '/public/ionPeople.svg';
+import PeopleFinder from '/public/peopleFinder.svg';
+import Competitor from '/public/competitor.svg';
+import Speaking from '/public/speaking.svg';
+import Audience from '/public/audience.svg';
+import Customer from '/public/customer.svg';
+import Keywords from '/public/keywords.svg';
+import SocialCause from '/public/socialCause.svg';
+import Brand from '/public/brand.svg';
 import Vector1 from '/public/vectorTemplate.svg';
 import Vector3 from '/public/Vector3.svg';
 import Vector4 from '/public/Vector4.svg';
@@ -57,26 +66,66 @@ const data=[
   {
     type:'template',
     domain:'Human Resource',
+    img:People,
     trackerName:'Recruitment',
     content:'Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...'
   },
   {
     type:'template',
     domain:'Human Resource',
+    img:PeopleFinder,
     trackerName:'People Finder',
     content:'Track experts, influencers and where they might be participating in various events'
   },
   {
     type:'template',
     domain:'Human Resource',
+    img:Competitor,
     trackerName:'Competitor',
     content:'Track your competitor experts, influencers and where they might be participating in events'
   },
   {
     type:'template',
     domain:'Human Resource',
+    img:Speaking,
     trackerName:'Speaking Opportunity',
     content:'Input team members and their details to keep track of the events with speaking opportunities.'
+  }
+  ,
+  {
+    type:'template',
+    domain:'Sales',
+    img:Audience,
+    trackerName:'Audience Dept. & Profiles',
+    content:'Track events for the specific organizational departments or audience profiles'
+  },
+  {
+    type:'template',
+    domain:'Sales',
+    img:Customer,
+    trackerName:'Customer ICP',
+    content:'Input ideal customer profile details like company, location or websites to track their interests'
+  },
+  {
+    type:'template',
+    domain:'Sales',
+    img:Keywords,
+    trackerName:'Product Keywords',
+    content:'List all the events which belongs to given industry or associated with keywords.'
+  },
+  {
+    type:'template',
+    domain:'Sales',
+    img:SocialCause,
+    trackerName:'Social Cause',
+    content:'Track social cause events that interests audience to be socially active and enhance their reach',
+  },
+  {
+    type:'template',
+    img:Brand,
+    domain:'Sales',
+    trackerName:'Brand Building',
+    content:'Input designations and keywords, and upload job descriptions to identify relevant events effortles',
   }
 ]
   const handleShowMore = () => {
@@ -102,7 +151,10 @@ const data=[
       document.body.style.overflow = 'auto';
     }
   };
-  
+  const [showTracker,setShowTracker]=useState(false);
+  const viewTracker=()=>{
+    setShowTracker(true);
+  }
   
   return (
     // <div className={styles.body}>
@@ -126,12 +178,20 @@ const data=[
    <div className={styles.outerContainer} >
  <div className={styles.header_container}>
         <div className={styles.tab_container}>
-          <Link
-            href="/internal/trackers"
-            className={`${styles.tab }`}
-          >
-            Create Your Event Tracker
-          </Link>
+          {showTracker?(
+            <div className={styles.backDiv} onClick={()=>setShowTracker(false)}>
+            <Image src={Back} alt="back"/>
+            <div className={styles.back}>Back</div>  
+            </div>
+          ):(
+              <Link
+              href="/internal/trackers"
+              className={`${styles.tab }`}
+            >
+              Create Your Event Tracker
+            </Link>
+          )}
+          
           {/* <Link
             href="/internal/trackers/savedevents"
             className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
@@ -141,14 +201,14 @@ const data=[
           </Link> */}
         </div>
         <div className={styles.trackers_header}>
-        <Link
-            href="trackers/create"
+        <div
             className={styles.trackers_header_newtracker_button}
+            onClick={viewTracker}
           >
            
-            New Tracker
-            <Image src={Add} alt="add" />
-          </Link>
+            Template Gallery
+            {/* <Image src={Add} alt="add" /> */}
+          </div>
           <div className={styles.trackers_header_more_button}>
             <Image src={MoreIcon} alt="moreicon" />
           </div>
@@ -156,15 +216,16 @@ const data=[
         </div>
       </div>
     <div className={styles.container}>
+      {!showTracker && 
       <div className={styles.innerContainerOne}>
       <Image src={Add} alt="add"/>
       <button className={styles.createBtn} onClick={()=>modalOpen()}>Create Tracker</button>
-      </div>
-      {data.map((item, ind) => (
+      </div>}
+      {data.slice(0,showTracker? 9 : 4).map((item, ind) => (
   <div className={styles.innerContainerTwo} key={ind}>
     <div className={styles.topView}>
       <div className={styles.account}>
-        <Image src={People} alt="people"/>
+        <Image src={item.img}alt="people"/>
       </div>
       <div>
         <Image src={Template} alt="template"/>
@@ -184,13 +245,18 @@ const data=[
   </div>
 ))}
 
-      
+    
     </div>
+    {!showTracker && 
+    <>
     <div className={styles.trackers}>
       <div className={`${styles.trackersHead} ${type === "My Trackers" ? styles.active : ""}`} onClick={()=>setType("My Trackers")}>My Trackers</div>
       <div className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""}`} onClick={()=>setType("Saved Events")}>Saved Events</div>
     </div>
     {type==="My Trackers" && <MyTracker/>}
+    </>
+     } 
+    
     {showModal && 
       <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
         <div className={styles.modalInnerContainer}>

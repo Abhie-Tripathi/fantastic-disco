@@ -478,24 +478,7 @@ const Page = () => {
   }, []);
   return (
     <div className={styles.container}>
-      <div className={styles.topContainer}>
-        <div className={styles.topInnerContainerLeft}>
-          <div>
-            <Image src={userOne} alt="userOne"/>
-            </div>
-            <div>
-              <div className={styles.createHead}>Create Custom Tracker</div>
-              <div className={styles.createContent}>Select from the available data filters to create a custom tracker</div>
-            </div>
-        </div>
-        <div className={styles.topInnerContainerRight}>
-          <button className={styles.cancel}>Cancel</button>
-          <button className={styles.save}>Save Tracker</button>
-        </div>
-      </div>
-      <div className={styles.searchContainer}>
-        <input className={styles.textArea}type='text' placeholder='Enter Tracker Name'/>
-      </div>
+      
       <Filters/>
       {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto rerum tempore cumque a, cum, qui omnis totam beatae esse laboriosam nisi aut fugit officia quasi dolore sed cupiditate obcaecati nulla.
       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi, blanditiis. Quidem voluptatum, nihil voluptate porro repudiandae adipisci, esse ad saepe ipsam ipsa incidunt dolorem doloribus sunt non quibusdam unde explicabo. Distinctio quibusdam nihil ea dolore earum culpa cumque cum non magni iusto recusandae quae vero nisi neque accusamus quidem, perspiciatis exercitationem. Debitis quaerat doloremque architecto quo nisi minus voluptatibus est velit ut fugit corrupti perspiciatis natus recusandae officiis asperiores, aperiam nostrum eum necessitatibus, quibusdam modi accusantium tempora, maiores in nulla! Eaque delectus aut nam adipisci tempora esse corporis laudantium dicta nihil, enim quas suscipit voluptates molestias maiores accusamus facere culpa autem omnis accusantium reprehenderit beatae obcaecati vel perferendis officia. Esse iste voluptatum veritatis aliquid velit sapiente culpa deleniti quod tenetur ratione corrupti, repellendus itaque porro debitis, eaque ad, tempora saepe facere corporis aperiam. Natus, a. Aspernatur, quia labore. Aspernatur blanditiis eum quis, voluptatibus, voluptatem explicabo perferendis ut natus quam recusandae repellendus asperiores. Officia veritatis provident sapiente excepturi cumque ipsa, a exercitationem. Vel saepe optio ipsum eaque eveniet nemo eius illo similique, doloremque animi officiis laudantium inventore quis accusantium, sapiente cum beatae quo error nihil accusamus temporibus provident unde sint dolor? Blanditiis quasi saepe nam expedita laudantium suscipit non atque quae. */}

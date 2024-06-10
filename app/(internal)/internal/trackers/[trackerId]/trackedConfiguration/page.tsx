@@ -1,11 +1,16 @@
-import React from 'react'
+"use client"
+import React,{useEffect, useState} from 'react'
 import styles from './trackedConfiguration.style.module.css'
 import BasicFilter from '@/app/components/trackers/basicFilter'
 import LocationFilter from '@/app/components/trackers/locationFilter';
 import Insights from '@/app/components/trackers/insights';
 import Intel from '@/app/components/trackers/intel';
 import AdvanceFilter from '@/app/components/trackers/advanceFilter'
-import Lables from '@/app/components/trackers/lables';
+import Labels from '@/app/components/trackers/labels';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/context';
+import Link from 'next/link';
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg width="17" height="18" viewBox="0 0 17 18" fill={fillColor} xmlns="http://www.w3.org/2000/svg">
@@ -14,6 +19,31 @@ function CustomeTracker({ fillColor }: { fillColor: string }) {
   )
 }
 const page = () => {
+  const pathName = usePathname().split('/');
+  const last=pathName[pathName.length-2];
+  const [data,setData]=useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+        const url = `${baseUrl}/tracker/${last}`;
+        try {
+            const { data, error } = await myFetch(url, {
+                method: 'GET'
+            });
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                console.log('Data fetched:', data);
+                setData(data);
+            }
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        }
+    };
+
+    fetchData();
+}, []);
+console.log(data);
+
   return (
     <div className={styles.container}>
       <div className={styles.containerTop}>
@@ -25,19 +55,21 @@ const page = () => {
           </div>
         </div>
         <div className={styles.containerTopRight}>
+      <Link href={`/internal/trackers/${last}/editTracker`}>
           <button>Edit Tracker</button>
+          </Link>
         </div>
       </div>
       <div className={styles.containerTopTwo}>
-        Events in Bangalore
+        {data?.tracker?.name}
       </div>
       <div className={styles.innerContainer}>
         <div className={styles.innerContainerLeft} style={{ border: "1px solid #EBEBEB" }}>
-          <BasicFilter />
+          {data && <BasicFilter category={data}/>}
         </div>
         <div className={styles.innerContainerRight}>
-          <LocationFilter />
-          <Lables />
+          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.active_gte} endDate={data?.tracker?.filterValue?.active_lte}/>}
+          {data && <Labels labels={data?.tracker?.filterValue?.labels}/>}
         </div>
       </div>
       <div className={styles.line}></div>

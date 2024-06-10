@@ -329,4 +329,19 @@
     color: white;
     border-radius: 6px;
   }
+  .savedDiv{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 10px;
+  }
+  .saved{
+    font-size: 18px;
+    font-weight: 700;
+    color:#6750A4;
+  }
+  .deleteBtn{
+   color:#C4C4C4;
+   cursor: pointer;
+  }
   

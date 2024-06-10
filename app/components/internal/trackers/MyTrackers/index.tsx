@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './myTrackers.style.module.css';
 import Trackers from '.././AllTrackers';
 import Image from 'next/image';
-
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 function AllTrackers({ fillColor }:{fillColor:string}) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="11" viewBox="0 0 18 11" fill={fillColor}>
@@ -27,7 +28,24 @@ function PremiumTracker({ fillColor }:{fillColor:string}) {
 const Index = () => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   console.log(trackerType);
-
+  const [allTracker,setAllTracker]=useState([]);
+  useEffect(() => {
+      const fetchData = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/tracker?offset=0&limit=100`);
+        if (error) {
+          console.log(error);
+          return;
+        }
+  
+        if (data) {
+          setAllTracker(data.trackerData);
+          console.log(data);
+        }
+      };
+      fetchData();
+    }, []);
+    // console.log(allTracker);
+    
   return (
     <div className={styles.container}>
       <div className={styles.containerLeft}>
@@ -43,8 +61,14 @@ const Index = () => {
           </div>
         </div>
       </div>
+      
       <div className={styles.containerRight}>
-        {trackerType === "All Trackers" && <Trackers/>}
+      {allTracker?.length>0 &&allTracker.map((item,id)=>(
+        <>
+          {trackerType === "All Trackers" && <Trackers item={item}/>}
+          </>
+      ))}
+        
       </div>
     </div>
   );
