@@ -1,5 +1,5 @@
 .container {
-  min-width: 300px;
+  min-width: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +10,7 @@
   border-radius: 6px;
 }
 .slider {
-  width: 250px;
+  width: 350px;
 }
 
 .labelContainer {
