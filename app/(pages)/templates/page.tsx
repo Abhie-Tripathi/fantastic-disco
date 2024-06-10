@@ -15,6 +15,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -33,8 +34,12 @@ const Page = () => {
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
+
+  const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
+  const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
+  const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -52,6 +57,19 @@ const Page = () => {
   //     });
   //   }
   // }, [preview]);
+  useEffect(() => {
+    // When the preview changes, set the value of promotedEventOn and promotedEventLimit
+    if (preview === "phblv" || preview === "phbgv" || preview === "phblgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(1);
+    } else if (preview === "pcslv" || preview === "pcsgv" || preview === "pcslgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(3);
+    } else {
+      setPromotedEventOn(false);
+      setPromotedEventLimit(0);
+    }
+  }, [preview]);
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -66,32 +84,34 @@ const Page = () => {
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
-        <div className={styles.heading}>Add Widget : </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("Designs")}
-        >
-          Designs
+        <div className={styles.navLeft}>
+          <div className={styles.heading}>Add Widget : </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Designs")}
+          >
+            Designs
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("BrandKit")}
+          >
+            Brand Kit
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Filter")}
+          >
+            Filter Events
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
+            onClick={() => handleNavItemClick("Code")}
+          >
+            Code
+          </div>
         </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("BrandKit")}
-        >
-          Brand Kit
-        </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("Filter")}
-        >
-          Filter Events
-        </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
-          onClick={() => handleNavItemClick("Code")}
-        >
-          Code
-        </div>
-        <div></div>
+        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
@@ -108,9 +128,9 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize} 
+            setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Filter" && <Filters  />}
+          {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>
@@ -154,6 +174,9 @@ const Page = () => {
 
         </div>
         <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
+      </div>
+      <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
+        <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
       </div>
     </div>
   );
