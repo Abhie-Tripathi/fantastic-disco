@@ -100,12 +100,13 @@
     left: 46%;
 }
 .yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
     height: 89%;
     width: 40%;
     background-color: black;
     position: absolute;
     top: 80px;
-    right: -40%; /* Start off-screen */
+    right: -45%; /* Start off-screen */
     padding: 20px;
     transition: right 0.3s ease; /* Smooth transition */
 }

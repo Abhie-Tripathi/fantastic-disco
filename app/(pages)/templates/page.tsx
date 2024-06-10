@@ -15,6 +15,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -175,7 +176,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <div className={styles.closeYourWidgetBtn} onClick={() => setYourWidgetModal(false)}>X</div>
+        <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
       </div>
     </div>
   );
