@@ -15,6 +15,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -38,6 +39,7 @@ const Page = () => {
   const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
+  const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -82,31 +84,34 @@ const Page = () => {
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
-        <div className={styles.heading}>Add Widget : </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("Designs")}
-        >
-          Designs
+        <div className={styles.navLeft}>
+          <div className={styles.heading}>Add Widget : </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Designs")}
+          >
+            Designs
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("BrandKit")}
+          >
+            Brand Kit
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Filter")}
+          >
+            Filter Events
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
+            onClick={() => handleNavItemClick("Code")}
+          >
+            Code
+          </div>
         </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("BrandKit")}
-        >
-          Brand Kit
-        </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
-          onClick={() => handleNavItemClick("Filter")}
-        >
-          Filter Events
-        </div>
-        <div
-          className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
-          onClick={() => handleNavItemClick("Code")}
-        >
-          Code
-        </div>
+        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
@@ -169,6 +174,9 @@ const Page = () => {
 
         </div>
         <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
+      </div>
+      <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
+        <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
       </div>
     </div>
   );
