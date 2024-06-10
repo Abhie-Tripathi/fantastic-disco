@@ -658,10 +658,13 @@ const Pages = () => {
                 </Button>
                 <Popover>
                   <Dialog>
+                    {({ close }) => (
                     <EventKeyword
                       state={selectedLabels}
                       setState={setSelectedLabels}
+                      onClose={close}
                     />
+                    )}
                   </Dialog>
                 </Popover>
               </MenuTrigger>
