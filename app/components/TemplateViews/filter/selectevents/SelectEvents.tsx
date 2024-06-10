@@ -8,6 +8,7 @@ import useFetch from '@/hooks/useFetch';
 
 interface SelectProps {
     promotedEventOn: boolean;
+    promotedEventLimit : number;
 }
 
 interface PromotedEvent {
@@ -15,7 +16,7 @@ interface PromotedEvent {
     name: string;
 }
 
-const SelectEvents = ({promotedEventOn} : SelectProps) => {
+const SelectEvents = ({promotedEventOn, promotedEventLimit} : SelectProps) => {
     const { data } = useFetch("https://api.eventgeni.com/es/find?company=104");
     const [showPromotedInput, setShowPromotedInput] = useState<boolean>(false);
     const [isPromotedDropdownOpen, setIsPromotedDropdownOpen] =
@@ -84,6 +85,7 @@ const SelectEvents = ({promotedEventOn} : SelectProps) => {
                     />
                     <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
+                {promotedEventTags.length < promotedEventLimit && (
                 <div
                     className={`${styles.promotedInput} ${styles.inputInnerContainer}`}
                 >
@@ -95,7 +97,7 @@ const SelectEvents = ({promotedEventOn} : SelectProps) => {
                         value={promotedInput}
                         disabled={!promotedEventOn}
                     />
-                </div>
+                </div>)}
                 {isPromotedDropdownOpen && (
                     <div className={styles.dropdown}>
                         {matchingPromotedEvents.map((event, index) => (

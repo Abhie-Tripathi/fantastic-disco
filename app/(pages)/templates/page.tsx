@@ -35,6 +35,7 @@ const Page = () => {
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
 
   const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
+  const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
 
@@ -54,15 +55,19 @@ const Page = () => {
   //     });
   //   }
   // }, [preview]);
-
   useEffect(() => {
-    //When the preview will change, we will also set the value of promotedEvent, that wether it is true or not so that we can pass it to the filters section
-    if(preview === "phblv" || preview === "phbgv"||preview === "phblgv"|| preview === "pcslv" || preview === "pcsgv"|| preview === "pcslgv"){
-      setPromotedEventOn(true)
-    }else{
-      setPromotedEventOn(false)
+    // When the preview changes, set the value of promotedEventOn and promotedEventLimit
+    if (preview === "phblv" || preview === "phbgv" || preview === "phblgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(1);
+    } else if (preview === "pcslv" || preview === "pcsgv" || preview === "pcslgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(3);
+    } else {
+      setPromotedEventOn(false);
+      setPromotedEventLimit(0);
     }
-  }, [preview])
+  }, [preview]);
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -120,7 +125,7 @@ const Page = () => {
             setBtnRadius={setBtnRadius}
             setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Filter" && <Filters promotedEventOn={promotedEventOn} />}
+          {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>

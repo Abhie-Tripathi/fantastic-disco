@@ -5,11 +5,12 @@ import AddEventModal from '../../AddEventModal';
 import YourEvent from './yourevents/YourEvent';
 import SelectEvents from './selectevents/SelectEvents';
 
-interface FilterProps{
-    promotedEventOn : boolean;
+interface FilterProps {
+    promotedEventOn: boolean;
+    promotedEventLimit: number;
 }
 
-const Filters = ({promotedEventOn} : FilterProps) => {
+const Filters = ({ promotedEventOn, promotedEventLimit }: FilterProps) => {
     const { theme } = useTheme();
     const [activeNavItem, setActiveNavItem] = useState<string>("yourevents");
 
@@ -25,9 +26,9 @@ const Filters = ({promotedEventOn} : FilterProps) => {
                 <div className={`${styles.navItem} ${activeNavItem === "add" ? styles.activeNavItem : ""}`} onClick={() => handleNavItemClick("add")}>Add Event</div>
             </div>
             <div className={styles.activeWindow}>
-                {activeNavItem === "add" && <AddEventModal style='column'/>}
-                {activeNavItem === "select" && <SelectEvents promotedEventOn ={promotedEventOn}/>}
-                {activeNavItem === "yourevents" && <YourEvent/>}
+                {activeNavItem === "add" && <AddEventModal style='column' />}
+                {activeNavItem === "select" && <SelectEvents promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
+                {activeNavItem === "yourevents" && <YourEvent />}
             </div>
         </div>
     );
