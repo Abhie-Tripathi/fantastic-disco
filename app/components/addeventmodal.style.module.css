@@ -294,8 +294,8 @@
 }
 
 .formImgContainer .imageHolder {
-    height: 400px;
-    width: 400px;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -335,9 +335,9 @@
     position: relative;
 }
 
-.formImgContainer .imageHolder img {
-    height: 100%;
-    width: 100%;
+.formImgContainer .imageHolder .imageBox .generatedImage {
+    height: 400px;
+    width: 400px;
     border-radius: 10px;
 }
 
