@@ -597,7 +597,7 @@ const Search = () => {
           )}
         </div>
         {isSearchResultOpen && searchResult && searchResult.length > 0 && (
-          <div ref={triggerRef} className={styles.resultContainer}>
+          <div ref={triggerRef} className={`${styles.resultContainer} ${theme === "light" ? styles.resultContainer_light : ""}`}>
             {searchResult.map((item) => (
               <div
                 key={item.id}

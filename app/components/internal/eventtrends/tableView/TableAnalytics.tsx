@@ -21,6 +21,7 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
   const [sortingOrder, setSortingOrder] = useState("ASC");
   const { groupingByDate }: any = groupedData;
   const [eventData, setEventData] = useState(groupingByDate);
+  console.log(groupingByDate);
 
   const sortDataDesc = (key: keyof typeof eventData) => {
     setSortingOrder("DESC");
@@ -32,8 +33,8 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
       });
 
       const sortedGroupingByDate: typeof groupingByDate = {};
-      sortedKeys.forEach((key) => {
-        sortedGroupingByDate[key] = groupingByDate[key];
+      sortedKeys.forEach((date) => {
+        sortedGroupingByDate[date] = groupingByDate[date];
       });
       setEventData(sortedGroupingByDate);
     } else {
@@ -61,11 +62,13 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
         const parsedDateB = new Date(dateB).getTime();
         return parsedDateA - parsedDateB;
       });
-
+      
       const sortedGroupingByDate: typeof groupingByDate = {};
       sortedKeys.forEach((key) => {
         sortedGroupingByDate[key] = groupingByDate[key];
       });
+      console.log("Unsorted",eventData)
+      console.log("Sorted", sortedGroupingByDate);
       setEventData(sortedGroupingByDate);
     } else {
       const sortedGroupingByDate: typeof groupingByDate = {};
@@ -90,8 +93,11 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
   };
 
   const objectValues: any = Object.entries(eventData)[0][1];
-  const calculateTotalAttendance = (events: Event[]) => {
-    return events.reduce((total, event) => total + event.attendance, 0);
+  const calculateTotalAttendance = (events: any) => {
+    return events.reduce(
+      (total: any, event: any) => total + event.attendance,
+      0
+    );
   };
 
   return (
@@ -166,15 +172,17 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
           </thead>
 
           <tbody className={styles.table_body}>
-            {Object.entries(eventData).map(([date, events]: [string, any]) => (
-              <tr key={date}>
-                <td>{date}</td>
-                <td>{calculateTotalAttendance(events)}</td>
-                {events.map((event: any, index: any) => (
-                  <td key={index}>{event.attendance}</td>
-                ))}
-              </tr>
-            ))}
+            {Object.entries(eventData).map(
+              ([key, items]: [key: any, items: any]) => (
+                <tr key={key}>
+                  <td>{key}</td>
+                  <td>{calculateTotalAttendance(items)}</td>
+                  {items.map((item: any, index: number) => (
+                    <td key={index}>{item.attendance}</td>
+                  ))}
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
@@ -183,3 +191,15 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
 };
 
 export default TableAnalytics;
+
+// (
+{
+  /* <tr key={date}>
+  <td>{date}</td>
+  <td>{calculateTotalAttendance(events)}</td>
+  {events.map((event: any, index: any) => (
+    <td key={index}>{event.attendance}</td>
+  ))}
+</tr> */
+}
+// )

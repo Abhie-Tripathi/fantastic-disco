@@ -385,13 +385,17 @@ input:checked + .slider:before {
   max-height: 40vh;
   overflow-y: auto;
   width: calc(100vw - 135px);
-  background-color: white;
+  background-color: #1a1a1a;
   /* background-color: #131313; */
   z-index: 1;
   padding: 10px 0;
   box-shadow: 0px 0px 35px 0px rgba(154, 161, 171, 0.15);
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
+}
+
+.resultContainer_light {
+  background-color: white;
 }
 
 .eventName_container {

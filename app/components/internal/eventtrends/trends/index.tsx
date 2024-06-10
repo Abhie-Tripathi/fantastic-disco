@@ -97,7 +97,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     }
     // if (selectedLocations.length > 0) {
     // query += "&city=" + selectedLocations.join(",");
-    query += "&city=london,chicago";
+    query += "&city=London,Chicago";
     // params.set("city", selectedLocations?.join(","));
     // }
     if (selectedDateRange.length > 0) {
