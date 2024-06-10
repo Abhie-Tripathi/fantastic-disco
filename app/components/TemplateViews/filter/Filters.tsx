@@ -3,8 +3,13 @@ import styles from './filters.style.module.css'
 import { useTheme } from "@/context";
 import AddEventModal from '../../AddEventModal';
 import YourEvent from './yourevents/YourEvent';
+import SelectEvents from './selectevents/SelectEvents';
 
-const Filters = () => {
+interface FilterProps{
+    promotedEventOn : boolean;
+}
+
+const Filters = ({promotedEventOn} : FilterProps) => {
     const { theme } = useTheme();
     const [activeNavItem, setActiveNavItem] = useState<string>("yourevents");
 
@@ -21,6 +26,7 @@ const Filters = () => {
             </div>
             <div className={styles.activeWindow}>
                 {activeNavItem === "add" && <AddEventModal style='column'/>}
+                {activeNavItem === "select" && <SelectEvents promotedEventOn ={promotedEventOn}/>}
                 {activeNavItem === "yourevents" && <YourEvent/>}
             </div>
         </div>

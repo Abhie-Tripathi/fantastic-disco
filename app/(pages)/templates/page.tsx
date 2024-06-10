@@ -33,6 +33,8 @@ const Page = () => {
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
+
+  const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
 
@@ -52,6 +54,15 @@ const Page = () => {
   //     });
   //   }
   // }, [preview]);
+
+  useEffect(() => {
+    //When the preview will change, we will also set the value of promotedEvent, that wether it is true or not so that we can pass it to the filters section
+    if(preview === "phblv" || preview === "phbgv"||preview === "phblgv"|| preview === "pcslv" || preview === "pcsgv"|| preview === "pcslgv"){
+      setPromotedEventOn(true)
+    }else{
+      setPromotedEventOn(false)
+    }
+  }, [preview])
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -91,7 +102,6 @@ const Page = () => {
         >
           Code
         </div>
-        <div></div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
@@ -108,9 +118,9 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize} 
+            setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Filter" && <Filters  />}
+          {activeNavItem === "Filter" && <Filters promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>
