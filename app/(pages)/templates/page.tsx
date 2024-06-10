@@ -33,6 +33,9 @@ const Page = () => {
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
+
+  const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
+  const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
 
@@ -52,6 +55,19 @@ const Page = () => {
   //     });
   //   }
   // }, [preview]);
+  useEffect(() => {
+    // When the preview changes, set the value of promotedEventOn and promotedEventLimit
+    if (preview === "phblv" || preview === "phbgv" || preview === "phblgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(1);
+    } else if (preview === "pcslv" || preview === "pcsgv" || preview === "pcslgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(3);
+    } else {
+      setPromotedEventOn(false);
+      setPromotedEventLimit(0);
+    }
+  }, [preview]);
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -91,7 +107,6 @@ const Page = () => {
         >
           Code
         </div>
-        <div></div>
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
@@ -108,9 +123,9 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize} 
+            setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
-          {activeNavItem === "Filter" && <Filters  />}
+          {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>

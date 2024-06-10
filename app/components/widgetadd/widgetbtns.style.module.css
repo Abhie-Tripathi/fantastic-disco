@@ -13,7 +13,6 @@
     gap: 6px;
     cursor: pointer;
     color: grey;
-    cursor:not-allowed;
 }
 .button.active {
     border: none;
