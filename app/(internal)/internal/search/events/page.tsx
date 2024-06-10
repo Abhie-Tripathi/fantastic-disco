@@ -41,6 +41,7 @@ import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
 import CloseIcon from "/public/close.svg";
+import FilterIcon from "/public/internal/advanceFilter.svg"
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -369,7 +370,7 @@ const Search = () => {
 
     // Inbound Score
     if (selectedInboundScore > 0) {
-      queryString.maturity = selectedInboundScore;
+      queryString.inboundScore = selectedInboundScore;
     }
 
     // User Ratings
@@ -899,12 +900,13 @@ const Search = () => {
               Save as Tracker
             </button>
             <button
-              className={styles.clearfilter_button}
               onClick={() => {
                 setShowAdvanceFilter((prev) => !prev);
               }}
+              style={{display:"flex", alignItems:"center", gap:"4px"}}
             >
-              Advance Filters
+              <Image src={FilterIcon} width={18} height={18} alt="filters" />
+              <span className={styles.clearfilter_button} > Advanced Filters</span>
             </button>
           </div>
         </div>
@@ -1132,6 +1134,7 @@ const Search = () => {
                         <EventKeyword
                           state={selectedEventKeywords}
                           setState={setSelectedEventKeywords}
+                          onClose={close}
                         />
                       )}
                     </Dialog>

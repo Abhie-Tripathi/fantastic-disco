@@ -45,7 +45,7 @@ const IntScoreSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
                       left: `${key}%`,
                     }}
                   >
-                    <span className={styles.markLabel}>{value}</span>
+                    <span className={styles.markLabel} style={{right:"-15px"}}>{value}</span>
                   </div>
                 );
               })}
