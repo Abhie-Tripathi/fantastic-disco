@@ -19,7 +19,6 @@ const LabelDropdown = ({ state, setState }: LabelDropdownProps) => {
       ? setState(state.filter((data) => data !== value))
       : setState([...state, value]);
   };
-
   return (
     <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <div className={styles.search} style={{background: theme==="light"?" #f7f7f9":""}}>

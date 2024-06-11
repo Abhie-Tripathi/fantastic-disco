@@ -5,9 +5,12 @@
     justify-content: space-between;
 }
 .leftNav{
-    color:#6750A4;
-    font-size: 18px;
-    font-weight: 700;
+  color: #6750A4;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  gap:5px;
+  font-weight: 700;
 }
 .rightNav{
     color:#696B83;

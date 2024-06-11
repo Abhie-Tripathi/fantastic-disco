@@ -1,14 +1,20 @@
 "use client"
 import React,{useEffect, useState} from 'react'
 import Expand from '/public/expand_more.svg';
+import { Notes } from '@/app/components/eventDetail/Notes';
 import Table from '../savedEvents/page';
 import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/context';
 // import Table from '@/app/components/Table'
 const Page = () => {
   const [active,setActive]=useState("Active Events")
+  const pathName = usePathname().split('/');
+  const id=pathName[pathName.length-2];
   console.log(active);
   const [open,setOpen]=useState(false);
   const showInsights = {
@@ -35,7 +41,27 @@ const Page = () => {
       },
     ],
   };
+  useEffect(() => {
+    const fetchData = async () => {
+        const url = `${baseUrl}/tracker/${id}`;
+        try {
+            const { data, error } = await myFetch(url, {
+                method: 'GET'
+            });
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                console.log('Data fetched:', data);
+                
+            }
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        }
+    };
 
+    fetchData();
+}, []);
+  
   const lineOptions = {
     plugins: {
       legend: {
@@ -72,7 +98,10 @@ const Page = () => {
   useEffect(()=>{
       setOpen(true);
   },[])
+  
   return (
+    // <div className={styles.containerOne}>
+    
     <div className={styles.container}>
     <div className={styles.top}>
       <div className={styles.topLeft} onClick={() => setOpen(!open)}>
@@ -117,7 +146,10 @@ const Page = () => {
     </div>
     <Table />
   </div>
-  
+  // <div>
+  //           {/* <Notes/> */}
+  // </div>
+  // </div>
   )
 }
 

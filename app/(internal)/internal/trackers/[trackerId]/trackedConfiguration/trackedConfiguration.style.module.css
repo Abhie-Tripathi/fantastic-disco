@@ -52,10 +52,12 @@
     display: grid;
     grid-template-columns: calc(45% - 5px) calc(55% - 5px);
     width: 100%;
+    /* border-radius: 5px; */
     gap: 10px;
 }
 .innerContainerLeft{
     /* width:40%; */
+    border-radius: 5px;
 }
 .innerContainerRight{
     display: flex;

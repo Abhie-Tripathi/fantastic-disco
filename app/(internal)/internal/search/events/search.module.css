@@ -404,6 +404,10 @@ input:checked + .slider:before {
   flex-wrap: nowrap;
   padding: 10px;
   flex-direction: row;
+<<<<<<< HEAD
+  width: 100%;
+  overflow-x: auto;
+=======
   /* width: 100%; */
   overflow-x: auto;
 
@@ -425,6 +429,7 @@ input:checked + .slider:before {
 .eventName_container::-webkit-scrollbar-thumb {
   background: #6750A4;
   border-radius: 24px;
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 }
  
 .eventName_chip {
