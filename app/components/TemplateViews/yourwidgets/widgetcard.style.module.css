@@ -1,0 +1,122 @@
+.body{
+    border-radius: 12px;
+    padding: 13px 15px;
+    border: 1px solid #6650a465;
+    background: linear-gradient(270deg, #0c0c0c 0%, rgba(102, 80, 164, 0.219) 100%);
+}
+.headerSection{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.name_statusContainer{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.iconCircle {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(137.25deg, #000000 -17.15%, rgba(231, 231, 231, 0.6875) 17.46%, rgba(255, 255, 255, 0.34139) 44.62%, rgba(255, 255, 255, 0.222774) 61.76%, #666666 117.91%);
+    box-shadow: 0px 0px 4.942586421966553px 8.031702995300293px #2B2B2B40 inset;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+}
+.widgetName{
+    font-size: 13px;
+    color: white;
+}
+.statusBtn {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+.statusFlag{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.activeFlag {
+    background-color: #19922C;
+}
+.inactiveFlag{
+    background-color: #921919;
+}
+.inprogressFlag{
+    background-color: #bba818;
+}
+.status{
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+}
+.activeStatus {
+    color: #0E9B1C;
+}
+.inactiveStatus {
+    color: #921919;
+}
+.inprogressStatus {
+    color: #bba818;
+}
+.delete {
+    padding: 3px;
+    border-radius: 8px;
+    background-color: #313131;
+    cursor: pointer;
+}
+.delete:hover {
+    transition-duration: .2s;
+    background-color: rgb(218, 99, 99);
+}
+.footerSection{
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dateContainer {
+    outline: 1px solid transparent;
+    padding: 3px;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: #313131;
+}
+
+.date {
+    font-size: 10px;
+    font-weight: 400;
+    padding: 5px 10px;
+}
+
+.viewDetailsContainer {
+    display: flex;
+    border: 1px solid #6750A4;
+    border-radius: 40px;
+    padding: 3px 6px;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.viewDetailsIcon {
+    background-color: #2B233D;
+    border-radius: 10px;
+}
+
+.viewDetailsHeading {
+    font-size: 10px;
+    color: white;
+}
+

@@ -15,6 +15,12 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+<<<<<<< HEAD
+=======
+import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
+import Image from "next/image";
+import FullScreeIcon from '/public/fullscreen.svg'
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -33,8 +39,19 @@ const Page = () => {
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
+<<<<<<< HEAD
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
+=======
+
+  const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
+  const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
+  // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
+  const [widgetSelected, setWidgetSelected] = useState<string>("");
+  const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
+
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -52,6 +69,30 @@ const Page = () => {
   //     });
   //   }
   // }, [preview]);
+<<<<<<< HEAD
+
+  const handleStep = () => {
+    if (activeNavItem === "Designs") {
+      setActiveNavItem("BrandKit")
+    } else if (activeNavItem === "BrandKit") {
+      setActiveNavItem("Filter")
+    } else if (activeNavItem === "Filter") {
+      setActiveNavItem("Code")
+=======
+  useEffect(() => {
+    // When the preview changes, set the value of promotedEventOn and promotedEventLimit
+    if (preview === "phblv" || preview === "phbgv" || preview === "phblgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(1);
+    } else if (preview === "pcslv" || preview === "pcsgv" || preview === "pcslgv") {
+      setPromotedEventOn(true);
+      setPromotedEventLimit(3);
+    } else {
+      setPromotedEventOn(false);
+      setPromotedEventLimit(0);
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
+    }
+  }
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -66,6 +107,7 @@ const Page = () => {
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
+<<<<<<< HEAD
         <div className={styles.heading}>Add Widget : </div>
         <div
           className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
@@ -95,6 +137,39 @@ const Page = () => {
       </div>
       <div className={styles.body}>
         <div className={styles.editWindow}>
+=======
+        <div className={styles.navLeft}>
+          <div className={styles.heading}>Add Widget : </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Designs")}
+          >
+            Designs
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("BrandKit")}
+          >
+            Brand Kit
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
+            onClick={() => handleNavItemClick("Filter")}
+          >
+            Filter Events
+          </div>
+          <div
+            className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
+            onClick={() => handleNavItemClick("Code")}
+          >
+            Code
+          </div>
+        </div>
+        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
+      </div>
+      <div className={styles.body}>
+        {!isFullScreen && <div className={styles.editWindow}>
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
           {activeNavItem === "Designs" && <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
           {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
@@ -110,10 +185,17 @@ const Page = () => {
             setBtnRadius={setBtnRadius}
             setBtnFontSize={setBtnFontSize} 
             setBgColor={setBgColor} />}
+<<<<<<< HEAD
           {activeNavItem === "Filter" && <Filters  />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
         </div>
         <div className={styles.previewWindow}>
+=======
+          {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
+          {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
+        </div>}
+        <div className={`${styles.previewWindow} ${isFullScreen ? styles.fullPreview :""}`}>
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
           <div className={styles.heading}>
             {preview === "stickytop" ? "Sticky Top" :
               preview === "stickydown" ? "Sticky Footer" :
@@ -151,9 +233,15 @@ const Page = () => {
                                           <ScrollView type='left' /> :
                                           preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
-
+           <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={()=>setIsFullScreen(!isFullScreen)}/>   
         </div>
         <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
+<<<<<<< HEAD
+=======
+      </div>
+      <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
+        <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
       </div>
     </div>
   );

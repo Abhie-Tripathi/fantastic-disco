@@ -22,6 +22,7 @@ const SignIn = () => {
   const router = useRouter();
   const { signin } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
+
   const signinHandler = async (event: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     try {

@@ -1,0 +1,21 @@
+.heading_btnContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.heading{
+    color: white;
+}
+.closeBtn{
+    padding: 5px;
+    border: 1px solid #6750a4;
+    border-radius: 10px;
+    color: #6750a4;
+    cursor: pointer;
+}
+.widgets{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

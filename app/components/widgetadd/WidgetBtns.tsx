@@ -2,9 +2,15 @@ import React from 'react'
 import styles from './widgetbtns.style.module.css'
 
 interface WidgetBtnsProps {
+<<<<<<< HEAD
     widgetSelected?: string;
     // setType?: React.Dispatch<React.SetStateAction<string>>;
     
+=======
+    type: string;
+    setType: React.Dispatch<React.SetStateAction<string>>;
+
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 }
 const WidgetBtns: React.FC<WidgetBtnsProps> = ({ widgetSelected }) => {
     return (

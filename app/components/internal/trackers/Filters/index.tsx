@@ -958,7 +958,9 @@ const Pages = () => {
                     <EventKeyword
                       state={selectedLabels}
                       setState={setSelectedLabels}
+                      onClose={close}
                     />
+                   
                   </Dialog>
                 </Popover>
               </MenuTrigger>
@@ -1012,6 +1014,9 @@ const Pages = () => {
                         Branded Event
                         {selectedEventAttendanceRange[0] !== undefined ? (
                           <span className={styles.input_selected_title}>
+                            {`${selectedEventAttendanceRange[0]} - ${
+                              selectedEventAttendanceRange[1] || "Unlimited"
+                            }`}
                             {`${selectedEventAttendanceRange[0]} - ${
                               selectedEventAttendanceRange[1] || "Unlimited"
                             }`}
@@ -1165,6 +1170,7 @@ const Pages = () => {
                             <input
                               type="checkbox"
                               onChange={() => {}}
+                              // checked={}
                               // checked={}
                             />
                             <span className={styles.slider}></span>

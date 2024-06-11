@@ -1,18 +1,46 @@
 .layout {
     padding: 10px;
 }
+<<<<<<< HEAD
 
 .navbar {
     display: flex;
     align-items: center;
     gap: 10px;
+=======
+.navbar {
+    display: flex;
+    align-items: center;
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
     background-color: #1a1a1a;
     border-radius: 10px;
     padding: 5px;
     margin-bottom: 5px;
+<<<<<<< HEAD
 }
 .heading{
     color: white;
+=======
+    justify-content: space-between;
+}
+.navLeft{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.yourWidgets{
+    padding: 5px 20px;
+    width: fit-content;
+    cursor: pointer;
+    background-color: #6750a4;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+}
+.heading{
+    color: white;
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 }
 .navItem {
     padding: 5px 20px;
@@ -39,6 +67,7 @@
 .completed {
     color: #6750a4;
     border: 1px solid #6750a4;
+<<<<<<< HEAD
 }
 
 .active {
@@ -46,6 +75,15 @@
     border: 1px solid #6750a4;
 }
 
+=======
+}
+
+.active {
+    color: #6750a4;
+    border: 1px solid #6750a4;
+}
+
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 .body {
     display: flex;
     gap: 5px;
@@ -67,15 +105,31 @@
     height: 80vh;
     overflow-y: auto;
     padding: 10px;
+    position: relative;
 }
+.fullPreview{
+    width: 100%;
+}
+<<<<<<< HEAD
 
+=======
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 .preview {
     display: flex;
     height: 90%;
     align-items: center;
     justify-content: center;
 }
+<<<<<<< HEAD
 
+=======
+.fullScreenIcon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 .submitBtn {
     position: absolute;
     bottom: 15px;
@@ -84,4 +138,32 @@
     color: white;
     background-color: #6750a4;
     left: 46%;
+<<<<<<< HEAD
+=======
+}
+.yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
+    height: 89%;
+    width: 40%;
+    background-color: black;
+    position: absolute;
+    top: 80px;
+    right: -45%; /* Start off-screen */
+    padding: 20px;
+    transition: right 0.3s ease; /* Smooth transition */
+    overflow-y: auto;
+}
+
+.yourWidgetModal.open {
+    right: 0; /* Move on-screen */
+}
+
+.closeYourWidgetBtn {
+    background-color: #1a1a1a;
+    padding: 5px;
+    border-radius: 10px;
+    color: white;
+    width: fit-content;
+    cursor: pointer;
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 }

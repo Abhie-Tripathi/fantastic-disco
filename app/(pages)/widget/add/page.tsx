@@ -1,5 +1,9 @@
 "use client";
+<<<<<<< HEAD
 import React, {useState } from "react";
+=======
+import React, { useState } from "react";
+>>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 import styles from "./page.style.module.css";
 import WidgetBtns from "../../../components/widgetadd/WidgetBtns";
 import StickyWidget from "../../../components/widgetadd/StickyWidget";
@@ -38,9 +42,8 @@ const Page = () => {
           </div>
         )}
         <div
-          className={`${styles.previewSection} ${
-            previewState === "Full Preview" ? styles.fullPreview : ""
-          }`}
+          className={`${styles.previewSection} ${previewState === "Full Preview" ? styles.fullPreview : ""
+            }`}
         >
           <Preview
             type={type}

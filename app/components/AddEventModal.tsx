@@ -241,7 +241,7 @@ const AddEventModal = (props : Props) => {
                             </div>
                         ) : (
                             <div className={styles.imageBox}>
-                                <Image src={image.placeHolder} alt="" width={400} height={400} />
+                                <Image src={image.placeHolder} alt="" className={styles.generatedImage} />
                                 <div className={styles.imageLocation}>{location}</div>
                                 <Image src={logo} alt='logo' className={styles.logo}></Image>
                             </div>
