@@ -16,6 +16,8 @@ import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
+import Image from "next/image";
+import FullScreeIcon from '/public/fullscreen.svg'
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("Designs");
@@ -40,6 +42,8 @@ const Page = () => {
   // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
   const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
+
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -114,7 +118,7 @@ const Page = () => {
         <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
       </div>
       <div className={styles.body}>
-        <div className={styles.editWindow}>
+        {!isFullScreen && <div className={styles.editWindow}>
           {activeNavItem === "Designs" && <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />}
           {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
@@ -132,8 +136,8 @@ const Page = () => {
             setBgColor={setBgColor} />}
           {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
-        </div>
-        <div className={styles.previewWindow}>
+        </div>}
+        <div className={`${styles.previewWindow} ${isFullScreen ? styles.fullPreview :""}`}>
           <div className={styles.heading}>
             {preview === "stickytop" ? "Sticky Top" :
               preview === "stickydown" ? "Sticky Footer" :
@@ -171,7 +175,7 @@ const Page = () => {
                                           <ScrollView type='left' /> :
                                           preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
-
+           <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={()=>setIsFullScreen(!isFullScreen)}/>   
         </div>
         <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
       </div>
