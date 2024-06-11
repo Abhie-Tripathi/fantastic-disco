@@ -283,6 +283,11 @@ const Search = () => {
       queryString.eventRank = selectedEventRank;
     }
 
+    // Local Rank
+    if (selectedLocalRank[0] !== 0 || selectedLocalRank[1] !== 100) {
+      queryString.localRank = selectedLocalRank;
+    }
+
     // Dates
     if (selectedDateRange[0]) {
       queryString.startDate = [
@@ -325,7 +330,7 @@ const Search = () => {
 
     // Event Edition
     if (selectedEventEdition > 0) {
-      queryString.eventEdition = selectedEventEdition;
+      queryString.editionRange = selectedEventEdition;
     }
 
     // Event Keywords
@@ -360,12 +365,27 @@ const Search = () => {
 
     // Maturity
     if (selectedMaturity > 0) {
-      queryString.maturity = selectedMaturity;
+      // queryString.maturity = selectedMaturity;
+      if(selectedMaturity >= 1 && selectedMaturity <=25)
+        queryString.maturity = 'new';
+      else if(selectedMaturity >= 26 && selectedMaturity <= 50)
+        queryString.maturity = 'low';
+      else if(selectedMaturity >= 51 && selectedMaturity <= 75)
+        queryString.maturity = 'medium';
+      else
+        queryString.maturity = 'High';
     }
 
     // Int. Score
     if (selectedINScore > 0) {
-      queryString.maturity = selectedINScore;
+      if(selectedINScore >= 1 && selectedINScore <=25)
+        queryString.internationalScore = 'local';
+      else if(selectedINScore >= 26 && selectedINScore <= 50)
+        queryString.internationalScore = 'National';
+      else if(selectedINScore >= 51 && selectedINScore <= 75)
+        queryString.internationalScore = 'Regional';
+      else
+        queryString.internationalScore = 'International';
     }
 
     // Inbound Score
@@ -529,6 +549,7 @@ const Search = () => {
       estExhibit: true,
       growth: true,
       repeatSent: true,
+      eventSeries: selectedEventSeries,
     });
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -545,7 +566,11 @@ const Search = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [selectedEventSeries]);
+
+  useEffect(() => {
+    createQueryString();
+  }, [selectedEventSeries, selectedBrandedEvent]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -566,12 +591,12 @@ const Search = () => {
               onChange={handleSearchChange}
               value={searchInput}
             ></input>
-            <div
+            {/* <div
               className={styles.recentSearches_button}
               onClick={() => setShowRecentSearches(!showRecentSearches)}
             >
               Recent searches
-            </div>
+            </div> */}
             <button onClick={searchHandler}>
               <Image src={SearchIcon} alt="search" className={iconClass} />
             </button>
@@ -854,7 +879,7 @@ const Search = () => {
 
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
+                <div className={styles.input_container} style={{width:"fit-content"}}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Event Attendance
@@ -1141,7 +1166,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1168,15 +1193,13 @@ const Search = () => {
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
                     <EventAdvFilter
                       state={selectedEventRanking}
                       setState={setSelectedEventRanking}
                       data={eventRankData}
                     />
-                    {/* </Dialog> */}
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
               </div>
             )}
 
@@ -1322,9 +1345,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          <span className={styles.input_selected_title}>
-                            {selectedMaturity} %
-                          </span>
+                          {selectedMaturity !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedMaturity} %
+                            </span>
+                          )}
                         </div>
                         <div className={styles.toggle_container}>
                           <span>
@@ -1332,7 +1357,7 @@ const Search = () => {
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                // checked={}
+                                checked={selectedMaturity !== 0}
                               />
                               <span className={styles.slider}></span>
                             </label>
