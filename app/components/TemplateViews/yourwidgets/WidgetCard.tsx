@@ -39,6 +39,7 @@ const WidgetCard = ({status, statusIcon} : WidgetProps) => {
                     <div className={styles.viewDetailsHeading}>Edit</div>
                     <Image src={DownArrow} alt='down' className={styles.viewDetailsIcon} />
                 </div>
+
             </div>
         </div>
     )

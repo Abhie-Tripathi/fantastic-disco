@@ -113,6 +113,7 @@
     width: 40%;
     background-color: black;
     position: absolute;
+    z-index: 1;
     top: 80px;
     right: -45%; /* Start off-screen */
     padding: 20px;
