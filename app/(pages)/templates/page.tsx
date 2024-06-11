@@ -73,7 +73,7 @@ const Page = () => {
       setPromotedEventOn(false);
       setPromotedEventLimit(0);
     }
-  }, [preview]);
+  },[preview])
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -132,7 +132,7 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize}
+            setBtnFontSize={setBtnFontSize} 
             setBgColor={setBgColor} />}
           {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
           {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}

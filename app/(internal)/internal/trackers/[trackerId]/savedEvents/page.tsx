@@ -1,9 +1,11 @@
 "use client"
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import styles from './savedEvent.style.module.css'
 import ExpandAll from "/public/expandAll.svg";
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/theme'
+import { myFetch} from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 const Page = () => {
   const urlPath=usePathname().split('/');
   const lastParam=urlPath[urlPath.length-1];
@@ -142,8 +144,100 @@ const Page = () => {
     event.preventDefault();
     setItemsPerPage(parseInt(event.target.value));
   }
+  const [data,setData]=useState<any>();
+  const fetchData = async (secondLast:string) => {
+    const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/events`);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (data) {
+      console.log(data);
+      if(data?.events?.length>0){
+        setData(data.events);
+      }
+      // setCatgeoryData(data);
+    }
+  };
+  const fetchSavedData=async()=>{
+    const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (data) {
+      console.log(data);
+      if(data?.savedEvents?.length>0){
+        setData(data.savedEvents);
+      }
+      // setCatgeoryData(data);
+    }
+  }
+  useEffect(()=>{
+    if(lastParam==="trackedEvents"){
+      const secondLast=urlPath[urlPath.length-2];
+      fetchData(secondLast);
+    }else {
+      fetchSavedData();
+    }
+  },[])
+  function formatDate(dateString:Date) {
+    const date = new Date(dateString);
+    
+    // Get day
+    const day = date.getDate();
+    
+    // Get month and convert it to short format
+    const month = date.toLocaleString('default', { month: 'short' });
+    
+    // Get year
+    const year = date.getFullYear();
+    
+    // Format the date
+    const formattedDate = `${day} ${month}, ${year}`;
+    
+    return formattedDate;
+}
+ const saveEvent=async()=>{
+  console.log(1);
+  
+  const url=`${baseUrl}/tracker/saved-events`
+  const dataToSend={
+    "eventGroupIds":["00016011-d26b-40ef-baf6-c5929bfb862c"]
+}
+   const {data,error}=await myFetch(url,{
+      method:"POST",
+      body: JSON.stringify(dataToSend),
+          headers: {
+            "Content-Type": "application/json",
+          },
+   })
+   if(data)
+   console.log(data);
+  else console.log(error);
+  
+   
+ }
+ console.log(data);
+ const [openCheck,setOpenCheck]=useState(false);
+ const [isChecked,setChecked]=useState(false);
+ const handleCheckboxChange=()=>{
+  setChecked(!isChecked);
+ }
   return (
     <>
+    {/* {data && data?.map((item,ind)=>(
+      
+    ))} */}
+    {lastParam==="savedEvents" &&
+    <div className={styles.savedDiv}>
+      <div className={styles.saved}>Saved Events</div>
+      <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div>
+    </div>
+    }
+    <div></div>
     <div
       className={`${styles.table_wrapper} ${theme === "light" ? styles.table_wrapper_light : ""
         }`}
@@ -154,7 +248,19 @@ const Page = () => {
             }`}
         >
           <tr className={styles.table_head_row}>
-            <th className={styles.table_firstColumn}>Event</th>
+            <th className={styles.table_firstColumn}>
+              <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
+              {/* {openCheck && 
+              <div style={{display:"flex"}}><input
+              type="checkbox"
+              // checked={isChecked}
+              // onChange={handleCheckboxChange}
+            /></div>
+              } */}
+              
+              Event
+              </div>
+            </th>
             <th>Date</th>
             <th>Venue</th>
             <th>Category</th>
@@ -171,39 +277,49 @@ const Page = () => {
         </thead>
 
         <tbody className={styles.table_body}>
-          {eventPerPage.map((event: any) => (
-            <tr key={event.id}>
+          {data && data?.map((event: any,ind:number) => (
+            <tr key={ind}>
               <td>
-                <div>
-                {event.Event.length > 80
-                      ? event.Event.slice(0, 80) + "..."
-                      : event.Event}
+                <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
+                {openCheck && 
+              <div><input
+              type="checkbox"
+              style={{display:"flex"}}
+              // checked={isChecked}
+              // onClick={()=>setChecked(!isChecked)}
+              // onChange={handleCheckboxChange}
+            /></div>
+              }
+                {event?.title?.length > 80
+                      ? event.title.slice(0, 80) + "..."
+                      : event.title}
                   <div className={styles.event_organizer}>
                     {event.Organizer}
                   </div>
                 </div>
               </td>
               <td>
-                <div>{event.Date.substring(0,14)}</div>
-                <div>{event.Date.substring(14,event.Date.length)}</div>
+                <div>{formatDate(event?.startingDateTime)} - {formatDate(event?.endingDateTime)}</div>
+                {/* <div>{event.Date.substring(14,event.Date.length)}</div> */}
               </td>
               <td>
-                {event.Venue}
+                {event?.venue?.city}
               </td>
-              <td>{event.Category}</td>
-              <td>1000-2000</td>
-              <td>High</td>
+              <td>Abc</td>
+              <td>{event?.totalAttendance}</td>
+              <td>{!event.internationalAttendance? <div>High</div> :event?.internationalAttendance}</td>
               {lastParam==="trackedEvents" && 
               <td>
-                <button className={styles.saveBtn}>Save</button>
+                <button className={styles.saveBtn} onClick={()=>saveEvent()}>Save</button>
                 </td>}
             </tr>
           ))}
         </tbody>
         
       </table>
-      
+    
     </div>
+
     <div
         className={`${styles.pagination_container} ${
           theme === "light" ? styles.pagination_container_light : ""

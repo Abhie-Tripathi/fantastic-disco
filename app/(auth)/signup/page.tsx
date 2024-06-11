@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import LeftBackground from "../../../public/leftBackground.svg";
 import TopRightBackground from "../../../public/topRightBackground.svg";
+import Carousel from '@/app/components/carousel'
 import BottomRightBackground from "../../../public/bottomRightBackground.svg";
 import SignUpVisuals from "../../../public/signupVisuals.svg";
 import Verification from "../verification/page";
@@ -105,7 +106,7 @@ const SignUp = () => {
   };
   return (
     <div className={styles.container}>
-      <Image
+      {/* <Image
         src={LeftBackground}
         alt="leftBackground"
         className={`${styles.leftBackground_image} desktop_view tablet_view`}
@@ -119,16 +120,14 @@ const SignUp = () => {
         src={BottomRightBackground}
         alt="bottomRightBackground"
         className={`${styles.bottomRightBackground} desktop_view tablet_view`}
-      />
+      /> */}
 
       {!showVerification && (
         <div className={styles.sub_container}>
-          <Image
-            src={SignUpVisuals}
-            alt="loginvisuals"
-            className={styles.image}
-          />
-          <form onSubmit={handleSignUp}>
+          <div className={styles.sub_containerLeft}>
+         <Carousel/>
+        </div>
+          <form onSubmit={handleSignUp} className={styles.formContainer}>
             <div className={styles.form_container}>
               <div className={styles.form_heading}>Sign Up</div>
 

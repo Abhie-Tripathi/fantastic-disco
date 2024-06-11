@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import OtpInput from "react-otp-input";
+import Carousel from '@/app/components/carousel'
 import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
 import { useRouter } from "next/navigation";
@@ -106,13 +107,9 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
-        <Image
-          src={VerificationVisuals}
-          alt="verificationvisuals"
-          width={500}
-          className={`${styles.verification_visuals} ${styles.image}`}
-        />
-
+        <div className={styles.leftContainer}>
+      <Carousel/>
+      </div>
         <div className={styles.form_container}>
           <div className={styles.message}>
             <span className={styles.message_highlighted}>Check your </span>

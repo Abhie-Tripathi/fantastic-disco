@@ -52,7 +52,7 @@ const PasswordReset = () => {
         <div className={styles.heroImage}></div>
       </div>
 
-      <Image
+      {/* <Image
         src={LeftBackground}
         alt="leftBackground"
         className={`${styles.leftBackground_image} desktop_view tablet_view`}
@@ -66,10 +66,13 @@ const PasswordReset = () => {
         src={BottomRightBackground}
         alt="bottomRightBackground"
         className={`${styles.bottomRightBackground} desktop_view tablet_view`}
-      />
+      /> */}
 
       <div className={styles.sub_container}>
+      <div className={styles.sub_containerLeft}>
         <Image src={LoginVisuals} alt="loginvisuals" className={styles.image} />
+        </div>
+        {/* <div className={styles.form_outercontainer}> */}
         <form className={styles.loginForm} onSubmit={forgetPasswordHandler}>
           <div className={styles.form_container}>
             <div className={styles.form_heading}>Forgot Password</div>
@@ -93,6 +96,7 @@ const PasswordReset = () => {
             </div>
           </div>
         </form>
+        {/* </div> */}
       </div>
     </div>
   );
