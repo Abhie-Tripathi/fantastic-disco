@@ -10,13 +10,13 @@ import { useTheme } from "@/context";
 interface EventKeywordProps {
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
-  // onClose: () => void;
+  onClose: () => void;
 }
 
 const EventKeyword = ({
   state,
   setState,
-  // onClose,
+  onClose,
 }: EventKeywordProps) => {
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
@@ -44,7 +44,7 @@ const EventKeyword = ({
 
   const handleSaveData = () => {
     setState(eventKeyword);
-    // onClose();
+    onClose();
   };
 
   return (
@@ -69,7 +69,7 @@ const EventKeyword = ({
               Keywords excluded
             </div>
           </div>
-          <div className={styles.header_button}>
+          <div className={styles.header_button} onClick={onClose}>
             <Image src={CloseIcon} width={20} height={20} alt="close" />
           </div>
         </div>
