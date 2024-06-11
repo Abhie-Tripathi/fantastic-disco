@@ -41,10 +41,7 @@ import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
 import CloseIcon from "/public/close.svg";
-<<<<<<< HEAD
-=======
 import FilterIcon from "/public/internal/advanceFilter.svg"
->>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -373,11 +370,7 @@ const Search = () => {
 
     // Inbound Score
     if (selectedInboundScore > 0) {
-<<<<<<< HEAD
-      queryString.maturity = selectedInboundScore;
-=======
       queryString.inboundScore = selectedInboundScore;
->>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
     }
 
     // User Ratings
@@ -1141,10 +1134,7 @@ const Search = () => {
                         <EventKeyword
                           state={selectedEventKeywords}
                           setState={setSelectedEventKeywords}
-<<<<<<< HEAD
-=======
                           onClose={close}
->>>>>>> e382fe65f31e4f8c178f89fe534db35d61dc2302
                         />
                       )}
                     </Dialog>
