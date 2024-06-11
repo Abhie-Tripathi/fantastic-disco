@@ -117,6 +117,7 @@
     right: -45%; /* Start off-screen */
     padding: 20px;
     transition: right 0.3s ease; /* Smooth transition */
+    overflow-y: auto;
 }
 
 .yourWidgetModal.open {

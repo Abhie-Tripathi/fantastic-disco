@@ -38,20 +38,34 @@
     box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
     outline: 0.47px solid transparent;
 }
-
-.activeFlag {
-    background-color: #19922C;
+.statusFlag{
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
-
-.status {
+.activeFlag {
+    background-color: #19922C;
+}
+.inactiveFlag{
+    background-color: #921919;
+}
+.inprogressFlag{
+    background-color: #bba818;
+}
+.status{
     font-size: 13px;
     font-weight: 400;
     line-height: 19.87px;
     text-align: left;
+}
+.activeStatus {
     color: #0E9B1C;
+}
+.inactiveStatus {
+    color: #921919;
+}
+.inprogressStatus {
+    color: #bba818;
 }
 .delete {
     padding: 3px;

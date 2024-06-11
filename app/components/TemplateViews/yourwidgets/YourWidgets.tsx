@@ -14,7 +14,11 @@ const YourWidgets = ({ setYourWidgetModal }: Props) => {
         <div className={styles.closeBtn} onClick={() => (setYourWidgetModal(false))}>{`>>`}</div>
       </div>
       <div className={styles.widgets}>
-        <WidgetCard />
+        <WidgetCard status='Active' statusIcon = "green" />
+        <WidgetCard status='Inactive' statusIcon = "red"/>
+        <WidgetCard status='Events Not Selected' statusIcon = "yellow"/>
+        <WidgetCard status='Events Not Selected' statusIcon = "yellow"/>
+        <WidgetCard status='Events Not Selected' statusIcon = "yellow"/>
       </div>
 
     </div>

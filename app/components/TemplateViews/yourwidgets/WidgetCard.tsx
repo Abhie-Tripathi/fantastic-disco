@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import styles from './widgetcard.style.module.css'
-import Analytics from '../../widgets/Analytics'
 import Calendar from '/public/vector.svg'
 import Image from 'next/image'
 import Spinner from '/public/Icon.svg'
-import Link from 'next/link'
 import Delete from '/public/delete.svg'
-import PenIcon from '/public/pen.svg'
 import DownArrow from '/public/internal/arrow_drop_down.svg'
 
-const WidgetCard = () => {
+interface WidgetProps{
+    status : string;
+    statusIcon : string;
+}
+
+const WidgetCard = ({status, statusIcon} : WidgetProps) => {
     const [accordian, setAccordian] = useState(false)
     return (
         <div className={styles.body}>
@@ -20,8 +22,8 @@ const WidgetCard = () => {
                     </div>
                     <div className={styles.widgetName}>Page Widget</div>
                     <div className={styles.statusBtn}>
-                        <div className={styles.activeFlag}></div>
-                        <div className={styles.status}>Active</div>
+                        <div className={`${statusIcon === "green" ? styles.activeFlag : statusIcon==="red" ? styles.inactiveFlag : styles.inprogressFlag} ${styles.statusFlag}`}></div>
+                        <div className={`${statusIcon === "green" ? styles.activeStatus : statusIcon==="red" ? styles.inactiveStatus : styles.inprogressStatus} ${styles.status}`}>{status}</div>
                     </div>
                 </div>
                 <Image src={Delete} alt='delete' className={styles.delete} />
@@ -34,7 +36,7 @@ const WidgetCard = () => {
                     <div className={styles.date}>30th Apr 2024</div>
                 </div>
                 <div className={styles.viewDetailsContainer} onClick={() => setAccordian(!accordian)}>
-                    <div className={styles.viewDetailsHeading}>View Details</div>
+                    <div className={styles.viewDetailsHeading}>Edit</div>
                     <Image src={DownArrow} alt='down' className={styles.viewDetailsIcon} />
                 </div>
             </div>
