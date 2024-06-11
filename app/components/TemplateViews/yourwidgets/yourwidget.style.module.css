@@ -13,3 +13,9 @@
     color: #6750a4;
     cursor: pointer;
 }
+.widgets{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
