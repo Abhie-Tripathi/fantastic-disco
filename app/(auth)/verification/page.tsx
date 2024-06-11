@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import OtpInput from "react-otp-input";
+import Carousel from '@/app/components/carousel'
 import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,9 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   const router = useRouter();
   const [time, setTime] = useState(30);
   const [code, setCode] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const confirmHandler = () => {
     verifyOtp();
@@ -26,11 +30,17 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
 
   const verifyOtp = async () => {
     const url = `${baseUrl}/auth/customer/verify`;
+    if (code.length < 4) {
+      setErrors({ otpError: "OTP must be of 4 digit" });
+      return;
+    }
 
     const dataToSend = {
       email: params?.email,
       otpCode: code,
     };
+
+    setIsLoading(true);
     const { data, error } = await myFetch(url, {
       method: "POST",
       body: JSON.stringify(dataToSend),
@@ -38,10 +48,17 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
         "Content-Type": "application/json",
       },
     });
+
+    setIsLoading(false);
     if (data) {
       console.log(data);
+      if (!data.isVerified) {
+        setErrors({ otpError: "Invalid Otp, Please try again" });
+        return;
+      }
       if (data.isVerified) router.push("/");
     }
+
     if (error) {
       console.log(error);
       return;
@@ -50,9 +67,12 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
 
   const generateOtp = async () => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
+    setResendLoading(true);
     const { data, error } = await myFetch(url, {
       method: "POST",
     });
+
+    setResendLoading(false);
     if (data) console.log(data);
     if (error) {
       console.log(error);
@@ -76,16 +96,20 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     }
     generateOtp();
   };
+
+  const handleChange = (value: any) => {
+    setCode(value);
+    if (Object.keys(errors).length !== 0) {
+      setErrors({});
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
-        <Image
-          src={VerificationVisuals}
-          alt="verificationvisuals"
-          width={500}
-          className={`${styles.verification_visuals} ${styles.image}`}
-        />
-
+        <div className={styles.leftContainer}>
+      <Carousel/>
+      </div>
         <div className={styles.form_container}>
           <div className={styles.message}>
             <span className={styles.message_highlighted}>Check your </span>
@@ -105,7 +129,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
           <OtpInput
             containerStyle={styles.input_container}
             value={code}
-            onChange={(value) => setCode(value)}
+            onChange={handleChange}
             numInputs={4}
             inputType="number"
             renderSeparator={<span style={{ width: "20px" }}></span>}
@@ -124,17 +148,25 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
               textAlign: "center",
             }}
           />
+          {errors.otpError && (
+            <div className={styles.error}>{errors.otpError}</div>
+          )}
 
           <div className={styles.actions_container}>
-            <div className={styles.button} onClick={confirmHandler}>
-              Confirm
+            <div
+              className={`${styles.button} ${isLoading && styles.disable}`}
+              onClick={confirmHandler}
+            >
+              {isLoading ? "Verifying..." : "Confirm"}
             </div>
           </div>
           <div className={styles.resendButton_container}>
             {time !== 0 && <span>00 : {time > 9 ? time : `0${time}`}</span>}
             {time === 0 && (
               <span
-                className={styles.resend_button}
+                className={`${styles.resend_button} ${
+                  resendLoading && styles.disable_text
+                }`}
                 onClick={() => resend()}
                 style={{ cursor: time === 0 ? "pointer" : "default" }}
               >

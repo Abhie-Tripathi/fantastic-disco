@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import styles from "./page.style.module.css";
 import WidgetBtns from "../../../components/widgetadd/WidgetBtns";
 import StickyWidget from "../../../components/widgetadd/StickyWidget";
@@ -27,7 +27,7 @@ const Page = () => {
       >
         {previewState === "Side Preview" && (
           <div className={`${styles.configurationForm} ${theme === 'light' && styles.configurationForm_light}`}>
-            <WidgetBtns type={type} setType={setType} />
+            <WidgetBtns/>
             <div className={styles.dropdown_container}>
               {type === "Sticky" && <StickyWidget setWidgetId={setWidgetId} />}
               {type === "Section" && (

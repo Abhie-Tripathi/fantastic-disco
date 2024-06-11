@@ -1,5 +1,5 @@
-'use client'
-import styles from './filters.style.module.css'
+"use client";
+import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -50,15 +50,30 @@ import eventFrequencyData from "../../../../../public/data/eventFrequency.json";
 import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
-import { useTheme } from '@/context';
+import { useTheme } from "@/context";
+interface FilterValue {
+  labels: string[];
+  category: string[];
+}
+
+interface Tracker {
+  name: string;
+  filterValue: FilterValue;
+}
+
+interface EditData {
+  tracker: Tracker;
+}
 const Pages = () => {
-    const searchParams = useSearchParams();
+    // const searchParams = useSearchParams();
     const pathName = usePathname().split('/');
     const last=pathName[pathName.length-1];
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { theme } = useTheme();
   const [selectedView, setSelectedView] = useState("list");
   const [categoryData, setCatgeoryData] = useState([]);
+  // const [categorySlug, setCategorySlug] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
@@ -99,7 +114,11 @@ const Pages = () => {
   const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
     searchParams.get("rating")?.split(",") || []
   );
-
+  const [rankToggles, setRankToggles] = useState({
+    isEventRank: false,
+    isLocalRank: false,
+    isAviationRank: false,
+  });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
@@ -165,7 +184,7 @@ const Pages = () => {
   const [categorySlug,setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
-  const [editData,setEditData]=useState();
+  const [editData, setEditData] = useState<EditData | null>(null);
   useEffect(()=>{
     if(last==="editTracker"){
       const secondLast=pathName[pathName.length-2];
@@ -249,47 +268,56 @@ const Pages = () => {
     }
     // console.log(selectedDateRange.length);
     else{
+      const s=selectedCategories.join(',');
+      // console.log(s);
+      
         const formData = {
           name: trackerName,
           filterValue: {
-            labels: selectedLabels,
-            category:selectedCategories,
-            city:[
-              "London"
-          ],
-            status1:selectedEventStatus,
-            status: selectedEventStatus,
-            ...(selectedDateRange && selectedDateRange.length>0 &&{active_gte: new Date(selectedDateRange[0]).toISOString()}),
-            ...(selectedDateRange && selectedDateRange.length>0 &&{active_lte: new Date(selectedDateRange[1]).toISOString()}),
-            total_attendance_gte: +selectedEventAttendanceRange[0],
-            total_attendance_lte:
-            selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : +selectedEventAttendanceRange[1],
-            event_rank_gte: Math.floor(selectedEventRank[0]),
-            event_rank_lte: Math.floor(selectedEventRank[1]),
-            local_rank_gte: Math.floor(selectedLocalRank[0]),
-            local_rank_lte: Math.floor(selectedLocalRank[1]),
-            aviation_rank_gte: Math.floor(selectedAviationRank[0]),
-            aviation_rank_lte: Math.floor(selectedAviationRank[1]),
+            // labels: selectedLabels.join(','),
+            category:selectedCategories.join(','),
+            city:selectedLocations,
+            max:"100",
+            eventStatus: selectedEventStatus.join(','),
+            ...(selectedDateRange && selectedDateRange.length>0 &&{startDate: selectedDateRange[0]}),
+            ...(selectedDateRange && selectedDateRange.length>0 &&{endDate: selectedDateRange[1]}),
+            eventFormat:selectedEventFormat.join(','),
+            // total_attendance_gte: +selectedEventAttendanceRange[0],
+            // total_attendance_lte:
+            // selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : +selectedEventAttendanceRange[1],
+            // event_rank_gte: Math.floor(selectedEventRank[0]),
+            // event_rank_lte: Math.floor(selectedEventRank[1]),
+            // local_rank_gte: Math.floor(selectedLocalRank[0]),
+            // local_rank_lte: Math.floor(selectedLocalRank[1]),
+            // aviation_rank_gte: Math.floor(selectedAviationRank[0]),
+            // aviation_rank_lte: Math.floor(selectedAviationRank[1]),
             ...(selectedEventFormat && selectedEventFormat.length>0 &&{}),
-            eventFormat:selectedEventFormat,
-            eventFrequency:selectedEventFrequency,
-            eventEntry:selectedEntry,
-            eventEdition:selectedEventEdition,
-            eventKeywords:selectedLabels,
-            eventRanking:selectedEventRanking,
+            info:{
+              labels: selectedLabels.join(','), 
+              category:categorySlug.join(','),
+              eventStatus: selectedEventStatus.join(','),
+            eventFrequency:selectedEventFrequency.join(','),
+            eventEntry:selectedEntry.join(','),
+            eventEdition:selectedEventEdition.toString(),
+            eventKeywords:selectedLabels.join(','),
+            eventRanking:selectedEventRanking.join(','),
             brandedEvent: selectedBrandedEvent,
-            trustScore: selectedTrustScore,
-            eventSeries:selectedEventSeries,
-            reputationScore:selectedReptScore,
-            maturity:selectedMaturity,
-            internationScore:selectedINScore,
-            inboundScore:selectedInboundScore,
-            userRating:selectedUserRatings,
-            exhibitScore:selectedExhibitScore,
+            trustScore: selectedTrustScore.toString(),
+            eventSeries:selectedEventSeries.toString(),
+            reputationScore:selectedReptScore.toString(),
+            maturity:selectedMaturity.toString(),
+            internationScore:selectedINScore.toString(),
+            inboundScore:selectedInboundScore.toString(),
+            userRating:selectedUserRatings.join(','),
+            exhibitScore:selectedExhibitScore.join(','),
+            total_attendance_gte: selectedEventAttendanceRange[0],
+            total_attendance_lte:
+            selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
+            }
           },
         };
         console.log(formData);
-        console.log(selectedCategories);
+        // console.log(selectedCategories);
         
         // if (
         //   trackerName.length===0||
@@ -326,13 +354,15 @@ const Pages = () => {
         
         // if (error) {
         //   console.log(error);
-        //   setIsSaving(false);
-        //   setIsSaving(false);
+        //   // setIsSaving(false);
+        //   // setIsSaving(false);
         //   return;
         // }
         // if (data) {
-        //   setIsSaving(false);
-        //   setIsSaving(false);
+        //   // setIsSaving(false);
+        //   // setIsSaving(false);
+        //   console.log(data);
+          
         //   router.replace("/internal/trackers");
         // }
       }
@@ -354,7 +384,7 @@ const Pages = () => {
         fetchData();
       }, []);
       useEffect(()=>{
-        if (editData?.tracker) {
+        if (editData && editData?.tracker) {
           setTrackerName(editData.tracker.name || '');
           setSelectedLabels(editData.tracker.filterValue?.labels || []);
           setSelectedCategories(editData.tracker.filterValue?.category || []);
@@ -394,6 +424,9 @@ const Pages = () => {
     <Suspense fallback={<Loading/>}>
     <div className={styles.container}>
       {/* <div className={styles.searchbar}>
+    <Suspense fallback={<Loading />}>
+      <div className={styles.container}>
+        {/* <div className={styles.searchbar}>
         <input
           type="text"
           placeholder="Search Events"
@@ -410,21 +443,21 @@ const Pages = () => {
           <Image src={SearchIcon} alt="search" />
         </button>
       </div> */}
-      <div className={styles.sub_container}>
-        <div className={styles.inputdropdowns_container}>
-        <MenuTrigger>
-              <Button className={styles.dropdown_button}>
+        <div className={styles.sub_container}>
+          <div className={styles.inputdropdowns_container}>
+            <MenuTrigger>
+              <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Category
-                      {categorySlug?.length > 1 ? (
+                      {selectedCategories?.length > 1 ? (
                         <span className={styles.input_selected_no}>
-                          {categorySlug.length}
+                          {selectedCategories.length}
                         </span>
                       ) : (
                         <span className={styles.input_selected_title}>
-                          {categorySlug[0]}
+                          {selectedCategories[0]}
                         </span>
                       )}
                     </div>
@@ -433,17 +466,16 @@ const Pages = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
-                      // className={iconClass}
                     />
                   </div>
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   <CategoryDropdown
                     state={selectedCategories}
-                    setState={setSelectedCategories}
                     categoryData={categoryData}
+                    setState={setSelectedCategories}
                     categorySlug={categorySlug}
                     setCategorySlug={setCategorySlug}
                   />
@@ -452,33 +484,26 @@ const Pages = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button className={styles.dropdown_button}>
+              <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Location
-                      {selectedLocations?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedLocations.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedLocations[0]}
-                        </span>
-                      )}
+                      <span className={styles.input_selected_title}>
+                        {selectedLocations[0]}
+                      </span>
                     </div>
-                    <Image 
+                    <Image
                       src={DropIcon}
                       alt="dropicon"
                       width={20}
                       height={20}
-                      // className={iconClass}
                     />
                   </div>
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   {({ close }) => (
                     <LocationDropdown
                       state={selectedLocations}
@@ -524,9 +549,43 @@ const Pages = () => {
               </Dialog>
             </Popover>
           </MenuTrigger>
+            {/* <MenuTrigger>
+              <Button>
+                <div className={styles.input_container}>
+                  <div className={styles.input}>
+                    <div className={styles.input_title}>
+                      Labels
+                      {selectedLabels?.length > 1 ? (
+                        <span className={styles.input_selected_no}>
+                          {selectedLabels.length}
+                        </span>
+                      ) : (
+                        <span className={styles.input_selected_title}>
+                          {selectedLabels[0]}
+                        </span>
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+              </Button>
+              <Popover>
+                <Dialog>
+                  <LabelDropdown
+                    state={selectedLabels}
+                    setState={setSelectedLabels}
+                  />
+                </Dialog>
+              </Popover>
+            </MenuTrigger> */}
 
-          <MenuTrigger>
-              <Button className={styles.dropdown_button}>
+            {/* <MenuTrigger>
+              <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>Rank</div>
@@ -535,13 +594,12 @@ const Pages = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
-                      // className={iconClass}
                     />
                   </div>
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   {({ close }) => (
                     <RankInput
                       selectedEventRank={selectedEventRank}
@@ -550,16 +608,17 @@ const Pages = () => {
                       setSelectedLocalRank={setSelectedLocalRank}
                       selectedAviationRank={selectedAviationRank}
                       setSelectedAviationRank={setSelectedAviationRank}
+                      rankToggles={rankToggles}
+                      setRankToggles={setRankToggles}
                       onClose={close}
                     />
                   )}
                 </Dialog>
               </Popover>
-            </MenuTrigger>
+            </MenuTrigger> */}
 
             <MenuTrigger>
-              <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
+              <Button className={styles.input_container}>
                 <div className={styles.input}>
                   <div className={styles.input_title}>
                     Dates
@@ -576,14 +635,11 @@ const Pages = () => {
                       ""
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} 
-                  // className={iconClass} 
-                  />
-                </div>
+                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   <DateRange
                     state={selectedDateRange}
                     setState={setSelectedDateRange}
@@ -592,8 +648,8 @@ const Pages = () => {
               </Popover>
             </MenuTrigger>
 
-          <MenuTrigger>
-              <Button className={styles.dropdown_button}>
+            <MenuTrigger>
+              <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -613,13 +669,12 @@ const Pages = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
-                      // className={iconClass}
                     />
                   </div>
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   <EventStatus
                     state={selectedEventStatus}
                     setState={setSelectedEventStatus}
@@ -629,7 +684,7 @@ const Pages = () => {
             </MenuTrigger>
 
             <MenuTrigger>
-              <Button className={styles.dropdown_button}>
+              <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -649,13 +704,12 @@ const Pages = () => {
                       alt="dropicon"
                       width={20}
                       height={20}
-                      // className={iconClass}
                     />
                   </div>
                 </div>
               </Button>
               <Popover>
-                <Dialog className={styles.noBorder}>
+                <Dialog>
                   {({ close }) => (
                     <EventAttendance
                       state={selectedEventAttendanceRange}
@@ -666,9 +720,9 @@ const Pages = () => {
                 </Dialog>
               </Popover>
             </MenuTrigger>
-        </div>
+          </div>
 
-        {/* <div className={styles.buttons_container}>
+          {/* <div className={styles.buttons_container}>
           <button
             className={styles.createtracker_button}
             onClick={createTrackerHandler}
@@ -684,38 +738,47 @@ const Pages = () => {
             Advance Filters
           </button>
         </div> */}
-      </div>
-      {showRecentSearches && (
-        <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-      )}
+        </div>
+        {showRecentSearches && (
+          <RecentSearches setShowRecentSearches={setShowRecentSearches} />
+        )}
 
-      {/*   ADVANCE FILTER SECTION */}
-      
+        {/*   ADVANCE FILTER SECTION */}
+
         <div>
-          <div className={`${styles.viewContainer} ${theme==="light" ? styles.viewContainerLight:styles.viewContainerDark}`}>
+          <div
+            className={`${styles.viewContainer} ${
+              theme === "light"
+                ? styles.viewContainerLight
+                : styles.viewContainerDark
+            }`}
+          >
             <div className={styles.viewTypeButtons_container}>
               <div className={styles.advanceFilterBtns}>
                 <button
                   onClick={() => setSelectedAdvFilter("AP")}
-                  className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                    } `}
-                    style={{background: theme==="light"?"white":""}}
+                  className={`${styles.listBtn} ${
+                    selectedAdvFilter === "AP" ? styles.active : ""
+                  } `}
+                  style={{ background: theme === "light" ? "white" : "" }}
                 >
                   Advanced Details
                 </button>
                 <button
                   onClick={() => setSelectedAdvFilter("IS")}
-                  className={`${styles.mapBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                    }`}
-                    style={{background: theme==="light"?"white":""}}
+                  className={`${styles.mapBtn} ${
+                    selectedAdvFilter === "IS" ? styles.active : ""
+                  }`}
+                  style={{ background: theme === "light" ? "white" : "" }}
                 >
                   Insights and Score
                 </button>
                 <button
                   onClick={() => setSelectedAdvFilter("AI")}
-                  className={`${styles.calendarBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                    }`}
-                    style={{background: theme==="light"?"white":""}}
+                  className={`${styles.calendarBtn} ${
+                    selectedAdvFilter === "AI" ? styles.active : ""
+                  }`}
+                  style={{ background: theme === "light" ? "white" : "" }}
                 >
                   Audience Intel
                 </button>
@@ -949,8 +1012,9 @@ const Pages = () => {
                         Branded Event
                         {selectedEventAttendanceRange[0] !== undefined ? (
                           <span className={styles.input_selected_title}>
-                            {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                              }`}
+                            {`${selectedEventAttendanceRange[0]} - ${
+                              selectedEventAttendanceRange[1] || "Unlimited"
+                            }`}
                           </span>
                         ) : (
                           ""
@@ -994,7 +1058,7 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
+                              onChange={() => {}}
                               checked={selectedTrustScore !== 0}
                             />
                             <span className={styles.slider}></span>
@@ -1027,10 +1091,8 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => {
-                                setSelectedEventSeries((prev) => !prev);
-                              }}
-                            checked={selectedEventSeries}
+                              onChange={() => {}}
+                              // checked={}
                             />
                             <span className={styles.slider}></span>
                           </label>
@@ -1059,7 +1121,7 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
+                              onChange={() => {}}
                               checked={selectedReptScore !== 0}
                             />
                             <span className={styles.slider}></span>
@@ -1102,8 +1164,8 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
-                            // checked={}
+                              onChange={() => {}}
+                              // checked={}
                             />
                             <span className={styles.slider}></span>
                           </label>
@@ -1144,7 +1206,7 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
+                              onChange={() => {}}
                               checked={selectedINScore !== 0}
                             />
                             <span className={styles.slider}></span>
@@ -1184,7 +1246,7 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
+                              onChange={() => {}}
                               checked={selectedInboundScore !== 0}
                             />
                             <span className={styles.slider}></span>
@@ -1210,7 +1272,8 @@ const Pages = () => {
                 <Button>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
-                      <div className={styles.input_title}>User Ratings
+                      <div className={styles.input_title}>
+                        User Ratings
                         {selectedUserRatings?.length > 1 ? (
                           <span className={styles.input_selected_no}>
                             {selectedUserRatings.length}
@@ -1227,7 +1290,7 @@ const Pages = () => {
                           <label className={styles.switch}>
                             <input
                               type="checkbox"
-                              onChange={() => { }}
+                              onChange={() => {}}
                               checked={selectedUserRatings.length !== 0}
                             />
                             <span className={styles.slider}></span>
@@ -1295,12 +1358,10 @@ const Pages = () => {
             </div>
           )}
         </div>
-      
-    </div>
-   
-  </Suspense>
-  </>
-  )
-}
+      </div>
+    </Suspense>
+    </>
+  );
+};
 
-export default Pages
+export default Pages;

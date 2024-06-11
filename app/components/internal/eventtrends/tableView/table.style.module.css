@@ -37,6 +37,10 @@
 
 .table_column_heading {
   cursor: pointer;
+  display: flex;
+  width: 80px;
+  align-items: center;
+  justify-content: center;
 }
 
 .table th {
@@ -73,6 +77,10 @@
 
 .table_body > tr > td {
   padding: 30px;
+}
+
+.sortImg {
+  /* visibility: hidden; */
 }
 
 .analytics_link {

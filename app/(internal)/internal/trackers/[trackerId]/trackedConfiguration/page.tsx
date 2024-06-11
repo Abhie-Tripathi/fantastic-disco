@@ -18,10 +18,10 @@ function CustomeTracker({ fillColor }: { fillColor: string }) {
     </svg>
   )
 }
-const page = () => {
+const Page = () => {
   const pathName = usePathname().split('/');
   const last=pathName[pathName.length-2];
-  const [data,setData]=useState([]);
+  const [data,setData]=useState<any>([]);
   useEffect(() => {
     const fetchData = async () => {
         const url = `${baseUrl}/tracker/${last}`;
@@ -107,4 +107,4 @@ console.log(data);
   )
 }
 
-export default page
+export default Page

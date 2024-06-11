@@ -10,7 +10,7 @@ import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import closeIcon from "/public/close.svg";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
@@ -20,6 +20,7 @@ import {EventTableType} from "@/types/ListViewTable";
 interface FormDataType {
   entityId_id?: string | number | null;
   markedInterest?: string | null;
+  eventGroupId: string;
 }
 
 interface ProductsType {
@@ -189,9 +190,11 @@ function getEventRating(item: string) {
 const Table = ({
   // eventData,
   showInsights,
+  queryString,
 }: {
   eventData?: any;
   showInsights: any;
+  queryString: string;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
@@ -201,15 +204,14 @@ const Table = ({
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
-  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([
-    "9306f250-0bed-4a0f-b7de-1f587e623f33", "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
-  ]);
+  const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([]);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
     entityId_id: null,
     markedInterest: null,
+    eventGroupId: '',
   });
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -220,7 +222,57 @@ const Table = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(formData.entityId_id && formData.markedInterest && formData.markedInterest != 'bookmark'){
+    if(formData.entityId_id && formData.markedInterest && formData.eventGroupId){
+      if(formData.markedInterest == 'bookmark'){
+        let payloadData = {
+          "eventGroupIds":[formData.eventGroupId]
+        };
+        try {
+          const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`, {
+            method: "POST",
+            body: JSON.stringify(payloadData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (error) {
+            console.log(error);
+            return;
+          }
+          if (data) {
+            toast.success('Event bookmarked successfully!', {
+              position: 'bottom-right',
+              autoClose: 2000,
+              closeButton: false,
+              hideProgressBar: true,
+            });
+            setBookmarkedEvent(prev => [...prev, formData.eventGroupId]);
+          }
+        } catch (error) {
+          console.error('Error saving data:', error);
+        } finally {
+          setIsOpen(null);
+        }
+      }else if(formData.markedInterest == 'unbookmark'){
+        try {
+          const response = await myFetch(`${baseUrl}/tracker/saved-events/${formData.eventGroupId}`, {
+            method: "DELETE",
+          });
+          if (response) {
+            setBookmarkedEvent(prev => prev.filter(id => id !== formData.eventGroupId));
+            toast.success('Bookmarked event removed!', {
+              position: 'bottom-right',
+              autoClose: 2000,
+              closeButton: false,
+              hideProgressBar: true,
+            });
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        } finally {
+          setIsOpen(null);
+        }
+      }else{
       let payloadData = {
         source: "GTM",
         entityId: formData?.entityId_id,
@@ -235,14 +287,6 @@ const Table = ({
         });
 
         if (apiData.data.message == "Entry Created") {
-          if (formData.markedInterest == "bookmark") {
-            toast.success('Event bookmarked successfully!', {
-              position: 'bottom-right',
-              autoClose: 2000,
-              closeButton: false,
-              hideProgressBar: true,
-            });
-          } else
             toast.success("Interest marked successfully!", {
               position: "bottom-right",
               autoClose: 2000,
@@ -254,6 +298,7 @@ const Table = ({
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      }
     }
   };
 
@@ -263,14 +308,29 @@ const Table = ({
     const endInd = startInd + itemsPerPage;
     // setEventPerPage(eventData.slice(startInd, endInd));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage, itemsPerPage]);
+  }, [currPage, itemsPerPage, queryString]);
 
-  const handleModalOpen = (eventId: string) => {
+  useEffect(() => {
+    const fetchBookmarkData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+      if (data) {
+        let bookmarkGroupIds = data.savedEvents.map((event: any) => event.eventGroupId);
+        setBookmarkedEvent(bookmarkGroupIds);
+      }
+    };
+    fetchBookmarkData();
+  }, []);
+
+  const handleModalOpen = (eventId: string, eventGroupId: string) => {
     setIsOpen((prev) => (prev == eventId ? null : eventId));
     if (isOpen != eventId) {
-      setFormData({ ...formData, entityId_id: eventId });
+      setFormData({ ...formData, entityId_id: eventId, eventGroupId: eventGroupId });
     } else {
-      setFormData({ entityId_id: null, markedInterest: null });
+      setFormData({ entityId_id: null, markedInterest: null, eventGroupId: '' });
     }
   };
 
@@ -291,7 +351,7 @@ const Table = ({
 
   const fetchEventsData = async() => {
     try {
-      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}`;
+      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}&${queryString}`;
       // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
       const apiData = await myFetch(apiUrl, {
           method: "GET",
@@ -588,9 +648,9 @@ const Table = ({
                 >
                   <span
                     className={styles.save_image_container}
-                    onClick={() => handleModalOpen(event.id)}
+                    onClick={() => handleModalOpen(event.id, event.eventGroupId)}
                   >
-                    {bookmarkedEvent.includes(event.id) ? (
+                    {bookmarkedEvent.includes(event.eventGroupId) ? (
                       <BookmarkIcon fillColor={"#ff851b"} />
                     ) : (
                       <BookmarkIcon
@@ -598,7 +658,7 @@ const Table = ({
                       />
                     )}
                   </span>
-                  <span onClick={() => handlePinEvent(event.id)}>
+                  {/* <span onClick={() => handlePinEvent(event.id)}>
                     {event.id == pinEvent ? (
                       <PinIcon fillColor={"#ff851b"} />
                     ) : (
@@ -606,7 +666,7 @@ const Table = ({
                         fillColor={theme === "light" ? "#000000" : "#ffffff"}
                       />
                     )}
-                  </span>
+                  </span> */}
                   {isOpen == event.id && (
                     <div className={styles.modal}>
                       <header className={styles["modal_header"]}>
@@ -617,7 +677,7 @@ const Table = ({
                         <button
                           className={styles["close"]}
                           onClick={() =>
-                            handleModalOpen(event.id)
+                            handleModalOpen(event.id, event.eventGroupId)
                           }
                         >
                           <Image src={closeIcon} alt="clock" width={16} height={16} />
@@ -627,15 +687,30 @@ const Table = ({
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              <input
-                                className={styles["form-check-input"]}
-                                type="radio"
-                                defaultValue="bookmark"
-                                name={"interest"}
-                                id="customradio1"
-                                onChange={handleChangeIntent}
-                              />
-                              <label htmlFor="customradio1">Bookmark</label>
+                              {bookmarkedEvent.includes(event.eventGroupId) ?
+                                <>
+                                  <input
+                                    className={styles["form-check-input"]}
+                                    type="radio"
+                                    defaultValue="unbookmark"
+                                    name={"interest"}
+                                    id="customradio1"
+                                    onChange={handleChangeIntent}
+                                  />
+                                  <label htmlFor="customradio1">Un-Bookmark</label>
+                                </> :
+                                <>
+                                  <input
+                                    className={styles["form-check-input"]}
+                                    type="radio"
+                                    defaultValue="bookmark"
+                                    name={"interest"}
+                                    id="customradio1"
+                                    onChange={handleChangeIntent}
+                                  />
+                                  <label htmlFor="customradio1">Bookmark</label>
+                                </>
+                              }
                             </div>
                             <div className={styles["form-check"]}>
                               <input
@@ -738,7 +813,6 @@ const Table = ({
           Next
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

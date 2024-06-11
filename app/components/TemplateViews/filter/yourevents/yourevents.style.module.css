@@ -1,0 +1,37 @@
+.body{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.eventContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.btnsContainer{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.deleteBtn{
+    border: 1px solid rgb(146, 65, 65);
+    padding: 1px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.deleteBtn:hover{
+    transition-duration: .2s;
+    background-color: rgb(146, 65, 65);
+}
+.editBtn{
+    border: 1px solid #6750a4;
+    padding: 1px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.editBtn:hover{
+    transition-duration: .2s;
+    background-color: #6750a4;
+}

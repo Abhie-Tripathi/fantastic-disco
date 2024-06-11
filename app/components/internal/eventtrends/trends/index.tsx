@@ -16,10 +16,11 @@ import { Button, Dialog, MenuTrigger, Popover } from "react-aria-components";
 import DateRange from "@/app/components/dropdown/DateRange";
 import { convertToCustomFormat } from "@/utils/dateFormat";
 import { convertISOToOriginalFormat } from "@/utils/date";
+import { showToast } from "@/utils/showToast";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface EventTrendsProps {
-  activeChipY: string;
-  activeChipX: string;
+  activeChip: string;
 }
 
 interface Event {
@@ -31,17 +32,32 @@ interface Event {
 interface GroupingByDate {
   [date: string]: Event[];
 }
-const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [categorySlug, setCategorySlug] = useState<string[]>([]);
+const EventTrends = ({ activeChip }: EventTrendsProps) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    searchParams.get("categories")?.split(",") || []
+  );
+  const [categorySlug, setCategorySlug] = useState<string[]>(
+    searchParams.get("categories")?.split(",") || []
+  );
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedDateRange, setSelectedDateRange] = useState<string[]>([]);
 
-  const [selectedEventRank, setSelectedEventRank] = useState<number[]>([]);
-  const [selectedLocalRank, setSelectedLocalRank] = useState<number[]>([]);
-  const [selectedAviationRank, setSelectedAviationRank] = useState<number[]>(
-    []
-  );
+  const [selectedEventRank, setSelectedEventRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [selectedLocalRank, setSelectedLocalRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [selectedAviationRank, setSelectedAviationRank] = useState<number[]>([
+    0, 100,
+  ]);
+  const [rankToggles, setRankToggles] = useState({
+    isEventRank: false,
+    isLocalRank: false,
+    isAviationRank: false,
+  });
   const [categoryData, setCatgeoryData] = useState([]);
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
@@ -62,14 +78,27 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
     fetchData();
   }, []);
 
+  const clearHandler = () => {
+    setSelectedCategories([]);
+    setCategorySlug([]);
+    setSelectedLocations([]);
+    setSelectedDateRange([]);
+    setSelectedEventRank([]);
+    setSelectedLocalRank([]);
+    setSelectedAviationRank([]);
+  };
+
   const searchHandler = () => {
     let query = "";
+    const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
       query += "category=" + selectedCategories.join(",");
+      params.set("category", selectedCategories.join(","));
     }
     // if (selectedLocations.length > 0) {
     // query += "&city=" + selectedLocations.join(",");
-    query += "&city=london,chicago";
+    query += "&city=London,Chicago";
+    // params.set("city", selectedLocations?.join(","));
     // }
     if (selectedDateRange.length > 0) {
       query += "&active_gte=" + selectedDateRange[0];
@@ -78,15 +107,28 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
     if (selectedEventRank.length > 0) {
       query += "&event_rank_gte=" + selectedEventRank[0];
       query += "&event_rank_lte=" + selectedEventRank[1];
+      params.set("active_gte", selectedDateRange[0]);
+      params.set("active_lte", selectedDateRange[1]);
     }
     console.log(query);
     fetchData(query);
+    // router.push(`/internal/trends?${params.toString()}`);
   };
 
   const fetchData = async (query: string) => {
+    if (
+      selectedCategories.length === 0 ||
+      selectedDateRange.length === 0 ||
+      selectedEventRank.length === 0 ||
+      selectedLocalRank.length === 0 ||
+      selectedAviationRank.length === 0
+    ) {
+      showToast("error", "Please select all the filters first");
+      return;
+    }
     const { data, error } = await myFetch(
       `${baseUrl}/trend/${
-        activeChipY === "Predicted Attendance"
+        activeChip === "Predicted Attendance"
           ? "predicted-attendance"
           : "predicted-number-of-events"
       }?${query}`
@@ -128,7 +170,9 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
       <div className={styles.filters_container}>
         <div className={styles.inputdropdowns_container}>
           <MenuTrigger>
-            <Button>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -161,7 +205,9 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -194,7 +240,9 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
                   <div className={styles1.input_title}>
@@ -229,10 +277,29 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
           </MenuTrigger>
 
           <MenuTrigger>
-            <Button>
+            <Button
+              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+            >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
-                  <div className={styles1.input_title}>Rank</div>
+                  <div className={styles1.input_title}>
+                    Rank
+                    {rankToggles.isEventRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                      </span>
+                    )}
+                    {rankToggles.isLocalRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                      </span>
+                    )}
+                    {rankToggles.isAviationRank && (
+                      <span className={styles.input_selected_title}>
+                        [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                      </span>
+                    )}
+                  </div>
                   <Image src={DropIcon} alt="dropicon" width={20} height={20} />
                 </div>
               </div>
@@ -247,16 +314,63 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
                     setSelectedLocalRank={setSelectedLocalRank}
                     selectedAviationRank={selectedAviationRank}
                     setSelectedAviationRank={setSelectedAviationRank}
+                    rankToggles={rankToggles}
+                    setRankToggles={setRankToggles}
                     onClose={close}
                   />
                 )}
               </Dialog>
             </Popover>
           </MenuTrigger>
-          <div className={styles.apply_button} onClick={searchHandler}>
-            <div>Apply</div>
+        </div>
+        <div>
+          {/* {activeChip === "No of Events" && (
+            <MenuTrigger>
+              <Button className={styles.input_container_btns}>
+                <div className={styles1.input_container}>
+                  <div className={styles1.input}>
+                    <div className={styles1.input_title}>
+                      Category
+                      {categorySlug?.length > 1 ? (
+                        <span className={styles1.input_selected_no}>
+                          {categorySlug.length}
+                        </span>
+                      ) : (
+                        <span className={styles1.input_selected_title}>
+                          {categorySlug[0]}
+                        </span>
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                </div>
+              </Button>
+              <Popover>
+                <Dialog>
+                  <CategoryDropdown
+                    state={selectedCategories}
+                    setState={setSelectedCategories}
+                    categoryData={categoryData}
+                    categorySlug={categorySlug}
+                    setCategorySlug={setCategorySlug}
+                  />
+                </Dialog>
+              </Popover>
+            </MenuTrigger>
+          )} */}
+          <div className={styles.btn_container}>
+            <div className={styles.apply_button} onClick={searchHandler}>
+              Apply
+            </div>
+            <div className={styles.clearfilters_button} onClick={clearHandler}>
+              Clear
+            </div>
           </div>
-          <div className={styles.clearfilters_button}>Clear</div>
         </div>
       </div>
 
@@ -266,8 +380,8 @@ const EventTrends = ({ activeChipY, activeChipX }: EventTrendsProps) => {
             className={`${styles.predictedAttendence_container} ${styles.chartContainer}`}
           >
             <LineChart
-              activeChipX={activeChipX}
-              activeChipY={activeChipY}
+              activeChip={activeChip}
+              // activeChipY={}
               groupedData={unparsedData.predictedAttendance}
             />
           </div>

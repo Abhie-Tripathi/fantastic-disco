@@ -8,7 +8,7 @@ const index = ({labels}:any) => {
     <div className={styles.container}>
       <div className={styles.heading}>Labels</div>
       <div className={styles.labels}>
-        {labels && labels.map((label, id)=>(
+        {labels && labels.map((label:any, id:any)=>(
             <div key={id} className={styles.label}>{label}</div>
         ))}
       </div>

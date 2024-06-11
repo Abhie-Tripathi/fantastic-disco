@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './locationFilter.style.module.css'
-const index = ({start,end, startDate, endDate}) => {
-  function formatDate(dateString) {
+const index = ({start,end, startDate, endDate}:any) => {
+  function formatDate(dateString:Date) {
     const date = new Date(dateString);
     
     // Get day

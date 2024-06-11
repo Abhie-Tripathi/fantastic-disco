@@ -1,6 +1,7 @@
 .container {
-  min-height: 100vh;
-  background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
+  /* min-height: 100vh; */
+  height: 100vh;
+  /* background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
   width: 100vw;
   position: relative;
   display: flex;
@@ -53,12 +54,48 @@
 
 .sub_container {
   display: flex;
-  gap: 140px;
+    box-shadow: 0px 8px 40px -2px #060C3B14;
+    width: 80%;
+    height: 90%;
+    /* gap: 140px; */
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+.sub_containerLeft{
+  width: 50%;
+  background-color: #FAFAFF;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 20px;
+  height: 100%;
+  /* background-color: red; */
 }
-
+.leftContent{
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s ease-in-out;
+  gap:20px;
+}
+.circles{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:10px;
+}
+.circle{
+  width: 10px;
+  cursor: pointer;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #D9D9D9;
+}
+.loginForm{
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .image{
   width: 400px;
   height: 390px;
@@ -157,6 +194,24 @@
   cursor: pointer;
   font-size: 14px;
 }
+.heading{
+  font-size: 24px;
+  font-weight: 700;
+ 
+  color:#6750A4;
+  text-align: center;
+}
+.content{
+  font-weight: 400;
+  font-size: 14px;
+  height: 35px;
+  text-align: center;
+  padding: 0px 40px;
+}
+.active{
+  background-color: #6750A4;
+  transform: scale(1.5);
+}
 @media screen and (max-width: 575px) {
   .container {
     min-height: 100vh;
@@ -175,5 +230,13 @@
   .image {
     width: 90px;
     height: 90px;
+  }
+}
+@media screen and (max-width: 1030px) {
+  .sub_containerLeft{
+    display: none;
+  }
+  .formContainer{
+    width: 100%;
   }
 }

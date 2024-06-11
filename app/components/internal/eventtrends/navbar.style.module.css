@@ -1,58 +1,72 @@
-.navbar{
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    background-color: #2B233D;
-    padding: 20px;
-    border-radius: 5px;
-    color: #ffffff;
-    width: fit-content;
+.navbar {
+  display: flex;
+  gap: 35pxpx;
+  align-items: center;
+  color: #ffffff;
+  width: fit-content;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
 }
 
-.navbar_light{
-    background-color: var(--secondary-bg-light);
-    color: var(--primary-color-light);
-}
-.yAxis{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.xAxis{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.navbarChip{
-    cursor: pointer;
-    padding: 5px 10px;
-    font-size: 16px;
-    border-radius: 10px;
-    border: 1px solid #6750A4 ;
-}
-.navbarChip:hover{
-    transition-duration: .2s;
-    background-color: #6750A4;
-}
-.activeChip{
-    background-color: #6750A4;
-    color: white;
+.header_container {
+  padding: 18px;
 }
 
-@media screen and (max-width:992px) {
-    .navbar{
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+.heading {
+  cursor: pointer;
+  font-size: 19px;
 }
 
-@media screen and (max-width:576px) {
-    .navbar{
-        flex-wrap: wrap;
-        gap: 10px;
-        font-size: 12px;
-    }
-    .navbarChip{
-        font-size: 10px;
-    }
+.active {
+  border-bottom: 3px solid #6750a4;
+  color: #6750a4;
+  margin-bottom: -2px;
+}
+
+.navbar_light {
+  /* background-color: var(--secondary-bg-light); */
+  color: var(--primary-color-light);
+}
+.yAxis {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.xAxis {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.navbarChip {
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #6750a4;
+}
+.navbarChip:hover {
+  transition-duration: 0.2s;
+  background-color: #6750a4;
+}
+.activeChip {
+  background-color: #6750a4;
+  color: white;
+}
+
+@media screen and (max-width: 992px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .navbarChip {
+    font-size: 10px;
+  }
 }

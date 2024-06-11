@@ -21,6 +21,7 @@ import { log } from "util";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { Select } from "react-aria-components";
+import { usePathname } from "next/navigation";
 interface Props {
   replyId?:string|undefined|null,
   setType : any,
@@ -84,6 +85,8 @@ export const AddComment = ({
   commentType
 }: Props) => {
   const commentId = replyOptions?.commentId;
+  const path=usePathname().split('/');
+  const last=path[path.length-1];
   const { user, signOut } = useAuthContext();
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -640,7 +643,7 @@ export const AddComment = ({
       {/* <div>{renderNote()}</div> */}
       <form onSubmit={notes} ref={formRef1} className={styles.form}>
         
-        { commentType === 'mainComment' ? 
+        { last!=="notesDiscussion" && commentType === 'mainComment' ? 
         <div className={styles.recommendBtn}>
           <button
             onClick={handleSelectAttend}

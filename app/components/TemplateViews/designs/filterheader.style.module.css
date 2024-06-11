@@ -34,6 +34,7 @@
 }
 .multipleContainer label{
     cursor: pointer;
+    font-size: 10px;
 }
 .multipleContainer .widgetCount{
     font-size: 10px;
@@ -52,8 +53,21 @@
     background-color: #1a1a1a;
     padding: 10px;
     border-radius: 10px;
+    width: fit-content;
 }
-.accordionItem{
+.highlightedCheckbox{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.highlightedCheckbox input{
+    cursor: pointer;
+}
+.highlightedCheckbox label{
+    cursor: pointer;
+}
+
+/* .accordionItem{
     padding: 5px 10px;
     cursor: pointer;
     border:1px solid #6750a4;
@@ -65,4 +79,4 @@
 }
 .accordionActive{
     background-color: #6750a4;
-}
+} */

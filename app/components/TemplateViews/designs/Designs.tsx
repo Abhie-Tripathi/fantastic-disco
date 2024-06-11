@@ -8,9 +8,11 @@ import Image from 'next/image'
 
 interface Props{
     setPreview: (id: string) => void;
-    setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
-    multipleWidgetOn :  boolean;
-    widgetsLength :  number;
+    // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
+    // multipleWidgetOn :  boolean;
+    // widgetsLength :  number;
+    setWidgetSelected :  React.Dispatch<React.SetStateAction<string>>;
+    widgetSelected : string;
 }
 
 const Designs = (props : Props) => {
@@ -18,8 +20,9 @@ const Designs = (props : Props) => {
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
     // const [preview, setPreview] = useState("");
-    const [widgetSelected, setWidgetSelected] = useState<string>("All")
-    const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+    const [widgetSelected, setWidgetSelected] = useState<string>("")
+    // const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
+    const [showHighlightedTemplates, setShowHighlihtedTemplates] = useState<boolean>(false)
     const [editModal, setEditModal] = useState<boolean>(false)
 
 
@@ -56,11 +59,13 @@ const Designs = (props : Props) => {
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={setWidgetSelected} setAccordianItemSelected={setAccordianItemSelected} setMultipleWidgetOn = {props.setMultipleWidgetOn} multipleWidgetOn = {props.multipleWidgetOn} widgetsLength = {props.widgetsLength}/></div>
+            <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setShowHighlihtedTemplates = {setShowHighlihtedTemplates} showHighlightedTemplates = {showHighlightedTemplates} /></div>
             <div className={`${styles.templates}`}>
-                {(widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
+                {(props.widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
                     <div className={styles.widgetHeading}>Page Widget</div>
-                    {accordianItemSelected.includes("No Highlighted Events") && <div className={styles.pageTemplateTypeOne}>
+                    {/* {accordianItemSelected.includes("No Highlighted Events") &&  */}
+                    {!showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeOne}>
                         <div className={styles.widgetSubheading}>No Highlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithoutHighlighted.slice(0, showAllOne ? undefined : 3).map((template, index) => (
@@ -73,7 +78,9 @@ const Designs = (props : Props) => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("One Highlighted Event") && <div className={styles.pageTemplateTypeTwo}>
+                    {/* {accordianItemSelected.includes("One Highlighted Event") &&  */}
+                    {showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeTwo}>
                         <div className={styles.widgetSubheading}>One Higlighted Event</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithOneHighlightedEvent.slice(0, showAllTwo ? undefined : 3).map((template, index) => (
@@ -86,7 +93,9 @@ const Designs = (props : Props) => {
                             </button>
                         )}
                     </div>}
-                    {accordianItemSelected.includes("Multiple Highlighted Events") && <div className={styles.pageTemplateTypeThree}>
+                    {/* {accordianItemSelected.includes("Multiple Highlighted Events") &&  */}
+                    {showHighlightedTemplates &&
+                    <div className={styles.pageTemplateTypeThree}>
                         <div className={styles.widgetSubheading}>Multiple Higlighted Events</div>
                         <div className={styles.templateContainer}>
                             {pageWidgetWithHighlightedEvents.slice(0, showAllThree ? undefined : 3).map((template, index) => (
@@ -100,7 +109,7 @@ const Designs = (props : Props) => {
                         )}
                     </div>}
                 </div>}
-                {(widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
+                {(props.widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
                     <div className={styles.widgetHeading}>Section Widget</div>
                     <div className={styles.templateContainer}>
                         {sectionWidgetEvents.map((template, index) => (
@@ -108,12 +117,19 @@ const Designs = (props : Props) => {
                         ))}
                     </div>
                 </div>}
-                {(widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
+                {(props.widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
                     <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
                     <div className={styles.templateContainer}>
                         <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={props.setPreview} setEditModal={setEditModal} />
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={props.setPreview} setEditModal={setEditModal} />
+                    </div>
+                </div>}
+                {(props.widgetSelected === "Popup") && <div className={styles.popupWidgetTemplates}>
+                    <div className={styles.widgetHeading}>Popup Widget</div>
+                    <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.templateContainer}>
+                        <TemplateCard name="Pop-up" isHidden={false} id="popup" setPreview={props.setPreview} setEditModal={setEditModal} />
                     </div>
                 </div>}
             </div>

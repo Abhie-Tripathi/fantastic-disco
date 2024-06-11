@@ -144,7 +144,7 @@ const Page = () => {
     event.preventDefault();
     setItemsPerPage(parseInt(event.target.value));
   }
-  const [data,setData]=useState();
+  const [data,setData]=useState<any>();
   const fetchData = async (secondLast:string) => {
     const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/events`);
     if (error) {

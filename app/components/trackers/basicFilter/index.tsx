@@ -3,11 +3,16 @@ import React, { useState,useEffect } from 'react';
 import { myFetch} from '@/utils/myFetch';
 import styles from './basicFilter.style.module.css'
 import { baseUrl } from '@/constants';
-const index = ({category}:any) => {
+interface CategoryData {
+  attendedCategories?: string[];
+  nonAttendedCategories?: string[];
+  unscheduledCategories?: string[];
+}
+const BasicFilter = ({category}:any) => {
   const data1=["Community","Confrence","Concerts ","Expos","Sports","Performing Arts"]
   const data2=["Performing Arts","Academics","Daylight Savings","Observances","Public holidays","School Holidays"]
   const data3=[" Politics","Airport Delays"];
-  const [categoryData,setCatgeoryData]=useState();
+  const [categoryData,setCatgeoryData]=useState<CategoryData>();
   useEffect(() => {
     console.log('data is', category);
     const fetchData = async () => {
@@ -24,14 +29,12 @@ const index = ({category}:any) => {
     };
     fetchData();
   }, []);
-  
-  
-  const newArr = [
+  const newArr:string[] = [
     ...(categoryData?.attendedCategories ?? []),
     ...(categoryData?.nonAttendedCategories ?? []),
     ...(categoryData?.unscheduledCategories ?? [])
   ];
-  const filteredArr = newArr.filter(item => category?.tracker?.filterValue?.category.includes(item.id));
+  const filteredArr = newArr.filter((item:any )=> category?.tracker?.filterValue?.category.includes(item?.id));
   console.log(category?.tracker?.filterValue
     );
     console.log("data is:", filteredArr);
@@ -41,7 +44,7 @@ const index = ({category}:any) => {
      <div className={styles.heading}>Category</div>
      <div className={styles.allCat1}>
       <div className={styles.allCat}>
-      {filteredArr.map((item,id)=>(
+      {filteredArr.map((item:any,id:any)=>(
       <div key={id} style={{width:"120px"}}>
       <label >
        <input
@@ -52,7 +55,7 @@ const index = ({category}:any) => {
          checked={true}
          disabled
        />
-       <span className={styles.item}>{item.name}</span>
+       <span className={styles.item}>{item?.name}</span>
      </label>
       </div>
      ))}
@@ -97,4 +100,4 @@ const index = ({category}:any) => {
   )
 }
 
-export default index;
+export default BasicFilter;
