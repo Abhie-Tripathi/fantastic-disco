@@ -9,7 +9,7 @@ interface EventStatusProps {
   setState: ([]) => void;
 }
 
-const EventStatusData = ["Active", "Cancelled", "Postponed", "Predicted"];
+const EventStatusData = ["Active", "Canceled", "Postponed", "Predicted"];
 
 const EventStatus = ({ state, setState }: EventStatusProps) => {
   const {theme} = useTheme();

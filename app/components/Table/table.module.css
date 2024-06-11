@@ -323,3 +323,8 @@
   background: #6750a4;
   border: none;
 }
+
+.noData {
+  padding: 20px;
+  text-align: center;
+}

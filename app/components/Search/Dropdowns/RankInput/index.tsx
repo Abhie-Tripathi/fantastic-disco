@@ -60,6 +60,14 @@ const RankInput = ({
     });
   };
 
+  const handleRankSlider = (values: number[], type: string) => {
+    if(values[0] !== 0 || values[1] !== 100){
+      setRankToggles((prev: any) => {
+        return { ...prev, [type]: true };
+      });
+    }
+  }
+
   return (
     <div
       className={`${styles.container} ${className}`}
@@ -83,7 +91,7 @@ const RankInput = ({
           <div className={styles.checkbox_title}>Event Rank</div>
           <>
             <ReactSlider
-              onChange={(values) => setSelectedEventRank(values)}
+              onChange={(values) => {setSelectedEventRank(values); handleRankSlider(values, "isEventRank")}}
               value={selectedEventRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -131,7 +139,7 @@ const RankInput = ({
           <div className={styles.checkbox_title}>Local Rank</div>
           <>
             <ReactSlider
-              onChange={(values) => setSelectedLocalRank(values)}
+              onChange={(values) => {setSelectedLocalRank(values); handleRankSlider(values, "isLocalRank")}}
               value={selectedLocalRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -167,7 +175,7 @@ const RankInput = ({
           </>
         </div>
 
-        <div className={styles.slider_container}>
+        {/* <div className={styles.slider_container}>
           <label className={styles.checkbox_label}>
             <input
               type="checkbox"
@@ -179,7 +187,7 @@ const RankInput = ({
           <div className={styles.checkbox_title}>Aviation Rank</div>
           <>
             <ReactSlider
-              onChange={(values) => setSelectedAviationRank(values)}
+              onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "isAviationRank")}}
               value={selectedAviationRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -213,7 +221,7 @@ const RankInput = ({
               />
             </div>
           </>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 [
-    {"name":"Free","slug":"free"},
-    {"name":"Paid","slug":"paid"},
-    {"name":"By Invite","slug":"invite"},
-    {"name":"By a Member","slug":"member"}
+    {"name":"Free","slug":"FREE"},
+    {"name":"Paid","slug":"PAID"},
+    {"name":"By Invite","slug":"BY_INVITE"},
+    {"name":"By a Member","slug":"BY_A_MEMBER"}
 ]
