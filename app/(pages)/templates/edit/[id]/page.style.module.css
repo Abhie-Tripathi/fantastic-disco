@@ -40,21 +40,6 @@
     border-radius: 10px;
     border: 1px solid #777;
 }
-/* 
-.navItem:not(:last-child)::after {
-    content: '>';
-    position: absolute;
-    top: 50%;
-    left: 200%;
-    font-size: 20px;
-    transform: translateY(-50%);
-} */
-
-.completed {
-    color: #6750a4;
-    border: 1px solid #6750a4;
-}
-
 .active {
     color: #6750a4;
     border: 1px solid #6750a4;

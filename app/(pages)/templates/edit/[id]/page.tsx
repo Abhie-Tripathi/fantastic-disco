@@ -89,7 +89,7 @@ const Page = () => {
     <div className={styles.layout}>
       <div className={styles.navbar}>
         <div className={styles.navLeft}>
-          <div className={styles.heading}>Add Widget : </div>
+          <div className={styles.heading}>Edit Widget : </div>
           {/* <div
             className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
             onClick={() => handleNavItemClick("Designs")}
@@ -97,13 +97,13 @@ const Page = () => {
             Designs
           </div> */}
           <div
-            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
+            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("BrandKit")}
           >
             Brand Kit
           </div>
           <div
-            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
+            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("Filter")}
           >
             Filter Events
@@ -177,7 +177,7 @@ const Page = () => {
           </div>
            <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={()=>setIsFullScreen(!isFullScreen)}/>   
         </div>
-        <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
+        <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
         <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
