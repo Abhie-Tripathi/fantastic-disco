@@ -199,6 +199,7 @@ const Table = ({
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -351,6 +352,7 @@ const Table = ({
 
   const fetchEventsData = async() => {
     try {
+      setIsLoaded(false);
       const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}&${queryString}`;
       // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
       const apiData = await myFetch(apiUrl, {
@@ -364,14 +366,22 @@ const Table = ({
         }else{
           setEventPerPage(apiData.data.events);
         }
-      }
+      }else
+        setEventPerPage([]);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsLoaded(true);
     }
   }
 
-  if (eventPerPage.length === 0) {
+  // if (eventPerPage.length === 0) {
+  //   return <Loading />;
+  // }
+  if(!isLoaded) {
     return <Loading />;
+  }else if(isLoaded && eventPerPage.length == 0){
+    return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
   }
 
   return (
@@ -395,6 +405,7 @@ const Table = ({
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
               <th>Category</th>
+              {showInsights.eventSeries && <th>Event Series</th>}
               {showInsights.eventRank && <th>Rank</th>}
               {showInsights.growth && <th>Growth</th>}
               {showInsights.reptSent && <th>Rept. Sentiment</th>}
@@ -433,7 +444,7 @@ const Table = ({
                 </td>
                 <td>
                   <span
-                    {...((event.status && event.status === "Cancelled")
+                    {...((event.status && event.status === "CANCELED")
                       ? { "data-toggle": "tooltip", title: "Cancelled" }
                       : null)}
                     style={{ whiteSpace: "nowrap" }}
@@ -537,6 +548,16 @@ const Table = ({
                     "-"
                   )}
                 </td>
+                {showInsights.eventSeries && (
+                  <td>
+                    {event.series ? (
+                      event.series
+
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                )}
                 {showInsights.eventRank && (
                   <td>
                     {event.rank?.globalRank ? (

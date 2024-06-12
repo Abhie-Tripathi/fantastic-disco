@@ -22,6 +22,7 @@ export interface EventTableType {
     categories: [{ name: string }];
     eventKeywords : string[];
     organizer: { name: string };
+    series: string;
     rank: {
         globalRank: number;
         countryRank: number;

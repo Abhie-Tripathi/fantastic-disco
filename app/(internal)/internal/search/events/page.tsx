@@ -40,7 +40,7 @@ import EventKeyword from "@/app/components/dropdown/EventKeyword";
 import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
-import CloseIcon from "/public/close.svg";
+import CloseIcon from "/public/internal/cross.svg";
 import FilterIcon from "/public/internal/advanceFilter.svg"
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
@@ -283,6 +283,11 @@ const Search = () => {
       queryString.eventRank = selectedEventRank;
     }
 
+    // Local Rank
+    if (selectedLocalRank[0] !== 0 || selectedLocalRank[1] !== 100) {
+      queryString.localRank = selectedLocalRank;
+    }
+
     // Dates
     if (selectedDateRange[0]) {
       queryString.startDate = [
@@ -325,7 +330,7 @@ const Search = () => {
 
     // Event Edition
     if (selectedEventEdition > 0) {
-      queryString.eventEdition = selectedEventEdition;
+      queryString.editionRange = selectedEventEdition;
     }
 
     // Event Keywords
@@ -360,12 +365,27 @@ const Search = () => {
 
     // Maturity
     if (selectedMaturity > 0) {
-      queryString.maturity = selectedMaturity;
+      // queryString.maturity = selectedMaturity;
+      if(selectedMaturity >= 1 && selectedMaturity <=25)
+        queryString.maturity = 'new';
+      else if(selectedMaturity >= 26 && selectedMaturity <= 50)
+        queryString.maturity = 'low';
+      else if(selectedMaturity >= 51 && selectedMaturity <= 75)
+        queryString.maturity = 'medium';
+      else
+        queryString.maturity = 'High';
     }
 
     // Int. Score
     if (selectedINScore > 0) {
-      queryString.maturity = selectedINScore;
+      if(selectedINScore >= 1 && selectedINScore <=25)
+        queryString.internationalScore = 'local';
+      else if(selectedINScore >= 26 && selectedINScore <= 50)
+        queryString.internationalScore = 'National';
+      else if(selectedINScore >= 51 && selectedINScore <= 75)
+        queryString.internationalScore = 'Regional';
+      else
+        queryString.internationalScore = 'International';
     }
 
     // Inbound Score
@@ -467,6 +487,7 @@ const Search = () => {
 
   console.log(filters);
 
+  const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [text, setText] = useState("");
   const [selectedEvents, setSelectedEvents] = useState<{
@@ -479,7 +500,7 @@ const Search = () => {
   const handleSearchInput = async (text: string) => {
     if (text) {
       const { data, error } = await myFetch(
-        `${baseUrl}/event/search?eventName=${text}`
+        `${baseUrl}/event/search?eventName=${text}&max=5`
       );
       if (error) {
         console.log(error);
@@ -505,6 +526,9 @@ const Search = () => {
   const eventSelectHandler = (eventId: string, eventName: string) => {
     if (!selectedEvents[eventId]) {
       setSelectedEvents((prev) => {
+        if(Object.keys(prev).length + 1 > 4) {
+          setShowAllEvents(true);
+        }
         return { ...prev, [eventId]: eventName };
       });
     }
@@ -512,6 +536,9 @@ const Search = () => {
 
   const removeSelectionHandler = (eventId: string) => {
     setSelectedEvents((prev) => {
+      if(Object.keys(prev).length - 1 <= 4) {
+        setShowAllEvents(false);
+      }
       const updatedEvents = { ...prev };
       delete updatedEvents[eventId];
       return updatedEvents;
@@ -529,6 +556,7 @@ const Search = () => {
       estExhibit: true,
       growth: true,
       repeatSent: true,
+      eventSeries: selectedEventSeries,
     });
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -545,7 +573,11 @@ const Search = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [selectedEventSeries]);
+
+  useEffect(() => {
+    createQueryString();
+  }, [selectedEventSeries, selectedBrandedEvent]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -559,6 +591,26 @@ const Search = () => {
       <div className={styles.container}>
         <div className={styles.searchContainer}>
           <div className={styles.searchbar}>
+            {(Object.keys(selectedEvents).length > 0 && !showAllEvents) && (
+              <div className={styles.eventName_container}>
+                {Object.entries(selectedEvents).map(
+                  ([eventId, eventName], index) => (
+                    (index < 4 ?
+                    (<div className={styles.eventName_chip} key={index}>
+                      <span className={styles.eventName_chip_text} >{eventName}</span>
+                      <Image
+                        src={CloseIcon}
+                        width={14}
+                        height={14}
+                        alt="close"
+                        className={styles.closeChip}
+                        onClick={() => removeSelectionHandler(eventId)}
+                      />
+                    </div>) : <></>)
+                  )
+                )}
+              </div>
+            )}
             <input
               type="text"
               placeholder="Search Events"
@@ -566,27 +618,27 @@ const Search = () => {
               onChange={handleSearchChange}
               value={searchInput}
             ></input>
-            <div
+            {/* <div
               className={styles.recentSearches_button}
               onClick={() => setShowRecentSearches(!showRecentSearches)}
             >
               Recent searches
-            </div>
+            </div> */}
             <button onClick={searchHandler}>
               <Image src={SearchIcon} alt="search" className={iconClass} />
             </button>
           </div>
 
-          {Object.keys(selectedEvents).length > 0 && (
-            <div className={styles.eventName_container}>
+          {(Object.keys(selectedEvents).length > 0 && showAllEvents) && (
+            <div className={styles.eventName_container2}>
               {Object.entries(selectedEvents).map(
                 ([eventId, eventName], index) => (
                   <div className={styles.eventName_chip} key={0}>
-                    <span>{eventName}</span>
+                    <span className={styles.eventName_chip_text} >{eventName}</span>
                     <Image
                       src={CloseIcon}
-                      width={20}
-                      height={20}
+                      width={14}
+                      height={14}
                       alt="close"
                       className={styles.closeChip}
                       onClick={() => removeSelectionHandler(eventId)}
@@ -599,6 +651,7 @@ const Search = () => {
         </div>
         {isSearchResultOpen && searchResult && searchResult.length > 0 && (
           <div ref={triggerRef} className={`${styles.resultContainer} ${theme === "light" ? styles.resultContainer_light : ""}`}>
+            <div className={styles.resultData_heading}>Suggestions</div>
             {searchResult.map((item) => (
               <div
                 key={item.id}
@@ -606,6 +659,7 @@ const Search = () => {
                 onClick={() => eventSelectHandler(item.id, item.name)}
               >
                 {item.name}
+                <span className={styles.resultData_subHeading} >{item.organizer.name}</span>
               </div>
             ))}
           </div>
@@ -854,7 +908,7 @@ const Search = () => {
 
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
+                <div className={styles.input_container} style={{width:"fit-content"}}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Event Attendance
@@ -1141,7 +1195,7 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1168,15 +1222,13 @@ const Search = () => {
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
                     <EventAdvFilter
                       state={selectedEventRanking}
                       setState={setSelectedEventRanking}
                       data={eventRankData}
                     />
-                    {/* </Dialog> */}
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
               </div>
             )}
 
@@ -1322,9 +1374,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          <span className={styles.input_selected_title}>
-                            {selectedMaturity} %
-                          </span>
+                          {selectedMaturity !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedMaturity} %
+                            </span>
+                          )}
                         </div>
                         <div className={styles.toggle_container}>
                           <span>
@@ -1332,7 +1386,7 @@ const Search = () => {
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                // checked={}
+                                checked={selectedMaturity !== 0}
                               />
                               <span className={styles.slider}></span>
                             </label>
