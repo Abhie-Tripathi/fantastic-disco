@@ -44,6 +44,7 @@ const Page = () => {
   const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
+  const [deactivated, setDeactivated] = useState<boolean>(false)
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -73,7 +74,7 @@ const Page = () => {
       setPromotedEventOn(false);
       setPromotedEventLimit(0);
     }
-  },[preview])
+  }, [preview])
 
   const handleStep = () => {
     if (activeNavItem === "Designs") {
@@ -89,7 +90,7 @@ const Page = () => {
     <div className={styles.layout}>
       <div className={styles.navbar}>
         <div className={styles.navLeft}>
-          <div className={styles.heading}>Add Widget : </div>
+          <div className={styles.heading}>Edit Widget : </div>
           {/* <div
             className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
             onClick={() => handleNavItemClick("Designs")}
@@ -97,13 +98,13 @@ const Page = () => {
             Designs
           </div> */}
           <div
-            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : (activeNavItem === "Filter" || activeNavItem === "Code" ? styles.completed : "")}`}
+            className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("BrandKit")}
           >
             Brand Kit
           </div>
           <div
-            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : (activeNavItem === "Code" ? styles.completed : "")}`}
+            className={`${styles.navItem} ${activeNavItem === "Filter" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("Filter")}
           >
             Filter Events
@@ -112,7 +113,7 @@ const Page = () => {
             className={`${styles.navItem} ${activeNavItem === "Code" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("Code")}
           >
-            Code
+            Code & Status
           </div>
         </div>
         <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
@@ -132,12 +133,29 @@ const Page = () => {
             setBtnBorderWidth={setBtnBorderWidth}
             setBtnBorderColor={setBtnBorderColor}
             setBtnRadius={setBtnRadius}
-            setBtnFontSize={setBtnFontSize} 
+            setBtnFontSize={setBtnFontSize}
             setBgColor={setBgColor} />}
           {activeNavItem === "Filter" && <Filters promotedEventLimit={promotedEventLimit} promotedEventOn={promotedEventOn} />}
-          {activeNavItem === "Code" && <CodeWindow widgetId="1524gus" type={"sticky"} />}
+          {activeNavItem === "Code" &&
+            <div>
+              <CodeWindow widgetId="1524gus" type={"sticky"} />
+              <div className={styles.status_activeContainer}>
+                <div className={styles.statusContainer}>
+                  <div className={styles.statusHeading}>Widget Status</div>
+                  <div className={styles.statusBtn}>
+                    <div className={styles.statusFlag}></div>
+                    <div className={styles.status}>Active</div>
+                  </div>
+                </div>
+                <div className={styles.activateBtn}>
+                  <div className={styles.activateHeading}>Deactivated</div>
+                  <input type="checkbox" id="activate" className={styles.checkboxInput} checked={deactivated} onChange={() => setDeactivated(!deactivated)} />
+                  <label htmlFor="activate" className={styles.checkBox}></label>
+                </div>
+              </div>
+            </div>}
         </div>}
-        <div className={`${styles.previewWindow} ${isFullScreen ? styles.fullPreview :""}`}>
+        <div className={`${styles.previewWindow} ${isFullScreen ? styles.fullPreview : ""}`}>
           <div className={styles.heading}>
             {preview === "stickytop" ? "Sticky Top" :
               preview === "stickydown" ? "Sticky Footer" :
@@ -175,12 +193,12 @@ const Page = () => {
                                           <ScrollView type='left' /> :
                                           preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
-           <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={()=>setIsFullScreen(!isFullScreen)}/>   
+          <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
         </div>
-        <button className={styles.submitBtn} onClick={handleStep} type="button">Next</button>
+        <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <YourWidgets setYourWidgetModal={setYourWidgetModal}/>
+        <YourWidgets setYourWidgetModal={setYourWidgetModal} />
       </div>
     </div>
   );
