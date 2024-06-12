@@ -368,16 +368,24 @@ input:checked + .slider:before {
 }
 
 .resultData_list{
-  padding: 10px 15px;
+  padding: 5px 25px;
   /* background-color: #F7F7F9; */
   /* margin-bottom: 6px; */
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+
+.resultData_subHeading {
+  font-size: 12px;
+  margin-left: 10px;
+  color: #A1A2A2;
 }
 
 .resultData_list:hover {
-  color: #6750a4;
-  background-color: #FBF8FF;
-  /* background-color: #1a1a1a; */
+  background-color: #F9F7FC;
 }
 
 .resultContainer {
@@ -389,26 +397,47 @@ input:checked + .slider:before {
   /* background-color: #131313; */
   z-index: 1;
   padding: 10px 0;
-  box-shadow: 0px 0px 35px 0px rgba(154, 161, 171, 0.15);
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
+  border-radius: 14px;
+  box-shadow: 2px 2px 12px 6px #0000000D;
 }
 
 .resultContainer_light {
-  background-color: white;
+  background-color: #FFFFFF;
+}
+
+.resultData_heading {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #666666;
+  padding: 5px 25px;
 }
 
 .eventName_container {
   display: flex;
   gap: 10px;
   flex-wrap: nowrap;
+  padding: 10px 0;
+  flex-direction: row;
+  overflow-x: auto;
+  margin-right: 5px;
+}
+
+.eventName_container2 {
+  overflow-x: unset;
+  flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
   padding: 10px;
   flex-direction: row;
-  /* width: 100%; */
-  overflow-x: auto;
-
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.eventName_container2 .eventName_chip {
+  width: 200px;
+  max-width: 25vw;
 }
 
 .eventName_container::-webkit-scrollbar {
@@ -428,15 +457,42 @@ input:checked + .slider:before {
 }
  
 .eventName_chip {
-  padding: 4px 7px 4px 7px;
   display: flex;
   align-items: center;
   gap: 15px;
-  border: 1px solid #ddd;
-  border-radius: 30px;
-  color: #6750a4;
-  font-weight: 500;
   text-wrap: nowrap;
+  width: 15vw;
+  height: 36px;
+  padding: 2px 20px;
+  gap: 0px;
+  border-radius: 6px;
+
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-align: left;
+  background: #F7F7F9;
+}
+
+.eventName_chip_text {
+  /* width: 150px; */
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 15px;
+}
+
+.moreEventsCount {
+  color: #A1A2A2;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  cursor: pointer;
 }
  
 .closeChip {
