@@ -61,7 +61,10 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
+  const [refreshState, setRefreshState] = useState<boolean>(false);
+
   const fetchData = async () => {
+    setRefreshState(true);
     const { data, error } = await myFetch(`${baseUrl}/export/list`);
     console.log(data);
     if (error) {
@@ -71,6 +74,9 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
 
     if (data) {
       setExportList(data);
+      setTimeout(() => {
+        setRefreshState(false);;
+      }, 500);
     }
   };
   useEffect(() => {
@@ -231,7 +237,7 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
                   alt="refresh"
                   width={24}
                   height={24}
-                  className={iconClass}
+                  className={`${iconClass} ${refreshState ?styles.rotating: ''}`}
                 />
                 <div>refresh</div>
               </div>

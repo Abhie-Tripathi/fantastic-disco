@@ -40,7 +40,7 @@ import EventKeyword from "@/app/components/dropdown/EventKeyword";
 import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
-import CloseIcon from "/public/close.svg";
+import CloseIcon from "/public/internal/cross.svg";
 import FilterIcon from "/public/internal/advanceFilter.svg"
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
@@ -487,6 +487,7 @@ const Search = () => {
 
   console.log(filters);
 
+  const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [text, setText] = useState("");
   const [selectedEvents, setSelectedEvents] = useState<{
@@ -499,7 +500,7 @@ const Search = () => {
   const handleSearchInput = async (text: string) => {
     if (text) {
       const { data, error } = await myFetch(
-        `${baseUrl}/event/search?eventName=${text}`
+        `${baseUrl}/event/search?eventName=${text}&max=5`
       );
       if (error) {
         console.log(error);
@@ -525,6 +526,9 @@ const Search = () => {
   const eventSelectHandler = (eventId: string, eventName: string) => {
     if (!selectedEvents[eventId]) {
       setSelectedEvents((prev) => {
+        if(Object.keys(prev).length + 1 > 4) {
+          setShowAllEvents(true);
+        }
         return { ...prev, [eventId]: eventName };
       });
     }
@@ -532,6 +536,9 @@ const Search = () => {
 
   const removeSelectionHandler = (eventId: string) => {
     setSelectedEvents((prev) => {
+      if(Object.keys(prev).length - 1 <= 4) {
+        setShowAllEvents(false);
+      }
       const updatedEvents = { ...prev };
       delete updatedEvents[eventId];
       return updatedEvents;
@@ -584,6 +591,26 @@ const Search = () => {
       <div className={styles.container}>
         <div className={styles.searchContainer}>
           <div className={styles.searchbar}>
+            {(Object.keys(selectedEvents).length > 0 && !showAllEvents) && (
+              <div className={styles.eventName_container}>
+                {Object.entries(selectedEvents).map(
+                  ([eventId, eventName], index) => (
+                    (index < 4 ?
+                    (<div className={styles.eventName_chip} key={index}>
+                      <span className={styles.eventName_chip_text} >{eventName}</span>
+                      <Image
+                        src={CloseIcon}
+                        width={14}
+                        height={14}
+                        alt="close"
+                        className={styles.closeChip}
+                        onClick={() => removeSelectionHandler(eventId)}
+                      />
+                    </div>) : <></>)
+                  )
+                )}
+              </div>
+            )}
             <input
               type="text"
               placeholder="Search Events"
@@ -602,16 +629,16 @@ const Search = () => {
             </button>
           </div>
 
-          {Object.keys(selectedEvents).length > 0 && (
-            <div className={styles.eventName_container}>
+          {(Object.keys(selectedEvents).length > 0 && showAllEvents) && (
+            <div className={styles.eventName_container2}>
               {Object.entries(selectedEvents).map(
                 ([eventId, eventName], index) => (
                   <div className={styles.eventName_chip} key={0}>
-                    <span>{eventName}</span>
+                    <span className={styles.eventName_chip_text} >{eventName}</span>
                     <Image
                       src={CloseIcon}
-                      width={20}
-                      height={20}
+                      width={14}
+                      height={14}
                       alt="close"
                       className={styles.closeChip}
                       onClick={() => removeSelectionHandler(eventId)}
@@ -624,6 +651,7 @@ const Search = () => {
         </div>
         {isSearchResultOpen && searchResult && searchResult.length > 0 && (
           <div ref={triggerRef} className={`${styles.resultContainer} ${theme === "light" ? styles.resultContainer_light : ""}`}>
+            <div className={styles.resultData_heading}>Suggestions</div>
             {searchResult.map((item) => (
               <div
                 key={item.id}
@@ -631,6 +659,7 @@ const Search = () => {
                 onClick={() => eventSelectHandler(item.id, item.name)}
               >
                 {item.name}
+                <span className={styles.resultData_subHeading} >{item.organizer.name}</span>
               </div>
             ))}
           </div>
