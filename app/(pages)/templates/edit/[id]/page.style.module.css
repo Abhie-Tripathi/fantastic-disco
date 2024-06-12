@@ -71,6 +71,80 @@
 .fullPreview{
     width: 100%;
 }
+.status_activeContainer{
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid rgb(84, 84, 84);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.statusContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.statusHeading{
+    color: white;
+}
+.statusBtn {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+    width: fit-content;
+}
+.statusFlag{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #19922C;
+}
+.status{
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #19922C;
+}
+.activateBtn{
+    display: flex;
+}
+.checkboxInput {
+    margin-right: 18px;
+    display: none;
+}
+.checkBox {
+    margin-left: 18px;
+    cursor: pointer;
+    background-color: #808080;
+    height: 24px;
+    width: 48px;
+    border-radius: 12px;
+}
+.checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin: 2px;
+    transition: transform 0.2s ease;
+}
+.checkboxInput:checked+.checkBox::before {
+    transform: translateX(24px);
+}
+
+.checkboxInput:checked+.checkBox {
+    background-color: #6650a483;
+}
+
 .preview {
     display: flex;
     height: 90%;
