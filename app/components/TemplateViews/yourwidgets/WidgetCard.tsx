@@ -22,6 +22,7 @@ const WidgetCard = ({status, statusIcon} : WidgetProps) => {
                         <Image src={Spinner} alt='spinner' />
                     </div>
                     <div className={styles.widgetName}>Page Widget</div>
+                    <div className={styles.widgetHeading}>(Your Widget Name)</div>
                     <div className={styles.statusBtn}>
                         <div className={`${statusIcon === "green" ? styles.activeFlag : statusIcon==="red" ? styles.inactiveFlag : styles.inprogressFlag} ${styles.statusFlag}`}></div>
                         <div className={`${statusIcon === "green" ? styles.activeStatus : statusIcon==="red" ? styles.inactiveStatus : styles.inprogressStatus} ${styles.status}`}>{status}</div>
@@ -36,7 +37,7 @@ const WidgetCard = ({status, statusIcon} : WidgetProps) => {
                     <div>-</div>
                     <div className={styles.date}>30th Apr 2024</div>
                 </div>
-                <Link href={"/templates/edit"} className={styles.viewDetailsContainer}>
+                <Link href={"/templates/edit/5sra857xa7s"} className={styles.viewDetailsContainer}>
                     <div className={styles.viewDetailsHeading}>Edit</div>
                     <Image src={RightArrow} alt='->' className={styles.viewDetailsIcon} />
                 </Link>
