@@ -4,7 +4,8 @@ import Calendar from '/public/vector.svg'
 import Image from 'next/image'
 import Spinner from '/public/Icon.svg'
 import Delete from '/public/delete.svg'
-import DownArrow from '/public/internal/arrow_drop_down.svg'
+import RightArrow from '/public/rightArrow.svg'
+import Link from 'next/link'
 
 interface WidgetProps{
     status : string;
@@ -12,7 +13,7 @@ interface WidgetProps{
 }
 
 const WidgetCard = ({status, statusIcon} : WidgetProps) => {
-    const [accordian, setAccordian] = useState(false)
+
     return (
         <div className={styles.body}>
             <div className={styles.headerSection}>
@@ -35,10 +36,10 @@ const WidgetCard = ({status, statusIcon} : WidgetProps) => {
                     <div>-</div>
                     <div className={styles.date}>30th Apr 2024</div>
                 </div>
-                <div className={styles.viewDetailsContainer} onClick={() => setAccordian(!accordian)}>
+                <Link href={"/templates/edit"} className={styles.viewDetailsContainer}>
                     <div className={styles.viewDetailsHeading}>Edit</div>
-                    <Image src={DownArrow} alt='down' className={styles.viewDetailsIcon} />
-                </div>
+                    <Image src={RightArrow} alt='->' className={styles.viewDetailsIcon} />
+                </Link>
 
             </div>
         </div>
