@@ -25,6 +25,10 @@ const Page = () => {
   const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [draftWidgets, setDraftWidgets] = useState<string[]>([]);
 
+  const handleDraftWidget = ()=>{
+    setDraftWidgets([...draftWidgets,widgetSelected])
+  }
+
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
@@ -40,7 +44,7 @@ const Page = () => {
             <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
           </div>
           <div className={styles.add_draftContainer}>
-            <button className={styles.draftBtn}>Save To Draft</button>
+            <button className={styles.draftBtn} onClick={handleDraftWidget}>Save To Draft</button>
             <button className={styles.addBtn}>Add Another Template</button>
           </div>
         </div>}

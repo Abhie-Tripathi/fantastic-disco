@@ -50,7 +50,7 @@
     padding: 12px;
     width: 50%;
     text-align: center;
-    background-color: rgb(206, 185, 22);
+    background-color: rgb(206, 96, 22);
     border-radius: 5px;
 }
 .rightContainer {
@@ -77,7 +77,7 @@
     padding: 12px;
     width: fit-content;
     text-align: center;
-    background-color: rgb(206, 185, 22);
+    background-color: rgb(206, 96, 22);
     border-radius: 5px;
 }
 .fullPreview{
