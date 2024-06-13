@@ -15,7 +15,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
-import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
+import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 
@@ -45,6 +45,7 @@ const Page = () => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
+  const [draftWidgets, setDraftWidgets] = useState<string[]>(["Page"]);
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -198,7 +199,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <YourWidgets setYourWidgetModal={setYourWidgetModal} />
+        <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets={draftWidgets}/>
       </div>
     </div>
   );

@@ -14,7 +14,8 @@ import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/Mult
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
-import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
+import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
+import Link from 'next/link';
 
 const Page = () => {
 
@@ -22,12 +23,16 @@ const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [preview, setPreview] = useState("sehb");
   const [widgetSelected, setWidgetSelected] = useState<string>("");
+  const [draftWidgets, setDraftWidgets] = useState<string[]>([]);
 
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
-        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
+        <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
+          <div className={styles.savedDraftHeading}>Saved Drafts</div>
+          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+        </div>
       </div>
       <div className={styles.body}>
         {!isFullScreen && <div className={styles.edit_btnsContainer}>
@@ -81,11 +86,11 @@ const Page = () => {
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
           <div className={styles.containueContainer}>
-            <button className={styles.continueBtn}>Continue with this Template</button>
+            <Link href={"/templates/edit/f36543"} className={styles.continueBtn}>Continue with this Template</Link>
           </div>
         </div>
         <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-          <YourWidgets setYourWidgetModal={setYourWidgetModal} />
+          <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets ={draftWidgets}/>
         </div>
       </div>
     </div>
