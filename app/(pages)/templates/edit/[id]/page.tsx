@@ -19,6 +19,11 @@ import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidge
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 
+interface DraftWidget {
+  widgetType: string[];
+  preview: string[];
+}
+
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("BrandKit");
   const [preview, setPreview] = useState("sehb");
@@ -45,7 +50,7 @@ const Page = () => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
-  const [draftWidgets, setDraftWidgets] = useState<string[]>(["Page"]);
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget>({ widgetType: [], preview: [] });
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);

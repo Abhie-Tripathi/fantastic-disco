@@ -4,7 +4,12 @@ import WidgetCard from './WidgetCard'
 
 interface Props {
   setYourWidgetModal: (value: boolean) => void
-  draftWidgets: string[];
+  draftWidgets: DraftWidget;
+}
+
+interface DraftWidget {
+  widgetType: string[];
+  preview: string[];
 }
 
 const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
@@ -24,12 +29,12 @@ const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
         <div className={`${styles.filterBtn} ${widgetType === "Sticky" ? styles.activeFilter : ""}`} onClick={() => setWidgetType("Sticky")}>Sticky</div>
         <div className={`${styles.filterBtn} ${widgetType === "Popup" ? styles.activeFilter : ""}`} onClick={() => setWidgetType("Popup")}>Popup</div>
       </div> */}
-      {draftWidgets.length === 0 && <div className={styles.emptyMessage}>
+      {draftWidgets.widgetType.length === 0 && <div className={styles.emptyMessage}>
         No widgets added to Draft.
         <br/>Save a widget to draft to see here
       </div>}
       <div className={styles.widgets}>
-        {draftWidgets.map((widget, key) => (
+        {draftWidgets.widgetType.map((widget, key) => (
           <WidgetCard status='Active' statusIcon="green" widgetType={widget} key={key} />
         ))}
       </div>

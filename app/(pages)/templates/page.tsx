@@ -15,7 +15,13 @@ import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import InfoModal from '@/app/components/TemplateViews/infomodal/InfoModal';
+
+interface DraftWidget {
+  widgetType: string[];
+  preview: string[];
+}
 
 const Page = () => {
 
@@ -23,11 +29,34 @@ const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [preview, setPreview] = useState("sehb");
   const [widgetSelected, setWidgetSelected] = useState<string>("");
-  const [draftWidgets, setDraftWidgets] = useState<string[]>([]);
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget>({ widgetType: [], preview: [] });
+  const [infoModal, setInfoModal] = useState<boolean>(false)
+  const router = useRouter();
+  const handleDraftWidget = () => {
 
-  const handleDraftWidget = ()=>{
-    setDraftWidgets([...draftWidgets,widgetSelected])
-  }
+    const isWidgetSelected = draftWidgets.widgetType.includes(widgetSelected);
+    if (isWidgetSelected) {
+      setInfoModal(true);
+    } else {
+      setDraftWidgets(prevState => ({
+        widgetType: [...prevState.widgetType, widgetSelected],
+        preview: [...prevState.preview, preview]
+      }));
+    }
+  };
+
+  const handleEditButton = () => {
+    const isWidgetSelected = draftWidgets.widgetType.includes(widgetSelected);
+    const isPreviewPresent = draftWidgets.preview.includes(preview);
+
+    if (isWidgetSelected && isPreviewPresent) {
+      router.push("/templates/edit/3763g");
+    } else if (isWidgetSelected && !isPreviewPresent) {
+      setInfoModal(true);
+    } else {
+      router.push("/templates/edit/3763g");
+    }
+  };
 
   return (
     <div className={styles.layout}>
@@ -35,10 +64,10 @@ const Page = () => {
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
         <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
-          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+          <div className={styles.savedDraftNumber}>{draftWidgets.widgetType.length}</div>
         </div>
       </div>
-      <div className={styles.body}>
+      <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
         {!isFullScreen && <div className={styles.edit_btnsContainer}>
           <div className={styles.templateWindow}>
             <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
@@ -90,13 +119,17 @@ const Page = () => {
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
           <div className={styles.containueContainer}>
-            <Link href={"/templates/edit/f36543"} className={styles.continueBtn}>Continue with this Template</Link>
+            <div onClick={handleEditButton} className={styles.continueBtn}>Continue with this Template</div>
           </div>
         </div>
         <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets ={draftWidgets}/>
+          <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets={draftWidgets} />
         </div>
       </div>
+      {infoModal && <div className={styles.infoModal}>
+        <InfoModal />
+      </div>}
+
     </div>
   )
 }

@@ -1,0 +1,7 @@
+.body{
+    background-color: grey;
+    height: 300px;
+    width: 500px;
+    border-radius: 10px;
+    padding: 10px;
+}
