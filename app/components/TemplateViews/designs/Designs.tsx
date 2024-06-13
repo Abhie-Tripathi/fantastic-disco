@@ -20,7 +20,7 @@ const Designs = (props : Props) => {
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
     // const [preview, setPreview] = useState("");
-    const [widgetSelected, setWidgetSelected] = useState<string>("")
+    // const [widgetSelected, setWidgetSelected] = useState<string>("")
     // const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
     const [showHighlightedTemplates, setShowHighlihtedTemplates] = useState<boolean>(false)
     const [editModal, setEditModal] = useState<boolean>(false)

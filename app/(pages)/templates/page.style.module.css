@@ -24,57 +24,62 @@
     display: flex;
     gap: 5px;
 }
-.editWindow {
+.edit_btnsContainer {
     width: 45%;
     height: 80vh;
-    overflow-y: scroll;
     background-color: #1a1a1a;
-    padding: 20px;
     border-radius: 12px;
 }
-.previewWindow {
-    width: 55%;
-    border: 1px solid white;
-    border-radius: 10px;
-    height: 80vh;
+.templateWindow{
+    height: 75vh;
     overflow-y: auto;
-    padding: 10px;
+    overflow-x: hidden;
+}
+.add_draftContainer{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.add_draftContainer button{
+    padding: 12px;
+    width: 50%;
+    text-align: center;
+    background-color: rgb(206, 185, 22);
+    border-radius: 5px;
+}
+.rightContainer {
+    width: 55%;
+    /* border: 1px solid white; */
+    border-radius: 3px;
+    height: 80vh;
     position: relative;
+}
+.previewContainer{
+    border: 1px solid rgb(98, 98, 98);
+    padding: 10px;
+    border-radius: 5px;
+    height: 75vh;
+    overflow-y: auto;
+}
+.containueContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.continueBtn{
+    padding: 12px;
+    width: fit-content;
+    text-align: center;
+    background-color: rgb(206, 185, 22);
+    border-radius: 5px;
 }
 .fullPreview{
     width: 100%;
 }
-.name_saveContainer{
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.widgetNameInput{
-    font-size: 14px;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #6750a4;
-    background: none;
-    color: white;
-}
-.widgetNameInput:focus{
-    outline: none;
-}
-.saveBtn{
-    font-size: 14px;
-    border: 1px solid #6750a4;
-    color:white;
-    padding: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.saveBtn:hover{
-    background-color: #6750a4;
-}
 .preview {
     display: flex;
-    height: 90%;
+    height: 95%;
     align-items: center;
     justify-content: center;
 }

@@ -144,7 +144,7 @@ const Page = () => {
                   <div className={styles.statusHeading}>Widget Status</div>
                   <div className={styles.statusBtn}>
                     <div className={styles.statusFlag}></div>
-                    <div className={styles.status}>Active</div>
+                    <div className={styles.status}>Events Not Selected</div>
                   </div>
                 </div>
                 <div className={styles.activateBtn}>

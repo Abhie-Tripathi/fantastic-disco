@@ -30,53 +30,59 @@ const Page = () => {
         <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
       </div>
       <div className={styles.body}>
-        {!isFullScreen && <div className={styles.editWindow}>
-          <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
+        {!isFullScreen && <div className={styles.edit_btnsContainer}>
+          <div className={styles.templateWindow}>
+            <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
+          </div>
+          <div className={styles.add_draftContainer}>
+            <button className={styles.draftBtn}>Save To Draft</button>
+            <button className={styles.addBtn}>Add Another Template</button>
+          </div>
         </div>}
-        <div className={`${styles.previewWindow} ${isFullScreen ? styles.fullPreview : ""}`}>
-          <div className={styles.heading}>
-            {preview === "stickytop" ? "Sticky Top" :
-              preview === "stickydown" ? "Sticky Footer" :
-                preview === "sehb" ? "Hero Banner" :
-                  preview === "megv" ? "Grid View" :
-                    preview === "melv" ? "List View" :
-                      preview === "melgv" ? "List and Grid view" :
-                        preview === "phblv" ? "Hero Banner and List view" :
-                          preview === "phbgv" ? "Hero Banner and Grid view" :
-                            preview === "phblgv" ? "Hero Banner and List Grid view" :
-                              preview === "pcslv" ? "Caraousel and List view" :
-                                preview === "pcsgv" ? "Caraousel and Grid view" :
-                                  preview === "pcslgv" ? "Caraousel and List Grid view" :
-                                    preview === "tscv" ? "Top Section Caraousel view" :
-                                      preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" :
-                                          preview === "popup" ? "Pop-up" : ""}
+        <div className={`${styles.rightContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
+          <div className={styles.previewContainer}>
+            <div className={styles.heading}>
+              {preview === "stickytop" ? "Sticky Top" :
+                preview === "stickydown" ? "Sticky Footer" :
+                  preview === "sehb" ? "Hero Banner" :
+                    preview === "megv" ? "Grid View" :
+                      preview === "melv" ? "List View" :
+                        preview === "melgv" ? "List and Grid view" :
+                          preview === "phblv" ? "Hero Banner and List view" :
+                            preview === "phbgv" ? "Hero Banner and Grid view" :
+                              preview === "phblgv" ? "Hero Banner and List Grid view" :
+                                preview === "pcslv" ? "Caraousel and List view" :
+                                  preview === "pcsgv" ? "Caraousel and Grid view" :
+                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                      preview === "tscv" ? "Top Section Caraousel view" :
+                                        preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                          preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                            preview === "popup" ? "Pop-up" : ""}
+            </div>
+            <div className={styles.preview}>
+              {preview === "stickytop" ? <StickyPreview type="top" /> :
+                preview === "stickydown" ? <StickyPreview type="down" /> :
+                  preview === "sehb" ? <HeroBanner /> :
+                    preview === "megv" ? <GridView /> :
+                      preview === "melv" ? <ListView /> :
+                        preview === "melgv" ? <ListAndGridView /> :
+                          preview === "phblv" ? <HeroBannerAndViews type='list' /> :
+                            preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
+                              preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
+                                preview === "pcslv" ? <CaraouselAndViews type='list' /> :
+                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
+                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                      preview === "tscv" ? <CaraouselTop /> :
+                                        preview === "tshs" ? <ScrollView type='top' /> :
+                                          preview === "lsvs" ?
+                                            <ScrollView type='left' /> :
+                                            preview === "popup" ? <Popup /> : <></>}
+            </div>
+            <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
-          <div className={styles.name_saveContainer}>
-            <input type="text" placeholder='Enter Widget Name' className={styles.widgetNameInput}/>
-            <div className={styles.saveBtn} onClick={() => setYourWidgetModal(true)}>Save Widget</div>
+          <div className={styles.containueContainer}>
+            <button className={styles.continueBtn}>Continue with this Template</button>
           </div>
-
-          <div className={styles.preview}>
-            {preview === "stickytop" ? <StickyPreview type="top" /> :
-              preview === "stickydown" ? <StickyPreview type="down" /> :
-                preview === "sehb" ? <HeroBanner /> :
-                  preview === "megv" ? <GridView /> :
-                    preview === "melv" ? <ListView /> :
-                      preview === "melgv" ? <ListAndGridView /> :
-                        preview === "phblv" ? <HeroBannerAndViews type='list' /> :
-                          preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
-                            preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                              preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                  preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
-                                    preview === "tscv" ? <CaraouselTop /> :
-                                      preview === "tshs" ? <ScrollView type='top' /> :
-                                        preview === "lsvs" ?
-                                          <ScrollView type='left' /> :
-                                          preview === "popup" ? <Popup /> : <></>}
-          </div>
-          <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
         </div>
         <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
           <YourWidgets setYourWidgetModal={setYourWidgetModal} />

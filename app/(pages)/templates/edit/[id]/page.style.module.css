@@ -103,14 +103,14 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #19922C;
+    background-color: #c3c633;
 }
 .status{
     font-size: 13px;
     font-weight: 400;
-    line-height: 19.87px;
-    text-align: left;
-    color: #19922C;
+    /* line-height: 19.87px;
+    text-align: left; */
+    color: #c3c633;
 }
 .activateBtn{
     display: flex;
