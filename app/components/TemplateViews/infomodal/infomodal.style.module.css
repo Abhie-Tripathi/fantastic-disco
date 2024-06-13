@@ -4,4 +4,22 @@
     width: 500px;
     border-radius: 10px;
     padding: 10px;
+    /* text-align: center; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.btns{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.btns button{
+    padding: 5px 20px;
+    font-size: 14px;
+    color: white;
+    border-radius: 10px;
+    width: fit-content;
+    background-color: #6750a4;
 }
