@@ -69,14 +69,14 @@ const Page = () => {
         </div>
       </div>
       <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
-        {!isFullScreen && <div className={styles.edit_btnsContainer}>
+        {!isFullScreen && <div className={styles.leftContainer}>
           <div className={styles.templateWindow}>
             <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} draftWidgets={draftWidgets} />
           </div>
-          <div className={styles.add_draftContainer}>
-            <button className={styles.draftBtn} onClick={handleDraftWidget}>Save To Draft</button>
+          {/* <div className={styles.add_draftContainer}>
+
             <button className={styles.addBtn}>Add Another Template</button>
-          </div>
+          </div> */}
         </div>}
         <div className={`${styles.rightContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
           <div className={styles.previewContainer}>
@@ -119,8 +119,9 @@ const Page = () => {
             </div>
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
-          <div className={styles.containueContainer}>
-            <div onClick={handleEditButton} className={styles.continueBtn}>Continue with this Template</div>
+          <div className={styles.continue_saveContainer}>
+            <button onClick={handleEditButton} className={styles.continueBtn}>Continue with this Template</button>
+            <button className={styles.saveBtn} onClick={handleDraftWidget}>Save To Draft</button>
           </div>
         </div>
         <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>

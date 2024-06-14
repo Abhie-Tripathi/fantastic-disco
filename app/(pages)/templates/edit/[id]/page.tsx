@@ -20,8 +20,8 @@ import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 
 interface DraftWidget {
-  widgetType: string[];
-  preview: string[];
+  widgetType: string;
+  preview: string;
 }
 
 const Page = () => {
@@ -50,7 +50,7 @@ const Page = () => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
-  const [draftWidgets, setDraftWidgets] = useState<DraftWidget>({ widgetType: [], preview: [] });
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
