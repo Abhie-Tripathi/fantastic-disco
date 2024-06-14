@@ -35,7 +35,7 @@ const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
       </div>}
       <div className={styles.widgets}>
         {draftWidgets.map((widget, key) => (
-          <WidgetCard status='Active' statusIcon="green" widgetType={widget.widgetType} key={key} />
+          <WidgetCard status='Events Not Added' statusIcon="yellow" widgetType={widget.widgetType} key={key} />
         ))}
       </div>
 

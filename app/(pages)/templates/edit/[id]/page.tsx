@@ -122,7 +122,10 @@ const Page = () => {
             Code & Status
           </div>
         </div>
-        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
+        <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
+          <div className={styles.savedDraftHeading}>Saved Drafts</div>
+          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+        </div>
       </div>
       <div className={styles.body}>
         {!isFullScreen && <div className={styles.editWindow}>

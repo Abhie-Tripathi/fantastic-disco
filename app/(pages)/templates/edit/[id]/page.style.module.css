@@ -15,6 +15,22 @@
     align-items: center;
     gap: 10px;
 }
+.savedDraftsContainer{
+    padding: 5px 20px;
+    width: fit-content;
+    cursor: pointer;
+    background-color: #6750a4;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.savedDraftNumber{
+    padding:2px;
+    background-color: black;
+    border-radius: 10px;
+}
 .yourWidgets{
     padding: 5px 20px;
     width: fit-content;
