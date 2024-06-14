@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './insights.style.module.css'
-const index = () => {
+const index = ({isBranded, trustScore, reputation, maturity}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -21,7 +21,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${isBranded ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -48,7 +48,7 @@ const index = () => {
             <div className={styles.branded}>
                     <div className={styles.formatHead}>
                         Trust Score
-                        <span className={styles.circle}>20</span>
+                        <span className={styles.circle}>{parseInt(trustScore)>0 && trustScore}</span>
                     </div>
                     <div className={styles.toggle_container}>
                           <span>
@@ -60,7 +60,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${parseInt(trustScore)>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -68,7 +68,7 @@ const index = () => {
                 <div className={styles.branded}>
                     <div className={styles.formatHead}>
                         Reputation Score
-                        <span className={styles.circle}>40</span>
+                        <span className={styles.circle}>{parseInt(reputation)>0 && reputation}</span>
                     </div>
                     <div className={styles.toggle_container}>
                           <span>
@@ -80,7 +80,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${parseInt(reputation)>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -102,7 +102,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${parseInt(maturity)>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>

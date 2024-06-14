@@ -42,6 +42,7 @@ interface Reply {
 export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
+  const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
   // const searchParams = useSearchParams();
   const [suggest, setSuggest] = useState();
@@ -91,7 +92,18 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     }
   };
   async function fetchData() {
-
+    if(path[path.length-1]==="notesDiscussion"){
+      const url =
+      `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${path[path.length-2]}&offset=${page}&limit=10`;
+      const { data, error } = await myFetch(url);
+      if (data) {
+        // setNotes([]);
+        console.log(data);
+        // setNotes(data.comments.reverse());
+        if (data.comments?.length > 0)
+          setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+      }
+    }else{
     const url =
       `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
 
@@ -113,6 +125,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
     else setNotes(CommentsData );
+  }
   }
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();
@@ -220,8 +233,22 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       console.log(selectedPdfs);
 
       console.log(replyName);
-
-      const dataToSend = {
+      if(path[path.length-1]==="notesDiscussion"){
+        const dataToSend = {
+          "stage": "INTERNAL",
+          "type": type,
+          "content": note,
+          "source": "GTM",
+          "entityType": "TRACKER",
+          "entityId":path[path.length-2],
+          ...(replyId !== null && {
+            "parentCommentId": replyId
+          })
+        };
+        postNote(dataToSend);
+      }else
+      {
+        const dataToSend = {
         "eventId": eventId,
         "eventGroupId": eventGroupId,
         "stage": stage,
@@ -237,6 +264,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         })
       };
       postNote(dataToSend);
+    }
       // console.log(dataToSend.files);
 
       // setNotes(updatedNotes);
@@ -286,7 +314,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     if (data) {
       const newData = transformData(data.data);
 
-      setNotes(prevNotes => [...prevNotes, newData]);
+      setNotes(prevNotes => [...prevNotes, data.data]);
     }
     if (!error) {
       console.log(data);
@@ -999,9 +1027,9 @@ const Comment = ({
             ))}
           </div>
             } */}
-            {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
+            {/* {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
               <div key={index}>{item.Attachment.fileName}</div>
-            ))}
+            ))} */}
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}
@@ -1009,11 +1037,11 @@ const Comment = ({
 
               {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
 
-                (item.Attachment && item?.Attachment[0]?.fileType === "IMAGE" ? (
+                (item.Attachment && item?.Attachment?.fileType === "IMAGE" ? (
                   <div key={index}>
                     <Image
                       style={{ borderRadius: "5px" }}
-                      src={item?.Attachment[0]?.filePath}
+                      src={item?.Attachment?.filePath}
                       alt={item.name}
                       width={200}
                       height={150}

@@ -17,7 +17,7 @@ function Location({ fillColor }:{fillColor:string}) {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
-        <div className={styles.bar}>
+        {/* <div className={styles.bar}>
             <div className={styles.leftNav}>
               <Link href='/internal/trackers'>
               <Image style={{display:"flex"}}src={Back} alt="back"/>
@@ -30,7 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   Bengaluru, Karnataka, India (1.34 mi radius) 
                   </div>
             </div>
-        </div>
+        </div> */}
         <div className={styles.containerBottom}>
       <div className={styles.containerLeft}>
         <SideNav/>

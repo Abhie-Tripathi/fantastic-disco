@@ -1,5 +1,6 @@
 .container {
-  height: 120vh;
+  min-height: 120vh;
+  background-color: #FAFAFF;
   /* background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
   width: 100vw;
   position: relative;
@@ -81,6 +82,8 @@
 .formContainer{
   display: flex;
     width: 50%;
+    background-color: white;
+    padding: 10px 0px;
     justify-content: center;
 }
 .image {

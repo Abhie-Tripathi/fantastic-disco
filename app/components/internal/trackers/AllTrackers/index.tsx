@@ -8,7 +8,7 @@ import Location from '/public/location_on.svg'
 import GoTo from '/public/goTo.svg'
 import Vectore6 from '/public/newVector.svg'
 import Link from 'next/link';
-const index = ({item}:any) => {
+const index = ({ item }: any) => {
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -73,37 +73,49 @@ const index = ({item}:any) => {
     ],
   };
   console.log(item);
-  
+
   return (
-    
-      <div className={styles.container}>
-       <Link href={{
-                        pathname: `/internal/trackers/${item.id}/trackedEvents`,
-                        // query: { data: JSON.stringify(item) }
-                    }}>
+
+    <div className={styles.container}>
+      <Link href={{
+        pathname: `/internal/trackers/${item.id}/trackedEvents`,
+        // query: { data: JSON.stringify(item) }
+      }}>
         <div className={styles.cardOne}>
           <div className={styles.heading}>{item.name}</div>
           <Image src={GoTo} alt="goTo" />
         </div>
         <div className={styles.cardTwo}>
           <Image src={Location} alt="location" />
-          <div className={styles.location}>Bengaluru, Karnataka, India (1.34 mi radius) </div>
+          <div className={styles.location}>{item?.filterValue
+            ?.
+            location
+             && item?.filterValue
+              ?.
+              location
+            [0]} {item?.filterValue
+              ?.
+              location && item?.filterValue
+              ?.
+              location.length>1 &&<span className={styles.moreBtn}>+{item?.filterValue
+                ?.
+                location.length-1}</span>}</div>
         </div>
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />New</div>
-              <div className={styles.number}>115</div>
+              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.new}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Active</div>
-              <div className={styles.number}>70</div>
+              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.active}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Expired</div>
-              <div className={styles.number}>42</div>
+              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.expired}</div>
               <div className={styles.events}>Events</div>
             </div>
           </div>
@@ -112,9 +124,9 @@ const index = ({item}:any) => {
             <Line data={lineData} options={lineOptions} />
           </div>
         </div>
-    </Link>
-      </div>
-  
+      </Link>
+    </div>
+
   )
 }
 

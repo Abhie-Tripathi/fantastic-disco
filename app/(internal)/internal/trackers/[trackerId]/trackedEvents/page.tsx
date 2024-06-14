@@ -2,7 +2,7 @@
 import React,{useEffect, useState} from 'react'
 import Expand from '/public/expand_more.svg';
 import { Notes } from '@/app/components/eventDetail/Notes';
-import Table from '../savedEvents/page';
+import Table from '@/app/components/Table';
 import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
@@ -14,19 +14,21 @@ import { baseUrl } from '@/context';
 const Page = () => {
   const [active,setActive]=useState("Active Events")
   const pathName = usePathname().split('/');
+  // const [showInsights,setShowInsights]=useState();
   const id=pathName[pathName.length-2];
   console.log(active);
   const [open,setOpen]=useState(false);
+  const [eventType,setEventType]=useState("active");
   const showInsights = {
     eventSize: true,
-    // eventKeywords: true,
-    // global: true,
-    // reptSent: true,
-    // eventRank: true,
-    // matchScore: true,
-    // estExhibit: true,
-    // growth: true,
-    // repeatSent: true,
+    eventKeywords: true,
+    global: true,
+    reptSent: true,
+    eventRank: true,
+    matchScore: true,
+    estExhibit: true,
+    growth: true,
+    repeatSent: true,
   };
   const lineData = {
     labels: ["01", "02", "03", "04", "05", "06", "07","08","09","10","11","12","13"],
@@ -144,7 +146,7 @@ const Page = () => {
       </div>
       <div className={styles.eventStatusRight}>Export Data</div>
     </div>
-    <Table />
+    <Table showInsights={showInsights} eventType={active}/>
   </div>
   // <div>
   //           {/* <Notes/> */}
