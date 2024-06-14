@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import styles from './design.style.module.css'
 import TemplateCard from './TemplateCard'
 import FilterHeader from './FilterHeader'
@@ -14,9 +14,6 @@ interface DraftWidget {
 interface Props{
     draftWidgets: DraftWidget[];
     setPreview: (id: string) => void;
-    // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
-    // multipleWidgetOn :  boolean;
-    // widgetsLength :  number;
     setWidgetSelected :  React.Dispatch<React.SetStateAction<string>>;
     widgetSelected : string;
 }
@@ -25,9 +22,6 @@ const Designs = (props : Props) => {
     const [showAllOne, setShowAllOne] = useState(false);
     const [showAllTwo, setShowAllTwo] = useState(false);
     const [showAllThree, setShowAllThree] = useState(false);
-    // const [preview, setPreview] = useState("");
-    // const [widgetSelected, setWidgetSelected] = useState<string>("")
-    // const [accordianItemSelected, setAccordianItemSelected] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events'])
     const [showHighlightedTemplates, setShowHighlihtedTemplates] = useState<boolean>(false)
     const [editModal, setEditModal] = useState<boolean>(false)
 
@@ -68,7 +62,8 @@ const Designs = (props : Props) => {
             <div className={styles.filterContainer}><FilterHeader setWidgetSelected={props.setWidgetSelected} setShowHighlihtedTemplates = {setShowHighlihtedTemplates} showHighlightedTemplates = {showHighlightedTemplates} draftWidgets={props.draftWidgets} /></div>
             <div className={`${styles.templates}`}>
                 {(props.widgetSelected === "Page") && <div className={styles.pageWidgetTemplates}>
-                    <div className={styles.widgetHeading}>Page Widget</div>
+                    <div className={styles.widgetHeading}>Page Widget </div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>You can add 1 Page Widget</div>
                     {/* {accordianItemSelected.includes("No Highlighted Events") &&  */}
                     {!showHighlightedTemplates &&
                     <div className={styles.pageTemplateTypeOne}>
@@ -117,6 +112,7 @@ const Designs = (props : Props) => {
                 </div>}
                 {(props.widgetSelected === "Section") && <div className={styles.sectionWidgetTemplates}>
                     <div className={styles.widgetHeading}>Section Widget</div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>You can add 1 Section Widget</div>
                     <div className={styles.templateContainer}>
                         {sectionWidgetEvents.map((template, index) => (
                             <TemplateCard key={index} name={template.name} isHidden={false} setPreview={props.setPreview} id={template.id} setEditModal={setEditModal}/>
@@ -125,7 +121,8 @@ const Designs = (props : Props) => {
                 </div>}
                 {(props.widgetSelected === "Sticky") && <div className={styles.stickyWidgetTemplates}>
                     <div className={styles.widgetHeading}>Sticky Widget</div>
-                    <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>You can add 2 Sticky Widgets</div>
                     <div className={styles.templateContainer}>
                         <TemplateCard name="Sticky Top" isHidden={false} id="stickytop" setPreview={props.setPreview} setEditModal={setEditModal} />
                         <TemplateCard name="Sticky Footer" isHidden={false} id="stickydown" setPreview={props.setPreview} setEditModal={setEditModal} />
@@ -133,7 +130,8 @@ const Designs = (props : Props) => {
                 </div>}
                 {(props.widgetSelected === "Popup") && <div className={styles.popupWidgetTemplates}>
                     <div className={styles.widgetHeading}>Popup Widget</div>
-                    <div className={styles.stickyInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>Best Suitable if you have one event</div>
+                    <div className={styles.widgetInfo}><span className={styles.infoIcon}>i</span>You can add 1 Popup Widget</div>
                     <div className={styles.templateContainer}>
                         <TemplateCard name="Pop-up" isHidden={false} id="popup" setPreview={props.setPreview} setEditModal={setEditModal} />
                     </div>

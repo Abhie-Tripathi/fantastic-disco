@@ -26,7 +26,7 @@ interface DraftWidget {
 
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("BrandKit");
-  const [preview, setPreview] = useState("sehb");
+  const [preview, setPreview] = useState("phblv");
   const [cardRadius, setCardRadius] = useState<number>(10);
   const [cardBgColor, setCardBgColor] = useState<string>('#688bc4');
   const [eventNameColor, setEventNameColor] = useState<string>('#000000');
