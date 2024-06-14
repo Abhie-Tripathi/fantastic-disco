@@ -205,6 +205,7 @@ const Table = ({
   const path = usePathname().split('/')
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
@@ -468,9 +469,14 @@ const Table = ({
     }
   };
 
-  if (eventPerPage.length === 0) {
-    return <Loading />;
-  }
+  // if (eventPerPage.length === 0) {
+  //   return <Loading />;
+  // }
+  // if(!isLoaded) {
+  //   return <Loading />;
+  // }else if(isLoaded && eventPerPage.length == 0){
+  //   return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
+  // }
   const saveEvent=async(groupId:string)=>{
     console.log(1);
     const secondLast=path[path.length-2];
@@ -531,6 +537,7 @@ const Table = ({
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
               <th>Category</th>
+              {showInsights.eventSeries && <th>Event Series</th>}
               {showInsights.eventRank && <th>Rank</th>}
               {showInsights.growth && <th>Growth</th>}
               {showInsights.reptSent && <th>Rept. Sentiment</th>}
@@ -568,7 +575,7 @@ const Table = ({
                 </td>
                 <td>
                   <span
-                    {...((event.status && event.status === "Cancelled")
+                    {...((event.status && event.status === "CANCELED")
                       ? { "data-toggle": "tooltip", title: "Cancelled" }
                       : null)}
                     style={{ whiteSpace: "nowrap" }}
@@ -672,6 +679,16 @@ const Table = ({
                     "-"
                   )}
                 </td>
+                {showInsights.eventSeries && (
+                  <td>
+                    {event.series ? (
+                      event.series
+
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                )}
                 {showInsights.eventRank && (
                   <td>
                     {event.rank?.globalRank ? (

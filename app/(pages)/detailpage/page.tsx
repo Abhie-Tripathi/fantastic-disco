@@ -9,6 +9,7 @@ import DateCard from '@/app/components/staticDetailPage/DateCard'
 import RightArrowIcon from "/public/rightbigarrow.svg"
 import Loading from '@/app/components/UI/Loading'
 import FestIcon from '/public/festival.svg'
+import Script from 'next/script'
 
 const Page = () => {
 

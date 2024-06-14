@@ -1,5 +1,5 @@
 [
-  { "name": "Annual", "slug": "annual" },
-  { "name": "Bi-Annual", "slug": "biannual" },
-  { "name": "Quarterly", "slug": "quarterly" }
+  { "name": "Annual", "slug": "Annual" },
+  { "name": "Bi-Annual", "slug": "Bi-annual" },
+  { "name": "Quarterly", "slug": "Quarterly" }
 ]

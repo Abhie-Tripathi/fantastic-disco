@@ -24,11 +24,11 @@ const WidgetBtns: React.FC<WidgetBtnsProps> = ({ type,setType}:WidgetBtnsProps) 
                 >
                 <div>Page</div>
             </div>
-            <div className={`${styles.button} ${type === "Popup" ? styles.active : ""}`}
+            {/* <div className={`${styles.button} ${type === "Popup" ? styles.active : ""}`}
                 onClick={() => setType("Popup")}
                 >
                 <div>Popup</div>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -20,6 +20,7 @@ interface exportModalProps {
 
 interface ExportContent {
   id: string;
+  created: string;
   status: string;
   attachment: {
     fileType: string;
@@ -32,6 +33,27 @@ interface ExportContent {
   };
 }
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const year: number = date.getFullYear();
+  const month: string = months[date.getMonth()];
+  const day: number = date.getDate();
+  let hours: number = date.getHours();
+  let minutes: number | string = date.getMinutes();
+  let am_pm: string = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+
+  const formattedDate: string = `${day} ${month} ${year} ${hours}:${minutes} ${am_pm}`;
+  return formattedDate;
+}
+
 const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
@@ -39,7 +61,10 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
+  const [refreshState, setRefreshState] = useState<boolean>(false);
+
   const fetchData = async () => {
+    setRefreshState(true);
     const { data, error } = await myFetch(`${baseUrl}/export/list`);
     console.log(data);
     if (error) {
@@ -49,6 +74,9 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
 
     if (data) {
       setExportList(data);
+      setTimeout(() => {
+        setRefreshState(false);;
+      }, 500);
     }
   };
   useEffect(() => {
@@ -170,6 +198,12 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
           >
             Export
           </div>
+          <div
+            className={styles.exportType_modal_button2}
+            onClick={()=>setShowExportedFiles(true)}
+          >
+            See previous export files
+          </div>
         </div>
       )}
 
@@ -203,7 +237,7 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
                   alt="refresh"
                   width={24}
                   height={24}
-                  className={iconClass}
+                  className={`${iconClass} ${refreshState ?styles.rotating: ''}`}
                 />
                 <div>refresh</div>
               </div>
@@ -240,7 +274,7 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
                       {exportItem.attachment.fileName}
                     </div>
                     <div className={styles.exportedfile_description}>
-                      28 Mar 2024 12:15 PM by {exportItem.user.firstname}{" "}
+                      {formatDate(exportItem.created)} by {exportItem.user.firstname}{" "}
                       {exportItem.user.lastname}
                     </div>
                   </div>
