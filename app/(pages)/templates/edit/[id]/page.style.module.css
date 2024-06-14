@@ -15,6 +15,22 @@
     align-items: center;
     gap: 10px;
 }
+.savedDraftsContainer{
+    padding: 5px 20px;
+    width: fit-content;
+    cursor: pointer;
+    background-color: #6750a4;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.savedDraftNumber{
+    padding:2px;
+    background-color: black;
+    border-radius: 10px;
+}
 .yourWidgets{
     padding: 5px 20px;
     width: fit-content;
@@ -103,14 +119,14 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: #19922C;
+    background-color: #c3c633;
 }
 .status{
     font-size: 13px;
     font-weight: 400;
-    line-height: 19.87px;
-    text-align: left;
-    color: #19922C;
+    /* line-height: 19.87px;
+    text-align: left; */
+    color: #c3c633;
 }
 .activateBtn{
     display: flex;

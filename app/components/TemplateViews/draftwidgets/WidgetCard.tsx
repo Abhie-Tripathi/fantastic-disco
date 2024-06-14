@@ -10,9 +10,10 @@ import Link from 'next/link'
 interface WidgetProps{
     status : string;
     statusIcon : string;
+    widgetType : string;
 }
 
-const WidgetCard = ({status, statusIcon} : WidgetProps) => {
+const WidgetCard = ({status, statusIcon, widgetType} : WidgetProps) => {
 
     return (
         <div className={styles.body}>
@@ -21,7 +22,7 @@ const WidgetCard = ({status, statusIcon} : WidgetProps) => {
                     <div className={styles.iconCircle}>
                         <Image src={Spinner} alt='spinner' />
                     </div>
-                    <div className={styles.widgetName}>Page Widget</div>
+                    <div className={styles.widgetName}>{widgetType}</div>
                     <div className={styles.widgetHeading}>(Your Widget Name)</div>
                     <div className={styles.statusBtn}>
                         <div className={`${statusIcon === "green" ? styles.activeFlag : statusIcon==="red" ? styles.inactiveFlag : styles.inprogressFlag} ${styles.statusFlag}`}></div>
