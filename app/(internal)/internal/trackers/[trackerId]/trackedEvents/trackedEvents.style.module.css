@@ -16,6 +16,7 @@
 .container{
     display:flex;
     gap:20px;
+    width: 90%;
     flex-direction: column;
 }
 .containerOne{

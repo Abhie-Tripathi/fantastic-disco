@@ -15,7 +15,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
-import {EventTableType} from "@/types/ListViewTable";
+import { EventTableType } from "@/types/ListViewTable";
+import { usePathname } from "next/navigation";
 
 interface FormDataType {
   entityId_id?: string | number | null;
@@ -191,14 +192,17 @@ const Table = ({
   // eventData,
   showInsights,
   queryString,
+  eventType
 }: {
   eventData?: any;
   showInsights: any;
-  queryString: string;
+  queryString?: string;
+  eventType?:string;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
+  const path = usePathname().split('/')
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -222,10 +226,10 @@ const Table = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(formData.entityId_id && formData.markedInterest && formData.eventGroupId){
-      if(formData.markedInterest == 'bookmark'){
+    if (formData.entityId_id && formData.markedInterest && formData.eventGroupId) {
+      if (formData.markedInterest == 'bookmark') {
         let payloadData = {
-          "eventGroupIds":[formData.eventGroupId]
+          "eventGroupIds": [formData.eventGroupId]
         };
         try {
           const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`, {
@@ -253,7 +257,7 @@ const Table = ({
         } finally {
           setIsOpen(null);
         }
-      }else if(formData.markedInterest == 'unbookmark'){
+      } else if (formData.markedInterest == 'unbookmark') {
         try {
           const response = await myFetch(`${baseUrl}/tracker/saved-events/${formData.eventGroupId}`, {
             method: "DELETE",
@@ -272,32 +276,32 @@ const Table = ({
         } finally {
           setIsOpen(null);
         }
-      }else{
-      let payloadData = {
-        source: "GTM",
-        entityId: formData?.entityId_id,
-        interest: formData?.markedInterest,
-      };
-      try {
-        const apiUrl = baseUrl + "/userInterest";
-        const apiData = await myFetch(apiUrl, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(payloadData),
-        });
+      } else {
+        let payloadData = {
+          source: "GTM",
+          entityId: formData?.entityId_id,
+          interest: formData?.markedInterest,
+        };
+        try {
+          const apiUrl = baseUrl + "/userInterest";
+          const apiData = await myFetch(apiUrl, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(payloadData),
+          });
 
-        if (apiData.data.message == "Entry Created") {
+          if (apiData.data.message == "Entry Created") {
             toast.success("Interest marked successfully!", {
               position: "bottom-right",
               autoClose: 2000,
               closeButton: false,
               hideProgressBar: true,
             });
-          setIsOpen(null);
+            setIsOpen(null);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
       }
     }
   };
@@ -318,7 +322,7 @@ const Table = ({
         return;
       }
       if (data) {
-        let bookmarkGroupIds = data.savedEvents.map((event: any) => event.eventGroupId);
+        let bookmarkGroupIds = data?.savedEvents?.map((event: any) => event.eventGroupId);
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
@@ -344,48 +348,180 @@ const Table = ({
     });
   };
 
-  const handlePageItems = (event:React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePageItems = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
     setItemsPerPage(parseInt(event.target.value));
   }
+  const fetchSavedData=async()=>{
+    const secondLast = path[path.length - 2];
+    const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`);
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-  const fetchEventsData = async() => {
-    try {
-      const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}&${queryString}`;
-      // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
-      const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
-      });
-      if(apiData.data) {
-        if(currPage === 1) {
-          setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
-          setEventPerPage(apiData.data.events);
-        }else{
-          setEventPerPage(apiData.data.events);
-        }
+    if (data) {
+      console.log(data);
+      // if (data?.events?.length > 0) {
+        setEventPerPage(data.result);
+        if (currPage === 1) {
+          setTotalPages(Math.ceil(data.count / itemsPerPage));
+          setEventPerPage(data.result);
+        } else {
+          setEventPerPage(data.result);
+        
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+      // }
+      // setCatgeoryData(data);
     }
   }
+  const fetchAllSavedEvent=async()=>{
+    const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (data) {
+      // console.log(data);
+      
+      
+        setEventPerPage(data.result);
+      
+          if (currPage === 1) {
+            setTotalPages(Math.ceil(data.count / itemsPerPage));
+            setEventPerPage(data.result);
+          } else {
+            setEventPerPage(data.result);
+          
+        }
+      
+      // setCatgeoryData(data);
+    }
+  }
+  // const fetchAllSavedEvent=aync()=>{
+
+  // }
+  const fetchEventsData = async () => {
+    if (path[path.length - 1] === 'trackedEvents') {
+      const secondLast = path[path.length - 2];
+      fetchData(secondLast);
+    } 
+    else if(path[path.length-1]==="trackers"){
+      fetchAllSavedEvent();
+    }
+    else if(path[path.length - 1] === 'savedEvents'){
+      console.log(1);
+      
+      fetchSavedData();
+    }
+    else {
+      try {
+        const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&${queryString}`;
+        // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
+        const apiData = await myFetch(apiUrl, {
+          method: "GET",
+          headers: headers,
+        });
+        if (apiData.data) {
+          if (currPage === 1) {
+            setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
+            setEventPerPage(apiData.data.events);
+          } else {
+            setEventPerPage(apiData.data.events);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  }
+  useEffect(()=>{
+    const secondLast = path[path.length - 2];
+    if(path[path.length-1]==="trackedEvents")
+    fetchData(secondLast);
+  },[eventType])
+  const fetchData = async (secondLast: string) => {
+    var url=`${baseUrl}/tracker/${secondLast}/events?&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=active`;
+    if(eventType==="New Events")
+      url=`${baseUrl}/tracker/${secondLast}/events?offset=10&limit=20`;
+    else if(eventType==="Expired Events")
+      url=`${baseUrl}/tracker/${secondLast}/events?offset=10&limit=20&type=expired`;
+    const { data, error } = await myFetch(url);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    if (currPage === 1) {
+      setTotalPages(Math.ceil(data.totalEvents / itemsPerPage));
+      setEventPerPage(data.events);
+    } else {
+      setEventPerPage(data.events);
+    
+  }
+    if (data) {
+      console.log(data);
+      if (data?.events?.length > 0) {
+        setEventPerPage(data.events);
+      }
+      // setCatgeoryData(data);
+    }
+  };
 
   if (eventPerPage.length === 0) {
     return <Loading />;
   }
-
+  const saveEvent=async(groupId:string)=>{
+    console.log(1);
+    const secondLast=path[path.length-2];
+    // console.log(groupId);
+    const dataToSend={
+          "eventGroupId":groupId,
+          "trackerId": secondLast
+      }
+      // console.log(dataToSend);
+      
+    const url=`${baseUrl}/tracker/saved-events`
+    
+     const {data,error}=await myFetch(url,{
+        method:"POST",
+        body: JSON.stringify(dataToSend),
+            headers: {
+              "Content-Type": "application/json",
+            },
+     })
+     if(data)
+     console.log(data);
+    else console.log(error);
+    
+     
+   }
+   const deleteEvent=async(groupId:string)=>{
+    const url=`${baseUrl}/tracker/saved-events/${groupId}`
+    
+    const {data,error}=await myFetch(url,{
+       method:"DELETE",
+           headers: {
+             "Content-Type": "application/json",
+           },
+    })
+    if(data) console.log(data);
+    else console.log(error);
+    const newData=eventPerPage.filter(event=>event?.eventGroupId!==groupId);
+    console.log(newData);
+    setEventPerPage(newData);
+    
+   }
   return (
     <div className={styles.table_container}>
       <div
-        className={`${styles.table_wrapper} ${
-          theme === "light" ? styles.table_wrapper_light : ""
-        }`}
+        className={`${styles.table_wrapper} ${theme === "light" ? styles.table_wrapper_light : ""
+          }`}
       >
         <table className={styles.table}>
           <thead
-            className={`${styles.table_head} ${
-              theme === "light" ? styles.table_head_light : ""
-            }`}
+            className={`${styles.table_head} ${theme === "light" ? styles.table_head_light : ""
+              }`}
           >
             <tr className={styles.table_head_row}>
               <th className={styles.table_firstColumn}>Event</th>
@@ -403,9 +539,8 @@ const Table = ({
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>Global</th>}
               <th
-                className={`${styles.table_actionColumn} ${
-                  styles.table_actionColumn_header
-                } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
+                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                  } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
               >
                 Actions
               </th>
@@ -449,23 +584,23 @@ const Table = ({
                       month: "short",
                       year: "2-digit",
                     }) !==
-                    new Date(event.endDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    })
+                      new Date(event.endDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })
                       ? new Date(event.endDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "2-digit",
-                        })
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })
                       : null}
                   </span>
                 </td>
                 <td>
                   {event.location.cityId !== '1' && event.format === 'ONLINE' ? (
                     event.location.venueName !== undefined &&
-                    event.location.venueName !== null ? (
+                      event.location.venueName !== null ? (
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
@@ -568,7 +703,7 @@ const Table = ({
                     ) : (
                       <></>
                     )}
-                    {event.interestsGrowthRange && 
+                    {event.interestsGrowthRange &&
                       // <>{getGrowthRange(event.interestsGrowthRange)}</>
                       event.interestsGrowthRange
                     }
@@ -590,9 +725,9 @@ const Table = ({
                         </>
                       )}
                     {event.reputationSentiment !== undefined &&
-                    event.reputationSentiment !== null &&
-                    (event.reputationSentiment > 1 ||
-                      event.reputationSentiment < -1) ? (
+                      event.reputationSentiment !== null &&
+                      (event.reputationSentiment > 1 ||
+                        event.reputationSentiment < -1) ? (
                       event.reputationSentiment > 0 ? (
                         <div className={styles.text_green}>
                           {event.reputationSentiment}%{" "}
@@ -621,7 +756,7 @@ const Table = ({
                 {showInsights.eventSize && <td>
                   {/* {getEventSize(event)} */}
                   {event.eventSize ? event.eventSize : '-'}
-                  </td>}
+                </td>}
                 {showInsights.estExhibit && (
                   <td>
                     {/* {getEstimatedExhibitors(event)} */}
@@ -642,22 +777,28 @@ const Table = ({
                   </td>
                 )}
                 <td
-                  className={`${styles.table_actionColumn} ${
-                    theme === "light" ? styles.table_actionColumn_light : ""
-                  }`}
+                  className={`${styles.table_actionColumn} ${theme === "light" ? styles.table_actionColumn_light : ""
+                    }`}
                 >
-                  <span
-                    className={styles.save_image_container}
-                    onClick={() => handleModalOpen(event.id, event.eventGroupId)}
-                  >
-                    {bookmarkedEvent.includes(event.eventGroupId) ? (
-                      <BookmarkIcon fillColor={"#ff851b"} />
+                  {path[path.length - 1] === "trackedEvents" || path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" ? (
+                    path[path.length - 1] === "trackedEvents" ? (
+                      <button onClick={()=>saveEvent(event?.eventGroupId)}>Save</button>
                     ) : (
-                      <BookmarkIcon
-                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
-                      />
-                    )}
-                  </span>
+                      <button onClick={()=>deleteEvent(event?.eventGroupId)}>Delete</button>
+                    )
+                  ) : (
+                    <span
+                      className={styles.save_image_container}
+                      onClick={() => handleModalOpen(event.id, event.eventGroupId)}
+                    >
+                      {bookmarkedEvent?.includes(event.eventGroupId) ? (
+                        <BookmarkIcon fillColor={"#ff851b"} />
+                      ) : (
+                        <BookmarkIcon fillColor={theme === "light" ? "#000000" : "#ffffff"} />
+                      )}
+                    </span>
+                  )}
+
                   {/* <span onClick={() => handlePinEvent(event.id)}>
                     {event.id == pinEvent ? (
                       <PinIcon fillColor={"#ff851b"} />
@@ -687,7 +828,7 @@ const Table = ({
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              {bookmarkedEvent.includes(event.eventGroupId) ?
+                              {bookmarkedEvent?.includes(event.eventGroupId) ?
                                 <>
                                   <input
                                     className={styles["form-check-input"]}
@@ -772,14 +913,12 @@ const Table = ({
       </div>
 
       <div
-        className={`${styles.pagination_container} ${
-          theme === "light" ? styles.pagination_container_light : ""
-        }`}
+        className={`${styles.pagination_container} ${theme === "light" ? styles.pagination_container_light : ""
+          }`}
       >
         <div
-          className={`${styles.pagination_control_button} ${
-            currPage === 1 ? styles.disabled : ""
-          }`}
+          className={`${styles.pagination_control_button} ${currPage === 1 ? styles.disabled : ""
+            }`}
           onClick={() => setCurrPage((page) => page - 1)}
         >
           Previous
@@ -805,9 +944,8 @@ const Table = ({
         </div>
 
         <div
-          className={`${styles.pagination_control_button} ${
-            currPage === totalPages ? styles.disabled : ""
-          }`}
+          className={`${styles.pagination_control_button} ${currPage === totalPages ? styles.disabled : ""
+            }`}
           onClick={() => setCurrPage((page) => page + 1)}
         >
           Next

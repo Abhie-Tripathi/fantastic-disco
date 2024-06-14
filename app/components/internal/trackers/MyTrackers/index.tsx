@@ -31,7 +31,7 @@ const Index = () => {
   const [allTracker,setAllTracker]=useState([]);
   useEffect(() => {
       const fetchData = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/tracker?offset=0&limit=100`);
+        const { data, error } = await myFetch(`${baseUrl}/tracker?offset=0&limit=4`);
         if (error) {
           console.log(error);
           return;

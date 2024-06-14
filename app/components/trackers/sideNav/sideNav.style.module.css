@@ -1,7 +1,9 @@
 .bar{
     padding: 18px 40px;
+    height: 60px;
     background-color: #F8F8F8;
     display: flex;
+    padding: 0px 10px;
     justify-content: space-between;
 }
 .leftNav{
@@ -28,7 +30,7 @@
   }
   .leftContainer{
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     /* gap: 10px; */
   }
   .heading{
@@ -36,16 +38,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 20px;
-    border-left: 2px solid #ECECF9;
+    padding: 18px 40px;
+    border-bottom: 4px solid #F8F8F8;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: color 1s ease-in-out, border-left 1s ease-in-out;
+    transition: color 1s ease-in-out, border-bottom 1s ease-in-out;
   }
   .active{
     color:#6750A4;
-    border-left: 2px solid #6750A4;
+    border-bottom: 4px solid #6750A4;
     
    
   }
@@ -54,4 +56,32 @@
     display: flex;
     align-items: center;
   }
- 
+  /* .bar{
+    padding: 18px 40px;
+    background-color: #F8F8F8;
+    display: flex;
+    justify-content: space-between;
+} */
+.leftNav{
+  color: #6750A4;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  gap:5px;
+  font-weight: 700;
+}
+.rightNav{
+    color:#696B83;
+    font-size: 14px;
+    font-weight: 500;
+}
+.configAccess{
+  display: flex;
+  gap:10px;
+}
+.heading1{
+  display: flex;
+    height: 100%;
+    align-items: center;
+    color: #696B83;
+}

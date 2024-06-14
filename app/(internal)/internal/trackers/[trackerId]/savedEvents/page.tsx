@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/theme'
 import { myFetch} from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import Table from '@/app/components/Table';
 const Page = () => {
   const urlPath=usePathname().split('/');
   const lastParam=urlPath[urlPath.length-1];
@@ -160,6 +161,7 @@ const Page = () => {
       // setCatgeoryData(data);
     }
   };
+
   const fetchSavedData=async()=>{
     const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
     if (error) {
@@ -226,8 +228,19 @@ const Page = () => {
  const handleCheckboxChange=()=>{
   setChecked(!isChecked);
  }
+ const showInsights = {
+  eventSize: true,
+  eventKeywords: true,
+  global: true,
+  reptSent: true,
+  eventRank: true,
+  matchScore: true,
+  estExhibit: true,
+  growth: true,
+  repeatSent: true,
+};
   return (
-    <>
+    <div className={styles.container}>
     {/* {data && data?.map((item,ind)=>(
       
     ))} */}
@@ -237,132 +250,8 @@ const Page = () => {
       <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div>
     </div>
     }
-    <div></div>
-    <div
-      className={`${styles.table_wrapper} ${theme === "light" ? styles.table_wrapper_light : ""
-        }`}
-    >
-      <table className={styles.table}>
-        <thead
-          className={`${styles.table_head} ${theme === "light" ? styles.table_head_light : ""
-            }`}
-        >
-          <tr className={styles.table_head_row}>
-            <th className={styles.table_firstColumn}>
-              <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
-              {/* {openCheck && 
-              <div style={{display:"flex"}}><input
-              type="checkbox"
-              // checked={isChecked}
-              // onChange={handleCheckboxChange}
-            /></div>
-              } */}
-              
-              Event
-              </div>
-            </th>
-            <th>Date</th>
-            <th>Venue</th>
-            <th>Category</th>
-            <th>Est. Audience</th>
-            <th>Intl. Audience</th>
-            {lastParam==="trackedEvents" && <th>Save</th>}
-            {/* <th
-              className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
-                } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
-            >
-              Actions
-            </th> */}
-          </tr>
-        </thead>
-
-        <tbody className={styles.table_body}>
-          {data && data?.map((event: any,ind:number) => (
-            <tr key={ind}>
-              <td>
-                <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
-                {openCheck && 
-              <div><input
-              type="checkbox"
-              style={{display:"flex"}}
-              // checked={isChecked}
-              // onClick={()=>setChecked(!isChecked)}
-              // onChange={handleCheckboxChange}
-            /></div>
-              }
-                {event?.title?.length > 80
-                      ? event.title.slice(0, 80) + "..."
-                      : event.title}
-                  <div className={styles.event_organizer}>
-                    {event.Organizer}
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div>{formatDate(event?.startingDateTime)} - {formatDate(event?.endingDateTime)}</div>
-                {/* <div>{event.Date.substring(14,event.Date.length)}</div> */}
-              </td>
-              <td>
-                {event?.venue?.city}
-              </td>
-              <td>Abc</td>
-              <td>{event?.totalAttendance}</td>
-              <td>{!event.internationalAttendance? <div>High</div> :event?.internationalAttendance}</td>
-              {lastParam==="trackedEvents" && 
-              <td>
-                <button className={styles.saveBtn} onClick={()=>saveEvent()}>Save</button>
-                </td>}
-            </tr>
-          ))}
-        </tbody>
-        
-      </table>
-    
+   <Table showInsights={showInsights}/>
     </div>
-
-    <div
-        className={`${styles.pagination_container} ${
-          theme === "light" ? styles.pagination_container_light : ""
-        }`}
-      >
-        <div
-          className={`${styles.pagination_control_button} ${
-            currPage === 1 ? styles.disabled : ""
-          }`}
-          onClick={() => setCurrPage((page) => page - 1)}
-        >
-          Previous
-        </div>
-
-        <div className={styles.pagination_info_container}>
-          <div>Showing</div>
-          {/* <Image src={ExpandAll} alt="expandall" className={iconClass} /> */}
-          <div className={styles.pagination_current_pageno}>
-            <select onChange={handlePageItems} name="" id="" className={styles.pagination_noOfPage}>
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
-            </select>
-          </div>
-          <div>results/Page</div>
-        </div>
-
-        <div className={styles.pagination_page_control_container}>
-          <div>Page</div>
-          <div className={styles.pagination_current_page}>{currPage}</div>
-          <div>of {totalPages}</div>
-        </div>
-
-        <div
-          className={`${styles.pagination_control_button} ${
-            currPage === totalPages ? styles.disabled : ""
-          }`}
-          onClick={() => setCurrPage((page) => page + 1)}
-        >
-          Next
-        </div>
-      </div>
-    </>
   )
 }
 

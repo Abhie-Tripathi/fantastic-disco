@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './intel.style.module.css'
-const index = () => {
+const index = ({internationalScore,inboundScore, userRating, exhibitScore}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -23,7 +23,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${parseInt(internationalScore)>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -40,7 +40,7 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${parseInt(inboundScore)>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -62,13 +62,13 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${userRating?.length>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
                         </div>
                         <div className={styles.allCat}>
-                        {rate.map((item, id) => (
+                        {userRating?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
@@ -100,13 +100,13 @@ const index = () => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${exhibitScore?.length>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
                         </div>
                         <div className={styles.allCat}>
-                        {score.map((item, id) => (
+                        {exhibitScore?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
