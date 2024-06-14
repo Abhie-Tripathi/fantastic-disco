@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './locationFilter.style.module.css'
-const index = ({start,end, startDate, endDate}:any) => {
+const index = ({start,end, startDate, endDate, locations}:any) => {
   function formatDate(dateString:Date) {
     const date = new Date(dateString);
     
@@ -22,7 +22,11 @@ const index = ({start,end, startDate, endDate}:any) => {
     <div className={styles.container}>
       <div className={styles.location}>
         <div style={{color:"#6750A4"}}>Location</div>
-        <div style={{color:'#696B83'}}>Bengaluru, Karnataka, India (1.34 mi radius) </div>
+        <div style={{color:'#696B83'}}>
+        {locations?.map((item:string) => (
+  <div key={item}>{item}</div>
+))}
+        </div>
       </div>
       <div className={styles.location}>
         <div style={{color:"#6750A4"}}>Date & Time</div>

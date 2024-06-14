@@ -38,13 +38,15 @@ const BasicFilter = ({category}:any) => {
   console.log(category?.tracker?.filterValue
     );
     console.log("data is:", filteredArr);
+    console.log(category);
+    
   // setCatgeoryData.filter((item)=>)
   return (
     <div className={styles.containerOuter}>
      <div className={styles.heading}>Category</div>
      <div className={styles.allCat1}>
       <div className={styles.allCat}>
-      {filteredArr.map((item:any,id:any)=>(
+      {category?.map((item:any,id:any)=>(
       <div key={id} style={{width:"120px"}}>
       <label >
        <input
@@ -55,7 +57,7 @@ const BasicFilter = ({category}:any) => {
          checked={true}
          disabled
        />
-       <span className={styles.item}>{item?.name}</span>
+       <span className={styles.item}>{item}</span>
      </label>
       </div>
      ))}

@@ -4,6 +4,7 @@ import styles from "./page.style.module.css";
 import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
 import Back from '/public/back.svg';
+import Table from '@/app/components/Table';
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
 import Add from '/public/add.svg';
@@ -62,6 +63,17 @@ const Trackers = () => {
 
   //   fetchData();
   // }, [offset]);
+  const showInsights = {
+    eventSize: true,
+    eventKeywords: true,
+    global: true,
+    reptSent: true,
+    eventRank: true,
+    matchScore: true,
+    estExhibit: true,
+    growth: true,
+    repeatSent: true,
+  };
 const data=[
   {
     type:'template',
@@ -254,6 +266,7 @@ const data=[
       <div className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""}`} onClick={()=>setType("Saved Events")}>Saved Events</div>
     </div>
     {type==="My Trackers" && <MyTracker/>}
+    {type==="Saved Events" && <Table showInsights={showInsights}/>}
     </>
      } 
     

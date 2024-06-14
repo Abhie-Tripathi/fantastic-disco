@@ -1,53 +1,102 @@
 "use client"
-import React,{useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from "next/navigation";
+import Back from '/public/back.svg';
+import { baseUrl } from '@/constants';
+import { myFetch} from '@/utils/myFetch';
+import Settings from '/public/trackerSetting.svg';
+import Manage from '/public/manageTracker.svg';
+// import Link from "next/link";
+import Image from "next/image";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
 const Index = () => {
-    const pathName = usePathname().split('/');
-    const last=pathName[pathName.length-1];
-    const secondLast=pathName[pathName.length-2];
-    console.log(secondLast);
-    
+  const pathName = usePathname().split('/');
+  const last = pathName[pathName.length - 1];
+  const secondLast = pathName[pathName.length - 2];
+  console.log(secondLast);
   const router = useRouter()
-  const [trackerSection,setTrackerSection]=useState("Tracked Events");
-  useEffect(()=>{
-    if(last==="trackedEvents") setTrackerSection("Tracked Events")
-    if(last==="trackedConfiguration"|| last==="editTracker") setTrackerSection("Tracker Configurations")
-    if(last==="notesDiscussion") setTrackerSection("Notes & Discussions")
-    if(last==="savedEvents") setTrackerSection("Saved Events")
-    if(last==="manageAccess") setTrackerSection("Manage Access")
-  },[last])
-console.log(trackerSection);
+  const [trackerSection, setTrackerSection] = useState("Tracked Events");
+  useEffect(() => {
+    if (last === "trackedEvents") setTrackerSection("Tracked Events")
+    if (last === "trackedConfiguration" || last === "editTracker") setTrackerSection("Tracker Configurations")
+    if (last === "notesDiscussion") setTrackerSection("Notes & Discussions")
+    if (last === "savedEvents") setTrackerSection("Saved Events")
+    if (last === "manageAccess") setTrackerSection("Manage Access")
+  }, [last])
+  console.log(trackerSection);
+  const [data,setData]=useState<any>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+        const url = `${baseUrl}/tracker/${secondLast}`;
+        try {
+            const { data, error } = await myFetch(url, {
+                method: 'GET'
+            });
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                console.log('Data fetched:', data);
+                setData(data);
+            }
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        }
+    };
 
+    fetchData();
+}, [secondLast]);
   return (
-    <div className={styles.leftContainer}>
+    <>
+      <div className={styles.bar}>
+        <div className={styles.leftNav}>
+          <Link href='/internal/trackers'>
+            <Image style={{ display: "flex" }} src={Back} alt="back" />
+          </Link>
+          {last === "trackedConfiguration" || last === "manageAccess"
+            ? (last === "trackedConfiguration" ? "Configuration" : "Manage Access")
+            : data?.tracker?.filterValue
+            ?.name}
+
+        </div>
+        {last !== "trackedConfiguration" && last !== "manageAccess" && 
+        <>
+        <div className={styles.leftContainer}>
           <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
-          <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
-            Tracked Events
-          </div>
+            <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
+              Tracked Events
+            </div>
           </Link>
-          <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
-          <div className={`${styles.heading} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-            Tracker Configurations
-          </div>
-          </Link>
+
           <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}>
-          <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
-          Notes & Discussions
-          </div>
+            <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
+              Notes & Discussions
+            </div>
           </Link>
           <Link href={`/internal/trackers/${secondLast}/savedEvents`}>
-          <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
-          Saved Events
-          </div>
+            <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
+              Saved Events
+            </div>
+          </Link>
+
+        </div>
+        <div className={styles.configAccess}>
+          <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
+            <div className={`${styles.heading1} ${trackerSection === "Tracker Configurations" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+             <Image src={Settings} alt="setting"/> Tracker Configurations
+            </div>
           </Link>
           <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
-          <div className={`${styles.heading} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-          Manage Access
-          </div>
+            <div className={`${styles.heading1} ${trackerSection === "Manage Access" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+            <Image src={Manage} alt="setting"/> Manage Access
+            </div>
           </Link>
         </div>
+        </>
+        }
+        
+      </div>
+    </>
   )
 }
 

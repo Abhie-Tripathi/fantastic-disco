@@ -42,7 +42,7 @@ const Page = () => {
 
     fetchData();
 }, []);
-console.log(data);
+// console.log(data?.tracker?.filterValue?.labels.split(','));
 
   return (
     <div className={styles.container}>
@@ -61,15 +61,15 @@ console.log(data);
         </div>
       </div>
       <div className={styles.containerTopTwo}>
-        {data?.tracker?.name}
+        {data?.tracker?.filterValue?.name}
       </div>
       <div className={styles.innerContainer}>
         <div className={styles.innerContainerLeft} style={{ border: "1px solid #EBEBEB" }}>
-          {data && <BasicFilter category={data}/>}
+          {data && <BasicFilter category={data?.tracker?.filterValue?.category.split(',')}/>}
         </div>
         <div className={styles.innerContainerRight}>
-          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.active_gte} endDate={data?.tracker?.filterValue?.active_lte}/>}
-          {data && <Labels labels={data?.tracker?.filterValue?.labels}/>}
+          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.last_active_gte} endDate={data?.tracker?.filterValue?.last_active_lte} locations={data?.tracker?.filterValue?.location}/>}
+          {data && <Labels labels={data?.tracker?.filterValue?.labels.split(',')}/>}
         </div>
       </div>
       <div className={styles.line}></div>
@@ -79,7 +79,7 @@ console.log(data);
           <div className={styles.advanceContent}>Advanced and more detailed event filter criteria for precise and personalized event tracking.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <AdvanceFilter />
+          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat.length!==0?data?.tracker?.filterValue?.eventFormat?.split(','):[]} keywords={data?.tracker?.filterValue?.keywords.length!==0?data?.tracker?.filterValue?.keywords.split(','):[]} freq={data?.tracker?.filterValue?.eventFrequency.length!==0?data?.tracker?.filterValue?.eventFrequency.split(','):[]} entry={data?.tracker?.filterValue?.eventEntry.length!==0?data?.tracker?.filterValue?.eventEntry.split(','):[]} rank={data?.tracker?.filterValue?.eventRanking.split(',')}/>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -90,7 +90,7 @@ console.log(data);
             scores and insights on event data.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Insights />
+          <Insights isBranded={data?.tracker?.filterValue?.brandedEvent} trustScore={data?.tracker?.filterValue?.trustScore} reputation={data?.tracker?.filterValue?.reputationScore} maturity={data?.tracker?.filterValue?.maturity}/>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -100,7 +100,7 @@ console.log(data);
           <div className={styles.advanceContent}>Track your events based on the audience intel and insights to gain more visibility and active participants</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Intel />
+          <Intel internationalScore={data?.tracker?.filterValue?.internationalScore} inboundScore={data?.tracker?.filterValue?.inboundScore} userRating={data?.tracker?.filterValue?.userRating.split(',')} exhibitScore={data?.tracker?.filterValue?.exhibitScore.split(',')}/>
         </div>
       </div>
     </div>

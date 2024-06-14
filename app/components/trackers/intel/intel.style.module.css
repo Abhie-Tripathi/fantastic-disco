@@ -11,6 +11,31 @@
 .format{
 
 }
+.sliderBranded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  /* cursor: pointer; */
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.sliderBranded:before{
+  position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    right: 2px;
+    bottom: 4px;
+    top: 2px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+}
 .branded{
     padding: 12px 15px;
     border: 1px solid #EBEBEB;

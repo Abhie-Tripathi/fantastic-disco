@@ -1,10 +1,10 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = () => {
-    const format = ["Hybrid", "In-person", "Virtual", "Offline"]
-    const freq=["Annual","Biannual","Queartly"]
-    const entry=["Free","Paid","Invites","Member Access"];
-    const rank=["Country Rank","Category Rank"];
+const index = ({format,freq, entry, rank, keywords}:any) => {
+    // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
+    // const freq=["Annual","Biannual","Queartly"]
+    // const entry=["Free","Paid","Invites","Member Access"];
+    // const rank=["Country Rank","Category Rank"];
     const key=["Tags","Airport","Animal","Sea","Arson","Cruise","National","Shows"];
     return (
         <div className={styles.container}>
@@ -12,7 +12,7 @@ const index = () => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Format</div>
                     <div className={styles.allCat}>
-                        {format.map((item, id) => (
+                        {format?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
@@ -32,7 +32,7 @@ const index = () => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Frequency</div>
                     <div className={styles.allCat}>
-                        {freq.map((item, id) => (
+                        {freq?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
@@ -54,7 +54,7 @@ const index = () => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Entry</div>
                     <div className={styles.allCat}>
-                        {entry.map((item, id) => (
+                        {entry?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
@@ -74,7 +74,7 @@ const index = () => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Rankings</div>
                     <div className={styles.allCat}>
-                        {rank.map((item, id) => (
+                        {rank?.map((item:string, id:number) => (
                             <>
                                 <label style={{display:"flex"}} >
                                     <input
@@ -96,7 +96,7 @@ const index = () => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Keywords</div>
                     <div className={styles.allCat1}>
-                        {key.map((item, id) => (
+                        {keywords?.map((item:string, id:number) => (
                             <>
                                 <div className={styles.key}>{item}</div>
                             </>
