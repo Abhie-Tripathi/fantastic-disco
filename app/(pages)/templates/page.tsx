@@ -70,7 +70,7 @@ const Page = () => {
       <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
         {!isFullScreen && <div className={styles.edit_btnsContainer}>
           <div className={styles.templateWindow}>
-            <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
+            <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} draftWidgets={draftWidgets} />
           </div>
           <div className={styles.add_draftContainer}>
             <button className={styles.draftBtn} onClick={handleDraftWidget}>Save To Draft</button>

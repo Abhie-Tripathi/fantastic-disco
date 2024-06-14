@@ -1,23 +1,32 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './filterheader.style.module.css'
+import Image from 'next/image'
+import TickIcon from '/public/tick.svg'
+
+interface DraftWidget {
+    widgetType: string[];
+    preview: string[];
+}
 
 interface Props {
     setWidgetSelected: React.Dispatch<React.SetStateAction<string>>;
     // setAccordianItemSelected: React.Dispatch<React.SetStateAction<string[]>>;
-    setShowHighlihtedTemplates : React.Dispatch<React.SetStateAction<boolean>>;
+    setShowHighlihtedTemplates: React.Dispatch<React.SetStateAction<boolean>>;
     // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
     // multipleWidgetOn :  boolean;
     // widgetsLength :  number;
-    showHighlightedTemplates :  boolean;
+    showHighlightedTemplates: boolean;
+    draftWidgets: DraftWidget;
+
 }
 
 
-const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighlightedTemplates }: Props) => {
+const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighlightedTemplates, draftWidgets }: Props) => {
 
     const [activeFilter, setActiveFilter] = useState("Page")
     const [accordionOpen, setAccordionOpen] = useState<boolean>(false);
-    const [selectedAccordionItems, setSelectedAccordionItems] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events']);
+    // const [selectedAccordionItems, setSelectedAccordionItems] = useState<string[]>(['No Highlighted Events', 'One Highlighted Event', 'Multiple Highlighted Events']);
 
     useEffect(() => {
         setWidgetSelected(activeFilter);
@@ -32,13 +41,13 @@ const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighl
         // }
     }, [activeFilter, setWidgetSelected]);
 
-    const toggleAccordionItem = (item: string) => {
-        setSelectedAccordionItems((prevSelected) =>
-            prevSelected.includes(item)
-                ? prevSelected.filter((i) => i !== item)
-                : [...prevSelected, item]
-        );
-    };
+    // const toggleAccordionItem = (item: string) => {
+    //     setSelectedAccordionItems((prevSelected) =>
+    //         prevSelected.includes(item)
+    //             ? prevSelected.filter((i) => i !== item)
+    //             : [...prevSelected, item]
+    //     );
+    // };
     // useEffect(() => {
     //     setAccordianItemSelected(selectedAccordionItems)
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,15 +57,27 @@ const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighl
         <div className={styles.body}>
             <div className={styles.filters}>
                 <div>Select Widget : </div>
-                <div className={`${styles.filter} ${activeFilter === "Page" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Page")}>Page</div>
-                <div className={`${styles.filter} ${activeFilter === "Section" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Section")}>Section</div>
-                <div className={`${styles.filter} ${activeFilter === "Sticky" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Sticky")}>Sticky</div>
-                <div className={`${styles.filter} ${activeFilter === "Popup" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Popup")}>Popup</div>
-                {/* <div className={styles.multipleContainer}>
-                    <input type="checkbox" id='multiple' className={styles.multipleInput} onChange={()=>setMultipleWidgetOn(!multipleWidgetOn)} />
-                    <label htmlFor="multiple">Select Multiple Widgets</label>
-                    <div className={styles.widgetCount}>{widgetsLength}</div>
-                </div> */}
+                <div className={`${styles.filter} ${activeFilter === "Page" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Page")}>
+                    Page
+                    {draftWidgets.widgetType.includes("Page") && (
+                        <Image src={TickIcon} alt='tick' className={styles.tickIcon} />
+                    )}
+                </div>
+                <div className={`${styles.filter} ${activeFilter === "Section" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Section")}>Section
+                    {draftWidgets.widgetType.includes("Section") && (
+                        <Image src={TickIcon} alt='tick' className={styles.tickIcon} />
+                    )}
+                </div>
+                <div className={`${styles.filter} ${activeFilter === "Sticky" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Sticky")}>Sticky
+                    {draftWidgets.widgetType.includes("Sticky") && (
+                        <Image src={TickIcon} alt='tick' className={styles.tickIcon} />
+                    )}
+                </div>
+                <div className={`${styles.filter} ${activeFilter === "Popup" ? styles.activeBtn : ""}`} onClick={() => setActiveFilter("Popup")}>Popup
+                    {draftWidgets.widgetType.includes("Popup") && (
+                        <Image src={TickIcon} alt='tick' className={styles.tickIcon} />
+                    )}
+                </div>
             </div>
             {accordionOpen && (
                 <div className={styles.accordion}>
@@ -73,7 +94,7 @@ const FilterHeader = ({ setWidgetSelected, setShowHighlihtedTemplates, showHighl
                         )
                     )} */}
                     <div className={styles.highlightedCheckbox}>
-                        <input type="checkbox" id='promoted' onChange={()=>setShowHighlihtedTemplates(!showHighlightedTemplates)}/>
+                        <input type="checkbox" id='promoted' onChange={() => setShowHighlihtedTemplates(!showHighlightedTemplates)} />
                         <label htmlFor="promoted">Show Highlighted Event Templates</label>
                     </div>
                 </div>
