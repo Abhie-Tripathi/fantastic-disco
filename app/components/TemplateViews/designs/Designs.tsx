@@ -7,12 +7,12 @@ import ExpandIcon from '/public/expandAll.svg'
 import Image from 'next/image'
 
 interface DraftWidget {
-    widgetType: string[];
-    preview: string[];
+    widgetType: string;
+    preview: string;
   }
 
 interface Props{
-    draftWidgets: DraftWidget;
+    draftWidgets: DraftWidget[];
     setPreview: (id: string) => void;
     // setMultipleWidgetOn :  React.Dispatch<React.SetStateAction<boolean>>;
     // multipleWidgetOn :  boolean;

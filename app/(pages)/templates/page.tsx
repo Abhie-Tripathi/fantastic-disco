@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import Image from "next/image";
@@ -19,8 +19,8 @@ import { useRouter } from 'next/navigation';
 import InfoModal from '@/app/components/TemplateViews/infomodal/InfoModal';
 
 interface DraftWidget {
-  widgetType: string[];
-  preview: string[];
+  widgetType: string;
+  preview: string;
 }
 
 const Page = () => {
@@ -29,34 +29,35 @@ const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [preview, setPreview] = useState("sehb");
   const [widgetSelected, setWidgetSelected] = useState<string>("");
-  const [draftWidgets, setDraftWidgets] = useState<DraftWidget>({ widgetType: [], preview: [] });
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
   const [infoModal, setInfoModal] = useState<boolean>(false)
   const router = useRouter();
+  
   const handleDraftWidget = () => {
-
-    const isWidgetSelected = draftWidgets.widgetType.includes(widgetSelected);
-    if (isWidgetSelected) {
+    const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
+    
+    if (existingWidget) {
       setInfoModal(true);
     } else {
-      setDraftWidgets(prevState => ({
-        widgetType: [...prevState.widgetType, widgetSelected],
-        preview: [...prevState.preview, preview]
-      }));
+      setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview: preview }]);
     }
   };
 
   const handleEditButton = () => {
-    const isWidgetSelected = draftWidgets.widgetType.includes(widgetSelected);
-    const isPreviewPresent = draftWidgets.preview.includes(preview);
-
-    if (isWidgetSelected && isPreviewPresent) {
+    const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
+    
+    if (existingWidget && existingWidget.preview) {
       router.push("/templates/edit/3763g");
-    } else if (isWidgetSelected && !isPreviewPresent) {
+    } else if (existingWidget && !existingWidget.preview) {
       setInfoModal(true);
     } else {
       router.push("/templates/edit/3763g");
     }
   };
+
+  useEffect(()=>{
+    console.log("Draft widgets, ", draftWidgets)
+  },[draftWidgets])
 
   return (
     <div className={styles.layout}>
@@ -64,7 +65,7 @@ const Page = () => {
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
         <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
-          <div className={styles.savedDraftNumber}>{draftWidgets.widgetType.length}</div>
+          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
         </div>
       </div>
       <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
@@ -127,7 +128,7 @@ const Page = () => {
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
-        <InfoModal />
+        <InfoModal setInfoModal={setInfoModal} preview={preview} widgetSelected = {widgetSelected} setDraftWidgets={setDraftWidgets} draftWidgets = {draftWidgets}/>
       </div>}
 
     </div>

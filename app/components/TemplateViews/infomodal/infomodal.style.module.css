@@ -1,25 +1,64 @@
-.body{
-    background-color: grey;
-    height: 300px;
+.body {
+    background-color: rgb(0, 0, 0);
+    height: 250px;
     width: 500px;
     border-radius: 10px;
     padding: 10px;
-    /* text-align: center; */
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+    border: 1px solid white;
 }
-.btns{
+
+.heading {
+    font-size: 18px;
+    color: white;
+}
+
+.desc {
+    text-align: center;
+}
+
+.btns {
     display: flex;
     align-items: center;
     gap: 20px;
+    justify-content: space-evenly;
+    width: 100%;
 }
-.btns button{
+
+.btns .btn {
     padding: 5px 20px;
-    font-size: 14px;
     color: white;
     border-radius: 10px;
     width: fit-content;
     background-color: #6750a4;
+    cursor: pointer;
+    position: relative;
+}
+
+.btns .btn::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    /* bottom: 0; */
+    /* left: 60%; */
+    /* white-space: nowrap; */
+    width: 200px;
+    
+    transform: translateX(-50%);
+    background-color: rgba(17, 17, 17, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.btns .btn:hover::before {
+    opacity: 1;
 }

@@ -24,7 +24,7 @@
     transition-duration: .2s;
 }
 .tickIcon{
-    padding: 2px;
+    padding: 4px;
     background-color: rgb(49, 161, 49);
     border-radius: 10px;
 }
