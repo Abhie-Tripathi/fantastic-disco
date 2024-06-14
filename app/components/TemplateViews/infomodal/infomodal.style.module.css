@@ -41,13 +41,9 @@
 .btns .btn::before {
     content: attr(data-name);
     position: absolute;
-    bottom: 100%;
+    bottom: 105%;
     left: 50%;
-    /* bottom: 0; */
-    /* left: 60%; */
-    /* white-space: nowrap; */
     width: 200px;
-    
     transform: translateX(-50%);
     background-color: rgba(17, 17, 17, 0.8);
     color: white;
@@ -56,6 +52,7 @@
     font-size: 14px;
     opacity: 0;
     pointer-events: none;
+    border: 1px solid rgb(149, 149, 149);
     transition: opacity 0.2s ease;
 }
 

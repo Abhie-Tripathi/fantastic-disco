@@ -32,20 +32,32 @@ const Page = () => {
   const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
   const [infoModal, setInfoModal] = useState<boolean>(false)
   const router = useRouter();
-  
+
   const handleDraftWidget = () => {
-    const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
-    
-    if (existingWidget) {
-      setInfoModal(true);
+    if (widgetSelected === "Sticky") {
+      const existingStickyWidgets = draftWidgets.filter(widget => widget.widgetType === "Sticky");
+
+      const samePreviewExists = existingStickyWidgets.some(widget => widget.preview === preview);
+
+      if (samePreviewExists) {
+        setInfoModal(true);
+      } else {
+        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+      }
     } else {
-      setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview: preview }]);
+      const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
+
+      if (existingWidget) {
+        setInfoModal(true);
+      } else {
+        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+      }
     }
   };
 
   const handleEditButton = () => {
     const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
-    
+
     if (existingWidget && existingWidget.preview) {
       router.push("/templates/edit/3763g");
     } else if (existingWidget && !existingWidget.preview) {
@@ -55,9 +67,9 @@ const Page = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("Draft widgets, ", draftWidgets)
-  },[draftWidgets])
+  }, [draftWidgets])
 
   return (
     <div className={styles.layout}>
@@ -129,7 +141,7 @@ const Page = () => {
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
-        <InfoModal setInfoModal={setInfoModal} preview={preview} widgetSelected = {widgetSelected} setDraftWidgets={setDraftWidgets} draftWidgets = {draftWidgets}/>
+        <InfoModal setInfoModal={setInfoModal} preview={preview} widgetSelected={widgetSelected} setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} />
       </div>}
 
     </div>
