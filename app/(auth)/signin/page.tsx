@@ -2,23 +2,30 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
-import Carousel from '@/app/components/carousel'
+import Carousel from "@/app/components/carousel";
 import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
-import IntelligentEventTracking from "/public/intelligent_Event_Tracking.png";
-import SmartEventDiscovery from "/public/smart_Event_Discovery.png";
-import IntelligentNotification from "/public/intelligent_Notification.png";
-import DynamicEventTrends from "/public/dynamic_Event_Trends.png";
+import VisibilityOff from "../../../public/visibilityOff.svg";
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
- 
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
   const router = useRouter();
   const { signin } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,11 +37,16 @@ const SignIn = () => {
       setErrors({});
       setIsLoading(true);
       const response = await signin({ email, password });
-      console.log(response);
       setIsLoading(false);
-      if (response?.error) {
-        setErrors({ password: response.error });
+      if (response[0]?.error) {
+        setErrors({ password: response[0].error.message });
+        return;
       } else {
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
         router.push("/");
       }
     } catch (error) {
@@ -54,36 +66,10 @@ const SignIn = () => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.hero_container}>
-        <div className={styles.heroImage}> */}
-      {/* <Image src={EventeliLogo} alt="logo" width={65} />
-          <Image src={EventeliText} alt="text" /> */}
-      {/* </div> */}
-      {/* <div className={styles.heroTitle}>
-          Elevate your event planning with intelligence
-        </div> */}
-      {/* </div> */}
-
-      {/* <Image
-        src={LeftBackground}
-        alt="leftBackground"
-        className={`${styles.leftBackground_image} desktop_view tablet_view`}
-      />
-      <Image
-        src={TopRightBackground}
-        alt="toprightBackground"
-        className={`${styles.topRightBackground_image} desktop_view tablet_view`}
-      />
-      <Image
-        src={BottomRightBackground}
-        alt="bottomRightBackground"
-        className={`${styles.bottomRightBackground} desktop_view tablet_view`}
-      /> */}
-
       <div className={styles.sub_container}>
         {/* <Image src={LoginVisuals} alt="loginvisuals" className={styles.image} /> */}
         <div className={styles.sub_containerLeft}>
-         <Carousel/>
+          <Carousel />
         </div>
         <form className={styles.loginForm} onSubmit={signinHandler}>
           <div className={styles.form_container}>
@@ -110,7 +96,7 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Image
-                src={Visibility}
+                src={visible ? VisibilityOff : Visibility}
                 alt="visibility"
                 className={styles.visibility_Icon}
                 onClick={() => setVisible(!visible)}
@@ -125,6 +111,8 @@ const SignIn = () => {
                 type="checkbox"
                 id="remember"
                 className={styles.checkbox_input}
+                checked={rememberMe}
+                onChange={() => setRememberMe(!rememberMe)}
               />
               <label htmlFor="remember" className={styles.checkbox_title}>
                 Remember me

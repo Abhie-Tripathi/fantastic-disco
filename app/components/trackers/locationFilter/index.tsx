@@ -30,7 +30,7 @@ const index = ({start,end, startDate, endDate, locations}:any) => {
       </div>
       <div className={styles.location}>
         <div style={{color:"#6750A4"}}>Date & Time</div>
-        <div style={{color:'#696B83'}}>{formatDate(startDate)} - {formatDate(endDate)}</div>
+        <div style={{color:'#696B83'}}>{startDate?.length>0&&formatDate(startDate)} - {endDate?.length>0&&formatDate(endDate)}</div>
       </div>
       <div className={styles.location}>
         <div style={{color:"#6750A4"}}>Attendance</div>
