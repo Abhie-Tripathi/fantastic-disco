@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import Image from "next/image";
@@ -25,7 +25,7 @@ interface DraftWidget {
 
 const Page = () => {
 
-  const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
+  const [draftModal, setDraftModal] = useState<boolean>(false)
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [preview, setPreview] = useState("sehb");
   const [widgetSelected, setWidgetSelected] = useState<string>("");
@@ -67,15 +67,11 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("Draft widgets, ", draftWidgets)
-  }, [draftWidgets])
-
   return (
     <div className={styles.layout}>
       <div className={styles.navbar}>
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
-        <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
+        <div className={styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
           <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
         </div>
@@ -136,8 +132,8 @@ const Page = () => {
             <button className={styles.saveBtn} onClick={handleDraftWidget}>Save To Draft</button>
           </div>
         </div>
-        <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets={draftWidgets} />
+        <div className={`${styles.draftsModal} ${draftModal ? styles.open : ''}`}>
+          <DraftWidgets setYourWidgetModal={setDraftModal} draftWidgets={draftWidgets} />
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
@@ -145,7 +141,7 @@ const Page = () => {
       </div>}
 
     </div>
-  )
+  ) 
 }
 
 export default Page
