@@ -1,14 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import OtpInput from "react-otp-input";
-import Carousel from '@/app/components/carousel'
+import Carousel from "@/app/components/carousel";
 import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
 import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
+import { useAuthContext } from "@/context";
 
 interface VerificationProps {
   params: {
@@ -23,13 +24,13 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const { verifyOtp } = useAuthContext();
 
   const confirmHandler = () => {
-    verifyOtp();
+    otpVerificationHandler();
   };
 
-  const verifyOtp = async () => {
-    const url = `${baseUrl}/auth/customer/verify`;
+  const otpVerificationHandler = async () => {
     if (code.length < 4) {
       setErrors({ otpError: "OTP must be of 4 digit" });
       return;
@@ -41,26 +42,14 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     };
 
     setIsLoading(true);
-    const { data, error } = await myFetch(url, {
-      method: "POST",
-      body: JSON.stringify(dataToSend),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await verifyOtp(dataToSend);
+    console.log("Res", response);
     setIsLoading(false);
-    if (data) {
-      console.log(data);
-      if (!data.isVerified) {
-        setErrors({ otpError: "Invalid Otp, Please try again" });
-        return;
-      }
-      if (data.isVerified) router.push("/");
-    }
 
-    if (error) {
-      console.log(error);
+    if (response?.isVerified) {
+      router.push("/");
+    } else {
+      setErrors({ otpError: "Invalid OTP! Please Enter Correct OTP" });
       return;
     }
   };
@@ -108,8 +97,8 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     <div className={styles.container}>
       <div className={styles.sub_container}>
         <div className={styles.leftContainer}>
-      <Carousel/>
-      </div>
+          <Carousel />
+        </div>
         <div className={styles.form_container}>
           <div className={styles.message}>
             <span className={styles.message_highlighted}>Check your </span>

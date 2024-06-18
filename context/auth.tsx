@@ -13,6 +13,7 @@ type authContextType = {
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
+  verifyOtp: (user: any) => Promise<any>;
 };
 
 const authContextDefaultValues: authContextType = {
@@ -20,6 +21,7 @@ const authContextDefaultValues: authContextType = {
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
   signOut: () => {},
+  verifyOtp: () => Promise.resolve(null),
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -45,9 +47,11 @@ export const AuthContextProvider = ({ children }: any) => {
       headers: headers,
       body: JSON.stringify(userDto),
     });
+
+    console.log("Error", error);
     if (data && !error) {
-      setLocalStorage(data);
-      setUser(data);
+      // setLocalStorage(data);
+      // setUser(data);
     } else if (
       error &&
       error.status === 401 &&
@@ -57,6 +61,7 @@ export const AuthContextProvider = ({ children }: any) => {
     } else {
       setLoginError("Something went wrong");
     }
+    return [{ data, error }];
   };
   interface SignIn {
     data?: SignInResponse;
@@ -76,14 +81,13 @@ export const AuthContextProvider = ({ children }: any) => {
       setUser(data);
       setLocalStorage(data);
     }
+
     if (error) {
-      if (error.status === 401 && error.message === "Credentials incorrect")
-        return { error: "Credentials incorrect" };
-      else {
-        return { error: "Something went wrong" };
-      }
+      console.log(error);
+      return;
     }
-    return;
+
+    return [{ data, error }];
   };
 
   const signOut = () => {
@@ -100,8 +104,47 @@ export const AuthContextProvider = ({ children }: any) => {
     window.localStorage.removeItem("user");
   };
 
+  interface VerifyOTP {
+    email: string;
+    otpCode: string;
+  }
+
+  const verifyOtp = async (dataToSend: VerifyOTP) => {
+    const url = baseUrl + "/auth/customer/verify";
+    const { data, error } = await myFetch(url, {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log(data, error);
+
+    if (data) {
+      console.log(data);
+      if (!data.isVerified) {
+        console.log("Not Verified");
+        return;
+      }
+      if (data.isVerified) {
+        console.log("Data is verified");
+        setUser(data);
+        setLocalStorage(data);
+      }
+    }
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    return data;
+  };
+
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
+    console.log(user)
     if (user) {
       setUser(JSON.parse(user).user);
     } else {
@@ -116,6 +159,7 @@ export const AuthContextProvider = ({ children }: any) => {
     signup,
     signin,
     signOut,
+    verifyOtp,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
