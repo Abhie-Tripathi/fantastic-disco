@@ -1,10 +1,10 @@
 import React from 'react'
 import styles from './insights.style.module.css'
-const index = ({isBranded, trustScore, reputation, maturity}:any) => {
+const index = ({isBranded, trustScore, reputation, maturity, rank}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
-    const rank=["Country Rank","Category Rank"];
+    // const rank=["Country Rank","Category Rank"];
     const key=["Tags","Airport","Animal","Sea","Arson","Cruise","National","Shows"];
     return (
         <div className={styles.container}>
@@ -38,7 +38,7 @@ const index = ({isBranded, trustScore, reputation, maturity}:any) => {
                                 defaultChecked
                                 disabled
                               />
-                              <span className={styles.slider}></span>
+                              <span className={`${rank ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
