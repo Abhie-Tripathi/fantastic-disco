@@ -22,6 +22,8 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import List from "@/app/components/List";
+import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
+import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import Loading from "@/app/components/UI/Loading";
 import { searchEvents } from "@/services/eventsService";
 import { convertToYYYYMMDD } from "@/utils/dateFormat";
@@ -72,6 +74,9 @@ interface FilterValue {
   exhibitScore:string;
   total_attendance_gte:string;
   total_attendance_lte:string;
+  location:string[];
+  startDate:string;
+  endDate:string;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -148,6 +153,8 @@ const Pages = () => {
   const [selectedTrustScore, setSelectedTrustScore] = useState(0);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState(0);
+  const [maturity,setMaturity]=useState<string|null>();
+  const [intScore,setIntScore]=useState<string|null>();
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
@@ -235,9 +242,57 @@ const Pages = () => {
     }
   };
   const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
+  useEffect(()=>{
+    if (selectedMaturity > 0) {
+      // queryString.maturity = selectedMaturity;
+      if(selectedMaturity >= 1 && selectedMaturity <=25)
+        setMaturity('new');
+      else if(selectedMaturity >= 26 && selectedMaturity <= 50)
+        setMaturity('low');
+      else if(selectedMaturity >= 51 && selectedMaturity <= 75)
+        setMaturity('medium');
+      else
+        setMaturity('High');
+    }
+  },[selectedMaturity])
+  useEffect(()=>{
+    if (selectedINScore > 0) {
+      if(selectedINScore >= 1 && selectedINScore <=25)
+        setIntScore('local');
+      else if(selectedINScore >= 26 && selectedINScore <= 50)
+        setIntScore('National');
+      else if(selectedINScore >= 51 && selectedINScore <= 75)
+        setIntScore('Regional');
+      else
+        setIntScore('International');
+    }
+  },[selectedINScore])
+ const [ratings,setRatings]=useState<string[]|null>();
+ useEffect(() => {
+  if (selectedUserRatings.length > 0) {
+    const lastRating = selectedUserRatings[selectedUserRatings.length - 1];
+    setRatings((prevRatings:any) => {
+      if (lastRating === '0+') {
+        return [...prevRatings, '0-1'];
+      } else if (lastRating === '1+') {
+        return [...prevRatings, '1-2'];
+      } else if (lastRating === '2+') {
+        return [...prevRatings, '2-3'];
+      } else if (lastRating === '3+') {
+        return [...prevRatings, '3-4'];
+      } else if (lastRating === '4+') {
+        return [...prevRatings, '4-5'];
+      }
+      return prevRatings; // return prevRatings if no conditions match
+    });
+  }
+}, [selectedUserRatings]);
   const saveTrackerHandler = async () => {
+    // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
+    
     if (last === "editTracker") {
-
+      console.log(1);
+      
 
       const secondLast = pathName[pathName.length - 2];
       const formData = {
@@ -245,7 +300,23 @@ const Pages = () => {
         name: trackerName,
         filterValue: {
           // labels: selectedLabels.join(','),
-          category: selectedCategories.join(','),
+          eventCategory : selectedCategories.join(','),
+          // labels:selectedLabels.join(','),
+          ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
+          eventSeries:selectedEventSeries.toString(),
+          // ...(selectedDateRange?.length === 2 && { startDate: new Date(selectedDateRange[0]).toISOString().split('T')[0] }),
+          // ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
+         
+         ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
+          ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
+          trustScore:selectedTrustScore.toString(),
+          ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
+          reputationScore:selectedReptScore,
+          maturity:maturity,
+          ...(ratings&&ratings?.length>0 && {eventRating:ratings.join(',')}),
+          internationalScore:intScore,
+          inboundScore:selectedInboundScore,
+          ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
           // labels: selectedLabels.join(','), 
           // city:selectedLocations,
           max: "100",
@@ -295,7 +366,7 @@ const Pages = () => {
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if(selectedLocations.length===0){
+      if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
         return;
       }
@@ -317,7 +388,10 @@ const Pages = () => {
         },
       });
       if (data)
-        console.log(data);
+        {
+          console.log(data);
+          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration`);
+        }
       else console.log(error);
 
 
@@ -360,7 +434,34 @@ const Pages = () => {
         name: trackerName,
         filterValue: {
           // labels: selectedLabels.join(','),
-          category: selectedCategories.join(','),
+          eventCategory : selectedCategories.join(','),
+          // labels:selectedLabels.join(','),
+          ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
+          eventSeries:selectedEventSeries.toString(),
+         ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
+          ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
+          trustScore:selectedTrustScore.toString(),
+          ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
+          reputationScore:selectedReptScore,
+          maturity:maturity,
+          ...(selectedDateRange?.length === 2 && {
+            startDate: [
+              new Date(selectedDateRange[0]).toISOString().split('T')[0],
+              new Date(selectedDateRange[1]).toISOString().split('T')[0]
+            ].join(',')
+          }),
+          ...(selectedDateRange?.length === 2 && {
+            endDate: [
+              new Date(selectedDateRange[0]).toISOString().split('T')[0],
+              new Date(selectedDateRange[1]).toISOString().split('T')[0]
+            ].join(',')
+          }),
+        //   ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
+        // startDate: "2024-01-01,",
+        // endDate: "2024-10-22,",
+          internationalScore:intScore,
+          inboundScore:selectedInboundScore,
+          ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
           // labels: selectedLabels.join(','), 
           // city:selectedLocations,
           max: "100",
@@ -408,7 +509,7 @@ const Pages = () => {
           }
         },
       };
-      console.log(formData);
+      console.log(selectedEntry);
       // console.log(selectedCategories);
 
       // if (
@@ -434,7 +535,10 @@ const Pages = () => {
       // }
 
       // setIsSaving(true);
-
+      if(selectedLocations.length===0 || trackerName.length===0){
+        console.log("Please, Fill all the details");
+        return;
+      }
       const { data, error } = await myFetch(`${baseUrl}/tracker`, {
         method: "POST",
         body: JSON.stringify(formData),
@@ -493,10 +597,11 @@ const Pages = () => {
       setSelectedLabels(editData?.tracker?.filterValue?.labels.split(',') || []);
       setSelectedCategories(filteredArr|| []);
       setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.split(','));
-      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus.split(','));
+      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus.length!==0?editData?.tracker?.filterValue?.eventStatus.split(','):[]);
+      setSelectedDateRange(editData?.tracker?.filterValue?.startDate.length>0&&  editData?.tracker?.filterValue?.endDate.length>0 ? [editData?.tracker?.filterValue?.startDate,editData?.tracker?.filterValue?.endDate]:[]);
       setCategorySlug(editData.tracker.filterValue?.category || []);
       setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency.split(','))
-      setSelectedEntry(editData.tracker.filterValue?.eventEntry.split(',') || [])
+      setSelectedEntry(editData.tracker.filterValue?.eventEntry.length!==0?editData.tracker.filterValue?.eventEntry.split(','):[])
       setSelectedEventEdition(editData.tracker.filterValue?.eventEdition.split(',') || [])
       setSelectedEventRanking(editData.tracker.filterValue?.eventRanking.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
@@ -509,6 +614,7 @@ const Pages = () => {
       setSelectedUserRatings(editData.tracker.filterValue?.userRating.length!==0?editData.tracker.filterValue?.userRating.split(',') : [])
       setSelectedExhibitScore(editData.tracker.filterValue?.exhibitScore.length!==0?editData.tracker.filterValue?.exhibitScore.split(','): [])
       setCategorySlug(editData.tracker.filterValue?.category.split(',') || [])
+      setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange(prevArray => {
         const newArray = [...prevArray]; // Create a copy of the array
         newArray[0] = editData.tracker.filterValue?.total_attendance_gte;
@@ -1236,8 +1342,10 @@ const Pages = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
-                              // checked={}
+                                onChange={() => {
+                                  setSelectedEventSeries((prev) => !prev);
+                                }}
+                                checked={selectedEventSeries}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1289,7 +1397,7 @@ const Pages = () => {
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1305,10 +1413,8 @@ const Pages = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedMaturity !== 0}
-                              // checked={}
-                              // checked={}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1317,13 +1423,13 @@ const Pages = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      <RangeSlider
-                        state={selectedMaturity}
-                        setState={setSelectedMaturity}
-                      />
-                    </Dialog>
+                  <Popover className={styles.filterPopover}>
+                    {/* <Dialog> */}
+                    <MaturitySlider
+                      state={selectedMaturity}
+                      setState={setSelectedMaturity}
+                    />
+                    {/* </Dialog> */}
                   </Popover>
                 </MenuTrigger>
               </div>
@@ -1333,7 +1439,7 @@ const Pages = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
               <div className={styles.inputdropdowns_container_AI}>
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1349,7 +1455,7 @@ const Pages = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedINScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1359,15 +1465,11 @@ const Pages = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <RangeSlider
-                          state={selectedINScore}
-                          setState={setSelectedINScore}
-                        />
-                      )}
-                    </Dialog>
+                  <Popover className={styles.filterPopover}>
+                    <IntScoreSlider
+                      state={selectedINScore}
+                      setState={setSelectedINScore}
+                    />
                   </Popover>
                 </MenuTrigger>
 

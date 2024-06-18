@@ -443,11 +443,11 @@ const Table = ({
     fetchData(secondLast);
   },[eventType])
   const fetchData = async (secondLast: string) => {
-    var url=`${baseUrl}/tracker/${secondLast}/events?&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=active`;
+    var url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=active`;
     if(eventType==="New Events")
-      url=`${baseUrl}/tracker/${secondLast}/events?offset=10&limit=20`;
+      url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`;
     else if(eventType==="Expired Events")
-      url=`${baseUrl}/tracker/${secondLast}/events?offset=10&limit=20&type=expired`;
+      url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=expired`;
     const { data, error } = await myFetch(url);
     if (error) {
       console.log(error);
@@ -503,13 +503,27 @@ const Table = ({
      
    }
    const deleteEvent=async(groupId:string)=>{
-    const url=`${baseUrl}/tracker/saved-events/${groupId}`
+    const url=`${baseUrl}/tracker/saved-events`
+    let dataToSend={}
+    if(path[path.length-1]==="savedEvents"){
+        const secondLast=path[path.length-2];
+        dataToSend={
+          "eventGroupIds": [groupId],
+          "trackerId": secondLast,
+        }
+    }else{
+      dataToSend={
+        "eventGroupIds": [groupId],
+        "global":true
+      }
+    }
     
     const {data,error}=await myFetch(url,{
        method:"DELETE",
            headers: {
              "Content-Type": "application/json",
            },
+          body:JSON.stringify(dataToSend)
     })
     if(data) console.log(data);
     else console.log(error);
@@ -537,7 +551,7 @@ const Table = ({
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
               <th>Category</th>
-              {showInsights.eventSeries && <th>Event Series</th>}
+              {showInsights.eventSeries || eventPerPage[0]?.series  && <th>Event Series</th>}
               {showInsights.eventRank && <th>Rank</th>}
               {showInsights.growth && <th>Growth</th>}
               {showInsights.reptSent && <th>Rept. Sentiment</th>}
@@ -679,7 +693,7 @@ const Table = ({
                     "-"
                   )}
                 </td>
-                {showInsights.eventSeries && (
+                {showInsights.eventSeries || event?.series && (
                   <td>
                     {event.series ? (
                       event.series
