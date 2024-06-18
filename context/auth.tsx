@@ -140,7 +140,7 @@ export const AuthContextProvider = ({ children }: any) => {
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
     if (user) {
-      setUser(JSON.parse(user));
+      setUser(JSON.parse(user).user);
     } else {
       if (pathName !== "/signup" && pathName !== "/forgot-password") {
         router.push("/signin");
