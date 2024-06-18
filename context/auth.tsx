@@ -82,6 +82,11 @@ export const AuthContextProvider = ({ children }: any) => {
       setLocalStorage(data);
     }
 
+    if (error) {
+      console.log(error);
+      return;
+    }
+
     return [{ data, error }];
   };
 
@@ -139,6 +144,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
+    console.log(user)
     if (user) {
       setUser(JSON.parse(user).user);
     } else {

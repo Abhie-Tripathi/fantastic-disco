@@ -36,6 +36,8 @@ const Navbar = () => {
     user ? user : null
   );
 
+  console.log(userDetail)
+
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
