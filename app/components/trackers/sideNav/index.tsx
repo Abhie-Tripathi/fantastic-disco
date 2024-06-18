@@ -53,13 +53,13 @@ const Index = () => {
           <Link href='/internal/trackers'>
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          {last === "trackedConfiguration" || last === "manageAccess"
-            ? (last === "trackedConfiguration" ? "Configuration" : "Manage Access")
+          {last === "trackedConfiguration" || last === "manageAccess" || last==="editTracker"
+            ? (last === "trackedConfiguration" || last==="editTracker" ? "Configuration" : "Manage Access")
             : data?.tracker?.filterValue
             ?.name}
 
         </div>
-        {last !== "trackedConfiguration" && last !== "manageAccess" && 
+        {last !== "trackedConfiguration" && last !== "manageAccess" && last!=="editTracker" &&
         <>
         <div className={styles.leftContainer}>
           <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
@@ -83,7 +83,7 @@ const Index = () => {
         <div className={styles.configAccess}>
           <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
             <div className={`${styles.heading1} ${trackerSection === "Tracker Configurations" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-             <Image src={Settings} alt="setting"/> Tracker Configurations
+             <Image src={Settings} alt="setting"/> Configurations
             </div>
           </Link>
           <Link href={`/internal/trackers/${secondLast}/manageAccess`}>

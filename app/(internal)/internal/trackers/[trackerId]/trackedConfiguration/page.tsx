@@ -65,11 +65,11 @@ const Page = () => {
       </div>
       <div className={styles.innerContainer}>
         <div className={styles.innerContainerLeft} style={{ border: "1px solid #EBEBEB" }}>
-          {data && <BasicFilter category={data?.tracker?.filterValue?.category.split(',')}/>}
+          {data && <BasicFilter category={data?.tracker?.filterValue?.category?data?.tracker?.filterValue?.category.split(','):[]}/>}
         </div>
         <div className={styles.innerContainerRight}>
-          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.last_active_gte} endDate={data?.tracker?.filterValue?.last_active_lte} locations={data?.tracker?.filterValue?.location}/>}
-          {data && <Labels labels={data?.tracker?.filterValue?.labels.split(',')}/>}
+          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.startDate} endDate={data?.tracker?.filterValue?.endDate} locations={data?.tracker?.filterValue?.location}/>}
+          {data && <Labels labels={data?.tracker?.filterValue?.labels?data?.tracker?.filterValue?.labels.split(','):[]}/>}
         </div>
       </div>
       <div className={styles.line}></div>
@@ -79,7 +79,7 @@ const Page = () => {
           <div className={styles.advanceContent}>Advanced and more detailed event filter criteria for precise and personalized event tracking.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat.length!==0?data?.tracker?.filterValue?.eventFormat?.split(','):[]} keywords={data?.tracker?.filterValue?.keywords.length!==0?data?.tracker?.filterValue?.keywords.split(','):[]} freq={data?.tracker?.filterValue?.eventFrequency.length!==0?data?.tracker?.filterValue?.eventFrequency.split(','):[]} entry={data?.tracker?.filterValue?.eventEntry.length!==0?data?.tracker?.filterValue?.eventEntry.split(','):[]} rank={data?.tracker?.filterValue?.eventRanking.split(',')}/>
+          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat.length!==0?data?.tracker?.filterValue?.eventFormat?.split(','):[]} keywords={data?.tracker?.filterValue?.keywords.length!==0?data?.tracker?.filterValue?.keywords.split(','):[]} freq={data?.tracker?.filterValue?.eventFrequency.length!==0?data?.tracker?.filterValue?.eventFrequency.split(','):[]} entry={data?.tracker?.filterValue?.eventEntry.length!==0?data?.tracker?.filterValue?.eventEntry.split(','):[]} rank={data?.tracker?.filterValue?.eventRanking?data?.tracker?.filterValue?.eventRanking.split(','):[]}/>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -90,7 +90,7 @@ const Page = () => {
             scores and insights on event data.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Insights isBranded={data?.tracker?.filterValue?.brandedEvent} trustScore={data?.tracker?.filterValue?.trustScore} reputation={data?.tracker?.filterValue?.reputationScore} maturity={data?.tracker?.filterValue?.maturity}/>
+          <Insights isBranded={data?.tracker?.filterValue?.brandedEvent} trustScore={data?.tracker?.filterValue?.trustScore} reputation={data?.tracker?.filterValue?.reputationScore} maturity={data?.tracker?.filterValue?.maturity} rank={data?.tracker?.filterValue?.eventSeries}/>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -100,7 +100,7 @@ const Page = () => {
           <div className={styles.advanceContent}>Track your events based on the audience intel and insights to gain more visibility and active participants</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Intel internationalScore={data?.tracker?.filterValue?.internationalScore} inboundScore={data?.tracker?.filterValue?.inboundScore} userRating={data?.tracker?.filterValue?.userRating.split(',')} exhibitScore={data?.tracker?.filterValue?.exhibitScore.split(',')}/>
+          <Intel internationalScore={data?.tracker?.filterValue?.internationalScore} inboundScore={data?.tracker?.filterValue?.inboundScore} userRating={data?.tracker?.filterValue?.userRating?data?.tracker?.filterValue?.userRating.split(','):[]} exhibitScore={data?.tracker?.filterValue?.exhibitScore?data?.tracker?.filterValue?.exhibitScore.split(','):[]}/>
         </div>
       </div>
     </div>
