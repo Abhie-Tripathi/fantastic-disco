@@ -26,7 +26,7 @@ const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
   // console.log("height is "+height);
-  
+
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const sidebarRef = useRef<HTMLDivElement | null>(null);
@@ -39,8 +39,8 @@ const Navbar = () => {
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-  console.log("User object:", userDetail);
-  console.log("User firstname:", userDetail?.firstname);
+
+
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
   };
@@ -62,7 +62,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (sidebarRef.current  && !sidebarRef.current.contains(event.target)) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setShowSidebar(false);
       }
     };
