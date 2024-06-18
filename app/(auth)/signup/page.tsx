@@ -12,6 +12,7 @@ import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import logo from "/public/Logo_Light mode.png";
 
 const SignUp = () => {
   const [showVerification, setShowVerification] = useState(false);
@@ -122,7 +123,11 @@ const SignUp = () => {
           </div>
           <form onSubmit={handleSignUp} className={styles.formContainer}>
             <div className={styles.form_container}>
-              <div className={styles.form_heading}>Sign Up</div>
+              <div className={styles.form_heading}>
+                <Image src={logo} alt="logo" />
+                
+              </div>
+              <div className={styles.form_heading}>Create Your Account</div>
 
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Full Name</div>

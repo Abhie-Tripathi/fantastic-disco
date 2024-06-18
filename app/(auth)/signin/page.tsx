@@ -10,6 +10,7 @@ import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
+import logo from '/public/Logo_Light mode.png'
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -73,7 +74,9 @@ const SignIn = () => {
         </div>
         <form className={styles.loginForm} onSubmit={signinHandler}>
           <div className={styles.form_container}>
-            <div className={styles.form_heading}>Sign In</div>
+            <div className={styles.form_heading}>
+              <Image src={logo} alt="logo" />
+            </div>
 
             <div className={styles.input_container}>
               <div className={styles.input_title}>Email Address</div>
