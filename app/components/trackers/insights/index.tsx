@@ -48,7 +48,7 @@ const index = ({isBranded, trustScore, reputation, maturity, rank}:any) => {
             <div className={styles.branded}>
                     <div className={styles.formatHead}>
                         Trust Score
-                        <span className={styles.circle}>{parseInt(trustScore)>0 && trustScore}</span>
+                        {parseInt(trustScore)>0 && <span className={styles.circle}> trustScore</span>}
                     </div>
                     <div className={styles.toggle_container}>
                           <span>
@@ -68,7 +68,7 @@ const index = ({isBranded, trustScore, reputation, maturity, rank}:any) => {
                 <div className={styles.branded}>
                     <div className={styles.formatHead}>
                         Reputation Score
-                        <span className={styles.circle}>{parseInt(reputation)>0 && reputation}</span>
+                        {parseInt(reputation)>0 &&<span className={styles.circle}> reputation</span>}
                     </div>
                     <div className={styles.toggle_container}>
                           <span>

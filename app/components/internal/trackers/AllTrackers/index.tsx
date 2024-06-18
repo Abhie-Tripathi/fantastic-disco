@@ -1,14 +1,16 @@
 import React from 'react'
 import styles from './allTrackers.style.module.css'
 import "chart.js/auto";
-
 import { Line } from "react-chartjs-2";
 import Image from 'next/image'
 import Location from '/public/location_on.svg'
 import GoTo from '/public/goTo.svg'
 import Vectore6 from '/public/newVector.svg'
 import Link from 'next/link';
+// import { useTheme } from '@/context/theme';
 const index = ({ item }: any) => {
+  // const { theme } = useTheme();
+  console.log(Math.floor(item?.groupedEventsCountByDate.length/7));
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -105,17 +107,17 @@ const index = ({ item }: any) => {
           <div className={styles.cardThreeLeft}>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />New</div>
-              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.new}</div>
+              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.new}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Active</div>
-              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.active}</div>
+              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.active}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
               <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Expired</div>
-              <div className={styles.number}>{item.groupedEventsCountByStatus.groupedEventsByStatus.expired}</div>
+              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.expired}</div>
               <div className={styles.events}>Events</div>
             </div>
           </div>
