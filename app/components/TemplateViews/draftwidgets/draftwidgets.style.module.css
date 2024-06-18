@@ -32,6 +32,15 @@
 .activeFilter{
     background-color: #6750a4;
 }
+.emptyMessage{
+    background-color: #6750a4;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    margin-top: 50px;
+    text-align: center;
+}
 .widgets{
     margin-top: 20px;
     display: flex;

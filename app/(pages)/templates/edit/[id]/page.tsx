@@ -15,13 +15,18 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
-import YourWidgets from "@/app/components/TemplateViews/yourwidgets/YourWidgets";
+import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 
+interface DraftWidget {
+  widgetType: string;
+  preview: string;
+}
+
 const Page = () => {
   const [activeNavItem, setActiveNavItem] = useState<string>("BrandKit");
-  const [preview, setPreview] = useState("sehb");
+  const [preview, setPreview] = useState("phblv");
   const [cardRadius, setCardRadius] = useState<number>(10);
   const [cardBgColor, setCardBgColor] = useState<string>('#688bc4');
   const [eventNameColor, setEventNameColor] = useState<string>('#000000');
@@ -45,6 +50,7 @@ const Page = () => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
@@ -116,7 +122,10 @@ const Page = () => {
             Code & Status
           </div>
         </div>
-        <div className={styles.yourWidgets} onClick={() => setYourWidgetModal(true)}>Your Widgets</div>
+        <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
+          <div className={styles.savedDraftHeading}>Saved Drafts</div>
+          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+        </div>
       </div>
       <div className={styles.body}>
         {!isFullScreen && <div className={styles.editWindow}>
@@ -144,7 +153,7 @@ const Page = () => {
                   <div className={styles.statusHeading}>Widget Status</div>
                   <div className={styles.statusBtn}>
                     <div className={styles.statusFlag}></div>
-                    <div className={styles.status}>Active</div>
+                    <div className={styles.status}>Events Not Selected</div>
                   </div>
                 </div>
                 <div className={styles.activateBtn}>
@@ -198,7 +207,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <YourWidgets setYourWidgetModal={setYourWidgetModal} />
+        <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets={draftWidgets}/>
       </div>
     </div>
   );
