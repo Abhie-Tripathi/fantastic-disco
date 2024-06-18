@@ -18,8 +18,8 @@
     .tab {
         padding: 9px;
         color: inherit;
-        font-weight: 500;
-        font-size: 18px;
+        font-weight: 600;
+        font-size: 20px;
         cursor: pointer;
     }
 
@@ -118,7 +118,7 @@
         flex-direction: column;
         height: 300px;
         position: relative;
-        background-color: #FFFFFF;
+        /* background-color: #FFFFFF; */
         border-radius: 15px;
         border: 1px solid #E0E1E4;
     }
@@ -140,7 +140,7 @@
         justify-content: center;
         flex-direction: column;
         height: 300px;
-        background-color: #FFFFFF;
+        /* background-color: #FFFFFF; */
         border-radius: 15px;
         border: 1px solid #E0E1E4;
     }

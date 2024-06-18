@@ -247,7 +247,7 @@ const Page = () => {
     {lastParam==="savedEvents" &&
     <div className={styles.savedDiv}>
       <div className={styles.saved}>Saved Events</div>
-      <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div>
+      {/* <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div> */}
     </div>
     }
    <Table showInsights={showInsights}/>
