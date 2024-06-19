@@ -15,13 +15,19 @@ interface DraftWidget {
 const DraftWidgets = ({ setYourWidgetModal }: Props) => {
 
   const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
-  
+
   useEffect(() => {
     const storedDraftWidgets = localStorage.getItem('draftWidgets');
     if (storedDraftWidgets) {
       setDraftWidgets(JSON.parse(storedDraftWidgets));
     }
   }, []);
+  
+  const handleDeleteWidget = (widgetType: string, preview: string) => {
+    const updatedWidgets = draftWidgets.filter(widget => !(widget.widgetType === widgetType && widget.preview === preview));
+    setDraftWidgets(updatedWidgets);
+    localStorage.setItem('draftWidgets', JSON.stringify(updatedWidgets));
+  };
 
   return (
     <div className={styles.body}>
@@ -36,7 +42,7 @@ const DraftWidgets = ({ setYourWidgetModal }: Props) => {
       </div>}
       <div className={styles.widgets}>
         {draftWidgets.map((widget, key) => (
-          <WidgetCard status='Events Not Added' statusIcon="yellow" widgetType={widget.widgetType} key={key} />
+          <WidgetCard status='Events Not Added' statusIcon="yellow" widgetType={widget.widgetType} widgetPreview = {widget.preview} key={key} onDelete={handleDeleteWidget}/>
         ))}
       </div>
 

@@ -11,9 +11,15 @@ interface WidgetProps{
     status : string;
     statusIcon : string;
     widgetType : string;
+    widgetPreview : string;
+    onDelete: (widgetType: string, widgetPreview : string) => void;
 }
 
-const WidgetCard = ({status, statusIcon, widgetType} : WidgetProps) => {
+const WidgetCard = ({status, statusIcon, widgetType, onDelete , widgetPreview} : WidgetProps) => {
+
+    const handleDelete = ()=>{
+
+    }
 
     return (
         <div className={styles.body}>
@@ -29,7 +35,7 @@ const WidgetCard = ({status, statusIcon, widgetType} : WidgetProps) => {
                         <div className={`${statusIcon === "green" ? styles.activeStatus : statusIcon==="red" ? styles.inactiveStatus : styles.inprogressStatus} ${styles.status}`}>{status}</div>
                     </div>
                 </div>
-                <Image src={Delete} alt='delete' className={styles.delete} />
+                <Image src={Delete} alt='delete' className={styles.delete} onClick={()=>onDelete(widgetType, widgetPreview)} />
             </div>
             <div className={styles.footerSection}>
                 <div className={styles.dateContainer}>
