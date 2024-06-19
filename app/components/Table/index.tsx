@@ -226,7 +226,7 @@ const Table = ({
     if(formData.entityId_id && formData.markedInterest && formData.eventGroupId){
       if(formData.markedInterest == 'bookmark'){
         let payloadData = {
-          "eventGroupIds":[formData.eventGroupId]
+          "eventGroupId":formData.eventGroupId,
         };
         try {
           const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`, {
@@ -256,8 +256,15 @@ const Table = ({
         }
       }else if(formData.markedInterest == 'unbookmark'){
         try {
-          const response = await myFetch(`${baseUrl}/tracker/saved-events/${formData.eventGroupId}`, {
+          let payloadData = {
+            "eventGroupIds":[formData.eventGroupId],
+          };
+          const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
+            body: JSON.stringify(payloadData),
+            headers: {
+              "Content-Type": "application/json",
+            },
           });
           if (response) {
             setBookmarkedEvent(prev => prev.filter(id => id !== formData.eventGroupId));
@@ -319,7 +326,7 @@ const Table = ({
         return;
       }
       if (data) {
-        let bookmarkGroupIds = data.savedEvents.map((event: any) => event.eventGroupId);
+        let bookmarkGroupIds = data.result.map((event: any) => event.eventGroupId);
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
