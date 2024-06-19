@@ -428,6 +428,7 @@ const Table = ({
     }
     else {
       try {
+        setIsLoaded(false);
         const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&${queryString}`;
         // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
         const apiData = await myFetch(apiUrl, {
@@ -444,6 +445,8 @@ const Table = ({
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoaded(true);
       }
     }
   }
@@ -481,11 +484,6 @@ const Table = ({
 
   // if (eventPerPage.length === 0) {
   //   return <Loading />;
-  // }
-  // if(!isLoaded) {
-  //   return <Loading />;
-  // }else if(isLoaded && eventPerPage.length == 0){
-  //   return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
   // }
   const [isSaving, setIsSaving] = useState(false);
 
@@ -569,6 +567,12 @@ const deleteEvent = async (groupId: string) => {
     setIsDelete(false);
   }
 };
+
+  if(!isLoaded) {
+    return <Loading />;
+  }else if(isLoaded && eventPerPage.length == 0){
+    return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
+  }
 
   return (
     <div className={styles.table_container}>

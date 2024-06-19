@@ -293,7 +293,7 @@ const Map = (props: MapProps) => {
                   latitude={(event.geoCordinates.latitude) ? event.geoCordinates.latitude :0}
                   longitude={(event.geoCordinates.longitude) ? event.geoCordinates.longitude :0}
                 >
-                  <span className={styles.eventCountTag}>{event.eventCount}</span>
+                  <span className={styles.eventCountTag}>{event.name+' - '+event.eventCount}</span>
                 </Marker>
               </div>
             ))}
