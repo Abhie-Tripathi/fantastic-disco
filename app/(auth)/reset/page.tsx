@@ -33,7 +33,7 @@ const PasswordReset = () => {
       return;
     }
     if (password.trim().length < 8) {
-      setErrors({ password: "Passoword should be atleast 8 characters" });
+      setErrors({ password: "Passoword must be atleast 8 characters" });
       return;
     }
     if (password !== cnfrmPassword) {

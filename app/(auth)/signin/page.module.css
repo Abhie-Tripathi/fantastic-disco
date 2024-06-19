@@ -1,11 +1,9 @@
 .container {
-  /* min-height: 100vh; */
   height: 100vh;
-  /* background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
+  background-color: #fafaff;
   width: 100vw;
   position: relative;
   display: flex;
-  gap: 80px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -57,10 +55,10 @@
   box-shadow: 0px 8px 40px -2px #060c3b14;
   width: 80%;
   height: 90%;
-  /* gap: 140px; */
   align-items: center;
   justify-content: center;
   margin: 20px;
+  background-color: #ffffff;
 }
 .sub_containerLeft {
   width: 50%;
@@ -69,7 +67,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  /* background-color: red; */
 }
 .leftContent {
   display: flex;
@@ -94,7 +91,9 @@
   width: 50%;
   display: flex;
   align-items: center;
+  padding: 10px 0;
   justify-content: center;
+  height: 100%;
 }
 .image {
   width: 400px;
@@ -105,7 +104,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  width: 400px;
+  width: 300px;
 }
 
 .input_container {
@@ -124,15 +123,15 @@
   border-color: #f15050 !important;
 }
 .form_heading {
-  /* color: #242424; */
+  color: #242424;
   font-weight: 500;
   font-size: 24px;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   text-align: center;
 }
 
 .input_title {
-  /* color: #424242df; */
+  color: #424242df;
   margin-bottom: 2px;
 }
 
@@ -184,6 +183,7 @@
   padding: 20px 0px;
   border-bottom: 0.5px solid #e6e6e6;
   font-size: 14px;
+  color: black;
 }
 
 .createNew_link {
@@ -227,10 +227,14 @@
 
   .form_container {
     width: 90%;
-    min-width: 300px;
     margin: auto;
   }
-
+  .form_heading {
+    font-size: 20px;
+  }
+  .loginForm {
+    width: 100%;
+  }
   .image {
     width: 90px;
     height: 90px;

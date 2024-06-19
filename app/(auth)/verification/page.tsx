@@ -135,7 +135,6 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
               outline: "none",
               border: "1px solid #e6e6e6",
               borderRadius: "10px",
-              padding: "10px 20px",
               width: "100%",
               textAlign: "center",
               borderColor: errors.otpError && "#f15050",
