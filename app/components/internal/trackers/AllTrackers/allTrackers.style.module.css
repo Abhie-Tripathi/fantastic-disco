@@ -40,7 +40,7 @@
 .cardThreeLeft{
     display: flex;
     gap:5px;
-    width: 70%;
+    width: 100%;
 }
 .cardType{
     display: flex;
