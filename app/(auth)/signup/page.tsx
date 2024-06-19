@@ -125,14 +125,15 @@ const SignUp = () => {
             <div className={styles.form_container}>
               <div className={styles.form_heading}>
                 <Image src={logo} alt="logo" />
-                
               </div>
               <div className={styles.form_heading}>Create Your Account</div>
 
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Full Name</div>
                 <input
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.name && styles.error_boundary
+                  }`}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -144,7 +145,9 @@ const SignUp = () => {
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Email</div>
                 <input
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.email && styles.error_boundary
+                  }`}
                   value={email}
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
@@ -157,7 +160,9 @@ const SignUp = () => {
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Mobile No</div>
                 <input
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.mobileNo && styles.error_boundary
+                  }`}
                   value={mobileNo}
                   type="number"
                   onChange={(e) => setMobileNo(e.target.value)}
@@ -170,7 +175,9 @@ const SignUp = () => {
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Password</div>
                 <input
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.password && styles.error_boundary
+                  }`}
                   value={password}
                   type={passwordVisibility ? "text" : "password"}
                   onChange={(e) => setPassword(e.target.value)}
@@ -189,19 +196,14 @@ const SignUp = () => {
               <div className={styles.input_container}>
                 <div className={styles.input_title}>Confirm Password</div>
                 <input
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    errors.confirmPassword && styles.error_boundary
+                  }`}
                   value={confirmPassword}
                   type={confirmPasswordVisibility ? "text" : "password"}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                {/* <Image
-                src={Visibility}
-                alt="visibility"
-                className={styles.visibility_Icon}
-                onClick={() =>
-                  setConfirmPasswordVisibility(!confirmPasswordVisibility)
-                }
-              /> */}
+
                 {errors.confirmPassword && (
                   <div className={styles.error}>{errors.confirmPassword}</div>
                 )}

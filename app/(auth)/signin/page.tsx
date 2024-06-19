@@ -81,7 +81,9 @@ const SignIn = () => {
             <div className={styles.input_container}>
               <div className={styles.input_title}>Email Address</div>
               <input
-                className={styles.input}
+                 className={`${styles.input} ${
+                  errors.email && styles.error_boundary
+                }`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -93,7 +95,9 @@ const SignIn = () => {
             <div className={styles.input_container}>
               <div className={styles.input_title}>Password</div>
               <input
-                className={styles.input}
+                 className={`${styles.input} ${
+                  errors.password && styles.error_boundary
+                }`}
                 value={password}
                 type={visible ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
