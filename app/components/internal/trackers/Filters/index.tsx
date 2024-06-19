@@ -72,8 +72,8 @@ interface FilterValue {
   inboundScore:any;
   userRating:string;
   exhibitScore:string;
-  total_attendance_gte:string;
-  total_attendance_lte:string;
+  total_attendance_gte:any;
+  total_attendance_lte:any;
   location:string[];
   startDate:string;
   endDate:string;
@@ -267,26 +267,6 @@ const Pages = () => {
         setIntScore('International');
     }
   },[selectedINScore])
- const [ratings,setRatings]=useState<string[]|null>();
-//  useEffect(() => {
-//   if (selectedUserRatings.length > 0) {
-//     const lastRating = selectedUserRatings[selectedUserRatings.length - 1];
-//     setRatings((prevRatings:any) => {
-//       if (lastRating === '0+') {
-//         return [...prevRatings, '0-1'];
-//       } else if (lastRating === '1+') {
-//         return [...prevRatings, '1-2'];
-//       } else if (lastRating === '2+') {
-//         return [...prevRatings, '2-3'];
-//       } else if (lastRating === '3+') {
-//         return [...prevRatings, '3-4'];
-//       } else if (lastRating === '4+') {
-//         return [...prevRatings, '4-5'];
-//       }
-//       return prevRatings; // return prevRatings if no conditions match
-//     });
-//   }
-// }, [selectedUserRatings]);
 const [isCreating,setIsCreating]=useState(false);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -305,6 +285,7 @@ if(isCreating) return;
           // labels: selectedLabels.join(','),
           eventCategory : selectedCategories.join(','),
           // labels:selectedLabels.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
          ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
@@ -331,16 +312,7 @@ if(isCreating) return;
         // endDate: "2024-10-22,",
           internationalScore:intScore,
           inboundScore:selectedInboundScore,
-          // ...(selectedEventAttendanceRange?.length === 2 && 
-          // isNaN(+selectedEventAttendanceRange[0]) && 
-          //   isNaN(+selectedEventAttendanceRange[1]) && 
-          //   {
-          //     eventAttendanceRange: [
-          //       +selectedEventAttendanceRange[0],
-          //       +selectedEventAttendanceRange[1]
-          //     ].join(',')
-          //   }
-          // ),
+          ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
           // labels: selectedLabels.join(','), 
           // city:selectedLocations,
           max: "100",
@@ -463,6 +435,7 @@ if(isCreating) return;
         filterValue: {
           // labels: selectedLabels.join(','),
           eventCategory : selectedCategories.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
           // labels:selectedLabels.join(','),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
@@ -647,10 +620,17 @@ if(isCreating) return;
       setCategorySlug(editData.tracker.filterValue?.category.split(',') || [])
       setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange(prevArray => {
-        const newArray = [...prevArray]; // Create a copy of the array
-        newArray[0] = editData.tracker.filterValue?.total_attendance_gte;
-        newArray[1] = editData.tracker.filterValue?.total_attendance_lte;
-        return newArray; // Return the updated array
+        const gte = editData.tracker.filterValue?.total_attendance_gte;
+        const lte = editData.tracker.filterValue?.total_attendance_lte;
+      
+        if (!isNaN(gte) && !isNaN(lte)) {
+          const newArray = [...prevArray]; // Create a copy of the array
+          newArray[0] = gte;
+          newArray[1] = lte;
+          return newArray; // Return the updated array
+        } else {
+          return prevArray; // Return the previous array if checks fail
+        }
       });
     }
 

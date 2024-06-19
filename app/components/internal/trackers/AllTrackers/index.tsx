@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Location from '/public/location_on.svg'
 import GoTo from '/public/goTo.svg'
 import Vectore6 from '/public/newVector.svg'
+import Vectore7 from '/public/lucide_timer.svg'
+import Vectore8 from '/public/expired.svg'
 import Link from 'next/link';
 // import { useTheme } from '@/context/theme';
 const index = ({ item }: any) => {
@@ -106,25 +108,25 @@ const index = ({ item }: any) => {
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore6} alt="vectore6" />New</div>
+              <div className={styles.new}><Image src={Vectore6} alt="newVector" />New</div>
               <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.new}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Active</div>
+              <div className={styles.new}><Image src={Vectore7} alt="lucide_timer" />Active</div>
               <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.active}</div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore6} alt="vectore6" />Expired</div>
+              <div className={styles.new}><Image src={Vectore8} alt="expired" />Expired</div>
               <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.expired}</div>
               <div className={styles.events}>Events</div>
             </div>
           </div>
 
-          <div className={styles.lineChart}>
+          {/* <div className={styles.lineChart}>
             <Line data={lineData} options={lineOptions} />
-          </div>
+          </div> */}
         </div>
       </Link>
     </div>
