@@ -328,3 +328,9 @@
   padding: 20px;
   text-align: center;
 }
+.table_saveBtn{
+  color: white;
+}
+.table_saveBtn_light{
+  color: black;
+}

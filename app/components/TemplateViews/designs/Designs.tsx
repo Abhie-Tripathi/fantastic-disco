@@ -31,24 +31,24 @@ const Designs = (props : Props) => {
         { id: "megv", name: "Multiple Events as Grid View" },
         { id: "melv", name: "Multiple Events as List view" },
         // { id: "melgv", name: "Multiple Events as Grid and List View" },
-        { id: "id5", name: "Table View (Multiple Events)" }
+        // { id: "id5", name: "Table View (Multiple Events)" }
     ];
 
     const pageWidgetWithOneHighlightedEvent = [
         { id: "phblv", name: "Promoted Event as Hero Banner and List of Events" },
         { id: "phbgv", name: "Promoted Event as Hero Banner and Grid of Events" },
-        { id: "phblgv", name: "Promoted Event as Hero Banner and List and Grid of Events" },
-        { id: "ptv", name: "Table View" },
-        { id: "id10", name: "Table View (Multiple Events)" }
+        // { id: "phblgv", name: "Promoted Event as Hero Banner and List and Grid of Events" },
+        // { id: "ptv", name: "Table View" },
+        // { id: "id10", name: "Table View (Multiple Events)" }
     ];
 
     const pageWidgetWithHighlightedEvents = [
         { id: "pcslv", name: "Promoted Events as carousel slider and Rest Events as List" },
         { id: "pcsgv", name: "Promoted Events as carousel slider and rest Events as Grid" },
-        { id: "pcslgv", name: "Promoted Events as carousel slider and rest Events as Grid + List" },
-        { id: "id14", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List" },
-        { id: "id15", name: "Promoted Events as Normal list (Flex Column) and Rest Events as Grid" },
-        { id: "id16", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List + Grid" }
+        // { id: "pcslgv", name: "Promoted Events as carousel slider and rest Events as Grid + List" },
+        // { id: "id14", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List" },
+        // { id: "id15", name: "Promoted Events as Normal list (Flex Column) and Rest Events as Grid" },
+        // { id: "id16", name: "Promoted Events as Normal list (Flex Column) and Rest Events as List + Grid" }
     ];
 
     const sectionWidgetEvents = [

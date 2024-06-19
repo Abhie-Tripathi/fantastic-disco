@@ -10,6 +10,12 @@ import SkeletonWidget from '@/app/components/widgets/SkeletonWidget'
 import { useTheme } from '@/context'
 import LeftArrowIcon from '/public/leftArrow.svg'
 import RightArrowIcon from '/public/rightArrow.svg'
+import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
+
+interface DraftWidget {
+  widgetType: string;
+  preview: string;
+}
 
 const Widget = () => {
 
@@ -18,10 +24,12 @@ const Widget = () => {
   const widgetsPerPage = 3;
   const { theme } = useTheme()
   const [deleteId, setDeleteId] = useState("");
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+  const [draftModal, setDraftModal] = useState<boolean>(false)
 
   const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
   let totalPages = 1
-  if(widgets.length > 0){
+  if (widgets.length > 0) {
     totalPages = Math.ceil(widgets.length / widgetsPerPage);
   }
   const fetchData = async (type: string): Promise<any[]> => {
@@ -50,9 +58,9 @@ const Widget = () => {
     fetchAllWidgets();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo(0, 0); // To scroll up when ever page changes
-  },[currentPage])
+  }, [currentPage])
 
   // Pagination Logic
   const indexOfLastWidget = currentPage * widgetsPerPage;
@@ -66,24 +74,28 @@ const Widget = () => {
 
   }
   const handleNextPage = () => {
-    if(currentPage !== totalPages){
+    if (currentPage !== totalPages) {
       setCurrentPage(prevPage => prevPage + 1);
     }
-    
+
   }
- // To see the live deletion of widget, else if we use "widget" as dependency array, it will go in infinite loop
-  useEffect(()=>{ 
+  // To see the live deletion of widget, else if we use "widget" as dependency array, it will go in infinite loop
+  useEffect(() => {
     if (deleteId) {
       window.location.reload(); // Reload the page when deleteId changes
-  }
-  },[deleteId])
+    }
+  }, [deleteId])
 
   return (
     <div className={`${Styles.outerContainer}`}>
       <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light : ""}`}>
-        <div className={Styles.c1left}>Widgets <span className={Styles.widgetCount}>{`${widgets.length > 0 ?`(${widgets.length})`:``}`}</span></div>
+        <div className={Styles.c1left}>Widgets <span className={Styles.widgetCount}>{`${widgets.length > 0 ? `(${widgets.length})` : ``}`}</span></div>
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
+          <div className={Styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
+            <div className={Styles.savedDraftHeading}>Saved Drafts</div>
+            <div className={Styles.savedDraftNumber}>{draftWidgets.length}</div>
+          </div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
             <div><Image src={Add} alt="add" className={iconClass} /></div>
             <div>Add Widget</div>
@@ -118,6 +130,9 @@ const Widget = () => {
           <div className={Styles.paginationHeading}>Next</div>
           <Image src={RightArrowIcon} alt='next' className={Styles.paginationIcon} />
         </div>
+      </div>
+      <div className={`${Styles.draftsModal} ${draftModal ? Styles.open : ''}`}>
+        <DraftWidgets setYourWidgetModal={setDraftModal} draftWidgets={draftWidgets} />
       </div>
     </div>
   )

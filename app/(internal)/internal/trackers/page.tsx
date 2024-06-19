@@ -196,12 +196,11 @@ const data=[
             <div className={styles.back}>Back</div>  
             </div>
           ):(
-              <Link
-              href="/internal/trackers"
+              <div
               className={`${styles.tab }`}
             >
               Create Your Event Tracker
-            </Link>
+            </div>
           )}
           
           {/* <Link
@@ -266,7 +265,7 @@ const data=[
       <div className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""}`} onClick={()=>setType("Saved Events")}>Saved Events</div>
     </div>
     {type==="My Trackers" && <MyTracker/>}
-    {type==="Saved Events" && <Table showInsights={showInsights}/>}
+    {type==="Saved Events" && <div style={{"margin": "-25px 0px"}}><Table showInsights={showInsights}/></div>}
     </>
      } 
     

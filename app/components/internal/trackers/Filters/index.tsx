@@ -72,8 +72,8 @@ interface FilterValue {
   inboundScore:any;
   userRating:string;
   exhibitScore:string;
-  total_attendance_gte:string;
-  total_attendance_lte:string;
+  total_attendance_gte:any;
+  total_attendance_lte:any;
   location:string[];
   startDate:string;
   endDate:string;
@@ -267,30 +267,13 @@ const Pages = () => {
         setIntScore('International');
     }
   },[selectedINScore])
- const [ratings,setRatings]=useState<string[]|null>();
- useEffect(() => {
-  if (selectedUserRatings.length > 0) {
-    const lastRating = selectedUserRatings[selectedUserRatings.length - 1];
-    setRatings((prevRatings:any) => {
-      if (lastRating === '0+') {
-        return [...prevRatings, '0-1'];
-      } else if (lastRating === '1+') {
-        return [...prevRatings, '1-2'];
-      } else if (lastRating === '2+') {
-        return [...prevRatings, '2-3'];
-      } else if (lastRating === '3+') {
-        return [...prevRatings, '3-4'];
-      } else if (lastRating === '4+') {
-        return [...prevRatings, '4-5'];
-      }
-      return prevRatings; // return prevRatings if no conditions match
-    });
-  }
-}, [selectedUserRatings]);
+const [isCreating,setIsCreating]=useState(false);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-    
-    if (last === "editTracker") {
+if(isCreating) return;
+    setIsCreating(true);
+   
+      if (last === "editTracker") {
       console.log(1);
       
 
@@ -302,18 +285,31 @@ const Pages = () => {
           // labels: selectedLabels.join(','),
           eventCategory : selectedCategories.join(','),
           // labels:selectedLabels.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
-          // ...(selectedDateRange?.length === 2 && { startDate: new Date(selectedDateRange[0]).toISOString().split('T')[0] }),
-          // ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
-         
          ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
           ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
           trustScore:selectedTrustScore.toString(),
           ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
           reputationScore:selectedReptScore,
           maturity:maturity,
-          ...(ratings&&ratings?.length>0 && {eventRating:ratings.join(',')}),
+          ...(selectedDateRange?.length === 2 && {
+            startDate: [
+              new Date(selectedDateRange[0]).toISOString().split('T')[0],
+              new Date(selectedDateRange[1]).toISOString().split('T')[0]
+            ].join(',')
+          }),
+          ...(selectedDateRange?.length === 2 && {
+            endDate: [
+              new Date(selectedDateRange[0]).toISOString().split('T')[0],
+              new Date(selectedDateRange[1]).toISOString().split('T')[0]
+            ].join(',')
+          }),
+          eventRating:selectedUserRatings.join(','),
+        //   ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
+        // startDate: "2024-01-01,",
+        // endDate: "2024-10-22,",
           internationalScore:intScore,
           inboundScore:selectedInboundScore,
           ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
@@ -368,6 +364,7 @@ const Pages = () => {
       console.log(`${baseUrl}/tracker/${secondLast}`);
       if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
+        setIsCreating(false);
         return;
       }
       // if (
@@ -392,7 +389,10 @@ const Pages = () => {
           console.log(data);
           router.replace(`/internal/trackers/${secondLast}/trackedConfiguration`);
         }
-      else console.log(error);
+      else {
+        console.log(error);
+        setIsCreating(false);
+      }
 
 
     }
@@ -435,6 +435,7 @@ const Pages = () => {
         filterValue: {
           // labels: selectedLabels.join(','),
           eventCategory : selectedCategories.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
           // labels:selectedLabels.join(','),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
@@ -456,6 +457,7 @@ const Pages = () => {
               new Date(selectedDateRange[1]).toISOString().split('T')[0]
             ].join(',')
           }),
+          eventRating:selectedUserRatings.join(','),
         //   ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
         // startDate: "2024-01-01,",
         // endDate: "2024-10-22,",
@@ -537,6 +539,7 @@ const Pages = () => {
       // setIsSaving(true);
       if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
+        setIsCreating(false);
         return;
       }
       const { data, error } = await myFetch(`${baseUrl}/tracker`, {
@@ -552,6 +555,7 @@ const Pages = () => {
         console.log(error);
         // setIsSaving(false);
         // setIsSaving(false);
+        setIsCreating(false);
         return;
       }
       if (data) {
@@ -596,13 +600,13 @@ const Pages = () => {
       setTrackerName(editData?.tracker?.filterValue?.name || '');
       setSelectedLabels(editData?.tracker?.filterValue?.labels.split(',') || []);
       setSelectedCategories(filteredArr|| []);
-      setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.split(','));
+      setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
       setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus.length!==0?editData?.tracker?.filterValue?.eventStatus.split(','):[]);
-      setSelectedDateRange(editData?.tracker?.filterValue?.startDate.length>0&&  editData?.tracker?.filterValue?.endDate.length>0 ? [editData?.tracker?.filterValue?.startDate,editData?.tracker?.filterValue?.endDate]:[]);
+      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0&&  editData?.tracker?.filterValue?.endDate.length>0 ? [editData?.tracker?.filterValue?.startDate,editData?.tracker?.filterValue?.endDate]:[]);
       setCategorySlug(editData.tracker.filterValue?.category || []);
-      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency.split(','))
+      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency.split(','):[])
       setSelectedEntry(editData.tracker.filterValue?.eventEntry.length!==0?editData.tracker.filterValue?.eventEntry.split(','):[])
-      setSelectedEventEdition(editData.tracker.filterValue?.eventEdition.split(',') || [])
+      setSelectedEventEdition(editData.tracker.filterValue?.eventEdition>0?editData.tracker.filterValue?.eventEdition.split(','):0)
       setSelectedEventRanking(editData.tracker.filterValue?.eventRanking.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
       setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
@@ -616,10 +620,17 @@ const Pages = () => {
       setCategorySlug(editData.tracker.filterValue?.category.split(',') || [])
       setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange(prevArray => {
-        const newArray = [...prevArray]; // Create a copy of the array
-        newArray[0] = editData.tracker.filterValue?.total_attendance_gte;
-        newArray[1] = editData.tracker.filterValue?.total_attendance_lte;
-        return newArray; // Return the updated array
+        const gte = editData.tracker.filterValue?.total_attendance_gte;
+        const lte = editData.tracker.filterValue?.total_attendance_lte;
+      
+        if (!isNaN(gte) && !isNaN(lte)) {
+          const newArray = [...prevArray]; // Create a copy of the array
+          newArray[0] = gte;
+          newArray[1] = lte;
+          return newArray; // Return the updated array
+        } else {
+          return prevArray; // Return the previous array if checks fail
+        }
       });
     }
 

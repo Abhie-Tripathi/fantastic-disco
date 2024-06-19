@@ -105,7 +105,7 @@ const Page = () => {
     // <div className={styles.containerOne}>
     
     <div className={styles.container}>
-    <div className={styles.top}>
+    {/* <div className={styles.top}>
       <div className={styles.topLeft} onClick={() => setOpen(!open)}>
         <div style={{ color: "#6750A4", fontWeight: "500" }}>Tracker Trends and Analytics</div>
         <div>
@@ -137,7 +137,7 @@ const Page = () => {
         </div>
       </div>
       <div className={styles.topRight}></div>
-    </div>
+    </div> */}
     <div className={styles.eventStatus}>
       <div className={styles.eventStatusLeft}>
         <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>Active Events</button>
