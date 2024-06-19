@@ -31,20 +31,20 @@ const Page = () => {
   const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
   const [infoModal, setInfoModal] = useState<boolean>(false)
-  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
+  const [draftwidgetsLength, setDraftwidgetsLength] = useState<number>();
 
-  useEffect(()=>{
+  useEffect(() => {
     const storedDraftWidgets = localStorage.getItem('draftWidgets');
     if (storedDraftWidgets) {
       setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
       setDraftWidgets(JSON.parse(storedDraftWidgets))
     }
-  },[])
+  }, [])
 
   const router = useRouter();
 
   const handleDraftWidget = () => {
-    let updatedDraftWidgets : DraftWidget[] = [];
+    let updatedDraftWidgets: DraftWidget[] = [];
     if (widgetSelected === "Sticky") {
       const existingStickyWidgets = draftWidgets.filter(widget => widget.widgetType === "Sticky");
       const samePreviewExists = existingStickyWidgets.some(widget => widget.preview === preview);
@@ -73,12 +73,18 @@ const Page = () => {
   const handleEditButton = () => {
     const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
 
+    const query = new URLSearchParams({
+      preview: preview
+    }).toString();
+
+    const editUrl = `/templates/edit/3763g?${query}`;
+
     if (existingWidget && existingWidget.preview) {
-      router.push("/templates/edit/3763g");
+      router.push(editUrl);
     } else if (existingWidget && !existingWidget.preview) {
       setInfoModal(true);
     } else {
-      router.push("/templates/edit/3763g");
+      router.push(editUrl);
     }
   };
 
@@ -144,7 +150,7 @@ const Page = () => {
           </div>
         </div>
         <div className={`${styles.draftsModal} ${draftModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setDraftModal}/>
+          <DraftWidgets setYourWidgetModal={setDraftModal} />
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
