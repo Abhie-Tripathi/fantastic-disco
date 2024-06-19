@@ -123,12 +123,12 @@ export const AuthContextProvider = ({ children }: any) => {
 
     if (data) {
       console.log(data);
-      if (!data.isVerified) {
-        console.log("Not Verified");
+      if (!data.user.isVerified) {
+        // console.log("Not Verified");
         return;
       }
-      if (data.isVerified) {
-        console.log("Data is verified");
+      if (data.user.isVerified) {
+        // console.log("Data is verified");
         setUser(data);
         setLocalStorage(data);
       }
@@ -139,16 +139,20 @@ export const AuthContextProvider = ({ children }: any) => {
       return;
     }
 
-    return data;
+    return data.user;
   };
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
-    console.log(user)
+    console.log(user);
     if (user) {
       setUser(JSON.parse(user).user);
     } else {
-      if (pathName !== "/signup" && pathName !== "/forgot-password") {
+      if (
+        pathName !== "/signup" &&
+        pathName !== "/forgot-password" &&
+        pathName !== "/reset"
+      ) {
         router.push("/signin");
       }
     }

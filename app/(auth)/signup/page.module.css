@@ -1,6 +1,6 @@
 .container {
   min-height: 120vh;
-  background-color: #FAFAFF;
+  background-color: #fafaff;
   /* background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
   width: 100vw;
   position: relative;
@@ -36,10 +36,10 @@
   height: 435px;
   z-index: -1;
 }
-.leftContainer{
+.leftContainer {
   width: 50%;
   height: 100%;
-  background-color: #FAFAFF;
+  background-color: #fafaff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,35 +62,35 @@
 
 .sub_container {
   display: flex;
-    box-shadow: 0px 8px 40px -2px #060C3B14;
-    width: 80%;
-    height: 90%;
-    /* gap: 140px; */
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
+  box-shadow: 0px 8px 40px -2px #060c3b14;
+  width: 80%;
+  height: 90%;
+  /* gap: 140px; */
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
 }
-.sub_containerLeft{
+.sub_containerLeft {
   width: 50%;
-  background-color: #FAFAFF;
+  background-color: #fafaff;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
   /* background-color: red; */
 }
-.formContainer{
+.formContainer {
   display: flex;
-    width: 50%;
-    background-color: white;
-    padding: 10px 0px;
-    justify-content: center;
+  width: 50%;
+  background-color: white;
+  padding: 10px 0px;
+  justify-content: center;
 }
 .image {
   width: 400px;
   height: 390px;
 }
-.form_outercontainer{
+.form_outercontainer {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -124,6 +124,9 @@
   color: #f15050;
 }
 
+.error_boundary {
+  border-color: #f15050 !important;
+}
 .input_title {
   /* color: #424242df; */
   /* color: white; */
@@ -173,7 +176,7 @@
   border: none;
 }
 
-.disable{
+.disable {
   cursor: not-allowed;
   background-color: #a68fe7;
 }
@@ -223,10 +226,10 @@
   }
 }
 @media screen and (max-width: 1030px) {
-  .sub_containerLeft{
+  .sub_containerLeft {
     display: none;
   }
-  .formContainer{
+  .formContainer {
     width: 100%;
   }
 }

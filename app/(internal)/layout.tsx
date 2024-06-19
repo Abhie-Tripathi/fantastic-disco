@@ -8,6 +8,7 @@ import { Sora } from "next/font/google";
 import Sidebar from "../components/Sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
 
             <Navbar />
             <div className="body_layout">{children}</div>
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>
       </body>
