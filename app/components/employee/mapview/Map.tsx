@@ -288,8 +288,9 @@ const Map = (props: MapProps) => {
               {layers}
             </Source>
             {countryPerPage.map((event) => (
-              <div>
+              <div key={event.countryId} >
                 <Marker
+                  key={event.countryId}
                   latitude={(event.geoCordinates.latitude) ? event.geoCordinates.latitude :0}
                   longitude={(event.geoCordinates.longitude) ? event.geoCordinates.longitude :0}
                 >
