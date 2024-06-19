@@ -37,6 +37,7 @@ const Page = () => {
     const storedDraftWidgets = localStorage.getItem('draftWidgets');
     if (storedDraftWidgets) {
       setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+      setDraftWidgets(JSON.parse(storedDraftWidgets))
     }
   },[])
 
