@@ -2,25 +2,21 @@
 import React, { useState, FormEvent } from "react";
 import styles from "../signin/page.module.css";
 import Image from "next/image";
-import LeftBackground from "../../../public/leftBackground.svg";
-import TopRightBackground from "../../../public/topRightBackground.svg";
-import BottomRightBackground from "../../../public/bottomRightBackground.svg";
-import LoginVisuals from "../../../public/loginVisuals.png";
 import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SignInFormSchema } from "@/types";
-import { ZodError } from "zod";
-import Visibility from "../../../public/visibility.svg";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import Carousel from "@/app/components/carousel";
+import logo from "/public/Logo_Light mode.png";
+import { showToast } from "@/utils/showToast";
 
-const PasswordReset = () => {
+const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
-  const forgetPasswordHandler = async (event: FormEvent<HTMLFormElement>) => {
+  const forgetPasswordHandler = async (event: any) => {
     event?.preventDefault();
     const dataToSend = {
       email: email,
@@ -38,6 +34,7 @@ const PasswordReset = () => {
 
     if (data) {
       console.log(data);
+      showToast("success", data.message);
     }
 
     if (error) {
@@ -52,35 +49,23 @@ const PasswordReset = () => {
         <div className={styles.heroImage}></div>
       </div>
 
-      {/* <Image
-        src={LeftBackground}
-        alt="leftBackground"
-        className={`${styles.leftBackground_image} desktop_view tablet_view`}
-      />
-      <Image
-        src={TopRightBackground}
-        alt="toprightBackground"
-        className={`${styles.topRightBackground_image} desktop_view tablet_view`}
-      />
-      <Image
-        src={BottomRightBackground}
-        alt="bottomRightBackground"
-        className={`${styles.bottomRightBackground} desktop_view tablet_view`}
-      /> */}
-
       <div className={styles.sub_container}>
-      <div className={styles.sub_containerLeft}>
-        <Image src={LoginVisuals} alt="loginvisuals" className={styles.image} />
+        <div className={styles.sub_containerLeft}>
+          <Carousel />
         </div>
-        {/* <div className={styles.form_outercontainer}> */}
         <form className={styles.loginForm} onSubmit={forgetPasswordHandler}>
           <div className={styles.form_container}>
+            <div className={styles.form_heading}>
+              <Image src={logo} alt="logo" />
+            </div>
             <div className={styles.form_heading}>Forgot Password</div>
 
             <div className={styles.input_container}>
               <div className={styles.input_title}>Email Address</div>
               <input
-                className={styles.input}
+                className={`${styles.input} ${
+                  errors.email && styles.error_boundary
+                }`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -90,16 +75,19 @@ const PasswordReset = () => {
             </div>
 
             <div className={styles.actions_container}>
-              <button className={styles.button} type="submit">
+              <button
+                className={styles.button}
+                type="submit"
+                onClick={forgetPasswordHandler}
+              >
                 Submit
               </button>
             </div>
           </div>
         </form>
-        {/* </div> */}
       </div>
     </div>
   );
 };
 
-export default PasswordReset;
+export default ForgetPassword;

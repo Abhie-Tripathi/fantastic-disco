@@ -4,6 +4,8 @@ import { AuthContextProvider } from "@/context";
 import "./../globals.css";
 const inter = Inter({ subsets: ["latin"] });
 import { Sora } from "next/font/google";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const sora = Sora({
   subsets: ['latin'],
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
     return (
       <html lang="en" className={sora.className}>
         <body>
+        <ToastContainer />
         <AuthContextProvider>
         <div>
           {children}
