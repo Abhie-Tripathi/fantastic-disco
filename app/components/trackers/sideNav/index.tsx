@@ -10,6 +10,7 @@ import Manage from '/public/manageTracker.svg';
 import Image from "next/image";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
+import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -50,13 +51,13 @@ const Index = () => {
     <>
       <div className={styles.bar}>
         <div className={styles.leftNav}>
-          <Link href={
+          <Link className={styles.bottom} href={
             last === "trackedConfiguration" || last === "editTracker"
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration`
                 : `/internal/trackers/${secondLast}/trackedEvents`)
               : '/internal/trackers'
-          }>
+          } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
           {last === "trackedConfiguration" || last === "manageAccess" || last === "editTracker"
