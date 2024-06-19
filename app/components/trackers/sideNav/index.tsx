@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from "next/navigation";
 import Back from '/public/back.svg';
 import { baseUrl } from '@/constants';
-import { myFetch} from '@/utils/myFetch';
+import { myFetch } from '@/utils/myFetch';
 import Settings from '/public/trackerSetting.svg';
 import Manage from '/public/manageTracker.svg';
 // import Link from "next/link";
@@ -25,76 +25,82 @@ const Index = () => {
     if (last === "manageAccess") setTrackerSection("Manage Access")
   }, [last])
   console.log(trackerSection);
-  const [data,setData]=useState<any>([]);
+  const [data, setData] = useState<any>([]);
   useEffect(() => {
     const fetchData = async () => {
-        const url = `${baseUrl}/tracker/${secondLast}`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'GET'
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                console.log('Data fetched:', data);
-                setData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
+      const url = `${baseUrl}/tracker/${secondLast}`;
+      try {
+        const { data, error } = await myFetch(url, {
+          method: 'GET'
+        });
+        if (error) {
+          console.error('Error fetching data:', error);
+        } else {
+          console.log('Data fetched:', data);
+          setData(data);
         }
+      } catch (err) {
+        console.error('Fetch failed:', err);
+      }
     };
 
     fetchData();
-}, [secondLast]);
+  }, [secondLast]);
   return (
     <>
       <div className={styles.bar}>
         <div className={styles.leftNav}>
-          <Link href='/internal/trackers'>
+          <Link href={
+            last === "trackedConfiguration" || last === "editTracker"
+              ? (last === "editTracker"
+                ? `/internal/trackers/${secondLast}/trackedConfiguration`
+                : `/internal/trackers/${secondLast}/trackedEvents`)
+              : '/internal/trackers'
+          }>
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          {last === "trackedConfiguration" || last === "manageAccess" || last==="editTracker"
-            ? (last === "trackedConfiguration" || last==="editTracker" ? "Configuration" : "Manage Access")
+          {last === "trackedConfiguration" || last === "manageAccess" || last === "editTracker"
+            ? (last === "trackedConfiguration" || last === "editTracker" ? "Configuration" : "Manage Access")
             : data?.tracker?.filterValue
-            ?.name}
+              ?.name}
 
         </div>
-        {last !== "trackedConfiguration" && last !== "manageAccess" && last!=="editTracker" &&
-        <>
-        <div className={styles.leftContainer}>
-          <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
-            <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
-              Tracked Events
-            </div>
-          </Link>
+        {last !== "trackedConfiguration" && last !== "manageAccess" && last !== "editTracker" &&
+          <>
+            <div className={styles.leftContainer}>
+              <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
+                <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
+                  Tracked Events
+                </div>
+              </Link>
 
-          <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}>
-            <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
-              Notes & Discussions
-            </div>
-          </Link>
-          <Link href={`/internal/trackers/${secondLast}/savedEvents`}>
-            <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
-              Saved Events
-            </div>
-          </Link>
+              <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}>
+                <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
+                  Notes & Discussions
+                </div>
+              </Link>
+              <Link href={`/internal/trackers/${secondLast}/savedEvents`}>
+                <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
+                  Saved Events
+                </div>
+              </Link>
 
-        </div>
-        <div className={styles.configAccess}>
-          <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
-            <div className={`${styles.heading1} ${trackerSection === "Tracker Configurations" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-             <Image src={Settings} alt="setting"/> Configurations
             </div>
-          </Link>
-          <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
-            <div className={`${styles.heading1} ${trackerSection === "Manage Access" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-            <Image src={Manage} alt="setting"/> Manage Access
+            <div className={styles.configAccess}>
+              <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
+                <div className={`${styles.heading1} ${trackerSection === "Tracker Configurations" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+                  <Image src={Settings} alt="setting" /> Configurations
+                </div>
+              </Link>
+              <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
+                <div className={`${styles.heading1} ${trackerSection === "Manage Access" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+                  <Image src={Manage} alt="setting" /> Manage Access
+                </div>
+              </Link>
             </div>
-          </Link>
-        </div>
-        </>
+          </>
         }
-        
+
       </div>
     </>
   )

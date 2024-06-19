@@ -353,7 +353,10 @@ const Table = ({
     event.preventDefault();
     setItemsPerPage(parseInt(event.target.value));
   }
+  const [isSaved,setIsSaved]=useState(false);
   const fetchSavedData=async()=>{
+    setIsSaved(true);
+    
     const secondLast = path[path.length - 2];
     const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`);
     if (error) {
@@ -477,61 +480,89 @@ const Table = ({
   // }else if(isLoaded && eventPerPage.length == 0){
   //   return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
   // }
-  const saveEvent=async(groupId:string)=>{
-    console.log(1);
-    const secondLast=path[path.length-2];
-    // console.log(groupId);
-    const dataToSend={
-          "eventGroupId":groupId,
-          "trackerId": secondLast
-      }
-      // console.log(dataToSend);
-      
-    const url=`${baseUrl}/tracker/saved-events`
-    
-     const {data,error}=await myFetch(url,{
-        method:"POST",
+  const [isSaving, setIsSaving] = useState(false);
+
+  const saveEvent = async (groupId: string) => {
+    if (isSaving) return;
+  
+   
+    setIsSaving(true);
+  
+    const secondLast = path[path.length - 2];
+    const dataToSend = {
+      eventGroupId: groupId,
+      trackerId: secondLast
+    };
+  
+    const url = `${baseUrl}/tracker/saved-events`;
+  
+    try {
+      const { data, error } = await myFetch(url, {
+        method: "POST",
         body: JSON.stringify(dataToSend),
-            headers: {
-              "Content-Type": "application/json",
-            },
-     })
-     if(data)
-     console.log(data);
-    else console.log(error);
-    
-     
-   }
-   const deleteEvent=async(groupId:string)=>{
-    const url=`${baseUrl}/tracker/saved-events`
-    let dataToSend={}
-    if(path[path.length-1]==="savedEvents"){
-        const secondLast=path[path.length-2];
-        dataToSend={
-          "eventGroupIds": [groupId],
-          "trackerId": secondLast,
-        }
-    }else{
-      dataToSend={
-        "eventGroupIds": [groupId],
-        "global":true
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (data) {
+        console.log(data);
+      } else {
+        console.log(error);
       }
+    } catch (err) {
+      console.error("Error saving event:", err);
+    } finally {
+      
+      setIsSaving(false);
     }
-    
-    const {data,error}=await myFetch(url,{
-       method:"DELETE",
-           headers: {
-             "Content-Type": "application/json",
-           },
-          body:JSON.stringify(dataToSend)
-    })
-    if(data) console.log(data);
-    else console.log(error);
-    const newData=eventPerPage.filter(event=>event?.eventGroupId!==groupId);
-    console.log(newData);
-    setEventPerPage(newData);
-    
-   }
+  };
+  
+   const [isDelete, setIsDelete] = useState(false);
+
+const deleteEvent = async (groupId: string) => {
+  if (isDelete) return;
+  setIsDelete(true);
+
+  const url = `${baseUrl}/tracker/saved-events`;
+  let dataToSend = {};
+
+  if (path[path.length - 1] === "savedEvents") {
+    const secondLast = path[path.length - 2];
+    dataToSend = {
+      eventGroupIds: [groupId],
+      trackerId: secondLast,
+    };
+  } else {
+    dataToSend = {
+      eventGroupIds: [groupId],
+      global: true,
+    };
+  }
+
+  try {
+    const { data, error } = await myFetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    if (data) {
+      console.log(data);
+      const newData = eventPerPage.filter(event => event?.eventGroupId !== groupId);
+      setEventPerPage(newData);
+    } else {
+      console.log(error);
+    }
+  } catch (err) {
+    console.error("Error deleting event:", err);
+  } finally {
+    setIsDelete(false);
+  }
+};
+
   return (
     <div className={styles.table_container}>
       <div
@@ -813,9 +844,11 @@ const Table = ({
                 >
                   {path[path.length - 1] === "trackedEvents" || path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
-                      <button onClick={()=>saveEvent(event?.eventGroupId)}>Save</button>
+                      <button onClick={()=>saveEvent(event?.eventGroupId)} className={`${styles.table_saveBtn} ${theme === "light" ? styles.table_saveBtn_light : ""
+                    }`}>Save</button>
                     ) : (
-                      <button onClick={()=>deleteEvent(event?.eventGroupId)}>Delete</button>
+                      <button onClick={()=>deleteEvent(event?.eventGroupId)}  className={`${styles.table_saveBtn} ${theme === "light" ? styles.table_saveBtn_light : ""
+                    }`}>Delete</button>
                     )
                   ) : (
                     <span

@@ -9,6 +9,7 @@
 .leftNav{
     color:#6750A4;
     font-size: 18px;
+    width: 25%;
     font-weight: 700;
 }
 .rightNav{
@@ -30,6 +31,8 @@
   }
   .leftContainer{
     display: flex;
+    width: 50%;
+    justify-content: center;
     /* flex-direction: column; */
     /* gap: 10px; */
   }
@@ -78,6 +81,8 @@
 .configAccess{
   display: flex;
   gap:10px;
+  width: 25%;
+  justify-content: flex-end;
 }
 .heading1{
   display: flex;
