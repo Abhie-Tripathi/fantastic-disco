@@ -89,6 +89,11 @@ const Search = () => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>(
     searchParams.get("location")?.split(",") || []
   );
+  interface SelectedLocation {
+    [id: string]: string,
+  }
+  const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
+  const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
   );
@@ -268,9 +273,15 @@ const Search = () => {
       queryString.eventCategory = selectedCategories;
     }
 
-    // Location
-    if (selectedLocations.length > 0) {
-      queryString.eventRegion = selectedLocations;
+    // Location - Event Country
+    if (Object.entries(selectedCountry).length > 0) {
+      // queryString.eventRegion = selectedLocations;
+      queryString.eventCountry = Object.keys(selectedCountry);
+    }
+
+    // Event City
+    if (Object.entries(selectedCity).length > 0) {
+      queryString.eventCity = Object.keys(selectedCity);
     }
 
     // Labels
@@ -738,6 +749,10 @@ const Search = () => {
                       state={selectedLocations}
                       setState={setSelectedLocations}
                       onClose={close}
+                      selectedCity={selectedCity}
+                      setSelectedCity={setSelectedCity}
+                      selectedCountry={selectedCountry}
+                      setSelectedCountry={setSelectedCountry}
                     />
                   )}
                 </Dialog>
