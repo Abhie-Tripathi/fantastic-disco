@@ -1,11 +1,15 @@
+'use client'
 import React from 'react'
 import Script from 'next/script'
+import styles from './page.style.module.css'
 
 const Page = () => {
+    const list = ["name1","name2","name3", "name4","name5"]
     return (
-        <div>
-            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
-            <page-widget page-id={"381ccfe1-6b96-4398-b234-c3a36c98c607"}></page-widget>
+        <div className={styles.list}>
+            {/* {list.map((item,key)=>(
+                <div className={styles.listItem} draggable>{item}</div>
+            ))} */}
         </div>
     )
 }

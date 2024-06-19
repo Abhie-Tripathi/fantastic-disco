@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
-import Designs from "@/app/components/TemplateViews/designs/Designs";
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
@@ -18,15 +17,21 @@ import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
+import { useSearchParams } from 'next/navigation';
 
-interface DraftWidget {
-  widgetType: string;
-  preview: string;
-}
+// import { ParsedUrlQuery } from 'querystring';  
 
+// interface DraftWidget {
+//   widgetType: string;
+//   preview: string;
+// }
 const Page = () => {
+  
+  const searchParams = useSearchParams();
+  const preview = searchParams.get('preview');
+
   const [activeNavItem, setActiveNavItem] = useState<string>("BrandKit");
-  const [preview, setPreview] = useState("phblv");
+  // const [preview, setPreview] = useState("phblv");
   const [cardRadius, setCardRadius] = useState<number>(10);
   const [cardBgColor, setCardBgColor] = useState<string>('#688bc4');
   const [eventNameColor, setEventNameColor] = useState<string>('#000000');
@@ -40,34 +45,27 @@ const Page = () => {
   const [btnRadius, setBtnRadius] = useState<number>(5);
   const [btnFontSize, setBtnFontSize] = useState<number>(15);
   const [bgColor, setBgColor] = useState<string>("#9968c4")
-  const [selectedWidgets, setSelectedWidgets] = useState<string[]>([])
 
   const [promotedEventOn, setPromotedEventOn] = useState<boolean>(false);
   const [promotedEventLimit, setPromotedEventLimit] = useState<number>(0);
-  // const [multipleWidgetOn, setMultipleWidgetOn] = useState<boolean>(false)
-  const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
-  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+  
+  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
   };
 
-  // useEffect(() => {
-  //   // If multiple widget checkbox is on, we will keep adding the widgets
-  //   if (multipleWidgetOn) {
-  //     setSelectedWidgets((prevWidgets) => {
-  //       // Check if preview is already present in the widgets
-  //       if (!prevWidgets.includes(preview)) {
-  //         return [...prevWidgets, preview];
-  //       }
-  //       return prevWidgets;
-  //     });
-  //   }
-  // }, [preview]);
+  useEffect(()=>{
+    const storedDraftWidgets = localStorage.getItem('draftWidgets');
+    if (storedDraftWidgets) {
+      setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+    }
+  },[])
+
   useEffect(() => {
     // When the preview changes, set the value of promotedEventOn and promotedEventLimit
     if (preview === "phblv" || preview === "phbgv" || preview === "phblgv") {
@@ -124,12 +122,11 @@ const Page = () => {
         </div>
         <div className={styles.savedDraftsContainer} onClick={() => setYourWidgetModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
-          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+          <div className={styles.savedDraftNumber}>{draftwidgetsLength}</div>
         </div>
       </div>
       <div className={styles.body}>
         {!isFullScreen && <div className={styles.editWindow}>
-          {/* {activeNavItem === "Designs" && <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />} */}
           {activeNavItem === "BrandKit" && <BrandKit
             setDateFontSize={setDateFontSize}
             setLocationFontSize={setLocationFontSize}
@@ -207,7 +204,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setYourWidgetModal} draftWidgets={draftWidgets}/>
+        <DraftWidgets setYourWidgetModal={setYourWidgetModal}/>
       </div>
     </div>
   );
