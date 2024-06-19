@@ -34,15 +34,16 @@ const Page = () => {
   const router = useRouter();
 
   const handleDraftWidget = () => {
+    let updatedDraftWidgets : DraftWidget[] = [];
     if (widgetSelected === "Sticky") {
       const existingStickyWidgets = draftWidgets.filter(widget => widget.widgetType === "Sticky");
-
       const samePreviewExists = existingStickyWidgets.some(widget => widget.preview === preview);
 
       if (samePreviewExists) {
         setInfoModal(true);
       } else {
-        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+        updatedDraftWidgets = [...draftWidgets, { widgetType: widgetSelected, preview }];
+        setDraftWidgets(updatedDraftWidgets);
       }
     } else {
       const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
@@ -50,8 +51,12 @@ const Page = () => {
       if (existingWidget) {
         setInfoModal(true);
       } else {
-        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+        updatedDraftWidgets = [...draftWidgets, { widgetType: widgetSelected, preview }];
+        setDraftWidgets(updatedDraftWidgets);
       }
+    }
+    if (updatedDraftWidgets.length > 0) {
+      localStorage.setItem('draftWidgets', JSON.stringify(updatedDraftWidgets));
     }
   };
 
@@ -141,7 +146,7 @@ const Page = () => {
       </div>}
 
     </div>
-  ) 
+  )
 }
 
 export default Page
