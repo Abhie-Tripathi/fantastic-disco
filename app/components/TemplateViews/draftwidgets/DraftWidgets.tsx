@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './draftwidgets.style.module.css'
 import WidgetCard from './WidgetCard'
 
 interface Props {
   setYourWidgetModal: (value: boolean) => void
-  draftWidgets: DraftWidget[];
+  // draftWidgets: DraftWidget[];
 }
 
 interface DraftWidget {
@@ -12,7 +12,16 @@ interface DraftWidget {
   preview: string;
 }
 
-const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
+const DraftWidgets = ({ setYourWidgetModal }: Props) => {
+
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+  
+  useEffect(() => {
+    const storedDraftWidgets = localStorage.getItem('draftWidgets');
+    if (storedDraftWidgets) {
+      setDraftWidgets(JSON.parse(storedDraftWidgets));
+    }
+  }, []);
 
   return (
     <div className={styles.body}>

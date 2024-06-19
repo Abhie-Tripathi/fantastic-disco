@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import Image from "next/image";
@@ -31,6 +31,15 @@ const Page = () => {
   const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
   const [infoModal, setInfoModal] = useState<boolean>(false)
+  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
+
+  useEffect(()=>{
+    const storedDraftWidgets = localStorage.getItem('draftWidgets');
+    if (storedDraftWidgets) {
+      setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+    }
+  },[])
+
   const router = useRouter();
 
   const handleDraftWidget = () => {
@@ -78,7 +87,7 @@ const Page = () => {
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
         <div className={styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
-          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+          <div className={styles.savedDraftNumber}>{draftwidgetsLength}</div>
         </div>
       </div>
       <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
@@ -86,10 +95,6 @@ const Page = () => {
           <div className={styles.templateWindow}>
             <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} draftWidgets={draftWidgets} />
           </div>
-          {/* <div className={styles.add_draftContainer}>
-
-            <button className={styles.addBtn}>Add Another Template</button>
-          </div> */}
         </div>}
         <div className={`${styles.rightContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
           <div className={styles.previewContainer}>
@@ -138,7 +143,7 @@ const Page = () => {
           </div>
         </div>
         <div className={`${styles.draftsModal} ${draftModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setDraftModal} draftWidgets={draftWidgets} />
+          <DraftWidgets setYourWidgetModal={setDraftModal}/>
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
