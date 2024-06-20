@@ -13,7 +13,7 @@ import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
 import Spinner from "/public/Icon.svg";
 import menuIcon from "/public/internal/hamburger.svg";
-import MobileSidebar from "./MobileSidebar";
+import MobileSidebar from "@/app/components/sidebar/MobileSidebar"
 import BellIcon from "/public/bell.svg";
 
 interface UserDetail {
@@ -62,6 +62,13 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    if(showSidebar){
+      document.body.classList.add('sidebar-open');
+    }else
+      document.body.classList.remove('sidebar-open');
+  }, [showSidebar]);
+
+  useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setShowSidebar(false);
@@ -95,7 +102,7 @@ const Navbar = () => {
         {pathName === "internal" ? (
           <Link href="/internal">
             <Image
-              className={`styles.logo_internal`}
+              className={styles.logo}
               src={logo}
               width={40}
               height={48}

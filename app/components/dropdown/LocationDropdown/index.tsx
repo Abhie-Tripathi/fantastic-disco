@@ -27,12 +27,20 @@ const searchResults = [
   },
 ];
 
+interface SelectedLocation {
+  [id: string]: string,
+}
+
 interface LocationDropdown {
   className?: string;
   dropdownRef?: React.MutableRefObject<null>;
   state: string[];
   setState: ([]: string[]) => void;
   onClose: () => void;
+  selectedCity?: {[id: string]: string};
+  setSelectedCity?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
+  selectedCountry?: {[id: string]: string};
+  setSelectedCountry?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
 }
 
 const LocationDropdown = ({
@@ -40,6 +48,10 @@ const LocationDropdown = ({
   state,
   setState,
   onClose,
+  selectedCity,
+  setSelectedCity,
+  selectedCountry,
+  setSelectedCountry,
 }: LocationDropdown) => {
   const menuNode = useRef(null);
   const {theme} = useTheme()
@@ -95,11 +107,31 @@ const LocationDropdown = ({
     setSelectedLocations((prev) => prev.filter((item) => item !== name));
   };
 
+  const addLocationHandler = (type: string, id: string, name: string) => {
+    if (type === 'city' && setSelectedCity) {
+      setSelectedCity((prev) => ({...prev, [id]: name }));  
+    }
+    else if(type === 'country' && setSelectedCountry) {
+      setSelectedCountry((prev) => ({...prev, [id]: name }));
+    }
+  }
+
+  const removeLocationHandler = (type: string, id: string) => {
+    if(type === 'city' && setSelectedCity && selectedCity){
+      const entries = Object.entries(selectedCity).filter(([key]) => key!== id);
+      setSelectedCity(Object.fromEntries(entries));
+    }
+    else if(type === 'country' && setSelectedCountry && selectedCountry){
+      const entries = Object.entries(selectedCountry).filter(([key]) => key!== id);
+      setSelectedCountry(Object.fromEntries(entries));
+    }
+  };
+
   return (
     <div>
       <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
         <div className={styles.keywords_container}>
-          {selectedLocation.length > 0 &&
+          {/* {selectedLocation.length > 0 &&
             selectedLocation.map((data, index) => (
               <div className={styles.keyword_chip} key={0}>
                 <span>{data}</span>
@@ -112,7 +144,43 @@ const LocationDropdown = ({
                   onClick={() => removeSelectionHandler(data)}
                 />
               </div>
-            ))}
+            ))} */}
+            { (selectedCountry && Object.entries(selectedCountry).length > 0) &&
+              Object.entries(selectedCountry).map(([id, name]) => (
+                <div className={styles.keyword_chip} key={id}>
+                  <span>{name}</span>
+                  <Image
+                    src={CloseIcon}
+                    width={20}
+                    height={20}
+                    alt="close"
+                    className={styles.closeChip}
+                    onClick={() => {
+                      removeLocationHandler('country', id)
+                      removeSelectionHandler(name)
+                    }}
+                  />
+                </div>
+              ))
+            }
+            { (selectedCity && Object.entries(selectedCity).length > 0) &&
+              Object.entries(selectedCity).map(([id, name]) => (
+                <div className={styles.keyword_chip} key={id}>
+                  <span>{name}</span>
+                  <Image
+                    src={CloseIcon}
+                    width={20}
+                    height={20}
+                    alt="close"
+                    className={styles.closeChip}
+                    onClick={() => {
+                      removeLocationHandler('city', id)
+                      removeSelectionHandler(name)
+                    }}
+                  />
+                </div>
+              ))
+            }
         </div>
         <div className={styles.header}>
           <div className={styles.header_title}>LOCATIONS</div>
@@ -211,7 +279,10 @@ const LocationDropdown = ({
         {cityData.map((data: any) => (
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
-            onClick={() => locationSelectHandler(data.name, data.state)}
+            onClick={() => {
+              locationSelectHandler(data.name, data.state)
+              addLocationHandler('city', data.id, `${data.name}, ${data.state}`)
+            }}
             key={data.id}
           >
             {data?.name}, {data?.state}
@@ -231,7 +302,10 @@ const LocationDropdown = ({
         {countryData.map((data: any) => (
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
-            onClick={() => locationSelectHandler(data.name)}
+            onClick={() => {
+              locationSelectHandler(data.name)
+              addLocationHandler('country', data.id, data.name)
+            }}
             key={data.id}
           >
             {data?.name}

@@ -5,7 +5,7 @@ import styles from "./layout.module.css";
 import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics } from "@next/third-parties/google";

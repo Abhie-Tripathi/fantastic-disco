@@ -13,25 +13,6 @@
     color: #6750a4;
     cursor: pointer;
 }
-.filterContainer{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.filterHeading{
-    font-size: 12px;
-}
-.filterBtn{
-    font-size: 12px;
-    color: white;
-    border: 1px solid #6750a4;
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-.activeFilter{
-    background-color: #6750a4;
-}
 .emptyMessage{
     background-color: #6750a4;
     padding: 10px;
