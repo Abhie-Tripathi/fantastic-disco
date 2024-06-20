@@ -17,6 +17,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { useRouter } from 'next/navigation';
 import InfoModal from '@/app/components/TemplateViews/infomodal/InfoModal';
+import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 
 interface DraftWidget {
   widgetType: string;
@@ -111,17 +112,18 @@ const Page = () => {
                   preview === "sehb" ? "Hero Banner" :
                     preview === "megv" ? "Grid View" :
                       preview === "melv" ? "List View" :
-                        preview === "melgv" ? "List and Grid view" :
-                          preview === "phblv" ? "Hero Banner and List view" :
-                            preview === "phbgv" ? "Hero Banner and Grid view" :
-                              preview === "phblgv" ? "Hero Banner and List Grid view" :
-                                preview === "pcslv" ? "Caraousel and List view" :
-                                  preview === "pcsgv" ? "Caraousel and Grid view" :
-                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
-                                      preview === "tscv" ? "Top Section Caraousel view" :
-                                        preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                          preview === "lsvs" ? "Left Section Veritcal Scroll view" :
-                                            preview === "popup" ? "Pop-up" : ""}
+                        preview === "mecv" ? "Carousel View" :
+                          preview === "melgv" ? "List and Grid view" :
+                            preview === "phblv" ? "Hero Banner and List view" :
+                              preview === "phbgv" ? "Hero Banner and Grid view" :
+                                preview === "phblgv" ? "Hero Banner and List Grid view" :
+                                  preview === "pcslv" ? "Caraousel and List view" :
+                                    preview === "pcsgv" ? "Caraousel and Grid view" :
+                                      preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                        preview === "tscv" ? "Top Section Caraousel view" :
+                                          preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                            preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                              preview === "popup" ? "Pop-up" : ""}
             </div>
             <div className={styles.preview}>
               {preview === "stickytop" ? <StickyPreview type="top" /> :
@@ -129,18 +131,19 @@ const Page = () => {
                   preview === "sehb" ? <HeroBanner /> :
                     preview === "megv" ? <GridView /> :
                       preview === "melv" ? <ListView /> :
-                        preview === "melgv" ? <ListAndGridView /> :
-                          preview === "phblv" ? <HeroBannerAndViews type='list' /> :
-                            preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
-                              preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                                preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
-                                      preview === "tscv" ? <CaraouselTop /> :
-                                        preview === "tshs" ? <ScrollView type='top' /> :
-                                          preview === "lsvs" ?
-                                            <ScrollView type='left' /> :
-                                            preview === "popup" ? <Popup /> : <></>}
+                        preview === "mecv" ? <CaraouselView /> :
+                          preview === "melgv" ? <ListAndGridView /> :
+                            preview === "phblv" ? <HeroBannerAndViews type='list' /> :
+                              preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
+                                preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
+                                  preview === "pcslv" ? <CaraouselAndViews type='list' /> :
+                                    preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
+                                      preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                        preview === "tscv" ? <CaraouselTop /> :
+                                          preview === "tshs" ? <ScrollView type='top' /> :
+                                            preview === "lsvs" ?
+                                              <ScrollView type='left' /> :
+                                              preview === "popup" ? <Popup /> : <></>}
             </div>
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
