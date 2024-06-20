@@ -1,0 +1,125 @@
+.container {
+  padding: 20px;
+}
+
+.header {
+  font-size: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.account {
+  display: flex;
+  gap: 50px;
+  padding: 20px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.account_left {
+  flex: 1;
+}
+
+.profile_header {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.account_right {
+  flex: 1;
+}
+
+.account_basicInfo {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  gap: 20px;
+}
+
+.account_basicInfo_pic {
+  width: 76px;
+  height: 76px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+}
+
+.account_basicInfo_picInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action_container > span {
+  margin-right: 10px;
+}
+
+.action_upload {
+  font-size: 13px;
+  padding: 5px;
+  background-color: #f2f2f2;
+}
+
+.image {
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.action_remove {
+  border: 1px solid #ddd;
+  font-size: 13px;
+  padding: 5px;
+}
+
+.profile_hintText {
+  font-size: 13px;
+  color: gray;
+}
+
+.account_details {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input_container {
+  /* position: relative; */
+  flex: 1;
+}
+
+.input_title {
+  color: #424242df;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+
+.input {
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.dual_input_container {
+  display: flex;
+  gap: 20px;
+}
+
+.action_button {
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #6750a4;
+  text-align: center;
+}
+
+.action_reset {
+  color: #6750a4;
+  font-size: 14px;
+}
+
+.searchBar_container {
+  /* width: 80%; */
+  display: flex;
+}

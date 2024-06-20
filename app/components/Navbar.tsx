@@ -36,12 +36,11 @@ const Navbar = () => {
     user ? user : null
   );
 
-  console.log(userDetail)
+  console.log(userDetail);
 
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
@@ -251,7 +250,9 @@ const Navbar = () => {
                     theme === "light" && styles.light
                   }`}
                 >
-                  <div className={styles.btns}>Profile</div>
+                  <div className={styles.btns}>
+                    <Link href="/profile">Profile</Link>
+                  </div>
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>
