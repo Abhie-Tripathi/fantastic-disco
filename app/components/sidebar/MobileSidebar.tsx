@@ -3,15 +3,21 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./MobileSidebar.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import Dashboard from "/public/internal/dashboard.svg";
-import Trend from "/public/internal/trend.svg";
-import Research from "/public/internal/research.svg";
-import DatasetIcon from "/public/dataset.svg";
-import Exhibit from "/public/internal/exhibit.svg";
+// import Dashboard from "/public/internal/dashboard.svg";
+// import Trend from "/public/internal/trend.svg";
+// import Research from "/public/internal/research.svg";
+// import DatasetIcon from "/public/dataset.svg";
+// import Exhibit from "/public/internal/exhibit.svg";
+import SearchIcon from "@/app/components/sidebar/Icons/Search";
+import DashboardIcon from "@/app/components/sidebar/Icons/Dashboard";
+import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
+import EventTrends from "@/app/components/sidebar/Icons/EventTrends";
+import Tracker from "@/app/components/sidebar/Icons/Trackers";
+import OutreachIcon from "@/app/components/sidebar/Icons/Outreach";
 import { usePathname } from "next/navigation";
-import Graph from "/public/internal/trend.svg";
+// import Graph from "/public/internal/trend.svg";
 import { useAuthContext, useTheme } from "@/context";
-import closeIcon from "/public/close.svg";
+import closeIcon from "/public/internal/cross.svg";
 import logoutIcon from "/public/internal/logout.svg";
 import Home from "/public/internal/home.svg";
 
@@ -49,10 +55,10 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
         <div>
           <div className={styles.header_container}>
             <div
-              className={`${styles.link} ${styles.header}`}
+              className={`${styles.header}`}
               style={{
                 display: "flex",
-                gap: "18px",
+                gap: "12px",
                 position: "relative",
               }}
             >
@@ -61,10 +67,10 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
                 {userDetail?.lastname.charAt(0)}
               </div>
               <div className={styles.userDetails}>
-                <div>
+                <div style={{fontSize: "16px"}}>
                   {userDetail?.firstname} {userDetail?.lastname}
                 </div>
-                <div style={{ fontSize: "14px" }}>
+                <div style={{ fontSize: "12px" }}>
                   {userDetail && userDetail?.email.length > 23
                     ? userDetail?.email.slice(0, 22) + "..."
                     : userDetail?.email}
@@ -72,20 +78,14 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
               </div>
             </div>
             <span className={styles.closeIcon} onClick={onClose}>
-              X
+              <Image src={closeIcon} alt="close" />
             </span>
           </div>
 
           <div className={styles.links}>
             <Link
               href="/"
-              className={`${styles.link} ${
-                pathname === "/"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
-                  : ""
-              }`}
+              className={`${styles.link} ${ pathname === "/" ? styles.active : ""}`}
               onClick={onClose}
             >
               <Image
@@ -95,92 +95,82 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
               />
               <div className={styles.linkName}>Home</div>
             </Link>
+
             <Link
               href="/internal"
               className={`${styles.link} ${
                 pathname === "/internal"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image src={Dashboard} alt="dashboard" className={styles.icons} />
+              <DashboardIcon />
               <div className={styles.linkName}>Dashboard</div>
             </Link>
+
             <Link
               href="/internal/coordinate"
               className={`${styles.link} ${
                 pathname === "/internal/coordinate"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image
-                src={DatasetIcon}
-                alt="coordinate"
-                className={styles.icons}
-              />
+              <CoordinateIcon />
               <div className={styles.linkName}>Coordinate</div>
             </Link>
+
             <Link
               href="/internal/search/events"
               className={`${styles.link} ${
                 pathname === "/internal/search/events"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image src={Research} alt="location" className={styles.icons} />
+              <SearchIcon />
               <div className={styles.linkName}>Research</div>
             </Link>
+
             <Link
               href="/internal/trackers"
               className={`${styles.link} ${
                 pathname === "/internal/trackers"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image src={Trend} alt="location" className={styles.icons} />
+              <Tracker />
               <div className={styles.linkName}>Trackers</div>
             </Link>
+
             <Link
               href="/internal/outreach"
               className={`${styles.link} ${
                 pathname === "/internal/outreach"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image src={Exhibit} alt="location" className={styles.icons} />
+              <OutreachIcon />
               <div className={styles.linkName}>Outreach</div>
             </Link>
+
             <Link
               href="/internal/trends"
               className={`${styles.link} ${
                 pathname === "/internal/trends"
-                  ? theme === "light"
-                    ? styles.activeLink_light
-                    : styles.activeLink
+                  ? styles.active
                   : ""
               }`}
               onClick={onClose}
             >
-              <Image src={Graph} alt="location" className={styles.icons} />
+              <EventTrends />
               <div className={styles.linkName}>Event Trends</div>
             </Link>
           </div>
@@ -190,9 +180,7 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             href="#"
             className={`${styles.link} ${
               pathname === "/notification"
-                ? theme === "light"
-                  ? styles.activeLink_light
-                  : styles.activeLink
+                ? styles.active
                 : ""
             }`}
             onClick={signOut}
@@ -210,11 +198,11 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
           <div className={styles.link}>
             <div className={styles.toggle_container}>
               <label className={styles.switch}>
-                <input type="checkbox" onClick={themeSwitchHandler} />
+                <input type="checkbox" onClick={themeSwitchHandler} checked={theme === "dark"? true : false} />
                 <span className={styles.slider}></span>
               </label>
             </div>
-            <span>Light Mode</span>
+            <span>Dark Theme</span>
           </div>
         </div>
       </div>

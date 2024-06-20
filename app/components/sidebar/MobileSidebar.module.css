@@ -1,12 +1,12 @@
 .container {
   position: fixed;
-  color: white;
+  /* color: white; */
   z-index: 2;
-  top: -80px;
-  left: 0px;
+  top: 0px;
+  /* left: 0px; */
   height: 100%;
   width: 60%;
-  margin-top: 80px;
+  /* margin-top: 80px; */
   padding: 0px;
   background-color: #1a1a1a;
   display: flex;
@@ -18,8 +18,8 @@
 }
 
 .container_light {
-  background-color: var(--secondary-bg-light);
-  color: var(--primary-color-light);
+  background-color: white;
+  border-right: 1px solid #dcdfe4;
 }
 
 .container.open {
@@ -62,18 +62,18 @@
 }
 
 .link {
+  padding: 18px 27px 18px 27px;
+  height: 56px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
-  height: 55px;
-  font-size: 17px;
-  overflow: hidden;
-  text-decoration: none;
+  gap: 16px;
+  /* width: 260px; */
+  cursor: pointer;
 }
 .header_container {
   position: relative;
-  border-bottom: 1px solid #676767;
+  border-bottom: 1px solid #90909040;
+  margin: 10px;
 }
 .header {
   font-size: 22px;
@@ -81,7 +81,8 @@
   gap: 10px;
   height: 80px;
   overflow: hidden;
-  padding-left: 10px;
+  /* padding-left: 10px; */
+  padding: 0;
   text-decoration: none;
   align-items: center;
 }
@@ -90,14 +91,16 @@
   position: absolute;
   top: 7px;
   right: 10px;
+  cursor: pointer;
 }
 .linkName {
+  flex: 1;
   margin-left: 12px;
-  text-decoration: none;
+  white-space: nowrap;
 }
 .link:hover {
-  font-weight: 600;
-  cursor: pointer;
+  font-weight: 500;
+  color: #8f68ce;
 }
 .linkContainer {
   display: flex;
@@ -105,20 +108,27 @@
   width: 300px;
   gap: 10px;
 }
-.activeLink {
-  padding-left: 10px;
+/* .activeLink {
+  padding-left: 21px;
+  border-left: 6px solid #8f68ce;
+  background-color: #292929;
+  font-weight: 500;
+  color: #8f68ce;
+} */
+
+.link.active {
+  padding-left: 21px;
   border-left: 6px solid #8f68ce;
   background-color: #292929;
   font-weight: 500;
   color: #8f68ce;
 }
+.container_light .link.active {
+  background-color: #f6edff;
+}
 
 .activeLink_light {
-  padding-left: 21px;
-  border-left: 6px solid #8f68ce;
-  background-color: #e2c4ff;
-  font-weight: 500;
-  color: #8f68ce;
+  background-color: #f6edff;
 }
 
 .sublink {
