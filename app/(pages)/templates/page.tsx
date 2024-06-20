@@ -112,7 +112,6 @@ const Page = () => {
                   preview === "sehb" ? "Hero Banner" :
                     preview === "megv" ? "Grid View" :
                       preview === "melv" ? "List View" :
-                        preview === "mecv" ? "Carousel View" :
                           preview === "melgv" ? "List and Grid view" :
                             preview === "phblv" ? "Hero Banner and List view" :
                               preview === "phbgv" ? "Hero Banner and Grid view" :
@@ -131,7 +130,6 @@ const Page = () => {
                   preview === "sehb" ? <HeroBanner /> :
                     preview === "megv" ? <GridView /> :
                       preview === "melv" ? <ListView /> :
-                        preview === "mecv" ? <CaraouselView /> :
                           preview === "melgv" ? <ListAndGridView /> :
                             preview === "phblv" ? <HeroBannerAndViews type='list' /> :
                               preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :

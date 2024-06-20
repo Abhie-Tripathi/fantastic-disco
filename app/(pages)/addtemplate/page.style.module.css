@@ -1,0 +1,51 @@
+.body{
+    padding-right: 54px;
+    padding-left: 54px;
+    font-family: var(--font-inter);
+}
+.nav{
+    margin-top: 43px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+}
+.hide_showBtn{
+    border: 1px solid #E0E1E4;
+    border-radius: 8px;
+    padding: 5px 17px;
+}
+.line{
+    height: 20px;
+    border-right: 1px solid #D8D8D8;
+}
+.myWidgetBtnContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background-color: #6750A4;
+}
+.myWidgetBtn{
+    color: white;
+    font-size: 14px;
+}
+.headingContainer{
+    margin-top: 28px;
+    text-align: center;
+}
+.heading{
+    font-size: 40px;
+    color: black;
+    font-weight: 500;
+}
+.subheading{
+    margin-top: 24px;
+    color: black;
+}
+.widgetOptions{
+    display: flex;
+    justify-content: center;
+    margin-top: 66px;
+}
