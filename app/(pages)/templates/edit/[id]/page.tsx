@@ -18,6 +18,7 @@ import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidge
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 import { useSearchParams } from 'next/navigation';
+import CaraouselView from "@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView";
 
 // import { ParsedUrlQuery } from 'querystring';  
 
@@ -26,7 +27,7 @@ import { useSearchParams } from 'next/navigation';
 //   preview: string;
 // }
 const Page = () => {
-  
+
   const searchParams = useSearchParams();
   const preview = searchParams.get('preview');
 
@@ -52,19 +53,19 @@ const Page = () => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [deactivated, setDeactivated] = useState<boolean>(false)
-  
-  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
+
+  const [draftwidgetsLength, setDraftwidgetsLength] = useState<number>();
 
   const handleNavItemClick = (item: string) => {
     setActiveNavItem(item);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const storedDraftWidgets = localStorage.getItem('draftWidgets');
     if (storedDraftWidgets) {
       setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
     }
-  },[])
+  }, [])
 
   useEffect(() => {
     // When the preview changes, set the value of promotedEventOn and promotedEventLimit
@@ -168,17 +169,18 @@ const Page = () => {
                 preview === "sehb" ? "Hero Banner" :
                   preview === "megv" ? "Grid View" :
                     preview === "melv" ? "List View" :
-                      preview === "melgv" ? "List and Grid view" :
-                        preview === "phblv" ? "Hero Banner and List view" :
-                          preview === "phbgv" ? "Hero Banner and Grid view" :
-                            preview === "phblgv" ? "Hero Banner and List Grid view" :
-                              preview === "pcslv" ? "Caraousel and List view" :
-                                preview === "pcsgv" ? "Caraousel and Grid view" :
-                                  preview === "pcslgv" ? "Caraousel and List Grid view" :
-                                    preview === "tscv" ? "Top Section Caraousel view" :
-                                      preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                        preview === "lsvs" ? "Left Section Veritcal Scroll view" :
-                                          preview === "popup" ? "Pop-up" : ""}
+                      preview === "mecv" ? "Carousel View" :
+                        preview === "melgv" ? "List and Grid view" :
+                          preview === "phblv" ? "Hero Banner and List view" :
+                            preview === "phbgv" ? "Hero Banner and Grid view" :
+                              preview === "phblgv" ? "Hero Banner and List Grid view" :
+                                preview === "pcslv" ? "Caraousel and List view" :
+                                  preview === "pcsgv" ? "Caraousel and Grid view" :
+                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                      preview === "tscv" ? "Top Section Caraousel view" :
+                                        preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                          preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                            preview === "popup" ? "Pop-up" : ""}
           </div>
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
@@ -189,22 +191,23 @@ const Page = () => {
                       preview === "melgv" ? <ListAndGridView /> :
                         preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                           preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
-                            preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                              preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                  preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
-                                    preview === "tscv" ? <CaraouselTop /> :
-                                      preview === "tshs" ? <ScrollView type='top' /> :
-                                        preview === "lsvs" ?
-                                          <ScrollView type='left' /> :
-                                          preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
+                            preview === "mecv" ? <CaraouselView /> :
+                              preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
+                                preview === "pcslv" ? <CaraouselAndViews type='list' /> :
+                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
+                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                      preview === "tscv" ? <CaraouselTop /> :
+                                        preview === "tshs" ? <ScrollView type='top' /> :
+                                          preview === "lsvs" ?
+                                            <ScrollView type='left' /> :
+                                            preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
           </div>
           <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
         </div>
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setYourWidgetModal}/>
+        <DraftWidgets setYourWidgetModal={setYourWidgetModal} />
       </div>
     </div>
   );
