@@ -5,9 +5,12 @@ import SectionWidgetImage from '/public/SectionWidgetImage.svg'
 import StickyWidgetImage from '/public/StickyWidgetImage.svg'
 import PopupWidgetImage from '/public/PopupWidgetImage.svg'
 import Image from 'next/image'
+import TickIcon from '/public/tick.svg'
 
 interface WidgetCardProps {
     widgetType: 'Page' | 'Section' | 'Sticky' | 'Popup';
+    setWidgetSelected : (value : string) => void;
+    widgetSelected: string;
 }
 
 interface WidgetConfig {
@@ -43,7 +46,7 @@ const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
         color : "#E0ECFF"
     },
 };
-const WidgetCard = ({ widgetType }: WidgetCardProps) => {
+const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected}: WidgetCardProps) => {
     const [widgetName, setWidgetName] = useState("");
     const [templateLength, setTemplateLength] = useState(0);
     const [widgetDesc, setWidgetDesc] = useState("");
@@ -59,7 +62,7 @@ const WidgetCard = ({ widgetType }: WidgetCardProps) => {
         }
     }, [widgetType]);
     return (
-        <div className={styles.body}>
+        <div className={styles.body} onClick={()=>setWidgetSelected(widgetType)}>
             <div className={styles.banner}>
                 <Image src={widgetType === "Page" ? PageWidgetImage :
                     widgetType === "Section" ? SectionWidgetImage :
@@ -77,6 +80,7 @@ const WidgetCard = ({ widgetType }: WidgetCardProps) => {
                 <div className={styles.widgetName}>{widgetName}</div>
                 <div className={styles.widgetDesc}>{widgetDesc}</div>
             </div>
+            {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon}/>}
         </div>
     )
 }

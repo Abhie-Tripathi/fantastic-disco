@@ -74,4 +74,9 @@
     text-align: center;
     padding-top: 17.5px;
     padding-bottom: 17.5px;
+    transition: color 0.3s ease, background-color 0.4s ease;
+}
+.activeExploreBtn{
+    color: white;
+    background-color: #6750A4;
 }

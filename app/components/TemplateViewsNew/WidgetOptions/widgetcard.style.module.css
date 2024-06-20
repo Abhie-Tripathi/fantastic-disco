@@ -4,6 +4,8 @@
     border-radius:8px;
     border: 1px solid #E0E1E4;
     padding: 12px;
+    cursor: pointer;
+    position: relative;
 }
 .banner{
     background-color: #F9F9FF;
@@ -48,4 +50,12 @@
 .widgetDesc{
     font-size: 14px;
     color: #6E6F89;
+}
+.tickIcon{
+    background-color: #6750a4;
+    padding: 5px;
+    border-radius: 50px;
+    position: absolute;
+    top: 27px;
+    left: 25px;
 }

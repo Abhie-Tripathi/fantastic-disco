@@ -1,11 +1,13 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
 
 const Page = () => {
+    const [widgetSelected, setWidgetSelected] = useState("");
+
     return (
         <div className={styles.body}>
             <div className={styles.nav}>
@@ -23,10 +25,10 @@ const Page = () => {
                 <div className={styles.subheading}>Customize Your Website's Functionality with the widget that perfectly fit your style!</div>
             </div>
             <div className={styles.widgetOptions}>
-                <WidgetOptions />
+                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected}/>
             </div>
             <div className={styles.exploreBtnContainer}>
-                <div className={styles.explporeBtn}>Explore Styles</div>
+                <div className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`}>Explore Styles</div>
             </div>
         </div>
     )
