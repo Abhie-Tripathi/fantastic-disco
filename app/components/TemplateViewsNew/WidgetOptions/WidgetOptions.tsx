@@ -5,10 +5,10 @@ import WidgetCard from './WidgetCard'
 const WidgetOptions = () => {
   return (  
     <div className={styles.body}>
-        <WidgetCard/>
-        <WidgetCard/>
-        <WidgetCard/>
-        <WidgetCard/>
+        <WidgetCard widgetType = "Page"/>
+        <WidgetCard widgetType = "Section"/>
+        <WidgetCard widgetType = "Sticky"/>
+        <WidgetCard widgetType = "Popup"/>
     </div>
   )
 }

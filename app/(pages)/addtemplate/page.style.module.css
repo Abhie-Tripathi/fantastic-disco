@@ -1,25 +1,29 @@
-.body{
+.body {
     padding-right: 54px;
     padding-left: 54px;
     font-family: var(--font-inter);
 }
-.nav{
+
+.nav {
     margin-top: 43px;
     display: flex;
     justify-content: flex-end;
     gap: 12px;
     align-items: center;
 }
-.hide_showBtn{
+
+.hide_showBtn {
     border: 1px solid #E0E1E4;
     border-radius: 8px;
     padding: 5px 17px;
 }
-.line{
+
+.line {
     height: 20px;
     border-right: 1px solid #D8D8D8;
 }
-.myWidgetBtnContainer{
+
+.myWidgetBtnContainer {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -27,25 +31,47 @@
     border-radius: 6px;
     background-color: #6750A4;
 }
-.myWidgetBtn{
+
+.myWidgetBtn {
     color: white;
     font-size: 14px;
 }
-.headingContainer{
+
+.headingContainer {
     margin-top: 28px;
     text-align: center;
 }
-.heading{
+
+.heading {
     font-size: 40px;
     color: black;
     font-weight: 500;
 }
-.subheading{
+
+.subheading {
     margin-top: 24px;
     color: black;
 }
-.widgetOptions{
+
+.widgetOptions {
     display: flex;
     justify-content: center;
     margin-top: 66px;
+}
+.exploreBtnContainer{
+    display: flex;
+    justify-content: center;
+}
+.explporeBtn {
+    cursor: pointer;
+    margin-top: 59px;
+    color: #C9C9C9;
+    border-radius: 4px;
+    border: 1px solid #C9C9C9;
+    font-size: 18px;
+    font-weight: 500;
+    width: 672px;
+    text-align: center;
+    padding-top: 17.5px;
+    padding-bottom: 17.5px;
 }
