@@ -7,17 +7,34 @@ import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/Widge
 
 const Page = () => {
     const [widgetSelected, setWidgetSelected] = useState("");
+    const [exploreWindow, setExploreWindow] = useState<boolean>(false);
 
     return (
         <div className={styles.body}>
-            <div className={styles.nav}>
-                <div className={styles.hide_showBtn}>
-                    <EyeIcon fillColor='#6750a4' />
-                </div>
-                <div className={styles.line}></div>
-                <div className={styles.myWidgetBtnContainer}>
-                    <div className={styles.myWidgetBtn}>My Widgets</div>
-                    <Image src={RightArrow} alt='arrow' />
+            <div className={styles.nav} style={exploreWindow ? { justifyContent: "space-between" } : { justifyContent: "flex-end" }}>
+                {exploreWindow && <div className={styles.leftNav}>
+                    <div className={`${styles.navItem} ${widgetSelected === "Page" ? styles.activeNavItem : ""}`} onClick={()=>setWidgetSelected("Page")}>Page Widgets
+                    {widgetSelected === "Page" && <div className={styles.activeLine}></div>}
+                    </div>
+                    <div className={`${styles.navItem} ${widgetSelected === "Section" ? styles.activeNavItem : ""}`}onClick={()=>setWidgetSelected("Section")}>Section Widgets
+                    {widgetSelected === "Section" && <div className={styles.activeLine}></div>}
+                    </div>
+                    <div className={`${styles.navItem} ${widgetSelected === "Sticky" ? styles.activeNavItem : ""}`}onClick={()=>setWidgetSelected("Sticky")}>Sticky Widgets
+                    {widgetSelected === "Sticky" && <div className={styles.activeLine}></div>}
+                    </div>
+                    <div className={`${styles.navItem} ${widgetSelected === "Popup" ? styles.activeNavItem : ""}`}onClick={()=>setWidgetSelected("Popup")}>Pop-up Widget
+                    {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
+                    </div>
+                </div>}
+                <div className={styles.rightNav}>
+                    <div className={styles.hide_showBtn}>
+                        <EyeIconOn fillColor='#6750a4' />
+                    </div>
+                    <div className={styles.line}></div>
+                    <div className={styles.myWidgetBtnContainer}>
+                        <div className={styles.myWidgetBtn}>My Widgets</div>
+                        <Image src={RightArrow} alt='arrow' />
+                    </div>
                 </div>
             </div>
             <div className={styles.headingContainer}>
@@ -25,16 +42,16 @@ const Page = () => {
                 <div className={styles.subheading}>Customize Your Website's Functionality with the widget that perfectly fit your style!</div>
             </div>
             <div className={styles.widgetOptions}>
-                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected}/>
+                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
             </div>
             <div className={styles.exploreBtnContainer}>
-                <div className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`}>Explore Styles</div>
+                <div onClick={() => setExploreWindow(!exploreWindow)} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`}>Explore Styles</div>
             </div>
         </div>
     )
 }
 
-function EyeIcon({ fillColor }: { fillColor: string }) {
+function EyeIconOn({ fillColor }: { fillColor: string }) {
     return (
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g mask="url(#mask0_1423_19272)">
