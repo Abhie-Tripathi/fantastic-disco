@@ -13,7 +13,7 @@ const TemplatesPreview = ({widgetSelected} : Props) => {
     return (
         <div className={`${styles.body}`}>
             <div className={styles.templatesContainer}>
-                <div className={styles.heading}>Choose your widget style</div>
+                <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
                     {widgetSelected === "Page" ? <PageTemplates /> :
                     widgetSelected === "Section" ? <SectionTemplates /> :
