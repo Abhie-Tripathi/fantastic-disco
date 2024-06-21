@@ -5,6 +5,7 @@ import Image from "next/image";
 import Carousel from "@/app/components/carousel";
 import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from 'next/navigation'
 import Link from "next/link";
 import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
@@ -28,6 +29,9 @@ const SignIn = () => {
   }, []);
 
   const router = useRouter();
+  const searchParams = useSearchParams()
+ 
+  const id = searchParams.get('id')
   const { signin } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +52,9 @@ const SignIn = () => {
         } else {
           localStorage.removeItem("rememberedEmail");
         }
+        if(id!==null){
+          router.push(`/internal/trackers/${id}/trackedEvents`)
+        }else 
         router.push("/");
       }
     } catch (error) {
@@ -64,6 +71,7 @@ const SignIn = () => {
       }
     }
   };
+console.log(id);
 
   return (
     <div className={styles.container}>

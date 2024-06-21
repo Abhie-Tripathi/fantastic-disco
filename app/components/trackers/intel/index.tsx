@@ -23,7 +23,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore}:any) 
                                 defaultChecked
                                 disabled
                               />
-                              <span className={`${parseInt(internationalScore)>0 ? styles.sliderBranded : styles.slider}`}></span>
+                              <span className={`${internationalScore?.length>0 ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>

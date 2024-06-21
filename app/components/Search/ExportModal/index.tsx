@@ -12,10 +12,11 @@ import { baseUrl } from "@/constants";
 import Loading from "../../UI/Loading";
 import backIcon from "/public/internal/back_arrow.svg";
 import Link from "next/link";
-
+import { usePathname } from 'next/navigation';
 interface exportModalProps {
   onClose: () => void;
-  filterValue: any;
+  filterValue?: any;
+  type?:string|undefined;
 }
 
 interface ExportContent {
@@ -35,7 +36,7 @@ interface ExportContent {
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-
+  
   const months: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const year: number = date.getFullYear();
@@ -54,7 +55,8 @@ function formatDate(dateString: string): string {
   return formattedDate;
 }
 
-const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
+const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
+  const pathName = usePathname().split('/');
   const [activeTab, setActiveTab] = useState("CSV");
   const [showExportedFiles, setShowExportedFiles] = useState(false);
   const [exportList, setExportList] = useState<ExportContent[]>([]);
@@ -65,6 +67,21 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
 
   const fetchData = async () => {
     setRefreshState(true);
+    if(type){
+      const { data, error } = await myFetch(`${baseUrl}/export/list?tracker=${pathName[pathName.length-2]}`);
+    console.log(data);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (data) {
+      setExportList(data);
+      setTimeout(() => {
+        setRefreshState(false);;
+      }, 500);
+    }
+    }else{
     const { data, error } = await myFetch(`${baseUrl}/export/list`);
     console.log(data);
     if (error) {
@@ -78,6 +95,7 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
         setRefreshState(false);;
       }, 500);
     }
+  }
   };
   useEffect(() => {
     if (showExportedFiles) {
@@ -86,6 +104,25 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
   }, [showExportedFiles]);
 
   const exportDataHandler = async () => {
+    if(type){
+      const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
+        method: "POST",
+        body: JSON.stringify({
+          type:type
+        })
+      });
+  
+      if (error) {
+        console.log("Unable to send the post request", error);
+        return;
+      }
+  
+      // console.log(data);
+      if (data) {
+        console.log("Export Post Api", data);
+        setShowExportedFiles(true);
+      }
+    }else{
     const formData = new URLSearchParams();
     Object.entries(filterValue).forEach(([key, value]: [string, any]) => {
       formData.append(key, value);
@@ -109,6 +146,7 @@ const ExportModal = ({ onClose, filterValue }: exportModalProps) => {
       console.log("Export Post Api", data);
       setShowExportedFiles(true);
     }
+  }
   };
 
   const deleteFileHandler = async (dataexportId: string) => {

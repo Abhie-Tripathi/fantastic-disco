@@ -5,9 +5,11 @@ import TrackerOwner from '@/app/components/trackers/trackerOwner';
 import TrackerUser from '@/app/components/trackers/trackerUser';
 import Account from '/public/account.svg'
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 const Page = () => {
     const [share, setShare] = useState(false);
-
+    const path=usePathname().split('/');
     const shareFunction = () => {
         if (!share) {
             // Add a custom state to the history
@@ -29,7 +31,7 @@ const Page = () => {
     };
 
     useEffect(() => {
-        const handlePopState = (event:any) => {
+        const handlePopState = (event: any) => {
             if (event.state && event.state.shareOpen) {
                 closeShareModal();
             } else if (share) {
@@ -46,12 +48,15 @@ const Page = () => {
         };
     }, [share]);
 
-    const closeModal = (e:any) => {
+    const closeModal = (e: any) => {
         const targetElement = e.target;
         if (targetElement.classList.contains(styles.shareModal)) {
             closeShareModal();
         }
     };
+    const queryParams = {
+        id: path[path.length-2],
+      };
 
     return (
         <div className={styles.container}>
@@ -89,17 +94,20 @@ const Page = () => {
                             <div className={styles.copy}>Copy link</div>
                         </div>
                         <div className={styles.inviteAccess}>
-                            <Image src={Account} alt="account"/>
+                            <Image src={Account} alt="account" />
                             <div className={styles.inputArea}>
-                            <input type="text" placeholder='Invite others by name or email'/>
+                                <input type="text" placeholder='Invite others by name or email' />
 
                             </div>
                         </div>
                         <div className={styles.buttons}>
-                               
-                                <button className={styles.send}>Send Invite</button>
-                                <button className={styles.cancle} onClick={closeModal}>Cancle</button>
-                            </div>
+                            <Link href={{ pathname: '/signin', query: queryParams }} legacyBehavior>
+                                <a target="_blank" rel="noopener noreferrer">
+                                    <button className={styles.send}>Send Invite</button>
+                                </a>
+                            </Link>
+                            <button className={styles.cancle} onClick={closeModal}>Cancle</button>
+                        </div>
                     </div>
                 </div>
             )}
