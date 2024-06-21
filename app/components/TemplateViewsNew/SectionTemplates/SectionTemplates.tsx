@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './sectiontemplates.style.module.css'
 import TemplateCard from '../TemplatesPreview/TemplateCard'
 import CarouselViewImage from '/public/widgetimages/sectionimages/carouselview.png'
