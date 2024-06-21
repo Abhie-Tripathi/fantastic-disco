@@ -55,10 +55,10 @@ const Page = () => {
             {!exploreWindow && <div className={styles.exploreBtnContainer}>
                 <div onClick={handleExplore} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`} style={!widgetSelected ? { cursor: "not-allowed" } : { cursor: "pointer" }}>Explore Styles</div>
             </div>}
-            {exploreWindow && 
-            <div className={styles.templates_preview}>
-            <TemplatesPreview/>
-            </div>
+            {exploreWindow &&
+                <div className={styles.templates_preview}>
+                    <TemplatesPreview />
+                </div>
             }
         </div>
     )

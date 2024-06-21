@@ -1,5 +1,7 @@
 .body{
     display: flex;
+    height: 100%;
+    gap: 30px;
 }
 .templatesContainer{
     width: 40%;
@@ -10,12 +12,11 @@
 }
 .previewContainer{
     width: 60%;
-    height: 600px;
 }
 .preview_btnContainer{
     margin-top: 20px;
     background-color: #FAFAFA;
-    height: 580px;
+    height: 90%;
     width: 100%;
     border-radius: 10px;
 }
