@@ -11,6 +11,7 @@ interface WidgetCardProps {
     widgetType: 'Page' | 'Section' | 'Sticky' | 'Popup';
     setWidgetSelected : (value : string) => void;
     widgetSelected: string;
+    smallCard : boolean;
 }
 
 interface WidgetConfig {
@@ -46,11 +47,24 @@ const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
         color : "#E0ECFF"
     },
 };
-const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected}: WidgetCardProps) => {
+const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}: WidgetCardProps) => {
     const [widgetName, setWidgetName] = useState("");
     const [templateLength, setTemplateLength] = useState(0);
     const [widgetDesc, setWidgetDesc] = useState("");
     const [bgColor, setBgColor] = useState("");
+    const [cardHeight, setCardHeight] = useState("399px")
+    const [imageHolderHeight, setImageHolderHeight] = useState("199px")
+    const [imageHeight, setImageHeight] = useState(200)
+    const [imageWidth, setImageWidth] = useState(178)
+
+    useEffect(()=>{
+        if(smallCard){
+            setCardHeight("293px")
+            setImageHolderHeight("108px")
+            setImageHeight(108)
+            setImageWidth(112)
+        }
+    },[smallCard])
 
     useEffect(() => {
         const config = widgetConfig[widgetType];
@@ -62,12 +76,12 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected}: WidgetCar
         }
     }, [widgetType]);
     return (
-        <div className={styles.body} onClick={()=>setWidgetSelected(widgetType)}>
-            <div className={styles.banner}>
+        <div className={styles.body} style={{height : cardHeight}} onClick={()=>setWidgetSelected(widgetType)}>
+            <div className={styles.banner} style={{height : imageHolderHeight}}>
                 <Image src={widgetType === "Page" ? PageWidgetImage :
                     widgetType === "Section" ? SectionWidgetImage :
                         widgetType === "Sticky" ? StickyWidgetImage :
-                            widgetType === "Popup" ? PopupWidgetImage : ""} alt='page' />
+                            widgetType === "Popup" ? PopupWidgetImage : ""} alt='page' width={imageWidth} height={imageHeight} />
             </div>
             <div className={styles.content}>
                 <div className={styles.headerContainer}>

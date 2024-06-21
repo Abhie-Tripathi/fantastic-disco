@@ -8,15 +8,15 @@ import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/Widge
 const Page = () => {
     const [widgetSelected, setWidgetSelected] = useState("");
     const [exploreWindow, setExploreWindow] = useState<boolean>(false);
-    const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(false)
+    const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(true)
 
     const handleExplore = () => {
         if (widgetSelected) {
             setExploreWindow(true)
-            setWidgetOptionsWindow(true)
+            setWidgetOptionsWindow(false)
         }
     }
-    const handleWidgetOptionsWindow = ()=>{
+    const handleWidgetOptionsWindow = () => {
         if (exploreWindow) {
             setWidgetOptionsWindow(!widgetOptionsWindow)
         }
@@ -24,7 +24,7 @@ const Page = () => {
 
     return (
         <div className={styles.body}>
-            {widgetOptionsWindow && <div className={styles.leftNav}>
+            {!widgetOptionsWindow && <div className={styles.leftNav}>
                 <div className={`${styles.navItem} ${widgetSelected === "Page" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Page")}>Page Widgets
                     {widgetSelected === "Page" && <div className={styles.activeLine}></div>}
                 </div>
@@ -40,7 +40,7 @@ const Page = () => {
             </div>}
             <div className={styles.navRightBtns}>
                 <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
-                    {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4'/>}
+                    {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.myWidgetBtnContainer}>
@@ -48,8 +48,8 @@ const Page = () => {
                     <Image src={RightArrow} alt='arrow' />
                 </div>
             </div>
-            {!widgetOptionsWindow && <div className={styles.widgetOptions}>
-                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} />
+            {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ marginTop: (widgetOptionsWindow && exploreWindow) ? "43px" : "100px" }}>
+                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
             </div>}
             {!exploreWindow && <div className={styles.exploreBtnContainer}>
                 <div onClick={handleExplore} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`} style={!widgetSelected ? { cursor: "not-allowed" } : { cursor: "pointer" }}>Explore Styles</div>

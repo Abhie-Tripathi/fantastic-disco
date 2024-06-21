@@ -1,6 +1,5 @@
 .body{
     width: 374px;
-    height: 399px;
     border-radius:8px;
     border: 1px solid #E0E1E4;
     padding: 12px;
@@ -10,7 +9,6 @@
 .banner{
     background-color: #F9F9FF;
     border-radius: 8px;
-    height: 199px;
     display: flex;
     justify-content: center;
     align-items: flex-end;
