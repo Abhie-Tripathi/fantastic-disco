@@ -105,11 +105,15 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
 
   const exportDataHandler = async () => {
     if(type){
+      const dataToSend={
+          type:type,
+      }
       const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
         method: "POST",
-        body: JSON.stringify({
-          type:type
-        })
+        body: JSON.stringify(dataToSend),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
   
       if (error) {

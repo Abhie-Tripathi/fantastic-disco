@@ -154,12 +154,14 @@ const Index = () => {
   const handleNextPage = () => {
     if (page < totalPage - 1) {
       setPage(page + 1);
+      setAllTracker([]);
     }
   };
 
   const handlePrevPage = () => {
     if (page > 0) {
       setPage(page - 1);
+      setAllTracker([]);
     }
   };
 
@@ -182,18 +184,18 @@ const Index = () => {
         <div className={styles.containerRight}>
           {loading && <div>Loading...</div>}
           {!loading && error && <div>{error}</div>}
-          {allTracker.length > 0 &&
+          {allTracker.length > 0 && (trackerType === "All Trackers" || trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => (
               <Trackers key={id} item={item} />
             ))}
-            {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
+            {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>}
         </div>
-        {/* {totalPage > 1 && ( */}
+        {totalPage > 1 &&  (trackerType === "All Trackers" || trackerType === "Custom Trackers") && !loading &&(
           <div style={{ display: "flex", justifyContent: "space-between", paddingTop:"15px"}}>
             <div className={styles.btn} onClick={handlePrevPage}>Prev</div>
             <div className={styles.btn} onClick={handleNextPage}>Next</div>
           </div>
-        {/* )} */}
+        )} 
       </div>
     </div>
   );
