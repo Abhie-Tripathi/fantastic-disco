@@ -24,7 +24,8 @@ const Widget = () => {
   const widgetsPerPage = 3;
   const { theme } = useTheme()
   const [deleteId, setDeleteId] = useState("");
-  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+  // const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
   const [draftModal, setDraftModal] = useState<boolean>(false)
 
   const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
@@ -56,6 +57,10 @@ const Widget = () => {
       }
     };
     fetchAllWidgets();
+    const storedDraftWidgets = localStorage.getItem('draftWidgets');
+    if (storedDraftWidgets) {
+      setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+    }
   }, []);
 
   useEffect(() => {
@@ -94,7 +99,7 @@ const Widget = () => {
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
           <div className={Styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
             <div className={Styles.savedDraftHeading}>Saved Drafts</div>
-            <div className={Styles.savedDraftNumber}>{draftWidgets.length}</div>
+            <div className={Styles.savedDraftNumber}>{draftwidgetsLength}</div>
           </div>
           <Link className={Styles.addBtn} href={"/widget/add"}>
             <div><Image src={Add} alt="add" className={iconClass} /></div>
@@ -132,7 +137,7 @@ const Widget = () => {
         </div>
       </div>
       <div className={`${Styles.draftsModal} ${draftModal ? Styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setDraftModal} draftWidgets={draftWidgets} />
+        <DraftWidgets setYourWidgetModal={setDraftModal} />
       </div>
     </div>
   )

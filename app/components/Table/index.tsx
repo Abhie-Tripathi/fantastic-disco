@@ -230,7 +230,7 @@ const Table = ({
     if (formData.entityId_id && formData.markedInterest && formData.eventGroupId) {
       if (formData.markedInterest == 'bookmark') {
         let payloadData = {
-          "eventGroupIds": [formData.eventGroupId]
+          "eventGroupId":formData.eventGroupId,
         };
         try {
           const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`, {
@@ -260,8 +260,15 @@ const Table = ({
         }
       } else if (formData.markedInterest == 'unbookmark') {
         try {
-          const response = await myFetch(`${baseUrl}/tracker/saved-events/${formData.eventGroupId}`, {
+          let payloadData = {
+            "eventGroupIds":[formData.eventGroupId],
+          };
+          const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
+            body: JSON.stringify(payloadData),
+            headers: {
+              "Content-Type": "application/json",
+            },
           });
           if (response) {
             setBookmarkedEvent(prev => prev.filter(id => id !== formData.eventGroupId));
@@ -323,7 +330,7 @@ const Table = ({
         return;
       }
       if (data) {
-        let bookmarkGroupIds = data?.savedEvents?.map((event: any) => event.eventGroupId);
+        let bookmarkGroupIds = data.result.map((event: any) => event.eventGroupId);
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
@@ -427,7 +434,7 @@ const Table = ({
     else {
       try {
         setIsLoaded(false);
-        const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1)*10}&${queryString}`;
+        const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&${queryString}`;
         // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
         const apiData = await myFetch(apiUrl, {
             method: "GET",
@@ -481,7 +488,9 @@ const Table = ({
     }
   };
 
- 
+  // if (eventPerPage.length === 0) {
+  //   return <Loading />;
+  // }
   const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (groupId: string) => {
@@ -564,15 +573,13 @@ const deleteEvent = async (groupId: string) => {
     setIsDelete(false);
   }
 };
-// useEffect(()=>{
-//   if(eventPerPage.length>0)
-//   setIsLoaded(true)
-// },[eventPerPage])
- if(!isLoaded) {
+
+  if(!isLoaded) {
     return <Loading />;
   }else if(isLoaded && eventPerPage.length == 0){
     return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
   }
+
   return (
     <div className={styles.table_container}>
       <div

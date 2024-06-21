@@ -1,7 +1,6 @@
 .container {
   min-height: 120vh;
-  background-color: #FAFAFF;
-  /* background: linear-gradient(270deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
+  background-color: #fafaff;
   width: 100vw;
   position: relative;
   display: flex;
@@ -36,10 +35,10 @@
   height: 435px;
   z-index: -1;
 }
-.leftContainer{
+.leftContainer {
   width: 50%;
   height: 100%;
-  background-color: #FAFAFF;
+  background-color: #fafaff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,35 +61,33 @@
 
 .sub_container {
   display: flex;
-    box-shadow: 0px 8px 40px -2px #060C3B14;
-    width: 80%;
-    height: 90%;
-    /* gap: 140px; */
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
+  box-shadow: 0px 8px 40px -2px #060c3b14;
+  width: 80%;
+  height: 90%;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
 }
-.sub_containerLeft{
+.sub_containerLeft {
   width: 50%;
-  background-color: #FAFAFF;
+  background-color: #fafaff;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  /* background-color: red; */
 }
-.formContainer{
+.formContainer {
   display: flex;
-    width: 50%;
-    background-color: white;
-    padding: 10px 0px;
-    justify-content: center;
+  width: 50%;
+  background-color: white;
+  padding: 10px 0px;
+  justify-content: center;
 }
 .image {
   width: 400px;
   height: 390px;
 }
-.form_outercontainer{
+.form_outercontainer {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -104,8 +101,8 @@
 }
 
 .form_heading {
-  /* color: #242424; */
-  font-weight: 700;
+  color: #242424;
+  font-weight: 500;
   font-size: 24px;
   /* margin-bottom: 20px; */
   text-align: center;
@@ -124,8 +121,11 @@
   color: #f15050;
 }
 
+.error_boundary {
+  border-color: #f15050 !important;
+}
 .input_title {
-  /* color: #424242df; */
+  color: #424242df;
   /* color: white; */
   margin-bottom: 2px;
 }
@@ -173,7 +173,7 @@
   border: none;
 }
 
-.disable{
+.disable {
   cursor: not-allowed;
   background-color: #a68fe7;
 }
@@ -183,6 +183,7 @@
   padding: 20px 0px;
   border-bottom: 0.5px solid #e6e6e6;
   font-size: 14px;
+  color: black;
 }
 
 .createNew_link {
@@ -216,17 +217,19 @@
     width: 90%;
     margin: auto;
   }
-
+  .form_heading {
+    font-size: 20px;
+  }
   .image {
     width: 90px;
     height: 90px;
   }
 }
 @media screen and (max-width: 1030px) {
-  .sub_containerLeft{
+  .sub_containerLeft {
     display: none;
   }
-  .formContainer{
+  .formContainer {
     width: 100%;
   }
 }

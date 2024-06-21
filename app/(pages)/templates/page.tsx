@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Designs from "@/app/components/TemplateViews/designs/Designs";
 import Image from "next/image";
@@ -17,6 +17,7 @@ import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollVi
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { useRouter } from 'next/navigation';
 import InfoModal from '@/app/components/TemplateViews/infomodal/InfoModal';
+import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 
 interface DraftWidget {
   widgetType: string;
@@ -31,18 +32,29 @@ const Page = () => {
   const [widgetSelected, setWidgetSelected] = useState<string>("");
   const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
   const [infoModal, setInfoModal] = useState<boolean>(false)
+  const [draftwidgetsLength, setDraftwidgetsLength] = useState<number>();
+
+  useEffect(() => {
+    const storedDraftWidgets = localStorage.getItem('draftWidgets');
+    if (storedDraftWidgets) {
+      setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+      setDraftWidgets(JSON.parse(storedDraftWidgets))
+    }
+  }, [])
+
   const router = useRouter();
 
   const handleDraftWidget = () => {
+    let updatedDraftWidgets: DraftWidget[] = [];
     if (widgetSelected === "Sticky") {
       const existingStickyWidgets = draftWidgets.filter(widget => widget.widgetType === "Sticky");
-
       const samePreviewExists = existingStickyWidgets.some(widget => widget.preview === preview);
 
       if (samePreviewExists) {
         setInfoModal(true);
       } else {
-        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+        updatedDraftWidgets = [...draftWidgets, { widgetType: widgetSelected, preview }];
+        setDraftWidgets(updatedDraftWidgets);
       }
     } else {
       const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
@@ -50,20 +62,30 @@ const Page = () => {
       if (existingWidget) {
         setInfoModal(true);
       } else {
-        setDraftWidgets([...draftWidgets, { widgetType: widgetSelected, preview }]);
+        updatedDraftWidgets = [...draftWidgets, { widgetType: widgetSelected, preview }];
+        setDraftWidgets(updatedDraftWidgets);
       }
+    }
+    if (updatedDraftWidgets.length > 0) {
+      localStorage.setItem('draftWidgets', JSON.stringify(updatedDraftWidgets));
     }
   };
 
   const handleEditButton = () => {
     const existingWidget = draftWidgets.find(widget => widget.widgetType === widgetSelected);
 
+    const query = new URLSearchParams({
+      preview: preview
+    }).toString();
+
+    const editUrl = `/templates/edit/3763g?${query}`;
+
     if (existingWidget && existingWidget.preview) {
-      router.push("/templates/edit/3763g");
+      router.push(editUrl);
     } else if (existingWidget && !existingWidget.preview) {
       setInfoModal(true);
     } else {
-      router.push("/templates/edit/3763g");
+      router.push(editUrl);
     }
   };
 
@@ -73,7 +95,7 @@ const Page = () => {
         <div className={styles.heading}>Start with Selecting One or Multiple templates</div>
         <div className={styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
           <div className={styles.savedDraftHeading}>Saved Drafts</div>
-          <div className={styles.savedDraftNumber}>{draftWidgets.length}</div>
+          <div className={styles.savedDraftNumber}>{draftwidgetsLength}</div>
         </div>
       </div>
       <div className={`${styles.body} ${infoModal ? styles.blurBody : ""}`}>
@@ -81,10 +103,6 @@ const Page = () => {
           <div className={styles.templateWindow}>
             <Designs setPreview={setPreview} setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} draftWidgets={draftWidgets} />
           </div>
-          {/* <div className={styles.add_draftContainer}>
-
-            <button className={styles.addBtn}>Add Another Template</button>
-          </div> */}
         </div>}
         <div className={`${styles.rightContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
           <div className={styles.previewContainer}>
@@ -94,17 +112,18 @@ const Page = () => {
                   preview === "sehb" ? "Hero Banner" :
                     preview === "megv" ? "Grid View" :
                       preview === "melv" ? "List View" :
-                        preview === "melgv" ? "List and Grid view" :
-                          preview === "phblv" ? "Hero Banner and List view" :
-                            preview === "phbgv" ? "Hero Banner and Grid view" :
-                              preview === "phblgv" ? "Hero Banner and List Grid view" :
-                                preview === "pcslv" ? "Caraousel and List view" :
-                                  preview === "pcsgv" ? "Caraousel and Grid view" :
-                                    preview === "pcslgv" ? "Caraousel and List Grid view" :
-                                      preview === "tscv" ? "Top Section Caraousel view" :
-                                        preview === "tshs" ? "Top Section Horizontal Scroll view" :
-                                          preview === "lsvs" ? "Left Section Veritcal Scroll view" :
-                                            preview === "popup" ? "Pop-up" : ""}
+                        preview === "mecv" ? "Carousel View" :
+                          preview === "melgv" ? "List and Grid view" :
+                            preview === "phblv" ? "Hero Banner and List view" :
+                              preview === "phbgv" ? "Hero Banner and Grid view" :
+                                preview === "phblgv" ? "Hero Banner and List Grid view" :
+                                  preview === "pcslv" ? "Caraousel and List view" :
+                                    preview === "pcsgv" ? "Caraousel and Grid view" :
+                                      preview === "pcslgv" ? "Caraousel and List Grid view" :
+                                        preview === "tscv" ? "Top Section Caraousel view" :
+                                          preview === "tshs" ? "Top Section Horizontal Scroll view" :
+                                            preview === "lsvs" ? "Left Section Veritcal Scroll view" :
+                                              preview === "popup" ? "Pop-up" : ""}
             </div>
             <div className={styles.preview}>
               {preview === "stickytop" ? <StickyPreview type="top" /> :
@@ -112,18 +131,19 @@ const Page = () => {
                   preview === "sehb" ? <HeroBanner /> :
                     preview === "megv" ? <GridView /> :
                       preview === "melv" ? <ListView /> :
-                        preview === "melgv" ? <ListAndGridView /> :
-                          preview === "phblv" ? <HeroBannerAndViews type='list' /> :
-                            preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
-                              preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                                preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
-                                      preview === "tscv" ? <CaraouselTop /> :
-                                        preview === "tshs" ? <ScrollView type='top' /> :
-                                          preview === "lsvs" ?
-                                            <ScrollView type='left' /> :
-                                            preview === "popup" ? <Popup /> : <></>}
+                        preview === "mecv" ? <CaraouselView /> :
+                          preview === "melgv" ? <ListAndGridView /> :
+                            preview === "phblv" ? <HeroBannerAndViews type='list' /> :
+                              preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
+                                preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
+                                  preview === "pcslv" ? <CaraouselAndViews type='list' /> :
+                                    preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
+                                      preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                        preview === "tscv" ? <CaraouselTop /> :
+                                          preview === "tshs" ? <ScrollView type='top' /> :
+                                            preview === "lsvs" ?
+                                              <ScrollView type='left' /> :
+                                              preview === "popup" ? <Popup /> : <></>}
             </div>
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
@@ -133,7 +153,7 @@ const Page = () => {
           </div>
         </div>
         <div className={`${styles.draftsModal} ${draftModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setDraftModal} draftWidgets={draftWidgets} />
+          <DraftWidgets setYourWidgetModal={setDraftModal} />
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>
@@ -141,7 +161,7 @@ const Page = () => {
       </div>}
 
     </div>
-  ) 
+  )
 }
 
 export default Page

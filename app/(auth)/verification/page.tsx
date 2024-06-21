@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import { useAuthContext } from "@/context";
+import logo from "/public/Logo_Light mode.png";
 
 interface VerificationProps {
   params: {
@@ -49,7 +50,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     if (response?.isVerified) {
       router.push("/");
     } else {
-      setErrors({ otpError: "Invalid OTP! Please Enter Correct OTP" });
+      setErrors({ otpError: "Invalid Code. Please retry" });
       return;
     }
   };
@@ -100,6 +101,10 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
           <Carousel />
         </div>
         <div className={styles.form_container}>
+          <div className={styles.heading}>
+            <Image src={logo} alt="logo" />
+          </div>
+
           <div className={styles.message}>
             <span className={styles.message_highlighted}>Check your </span>
             <Image
@@ -111,9 +116,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
             for a quick verification code.
           </div>
 
-          <div className={styles.heading}>OTP Verification</div>
-
-          <div className={styles.sub_heading}>Enter 4 digit OTP</div>
+          <div className={styles.heading}>Enter OTP</div>
 
           <OtpInput
             containerStyle={styles.input_container}
@@ -132,9 +135,9 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
               outline: "none",
               border: "1px solid #e6e6e6",
               borderRadius: "10px",
-              padding: "10px 20px",
               width: "100%",
               textAlign: "center",
+              borderColor: errors.otpError && "#f15050",
             }}
           />
           {errors.otpError && (

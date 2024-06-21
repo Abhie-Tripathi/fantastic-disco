@@ -1,11 +1,13 @@
+'use client'
 import React from 'react'
 import Script from 'next/script'
+import styles from './page.style.module.css'
 
 const Page = () => {
     return (
-        <div>
-            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></Script>
-            <page-widget page-id={"381ccfe1-6b96-4398-b234-c3a36c98c607"}></page-widget>
+        <div className={styles.list}>
+            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
+            {/* <caraouselgrid-view/> */}
         </div>
     )
 }
