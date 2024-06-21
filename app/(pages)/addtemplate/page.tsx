@@ -24,7 +24,7 @@ const Page = () => {
     }
 
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body}`}>
             {!widgetOptionsWindow && <div className={styles.leftNav}>
                 <div className={`${styles.navItem} ${widgetSelected === "Page" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Page")}>Page Widgets
                     {widgetSelected === "Page" && <div className={styles.activeLine}></div>}

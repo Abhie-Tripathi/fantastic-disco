@@ -4,11 +4,11 @@ import PageTemplates from '../PageTemplates/PageTemplates'
 
 const TemplatesPreview = () => {
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body}`}>
             <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your widget style</div>
                 <div className={styles.templates}>
-                    <PageTemplates/>
+                    <PageTemplates />
                 </div>
             </div>
             <div className={styles.previewContainer}>

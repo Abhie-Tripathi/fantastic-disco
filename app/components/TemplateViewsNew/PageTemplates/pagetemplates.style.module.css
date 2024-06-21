@@ -22,3 +22,10 @@
 .activeBtn{
     border: 1px solid #6750A4;
 }
+.templates{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 17px;
+    padding: 10px 14px;
+    row-gap: 16px;
+}

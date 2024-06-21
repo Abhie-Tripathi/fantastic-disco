@@ -4,35 +4,41 @@
     font-family: var(--font-inter);
     position: relative;
     border: 1px solid white;
-    min-height:90vh;
+    min-height: 90vh;
     width: 100vw;
 }
+
 .leftNav {
     display: flex;
     align-items: center;
     gap: 64px;
     margin-top: 43px;
 }
+
 .navItem {
     color: #696B83;
     font-weight: 500;
     cursor: pointer;
 }
-.activeNavItem{
+
+.activeNavItem {
     color: #6750A4;
 }
-.activeLine{
+
+.activeLine {
     margin-top: 9px;
     border-top: 3px solid #6750A4;
 }
-.navRightBtns{
+
+.navRightBtns {
     position: absolute;
     display: flex;
     align-items: center;
     gap: 12px;
-    right:90px;
+    right: 90px;
     top: 43px;
 }
+
 .hide_showBtn {
     border: 1px solid #E0E1E4;
     border-radius: 8px;
@@ -58,10 +64,12 @@
     color: white;
     font-size: 14px;
 }
+
 .widgetOptions {
     display: flex;
     justify-content: center;
 }
+
 .exploreBtnContainer {
     display: flex;
     justify-content: center;
@@ -85,7 +93,8 @@
     color: white;
     background-color: #6750A4;
 }
-.templates_preview{
+
+.templates_preview {
     border-top: 1px solid rgb(234, 234, 234);
     margin-top: 36px;
     padding-top: 32px;
