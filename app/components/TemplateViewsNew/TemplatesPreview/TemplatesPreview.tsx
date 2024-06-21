@@ -1,6 +1,9 @@
 import React from 'react'
 import styles from './templatepreview.style.module.css'
 import PageTemplates from '../PageTemplates/PageTemplates'
+import SectionTemplates from '../SectionTemplates/SectionTemplates';
+import StickyTemplates from '../StickyTemplates/StickyTemplates';
+import PopupTemplate from '../PopupTemplate/PopupTemplate';
 
 interface Props{
     widgetSelected : string;
@@ -12,7 +15,10 @@ const TemplatesPreview = ({widgetSelected} : Props) => {
             <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your widget style</div>
                 <div className={styles.templates}>
-                    {widgetSelected === "Page" ? <PageTemplates /> : <></>}
+                    {widgetSelected === "Page" ? <PageTemplates /> :
+                    widgetSelected === "Section" ? <SectionTemplates /> :
+                    widgetSelected === "Sticky" ? <StickyTemplates /> :
+                    widgetSelected === "Popup" ? <PopupTemplate /> : <></>}
                 </div>
             </div>
             <div className={styles.previewContainer}>
