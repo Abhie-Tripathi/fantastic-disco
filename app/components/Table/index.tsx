@@ -416,15 +416,20 @@ const Table = ({
   const fetchEventsData = async () => {
     if (path[path.length - 1] === 'trackedEvents') {
       const secondLast = path[path.length - 2];
+      
       fetchData(secondLast);
+      setIsLoaded(true);
     } 
     else if(path[path.length-1]==="trackers"){
+      
       fetchAllSavedEvent();
+      setIsLoaded(true);
     }
     else if(path[path.length - 1] === 'savedEvents'){
       console.log(1);
       
       fetchSavedData();
+      setIsLoaded(true);
     }
     else {
       try {
@@ -432,17 +437,18 @@ const Table = ({
         const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&${queryString}`;
         // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
         const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
+            method: "GET",
+            headers: headers,
         });
-        if (apiData.data) {
-          if (currPage === 1) {
+        if(apiData.data) {
+          if(currPage === 1) {
             setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
             setEventPerPage(apiData.data.events);
-          } else {
+          }else{
             setEventPerPage(apiData.data.events);
           }
-        }
+        }else
+          setEventPerPage([]);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
