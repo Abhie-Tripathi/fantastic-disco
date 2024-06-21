@@ -4,6 +4,7 @@ import styles from './page.style.module.css'
 import Image from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
+import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview/TemplatesPreview'
 
 const Page = () => {
     const [widgetSelected, setWidgetSelected] = useState("");
@@ -54,6 +55,11 @@ const Page = () => {
             {!exploreWindow && <div className={styles.exploreBtnContainer}>
                 <div onClick={handleExplore} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`} style={!widgetSelected ? { cursor: "not-allowed" } : { cursor: "pointer" }}>Explore Styles</div>
             </div>}
+            {exploreWindow && 
+            <div className={styles.templates_preview}>
+            <TemplatesPreview/>
+            </div>
+            }
         </div>
     )
 }
