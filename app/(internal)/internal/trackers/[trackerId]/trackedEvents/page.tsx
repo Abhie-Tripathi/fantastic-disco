@@ -2,6 +2,7 @@
 import React,{useEffect, useState} from 'react'
 import Expand from '/public/expand_more.svg';
 import { Notes } from '@/app/components/eventDetail/Notes';
+import ExportModal from '@/app/components/Search/ExportModal';
 import Table from '@/app/components/Table';
 import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
@@ -10,15 +11,26 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  MenuTrigger,
+  Modal,
+  ModalOverlay,
+  Popover,
+} from "react-aria-components";
 // import Table from '@/app/components/Table'
 const Page = () => {
   const [active,setActive]=useState("Active Events")
+  const [type,setType]=useState<string|undefined>();
   const pathName = usePathname().split('/');
   // const [showInsights,setShowInsights]=useState();
   const id=pathName[pathName.length-2];
   console.log(active);
   const [open,setOpen]=useState(false);
   const [eventType,setEventType]=useState("active");
+  
   const showInsights = {
     eventSize: true,
     eventKeywords: true,
@@ -100,7 +112,48 @@ const Page = () => {
   useEffect(()=>{
       setOpen(true);
   },[])
+  const [exp,setExp]=useState(false);
+  const exportData=async()=>{
+    let dataToSend={}
+    if(active==="Active Events"){
+      dataToSend={
+        type:"ACTIVE",
+      }
+    }else if(active==="New Events"){
+      dataToSend={
+        type:"NEW",
+      }
+    }else{
+      dataToSend={
+        type:"EXPIRED",
+      }
+    }
+    try {
+      const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
   
+      if (data) {
+        console.log(data);
+      } else {
+        console.log(error);
+      }
+    } catch (err) {
+      console.error("Error saving event:", err);
+    } finally {
+      
+      // setIsSaving(false);
+    }
+  }
+  useEffect(()=>{
+      if(active==="Active Events") setType('ACTIVE');
+      if(active==="New Events") setType('NEW');
+      if(active==="Expired Events") setType('EXPIRED')
+  },[active])
   return (
     // <div className={styles.containerOne}>
     
@@ -144,10 +197,35 @@ const Page = () => {
         <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => setActive("New Events")}>New Events</button>
         <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => setActive("Expired Events")}>Expired Events</button>
       </div>
-      <div className={styles.eventStatusRight}>Export Data</div>
+      {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
+      <DialogTrigger>
+            <Button className={styles.exportButton}>
+              
+              <div className={styles.eventStatusRight}>Export Data</div>
+            </Button>
+            <ModalOverlay isDismissable className={styles.modalOverlay}>
+              <Modal>
+                <Dialog>
+                  {({ close }) => (
+                    <ExportModal onClose={close} type={type}/>
+                  )}
+                </Dialog>
+              </Modal>
+            </ModalOverlay>
+          </DialogTrigger>
     </div>
     <Table showInsights={showInsights} eventType={active}/>
+    {/* {exp && <ModalOverlay isDismissable className={styles.modalOverlay}>
+              <Modal>
+                <Dialog>
+                  {({ close }) => (
+                    <ExportModal onClose={close} filterValue={filters} />
+                  )}
+                </Dialog>
+              </Modal>
+            </ModalOverlay>} */}
   </div>
+  
   // <div>
   //           {/* <Notes/> */}
   // </div>
@@ -156,3 +234,18 @@ const Page = () => {
 }
 
 export default Page;
+{/* <DialogTrigger>
+            <Button className={styles.exportButton}>
+              
+              <div className={styles.eventStatusRight}>Export Data</div>
+            </Button>
+            <ModalOverlay isDismissable className={styles.modalOverlay}>
+              <Modal>
+                <Dialog>
+                  {({ close }) => (
+                    <ExportModal onClose={close} />
+                  )}
+                </Dialog>
+              </Modal>
+            </ModalOverlay>
+          </DialogTrigger> */}

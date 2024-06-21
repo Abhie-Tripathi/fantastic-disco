@@ -62,7 +62,7 @@ const Index = () => {
           </Link>
           {last === "trackedConfiguration" || last === "manageAccess" || last === "editTracker"
             ? (last === "trackedConfiguration" || last === "editTracker" ? "Configuration" : "Manage Access")
-            : data?.tracker?.filterValue
+            : data?.tracker
               ?.name}
 
         </div>

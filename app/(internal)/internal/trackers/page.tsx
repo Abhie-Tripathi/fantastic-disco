@@ -10,6 +10,7 @@ import { baseUrl } from "@/constants";
 import Add from '/public/add.svg';
 import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
+import Expand from '/public/expand_more.svg';
 import Template from '/public/template.svg';
 import People from '/public/ionPeople.svg';
 import PeopleFinder from '/public/peopleFinder.svg';
@@ -140,6 +141,7 @@ const data=[
     content:'Input designations and keywords, and upload job descriptions to identify relevant events effortles',
   }
 ]
+const [hide,setHide]=useState(false);
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
@@ -167,7 +169,7 @@ const data=[
   const viewTracker=()=>{
     setShowTracker(true);
   }
-  
+  const [hideTemplate,setHideTemplate]=useState(false);
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -216,16 +218,40 @@ const data=[
             className={styles.trackers_header_newtracker_button}
             onClick={viewTracker}
           >
-           
-            Template Gallery
+           {!hideTemplate && 
+           <>
+           Template Gallery
+           {/* <Image
+            style={{
+              transform: !open ? "rotate(-90deg)" : "none",
+              transition: "transform 0.3s ease-in-out"
+            }}
+            src={Expand}
+            alt="expand_more"
+          /> */}
+           </>
+           }
+            {hideTemplate &&
+            <Link href='/internal/trackers/create'>
+              Create Tracker
+             
+            </Link>
+            }
             {/* <Image src={Add} alt="add" /> */}
           </div>
-          <div className={styles.trackers_header_more_button}>
+          <div onClick={()=>setHide(!hide)} className={styles.trackers_header_more_button}>
             <Image src={MoreIcon} alt="moreicon" />
+            {hide && <div className={styles.hide} onClick={()=>setHideTemplate(!hideTemplate)}>{!hideTemplate?
+          "Hide Templates"
+           
+      
+            :
+            "Show Templates"}</div>}
           </div>
           
         </div>
       </div>
+      {!hideTemplate &&
     <div className={styles.container}>
       {!showTracker && 
       <div className={styles.innerContainerOne}>
@@ -258,6 +284,7 @@ const data=[
 
     
     </div>
+}
     {!showTracker && 
     <>
     <div className={styles.trackers}>

@@ -13,7 +13,7 @@ import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
 import Spinner from "/public/Icon.svg";
 import menuIcon from "/public/internal/hamburger.svg";
-import MobileSidebar from "./MobileSidebar";
+import MobileSidebar from "@/app/components/sidebar/MobileSidebar"
 import BellIcon from "/public/bell.svg";
 
 interface UserDetail {
@@ -36,12 +36,11 @@ const Navbar = () => {
     user ? user : null
   );
 
-  console.log(userDetail)
+  console.log(userDetail);
 
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
@@ -61,6 +60,13 @@ const Navbar = () => {
     setShowSidebar(false);
     // setHeight("auto");
   };
+
+  useEffect(() => {
+    if(showSidebar){
+      document.body.classList.add('sidebar-open');
+    }else
+      document.body.classList.remove('sidebar-open');
+  }, [showSidebar]);
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -96,7 +102,7 @@ const Navbar = () => {
         {pathName === "internal" ? (
           <Link href="/internal">
             <Image
-              className={`styles.logo_internal`}
+              className={styles.logo}
               src={logo}
               width={40}
               height={48}
@@ -244,7 +250,9 @@ const Navbar = () => {
                     theme === "light" && styles.light
                   }`}
                 >
-                  <div className={styles.btns}>Profile</div>
+                  <div className={styles.btns}>
+                    <Link href="/profile">Profile</Link>
+                  </div>
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>

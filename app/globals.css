@@ -92,6 +92,11 @@ button{
   margin-left: 80px;
 }
 
+.sidebar-open {
+  overflow: hidden;
+  height: 100vh;
+}
+
 .mobile_view {
   display: none;
 }
