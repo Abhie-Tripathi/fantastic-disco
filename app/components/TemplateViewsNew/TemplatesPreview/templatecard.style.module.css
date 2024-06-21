@@ -16,13 +16,14 @@
 .headerContainer{
     margin-top: 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 }
 .header{
     font-size: 18px;
     font-weight: 700;
     color: #6750A4;
+    width: 50%;
 }
 .tag{
     background-color: #F7EFFF;

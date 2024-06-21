@@ -13,12 +13,13 @@
     width: 100%;
 }
 .previewContainer{
+    height: 100%;
     width: 60%;
 }
 .preview_btnContainer{
     margin-top: 20px;
     background-color: #FAFAFA;
-    height: 90%;
+    height:95%;
     width: 100%;
     border-radius: 10px;
 }
