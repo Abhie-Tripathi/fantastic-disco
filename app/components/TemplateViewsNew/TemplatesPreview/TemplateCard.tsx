@@ -1,17 +1,20 @@
 import React from 'react'
 import styles from './templatecard.style.module.css'
+import { StaticImageData } from 'next/image';
+import Image from 'next/image';
 
 interface TemplateProps{
     widgetStyle : string;
     tag : string;
     desc : string;
+    image: StaticImageData; 
 }
 
-const TemplateCard = ({widgetStyle, tag, desc} : TemplateProps) => {
+const TemplateCard = ({widgetStyle, tag, desc, image } : TemplateProps) => {
     return (
         <div className={styles.body}>
             <div className={styles.imageContainer}>
-                <div className={styles.image}></div>
+                <Image src={image} alt='banner' className={styles.image}></Image>
             </div>
             <div className={styles.headerContainer}>
                 <div className={styles.header}>{widgetStyle}</div>

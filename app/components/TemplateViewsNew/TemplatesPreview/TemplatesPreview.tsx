@@ -2,13 +2,17 @@ import React from 'react'
 import styles from './templatepreview.style.module.css'
 import PageTemplates from '../PageTemplates/PageTemplates'
 
-const TemplatesPreview = () => {
+interface Props{
+    widgetSelected : string;
+}
+
+const TemplatesPreview = ({widgetSelected} : Props) => {
     return (
         <div className={`${styles.body}`}>
             <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your widget style</div>
                 <div className={styles.templates}>
-                    <PageTemplates />
+                    {widgetSelected === "Page" ? <PageTemplates /> : <></>}
                 </div>
             </div>
             <div className={styles.previewContainer}>

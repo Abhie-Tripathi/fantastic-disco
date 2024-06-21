@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import styles from './widgetcard.style.module.css'
-import PageWidgetImage from '/public/PageWidgetImage.svg'
-import SectionWidgetImage from '/public/SectionWidgetImage.svg'
-import StickyWidgetImage from '/public/StickyWidgetImage.svg'
-import PopupWidgetImage from '/public/PopupWidgetImage.svg'
+import PageWidgetImage from '/public/widgetimages/pageimages/PageWidgetImage.svg'
+import SectionWidgetImage from '/public/widgetimages/sectionimages/SectionWidgetImage.svg'
+import StickyWidgetImage from '/public/widgetimages/stickyimages/StickyWidgetImage.svg'
+import PopupWidgetImage from '/public/widgetimages/popupimages/PopupWidgetImage.svg'
 import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
 
