@@ -32,7 +32,7 @@ const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow,
         <div className={styles.body}>
             <div className={styles.headingContainer} style={{textAlign}}>
                 <div className={styles.heading} style={{fontSize : headingSize}}>Select Your Widget Type</div>
-                <div className={styles.subheading} style={{fontSize : subHeadingSize, marginTop : subHeadingMargin}}>Customize Your Website's Functionality with the widget that perfectly fit your style!</div>
+                <div className={styles.subheading} style={{fontSize : subHeadingSize, marginTop : subHeadingMargin}}>Customize Your Website&apos;s Functionality with the widget that perfectly fit your style!</div>
             </div>
             <div className={styles.widgetOptions} style={{marginTop : widgetCardMargin}}>
                 <WidgetCard widgetType="Page" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard = {exploreWindow && widgetOptionsWindow}/>
