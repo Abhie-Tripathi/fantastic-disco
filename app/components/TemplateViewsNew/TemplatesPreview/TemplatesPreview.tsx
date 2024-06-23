@@ -1,0 +1,38 @@
+import React from 'react'
+import styles from './templatepreview.style.module.css'
+import PageTemplates from '../PageTemplates/PageTemplates'
+import SectionTemplates from '../SectionTemplates/SectionTemplates';
+import StickyTemplates from '../StickyTemplates/StickyTemplates';
+import PopupTemplate from '../PopupTemplate/PopupTemplate';
+
+interface Props{
+    widgetSelected : string;
+}
+
+const TemplatesPreview = ({widgetSelected} : Props) => {
+    return (
+        <div className={`${styles.body}`}>
+            <div className={styles.templatesContainer}>
+                <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
+                <div className={styles.templates}>
+                    {widgetSelected === "Page" ? <PageTemplates /> :
+                    widgetSelected === "Section" ? <SectionTemplates /> :
+                    widgetSelected === "Sticky" ? <StickyTemplates /> :
+                    widgetSelected === "Popup" ? <PopupTemplate /> : <></>}
+                </div>
+            </div>
+            <div className={styles.previewContainer}>
+                <div className={styles.heading}>Preview</div>
+                <div className={styles.preview_btnContainer}>
+                    <div className={styles.preview}></div>
+                    <div className={styles.previewBtnContainer}>
+                        <button className={styles.previewBtn}>Save to my widgets</button>
+                        <button className={styles.previewBtn}>Continue with this template</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default TemplatesPreview

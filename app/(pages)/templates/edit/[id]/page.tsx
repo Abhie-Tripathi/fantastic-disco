@@ -169,7 +169,6 @@ const Page = () => {
                 preview === "sehb" ? "Hero Banner" :
                   preview === "megv" ? "Grid View" :
                     preview === "melv" ? "List View" :
-                      preview === "mecv" ? "Carousel View" :
                         preview === "melgv" ? "List and Grid view" :
                           preview === "phblv" ? "Hero Banner and List view" :
                             preview === "phbgv" ? "Hero Banner and Grid view" :
@@ -191,7 +190,6 @@ const Page = () => {
                       preview === "melgv" ? <ListAndGridView /> :
                         preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                           preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
-                            preview === "mecv" ? <CaraouselView /> :
                               preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
                                 preview === "pcslv" ? <CaraouselAndViews type='list' /> :
                                   preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
