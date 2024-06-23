@@ -71,19 +71,19 @@ const LocationDropdown = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
 
-  const inputChangeHandler = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setInputText(event.target.value);
+  const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setInputText(newValue);
+  
     try {
-      const data = await Promise.all([
-        myFetch(`${baseUrl}/location/suggestion?q=${inputText}`),
-        myFetch(`${baseUrl}/location/country?name=${inputText}`),
+      const [suggestionResponse, countryResponse] = await Promise.all([
+        myFetch(`${baseUrl}/location/suggestion?q=${newValue}`),
+        myFetch(`${baseUrl}/location/country?name=${newValue}`),
       ]);
-
-      setCityData(data[0].data.city);
-      setStateData(data[0].data.state);
-      setCountryData(data[1].data);
+  
+      setCityData(suggestionResponse.data.city);
+      setStateData(suggestionResponse.data.state);
+      setCountryData(countryResponse.data);
     } catch (error) {
       console.error("Error fetching location data:", error);
     }
@@ -126,6 +126,8 @@ const LocationDropdown = ({
       setSelectedCountry(Object.fromEntries(entries));
     }
   };
+console.log(selectedCity);
+console.log(selectedCountry);
 
   return (
     <div>

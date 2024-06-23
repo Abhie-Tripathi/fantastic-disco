@@ -106,7 +106,7 @@ const Page = () => {
                                     <button className={styles.send}>Send Invite</button>
                                 </a>
                             </Link>
-                            <button className={styles.cancle} onClick={closeModal}>Cancle</button>
+                            <button className={styles.cancel} onClick={closeModal}>Cancel</button>
                         </div>
                     </div>
                 </div>

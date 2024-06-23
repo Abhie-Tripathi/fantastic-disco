@@ -75,25 +75,32 @@ const Page = () => {
   const [editData, setEditData] = useState<EditData | null>(null);
   const [arr, setArr] = useState<any>();
 
-  useEffect(() => {
-    const newArr: string[] = [
-      ...(categoryData?.attendedCategories ?? []),
-      ...(categoryData?.nonAttendedCategories ?? []),
-      ...(categoryData?.unscheduledCategories ?? [])
-    ];
-    console.log(newArr);
+  // useEffect(() => {
+  //   const newArr: string[] = [
+  //     ...(categoryData?.attendedCategories ?? []),
+  //     ...(categoryData?.nonAttendedCategories ?? []),
+  //     ...(categoryData?.unscheduledCategories ?? [])
+  //   ];
+  //   console.log(newArr);
 
-    const filteredArr = newArr
-      .filter((item: any) => data?.tracker?.filterValue?.eventCategory?.split(',').includes(item?.id))
-      .map((item: any) => item.name);
+  //   const filteredArr = newArr
+  //     .filter((item: any) => data?.tracker?.filterValue?.eventCategory?.split(',').includes(item?.id))
+  //     .map((item: any) => item.name);
 
-    setArr(filteredArr);
-  }, [categoryData, data]);
+  //   setArr(filteredArr);
+  // }, [categoryData, data]);
 
-  useEffect(() => {
-    console.log(arr);
-  }, [arr]);
+  // useEffect(() => {
+  //   console.log(arr);
+  // }, [arr]);
+  const [locations, setLocations] = useState<any>();
 
+useEffect(() => {
+  const eventCountry = data?.tracker?.filterValue?.eventCountry || [];
+  const eventCity = data?.tracker?.filterValue?.eventCity || [];
+  setLocations([...eventCountry, ...eventCity]);
+}, [data]);
+    
   return (
     <div className={styles.container}>
       <div className={styles.containerTop}>
@@ -115,10 +122,10 @@ const Page = () => {
       </div>
       <div className={styles.innerContainer}>
         <div className={styles.innerContainerLeft} style={{ border: "1px solid #EBEBEB" }}>
-          {data && <BasicFilter category={arr?.length > 0 ? arr : []} />}
+          {data && <BasicFilter category={data?.tracker?.filterValue?.eventCategory?.length > 0 ? data?.tracker?.filterValue?.eventCategory : []} />}
         </div>
         <div className={styles.innerContainerRight}>
-          {data && <LocationFilter start={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]} end={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]} startDate={data?.tracker?.filterValue?.endDate?.split(',')[0]} endDate={data?.tracker?.filterValue?.endDate?.split(',')[1]} locations={data?.tracker?.filterValue?.location} />}
+          {data && <LocationFilter start={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]} end={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]} startDate={data?.tracker?.filterValue?.endDate?.split(',')[0]} endDate={data?.tracker?.filterValue?.endDate?.split(',')[1]} locations={locations} />}
           {data && <Labels labels={data?.tracker?.filterValue?.labels ? data?.tracker?.filterValue?.labels.split(',') : []} />}
         </div>
       </div>

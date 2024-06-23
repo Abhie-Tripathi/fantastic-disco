@@ -134,7 +134,7 @@ const Index = () => {
         setError('Create your first tracker!');
         setLoading(false);
         console.log(error);
-
+        <div>error</div>
         return;
       }
 
@@ -164,7 +164,7 @@ const Index = () => {
       setAllTracker([]);
     }
   };
-
+ 
   return (
     <div className={styles.container}>
       <div className={styles.containerLeft}>
@@ -182,12 +182,13 @@ const Index = () => {
       </div>
       <div style={{ width: "80%" }}>
         <div className={styles.containerRight}>
-          {loading && <div>Loading...</div>}
-          {!loading && error && <div>{error}</div>}
+          {loading  && <div>Loading...</div>}
+          {error && <div>{error}</div>}
           {allTracker.length > 0 && (trackerType === "All Trackers" || trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => (
               <Trackers key={id} item={item} />
             ))}
+            {allTracker.length===0 && !loading &&<div>Create your first tracker!</div> }
             {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>}
         </div>
         {totalPage > 1 &&  (trackerType === "All Trackers" || trackerType === "Custom Trackers") && !loading &&(

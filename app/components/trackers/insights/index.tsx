@@ -6,7 +6,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank }: any) => {
   const entry = ["Free", "Paid", "Invites", "Member Access"];
   // const rank=["Country Rank","Category Rank"];
   const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
-  console.log(isBranded);
+  console.log(rank);
   
   return (
     <div className={styles.container}>
@@ -40,7 +40,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank }: any) => {
                   defaultChecked
                   disabled
                 />
-                <span className={`${rank ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${rank==="true" ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>
