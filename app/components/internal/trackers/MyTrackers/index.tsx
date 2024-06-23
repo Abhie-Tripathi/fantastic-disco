@@ -138,12 +138,12 @@ const Index = () => {
         return;
       }
 
-      if (data) {
+      else if (data) {
         setAllTracker(data.trackerData);
         setTotalPage(Math.ceil(data.totalCount / trackerPerPage));
         setLoading(false);
       } else {
-        setError('Nothing to show, create a tracker!');
+        // setError('Nothing to show, create a tracker!');
         setLoading(false);
       }
     };
@@ -189,7 +189,7 @@ const Index = () => {
               <Trackers key={id} item={item} />
             ))}
             {allTracker.length===0 && !loading &&<div>Create your first tracker!</div> }
-            {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>}
+            {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
         </div>
         {totalPage > 1 &&  (trackerType === "All Trackers" || trackerType === "Custom Trackers") && !loading &&(
           <div style={{ display: "flex", justifyContent: "space-between", paddingTop:"15px"}}>

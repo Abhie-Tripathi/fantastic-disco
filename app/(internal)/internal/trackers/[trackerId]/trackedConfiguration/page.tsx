@@ -126,7 +126,7 @@ useEffect(() => {
         </div>
         <div className={styles.innerContainerRight}>
           {data && <LocationFilter start={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]} end={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]} startDate={data?.tracker?.filterValue?.endDate?.split(',')[0]} endDate={data?.tracker?.filterValue?.endDate?.split(',')[1]} locations={locations} />}
-          {data && <Labels labels={data?.tracker?.filterValue?.labels ? data?.tracker?.filterValue?.labels.split(',') : []} />}
+          {data && <Labels labels={data?.tracker?.filterValue?.labels ? data?.tracker?.filterValue?.labels : []} />}
         </div>
       </div>
       <div className={styles.line}></div>
