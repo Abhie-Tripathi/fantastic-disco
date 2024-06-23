@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import styles from './allTrackers.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
@@ -10,7 +10,7 @@ import Vectore7 from '/public/lucide_timer.svg'
 import Vectore8 from '/public/expired.svg'
 import Link from 'next/link';
 // import { useTheme } from '@/context/theme';
-const index = ({ item }: any) => {
+const AllTrackers = ({ item }: any) => {
   // const { theme } = useTheme();
   console.log(Math.floor(item?.groupedEventsCountByDate.length/7));
   const lineData = {
@@ -77,7 +77,13 @@ const index = ({ item }: any) => {
     ],
   };
   console.log(item);
+  const [locations, setLocations] = useState<any>();
 
+  useEffect(() => {
+    const eventCountry = item?.filterValue?.eventCountry || [];
+    const eventCity = item?.filterValue?.eventCity || [];
+    setLocations([...eventCountry, ...eventCity]);
+  }, [item]);
   return (
 
     <div className={styles.container}>
@@ -91,19 +97,10 @@ const index = ({ item }: any) => {
         </div>
         <div className={styles.cardTwo}>
           <Image src={Location} alt="location" />
-          <div className={styles.location}>{item?.filterValue
-            ?.
-            location
-             && item?.filterValue
-              ?.
-              location
-            [0]} {item?.filterValue
-              ?.
-              location && item?.filterValue
-              ?.
-              location.length>1 &&<span className={styles.moreBtn}>+{item?.filterValue
-                ?.
-                location.length-1}</span>}</div>
+          <div className={styles.location}>
+            {locations?.length>0 && locations[0]}
+              {locations?.length>1 &&<span className={styles.moreBtn}>+{
+                locations.length-1}</span>}</div>
         </div>
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
@@ -134,4 +131,4 @@ const index = ({ item }: any) => {
   )
 }
 
-export default index
+export default AllTrackers;

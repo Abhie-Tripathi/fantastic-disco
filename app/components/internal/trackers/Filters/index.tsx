@@ -82,6 +82,8 @@ interface FilterValue {
   eventCategory:any;
   editionRange:number;
   eventSize:any;
+  eventCity:any;
+  eventCountry:[];
   eventAttendanceRange:any;
 }
 interface CategoryData {
@@ -93,7 +95,10 @@ interface Tracker {
   name: string;
   filterValue: FilterValue;
 }
-
+interface Cat{
+  name:string;
+  id:string;
+}
 interface EditData {
   tracker: Tracker;
 }
@@ -237,7 +242,7 @@ const Pages = () => {
   }, [last])
 
   const fetchData = async (secondLast: string) => {
-    const url = `${baseUrl}/tracker/${secondLast}`;
+    const url = `${baseUrl}/tracker/${secondLast}/edit=true`;
     try {
       const { data, error } = await myFetch(url, {
         method: 'GET'
@@ -302,6 +307,9 @@ if(isCreating) return;
           brandedEvent:selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
+          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
+          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
          ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
@@ -381,7 +389,7 @@ if(isCreating) return;
         setIsCreating(false);
       }
 
-
+      console.log(selectedCountry);
     }
     else {
       const formData = {
@@ -453,6 +461,8 @@ if(isCreating) return;
           // }
         },
       };
+      console.log(selectedCountry);
+      
        if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
         setIsCreating(false);
@@ -508,24 +518,35 @@ if(isCreating) return;
       if(editData.tracker.filterValue?.maturity=="low"){
         setSelectedMaturity(25);
       }
-      const filteredArr = newArr
-        .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
-        .map((item: any) => item.id);
-      console.log(filteredArr);
+      // const filteredArr = newArr
+      //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
+      //   .map((item: any) => item.id);
+      // console.log(filteredArr);
       setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split(',') : [])
       setTrackerName(editData?.tracker?.name || '');
       setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
-      setSelectedCategories(filteredArr|| []);
+      setSelectedCategories(
+        editData?.tracker?.filterValue?.eventCategory?.length > 0
+          ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.id)
+          : []
+      );
       setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
       setIntScore(editData?.tracker?.filterValue?.internationalScore?.length>0?editData?.tracker?.filterValue?.internationalScore:"")
       setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus && editData?.tracker?.filterValue?.eventStatus?.length!==0?editData?.tracker?.filterValue?.eventStatus?.split(','):[]);
       setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0?[editData?.tracker?.filterValue?.startDate?.split(',')[0],editData?.tracker?.filterValue?.startDate?.split(',')[1]]:[]);
-      setCategorySlug(editData.tracker.filterValue?.category || []);
+      setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
+        ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
+        : []);
+        const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
+        const eventCity = editData?.tracker?.filterValue?.eventCity || [];
+        
+        setSelectedLocations([...eventCountry, ...eventCity]);
       setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
       setSelectedEntry(editData.tracker.filterValue?.eventEntry&&editData.tracker.filterValue?.eventEntry?.length!==0?editData.tracker.filterValue?.eventEntry?.split(','):[])
       setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
       setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
+      setSelectedCity(editData.tracker.filterValue?.eventCity?.length>0?editData.tracker.filterValue?.eventCity:{} );
       setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
       setSelectedEventSeries(editData.tracker.filterValue?.eventSeries.toString() === "true");
       setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
@@ -535,7 +556,7 @@ if(isCreating) return;
       setSelectedInboundScore(editData.tracker.filterValue?.inboundScore>0?editData.tracker.filterValue?.inboundScore :0)
       setSelectedUserRatings(editData.tracker.filterValue?.eventRating && editData.tracker.filterValue?.eventRating?.length!==0?editData.tracker.filterValue?.eventRating?.split(',') : [])
       setSelectedExhibitScore(editData.tracker.filterValue?.eventSize &&  editData.tracker.filterValue?.eventSize?.length!==0?editData.tracker.filterValue?.eventSize?.split(','): [])
-      setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
+      // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange(prevArray => {
         const gte = editData.tracker.filterValue?.eventAttendanceRange?.split(',')[0];
@@ -590,14 +611,15 @@ if(isCreating) return;
         </div>
 
         <div className={styles.topInnerContainerRight}>
-          <Link href='/internal/trackers' style={{ display: "flex" }}>
+          
+          <Link href={last==="create"?'/internal/trackers':`/internal/trackers/${pathName[pathName.length-2]}/trackedConfiguration`} style={{ display: "flex" }}>
             <button className={styles.cancel}>Cancel</button>
           </Link>
           <button className={styles.save} onClick={saveTrackerHandler}>Save Tracker</button>
         </div>
 
       </div>
-      <div className={styles.searchContainer} style={{border:isMandatory?"2px solid red":""}}>
+      <div className={styles.searchContainer} style={{border:isMandatory && trackerName.length===0 ?"2px solid red":""}}>
         <input className={styles.textArea} type='text' placeholder='Enter Tracker Name'
         
           value={trackerName}
@@ -648,7 +670,7 @@ if(isCreating) return;
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
-                  <div className={styles.input_container} style={{border:isMandatory?"2px solid red":""}}>
+                  <div className={styles.input_container} style={{border:isMandatory && selectedLocations.length===0?"2px solid red":""}}>
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Location

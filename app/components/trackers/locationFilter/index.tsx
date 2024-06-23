@@ -18,6 +18,8 @@ const index = ({start,end, startDate, endDate, locations}:any) => {
     
     return formattedDate;
 }
+console.log(locations);
+
   return (
     <div className={styles.container}>
       <div className={styles.location}>

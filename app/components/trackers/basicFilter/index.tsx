@@ -13,32 +13,32 @@ const BasicFilter = ({category}:any) => {
   const data2=["Performing Arts","Academics","Daylight Savings","Observances","Public holidays","School Holidays"]
   const data3=[" Politics","Airport Delays"];
   const [categoryData,setCatgeoryData]=useState<CategoryData>();
-  useEffect(() => {
-    console.log('data is', category);
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all`);
-      if (error) {
-        console.log(error);
-        return;
-      }
+  // useEffect(() => {
+  //   console.log('data is', category);
+  //   const fetchData = async () => {
+  //     const { data, error } = await myFetch(`${baseUrl}/category/all`);
+  //     if (error) {
+  //       console.log(error);
+  //       return;
+  //     }
 
-      if (data) {
-        console.log(data);
-        setCatgeoryData(data);
-      }
-    };
-    fetchData();
-  }, []);
-  const newArr:string[] = [
-    ...(categoryData?.attendedCategories ?? []),
-    ...(categoryData?.nonAttendedCategories ?? []),
-    ...(categoryData?.unscheduledCategories ?? [])
-  ];
-  const filteredArr = newArr.filter((item:any )=> category?.tracker?.filterValue?.category.includes(item?.id));
-  console.log(category?.tracker?.filterValue
-    );
-    console.log("data is:", filteredArr);
-    console.log(category);
+  //     if (data) {
+  //       console.log(data);
+  //       setCatgeoryData(data);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+  // const newArr:string[] = [
+  //   ...(categoryData?.attendedCategories ?? []),
+  //   ...(categoryData?.nonAttendedCategories ?? []),
+  //   ...(categoryData?.unscheduledCategories ?? [])
+  // ];
+  // const filteredArr = newArr.filter((item:any )=> category?.tracker?.filterValue?.category.includes(item?.id));
+  // console.log(category?.tracker?.filterValue
+  //   );
+  //   console.log("data is:", filteredArr);
+  //   console.log(category);
     
   // setCatgeoryData.filter((item)=>)
   return (
@@ -57,7 +57,7 @@ const BasicFilter = ({category}:any) => {
          checked={true}
          disabled
        />
-       <span className={styles.item}>{item}</span>
+       <span className={styles.item}>{item.name}</span>
      </label>
       </div>
      ))}
