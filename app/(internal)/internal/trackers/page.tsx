@@ -216,26 +216,14 @@ const [hide,setHide]=useState(false);
         <div className={styles.trackers_header}>
         <div
             className={styles.trackers_header_newtracker_button}
-            onClick={viewTracker}
+           
           >
-           {!hideTemplate && 
-           <>
-           Template Gallery
-           {/* <Image
-            style={{
-              transform: !open ? "rotate(-90deg)" : "none",
-              transition: "transform 0.3s ease-in-out"
-            }}
-            src={Expand}
-            alt="expand_more"
-          /> */}
-           </>
-           }
-            {hideTemplate &&
+           
+            {hideTemplate ?
             <Link href='/internal/trackers/create'>
               Create Tracker
              
-            </Link>
+            </Link>: <div  onClick={viewTracker}>Template Gallery</div>
             }
             {/* <Image src={Add} alt="add" /> */}
           </div>

@@ -242,7 +242,7 @@ const Pages = () => {
   }, [last])
 
   const fetchData = async (secondLast: string) => {
-    const url = `${baseUrl}/tracker/${secondLast}/edit=true`;
+    const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
     try {
       const { data, error } = await myFetch(url, {
         method: 'GET'
@@ -636,15 +636,15 @@ if(isCreating) return;
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Category
-                        {selectedCategories?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedCategories.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedCategories[0]}
-                          </span>
-                        )}
+                        {categorySlug?.length > 1 ? (
+                        <span className={styles.input_selected_no}>
+                          {categorySlug.length}
+                        </span>
+                      ) : (
+                        <span className={styles.input_selected_title}>
+                          {categorySlug[0]}
+                        </span>
+                      )}
                       </div>
                       <Image
                         src={DropIcon}

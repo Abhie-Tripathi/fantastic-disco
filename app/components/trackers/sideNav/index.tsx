@@ -60,8 +60,11 @@ const Index = () => {
           } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          {data?.tracker?.name}
-
+          <div className={styles.tooltipContainer}>
+          {data?.tracker?.name?.length>7?data?.tracker?.name?.substring(0,7)+'...':data?.tracker?.name}
+          
+  <span className={styles.tooltipText}>{data?.tracker?.name}</span>
+</div>
         </div>
        
           <>
