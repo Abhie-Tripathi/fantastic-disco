@@ -77,6 +77,14 @@ interface FilterValue {
   location:string[];
   startDate:string;
   endDate:string;
+  eventRating:string;
+  eventKeywords:any;
+  eventCategory:any;
+  editionRange:number;
+  eventSize:any;
+  eventCity:any;
+  eventCountry:[];
+  eventAttendanceRange:any;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -87,12 +95,20 @@ interface Tracker {
   name: string;
   filterValue: FilterValue;
 }
-
+interface Cat{
+  name:string;
+  id:string;
+}
 interface EditData {
   tracker: Tracker;
 }
 const Pages = () => {
   // const searchParams = useSearchParams();
+  interface SelectedLocation {
+    [id: string]: string,
+  }
+  const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
+  const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
@@ -226,7 +242,7 @@ const Pages = () => {
   }, [last])
 
   const fetchData = async (secondLast: string) => {
-    const url = `${baseUrl}/tracker/${secondLast}`;
+    const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
     try {
       const { data, error } = await myFetch(url, {
         method: 'GET'
@@ -268,6 +284,7 @@ const Pages = () => {
     }
   },[selectedINScore])
 const [isCreating,setIsCreating]=useState(false);
+const [isMandatory,setIsMandatory]=useState(false);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
 if(isCreating) return;
@@ -282,18 +299,25 @@ if(isCreating) return;
 
         name: trackerName,
         filterValue: {
-          // labels: selectedLabels.join(','),
-          eventCategory : selectedCategories.join(','),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
+          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
+          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          brandedEvent:selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
+          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
+          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
          ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
           ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
-          trustScore:selectedTrustScore.toString(),
+          ...(selectedTrustScore>0&&{trustScore:selectedTrustScore.toString()}),
           ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
-          reputationScore:selectedReptScore,
-          maturity:maturity,
+          ...(selectedReptScore>0 &&{reputationScore:selectedReptScore.toString()}),
+          ...(selectedMaturity>0&&{maturity:maturity}),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split('T')[0],
@@ -306,77 +330,48 @@ if(isCreating) return;
               new Date(selectedDateRange[1]).toISOString().split('T')[0]
             ].join(',')
           }),
-          eventRating:selectedUserRatings.join(','),
-        //   ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
-        // startDate: "2024-01-01,",
-        // endDate: "2024-10-22,",
-          internationalScore:intScore,
-          inboundScore:selectedInboundScore,
+          ...(selectedUserRatings?.length>0&&{eventRating:selectedUserRatings.join(',')}),
+         ...(selectedINScore>0&&{ internationalScore:intScore}),
+          ...(selectedInboundScore>0 &&{inboundScore:selectedInboundScore.toString()}),
           ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
-          // labels: selectedLabels.join(','), 
-          // city:selectedLocations,
-          max: "100",
-          // EventStatus: selectedEventStatus.join(','),
-          // ...(selectedDateRange && selectedDateRange.length>0 &&{startDate: selectedDateRange[0]}),
-          // ...(selectedDateRange && selectedDateRange.length>0 &&{endDate: selectedDateRange[1]}),
-          // EventFormat:selectedEventFormat.join(','),
-          // total_attendance_gte: +selectedEventAttendanceRange[0],
-          // total_attendance_lte:
-          // selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : +selectedEventAttendanceRange[1],
-          // event_rank_gte: Math.floor(selectedEventRank[0]),
-          // event_rank_lte: Math.floor(selectedEventRank[1]),
-          // local_rank_gte: Math.floor(selectedLocalRank[0]),
-          // local_rank_lte: Math.floor(selectedLocalRank[1]),
-          // aviation_rank_gte: Math.floor(selectedAviationRank[0]),
-          // aviation_rank_lte: Math.floor(selectedAviationRank[1]),
-          // ...(selectedEventFormat && selectedEventFormat.length>0 &&{}),
-          info: {
-            name: trackerName,
-            location:selectedLocations,
-            keywords:selectedEventKeywords.join(','),
-            labels: selectedLabels.join(','),
-            startDate: selectedDateRange[0],
-            endDate: selectedDateRange[1],
-            eventFormat: selectedEventFormat.join(','),
-            category: categorySlug.join(','),
-            eventStatus: selectedEventStatus.join(','),
-            eventFrequency: selectedEventFrequency.join(','),
-            eventEntry: selectedEntry.join(','),
-            eventEdition: selectedEventEdition.toString(),
-            eventKeywords: selectedLabels.join(','),
-            eventRanking: selectedEventRanking.join(','),
-            brandedEvent: selectedBrandedEvent,
-            trustScore: selectedTrustScore.toString(),
-            eventSeries: selectedEventSeries,
-            reputationScore: selectedReptScore.toString(),
-            maturity: selectedMaturity.toString(),
-            internationalScore: selectedINScore.toString(),
-            inboundScore: selectedInboundScore.toString(),
-            userRating: selectedUserRatings.join(','),
-            exhibitScore: selectedExhibitScore.join(','),
-            total_attendance_gte: selectedEventAttendanceRange[0],
-            total_attendance_lte:
-              selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-          }
+          // info: {
+          //   name: trackerName,
+          //   location:selectedLocations,
+          //   keywords:selectedEventKeywords.join(','),
+          //   labels: selectedLabels.join(','),
+          //   startDate: selectedDateRange[0],
+          //   endDate: selectedDateRange[1],
+          //   eventFormat: selectedEventFormat.join(','),
+          //   category: categorySlug.join(','),
+          //   eventStatus: selectedEventStatus.join(','),
+          //   eventFrequency: selectedEventFrequency.join(','),
+          //   eventEntry: selectedEntry.join(','),
+          //   eventEdition: selectedEventEdition.toString(),
+          //   eventKeywords: selectedLabels.join(','),
+          //   eventRanking: selectedEventRanking.join(','),
+          //   brandedEvent: selectedBrandedEvent,
+          //   trustScore: selectedTrustScore.toString(),
+          //   eventSeries: selectedEventSeries,
+          //   reputationScore: selectedReptScore.toString(),
+          //   maturity: selectedMaturity.toString(),
+          //   internationalScore: selectedINScore.toString(),
+          //   inboundScore: selectedInboundScore.toString(),
+          //   userRating: selectedUserRatings.join(','),
+          //   exhibitScore: selectedExhibitScore.join(','),
+          //   total_attendance_gte: selectedEventAttendanceRange[0],
+          //   total_attendance_lte:
+          //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
+          // }
         }
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
       if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
+        setIsMandatory(true);
         setIsCreating(false);
         return;
       }
-      // if (
-      //   trackerName.length===0||
-      //   selectedCategories.length === 0 ||
-      //   selectedLabels.length === 0 ||
-      //   selectedDateRange.length === 0 ||
-      //   selectedEventStatus.length === 0
-      // ) {
-      //   console.log("Please, Fill all the details");
-      //   return;
-      // }
       const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}`, {
         method: "PATCH",
         body: JSON.stringify(formData),
@@ -394,57 +389,31 @@ if(isCreating) return;
         setIsCreating(false);
       }
 
-
+      console.log(selectedCountry);
     }
-    // console.log(selectedDateRange.length);
     else {
-      // console.log(s);
-      // const formData={
-      //   "name": "hijkl",
-      //   "filterValue": {
-      //     "category": "7d8710f6-8f45-46c4-8287-f449cbb407d1,f98c3c88-853b-4406-9dd4-890ffd64523f,671b1a45-d40f-4559-959f-cd7a9b1617de,4612db12-9084-4d61-901d-ab7bd3120ade,8ba29ba3-e61a-42c1-b8d9-747b6cb8797e,0de9578c-ec7c-436a-8df7-19ec848a95fd,9c33f09d-f2f7-4ac6-bc56-8fbda48c97d1",
-      //     "eventFormat": "online,offline,hybrid",
-      //     "eventStatus": "ACTIVE,POSTPONED,PREDICTED",
-      //     "labels": "one,two,three,five",
-      //     "info": {
-      //       "brandedEvent": true,
-      //      "category": "community,concerts,conferences,expos,festivals,performing-arts,sports",
-      //       "eventEdition": "51",
-      //       "eventEntry": "paid,free,invite",
-      //       "eventFrequency": "annual,biannual,quarterly",
-      //       "eventKeywords": "",
-      //       "eventRanking": "countryRank,categoryRank",
-      //       "eventSeries": false,
-      //       "eventStatus": "ACTIVE,POSTPONED,PREDICTED",
-      //       "exhibitScore": "500-1000,100-500",
-      //       "inboundScore": "45",
-      //       "internationScore": "51",
-      //       "labels": "",
-      //       "maturity": "48",
-      //       "reputationScore": "56",
-      //       "total_attendance_gte": "0",
-      //       "total_attendance_lte": "1000",
-      //       "trustScore": "44",
-      //       "userRating": "3+,4+"
-      //     }
-      //   },
-      //   "max": "100"
-      // }
       const formData = {
         name: trackerName,
         filterValue: {
-          // labels: selectedLabels.join(','),
-          eventCategory : selectedCategories.join(','),
-          // eventKeywords:selectedEventKeywords.join(','),
+         ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
+          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
+          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
+          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
+          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          brandedEvent:selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
           eventSeries:selectedEventSeries.toString(),
          ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
           ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
-          trustScore:selectedTrustScore.toString(),
+          ...(selectedTrustScore>0&&{trustScore:selectedTrustScore.toString()}),
           ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
-          reputationScore:selectedReptScore,
-          maturity:maturity,
+          ...(selectedReptScore>0 &&{reputationScore:selectedReptScore.toString()}),
+          ...(selectedMaturity>0&&{maturity:maturity}),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split('T')[0],
@@ -457,89 +426,47 @@ if(isCreating) return;
               new Date(selectedDateRange[1]).toISOString().split('T')[0]
             ].join(',')
           }),
-          eventRating:selectedUserRatings.join(','),
-        //   ...(selectedDateRange?.length === 2 && { endDate: new Date(selectedDateRange[1]).toISOString().split('T')[0] }),
-        // startDate: "2024-01-01,",
-        // endDate: "2024-10-22,",
-          internationalScore:intScore,
-          inboundScore:selectedInboundScore,
+          ...(selectedUserRatings?.length>0&&{eventRating:selectedUserRatings.join(',')}),
+         ...(selectedINScore>0&&{ internationalScore:intScore}),
+          ...(selectedInboundScore>0 &&{inboundScore:selectedInboundScore.toString()}),
           ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
-          // labels: selectedLabels.join(','), 
-          // city:selectedLocations,
-          max: "100",
-          // EventStatus: selectedEventStatus.join(','),
-          // ...(selectedDateRange && selectedDateRange.length>0 &&{startDate: selectedDateRange[0]}),
-          // ...(selectedDateRange && selectedDateRange.length>0 &&{endDate: selectedDateRange[1]}),
-          // EventFormat:selectedEventFormat.join(','),
-          // total_attendance_gte: +selectedEventAttendanceRange[0],
-          // total_attendance_lte:
-          // selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : +selectedEventAttendanceRange[1],
-          // event_rank_gte: Math.floor(selectedEventRank[0]),
-          // event_rank_lte: Math.floor(selectedEventRank[1]),
-          // local_rank_gte: Math.floor(selectedLocalRank[0]),
-          // local_rank_lte: Math.floor(selectedLocalRank[1]),
-          // aviation_rank_gte: Math.floor(selectedAviationRank[0]),
-          // aviation_rank_lte: Math.floor(selectedAviationRank[1]),
-          // ...(selectedEventFormat && selectedEventFormat.length>0 &&{}),
-          info: {
-            name: trackerName,
-            location:selectedLocations,
-            keywords:selectedEventKeywords.join(','),
-            labels: selectedLabels.join(','),
-            startDate: selectedDateRange[0],
-            endDate: selectedDateRange[1],
-            eventFormat: selectedEventFormat.join(','),
-            category: categorySlug.join(','),
-            eventStatus: selectedEventStatus.join(','),
-            eventFrequency: selectedEventFrequency.join(','),
-            eventEntry: selectedEntry.join(','),
-            eventEdition: selectedEventEdition.toString(),
-            eventKeywords: selectedLabels.join(','),
-            eventRanking: selectedEventRanking.join(','),
-            brandedEvent: selectedBrandedEvent,
-            trustScore: selectedTrustScore.toString(),
-            eventSeries: selectedEventSeries,
-            reputationScore: selectedReptScore.toString(),
-            maturity: selectedMaturity.toString(),
-            internationalScore: selectedINScore.toString(),
-            inboundScore: selectedInboundScore.toString(),
-            userRating: selectedUserRatings.join(','),
-            exhibitScore: selectedExhibitScore.join(','),
-            total_attendance_gte: selectedEventAttendanceRange[0],
-            total_attendance_lte:
-              selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-          }
+          
+          // info: {
+          //   name: trackerName,
+          //   location:selectedLocations,
+          //   keywords:selectedEventKeywords.join(','),
+          //   labels: selectedLabels.join(','),
+          //   startDate: selectedDateRange[0],
+          //   endDate: selectedDateRange[1],
+          //   eventFormat: selectedEventFormat.join(','),
+          //   category: categorySlug.join(','),
+          //   eventStatus: selectedEventStatus.join(','),
+          //   eventFrequency: selectedEventFrequency.join(','),
+          //   eventEntry: selectedEntry.join(','),
+          //   eventEdition: selectedEventEdition.toString(),
+          //   eventKeywords: selectedLabels.join(','),
+          //   eventRanking: selectedEventRanking.join(','),
+          //   brandedEvent: selectedBrandedEvent,
+          //   trustScore: selectedTrustScore.toString(),
+          //   eventSeries: selectedEventSeries,
+          //   reputationScore: selectedReptScore.toString(),
+          //   maturity: selectedMaturity.toString(),
+          //   internationalScore: selectedINScore.toString(),
+          //   inboundScore: selectedInboundScore.toString(),
+          //   userRating: selectedUserRatings.join(','),
+          //   exhibitScore: selectedExhibitScore.join(','),
+          //   total_attendance_gte: selectedEventAttendanceRange[0],
+          //   total_attendance_lte:
+          //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
+          // }
         },
       };
-      console.log(selectedEntry);
-      // console.log(selectedCategories);
-
-      // if (
-      //   trackerName.length===0||
-      //   selectedCategories.length === 0 ||
-      //   selectedLabels.length === 0 ||
-      //   selectedDateRange.length === 0 ||
-      //   selectedEventStatus.length === 0
-      // ) {
-      //   console.log("Please, Fill all the details");
-      //   return;
-      // }
-      // setIsSaving(true);
-
-      // if (
-      //   categories.length === 0 ||
-      //   labels.length === 0 ||
-      //   dateRange.length === 0 ||
-      //   eventStatus.length === 0
-      // ) {
-      //   console.log("Please, Fill all the details");
-      //   return;
-      // }
-
-      // setIsSaving(true);
-      if(selectedLocations.length===0 || trackerName.length===0){
+      console.log(selectedCountry);
+      
+       if(selectedLocations.length===0 || trackerName.length===0){
         console.log("Please, Fill all the details");
         setIsCreating(false);
+        setIsMandatory(true);
         return;
       }
       const { data, error } = await myFetch(`${baseUrl}/tracker`, {
@@ -553,14 +480,10 @@ if(isCreating) return;
 
       if (error) {
         console.log(error);
-        // setIsSaving(false);
-        // setIsSaving(false);
         setIsCreating(false);
         return;
       }
       if (data) {
-        // setIsSaving(false);
-        // setIsSaving(false);
         console.log(data);
 
         router.replace("/internal/trackers");
@@ -592,44 +515,60 @@ if(isCreating) return;
         ...(categoryData?.nonAttendedCategories ?? []),
         ...(categoryData?.unscheduledCategories ?? [])
       ];
-      const filteredArr = newArr
-        .filter((item: any) => editData.tracker.filterValue?.category?.split(',').includes(item?.slug))
-        .map((item: any) => item.id);
-      console.log(filteredArr);
-
-      setTrackerName(editData?.tracker?.filterValue?.name || '');
-      setSelectedLabels(editData?.tracker?.filterValue?.labels.split(',') || []);
-      setSelectedCategories(filteredArr|| []);
+      if(editData.tracker.filterValue?.maturity=="low"){
+        setSelectedMaturity(25);
+      }
+      // const filteredArr = newArr
+      //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
+      //   .map((item: any) => item.id);
+      // console.log(filteredArr);
+      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split(',') : [])
+      setTrackerName(editData?.tracker?.name || '');
+      setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
+      setSelectedCategories(
+        editData?.tracker?.filterValue?.eventCategory?.length > 0
+          ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.id)
+          : []
+      );
       setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
-      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus.length!==0?editData?.tracker?.filterValue?.eventStatus.split(','):[]);
-      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0&&  editData?.tracker?.filterValue?.endDate.length>0 ? [editData?.tracker?.filterValue?.startDate,editData?.tracker?.filterValue?.endDate]:[]);
-      setCategorySlug(editData.tracker.filterValue?.category || []);
-      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency.split(','):[])
-      setSelectedEntry(editData.tracker.filterValue?.eventEntry.length!==0?editData.tracker.filterValue?.eventEntry.split(','):[])
-      setSelectedEventEdition(editData.tracker.filterValue?.eventEdition>0?editData.tracker.filterValue?.eventEdition.split(','):0)
-      setSelectedEventRanking(editData.tracker.filterValue?.eventRanking.split(',') || [])
+      setIntScore(editData?.tracker?.filterValue?.internationalScore?.length>0?editData?.tracker?.filterValue?.internationalScore:"")
+      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus && editData?.tracker?.filterValue?.eventStatus?.length!==0?editData?.tracker?.filterValue?.eventStatus?.split(','):[]);
+      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0?[editData?.tracker?.filterValue?.startDate?.split(',')[0],editData?.tracker?.filterValue?.startDate?.split(',')[1]]:[]);
+      setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
+        ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
+        : []);
+        const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
+        const eventCity = editData?.tracker?.filterValue?.eventCity || [];
+        
+        setSelectedLocations([...eventCountry, ...eventCity]);
+      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
+      setSelectedEntry(editData.tracker.filterValue?.eventEntry&&editData.tracker.filterValue?.eventEntry?.length!==0?editData.tracker.filterValue?.eventEntry?.split(','):[])
+      setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
+      setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
+      setSelectedCity(editData.tracker.filterValue?.eventCity?.length>0?editData.tracker.filterValue?.eventCity:{} );
       setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
-      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries);
+      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries.toString() === "true");
+      setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
       setSelectedReptScore(editData.tracker.filterValue?.reputationScore>0?editData.tracker.filterValue?.reputationScore:0);
       setSelectedMaturity(editData.tracker.filterValue?.maturity>0?editData.tracker.filterValue?.maturity:0)
       setSelectedINScore(editData.tracker.filterValue?.internationalScore>0?editData.tracker.filterValue?.internationalScore:0)
       setSelectedInboundScore(editData.tracker.filterValue?.inboundScore>0?editData.tracker.filterValue?.inboundScore :0)
-      setSelectedUserRatings(editData.tracker.filterValue?.userRating.length!==0?editData.tracker.filterValue?.userRating.split(',') : [])
-      setSelectedExhibitScore(editData.tracker.filterValue?.exhibitScore.length!==0?editData.tracker.filterValue?.exhibitScore.split(','): [])
-      setCategorySlug(editData.tracker.filterValue?.category.split(',') || [])
-      setSelectedLocations(editData.tracker.filterValue?.location);
+      setSelectedUserRatings(editData.tracker.filterValue?.eventRating && editData.tracker.filterValue?.eventRating?.length!==0?editData.tracker.filterValue?.eventRating?.split(',') : [])
+      setSelectedExhibitScore(editData.tracker.filterValue?.eventSize &&  editData.tracker.filterValue?.eventSize?.length!==0?editData.tracker.filterValue?.eventSize?.split(','): [])
+      // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
+      // setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange(prevArray => {
-        const gte = editData.tracker.filterValue?.total_attendance_gte;
-        const lte = editData.tracker.filterValue?.total_attendance_lte;
+        const gte = editData.tracker.filterValue?.eventAttendanceRange?.split(',')[0];
+        const lte = editData.tracker.filterValue?.eventAttendanceRange?.split(',')[1];
       
         if (!isNaN(gte) && !isNaN(lte)) {
-          const newArray = [...prevArray]; // Create a copy of the array
+          const newArray = [...prevArray]; 
           newArray[0] = gte;
           newArray[1] = lte;
-          return newArray; // Return the updated array
+          return newArray; 
         } else {
-          return prevArray; // Return the previous array if checks fail
+          return prevArray; 
         }
       });
     }
@@ -657,6 +596,7 @@ if(isCreating) return;
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
+  
   return (
     <>
       <div className={styles.topContainer}>
@@ -671,41 +611,23 @@ if(isCreating) return;
         </div>
 
         <div className={styles.topInnerContainerRight}>
-          <Link href='/internal/trackers' style={{ display: "flex" }}>
+          
+          <Link href={last==="create"?'/internal/trackers':`/internal/trackers/${pathName[pathName.length-2]}/trackedConfiguration`} style={{ display: "flex" }}>
             <button className={styles.cancel}>Cancel</button>
           </Link>
           <button className={styles.save} onClick={saveTrackerHandler}>Save Tracker</button>
         </div>
 
       </div>
-      <div className={styles.searchContainer}>
+      <div className={styles.searchContainer} style={{border:isMandatory && trackerName.length===0 ?"2px solid red":""}}>
         <input className={styles.textArea} type='text' placeholder='Enter Tracker Name'
+        
           value={trackerName}
           onChange={(event) => setTrackerName(event.target.value)}
         />
       </div>
       <Suspense fallback={<Loading />}>
         <div className={styles.container}>
-          {/* <div className={styles.searchbar}>
-    <Suspense fallback={<Loading />}>
-      <div className={styles.container}>
-        {/* <div className={styles.searchbar}>
-        <input
-          type="text"
-          placeholder="Search Events"
-          onChange={(e) => setSearchInput(e.target.value)}
-          value={searchInput}
-        ></input>
-        <div
-          className={styles.recentSearches_button}
-          onClick={() => setShowRecentSearches(!showRecentSearches)}
-        >
-          Recent searches
-        </div>
-        <button onClick={searchHandler}>
-          <Image src={SearchIcon} alt="search" />
-        </button>
-      </div> */}
           <div className={styles.sub_container}>
             <div className={styles.inputdropdowns_container}>
               <MenuTrigger onOpenChange={setMenuOpen}>
@@ -714,15 +636,15 @@ if(isCreating) return;
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Category
-                        {selectedCategories?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedCategories.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedCategories[0]}
-                          </span>
-                        )}
+                        {categorySlug?.length > 1 ? (
+                        <span className={styles.input_selected_no}>
+                          {categorySlug.length}
+                        </span>
+                      ) : (
+                        <span className={styles.input_selected_title}>
+                          {categorySlug[0]}
+                        </span>
+                      )}
                       </div>
                       <Image
                         src={DropIcon}
@@ -748,7 +670,7 @@ if(isCreating) return;
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
-                  <div className={styles.input_container}>
+                  <div className={styles.input_container} style={{border:isMandatory && selectedLocations.length===0?"2px solid red":""}}>
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Location
@@ -769,9 +691,13 @@ if(isCreating) return;
                   <Dialog>
                     {({ close }) => (
                       <LocationDropdown
-                        state={selectedLocations}
-                        setState={setSelectedLocations}
-                        onClose={close}
+                      state={selectedLocations}
+                      setState={setSelectedLocations}
+                      onClose={close}
+                      selectedCity={selectedCity}
+                      setSelectedCity={setSelectedCity}
+                      selectedCountry={selectedCountry}
+                      setSelectedCountry={setSelectedCountry}
                       />
                     )}
                   </Dialog>
@@ -1271,7 +1197,7 @@ if(isCreating) return;
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Branded Event
-                          {selectedEventAttendanceRange[0] !== undefined ? (
+                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
@@ -1280,7 +1206,7 @@ if(isCreating) return;
                             </span>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </div>
 
                         <div className={styles.toggle_container}>
@@ -1413,9 +1339,9 @@ if(isCreating) return;
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          {selectedMaturity !== 0 && (
+                          {maturity && maturity?.length> 0 && (
                             <span className={styles.input_selected_title}>
-                              {selectedMaturity} %
+                              {maturity} 
                             </span>
                           )}
                         </div>
@@ -1425,7 +1351,7 @@ if(isCreating) return;
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={selectedMaturity !== 0}
+                                checked={(maturity ?? [])?.length> 0 }
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1455,9 +1381,9 @@ if(isCreating) return;
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           International Score
-                          {selectedINScore !== 0 && (
+                          {intScore && intScore?.length>0 && (
                             <span className={styles.input_selected_title}>
-                              {selectedINScore} %
+                              {intScore}
                             </span>
                           )}
                         </div>
@@ -1467,7 +1393,7 @@ if(isCreating) return;
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={selectedINScore !== 0}
+                                checked={(intScore ?? [])?.length>0}
                               />
                               <span className={styles.slider}></span>
                             </label>

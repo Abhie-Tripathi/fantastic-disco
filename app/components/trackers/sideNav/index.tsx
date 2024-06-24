@@ -60,13 +60,13 @@ const Index = () => {
           } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          {last === "trackedConfiguration" || last === "manageAccess" || last === "editTracker"
-            ? (last === "trackedConfiguration" || last === "editTracker" ? "Configuration" : "Manage Access")
-            : data?.tracker?.filterValue
-              ?.name}
-
+          <div className={styles.tooltipContainer}>
+          {data?.tracker?.name?.length>7?data?.tracker?.name?.substring(0,7)+'...':data?.tracker?.name}
+          
+  <span className={styles.tooltipText}>{data?.tracker?.name}</span>
+</div>
         </div>
-        {last !== "trackedConfiguration" && last !== "manageAccess" && last !== "editTracker" &&
+       
           <>
             <div className={styles.leftContainer}>
               <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
@@ -89,18 +89,18 @@ const Index = () => {
             </div>
             <div className={styles.configAccess}>
               <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
-                <div className={`${styles.heading1} ${trackerSection === "Tracker Configurations" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-                  <Image src={Settings} alt="setting" /> Configurations
+                <div style={{padding:"10px"}} className={`${styles.heading} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`}onClick={() => setTrackerSection("Tracker Configurations")}>
+                  <Image src={Settings} alt="setting" /> 
                 </div>
               </Link>
               <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
-                <div className={`${styles.heading1} ${trackerSection === "Manage Access" ? styles.active1 : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-                  <Image src={Manage} alt="setting" /> Manage Access
+                <div style={{padding:"10px"}} className={`${styles.heading} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+                  <Image src={Manage} alt="setting" /> 
                 </div>
               </Link>
             </div>
           </>
-        }
+        
 
       </div>
     </>

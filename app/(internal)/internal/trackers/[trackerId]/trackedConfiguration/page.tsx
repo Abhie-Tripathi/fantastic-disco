@@ -1,5 +1,5 @@
 "use client"
-import React,{useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './trackedConfiguration.style.module.css'
 import BasicFilter from '@/app/components/trackers/basicFilter'
 import LocationFilter from '@/app/components/trackers/locationFilter';
@@ -18,32 +18,89 @@ function CustomeTracker({ fillColor }: { fillColor: string }) {
     </svg>
   )
 }
+interface CategoryData {
+  attendedCategories?: string[];
+  nonAttendedCategories?: string[];
+  unscheduledCategories?: string[];
+}
+interface Tracker {
+  name: string;
+  filterValue: any;
+}
+
+interface EditData {
+  tracker: Tracker;
+}
 const Page = () => {
   const pathName = usePathname().split('/');
-  const last=pathName[pathName.length-2];
-  const [data,setData]=useState<any>([]);
+  const last = pathName[pathName.length - 2];
+  const [data, setData] = useState<any>([]);
   useEffect(() => {
     const fetchData = async () => {
-        const url = `${baseUrl}/tracker/${last}`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'GET'
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                console.log('Data fetched:', data);
-                setData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
+      const url = `${baseUrl}/tracker/${last}`;
+      try {
+        const { data, error } = await myFetch(url, {
+          method: 'GET'
+        });
+        if (error) {
+          console.error('Error fetching data:', error);
+        } else {
+          console.log('Data fetched:', data);
+          setData(data);
         }
+      } catch (err) {
+        console.error('Fetch failed:', err);
+      }
     };
 
     fetchData();
-}, []);
-// console.log(data?.tracker?.filterValue?.labels.split(','));
+  }, []);
+  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      if (error) {
+        console.log(error);
+        return;
+      }
 
+      if (data) {
+        console.log(data);
+        setCatgeoryData(data);
+      }
+    };
+    fetchData();
+  }, []);
+  console.log(categoryData);
+  const [editData, setEditData] = useState<EditData | null>(null);
+  const [arr, setArr] = useState<any>();
+
+  // useEffect(() => {
+  //   const newArr: string[] = [
+  //     ...(categoryData?.attendedCategories ?? []),
+  //     ...(categoryData?.nonAttendedCategories ?? []),
+  //     ...(categoryData?.unscheduledCategories ?? [])
+  //   ];
+  //   console.log(newArr);
+
+  //   const filteredArr = newArr
+  //     .filter((item: any) => data?.tracker?.filterValue?.eventCategory?.split(',').includes(item?.id))
+  //     .map((item: any) => item.name);
+
+  //   setArr(filteredArr);
+  // }, [categoryData, data]);
+
+  // useEffect(() => {
+  //   console.log(arr);
+  // }, [arr]);
+  const [locations, setLocations] = useState<any>();
+
+useEffect(() => {
+  const eventCountry = data?.tracker?.filterValue?.eventCountry || [];
+  const eventCity = data?.tracker?.filterValue?.eventCity || [];
+  setLocations([...eventCountry, ...eventCity]);
+}, [data]);
+    
   return (
     <div className={styles.container}>
       <div className={styles.containerTop}>
@@ -55,21 +112,21 @@ const Page = () => {
           </div>
         </div>
         <div className={styles.containerTopRight}>
-      <Link href={`/internal/trackers/${last}/editTracker`}>
-          <button>Edit Tracker</button>
+          <Link href={`/internal/trackers/${last}/editTracker`}>
+            <button>Edit Tracker</button>
           </Link>
         </div>
       </div>
       <div className={styles.containerTopTwo}>
-        {data?.tracker?.filterValue?.name}
+        {data?.tracker?.name}
       </div>
       <div className={styles.innerContainer}>
         <div className={styles.innerContainerLeft} style={{ border: "1px solid #EBEBEB" }}>
-          {data && <BasicFilter category={data?.tracker?.filterValue?.category?data?.tracker?.filterValue?.category.split(','):[]}/>}
+          {data && <BasicFilter category={data?.tracker?.filterValue?.eventCategory?.length > 0 ? data?.tracker?.filterValue?.eventCategory : []} />}
         </div>
         <div className={styles.innerContainerRight}>
-          {data && <LocationFilter start={data?.tracker?.filterValue?.total_attendance_gte} end={data?.tracker?.filterValue?.total_attendance_lte} startDate={data?.tracker?.filterValue?.startDate} endDate={data?.tracker?.filterValue?.endDate} locations={data?.tracker?.filterValue?.location}/>}
-          {data && <Labels labels={data?.tracker?.filterValue?.labels?data?.tracker?.filterValue?.labels.split(','):[]}/>}
+          {data && <LocationFilter start={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]} end={data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]} startDate={data?.tracker?.filterValue?.endDate?.split(',')[0]} endDate={data?.tracker?.filterValue?.endDate?.split(',')[1]} locations={locations} />}
+          {data && <Labels labels={data?.tracker?.filterValue?.labels ? data?.tracker?.filterValue?.labels : []} />}
         </div>
       </div>
       <div className={styles.line}></div>
@@ -79,7 +136,7 @@ const Page = () => {
           <div className={styles.advanceContent}>Advanced and more detailed event filter criteria for precise and personalized event tracking.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat.length!==0?data?.tracker?.filterValue?.eventFormat?.split(','):[]} keywords={data?.tracker?.filterValue?.keywords.length!==0?data?.tracker?.filterValue?.keywords.split(','):[]} freq={data?.tracker?.filterValue?.eventFrequency.length!==0?data?.tracker?.filterValue?.eventFrequency.split(','):[]} entry={data?.tracker?.filterValue?.eventEntry.length!==0?data?.tracker?.filterValue?.eventEntry.split(','):[]} rank={data?.tracker?.filterValue?.eventRanking?data?.tracker?.filterValue?.eventRanking.split(','):[]}/>
+          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split(',') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []} />
         </div>
       </div>
       <div className={styles.line}></div>
@@ -90,7 +147,8 @@ const Page = () => {
             scores and insights on event data.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Insights isBranded={data?.tracker?.filterValue?.brandedEvent} trustScore={data?.tracker?.filterValue?.trustScore} reputation={data?.tracker?.filterValue?.reputationScore} maturity={data?.tracker?.filterValue?.maturity} rank={data?.tracker?.filterValue?.eventSeries}/>
+          <Insights isBranded={data?.tracker?.filterValue?.brandedEvent
+          } trustScore={data?.tracker?.filterValue?.trustScore} reputation={data?.tracker?.filterValue?.reputationScore} maturity={data?.tracker?.filterValue?.maturity} rank={data?.tracker?.filterValue?.eventSeries} />
         </div>
       </div>
       <div className={styles.line}></div>
@@ -100,7 +158,9 @@ const Page = () => {
           <div className={styles.advanceContent}>Track your events based on the audience intel and insights to gain more visibility and active participants</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <Intel internationalScore={data?.tracker?.filterValue?.internationalScore} inboundScore={data?.tracker?.filterValue?.inboundScore} userRating={data?.tracker?.filterValue?.userRating?data?.tracker?.filterValue?.userRating.split(','):[]} exhibitScore={data?.tracker?.filterValue?.exhibitScore?data?.tracker?.filterValue?.exhibitScore.split(','):[]}/>
+          <Intel internationalScore={data?.tracker?.filterValue?.internationalScore} inboundScore={data?.tracker?.filterValue?.inboundScore} userRating={data?.tracker?.filterValue?.
+            eventRating ? data?.tracker?.filterValue?.
+              eventRating.split(',') : []} exhibitScore={data?.tracker?.filterValue?.eventSize ? data?.tracker?.filterValue?.eventSize?.split(',') : []} />
         </div>
       </div>
     </div>

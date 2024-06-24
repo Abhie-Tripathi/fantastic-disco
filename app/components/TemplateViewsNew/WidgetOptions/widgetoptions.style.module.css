@@ -1,0 +1,15 @@
+.body{
+    display: flex;
+    flex-direction: column;
+}
+.widgetOptions{ 
+    display: flex;
+    gap: 16px;
+}
+.heading {
+    color: black;
+    font-weight: 500;
+}
+.subheading {
+    color: black;
+}

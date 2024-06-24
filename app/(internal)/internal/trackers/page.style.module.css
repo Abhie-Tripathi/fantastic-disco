@@ -20,7 +20,6 @@
         color: inherit;
         font-weight: 600;
         font-size: 20px;
-        cursor: pointer;
     }
 
     .tab.active {
@@ -45,6 +44,7 @@
 
     .trackers_header_more_button {
         cursor: pointer;
+        position: relative;
         border: 1px solid #e0e1e4;
         padding: 8px 24px;
         border-radius: 12px;
@@ -272,4 +272,16 @@ color:#6E6F89;
     display: flex;
     gap: 5px;
     cursor: pointer;
+  }
+  .hide{
+    position: absolute;
+    text-align: center;
+    top: 105%;
+    right: 0px;
+    cursor: pointer;
+    width: 200px;
+    background: #FFFFFF;
+    color: #6750A4;
+    box-shadow: -4px 4px 15px 0px #E8E8E84D;
+    padding: 10px 0px;
   }
