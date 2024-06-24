@@ -4,25 +4,36 @@ import PageTemplates from '../PageTemplates/PageTemplates'
 import SectionTemplates from '../SectionTemplates/SectionTemplates';
 import StickyTemplates from '../StickyTemplates/StickyTemplates';
 import PopupTemplate from '../PopupTemplate/PopupTemplate';
+import FullScreenIcon from '/public/fullscreen.svg'
+import MobileIcon from '/public/mobile.svg'
+import DesktopIcon from '/public/desktop.svg'
+import Image from 'next/image';
 
-interface Props{
-    widgetSelected : string;
+interface Props {
+    widgetSelected: string;
 }
 
-const TemplatesPreview = ({widgetSelected} : Props) => {
+const TemplatesPreview = ({ widgetSelected }: Props) => {
     return (
         <div className={`${styles.body}`}>
             <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
                     {widgetSelected === "Page" ? <PageTemplates /> :
-                    widgetSelected === "Section" ? <SectionTemplates /> :
-                    widgetSelected === "Sticky" ? <StickyTemplates /> :
-                    widgetSelected === "Popup" ? <PopupTemplate /> : <></>}
+                        widgetSelected === "Section" ? <SectionTemplates /> :
+                            widgetSelected === "Sticky" ? <StickyTemplates /> :
+                                widgetSelected === "Popup" ? <PopupTemplate /> : <></>}
                 </div>
             </div>
             <div className={styles.previewContainer}>
-                <div className={styles.heading}>Preview</div>
+                <div className={styles.heading_btnContainer}>
+                    <div className={styles.heading}>Preview</div>
+                    <div className={styles.btnContainer}>
+                        <Image src={MobileIcon} alt='mobile' />
+                        <Image src={DesktopIcon} alt='desktop' />
+                        <Image src={FullScreenIcon} alt='fullscreen' />
+                    </div>
+                </div>
                 <div className={styles.preview_btnContainer}>
                     <div className={styles.preview}></div>
                     <div className={styles.previewBtnContainer}>

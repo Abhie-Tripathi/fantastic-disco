@@ -4,7 +4,7 @@
     font-family: var(--font-inter);
     position: relative;
     border: 1px solid white;
-    min-height: 90vh;
+    /* min-height: 85vh; */
     width: 100vw;
 }
 

@@ -40,6 +40,19 @@
     width: 300px;
     height: 41px;
 }
+.heading_btnContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btnContainer img{
+    cursor: pointer;
+}
 .heading{
     font-size: 18px;
     font-weight: 500;
