@@ -548,7 +548,7 @@ if(isCreating) return;
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
       setSelectedCity(editData.tracker.filterValue?.eventCity?.length>0?editData.tracker.filterValue?.eventCity:{} );
       setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
-      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries.toString() === "true");
+      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries?.toString() === "true");
       setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
       setSelectedReptScore(editData.tracker.filterValue?.reputationScore>0?editData.tracker.filterValue?.reputationScore:0);
       setSelectedMaturity(editData.tracker.filterValue?.maturity>0?editData.tracker.filterValue?.maturity:0)
