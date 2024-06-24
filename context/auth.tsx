@@ -145,14 +145,18 @@ export const AuthContextProvider = ({ children }: any) => {
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
     console.log(user);
+
     if (user) {
       setUser(JSON.parse(user).user);
     } else {
-      if (
-        pathName !== "/signup" &&
-        pathName !== "/forgot-password" &&
-        pathName !== "/reset"
-      ) {
+      // Define an array of public paths
+      const publicPaths = ["/signup", "/forgot-password"];
+
+      // Check if the current path is in public paths or matches the dynamic /reset route
+      const isPublicPath =
+        publicPaths.includes(pathName) || pathName.startsWith("/reset");
+
+      if (!isPublicPath) {
         router.push("/signin");
       }
     }

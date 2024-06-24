@@ -13,7 +13,7 @@ import DropDown from "@/app/components/employee/listView/DropdownRef";
 import { useAuthContext, useTheme } from "@/context";
 import Spinner from "/public/Icon.svg";
 import menuIcon from "/public/internal/hamburger.svg";
-import MobileSidebar from "@/app/components/sidebar/MobileSidebar"
+import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import BellIcon from "/public/bell.svg";
 
 interface UserDetail {
@@ -62,10 +62,9 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if(showSidebar){
-      document.body.classList.add('sidebar-open');
-    }else
-      document.body.classList.remove('sidebar-open');
+    if (showSidebar) {
+      document.body.classList.add("sidebar-open");
+    } else document.body.classList.remove("sidebar-open");
   }, [showSidebar]);
 
   useEffect(() => {
