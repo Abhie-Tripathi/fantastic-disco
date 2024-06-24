@@ -8,11 +8,13 @@ interface TemplateProps{
     tag : string;
     desc : string;
     image: StaticImageData; 
+    setSelectedTemplate : (value : string) => void
+    templateKey : string;
 }
 
-const TemplateCard = ({widgetStyle, tag, desc, image } : TemplateProps) => {
+const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templateKey } : TemplateProps) => {
     return (
-        <div className={styles.body}>
+        <div className={styles.body} onClick={()=>setSelectedTemplate(templateKey)}>
             <div className={styles.imageContainer}>
                 <Image src={image} alt='banner' className={styles.image}></Image>
             </div>

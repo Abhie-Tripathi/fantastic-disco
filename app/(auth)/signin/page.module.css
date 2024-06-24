@@ -216,6 +216,13 @@
   background-color: #6750a4;
   transform: scale(1.5);
 }
+
+.expired_token {
+  font-size: 24px;
+  text-align: center;
+  font-weight: 600;
+}
+
 @media screen and (max-width: 575px) {
   .container {
     min-height: 100vh;
