@@ -6,8 +6,11 @@ import HorizontalScrollImage from '/public/widgetimages/sectionimages/horizontal
 import LeftScrollImage from '/public/widgetimages/sectionimages/leftscroll.png'
 import RightScrollImage from '/public/widgetimages/sectionimages/rightscroll.png'
 
+interface Props{
+    setSelectedTemplate : (value : string) => void
+}
 
-const SectionTemplates = () => {
+const SectionTemplates = ({setSelectedTemplate} : Props) => {
     const SectionTemplates =
         [{ key: "CV", name: "Carousel Section", desc: "Feature the Top Section of your page in a Carousel View for a dynamic display.", tag: "Multiple Events", image: CarouselViewImage },
         { key: "HS", name: "Scroll section", desc: "Display a Section of your page with a Horizontal Scroll for easy, interactive navigation.", tag: "Multiple Events", image: HorizontalScrollImage },
@@ -18,7 +21,7 @@ const SectionTemplates = () => {
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {SectionTemplates.map((card, key) => (
-                    <TemplateCard widgetStyle={card.name} key={key} tag={card.tag} desc={card.desc} image={card.image} />))}
+                    <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />))}
             </div>
         </div>
     )

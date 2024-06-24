@@ -4,6 +4,7 @@
     border: 1px solid #E8DFFF;
     border-radius: 8px;
     padding: 12px 12px 24px 12px;
+    cursor: pointer;
 }
 .imageContainer{
     height: 255px;
@@ -16,13 +17,14 @@
 .headerContainer{
     margin-top: 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 }
 .header{
     font-size: 18px;
     font-weight: 700;
     color: #6750A4;
+    width: 50%;
 }
 .tag{
     background-color: #F7EFFF;
