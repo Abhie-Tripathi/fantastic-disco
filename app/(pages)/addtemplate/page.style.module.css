@@ -4,14 +4,19 @@
     font-family: var(--font-inter);
     position:relative;
     width: 100vw;
+    /* height: 100vh; */
     /* overflow-y: hidden; */
+}
+.widgetOptions {
+    display: flex;
+    justify-content: center;
 }
 
 .leftNav {
     display: flex;
     align-items: center;
     gap: 64px;
-    margin-top: 43px;
+    padding-top: 43px;
 }
 
 .navItem {
@@ -35,6 +40,7 @@
     align-items: center;
     gap: 12px;
     right: 90px;
+    top: 43px;
 }
 
 .hide_showBtn {
@@ -56,16 +62,12 @@
     padding: 5px 12px;
     border-radius: 6px;
     background-color: #6750A4;
+    cursor: pointer;
 }
 
 .myWidgetBtn {
     color: white;
     font-size: 14px;
-}
-
-.widgetOptions {
-    display: flex;
-    justify-content: center;
 }
 
 .exploreBtnContainer {
@@ -97,4 +99,21 @@
     margin-top: 36px;
     padding-top: 32px;
     height: 650px;
+}
+.yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
+    height: 89%;
+    width: 40%;
+    background-color: black;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: -45%; /* Start off-screen */
+    padding: 20px;
+    transition: right 0.3s ease; /* Smooth transition */
+    overflow-y: auto;
+}
+
+.yourWidgetModal.open {
+    right: 0; /* Move on-screen */
 }

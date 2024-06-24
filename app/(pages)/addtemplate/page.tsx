@@ -5,11 +5,13 @@ import Image from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
 import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview/TemplatesPreview'
+import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 
 const Page = () => {
     const [widgetSelected, setWidgetSelected] = useState("");
     const [exploreWindow, setExploreWindow] = useState<boolean>(false);
     const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(true)
+    const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -30,7 +32,7 @@ const Page = () => {
                     {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
                 </div>
                 <div className={styles.line}></div>
-                <div className={styles.myWidgetBtnContainer}>
+                <div className={styles.myWidgetBtnContainer} onClick={()=>setYourWidgetModal(true)}>
                     <div className={styles.myWidgetBtn}>My Widgets</div>
                     <Image src={RightArrow} alt='arrow' />
                 </div>
@@ -49,7 +51,7 @@ const Page = () => {
                     {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
                 </div>
             </div>}
-            {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ marginTop: (widgetOptionsWindow && exploreWindow) ? "43px" : "100px" }}>
+            {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ paddingTop:(widgetOptionsWindow && exploreWindow) ? "43px" : "100px" }}>
                 <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
             </div>}
             {!exploreWindow && <div className={styles.exploreBtnContainer}>
@@ -60,6 +62,9 @@ const Page = () => {
                     <TemplatesPreview widgetSelected={widgetSelected} />
                 </div>
             }
+            <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
+                <DraftWidgets setYourWidgetModal={setYourWidgetModal} />
+            </div>
         </div>
     )
 }
