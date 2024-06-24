@@ -9,7 +9,11 @@ import CarouselListImage from '/public/widgetimages/pageimages/CarouselList.png'
 import HeroGridViewImage from '/public/widgetimages/pageimages/HeroGridView.png'
 import HeroListViewImage from '/public/widgetimages/pageimages/HeroListView.png'
 
-const PageTemplates = () => {
+interface Props{
+    setSelectedTemplate : (value : string) => void
+}
+
+const PageTemplates = ({setSelectedTemplate} : Props) => {
 
     const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted")
     const NonHighlightedTemplates =
@@ -32,10 +36,10 @@ const PageTemplates = () => {
             <div className={styles.templates}>
                 {activeBtn === "NonHighlighted" ? (
                     NonHighlightedTemplates.map((card, key) => (
-                        <TemplateCard widgetStyle={card.name} key={key} tag={card.tag} desc={card.desc} image={card.image} />
+                        <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
                     ))) : (
                     HighlightedTemplates.map((card, key) => (
-                        <TemplateCard widgetStyle={card.name} key={key} tag={card.tag} desc={card.desc} image={card.image}/>
+                        <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image}/>
                     ))
                 )
                 }

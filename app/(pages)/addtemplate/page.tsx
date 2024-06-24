@@ -57,7 +57,7 @@ const Page = () => {
             </div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview widgetSelected = {widgetSelected} />
+                    <TemplatesPreview widgetSelected={widgetSelected} />
                 </div>
             }
         </div>
