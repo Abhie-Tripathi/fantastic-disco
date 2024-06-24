@@ -25,6 +25,16 @@ const Page = () => {
 
     return (
         <div className={`${styles.body}`}>
+            <div className={styles.navRightBtns}>
+                <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
+                    {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
+                </div>
+                <div className={styles.line}></div>
+                <div className={styles.myWidgetBtnContainer}>
+                    <div className={styles.myWidgetBtn}>My Widgets</div>
+                    <Image src={RightArrow} alt='arrow' />
+                </div>
+            </div>
             {!widgetOptionsWindow && <div className={styles.leftNav}>
                 <div className={`${styles.navItem} ${widgetSelected === "Page" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Page")}>Page Widgets
                     {widgetSelected === "Page" && <div className={styles.activeLine}></div>}
@@ -39,16 +49,6 @@ const Page = () => {
                     {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
                 </div>
             </div>}
-            <div className={styles.navRightBtns}>
-                <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
-                    {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
-                </div>
-                <div className={styles.line}></div>
-                <div className={styles.myWidgetBtnContainer}>
-                    <div className={styles.myWidgetBtn}>My Widgets</div>
-                    <Image src={RightArrow} alt='arrow' />
-                </div>
-            </div>
             {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ marginTop: (widgetOptionsWindow && exploreWindow) ? "43px" : "100px" }}>
                 <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
             </div>}

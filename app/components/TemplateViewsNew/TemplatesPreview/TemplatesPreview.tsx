@@ -12,12 +12,10 @@ import StickyPreview from '@/app/components/TemplateViews/previews/sticky/Sticky
 import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
-import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
 import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndViews'
 import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
 import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
-import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 
 interface Props {
@@ -26,10 +24,11 @@ interface Props {
 
 const TemplatesPreview = ({ widgetSelected }: Props) => {
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+    const [isFullScreen , setIsFullScreen] = useState<boolean>(false);
 
     return (
         <div className={`${styles.body}`}>
-            <div className={styles.templatesContainer}>
+            {!isFullScreen && <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
                     {widgetSelected === "Page" ? <PageTemplates setSelectedTemplate={setSelectedTemplate} /> :
@@ -37,14 +36,14 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                             widgetSelected === "Sticky" ? <StickyTemplates setSelectedTemplate={setSelectedTemplate} /> :
                                 widgetSelected === "Popup" ? <PopupTemplate setSelectedTemplate={setSelectedTemplate} /> : <></>}
                 </div>
-            </div>
-            <div className={styles.previewContainer}>
+            </div>}
+            <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>Preview</div>
                     <div className={styles.btnContainer}>
                         <Image src={MobileIcon} alt='mobile' />
                         <Image src={DesktopIcon} alt='desktop' />
-                        <Image src={FullScreenIcon} alt='fullscreen' />
+                        <Image src={FullScreenIcon} alt='fullscreen' onClick={()=>setIsFullScreen(!isFullScreen)} />
                     </div>
                 </div>
                 <div className={styles.preview_btnContainer}>

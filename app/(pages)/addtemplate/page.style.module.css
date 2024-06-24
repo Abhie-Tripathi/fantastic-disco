@@ -2,10 +2,9 @@
     padding-right: 90px;
     padding-left: 90px;
     font-family: var(--font-inter);
-    position: relative;
-    border: 1px solid white;
-    /* min-height: 85vh; */
+    position:relative;
     width: 100vw;
+    /* overflow-y: hidden; */
 }
 
 .leftNav {
@@ -36,7 +35,6 @@
     align-items: center;
     gap: 12px;
     right: 90px;
-    top: 43px;
 }
 
 .hide_showBtn {
