@@ -346,7 +346,7 @@ const Search = () => {
 
     // Event Keywords
     if (selectedEventKeywords.length > 0) {
-      queryString.eventKeywords = selectedEventKeywords;
+      queryString.eventKeywords = selectedEventKeywords.join('+');
     }
 
     // Event Ranking
