@@ -4,6 +4,7 @@
     border: 1px solid #E8DFFF;
     border-radius: 8px;
     padding: 12px 12px 24px 12px;
+    cursor: pointer;
 }
 .imageContainer{
     height: 255px;

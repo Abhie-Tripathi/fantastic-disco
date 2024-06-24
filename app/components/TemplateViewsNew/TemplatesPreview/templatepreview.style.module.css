@@ -25,6 +25,11 @@
 }
 .preview{
     height: 92%;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
 }
 .previewBtnContainer{
     width: 100%;
