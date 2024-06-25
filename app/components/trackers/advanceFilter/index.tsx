@@ -1,20 +1,20 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({format,freq, entry, rank, keywords}:any) => {
+const index = ({ format, freq, entry, rank, keywords }: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
     // const rank=["Country Rank","Category Rank"];
-    const key=["Tags","Airport","Animal","Sea","Arson","Cruise","National","Shows"];
+    const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
     return (
         <div className={styles.container}>
             <div className={styles.formatFreq}>
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Format</div>
                     <div className={styles.allCat}>
-                        {format?.map((item:string, id:number) => (
+                        {format?.map((item: string, id: number) => (
                             <>
-                                <label style={{display:"flex"}} >
+                                <label style={{ display: "flex" }} >
                                     <input
 
                                         className={styles.text}
@@ -32,9 +32,9 @@ const index = ({format,freq, entry, rank, keywords}:any) => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Frequency</div>
                     <div className={styles.allCat}>
-                        {freq?.map((item:string, id:number) => (
+                        {freq?.map((item: string, id: number) => (
                             <>
-                                <label style={{display:"flex"}} >
+                                <label style={{ display: "flex" }} >
                                     <input
 
                                         className={styles.text}
@@ -54,9 +54,9 @@ const index = ({format,freq, entry, rank, keywords}:any) => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Entry</div>
                     <div className={styles.allCat}>
-                        {entry?.map((item:string, id:number) => (
+                        {entry?.map((item: string, id: number) => (
                             <>
-                                <label style={{display:"flex"}} >
+                                <label style={{ display: "flex" }} >
                                     <input
 
                                         className={styles.text}
@@ -74,9 +74,9 @@ const index = ({format,freq, entry, rank, keywords}:any) => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Rankings</div>
                     <div className={styles.allCat}>
-                        {rank?.map((item:string, id:number) => (
+                        {rank?.map((item: string, id: number) => (
                             <>
-                                <label style={{display:"flex"}} >
+                                <label style={{ display: "flex" }} >
                                     <input
 
                                         className={styles.text}
@@ -96,10 +96,16 @@ const index = ({format,freq, entry, rank, keywords}:any) => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Keywords</div>
                     <div className={styles.allCat1}>
-                        {keywords?.map((item:string, id:number) => (
-                            <>
-                                <div className={styles.key}>{item}</div>
-                            </>
+                        {keywords?.map((item: string, id: number) => (
+                            item?.charAt(0) !== '-' ? (
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
+                                <span className={styles.tooltipText}>Positive</span>
+                                </div>
+                            ) : (
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.substring(1)}
+                                <span className={styles.tooltipText}>Negative</span>
+                                </div>
+                            )
                         ))}
                     </div>
                 </div>

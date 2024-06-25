@@ -83,7 +83,7 @@ interface FilterValue {
   editionRange:number;
   eventSize:any;
   eventCity:any;
-  eventCountry:[];
+  eventCountry:any;
   eventAttendanceRange:any;
 }
 interface CategoryData {
@@ -301,7 +301,7 @@ if(isCreating) return;
         filterValue: {
           ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
           ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
           brandedEvent:selectedBrandedEvent?.toString(),
@@ -400,7 +400,7 @@ if(isCreating) return;
           ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
           ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
           ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
           brandedEvent:selectedBrandedEvent.toString(),
@@ -522,7 +522,7 @@ if(isCreating) return;
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
-      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split(',') : [])
+      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split('+') : [])
       setTrackerName(editData?.tracker?.name || '');
       setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
       setSelectedCategories(
@@ -537,8 +537,8 @@ if(isCreating) return;
       setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
         ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
         : []);
-        const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
-        const eventCity = editData?.tracker?.filterValue?.eventCity || [];
+        const eventCountry = editData?.tracker?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+        const eventCity = editData?.tracker?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
         
         setSelectedLocations([...eventCountry, ...eventCity]);
       setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
@@ -546,7 +546,18 @@ if(isCreating) return;
       setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
       setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
-      setSelectedCity(editData.tracker.filterValue?.eventCity?.length>0?editData.tracker.filterValue?.eventCity:{} );
+      setSelectedCountry(
+        editData.tracker.filterValue?.eventCountry?.length > 0
+          ? editData.tracker.filterValue.eventCountry.reduce((acc:any, current:any) => {
+              return { ...acc, ...current };
+            }, {})
+          : {}
+      );
+      setSelectedCity(editData.tracker.filterValue?.eventCity?.length > 0
+        ? editData.tracker.filterValue.eventCity.reduce((acc:any, current:any) => {
+            return { ...acc, ...current };
+          }, {})
+        : {});
       setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
       setSelectedEventSeries(editData.tracker.filterValue?.eventSeries?.toString() === "true");
       setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")

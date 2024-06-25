@@ -168,7 +168,7 @@ const Index = () => {
   return (
     <div className={styles.container}>
       <div className={styles.containerLeft}>
-        <div className={styles.leftContainer}>
+        {/* <div className={styles.leftContainer}>
           <div className={`${styles.heading} ${trackerType === "All Trackers" ? styles.active : ""}`} onClick={() => setTrackerType("All Trackers")}>
             <AllTrackers fillColor={trackerType === "All Trackers" ? "#6750A4" : "#696B83"} /> All Trackers
           </div>
@@ -178,9 +178,9 @@ const Index = () => {
           <div className={`${styles.heading} ${trackerType === "Premium Trackers" ? styles.active : ""}`} onClick={() => setTrackerType("Premium Trackers")}>
             <PremiumTracker fillColor={trackerType === "Premium Trackers" ? "#6750A4" : "#696B83"} /> Premium Trackers
           </div>       
-           </div>
+           </div> */}
       </div>
-      <div style={{ width: "80%" }}>
+      <div style={{ width: "100%" }}>
         <div className={styles.containerRight}>
           {loading  && <div>Loading...</div>}
           {error && <div>{error}</div>}

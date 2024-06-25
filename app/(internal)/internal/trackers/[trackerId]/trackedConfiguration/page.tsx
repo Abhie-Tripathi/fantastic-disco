@@ -96,8 +96,8 @@ const Page = () => {
   const [locations, setLocations] = useState<any>();
 
 useEffect(() => {
-  const eventCountry = data?.tracker?.filterValue?.eventCountry || [];
-  const eventCity = data?.tracker?.filterValue?.eventCity || [];
+  const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj:any) => Object.values(countryObj)[0])||[];
+  const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj:any) => Object.values(cityObj)[0])||[];
   setLocations([...eventCountry, ...eventCity]);
 }, [data]);
     
@@ -136,7 +136,7 @@ useEffect(() => {
           <div className={styles.advanceContent}>Advanced and more detailed event filter criteria for precise and personalized event tracking.</div>
         </div>
         <div className={styles.innerContainerRight}>
-          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split(',') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []} />
+          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []} />
         </div>
       </div>
       <div className={styles.line}></div>
