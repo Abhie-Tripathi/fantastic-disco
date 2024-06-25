@@ -1,9 +1,9 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "./EventKeyword.module.css";
 import Image from "next/image";
 import SearchIcon from "/public/search.svg";
-import CloseIcon from "/public/close.svg";
+import CloseIcon from "/public/internal/cross.svg";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useTheme } from "@/context";
 
@@ -21,8 +21,27 @@ const EventKeyword = ({
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
   const [eventKeyword, setEventKeyword] = useState<string[]>(state);
+  const [positiveKeyword, setPositiveKeyword] = useState<string[]>([]);
+  const [negativeKeyword, setNegativeKeyword] = useState<string[]>([]);
   const {theme} = useTheme()
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
+
+  useEffect(() => {
+    const positive: string[] = [];
+    const negative: string[] = [];
+
+    eventKeyword.forEach((item) => {
+      if (item.startsWith('-')) {
+        negative.push(item.substring(1));
+      } else {
+        positive.push(item);
+      }
+    });
+
+    setPositiveKeyword(positive);
+    setNegativeKeyword(negative);
+  }, [eventKeyword]);
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
@@ -32,18 +51,31 @@ const EventKeyword = ({
     if (event.key == "Enter") {
       event.preventDefault();
       if (inputText.trim() !== "") {
-        setEventKeyword((prev) => [...prev, inputText]);
+        // setEventKeyword((prev) => [...prev, inputText]);
+        if(activeTab == "Keywords excluded")
+          setNegativeKeyword((prev) => [...prev, inputText]);
+        else
+          setPositiveKeyword((prev) => [...prev, inputText]);
         setInputText("");
       }
     }
   };
 
   const handleRemoveKeyword = (keyword: string) => {
-    setEventKeyword((prev) => prev.filter((item) => item !== keyword));
+    // setEventKeyword((prev) => prev.filter((item) => item !== keyword));
+    if(activeTab == "Keywords excluded")
+      setNegativeKeyword((prev) => prev.filter((item) => item !== keyword));
+    else
+      setPositiveKeyword((prev) => prev.filter((item) => item !== keyword));
   };
 
   const handleSaveData = () => {
-    setState(eventKeyword);
+    // setState(eventKeyword);
+    const newEventKeyword = [
+      ...positiveKeyword,
+      ...negativeKeyword.map((keyword) => `-${keyword}`),
+    ];
+    setState(newEventKeyword);
     onClose();
   };
 
@@ -51,27 +83,29 @@ const EventKeyword = ({
     <div>
       <div className={`${styles.container}  ${theme === 'light' ? styles.container_light : ""}`}>
         <div className={styles.header}>
-          <div className={styles.tabs_container}>
-            <div
+        <div className={`${styles.tabs_container} ${theme === 'light' ? styles.tabs_container_light : ""}`}>
+          <div className={`${styles.keywordBtns} ${theme === 'light' ? styles.keywordBtns_light : ""}`} >
+            <button
               className={`${styles.tab} ${
                 activeTab == "Keywords" ? styles.active : ""
               }`}
               onClick={() => setActiveTab("Keywords")}
             >
               Keywords
-            </div>
-            <div
+            </button>
+            <button
               className={`${styles.tab} ${
                 activeTab == "Keywords excluded" ? styles.active : ""
               }`}
               onClick={() => setActiveTab("Keywords excluded")}
             >
               Keywords excluded
-            </div>
+            </button>
           </div>
-          <div className={styles.header_button} onClick={onClose}>
+        </div>
+          {/* <div className={styles.header_button} onClick={onClose}>
             <Image src={CloseIcon} width={20} height={20} alt="close" />
-          </div>
+          </div> */}
         </div>
 
         <div className={`${styles.searchBar_container} ${theme === 'light' ? styles.searchBar_container_light : ""}`}>
@@ -87,25 +121,39 @@ const EventKeyword = ({
             onKeyDown={handleKeyDown}
             value={inputText}
           />
-          <Image src={SearchIcon} alt="Search" width={20} height={20} />
+          <Image className={iconClass} src={SearchIcon} alt="Search" width={20} height={20} />
         </div>
 
         <div className={styles.action_container}>
           <div className={styles.keywords_container}>
-            {eventKeyword.length > 0 &&
-              eventKeyword.map((keyword, index) => (
-                <div className={styles.keyword_chip} key={index}>
-                  <span>{keyword}</span>
-                  <Image
-                    src={CloseIcon}
-                    width={20}
-                    height={20}
-                    alt="close"
-                    className={styles.closeChip}
-                    onClick={() => handleRemoveKeyword(keyword)}
-                  />
-                </div>
-              ))}
+            { (activeTab == "Keywords" && positiveKeyword.length > 0) &&
+            positiveKeyword.map((keyword, index) => (
+              <div className={`${styles.keyword_chip} ${theme === 'light' ? styles.keyword_chip_light : ""}`} key={index}>
+                <span>{keyword}</span>
+                <Image
+                  src={CloseIcon}
+                  width={14}
+                  height={14}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => handleRemoveKeyword(keyword)}
+                />
+              </div>
+            ))}
+            { (activeTab == "Keywords excluded" && negativeKeyword.length > 0) &&
+            negativeKeyword.map((keyword, index) => (
+              <div className={`${styles.keyword_chip} ${theme === 'light' ? styles.keyword_chip_light : ""}`} key={index}>
+                <span>{keyword}</span>
+                <Image
+                  src={CloseIcon}
+                  width={14}
+                  height={14}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => handleRemoveKeyword(keyword)}
+                />
+              </div>
+            ))}
           </div>
 
           <div className={styles.button_container}>
