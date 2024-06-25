@@ -103,6 +103,7 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
   }
 
   const fetchEventsData = async () => {
+    if(props.queryString){
     try {
       const apiUrl = `${baseUrl}/event/search?groupBy=${year}-01-01,${year}-12-31&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
@@ -114,7 +115,10 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setEventCountArr({});
     }
+    }else
+      setEventCountArr({});
   }
 
   const prevButtonHandler = () => {
