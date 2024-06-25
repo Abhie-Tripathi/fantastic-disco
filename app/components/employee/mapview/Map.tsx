@@ -33,7 +33,7 @@ const EventListCard = (event: any) => {
             {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
           </div>
           <span style={{ color: "grey" }}>|</span>
-          <div className={styles.eventListCard_label}>Parade</div>
+          <div className={styles.eventListCard_label}>{event.event?.categories[0]?.slug}</div>
         </div>
         <Link href={`/detailpage`}>
           View Details
@@ -121,7 +121,8 @@ const Map = (props: MapProps) => {
   }
 
   useEffect(() => {
-    fetchEventsData();
+    if(props.queryString)
+      fetchEventsData();
   }, [props.queryString]);
 
   const [currPage, setCurrPage] = useState(1);

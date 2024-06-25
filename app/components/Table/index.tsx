@@ -17,6 +17,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface FormDataType {
   entityId_id?: string | number | null;
@@ -192,31 +193,34 @@ const Table = ({
   // eventData,
   showInsights,
   queryString,
-  eventType
+  eventType,
 }: {
   eventData?: any;
   showInsights: any;
   queryString?: string;
-  eventType?:string;
+  eventType?: string;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
-  const path = usePathname().split('/')
+  const path = usePathname().split("/");
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [pinEvent, setPinEvent] = useState<string>("1b27ff90-1a46-4f49-85eb-607b4d510eb1");
+  const [pinEvent, setPinEvent] = useState<string>(
+    "1b27ff90-1a46-4f49-85eb-607b4d510eb1"
+  );
   const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([]);
+  const [appliedKeywords, setAppliedKeywords] = useState<String[]>([]);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
     entityId_id: null,
     markedInterest: null,
-    eventGroupId: '',
+    eventGroupId: "",
   });
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -227,41 +231,48 @@ const Table = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.entityId_id && formData.markedInterest && formData.eventGroupId) {
-      if (formData.markedInterest == 'bookmark') {
+    if (
+      formData.entityId_id &&
+      formData.markedInterest &&
+      formData.eventGroupId
+    ) {
+      if (formData.markedInterest == "bookmark") {
         let payloadData = {
-          "eventGroupId":formData.eventGroupId,
+          eventGroupId: formData.eventGroupId,
         };
         try {
-          const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`, {
-            method: "POST",
-            body: JSON.stringify(payloadData),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
+          const { data, error } = await myFetch(
+            `${baseUrl}/tracker/saved-events`,
+            {
+              method: "POST",
+              body: JSON.stringify(payloadData),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
           if (error) {
             console.log(error);
             return;
           }
           if (data) {
-            toast.success('Event bookmarked successfully!', {
-              position: 'bottom-right',
+            toast.success("Event bookmarked successfully!", {
+              position: "bottom-right",
               autoClose: 2000,
               closeButton: false,
               hideProgressBar: true,
             });
-            setBookmarkedEvent(prev => [...prev, formData.eventGroupId]);
+            setBookmarkedEvent((prev) => [...prev, formData.eventGroupId]);
           }
         } catch (error) {
-          console.error('Error saving data:', error);
+          console.error("Error saving data:", error);
         } finally {
           setIsOpen(null);
         }
-      } else if (formData.markedInterest == 'unbookmark') {
+      } else if (formData.markedInterest == "unbookmark") {
         try {
           let payloadData = {
-            "eventGroupIds":[formData.eventGroupId],
+            eventGroupIds: [formData.eventGroupId],
           };
           const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
@@ -271,9 +282,11 @@ const Table = ({
             },
           });
           if (response) {
-            setBookmarkedEvent(prev => prev.filter(id => id !== formData.eventGroupId));
-            toast.success('Bookmarked event removed!', {
-              position: 'bottom-right',
+            setBookmarkedEvent((prev) =>
+              prev.filter((id) => id !== formData.eventGroupId)
+            );
+            toast.success("Bookmarked event removed!", {
+              position: "bottom-right",
               autoClose: 2000,
               closeButton: false,
               hideProgressBar: true,
@@ -308,7 +321,7 @@ const Table = ({
             setIsOpen(null);
           }
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error("Error fetching data:", error);
         }
       }
     }
@@ -330,7 +343,9 @@ const Table = ({
         return;
       }
       if (data) {
-        let bookmarkGroupIds = data.result.map((event: any) => event.eventGroupId);
+        let bookmarkGroupIds = data.result.map(
+          (event: any) => event.eventGroupId
+        );
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
@@ -338,18 +353,27 @@ const Table = ({
   }, []);
 
   const handleModalOpen = (eventId: string, eventGroupId: string) => {
+    GAEvent("research", "Filters", "Saved Event | Viewed", "Saved Event");
     setIsOpen((prev) => (prev == eventId ? null : eventId));
     if (isOpen != eventId) {
-      setFormData({ ...formData, entityId_id: eventId, eventGroupId: eventGroupId });
+      setFormData({
+        ...formData,
+        entityId_id: eventId,
+        eventGroupId: eventGroupId,
+      });
     } else {
-      setFormData({ entityId_id: null, markedInterest: null, eventGroupId: '' });
+      setFormData({
+        entityId_id: null,
+        markedInterest: null,
+        eventGroupId: "",
+      });
     }
   };
 
   const handlePinEvent = (eventId: string) => {
     setPinEvent(eventId);
-    toast.success('Event pinned successfully!', {
-      position: 'bottom-right',
+    toast.success("Event pinned successfully!", {
+      position: "bottom-right",
       autoClose: 2000,
       closeButton: false,
       hideProgressBar: true,
@@ -359,13 +383,17 @@ const Table = ({
   const handlePageItems = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
     setItemsPerPage(parseInt(event.target.value));
-  }
-  const [isSaved,setIsSaved]=useState(false);
-  const fetchSavedData=async()=>{
+  };
+  const [isSaved, setIsSaved] = useState(false);
+  const fetchSavedData = async () => {
     setIsSaved(true);
-    
+
     const secondLast = path[path.length - 2];
-    const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`);
+    const { data, error } = await myFetch(
+      `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${
+        (currPage - 1) * 10
+      }`
+    );
     if (error) {
       console.log(error);
       return;
@@ -374,20 +402,23 @@ const Table = ({
     if (data) {
       console.log(data);
       // if (data?.events?.length > 0) {
+      setEventPerPage(data.result);
+      if (currPage === 1) {
+        setTotalPages(Math.ceil(data.count / itemsPerPage));
         setEventPerPage(data.result);
-        if (currPage === 1) {
-          setTotalPages(Math.ceil(data.count / itemsPerPage));
-          setEventPerPage(data.result);
-        } else {
-          setEventPerPage(data.result);
-        
+      } else {
+        setEventPerPage(data.result);
       }
       // }
       // setCatgeoryData(data);
     }
-  }
-  const fetchAllSavedEvent=async()=>{
-    const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`);
+  };
+  const fetchAllSavedEvent = async () => {
+    const { data, error } = await myFetch(
+      `${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${
+        (currPage - 1) * 10
+      }`
+    );
     if (error) {
       console.log(error);
       return;
@@ -395,78 +426,92 @@ const Table = ({
 
     if (data) {
       // console.log(data);
-      
-      
+
+      setEventPerPage(data.result);
+
+      if (currPage === 1) {
+        setTotalPages(Math.ceil(data.count / itemsPerPage));
         setEventPerPage(data.result);
-      
-          if (currPage === 1) {
-            setTotalPages(Math.ceil(data.count / itemsPerPage));
-            setEventPerPage(data.result);
-          } else {
-            setEventPerPage(data.result);
-          
-        }
-      
+      } else {
+        setEventPerPage(data.result);
+      }
+
       // setCatgeoryData(data);
     }
-  }
+  };
   // const fetchAllSavedEvent=aync()=>{
 
   // }
   const fetchEventsData = async () => {
-    if (path[path.length - 1] === 'trackedEvents') {
+    if (path[path.length - 1] === "trackedEvents") {
       const secondLast = path[path.length - 2];
-      
+
       fetchData(secondLast);
       setIsLoaded(true);
-    } 
-    else if(path[path.length-1]==="trackers"){
-      
+    } else if (path[path.length - 1] === "trackers") {
       fetchAllSavedEvent();
       setIsLoaded(true);
-    }
-    else if(path[path.length - 1] === 'savedEvents'){
+    } else if (path[path.length - 1] === "savedEvents") {
       console.log(1);
-      
+
       fetchSavedData();
       setIsLoaded(true);
-    }
-    else {
-      try {
-        setIsLoaded(false);
-        const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * 10}&${queryString}`;
-        // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
-        const apiData = await myFetch(apiUrl, {
+    } else {
+      if (queryString) {
+        try {
+          setIsLoaded(false);
+
+          const params = new URLSearchParams(queryString);
+          const obj: any = {};
+          params.forEach((value, key) => {
+            obj[key] = decodeURIComponent(value);
+          });
+          if (obj["eventKeywords"]) {
+            setAppliedKeywords(obj["eventKeywords"].split("+"));
+          } else setAppliedKeywords([]);
+
+          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
+            (currPage - 1) * 10
+          }&${queryString}`;
+          // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
+          const apiData = await myFetch(apiUrl, {
             method: "GET",
             headers: headers,
-        });
-        if(apiData.data) {
-          if(currPage === 1) {
-            setTotalPages(Math.ceil(apiData.data.stats.totalEvents / itemsPerPage));
-            setEventPerPage(apiData.data.events);
-          }else{
-            setEventPerPage(apiData.data.events);
-          }
-        }else
-          setEventPerPage([]);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoaded(true);
-      }
+          });
+          if (apiData.data) {
+            if (currPage === 1) {
+              setTotalPages(
+                Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
+              );
+              setEventPerPage(apiData.data.events);
+            } else {
+              setEventPerPage(apiData.data.events);
+            }
+          } else setEventPerPage([]);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setIsLoaded(true);
+        }
+      } else setIsLoaded(true);
     }
-  }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     const secondLast = path[path.length - 2];
-    if(path[path.length-1]==="trackedEvents")
-    fetchData(secondLast);
-  },[eventType])
+    if (path[path.length - 1] === "trackedEvents") fetchData(secondLast);
+  }, [eventType]);
   const fetchData = async (secondLast: string) => {
-    var url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=active`;
-    if(eventType==="New Events")
-      url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}`;
-    else if(eventType==="Expired Events")
-      url=`${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${(currPage - 1) * 10}&type=expired`;
+    var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+      (currPage - 1) * 10
+    }&type=active`;
+    if (eventType === "New Events")
+      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+        (currPage - 1) * 10
+      }`;
+    else if (eventType === "Expired Events")
+      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+        (currPage - 1) * 10
+      }&type=expired`;
     const { data, error } = await myFetch(url);
     if (error) {
       console.log(error);
@@ -477,8 +522,7 @@ const Table = ({
       setEventPerPage(data.events);
     } else {
       setEventPerPage(data.events);
-    
-  }
+    }
     if (data) {
       console.log(data);
       if (data?.events?.length > 0) {
@@ -495,18 +539,17 @@ const Table = ({
 
   const saveEvent = async (groupId: string) => {
     if (isSaving) return;
-  
-   
+
     setIsSaving(true);
-  
+
     const secondLast = path[path.length - 2];
     const dataToSend = {
       eventGroupId: groupId,
-      trackerId: secondLast
+      trackerId: secondLast,
     };
-  
+
     const url = `${baseUrl}/tracker/saved-events`;
-  
+
     try {
       const { data, error } = await myFetch(url, {
         method: "POST",
@@ -515,7 +558,7 @@ const Table = ({
           "Content-Type": "application/json",
         },
       });
-  
+
       if (data) {
         console.log(data);
       } else {
@@ -524,72 +567,84 @@ const Table = ({
     } catch (err) {
       console.error("Error saving event:", err);
     } finally {
-      
       setIsSaving(false);
     }
   };
-  
-   const [isDelete, setIsDelete] = useState(false);
 
-const deleteEvent = async (groupId: string) => {
-  if (isDelete) return;
-  setIsDelete(true);
+  const [isDelete, setIsDelete] = useState(false);
 
-  const url = `${baseUrl}/tracker/saved-events`;
-  let dataToSend = {};
+  const deleteEvent = async (groupId: string) => {
+    if (isDelete) return;
+    setIsDelete(true);
 
-  if (path[path.length - 1] === "savedEvents") {
-    const secondLast = path[path.length - 2];
-    dataToSend = {
-      eventGroupIds: [groupId],
-      trackerId: secondLast,
-    };
-  } else {
-    dataToSend = {
-      eventGroupIds: [groupId],
-      global: true,
-    };
-  }
+    const url = `${baseUrl}/tracker/saved-events`;
+    let dataToSend = {};
 
-  try {
-    const { data, error } = await myFetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
-
-    if (data) {
-      console.log(data);
-      const newData = eventPerPage.filter(event => event?.eventGroupId !== groupId);
-      setEventPerPage(newData);
+    if (path[path.length - 1] === "savedEvents") {
+      const secondLast = path[path.length - 2];
+      dataToSend = {
+        eventGroupIds: [groupId],
+        trackerId: secondLast,
+      };
     } else {
-      console.log(error);
+      dataToSend = {
+        eventGroupIds: [groupId],
+        global: true,
+      };
     }
-  } catch (err) {
-    console.error("Error deleting event:", err);
-  } finally {
-    setIsDelete(false);
-  }
-};
 
-  if(!isLoaded) {
+    try {
+      const { data, error } = await myFetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (data) {
+        console.log(data);
+        const newData = eventPerPage.filter(
+          (event) => event?.eventGroupId !== groupId
+        );
+        setEventPerPage(newData);
+      } else {
+        console.log(error);
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
+    } finally {
+      setIsDelete(false);
+    }
+  };
+
+  if (!isLoaded) {
     return <Loading />;
-  }else if(isLoaded && eventPerPage.length == 0){
-    return (<div className={styles.noData} >No results containing all your search terms were found.</div>);
+  } else if (isLoaded && eventPerPage.length == 0) {
+    return (
+      <div className={styles.noData}>
+        No results containing all your search terms were found.
+      </div>
+    );
   }
+
+  const loadMoreHandler = () => {
+    setCurrPage((page) => page + 1);
+    GAEvent("research", "Filters", "Load More Clicked", "Load More");
+  };
 
   return (
     <div className={styles.table_container}>
       <div
-        className={`${styles.table_wrapper} ${theme === "light" ? styles.table_wrapper_light : ""
-          }`}
+        className={`${styles.table_wrapper} ${
+          theme === "light" ? styles.table_wrapper_light : ""
+        }`}
       >
         <table className={styles.table}>
           <thead
-            className={`${styles.table_head} ${theme === "light" ? styles.table_head_light : ""
-              }`}
+            className={`${styles.table_head} ${
+              theme === "light" ? styles.table_head_light : ""
+            }`}
           >
             <tr className={styles.table_head_row}>
               <th className={styles.table_firstColumn}>Event</th>
@@ -598,8 +653,11 @@ const deleteEvent = async (groupId: string) => {
               <th>City</th>
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
+              {appliedKeywords.length > 0 && <th>Matched Keywords</th>}
+              {appliedKeywords.length >= 5 && <th>Match Score</th>}
               <th>Category</th>
-              {showInsights.eventSeries || eventPerPage[0]?.series  && <th>Event Series</th>}
+              {showInsights.eventSeries ||
+                (eventPerPage[0]?.series && <th>Event Series</th>)}
               {showInsights.eventRank && <th>Rank</th>}
               {showInsights.growth && <th>Growth</th>}
               {showInsights.reptSent && <th>Rept. Sentiment</th>}
@@ -608,8 +666,9 @@ const deleteEvent = async (groupId: string) => {
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>Global</th>}
               <th
-                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
-                  } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
+                className={`${styles.table_actionColumn} ${
+                  styles.table_actionColumn_header
+                } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
               >
                 Actions
               </th>
@@ -637,7 +696,7 @@ const deleteEvent = async (groupId: string) => {
                 </td>
                 <td>
                   <span
-                    {...((event.status && event.status === "CANCELED")
+                    {...(event.status && event.status === "CANCELED"
                       ? { "data-toggle": "tooltip", title: "Cancelled" }
                       : null)}
                     style={{ whiteSpace: "nowrap" }}
@@ -653,23 +712,24 @@ const deleteEvent = async (groupId: string) => {
                       month: "short",
                       year: "2-digit",
                     }) !==
-                      new Date(event.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "2-digit",
-                      })
+                    new Date(event.endDate).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "2-digit",
+                    })
                       ? new Date(event.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "2-digit",
-                      })
+                          day: "2-digit",
+                          month: "short",
+                          year: "2-digit",
+                        })
                       : null}
                   </span>
                 </td>
                 <td>
-                  {event.location.cityId !== '1' && event.format === 'ONLINE' ? (
+                  {event.location.cityId !== "1" &&
+                  event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
-                      event.location.venueName !== null ? (
+                    event.location.venueName !== null ? (
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
@@ -697,11 +757,11 @@ const deleteEvent = async (groupId: string) => {
                     ) : (
                       event.location.venueName
                     )
-                  ) : event.location.cityId === '1' &&
-                    (event.format === 'ONLINE' ||
+                  ) : event.location.cityId === "1" &&
+                    (event.format === "ONLINE" ||
                       event.location.venueName !== undefined) ? (
                     "Online"
-                  ) : event.location.cityId !== '1' &&
+                  ) : event.location.cityId !== "1" &&
                     event.location.venueName !== undefined ? (
                     <span data-toggle="tooltip" title="To be announced">
                       TBA
@@ -731,9 +791,48 @@ const deleteEvent = async (groupId: string) => {
                     )}
                   </td>
                 )}
+                {appliedKeywords.length > 0 && (
+                  <>
+                    <td style={{textAlign: "center"}}>
+                      {event.matchedKeywords.length == 0 ? (
+                        <>-</>
+                      ) : event.matchedKeywords.length == 1 ? (
+                        event.matchedKeywords[0]
+                      ) : (
+                        <>
+                          {event.matchedKeywords[0]}&nbsp;
+                          <a
+                            className={styles["products-list"]}
+                            href="javascript:void(0)"
+                            data-toggle="tooltip"
+                            title={listProducts(event.matchedKeywords)}
+                          >
+                            +{event.matchedKeywords.length - 1}
+                          </a>
+                        </>
+                      )}
+                    </td>
+                    {appliedKeywords.length >= 5 && (
+                      <td>
+                        {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    )}
+                  </>
+                )}
                 <td>
                   {/* Finance & Banking */}
-                  {event.categories !== undefined && event.categories.length > 0 ? (
+                  {event.categories !== undefined &&
+                  event.categories.length > 0 ? (
                     <span style={{ textTransform: "capitalize" }}>
                       {event.categories[0].name}
                     </span>
@@ -741,24 +840,16 @@ const deleteEvent = async (groupId: string) => {
                     "-"
                   )}
                 </td>
-                {showInsights.eventSeries || event?.series && (
-                  <td>
-                    {event.series ? (
-                      event.series
-
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                )}
+                {showInsights.eventSeries ||
+                  (event?.series && (
+                    <td>{event.series ? event.series : "-"}</td>
+                  ))}
                 {showInsights.eventRank && (
                   <td>
                     {event.rank?.globalRank ? (
                       <>
                         {getEventRank(event.rank.globalRank)}
-                        <span className={styles.rank_tag}>
-                          Global
-                        </span>
+                        <span className={styles.rank_tag}>Global</span>
                       </>
                     ) : (
                       "-"
@@ -784,9 +875,9 @@ const deleteEvent = async (groupId: string) => {
                     )}
                     {event.interestsGrowthRange &&
                       // <>{getGrowthRange(event.interestsGrowthRange)}</>
-                      event.interestsGrowthRange
-                    }
-                    {(event.interestsGrowth == undefined || event.interestsGrowth == 0) &&
+                      event.interestsGrowthRange}
+                    {(event.interestsGrowth == undefined ||
+                      event.interestsGrowth == 0) &&
                       (event.interestsGrowthRange == undefined ||
                         event.interestsGrowthRange == 0) &&
                       "-"}
@@ -796,7 +887,7 @@ const deleteEvent = async (groupId: string) => {
                   <td>
                     {event.stats.rating !== undefined &&
                       event.stats.rating !== null &&
-                      event.stats.rating > '0' && (
+                      event.stats.rating > "0" && (
                         <>
                           {getEventRating(event.stats.rating)}
                           &nbsp;
@@ -804,9 +895,9 @@ const deleteEvent = async (groupId: string) => {
                         </>
                       )}
                     {event.reputationSentiment !== undefined &&
-                      event.reputationSentiment !== null &&
-                      (event.reputationSentiment > 1 ||
-                        event.reputationSentiment < -1) ? (
+                    event.reputationSentiment !== null &&
+                    (event.reputationSentiment > 1 ||
+                      event.reputationSentiment < -1) ? (
                       event.reputationSentiment > 0 ? (
                         <div className={styles.text_green}>
                           {event.reputationSentiment}%{" "}
@@ -832,50 +923,77 @@ const deleteEvent = async (groupId: string) => {
                       : "-"}
                   </td>
                 )}
-                {showInsights.eventSize && <td>
-                  {/* {getEventSize(event)} */}
-                  {event.eventSize ? event.eventSize : '-'}
-                </td>}
+                {showInsights.eventSize && (
+                  <td>
+                    {/* {getEventSize(event)} */}
+                    {event.eventSize ? event.eventSize : "-"}
+                  </td>
+                )}
                 {showInsights.estExhibit && (
                   <td>
                     {/* {getEstimatedExhibitors(event)} */}
-                    {event.stats?.estimatedExhibitor ? event.stats?.estimatedExhibitor : '-'}
+                    {event.stats?.estimatedExhibitor
+                      ? event.stats?.estimatedExhibitor
+                      : "-"}
                   </td>
                 )}
                 {showInsights.global && (
                   <td>
                     {event["internationalAudience%"] !== undefined ? (
-                      event["internationalAudience%"] == 'High' ? (
+                      event["internationalAudience%"] == "High" ? (
                         <span className={styles.badge_success}>High</span>
-                      ) : event["internationalAudience%"] == 'Medium' ? (
+                      ) : event["internationalAudience%"] == "Medium" ? (
                         <span className={styles.badge_primary}>Medium</span>
-                      ) : event["internationalAudience%"] == 'Low' ? (
+                      ) : event["internationalAudience%"] == "Low" ? (
                         <span className={styles.badge_danger}>Low</span>
-                      ) : <></>
-                    ) : <></>}
+                      ) : (
+                        <></>
+                      )
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 )}
                 <td
-                  className={`${styles.table_actionColumn} ${theme === "light" ? styles.table_actionColumn_light : ""
-                    }`}
+                  className={`${styles.table_actionColumn} ${
+                    theme === "light" ? styles.table_actionColumn_light : ""
+                  }`}
                 >
-                  {path[path.length - 1] === "trackedEvents" || path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" ? (
+                  {path[path.length - 1] === "trackedEvents" ||
+                  path[path.length - 1] === "savedEvents" ||
+                  path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
-                      <button onClick={()=>saveEvent(event?.eventGroupId)} className={`${styles.table_saveBtn} ${theme === "light" ? styles.table_saveBtn_light : ""
-                    }`}>Save</button>
+                      <button
+                        onClick={() => saveEvent(event?.eventGroupId)}
+                        className={`${styles.table_saveBtn} ${
+                          theme === "light" ? styles.table_saveBtn_light : ""
+                        }`}
+                      >
+                        Save
+                      </button>
                     ) : (
-                      <button onClick={()=>deleteEvent(event?.eventGroupId)}  className={`${styles.table_saveBtn} ${theme === "light" ? styles.table_saveBtn_light : ""
-                    }`}>Delete</button>
+                      <button
+                        onClick={() => deleteEvent(event?.eventGroupId)}
+                        className={`${styles.table_saveBtn} ${
+                          theme === "light" ? styles.table_saveBtn_light : ""
+                        }`}
+                      >
+                        Delete
+                      </button>
                     )
                   ) : (
                     <span
                       className={styles.save_image_container}
-                      onClick={() => handleModalOpen(event.id, event.eventGroupId)}
+                      onClick={() =>
+                        handleModalOpen(event.id, event.eventGroupId)
+                      }
                     >
                       {bookmarkedEvent?.includes(event.eventGroupId) ? (
                         <BookmarkIcon fillColor={"#ff851b"} />
                       ) : (
-                        <BookmarkIcon fillColor={theme === "light" ? "#000000" : "#ffffff"} />
+                        <BookmarkIcon
+                          fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                        />
                       )}
                     </span>
                   )}
@@ -902,14 +1020,19 @@ const deleteEvent = async (groupId: string) => {
                             handleModalOpen(event.id, event.eventGroupId)
                           }
                         >
-                          <Image src={closeIcon} alt="clock" width={16} height={16} />
+                          <Image
+                            src={closeIcon}
+                            alt="clock"
+                            width={16}
+                            height={16}
+                          />
                         </button>
                       </header>
                       <main className={styles["modal_content"]}>
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              {bookmarkedEvent?.includes(event.eventGroupId) ?
+                              {bookmarkedEvent?.includes(event.eventGroupId) ? (
                                 <>
                                   <input
                                     className={styles["form-check-input"]}
@@ -919,8 +1042,11 @@ const deleteEvent = async (groupId: string) => {
                                     id="customradio1"
                                     onChange={handleChangeIntent}
                                   />
-                                  <label htmlFor="customradio1">Un-Bookmark</label>
-                                </> :
+                                  <label htmlFor="customradio1">
+                                    Un-Bookmark
+                                  </label>
+                                </>
+                              ) : (
                                 <>
                                   <input
                                     className={styles["form-check-input"]}
@@ -932,7 +1058,7 @@ const deleteEvent = async (groupId: string) => {
                                   />
                                   <label htmlFor="customradio1">Bookmark</label>
                                 </>
-                              }
+                              )}
                             </div>
                             <div className={styles["form-check"]}>
                               <input
@@ -994,12 +1120,14 @@ const deleteEvent = async (groupId: string) => {
       </div>
 
       <div
-        className={`${styles.pagination_container} ${theme === "light" ? styles.pagination_container_light : ""
-          }`}
+        className={`${styles.pagination_container} ${
+          theme === "light" ? styles.pagination_container_light : ""
+        }`}
       >
         <div
-          className={`${styles.pagination_control_button} ${currPage === 1 ? styles.disabled : ""
-            }`}
+          className={`${styles.pagination_control_button} ${
+            currPage === 1 ? styles.disabled : ""
+          }`}
           onClick={() => setCurrPage((page) => page - 1)}
         >
           Previous
@@ -1009,7 +1137,12 @@ const deleteEvent = async (groupId: string) => {
           <div>Showing</div>
           <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
-            <select onChange={handlePageItems} name="" id="" className={styles.pagination_noOfPage}>
+            <select
+              onChange={handlePageItems}
+              name=""
+              id=""
+              className={styles.pagination_noOfPage}
+            >
               <option value="10">10</option>
               <option value="15">15</option>
               <option value="20">20</option>
@@ -1025,9 +1158,10 @@ const deleteEvent = async (groupId: string) => {
         </div>
 
         <div
-          className={`${styles.pagination_control_button} ${currPage === totalPages ? styles.disabled : ""
-            }`}
-          onClick={() => setCurrPage((page) => page + 1)}
+          className={`${styles.pagination_control_button} ${
+            currPage === totalPages ? styles.disabled : ""
+          }`}
+          onClick={loadMoreHandler}
         >
           Next
         </div>

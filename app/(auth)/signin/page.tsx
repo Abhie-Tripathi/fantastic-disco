@@ -5,13 +5,13 @@ import Image from "next/image";
 import Carousel from "@/app/components/carousel";
 import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SignInFormSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
-import logo from '/public/Logo_Light mode.png'
+import logo from "/public/Logo_Light mode.png";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -29,9 +29,9 @@ const SignIn = () => {
   }, []);
 
   const router = useRouter();
-  const searchParams = useSearchParams()
- 
-  const id = searchParams.get('id')
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
   const { signin } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,9 +42,14 @@ const SignIn = () => {
       setErrors({});
       setIsLoading(true);
       const response = await signin({ email, password });
+      console.log(response);
       setIsLoading(false);
-      if (response[0]?.error) {
-        setErrors({ password: response[0].error.message });
+
+      if (response[0]?.emailError) {
+        setErrors({ email: response[0]?.emailError });
+        return;
+      } else if (response[0]?.passwordError) {
+        setErrors({ password: response[0].passwordError });
         return;
       } else {
         if (rememberMe) {
@@ -52,10 +57,9 @@ const SignIn = () => {
         } else {
           localStorage.removeItem("rememberedEmail");
         }
-        if(id!==null){
-          router.push(`/internal/trackers/${id}/trackedEvents`)
-        }else 
-        router.push("/");
+        if (id !== null) {
+          router.push(`/internal/trackers/${id}/trackedEvents`);
+        } else router.push("/");
       }
     } catch (error) {
       if (error instanceof ZodError) {
@@ -71,7 +75,7 @@ const SignIn = () => {
       }
     }
   };
-console.log(id);
+  console.log(id);
 
   return (
     <div className={styles.container}>
@@ -89,7 +93,7 @@ console.log(id);
             <div className={styles.input_container}>
               <div className={styles.input_title}>Email Address</div>
               <input
-                 className={`${styles.input} ${
+                className={`${styles.input} ${
                   errors.email && styles.error_boundary
                 }`}
                 value={email}
@@ -103,7 +107,7 @@ console.log(id);
             <div className={styles.input_container}>
               <div className={styles.input_title}>Password</div>
               <input
-                 className={`${styles.input} ${
+                className={`${styles.input} ${
                   errors.password && styles.error_boundary
                 }`}
                 value={password}
