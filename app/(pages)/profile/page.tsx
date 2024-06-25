@@ -5,7 +5,7 @@ import styles from "./page.style.module.css";
 import uploadIcon from "/public/upload.svg";
 import Image from "next/image";
 import searchIcon from "/public/searchIcon.svg";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
@@ -14,13 +14,26 @@ interface Profile {
   firstname: string;
   lastname: string;
   designation: string;
-  filename: string;
+  file: any;
   profilePicture: string;
   fileType: string;
 }
 
 const Profile = () => {
   const [profileData, setProfileData] = useState<Profile>();
+  const [name, setname] = useState("");
+  const [role, setRole] = useState("");
+  const [dept, setDept] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
+  const [picFile, setPicFile] = useState<any>();
+  const fileInputRef = useRef<any>();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleUploadClick = () => {
+    const fileRef = fileInputRef.current as HTMLDivElement;
+    fileRef.click();
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
@@ -39,6 +52,57 @@ const Profile = () => {
 
     fetchData();
   }, []);
+
+  const saveDataHandler = async () => {
+    const newErrors: Record<string, string> = {};
+    const [firstname, lastname] = name.split(" ");
+
+    if (!lastname) {
+      newErrors.name = "Please Enter Full Name";
+    }
+    if (mobileNo.length !== 10 || mobileNo.startsWith("+")) {
+      newErrors.mobileNo = "Enter 10 digit mobile number only";
+    }
+    if (!dept) {
+      newErrors.dept = "Please Enter the Department";
+    }
+    if (!role) {
+      newErrors.role = "Please Enter Your Role";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    const formData = new FormData();
+    formData.append("firstname", name[0]);
+    formData.append("lastname", name[1]);
+    formData.append("mobileNo", mobileNo);
+    formData.append("designation", role);
+    formData.append("file", picFile);
+
+    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (data) {
+      console.log(data);
+      showToast("success", "Data Saved Successfully");
+      return;
+    }
+
+    if (error) {
+      console.log(error);
+      showToast("error", error.message);
+      return;
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -62,7 +126,10 @@ const Profile = () => {
                     {profileData.firstname} {profileData.lastname}
                   </span>
                   <span className={styles.action_container}>
-                    <span className={styles.action_upload}>
+                    <span
+                      className={styles.action_upload}
+                      onClick={handleUploadClick}
+                    >
                       <Image
                         src={uploadIcon}
                         alt="upload"
@@ -77,11 +144,27 @@ const Profile = () => {
                   </span>
                 </div>
               </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                accept="image/png, image/jpeg, image/gif"
+                onChange={(e: any) => setPicFile(e.target.files[0])}
+              />
 
               <div className={styles.account_details}>
                 <div className={styles.input_container}>
                   <div className={styles.input_title}>Full Name</div>
-                  <input type="text" className={styles.input} />
+                  <input
+                    type="text"
+                    className={`${styles.input} ${
+                      errors.name && styles.error_boundary
+                    }`}
+                    onChange={(e) => setname(e.target.value)}
+                  />
+                  {errors.name && (
+                    <div className={styles.error}>{errors.name}</div>
+                  )}
                 </div>
 
                 <div className={styles.dual_input_container}>
@@ -92,23 +175,52 @@ const Profile = () => {
 
                   <span className={styles.input_container}>
                     <div className={styles.input_title}>Mobile Number</div>
-                    <input type="text" className={styles.input} />
+                    <input
+                      type="text"
+                      className={`${styles.input} ${
+                        errors.mobileNo && styles.error_boundary
+                      }`}
+                      onChange={(e) => setMobileNo(e.target.value)}
+                    />
+                    {errors.mobileNo && (
+                      <div className={styles.error}>{errors.mobileNo}</div>
+                    )}
                   </span>
                 </div>
 
                 <div className={styles.dual_input_container}>
                   <span className={styles.input_container}>
                     <div className={styles.input_title}>Department</div>
-                    <input type="text" className={styles.input} />
+                    <input
+                      type="text"
+                      className={`${styles.input} ${
+                        errors.dept && styles.error_boundary
+                      }`}
+                      onChange={(e) => setDept(e.target.value)}
+                    />
+                    {errors.dept && (
+                      <div className={styles.error}>{errors.dept}</div>
+                    )}
                   </span>
 
                   <span className={styles.input_container}>
                     <div className={styles.input_title}>Role</div>
-                    <input type="text" className={styles.input} />
+                    <input
+                      type="text"
+                      className={`${styles.input} ${
+                        errors.role && styles.error_boundary
+                      }`}
+                      onChange={(e) => setRole(e.target.value)}
+                    />
+                    {errors.role && (
+                      <div className={styles.error}>{errors.role}</div>
+                    )}
                   </span>
                 </div>
 
-                <div className={styles.action_button}>Save Changes</div>
+                <div className={styles.action_button} onClick={saveDataHandler}>
+                  Save Changes
+                </div>
 
                 <div className={styles.action_reset}>Reset Password</div>
               </div>

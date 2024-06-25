@@ -5,12 +5,12 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
-import userOne from '/public/userOne.svg'
+import userOne from "/public/userOne.svg";
 import SearchIcon from "/public/search.svg";
 import DropIcon from "/public/internal/dropdown_arrow.svg";
 import ExportIcon from "/public/internal/ExportIcon.svg";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
@@ -53,38 +53,39 @@ import eventEntryData from "../../../../../public/data/eventEntry.json";
 import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
+import { GAEvent } from "@/utils/GAEvent";
 interface FilterValue {
   labels: string;
-  name:string;
+  name: string;
   category: any;
-  eventFormat:string;
-  eventStatus:string;
-  eventFrequency:string;
-  eventEntry:string;
-  eventEdition:any;
-  eventRanking:string;
-  brandedEvent:boolean;
-  trustScore:any;
-  eventSeries:boolean;
-  reputationScore:any;
-  maturity:any;
+  eventFormat: string;
+  eventStatus: string;
+  eventFrequency: string;
+  eventEntry: string;
+  eventEdition: any;
+  eventRanking: string;
+  brandedEvent: boolean;
+  trustScore: any;
+  eventSeries: boolean;
+  reputationScore: any;
+  maturity: any;
   internationalScore: any;
-  inboundScore:any;
-  userRating:string;
-  exhibitScore:string;
-  total_attendance_gte:any;
-  total_attendance_lte:any;
-  location:string[];
-  startDate:string;
-  endDate:string;
-  eventRating:string;
-  eventKeywords:any;
-  eventCategory:any;
-  editionRange:number;
-  eventSize:any;
-  eventCity:any;
-  eventCountry:[];
-  eventAttendanceRange:any;
+  inboundScore: any;
+  userRating: string;
+  exhibitScore: string;
+  total_attendance_gte: any;
+  total_attendance_lte: any;
+  location: string[];
+  startDate: string;
+  endDate: string;
+  eventRating: string;
+  eventKeywords: any;
+  eventCategory: any;
+  editionRange: number;
+  eventSize: any;
+  eventCity: any;
+  eventCountry: [];
+  eventAttendanceRange: any;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -95,9 +96,9 @@ interface Tracker {
   name: string;
   filterValue: FilterValue;
 }
-interface Cat{
-  name:string;
-  id:string;
+interface Cat {
+  name: string;
+  id: string;
 }
 interface EditData {
   tracker: Tracker;
@@ -105,11 +106,11 @@ interface EditData {
 const Pages = () => {
   // const searchParams = useSearchParams();
   interface SelectedLocation {
-    [id: string]: string,
+    [id: string]: string;
   }
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
-  const pathName = usePathname().split('/');
+  const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -169,8 +170,8 @@ const Pages = () => {
   const [selectedTrustScore, setSelectedTrustScore] = useState(0);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState(0);
-  const [maturity,setMaturity]=useState<string|null>();
-  const [intScore,setIntScore]=useState<string|null>();
+  const [maturity, setMaturity] = useState<string | null>();
+  const [intScore, setIntScore] = useState<string | null>();
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
@@ -238,102 +239,136 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
       fetchData(secondLast);
     }
-
-  }, [last])
+  }, [last]);
 
   const fetchData = async (secondLast: string) => {
     const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
     try {
       const { data, error } = await myFetch(url, {
-        method: 'GET'
+        method: "GET",
       });
       if (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } else {
-        console.log('Data fetched:', data);
+        console.log("Data fetched:", data);
         setEditData(data);
       }
     } catch (err) {
-      console.error('Fetch failed:', err);
+      console.error("Fetch failed:", err);
     }
   };
-  const [categories, setCategories] = useState(searchParams.get("categories")?.split(",") || []);
-  useEffect(()=>{
+  const [categories, setCategories] = useState(
+    searchParams.get("categories")?.split(",") || []
+  );
+  useEffect(() => {
     if (selectedMaturity > 0) {
       // queryString.maturity = selectedMaturity;
-      if(selectedMaturity >= 1 && selectedMaturity <=25)
-        setMaturity('new');
-      else if(selectedMaturity >= 26 && selectedMaturity <= 50)
-        setMaturity('low');
-      else if(selectedMaturity >= 51 && selectedMaturity <= 75)
-        setMaturity('medium');
-      else
-        setMaturity('High');
+      if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
+      else if (selectedMaturity >= 26 && selectedMaturity <= 50)
+        setMaturity("low");
+      else if (selectedMaturity >= 51 && selectedMaturity <= 75)
+        setMaturity("medium");
+      else setMaturity("High");
     }
-  },[selectedMaturity])
-  useEffect(()=>{
+  }, [selectedMaturity]);
+  useEffect(() => {
     if (selectedINScore > 0) {
-      if(selectedINScore >= 1 && selectedINScore <=25)
-        setIntScore('local');
-      else if(selectedINScore >= 26 && selectedINScore <= 50)
-        setIntScore('National');
-      else if(selectedINScore >= 51 && selectedINScore <= 75)
-        setIntScore('Regional');
-      else
-        setIntScore('International');
+      if (selectedINScore >= 1 && selectedINScore <= 25) setIntScore("local");
+      else if (selectedINScore >= 26 && selectedINScore <= 50)
+        setIntScore("National");
+      else if (selectedINScore >= 51 && selectedINScore <= 75)
+        setIntScore("Regional");
+      else setIntScore("International");
     }
-  },[selectedINScore])
-const [isCreating,setIsCreating]=useState(false);
-const [isMandatory,setIsMandatory]=useState(false);
+  }, [selectedINScore]);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isMandatory, setIsMandatory] = useState(false);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-if(isCreating) return;
+
+    GAEvent('trackers','Trackers','Saved Tracker | New Tracker Created', 'Create')
+    if (isCreating) return;
     setIsCreating(true);
-   
-      if (last === "editTracker") {
+
+    if (last === "editTracker") {
       console.log(1);
-      
 
       const secondLast = pathName[pathName.length - 2];
       const formData = {
-
         name: trackerName,
         filterValue: {
-          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
-          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
-          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent?.toString(),
+          ...(selectedLabels?.length > 0 && {
+            labels: selectedLabels.join(","),
+          }),
+          ...(selectedEventEdition > 0 && {
+            editionRange: selectedEventEdition.toString(),
+          }),
+          ...(selectedEventKeywords.length > 0 && {
+            eventKeywords: selectedEventKeywords.join(","),
+          }),
+          ...(selectedCategories?.length > 0 && {
+            eventCategory: selectedCategories.join(","),
+          }),
+          ...(selectedExhibitScore?.length > 0 && {
+            eventSize: selectedExhibitScore.join(","),
+          }),
+          brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
-          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
-          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
-          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
-          ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
-          eventSeries:selectedEventSeries.toString(),
-         ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
-          ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
-          ...(selectedTrustScore>0&&{trustScore:selectedTrustScore.toString()}),
-          ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
-          ...(selectedReptScore>0 &&{reputationScore:selectedReptScore.toString()}),
-          ...(selectedMaturity>0&&{maturity:maturity}),
+          ...(Object.entries(selectedCountry).length > 0 && {
+            eventCountry: Object.keys(selectedCountry).join(","),
+          }),
+          ...(Object.entries(selectedCity).length > 0 && {
+            eventCity: Object.keys(selectedCity).join(","),
+          }),
+          ...(selectedLabels?.length > 0 && {
+            labels: selectedLabels.join(","),
+          }),
+          ...(selectedEventFormat?.length > 0 && {
+            eventFormat: selectedEventFormat.join(","),
+          }),
+          eventSeries: selectedEventSeries.toString(),
+          ...(selectedEventStatus?.length > 0 && {
+            eventStatus: selectedEventStatus.join(","),
+          }),
+          ...(selectedEntry?.length > 0 && {
+            eventEntry: selectedEntry.join(","),
+          }),
+          ...(selectedTrustScore > 0 && {
+            trustScore: selectedTrustScore.toString(),
+          }),
+          ...(selectedEventFrequency?.length > 0 && {
+            eventFrequency: selectedEventFrequency.join(","),
+          }),
+          ...(selectedReptScore > 0 && {
+            reputationScore: selectedReptScore.toString(),
+          }),
+          ...(selectedMaturity > 0 && { maturity: maturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
-              new Date(selectedDateRange[0]).toISOString().split('T')[0],
-              new Date(selectedDateRange[1]).toISOString().split('T')[0]
-            ].join(',')
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
           }),
           ...(selectedDateRange?.length === 2 && {
             endDate: [
-              new Date(selectedDateRange[0]).toISOString().split('T')[0],
-              new Date(selectedDateRange[1]).toISOString().split('T')[0]
-            ].join(',')
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
           }),
-          ...(selectedUserRatings?.length>0&&{eventRating:selectedUserRatings.join(',')}),
-         ...(selectedINScore>0&&{ internationalScore:intScore}),
-          ...(selectedInboundScore>0 &&{inboundScore:selectedInboundScore.toString()}),
-          ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
+          ...(selectedUserRatings?.length > 0 && {
+            eventRating: selectedUserRatings.join(","),
+          }),
+          ...(selectedINScore > 0 && { internationalScore: intScore }),
+          ...(selectedInboundScore > 0 && {
+            inboundScore: selectedInboundScore.toString(),
+          }),
+          ...(selectedEventAttendanceRange?.length === 2 && {
+            eventAttendanceRange: [
+              +selectedEventAttendanceRange[0],
+              +selectedEventAttendanceRange[1],
+            ].join(","),
+          }),
           // info: {
           //   name: trackerName,
           //   location:selectedLocations,
@@ -362,75 +397,112 @@ if(isCreating) return;
           //   total_attendance_lte:
           //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
           // }
-        }
+        },
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if(selectedLocations.length===0 || trackerName.length===0){
+      if (selectedLocations.length === 0 || trackerName.length === 0) {
         console.log("Please, Fill all the details");
         setIsMandatory(true);
         setIsCreating(false);
         return;
       }
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}`, {
-        method: "PATCH",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (data)
+      const { data, error } = await myFetch(
+        `${baseUrl}/tracker/${secondLast}`,
         {
-          console.log(data);
-          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration`);
+          method: "PATCH",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      else {
+      );
+      if (data) {
+        console.log(data);
+        router.replace(`/internal/trackers/${secondLast}/trackedConfiguration`);
+      } else {
         console.log(error);
         setIsCreating(false);
       }
 
       console.log(selectedCountry);
-    }
-    else {
+    } else {
       const formData = {
         name: trackerName,
         filterValue: {
-         ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
-          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
-          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
-          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
-          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join(',')}),
-          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent.toString(),
+          ...(selectedEventRanking?.length > 0 && {
+            eventRanking: selectedEventRanking.join(","),
+          }),
+          ...(Object.entries(selectedCountry).length > 0 && {
+            eventCountry: Object.keys(selectedCountry).join(","),
+          }),
+          ...(Object.entries(selectedCity).length > 0 && {
+            eventCity: Object.keys(selectedCity).join(","),
+          }),
+          ...(selectedLabels?.length > 0 && {
+            labels: selectedLabels.join(","),
+          }),
+          ...(selectedEventEdition > 0 && {
+            editionRange: selectedEventEdition.toString(),
+          }),
+          ...(selectedEventKeywords.length > 0 && {
+            eventKeywords: selectedEventKeywords.join(","),
+          }),
+          ...(selectedCategories?.length > 0 && {
+            eventCategory: selectedCategories.join(","),
+          }),
+          ...(selectedExhibitScore?.length > 0 && {
+            eventSize: selectedExhibitScore.join(","),
+          }),
+          brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
-          ...(selectedEventFormat?.length>0 && {eventFormat:selectedEventFormat.join(',')}),
-          eventSeries:selectedEventSeries.toString(),
-         ...(selectedEventStatus?.length>0 && {eventStatus:selectedEventStatus.join(',')}),
-          ...( selectedEntry?.length>0 &&{eventEntry:selectedEntry.join(',')}),
-          ...(selectedTrustScore>0&&{trustScore:selectedTrustScore.toString()}),
-          ...(selectedEventFrequency?.length>0 && {eventFrequency:selectedEventFrequency.join(',')}),
-          ...(selectedReptScore>0 &&{reputationScore:selectedReptScore.toString()}),
-          ...(selectedMaturity>0&&{maturity:maturity}),
+          ...(selectedEventFormat?.length > 0 && {
+            eventFormat: selectedEventFormat.join(","),
+          }),
+          eventSeries: selectedEventSeries.toString(),
+          ...(selectedEventStatus?.length > 0 && {
+            eventStatus: selectedEventStatus.join(","),
+          }),
+          ...(selectedEntry?.length > 0 && {
+            eventEntry: selectedEntry.join(","),
+          }),
+          ...(selectedTrustScore > 0 && {
+            trustScore: selectedTrustScore.toString(),
+          }),
+          ...(selectedEventFrequency?.length > 0 && {
+            eventFrequency: selectedEventFrequency.join(","),
+          }),
+          ...(selectedReptScore > 0 && {
+            reputationScore: selectedReptScore.toString(),
+          }),
+          ...(selectedMaturity > 0 && { maturity: maturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
-              new Date(selectedDateRange[0]).toISOString().split('T')[0],
-              new Date(selectedDateRange[1]).toISOString().split('T')[0]
-            ].join(',')
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
           }),
           ...(selectedDateRange?.length === 2 && {
             endDate: [
-              new Date(selectedDateRange[0]).toISOString().split('T')[0],
-              new Date(selectedDateRange[1]).toISOString().split('T')[0]
-            ].join(',')
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
           }),
-          ...(selectedUserRatings?.length>0&&{eventRating:selectedUserRatings.join(',')}),
-         ...(selectedINScore>0&&{ internationalScore:intScore}),
-          ...(selectedInboundScore>0 &&{inboundScore:selectedInboundScore.toString()}),
-          ...(selectedEventAttendanceRange?.length===2 && {eventAttendanceRange:[+selectedEventAttendanceRange[0],+selectedEventAttendanceRange[1]].join(',')}),
-          
+          ...(selectedUserRatings?.length > 0 && {
+            eventRating: selectedUserRatings.join(","),
+          }),
+          ...(selectedINScore > 0 && { internationalScore: intScore }),
+          ...(selectedInboundScore > 0 && {
+            inboundScore: selectedInboundScore.toString(),
+          }),
+          ...(selectedEventAttendanceRange?.length === 2 && {
+            eventAttendanceRange: [
+              +selectedEventAttendanceRange[0],
+              +selectedEventAttendanceRange[1],
+            ].join(","),
+          }),
+
           // info: {
           //   name: trackerName,
           //   location:selectedLocations,
@@ -462,8 +534,8 @@ if(isCreating) return;
         },
       };
       console.log(selectedCountry);
-      
-       if(selectedLocations.length===0 || trackerName.length===0){
+
+      if (selectedLocations.length === 0 || trackerName.length === 0) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -507,74 +579,163 @@ if(isCreating) return;
     fetchData();
   }, []);
   console.log(categoryData);
-  
+
   useEffect(() => {
-    if (editData && editData?.tracker && last==="editTracker") {
+    if (editData && editData?.tracker && last === "editTracker") {
       const newArr: string[] = [
         ...(categoryData?.attendedCategories ?? []),
         ...(categoryData?.nonAttendedCategories ?? []),
-        ...(categoryData?.unscheduledCategories ?? [])
+        ...(categoryData?.unscheduledCategories ?? []),
       ];
-      if(editData.tracker.filterValue?.maturity=="low"){
+      if (editData.tracker.filterValue?.maturity == "low") {
         setSelectedMaturity(25);
       }
       // const filteredArr = newArr
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
-      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split(',') : [])
-      setTrackerName(editData?.tracker?.name || '');
-      setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
-      setSelectedCategories(
-        editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.id)
+      setSelectedEventKeywords(
+        editData?.tracker?.filterValue?.eventKeywords?.length > 0
+          ? editData?.tracker?.filterValue?.eventKeywords?.split(",")
           : []
       );
-      setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
-      setIntScore(editData?.tracker?.filterValue?.internationalScore?.length>0?editData?.tracker?.filterValue?.internationalScore:"")
-      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus && editData?.tracker?.filterValue?.eventStatus?.length!==0?editData?.tracker?.filterValue?.eventStatus?.split(','):[]);
-      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0?[editData?.tracker?.filterValue?.startDate?.split(',')[0],editData?.tracker?.filterValue?.startDate?.split(',')[1]]:[]);
-      setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
-        ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
-        : []);
-        const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
-        const eventCity = editData?.tracker?.filterValue?.eventCity || [];
-        
-        setSelectedLocations([...eventCountry, ...eventCity]);
-      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
-      setSelectedEntry(editData.tracker.filterValue?.eventEntry&&editData.tracker.filterValue?.eventEntry?.length!==0?editData.tracker.filterValue?.eventEntry?.split(','):[])
-      setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
-      setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
+      setTrackerName(editData?.tracker?.name || "");
+      setSelectedLabels(
+        editData?.tracker?.filterValue?.labels?.length > 0
+          ? editData?.tracker?.filterValue?.labels?.split(",")
+          : []
+      );
+      setSelectedCategories(
+        editData?.tracker?.filterValue?.eventCategory?.length > 0
+          ? editData?.tracker?.filterValue?.eventCategory?.map(
+              (cat: Cat) => cat.id
+            )
+          : []
+      );
+      setSelectedEventFormat(
+        editData?.tracker?.filterValue?.eventFormat?.length > 0
+          ? editData?.tracker?.filterValue?.eventFormat?.split(",")
+          : []
+      );
+      setIntScore(
+        editData?.tracker?.filterValue?.internationalScore?.length > 0
+          ? editData?.tracker?.filterValue?.internationalScore
+          : ""
+      );
+      setSelectedEventStatus(
+        editData?.tracker?.filterValue?.eventStatus &&
+          editData?.tracker?.filterValue?.eventStatus?.length !== 0
+          ? editData?.tracker?.filterValue?.eventStatus?.split(",")
+          : []
+      );
+      setSelectedDateRange(
+        editData?.tracker?.filterValue?.startDate?.length > 0
+          ? [
+              editData?.tracker?.filterValue?.startDate?.split(",")[0],
+              editData?.tracker?.filterValue?.startDate?.split(",")[1],
+            ]
+          : []
+      );
+      setCategorySlug(
+        editData?.tracker?.filterValue?.eventCategory?.length > 0
+          ? editData?.tracker?.filterValue?.eventCategory?.map(
+              (cat: Cat) => cat.name
+            )
+          : []
+      );
+      const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
+      const eventCity = editData?.tracker?.filterValue?.eventCity || [];
+
+      setSelectedLocations([...eventCountry, ...eventCity]);
+      setSelectedEventFrequency(
+        editData?.tracker?.filterValue?.eventFrequency?.length > 0
+          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
+          : []
+      );
+      setSelectedEntry(
+        editData.tracker.filterValue?.eventEntry &&
+          editData.tracker.filterValue?.eventEntry?.length !== 0
+          ? editData.tracker.filterValue?.eventEntry?.split(",")
+          : []
+      );
+      setSelectedEventEdition(
+        editData.tracker.filterValue?.editionRange > 0
+          ? editData.tracker.filterValue?.editionRange
+          : 0
+      );
+      setSelectedEventRanking(
+        editData.tracker.filterValue?.eventRanking?.split(",") || []
+      );
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
-      setSelectedCity(editData.tracker.filterValue?.eventCity?.length>0?editData.tracker.filterValue?.eventCity:{} );
-      setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
-      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries.toString() === "true");
-      setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
-      setSelectedReptScore(editData.tracker.filterValue?.reputationScore>0?editData.tracker.filterValue?.reputationScore:0);
-      setSelectedMaturity(editData.tracker.filterValue?.maturity>0?editData.tracker.filterValue?.maturity:0)
-      setSelectedINScore(editData.tracker.filterValue?.internationalScore>0?editData.tracker.filterValue?.internationalScore:0)
-      setSelectedInboundScore(editData.tracker.filterValue?.inboundScore>0?editData.tracker.filterValue?.inboundScore :0)
-      setSelectedUserRatings(editData.tracker.filterValue?.eventRating && editData.tracker.filterValue?.eventRating?.length!==0?editData.tracker.filterValue?.eventRating?.split(',') : [])
-      setSelectedExhibitScore(editData.tracker.filterValue?.eventSize &&  editData.tracker.filterValue?.eventSize?.length!==0?editData.tracker.filterValue?.eventSize?.split(','): [])
+      setSelectedCity(
+        editData.tracker.filterValue?.eventCity?.length > 0
+          ? editData.tracker.filterValue?.eventCity
+          : {}
+      );
+      setSelectedTrustScore(
+        editData.tracker.filterValue?.trustScore > 0
+          ? editData.tracker.filterValue?.trustScore
+          : 0
+      );
+      setSelectedEventSeries(
+        editData.tracker.filterValue?.eventSeries.toString() === "true"
+      );
+      setMaturity(
+        editData.tracker.filterValue?.maturity?.length > 0
+          ? editData.tracker.filterValue?.maturity
+          : ""
+      );
+      setSelectedReptScore(
+        editData.tracker.filterValue?.reputationScore > 0
+          ? editData.tracker.filterValue?.reputationScore
+          : 0
+      );
+      setSelectedMaturity(
+        editData.tracker.filterValue?.maturity > 0
+          ? editData.tracker.filterValue?.maturity
+          : 0
+      );
+      setSelectedINScore(
+        editData.tracker.filterValue?.internationalScore > 0
+          ? editData.tracker.filterValue?.internationalScore
+          : 0
+      );
+      setSelectedInboundScore(
+        editData.tracker.filterValue?.inboundScore > 0
+          ? editData.tracker.filterValue?.inboundScore
+          : 0
+      );
+      setSelectedUserRatings(
+        editData.tracker.filterValue?.eventRating &&
+          editData.tracker.filterValue?.eventRating?.length !== 0
+          ? editData.tracker.filterValue?.eventRating?.split(",")
+          : []
+      );
+      setSelectedExhibitScore(
+        editData.tracker.filterValue?.eventSize &&
+          editData.tracker.filterValue?.eventSize?.length !== 0
+          ? editData.tracker.filterValue?.eventSize?.split(",")
+          : []
+      );
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
-      setSelectedEventAttendanceRange(prevArray => {
-        const gte = editData.tracker.filterValue?.eventAttendanceRange?.split(',')[0];
-        const lte = editData.tracker.filterValue?.eventAttendanceRange?.split(',')[1];
-      
+      setSelectedEventAttendanceRange((prevArray) => {
+        const gte =
+          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
+        const lte =
+          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[1];
+
         if (!isNaN(gte) && !isNaN(lte)) {
-          const newArray = [...prevArray]; 
+          const newArray = [...prevArray];
           newArray[0] = gte;
           newArray[1] = lte;
-          return newArray; 
+          return newArray;
         } else {
-          return prevArray; 
+          return prevArray;
         }
       });
     }
-
-
-  }, [editData])
+  }, [editData]);
 
   console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
@@ -596,7 +757,7 @@ if(isCreating) return;
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
-  
+
   return (
     <>
       <div className={styles.topContainer}>
@@ -606,22 +767,41 @@ if(isCreating) return;
           </div>
           <div>
             <div className={styles.createHead}>Create Custom Tracker</div>
-            <div className={styles.createContent}>Select from the available data filters to create a custom tracker</div>
+            <div className={styles.createContent}>
+              Select from the available data filters to create a custom tracker
+            </div>
           </div>
         </div>
 
         <div className={styles.topInnerContainerRight}>
-          
-          <Link href={last==="create"?'/internal/trackers':`/internal/trackers/${pathName[pathName.length-2]}/trackedConfiguration`} style={{ display: "flex" }}>
+          <Link
+            href={
+              last === "create"
+                ? "/internal/trackers"
+                : `/internal/trackers/${
+                    pathName[pathName.length - 2]
+                  }/trackedConfiguration`
+            }
+            style={{ display: "flex" }}
+          >
             <button className={styles.cancel}>Cancel</button>
           </Link>
-          <button className={styles.save} onClick={saveTrackerHandler}>Save Tracker</button>
+          <button className={styles.save} onClick={saveTrackerHandler}>
+            Save Tracker
+          </button>
         </div>
-
       </div>
-      <div className={styles.searchContainer} style={{border:isMandatory && trackerName.length===0 ?"2px solid red":""}}>
-        <input className={styles.textArea} type='text' placeholder='Enter Tracker Name'
-        
+      <div
+        className={styles.searchContainer}
+        style={{
+          border:
+            isMandatory && trackerName.length === 0 ? "2px solid red" : "",
+        }}
+      >
+        <input
+          className={styles.textArea}
+          type="text"
+          placeholder="Enter Tracker Name"
           value={trackerName}
           onChange={(event) => setTrackerName(event.target.value)}
         />
@@ -637,14 +817,14 @@ if(isCreating) return;
                       <div className={styles.input_title}>
                         Category
                         {categorySlug?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {categorySlug.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {categorySlug[0]}
-                        </span>
-                      )}
+                          <span className={styles.input_selected_no}>
+                            {categorySlug.length}
+                          </span>
+                        ) : (
+                          <span className={styles.input_selected_title}>
+                            {categorySlug[0]}
+                          </span>
+                        )}
                       </div>
                       <Image
                         src={DropIcon}
@@ -670,7 +850,15 @@ if(isCreating) return;
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
-                  <div className={styles.input_container} style={{border:isMandatory && selectedLocations.length===0?"2px solid red":""}}>
+                  <div
+                    className={styles.input_container}
+                    style={{
+                      border:
+                        isMandatory && selectedLocations.length === 0
+                          ? "2px solid red"
+                          : "",
+                    }}
+                  >
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Location
@@ -691,13 +879,13 @@ if(isCreating) return;
                   <Dialog>
                     {({ close }) => (
                       <LocationDropdown
-                      state={selectedLocations}
-                      setState={setSelectedLocations}
-                      onClose={close}
-                      selectedCity={selectedCity}
-                      setSelectedCity={setSelectedCity}
-                      selectedCountry={selectedCountry}
-                      setSelectedCountry={setSelectedCountry}
+                        state={selectedLocations}
+                        setState={setSelectedLocations}
+                        onClose={close}
+                        selectedCity={selectedCity}
+                        setSelectedCity={setSelectedCity}
+                        selectedCountry={selectedCountry}
+                        setSelectedCountry={setSelectedCountry}
                       />
                     )}
                   </Dialog>
@@ -812,7 +1000,7 @@ if(isCreating) return;
                     <div className={styles.input_title}>
                       Dates
                       {selectedDateRange.length > 0 &&
-                        selectedDateRange[0] !== null ? (
+                      selectedDateRange[0] !== null ? (
                         <span className={styles.input_selected_title}>
                           {`${convertISOToOriginalFormat(
                             selectedDateRange[0]
@@ -824,7 +1012,12 @@ if(isCreating) return;
                         ""
                       )}
                     </div>
-                    <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={20}
+                      height={20}
+                    />
                   </div>
                 </Button>
                 <Popover>
@@ -880,8 +1073,9 @@ if(isCreating) return;
                         Event Attendance
                         {selectedEventAttendanceRange[0] !== undefined ? (
                           <span className={styles.input_selected_title}>
-                            {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                              }`}
+                            {`${selectedEventAttendanceRange[0]} - ${
+                              selectedEventAttendanceRange[1] || "Unlimited"
+                            }`}
                           </span>
                         ) : (
                           ""
@@ -935,33 +1129,37 @@ if(isCreating) return;
 
           <div>
             <div
-              className={`${styles.viewContainer} ${theme === "light"
+              className={`${styles.viewContainer} ${
+                theme === "light"
                   ? styles.viewContainerLight
                   : styles.viewContainerDark
-                }`}
+              }`}
             >
               <div className={styles.viewTypeButtons_container}>
                 <div className={styles.advanceFilterBtns}>
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
-                    className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                      } `}
+                    className={`${styles.listBtn} ${
+                      selectedAdvFilter === "AP" ? styles.active : ""
+                    } `}
                     style={{ background: theme === "light" ? "white" : "" }}
                   >
                     Advanced Details
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("IS")}
-                    className={`${styles.mapBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                      }`}
+                    className={`${styles.mapBtn} ${
+                      selectedAdvFilter === "IS" ? styles.active : ""
+                    }`}
                     style={{ background: theme === "light" ? "white" : "" }}
                   >
                     Insights and Score
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("AI")}
-                    className={`${styles.calendarBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                      }`}
+                    className={`${styles.calendarBtn} ${
+                      selectedAdvFilter === "AI" ? styles.active : ""
+                    }`}
                     style={{ background: theme === "light" ? "white" : "" }}
                   >
                     Audience Intel
@@ -985,7 +1183,7 @@ if(isCreating) return;
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEventFormat &&selectedEventFormat[0]}
+                              {selectedEventFormat && selectedEventFormat[0]}
                             </span>
                           )}
                         </div>
@@ -1103,7 +1301,7 @@ if(isCreating) return;
                     </div>
                   </Button>
                   <Popover>
-                    <Dialog className={styles.noBorder} >
+                    <Dialog className={styles.noBorder}>
                       <RangeSlider
                         state={selectedEventEdition}
                         setState={setSelectedEventEdition}
@@ -1116,7 +1314,7 @@ if(isCreating) return;
                   <Button>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                      <div className={styles.input_title}>
+                        <div className={styles.input_title}>
                           Event Keywords
                           {selectedEventKeywords?.length > 1 ? (
                             <span className={styles.input_selected_no}>
@@ -1246,7 +1444,7 @@ if(isCreating) return;
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedTrustScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1311,7 +1509,7 @@ if(isCreating) return;
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedReptScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1339,9 +1537,9 @@ if(isCreating) return;
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          {maturity && maturity?.length> 0 && (
+                          {maturity && maturity?.length > 0 && (
                             <span className={styles.input_selected_title}>
-                              {maturity} 
+                              {maturity}
                             </span>
                           )}
                         </div>
@@ -1351,7 +1549,7 @@ if(isCreating) return;
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={(maturity ?? [])?.length> 0 }
+                                checked={(maturity ?? [])?.length > 0}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1381,7 +1579,7 @@ if(isCreating) return;
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           International Score
-                          {intScore && intScore?.length>0 && (
+                          {intScore && intScore?.length > 0 && (
                             <span className={styles.input_selected_title}>
                               {intScore}
                             </span>
@@ -1393,7 +1591,7 @@ if(isCreating) return;
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={(intScore ?? [])?.length>0}
+                                checked={(intScore ?? [])?.length > 0}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1428,7 +1626,7 @@ if(isCreating) return;
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedInboundScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1472,7 +1670,7 @@ if(isCreating) return;
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => { }}
+                                onChange={() => {}}
                                 checked={selectedUserRatings.length !== 0}
                               />
                               <span className={styles.slider}></span>

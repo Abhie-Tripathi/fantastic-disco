@@ -1,18 +1,19 @@
-import React,{useState, useEffect} from 'react'
-import styles from './allTrackers.style.module.css'
+import React, { useState, useEffect } from "react";
+import styles from "./allTrackers.style.module.css";
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
-import Image from 'next/image'
-import Location from '/public/location_on.svg'
-import GoTo from '/public/goTo.svg'
-import Vectore6 from '/public/newVector.svg'
-import Vectore7 from '/public/lucide_timer.svg'
-import Vectore8 from '/public/expired.svg'
-import Link from 'next/link';
+import Image from "next/image";
+import Location from "/public/location_on.svg";
+import GoTo from "/public/goTo.svg";
+import Vectore6 from "/public/newVector.svg";
+import Vectore7 from "/public/lucide_timer.svg";
+import Vectore8 from "/public/expired.svg";
+import Link from "next/link";
+import { GAEvent } from "@/utils/GAEvent";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item }: any) => {
   // const { theme } = useTheme();
-  console.log(Math.floor(item?.groupedEventsCountByDate.length/7));
+  console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -85,12 +86,21 @@ const AllTrackers = ({ item }: any) => {
     setLocations([...eventCountry, ...eventCity]);
   }, [item]);
   return (
-
     <div className={styles.container}>
-      <Link href={{
-        pathname: `/internal/trackers/${item.id}/trackedEvents`,
-        // query: { data: JSON.stringify(item) }
-      }}>
+      <Link
+        href={{
+          pathname: `/internal/trackers/${item.id}/trackedEvents`,
+          // query: { data: JSON.stringify(item) }
+        }}
+        onClick={() =>
+          GAEvent(
+            "trackers",
+            "Trackers",
+            "Saved Tracker | Any Filter Applied",
+            "View"
+          )
+        }
+      >
         <div className={styles.cardOne}>
           <div className={styles.heading}>{item.name}</div>
           <Image src={GoTo} alt="goTo" />
@@ -98,25 +108,42 @@ const AllTrackers = ({ item }: any) => {
         <div className={styles.cardTwo}>
           <Image src={Location} alt="location" />
           <div className={styles.location}>
-            {locations?.length>0 && locations[0]}
-              {locations?.length>1 &&<span className={styles.moreBtn}>+{
-                locations.length-1}</span>}</div>
+            {locations?.length > 0 && locations[0]}
+            {locations?.length > 1 && (
+              <span className={styles.moreBtn}>+{locations.length - 1}</span>
+            )}
+          </div>
         </div>
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore6} alt="newVector" />New</div>
-              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.new}</div>
+              <div className={styles.new}>
+                <Image src={Vectore6} alt="newVector" />
+                New
+              </div>
+              <div className={styles.number} style={{ color: "black" }}>
+                {item.groupedEventsCountByStatus.groupedEventsByStatus.new}
+              </div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore7} alt="lucide_timer" />Active</div>
-              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.active}</div>
+              <div className={styles.new}>
+                <Image src={Vectore7} alt="lucide_timer" />
+                Active
+              </div>
+              <div className={styles.number} style={{ color: "black" }}>
+                {item.groupedEventsCountByStatus.groupedEventsByStatus.active}
+              </div>
               <div className={styles.events}>Events</div>
             </div>
             <div className={styles.cardType}>
-              <div className={styles.new}><Image src={Vectore8} alt="expired" />Expired</div>
-              <div className={styles.number} style={{color: "black"}}>{item.groupedEventsCountByStatus.groupedEventsByStatus.expired}</div>
+              <div className={styles.new}>
+                <Image src={Vectore8} alt="expired" />
+                Expired
+              </div>
+              <div className={styles.number} style={{ color: "black" }}>
+                {item.groupedEventsCountByStatus.groupedEventsByStatus.expired}
+              </div>
               <div className={styles.events}>Events</div>
             </div>
           </div>
@@ -127,8 +154,7 @@ const AllTrackers = ({ item }: any) => {
         </div>
       </Link>
     </div>
-
-  )
-}
+  );
+};
 
 export default AllTrackers;
