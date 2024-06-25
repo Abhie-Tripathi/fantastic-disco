@@ -1,44 +1,41 @@
-'use client'
-import React, { Suspense, lazy} from 'react'
+import React, { FormEvent } from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
 import EventDescription from '@/app/components/internal/eventdetail/EventDescription'
 import Organiser from '@/app/components/internal/eventdetail/Organiser'
-import Scores from '@/app/components/staticDetailPage/Scores'
-import DateCard from '@/app/components/staticDetailPage/DateCard'
-import RightArrowIcon from "/public/rightbigarrow.svg"
-import Loading from '@/app/components/UI/Loading'
 import FestIcon from '/public/festival.svg'
-import Script from 'next/script'
+import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 
 const Page = () => {
-
     const tags = ["#paint", "#art", "#fest", "#fest", "#fest", "#fest", "#fest"]
     const description = "Unleash your creativity and immerse yourself in the world of art at the Painting Fest in New York. This vibrant celebration brings together artists, painters, and art enthusiasts from all walks of life to celebrate the joy of creation. Whether you're a seasoned artist or a novice, the festival offers a welcoming space to express yourself and explore new artistic horizons. From live painting demonstrations to interactive workshops, there's something for everyone to enjoy. Join us for a weekend filled with color, inspiration, and community as we come together to paint the town red, blue, and every color of the rainbow."
 
-    const Map = lazy(() => import("@/app/components/staticDetailPage/Map"));
+    const shareUrl = "http://console.eventgeni.com/detailpage";
+    const title = "Check out this amazing content!";
+    const media = "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg";
+
     return (
         <div className={styles.body}>
             <div className={styles.leftContainer}>
                 <div className={styles.headerContainer}>
-                    <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={250} height={250} className={styles.poster} />
-                    <div className={styles.name_categoryContainer}>
-                        <div className={styles.eventName}>Painting Fest</div>
-                        <div className={styles.categoryContainer}>
-                            <Image src={FestIcon} alt='fest'/>
-                            <div className={styles.category}>Tradeshow</div>
-                        </div>
-                    </div>
-                </div>
+                    <Image src={"https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg"} alt='poster' width={450} height={250} className={styles.poster} />
 
+                </div>
                 <div className={styles.tags}>{tags.map((tag, key) => (
                     <div key={key} className={styles.tag}>{tag}</div>
                 ))}
                 </div>
-                <EventDescription open={true} description={description} speakers={false} shortlist={false} />
-                <Organiser open={true} />
+                <EventDescription open={false} description={description} speakers={false} shortlist={false} />
+                <Organiser open={false} />
             </div>
             <div className={styles.rightContainer}>
+                <div className={styles.name_categoryContainer}>
+                    <div className={styles.eventName}>Painting Fest</div>
+                    <div className={styles.categoryContainer}>
+                        <Image src={FestIcon} alt='fest' />
+                        <div className={styles.category}>Tradeshow</div>
+                    </div>
+                </div>
                 <div className={styles.datesContainer}>
                     <div className={styles.eventDetails_dateTime_heading}>
                         Date & Time
@@ -55,39 +52,16 @@ const Page = () => {
                             TIME ZONE: -0500 (AMERICA/NEW_YORK)
                         </div>
                     </div>
-                    <div className={styles.eventDetails_dates_container}>
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                        <DateCard />
-                    </div>
                 </div>
-                <div className={styles.venueContainer}>
-                    <div>
-                        <div className={styles.venueHeading}>VENUE</div>
-                        <div className={styles.venueName}>The Konzerthaus Berlin</div>
-                        <div className={styles.venueLocation}>Gendarmenmarkt square</div>
-                    </div>
-                    <div className={styles.venueButton}>
-                        <Image src={RightArrowIcon} alt='arrow' />
-                        <div>Search this venue</div>
-                    </div>
-                </div>
-                <div className={styles.score_locationContainer}>
-                    <div className={styles.scoreContainer}>
-                        <Scores />
-                    </div>
-                    <div className={styles.locationContainer}>
-                        <div className={styles.locationHeading}>LOCATION</div>
-                        <div className={styles.locationName}>Berlin, Germany</div>
-                        <div className={styles.locationCoordinate}>Center : 40.7128, -74.0060</div>
-                        <Suspense fallback={<Loading />}>
-                            {/* <Map lat={40.7128} long={-74.0060} containerWidth={mapContainerWidth} /> */}
-                            <Map lat={40.7128} long={-74.0060} />
-                        </Suspense>
-                    </div>
+                <form className={styles.registerContainer} >
+                    <div className={styles.registerHeading}>One Click Register</div>
+                    <input type='text' placeholder='Enter your Name' className={styles.registerInput} />
+                    <input type='text' placeholder='Enter your Email' className={styles.registerInput} />
+                    <button type='button' className={styles.registerBtn}>Register</button>
+                </form>
+                <div className={styles.shareContainer}>
+                    <div className={styles.shareHeading}>Share</div>
+                   <ShareButtons shareUrl={shareUrl} title = {title}/>
                 </div>
             </div>
         </div>
@@ -95,3 +69,16 @@ const Page = () => {
 }
 
 export default Page
+
+export function generateMetadata() {
+    const title = 'My D etail Page';
+    const description = 'My Detail page description';
+  
+    return {
+      title,
+      description,
+      openGraph : {
+        images : ['https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg']
+      }
+    };
+  }
