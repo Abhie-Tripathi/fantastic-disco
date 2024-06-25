@@ -8,7 +8,7 @@ interface Props{
 
 const ScrollView = ({type}: Props) => {
     return (
-        <div className={type === "top" ? styles.topBody : styles.leftBody}>
+        <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : ""}>
             <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
                 <EventCard />
                 <EventCard />

@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 .stickyFooter{
     position: absolute;
@@ -22,6 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 .website{
     height:90%;
