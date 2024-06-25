@@ -41,7 +41,7 @@ import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
 import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
 import CloseIcon from "/public/internal/cross.svg";
-import FilterIcon from "/public/internal/advanceFilter.svg"
+import FilterIcon from "/public/internal/advanceFilter.svg";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -67,6 +67,7 @@ import { baseUrl } from "@/constants";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import { toast, ToastContainer } from "react-toastify";
+import { GAEvent } from "@/utils/GAEvent";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -90,7 +91,7 @@ const Search = () => {
     searchParams.get("location")?.split(",") || []
   );
   interface SelectedLocation {
-    [id: string]: string,
+    [id: string]: string;
   }
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
@@ -164,6 +165,7 @@ const Search = () => {
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
 
   const createTrackerHandler = () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
     const trackerFilters: any = {};
     if (selectedCategories.length > 0) {
       trackerFilters.category = selectedCategories;
@@ -226,6 +228,7 @@ const Search = () => {
   };
 
   const searchHandler = () => {
+    GAEvent("research", "Filters", "Filter Applied", "Apply");
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
       params.set("category", selectedCategories.join(","));
@@ -377,26 +380,24 @@ const Search = () => {
     // Maturity
     if (selectedMaturity > 0) {
       // queryString.maturity = selectedMaturity;
-      if(selectedMaturity >= 1 && selectedMaturity <=25)
-        queryString.maturity = 'new';
-      else if(selectedMaturity >= 26 && selectedMaturity <= 50)
-        queryString.maturity = 'low';
-      else if(selectedMaturity >= 51 && selectedMaturity <= 75)
-        queryString.maturity = 'medium';
-      else
-        queryString.maturity = 'High';
+      if (selectedMaturity >= 1 && selectedMaturity <= 25)
+        queryString.maturity = "new";
+      else if (selectedMaturity >= 26 && selectedMaturity <= 50)
+        queryString.maturity = "low";
+      else if (selectedMaturity >= 51 && selectedMaturity <= 75)
+        queryString.maturity = "medium";
+      else queryString.maturity = "High";
     }
 
     // Int. Score
     if (selectedINScore > 0) {
-      if(selectedINScore >= 1 && selectedINScore <=25)
-        queryString.internationalScore = 'local';
-      else if(selectedINScore >= 26 && selectedINScore <= 50)
-        queryString.internationalScore = 'National';
-      else if(selectedINScore >= 51 && selectedINScore <= 75)
-        queryString.internationalScore = 'Regional';
-      else
-        queryString.internationalScore = 'International';
+      if (selectedINScore >= 1 && selectedINScore <= 25)
+        queryString.internationalScore = "local";
+      else if (selectedINScore >= 26 && selectedINScore <= 50)
+        queryString.internationalScore = "National";
+      else if (selectedINScore >= 51 && selectedINScore <= 75)
+        queryString.internationalScore = "Regional";
+      else queryString.internationalScore = "International";
     }
 
     // Inbound Score
@@ -537,7 +538,7 @@ const Search = () => {
   const eventSelectHandler = (eventId: string, eventName: string) => {
     if (!selectedEvents[eventId]) {
       setSelectedEvents((prev) => {
-        if(Object.keys(prev).length + 1 > 4) {
+        if (Object.keys(prev).length + 1 > 4) {
           setShowAllEvents(true);
         }
         return { ...prev, [eventId]: eventName };
@@ -547,7 +548,7 @@ const Search = () => {
 
   const removeSelectionHandler = (eventId: string) => {
     setSelectedEvents((prev) => {
-      if(Object.keys(prev).length - 1 <= 4) {
+      if (Object.keys(prev).length - 1 <= 4) {
         setShowAllEvents(false);
       }
       const updatedEvents = { ...prev };
@@ -602,23 +603,27 @@ const Search = () => {
       <div className={styles.container}>
         <div className={styles.searchContainer}>
           <div className={styles.searchbar}>
-            {(Object.keys(selectedEvents).length > 0 && !showAllEvents) && (
+            {Object.keys(selectedEvents).length > 0 && !showAllEvents && (
               <div className={styles.eventName_container}>
                 {Object.entries(selectedEvents).map(
-                  ([eventId, eventName], index) => (
-                    (index < 4 ?
-                    (<div className={styles.eventName_chip} key={index}>
-                      <span className={styles.eventName_chip_text} >{eventName}</span>
-                      <Image
-                        src={CloseIcon}
-                        width={14}
-                        height={14}
-                        alt="close"
-                        className={styles.closeChip}
-                        onClick={() => removeSelectionHandler(eventId)}
-                      />
-                    </div>) : <></>)
-                  )
+                  ([eventId, eventName], index) =>
+                    index < 4 ? (
+                      <div className={styles.eventName_chip} key={index}>
+                        <span className={styles.eventName_chip_text}>
+                          {eventName}
+                        </span>
+                        <Image
+                          src={CloseIcon}
+                          width={14}
+                          height={14}
+                          alt="close"
+                          className={styles.closeChip}
+                          onClick={() => removeSelectionHandler(eventId)}
+                        />
+                      </div>
+                    ) : (
+                      <></>
+                    )
                 )}
               </div>
             )}
@@ -640,12 +645,14 @@ const Search = () => {
             </button>
           </div>
 
-          {(Object.keys(selectedEvents).length > 0 && showAllEvents) && (
+          {Object.keys(selectedEvents).length > 0 && showAllEvents && (
             <div className={styles.eventName_container2}>
               {Object.entries(selectedEvents).map(
                 ([eventId, eventName], index) => (
                   <div className={styles.eventName_chip} key={0}>
-                    <span className={styles.eventName_chip_text} >{eventName}</span>
+                    <span className={styles.eventName_chip_text}>
+                      {eventName}
+                    </span>
                     <Image
                       src={CloseIcon}
                       width={14}
@@ -661,7 +668,12 @@ const Search = () => {
           )}
         </div>
         {isSearchResultOpen && searchResult && searchResult.length > 0 && (
-          <div ref={triggerRef} className={`${styles.resultContainer} ${theme === "light" ? styles.resultContainer_light : ""}`}>
+          <div
+            ref={triggerRef}
+            className={`${styles.resultContainer} ${
+              theme === "light" ? styles.resultContainer_light : ""
+            }`}
+          >
             <div className={styles.resultData_heading}>Suggestions</div>
             {searchResult.map((item) => (
               <div
@@ -670,7 +682,9 @@ const Search = () => {
                 onClick={() => eventSelectHandler(item.id, item.name)}
               >
                 {item.name}
-                <span className={styles.resultData_subHeading} >{item.organizer.name}</span>
+                <span className={styles.resultData_subHeading}>
+                  {item.organizer.name}
+                </span>
               </div>
             ))}
           </div>
@@ -923,7 +937,10 @@ const Search = () => {
 
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container} style={{width:"fit-content"}}>
+                <div
+                  className={styles.input_container}
+                  style={{ width: "fit-content" }}
+                >
                   <div className={styles.input}>
                     <div className={styles.input_title}>
                       Event Attendance
@@ -971,11 +988,20 @@ const Search = () => {
             <button
               onClick={() => {
                 setShowAdvanceFilter((prev) => !prev);
+                GAEvent(
+                  "research",
+                  "Filters",
+                  "All Filter Modal | Viewed",
+                  "More Filter Icon"
+                );
               }}
-              style={{display:"flex", alignItems:"center", gap:"4px"}}
+              style={{ display: "flex", alignItems: "center", gap: "4px" }}
             >
               <Image src={FilterIcon} width={18} height={18} alt="filters" />
-              <span className={styles.clearfilter_button} > Advanced Filters</span>
+              <span className={styles.clearfilter_button}>
+                {" "}
+                Advanced Filters
+              </span>
             </button>
           </div>
         </div>
@@ -1619,7 +1645,12 @@ const Search = () => {
           </div>
 
           <DialogTrigger>
-            <Button className={styles.exportButton}>
+            <Button
+              className={styles.exportButton}
+              onPress={() =>
+                GAEvent("research", "Export", "Export Clicked", "Export Icon")
+              }
+            >
               <Image src={ExportIcon} width={20} height={20} alt="exporticon" />
               <div className={styles.exportedno_title}>Export</div>
             </Button>

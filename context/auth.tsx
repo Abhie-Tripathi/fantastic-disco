@@ -82,12 +82,20 @@ export const AuthContextProvider = ({ children }: any) => {
       setLocalStorage(data);
     }
 
+    let emailError = null;
+    let passwordError = null;
+
     if (error) {
       console.log(error);
-      return;
+      if (error.message.includes("email")) {
+        emailError = error.message;
+      }
+      if (error.message.includes("password")) {
+        passwordError = error.message;
+      }
     }
 
-    return [{ data, error }];
+    return [{ data, emailError, passwordError }];
   };
 
   const signOut = () => {

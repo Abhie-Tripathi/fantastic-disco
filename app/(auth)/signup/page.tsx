@@ -227,13 +227,19 @@ const SignUp = () => {
 
               <div className={styles.privacyPolicy}>
                 By signing up, you agree to our
-                <span className={styles.privacyPolicy_hightlighted}>
-                  Terms{" "}
-                </span>
+                <Link
+                  href="https://10times.com/terms-of-service"
+                  className={styles.privacyPolicy_hightlighted}
+                >
+                  Terms&nbsp;
+                </Link>
                 and
-                <span className={styles.privacyPolicy_hightlighted}>
+                <Link
+                  href="https://10times.com/privacy-policy"
+                  className={styles.privacyPolicy_hightlighted}
+                >
                   Privacy Policy
-                </span>
+                </Link>
               </div>
             </div>
           </form>
