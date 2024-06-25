@@ -213,6 +213,7 @@ const Table = ({
     "1b27ff90-1a46-4f49-85eb-607b4d510eb1"
   );
   const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([]);
+  const [appliedKeywords, setAppliedKeywords] = useState<String[]>([]);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
@@ -456,31 +457,43 @@ const Table = ({
       fetchSavedData();
       setIsLoaded(true);
     } else {
-      try {
-        setIsLoaded(false);
-        const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
-          (currPage - 1) * 10
-        }&${queryString}`;
-        // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
-        const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
-        });
-        if (apiData.data) {
-          if (currPage === 1) {
-            setTotalPages(
-              Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
-            );
-            setEventPerPage(apiData.data.events);
-          } else {
-            setEventPerPage(apiData.data.events);
-          }
-        } else setEventPerPage([]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoaded(true);
-      }
+      if (queryString) {
+        try {
+          setIsLoaded(false);
+
+          const params = new URLSearchParams(queryString);
+          const obj: any = {};
+          params.forEach((value, key) => {
+            obj[key] = decodeURIComponent(value);
+          });
+          if (obj["eventKeywords"]) {
+            setAppliedKeywords(obj["eventKeywords"].split("+"));
+          } else setAppliedKeywords([]);
+
+          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
+            (currPage - 1) * 10
+          }&${queryString}`;
+          // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
+          const apiData = await myFetch(apiUrl, {
+            method: "GET",
+            headers: headers,
+          });
+          if (apiData.data) {
+            if (currPage === 1) {
+              setTotalPages(
+                Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
+              );
+              setEventPerPage(apiData.data.events);
+            } else {
+              setEventPerPage(apiData.data.events);
+            }
+          } else setEventPerPage([]);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setIsLoaded(true);
+        }
+      } else setIsLoaded(true);
     }
   };
   useEffect(() => {
@@ -640,6 +653,8 @@ const Table = ({
               <th>City</th>
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
+              {appliedKeywords.length > 0 && <th>Matched Keywords</th>}
+              {appliedKeywords.length >= 5 && <th>Match Score</th>}
               <th>Category</th>
               {showInsights.eventSeries ||
                 (eventPerPage[0]?.series && <th>Event Series</th>)}
@@ -775,6 +790,44 @@ const Table = ({
                       </>
                     )}
                   </td>
+                )}
+                {appliedKeywords.length > 0 && (
+                  <>
+                    <td style={{textAlign: "center"}}>
+                      {event.matchedKeywords.length == 0 ? (
+                        <>-</>
+                      ) : event.matchedKeywords.length == 1 ? (
+                        event.matchedKeywords[0]
+                      ) : (
+                        <>
+                          {event.matchedKeywords[0]}&nbsp;
+                          <a
+                            className={styles["products-list"]}
+                            href="javascript:void(0)"
+                            data-toggle="tooltip"
+                            title={listProducts(event.matchedKeywords)}
+                          >
+                            +{event.matchedKeywords.length - 1}
+                          </a>
+                        </>
+                      )}
+                    </td>
+                    {appliedKeywords.length >= 5 && (
+                      <td>
+                        {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    )}
+                  </>
                 )}
                 <td>
                   {/* Finance & Banking */}

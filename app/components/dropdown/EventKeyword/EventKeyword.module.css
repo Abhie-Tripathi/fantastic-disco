@@ -7,7 +7,7 @@
     background-color: #131313;
     color: #ffffff;
     border-top: none;
-    border-radius: 2px;
+    border-radius: 6px;
     padding: 20px;
 }
 
@@ -17,9 +17,10 @@
 }
 
 .header {
- display: flex;
+ /* display: flex;
  align-items: center;
- justify-content: space-between;
+ justify-content: space-between; */
+ border-bottom: 1px solid #E0E0E080;
 }
 
 .header_title {
@@ -42,16 +43,59 @@
  cursor: pointer;
 }
 
-.tabs_container {
+/* .tabs_container {
  background-color: inherit;
  display: flex;
  justify-content: space-between;
  box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
  border-radius: 30px;
  width: 90%;
+} */
+
+.tabs_container {
+    /* background-color: #fbf8ff; */
+    background-color: #1a1a1a;
+    padding: 10px 0px;
+    border-radius: 12px;
+    margin: 15px 0px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.tab {
+.tabs_container_light {
+    background-color: #FBF8FF;
+}
+
+.keywordBtns {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.keywordBtns .tab {
+    width: 225px;
+    height: 40px;
+    font-size: inherit;
+    font-family: inherit;
+    background: #131313;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+  
+.keywordBtns_light .tab {
+    background: white;
+    color: inherit;
+}
+  
+.keywordBtns .tab.active {
+    border: 1px solid #6750a4;
+    border-radius: 4px;
+    /* color: white; */
+}
+
+/* .tab {
  padding: 0.44em 2em;
  color: inherit;
  font-size: 14px;
@@ -68,21 +112,21 @@
  border-radius: 30px;
  box-shadow: 1.73px 1.73px 6.92px 0px #00000040;
  color: white;
-}
+} */
 
 .searchBar_container {
  display: flex;
  justify-content: space-between;
  align-items: center;
- margin: 25px 0;
+ margin: 15px 0;
  padding: 10px;
- border-radius: 30px;
+ border-radius: 6px;
  background-color: #1A1A1A;
 }
 
 .searchBar_container_light{
-    background-color: var(--secondary-bg-light);
-    color: var(--primary-color-light);
+    background-color: #F7F7F9;
+    color: #A1A2A2;
 }
 
 .inputSearch {
@@ -110,14 +154,20 @@
 }
 
 .keyword_chip {
- padding: 4px 7px 4px 7px;
+ padding: 2px 24px;
  display: flex;
  align-items: center;
  gap: 15px;
- border: 1px solid #ddd;
- border-radius: 30px;
- color: #6750a4;
- font-weight: 500;
+ /* border: 1px solid #ddd; */
+ border-radius: 6px;
+ /* color: #6750a4; */
+ /* font-weight: 500; */
+ background-color: #292929;
+ height: 36px;
+}
+
+.keyword_chip_light {
+    background-color: #F6F6FF
 }
 
 .closeChip {

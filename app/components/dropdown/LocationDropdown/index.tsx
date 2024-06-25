@@ -297,7 +297,7 @@ console.log(selectedCountry);
             onClick={() => locationSelectHandler(data.state, data.country)}
             key={data.id}
           >
-            {data?.state}, {data?.country}
+            {data?.state}, {data?.countryName}
           </div>
         ))}
 

@@ -16,6 +16,9 @@
     height: 100%;
     width: 60%;
 }
+.fullPreview{
+    width: 100%;
+}
 .preview_btnContainer{
     margin-top: 20px;
     background-color: #FAFAFA;

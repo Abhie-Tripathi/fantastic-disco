@@ -266,6 +266,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
   const [datesWithEvents, setDatesWithEvents] = useState<any>();
 
   const fetchEventsData = async () => {
+    if(props.queryString){
     try {
       let apiMonth = '';
       if (month == 0) return;
@@ -286,7 +287,10 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setMonthEvents({});
     }
+    }else
+      setMonthEvents({});
   }
 
   const setupCalendar = () => {
