@@ -60,6 +60,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                         selectedTemplate === "CV" ? <CaraouselView /> :
                         selectedTemplate === "HS" ? <ScrollView type='top' /> :
                         selectedTemplate === "LScroll" ?<ScrollView type='left' /> : 
+                        selectedTemplate === "RScroll" ?<ScrollView type='right' /> : 
                         selectedTemplate === "PUV" ? <Popup /> : <></>}
                     </div>
                     <div className={styles.previewBtnContainer}>

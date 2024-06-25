@@ -101,13 +101,13 @@
     height: 650px;
 }
 .yourWidgetModal {
-    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
-    height: 89%;
+    filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
+    height: 95%;
     width: 40%;
-    background-color: black;
+    background-color: #FFFFFF;
     position: absolute;
     z-index: 1;
-    top: 0;
+    top: 10px;
     right: -45%; /* Start off-screen */
     padding: 20px;
     transition: right 0.3s ease; /* Smooth transition */
@@ -115,5 +115,5 @@
 }
 
 .yourWidgetModal.open {
-    right: 0; /* Move on-screen */
+    right: 3%; /* Move on-screen */
 }
