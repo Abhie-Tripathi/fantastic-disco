@@ -13,7 +13,7 @@ import leftImage from "/public/update_password_left_logo.png";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 
-const PasswordReset = ({ params }: { params: { token: string } }) => {
+const PasswordReset = ({ params }: { params: { token: string[] } }) => {
   const [password, setPassword] = useState("");
   const [cnfrmPassword, setCnfrmPassword] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
@@ -21,15 +21,20 @@ const PasswordReset = ({ params }: { params: { token: string } }) => {
     useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   useLayoutEffect(() => {
     const verifyToken = async () => {
+      const dataToSend = {
+        token: decodeURIComponent(params.token.join("/")),
+      };
+
       const { data, error } = await myFetch(
         `${baseUrl}/auth/customer/reset-password/page`,
         {
           method: "POST",
-          body: params.token,
+          body: JSON.stringify(dataToSend),
           headers: {
             "Content-Type": "application/json",
           },
@@ -64,9 +69,12 @@ const PasswordReset = ({ params }: { params: { token: string } }) => {
       setErrors({ cnfrmPassword: "Passwords do not match. Try again" });
       return;
     }
+
+    setIsLoading(true);
+
     const dataToSend = {
       password: password,
-      token: params.token,
+      token: decodeURIComponent(params.token.join("/")),
     };
 
     const { data, error } = await myFetch(
@@ -84,6 +92,7 @@ const PasswordReset = ({ params }: { params: { token: string } }) => {
       console.log("Reset", data);
       router.push("/signin");
     }
+    setIsLoading(false);
 
     if (error) {
       console.log("Reset", error);
@@ -93,7 +102,11 @@ const PasswordReset = ({ params }: { params: { token: string } }) => {
   };
 
   if (isValidToken === null) {
-    return <Loading />;
+    return (
+      <div style={{ textAlign: "center" }}>
+        <Loading />
+      </div>
+    );
   }
 
   if (isValidToken === false) {
@@ -186,9 +199,9 @@ const PasswordReset = ({ params }: { params: { token: string } }) => {
                 <button
                   className={styles.button}
                   type="submit"
-                  onClick={forgetPasswordHandler}
+                  disabled={isLoading} // Disable button while loading
                 >
-                  Submit
+                  {isLoading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </div>

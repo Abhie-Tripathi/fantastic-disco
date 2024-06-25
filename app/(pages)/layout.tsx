@@ -5,6 +5,8 @@ import { AuthContextProvider, ThemeProvider } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -26,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
+      <ToastContainer />
         <AuthContextProvider>
           <ThemeProvider>
             <Navbar />

@@ -10,6 +10,9 @@ import Tracker from "@/app/components/sidebar/Icons/Trackers";
 import OutreachIcon from "@/app/components/sidebar/Icons/Outreach";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/context";
+import Image from "next/image";
+import logo from "/public/croppedlogo.png";
+
 const Sidebar = () => {
   const pathName = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
@@ -23,10 +26,22 @@ const Sidebar = () => {
       onMouseEnter={() => setIsSidebarOpen(true)}
       onMouseLeave={() => setIsSidebarOpen(false)}
     >
+      <Link href="/internal" className={`${styles.link} `}>
+        <Image
+          className={styles.logo_image}
+          src={logo}
+          width={40}
+          height={48}
+          alt="logo"
+        />
+        <div className={styles.logo_title}>EventGeni</div>
+      </Link>
 
       <Link
         href="/internal"
-        className={`${styles.link} ${pathName === "/internal" ? styles.active : ""}`}
+        className={`${styles.link} ${
+          pathName === "/internal" ? styles.active : ""
+        }`}
       >
         <DashboardIcon />
         <div className={styles.linkName}>Dashboard</div>

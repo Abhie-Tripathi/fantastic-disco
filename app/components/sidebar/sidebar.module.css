@@ -10,10 +10,21 @@
   flex-direction: column;
   transition: width 0.3s ease;
   overflow: hidden;
-  margin-top: 80px;
+  padding-top: 22.5px;
   border-right: 1px solid #2c2c2c;
+  z-index: 120;
 }
 
+.logo_image {
+  margin-left: -10px;
+  margin-bottom: 17px;
+}
+
+.logo_title {
+  font-size: 24px;
+  margin-bottom: 17px;
+  margin-left: 5px;
+}
 .container_light {
   background-color: white;
   border-right: 1px solid #dcdfe4;
@@ -77,5 +88,4 @@
 .sublink:hover {
   font-weight: 500;
   color: #8f68ce;
-  
 }
