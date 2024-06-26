@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.module.css";
@@ -77,27 +77,42 @@ const Map = (props: MapProps) => {
     latitude: 51.50853,
     longitude: -0.076132,
     width: fullView ? "calc(100vw - 85px)" : "",
-    height: fullView ? "85vh" : "350px",
+    height: fullView ? "90vh" : "350px",
     zoom: 2,
   });
 
+  interface countryEventCounts {
+    [id: string] : number
+  }
+  const [countryEventCounts, setCountryEventCounts] = useState<countryEventCounts>({});
+
+  const getOpacityValue = (countryId: string) => {
+    if(countryId){
+      let totalCount = (countryEventCounts['totalEventCount'] && countryEventCounts['totalEventCount'] !== 0) ? countryEventCounts['totalEventCount'] : 1;
+      let val = Math.round((countryEventCounts[countryId] / totalCount)*100);
+      if(val == 0) return 0.1;
+      else if(val < 20) return 0.2;
+      else if(val > 80) return 0.8;
+      else return val / 100;
+    }else
+      return 0.1;
+  };
+
   const fetchEventsData = async() => {
-    let countriesArr = [];
+    let mapViewType = 'world';
     if(props.queryString){
       const params = new URLSearchParams(props.queryString);
       const obj:any = {};
       params.forEach((value, key) => {
         obj[key] = decodeURIComponent(value);
       });
-      if(obj['eventCountry']){
-        countriesArr = obj['eventCountry'].split(',');
-        setCountries(countriesArr);
-      }else
-        setCountries([]);
+      if(obj['eventCountry'] || obj['eventRegion']){
+        mapViewType = 'country';
+      }
     }
     try {
       let apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=10&offset=0&${props.queryString}`;
-      if(countriesArr.length > 0)
+      if(mapViewType == 'country')
         apiUrl = `${baseUrl}/event/search?groupBy=country&${props.queryString}`;
 
       const apiData = await myFetch(apiUrl, {
@@ -106,9 +121,16 @@ const Map = (props: MapProps) => {
       });
       if(apiData.data) {
         // setZonePerPage(apiData.data);
-        if(countriesArr.length > 0){
+        if(mapViewType == 'country'){
           setCountryPerPage(apiData.data);
           setEventPerPage([]);
+          const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
+          const countryEventCountsObj: any = {};
+          countryEventCountsObj['totalEventCount'] = totalCount;
+          apiData.data.forEach((country: any) => {
+            countryEventCountsObj[country.countryId] = country.eventCount;
+          });
+          setCountryEventCounts(countryEventCountsObj);
         }
         else{
           setEventPerPage(apiData.data.events);
@@ -152,12 +174,12 @@ const Map = (props: MapProps) => {
       handleLoadMoreEvents();
   }, [currPage]);
 
-  const [countries, setCountries] = useState<any[]>([]);
-
   let worldviewFilter = [
     "in",
     "iso_3166_1",
-    ...countries,
+    'IN',
+    'CN',
+    'US',
   ];
 
   const layerStyle = {
@@ -174,7 +196,7 @@ const Map = (props: MapProps) => {
 
   const colors = ['#D5B1F1', '#F5B8CC', '#FFC96B', '#99CEFF', '#F8B9B9'];
 
-  const layers = countries.map((country, index) => {
+  const layers = Object.keys(countryEventCounts).map((country, index) => {
     const layerStyle = {
       id: `country-layer-${country}`,
       type: 'fill',
@@ -182,8 +204,9 @@ const Map = (props: MapProps) => {
       'source-layer': 'country_boundaries',
       filter: ['==', 'iso_3166_1', country],
       paint: {
-        'fill-color': colors[index % 4],
-        'fill-opacity': 0.3,
+        'fill-color': 'rgba(103, 80, 164, 0.5)',
+        'fill-opacity': getOpacityValue(country),
+        'fill-outline-color': '#6750a4',
       },
     };
     return <Layer {...layerStyle} key={country} />;
