@@ -4,13 +4,14 @@
     border-radius: 10px;
     display: flex;
     padding: 20px;
+    gap: 10px;
 }
 /* .bodyContainer{
     position: absolute;
     z-index: 2;
 } */
 .formFieldsContainer {
-    width: 100%;
+    /* width: 100%; */
 }
 .search {
     position: relative;
@@ -254,9 +255,9 @@
     border: 3px solid var(--bg);
     border-radius: 7px;
     position: relative;
-    /* margin-left: 30px; */
     display: flex;
     flex-direction: column;
+    width: 400px;
 }
 .formImgContainer .btns{
     display: none;
@@ -336,8 +337,8 @@
 }
 
 .formImgContainer .imageHolder .imageBox .generatedImage {
-    height: 400px;
-    width: 400px;
+    /* height: 330px;
+    width: 350px; */
     border-radius: 10px;
 }
 

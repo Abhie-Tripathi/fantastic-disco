@@ -39,10 +39,10 @@ interface monthEventsType {
   [date: string]: { event: Event2[], totalEvent: number }
 }{ }
 
-interface DateWithEvent {
-  date: Date;
-  events: Event[];
-}
+// interface DateWithEvent {
+//   date: Date;
+//   events: Event[];
+// }
 
 interface EventColorMap {
   [eventId: string]: string;
@@ -82,104 +82,104 @@ const months = [
   "December",
 ];
 
-const events: Event[] = [
-  {
-    id: 1,
-    name: "HORN Ok Food Festival",
-    description:
-      "A food fest including a variety of drinks and food that you will savour for your entire life",
-    location: "Delhi",
-    startDate: "3/15/2024",
-    endDate: "3/16/2024",
-    tags: ["food", "festival", "drinks", "gathering", "hornok", "horn", "fest"],
-    logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
-    imageUrl:
-      "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
-    duration: 2,
-    background: "rgb(249 196 100)",
-    top: "55%",
-  },
-  {
-    id: 2,
-    name: "Great Indian Food Festival",
-    description:
-      "A food fest including a variety of drinks and food that you will savour for your entire life",
-    location: "Gurgaon",
-    startDate: "3/11/2024",
-    endDate: "3/12/2024",
-    tags: [
-      "food",
-      "festival",
-      "drinks",
-      "gathering",
-      "great indian food festival",
-      "fest",
-    ],
-    logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
-    imageUrl:
-      "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg",
-    duration: 2,
-    background: "rgb(183 235 255)",
-    top: "55%",
-  },
-  {
-    id: 3,
-    name: "Painting Fest",
-    description:
-      "A area filled with people and canvas boards to paint on. Come and paint your imagination",
-    location: "Ney York",
-    startDate: "3/9/2024",
-    endDate: "3/12/2024",
-    tags: ["paint", "painting", "colors", "color", "fest"],
-    logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
-    imageUrl:
-      "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg",
-    duration: 3,
-    background: "rgb(211 183 248)",
-    top: "35%",
-  },
-  {
-    id: 4,
-    name: "Tomartina Tomato Fest",
-    description:
-      "A annual tomato fest in which streets get filled with tomatoes and people throw tomatoes at each other for fun",
-    location: "Italy",
-    startDate: "3/12/2024",
-    endDate: "3/18/2024",
-    tags: ["tomato", "tomartina", "holi", "gathering", "fight"],
-    logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
-    imageUrl:
-      "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1",
-    duration: 7,
-    background: "rgb(149 126 100)",
-    top: "75%",
-  },
-  {
-    id: 5,
-    name: "Film Festival",
-    description:
-      "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
-    location: "Gurgaon",
-    startDate: "3/15/2024",
-    endDate: "3/18/2024",
-    tags: [
-      "movie",
-      "films",
-      "movies",
-      "fest",
-      "festival",
-      "acting",
-      "direction",
-      "film",
-    ],
-    logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
-    imageUrl:
-      "https://cdn.choosechicago.com/uploads/2019/06/chicago-film-festival-1800x900.jpg",
-    duration: 4,
-    background: "rgb(190 290 155)",
-    top: "35%",
-  },
-];
+// const events: Event[] = [
+//   {
+//     id: 1,
+//     name: "HORN Ok Food Festival",
+//     description:
+//       "A food fest including a variety of drinks and food that you will savour for your entire life",
+//     location: "Delhi",
+//     startDate: "3/15/2024",
+//     endDate: "3/16/2024",
+//     tags: ["food", "festival", "drinks", "gathering", "hornok", "horn", "fest"],
+//     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
+//     imageUrl:
+//       "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
+//     duration: 2,
+//     background: "rgb(249 196 100)",
+//     top: "55%",
+//   },
+//   {
+//     id: 2,
+//     name: "Great Indian Food Festival",
+//     description:
+//       "A food fest including a variety of drinks and food that you will savour for your entire life",
+//     location: "Gurgaon",
+//     startDate: "3/11/2024",
+//     endDate: "3/12/2024",
+//     tags: [
+//       "food",
+//       "festival",
+//       "drinks",
+//       "gathering",
+//       "great indian food festival",
+//       "fest",
+//     ],
+//     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
+//     imageUrl:
+//       "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg",
+//     duration: 2,
+//     background: "rgb(183 235 255)",
+//     top: "55%",
+//   },
+//   {
+//     id: 3,
+//     name: "Painting Fest",
+//     description:
+//       "A area filled with people and canvas boards to paint on. Come and paint your imagination",
+//     location: "Ney York",
+//     startDate: "3/9/2024",
+//     endDate: "3/12/2024",
+//     tags: ["paint", "painting", "colors", "color", "fest"],
+//     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
+//     imageUrl:
+//       "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg",
+//     duration: 3,
+//     background: "rgb(211 183 248)",
+//     top: "35%",
+//   },
+//   {
+//     id: 4,
+//     name: "Tomartina Tomato Fest",
+//     description:
+//       "A annual tomato fest in which streets get filled with tomatoes and people throw tomatoes at each other for fun",
+//     location: "Italy",
+//     startDate: "3/12/2024",
+//     endDate: "3/18/2024",
+//     tags: ["tomato", "tomartina", "holi", "gathering", "fight"],
+//     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
+//     imageUrl:
+//       "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1",
+//     duration: 7,
+//     background: "rgb(149 126 100)",
+//     top: "75%",
+//   },
+//   {
+//     id: 5,
+//     name: "Film Festival",
+//     description:
+//       "A annual film festival where people from all over India send in there directed films and they are shown in this festival on the large screen",
+//     location: "Gurgaon",
+//     startDate: "3/15/2024",
+//     endDate: "3/18/2024",
+//     tags: [
+//       "movie",
+//       "films",
+//       "movies",
+//       "fest",
+//       "festival",
+//       "acting",
+//       "direction",
+//       "film",
+//     ],
+//     logo: "https://1000logos.net/wp-content/uploads/2021/11/logo-Paramount.png",
+//     imageUrl:
+//       "https://cdn.choosechicago.com/uploads/2019/06/chicago-film-festival-1800x900.jpg",
+//     duration: 4,
+//     background: "rgb(190 290 155)",
+//     top: "35%",
+//   },
+// ];
 
 function generateMonthArray(year: number, month: number) {
   const firstDayOfMonth = new Date(year, month - 1, 1);
@@ -222,16 +222,16 @@ const datesWithEvents = monthDatesArray.map((date: any) => {
 });
 */
 
-function formatDateString(dateString: any) {
-  const [month, day, year] = dateString.split("/");
+// function formatDateString(dateString: any) {
+//   const [month, day, year] = dateString.split("/");
 
-  // Add leading zeros to day and month if necessary
-  const formattedDay = day.padStart(2, "0");
-  const formattedMonth = month.padStart(2, "0");
+//   // Add leading zeros to day and month if necessary
+//   const formattedDay = day.padStart(2, "0");
+//   const formattedMonth = month.padStart(2, "0");
 
-  // Return the rearranged and formatted date string
-  return `${formattedDay}/${formattedMonth}/${year}`;
-}
+//   // Return the rearranged and formatted date string
+//   return `${formattedDay}/${formattedMonth}/${year}`;
+// }
 
 function formatDate(dateString: any) {
   const date = new Date(dateString);
