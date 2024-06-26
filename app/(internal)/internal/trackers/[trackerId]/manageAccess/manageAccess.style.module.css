@@ -128,3 +128,34 @@
 .cancel{
     color: #6750A4;
 }
+/* manageAccess.style.module.css */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdownContent {
+    display: block;
+    position: absolute;
+    background-color: white;
+    min-width: 100%;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.dropdownItem {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #f1f1f1;
+}

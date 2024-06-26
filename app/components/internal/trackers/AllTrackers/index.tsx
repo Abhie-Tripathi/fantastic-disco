@@ -82,8 +82,8 @@ const AllTrackers = ({ item }: any) => {
   useEffect(() => {
     console.log(item?.tracker?.eventCountry);
     
-    const eventCountry = item?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = item?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+    const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
     setLocations([...eventCountry, ...eventCity]);
   }, [item]);
   return (

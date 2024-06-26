@@ -7,10 +7,11 @@ import Insights from '@/app/components/trackers/insights';
 import Intel from '@/app/components/trackers/intel';
 import AdvanceFilter from '@/app/components/trackers/advanceFilter'
 import Labels from '@/app/components/trackers/labels';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter  } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import Link from 'next/link';
+import { showToast } from '@/utils/showToast';
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg width="17" height="18" viewBox="0 0 17 18" fill={fillColor} xmlns="http://www.w3.org/2000/svg">
@@ -33,8 +34,10 @@ interface EditData {
 }
 const Page = () => {
   const pathName = usePathname().split('/');
+  const router = useRouter();
   const last = pathName[pathName.length - 2];
   const [data, setData] = useState<any>([]);
+  const [del, setDel] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       const url = `${baseUrl}/tracker/${last}`;
@@ -93,14 +96,29 @@ const Page = () => {
   // useEffect(() => {
   //   console.log(arr);
   // }, [arr]);
+  const deleteTracker=async()=>{
+      const url=`${baseUrl}/tracker/${pathName[pathName.length-2]}`
+    const { data, error } = await myFetch(url, {
+      method: 'DELETE'
+    });
+    if(data){
+      showToast("success","Tracker deleted successfully")
+      router.replace(`/internal/trackers`);
+    }
+  } 
   const [locations, setLocations] = useState<any>();
-
+  const closeShareModal = () => {
+    setDel(false);
+    document.body.style.height = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+};
 useEffect(() => {
   const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj:any) => Object.values(countryObj)[0])||[];
   const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj:any) => Object.values(cityObj)[0])||[];
   setLocations([...eventCountry, ...eventCity]);
 }, [data]);
-    
+  
   return (
     <div className={styles.container}>
       <div className={styles.containerTop}>
@@ -111,10 +129,16 @@ useEffect(() => {
             <div className={styles.content}>Select from the available data filters to create a custom tracker</div>
           </div>
         </div>
+        <div className={styles.outerRight}>
+        <div className={styles.containerTopRightTwo} >
+          <button onClick={()=>setDel(true)}>Delete Tracker</button>
+          </div>
         <div className={styles.containerTopRight}>
           <Link href={`/internal/trackers/${last}/editTracker`}>
             <button>Edit Tracker</button>
           </Link>
+        </div>
+        
         </div>
       </div>
       <div className={styles.containerTopTwo}>
@@ -163,6 +187,32 @@ useEffect(() => {
               eventRating.split(',') : []} exhibitScore={data?.tracker?.filterValue?.eventSize ? data?.tracker?.filterValue?.eventSize?.split(',') : []} />
         </div>
       </div>
+      {del &&
+      (
+        <div className={styles.shareModal} >
+                    <div className={styles.innerModal}>
+                        <div className={styles.shareHead}>Delete Tracker</div>
+                        {/* <div className={styles.bar}></div> */}
+                        <div className={styles.linkCopy}>
+                        
+                        <div className={styles.inviteAccess}>
+                            
+                        All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+                            </div>
+                        </div>
+                        
+                        <div className={styles.buttons}>
+                            
+                                    <button className={styles.send} onClick={deleteTracker}>Delete</button>
+                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+                        </div>
+                        </div>
+                    </div>
+               
+           
+      )}
+    
     </div>
   )
 }
