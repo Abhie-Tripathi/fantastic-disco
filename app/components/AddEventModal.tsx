@@ -115,7 +115,7 @@ const AddEventModal = (props : Props) => {
 
     const handlePoster = () => {
         if (location && description) {
-            generatePrompt(location, description)
+            generatePrompt(location, description, searchInput)
         }
     }
 
@@ -156,7 +156,7 @@ const AddEventModal = (props : Props) => {
 
     useEffect(() => {
         if (location && description) {
-            generatePrompt(location, description)
+            generatePrompt(location, description, searchInput)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [description, location])
@@ -241,7 +241,7 @@ const AddEventModal = (props : Props) => {
                             </div>
                         ) : (
                             <div className={styles.imageBox}>
-                                <Image src={image.placeHolder} alt="" className={styles.generatedImage} />
+                                <Image src={image.placeHolder} alt="" className={styles.generatedImage} width={350} height={350} />
                                 <div className={styles.imageLocation}>{location}</div>
                                 <Image src={logo} alt='logo' className={styles.logo}></Image>
                             </div>

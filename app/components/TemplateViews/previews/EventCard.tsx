@@ -19,7 +19,7 @@ interface CardProps {
 }
 
 const EventCard = ({
-    cardRadius = 10, // default value
+    cardRadius = 8, // default value
     cardBgColor = '#1a1a1a', // default value
     eventNameColor = '#ffffff', // default value
     eventNameSize = 24, // default value
