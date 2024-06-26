@@ -17,6 +17,7 @@ interface Profile {
   file: any;
   profilePicture: string;
   fileType: string;
+  email: string;
 }
 
 const Profile = () => {
@@ -25,7 +26,7 @@ const Profile = () => {
   const [role, setRole] = useState("");
   const [dept, setDept] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [picFile, setPicFile] = useState<any>();
+  const [picFile, setPicFile] = useState<any>(null);
   const fileInputRef = useRef<any>();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -54,19 +55,33 @@ const Profile = () => {
   }, []);
 
   const saveDataHandler = async () => {
-    const newErrors: Record<string, string> = {};
-    const [firstname, lastname] = name.split(" ");
+    if (
+      name.length === 0 &&
+      mobileNo.length === 0 &&
+      role.length === 0 &&
+      dept.length === 0 &&
+      picFile === null
+    ) {
+      showToast("error", "Please fill the data to change");
+      return;
+    }
 
-    if (!lastname) {
+    const newErrors: Record<string, string> = {};
+    const splitName = name.split(" ");
+
+    if (name.length !== 0 && !splitName[1]) {
       newErrors.name = "Please Enter Full Name";
     }
-    if (mobileNo.length !== 10 || mobileNo.startsWith("+")) {
+    if (
+      mobileNo.length !== 0 &&
+      (mobileNo.length !== 10 || mobileNo.startsWith("+"))
+    ) {
       newErrors.mobileNo = "Enter 10 digit mobile number only";
     }
-    if (!dept) {
+    if (dept.length !== 0 && !dept) {
       newErrors.dept = "Please Enter the Department";
     }
-    if (!role) {
+    if (role.length !== 0 && !role) {
       newErrors.role = "Please Enter Your Role";
     }
 
@@ -77,24 +92,75 @@ const Profile = () => {
 
     setErrors({});
     const formData = new FormData();
-    formData.append("firstname", name[0]);
-    formData.append("lastname", name[1]);
-    formData.append("mobileNo", mobileNo);
+    formData.append("firstname", splitName[0]);
+    formData.append("lastname", splitName[1]);
+    formData.append("phoneNumber", mobileNo);
     formData.append("designation", role);
+    formData.append("department", dept);
     formData.append("file", picFile);
 
     const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: "PATCH",
+      body: formData,
     });
 
     if (data) {
       console.log(data);
       showToast("success", "Data Saved Successfully");
+      setname("");
+      setRole("");
+      setMobileNo("");
+      setDept("");
+      setPicFile("");
       return;
+    }
+
+    if (error) {
+      console.log(error);
+      showToast("error", error.message);
+      return;
+    }
+  };
+
+  const handleResetPassword = async (event: any) => {
+    event?.preventDefault();
+    const dataToSend = {
+      email: profileData?.email,
+    };
+    const { data, error } = await myFetch(
+      `${baseUrl}/auth/customer/forgot-password`,
+      {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (data) {
+      console.log(data);
+      showToast("success", data.message);
+    }
+
+    if (error) {
+      console.log(error);
+      showToast("error", error.message);
+      return;
+    }
+  };
+
+  const handleRemove = async () => {
+    const formData = new FormData();
+    formData.append("removePicture", "true");
+    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
+      method: "PATCH",
+      body: formData,
+    });
+
+    if (data) {
+      console.log(data);
+      setProfileData(data);
     }
 
     if (error) {
@@ -120,7 +186,21 @@ const Profile = () => {
             </div>
             <div className={styles.account_right}>
               <div className={styles.account_basicInfo}>
-                <div className={styles.account_basicInfo_pic}></div>
+                <div className={styles.account_basicInfo_pic}>
+                  {profileData.profilePicture === null ? (
+                    <span className={styles.no_pic}>
+                      {profileData.firstname[0]}
+                      {profileData.lastname[0]}
+                    </span>
+                  ) : (
+                    <Image
+                      src={profileData.profilePicture}
+                      alt="ProfilPic"
+                      width={76}
+                      height={76}
+                    />
+                  )}
+                </div>
                 <div className={styles.account_basicInfo_picInfo}>
                   <span>
                     {profileData.firstname} {profileData.lastname}
@@ -137,7 +217,12 @@ const Profile = () => {
                       />
                       <span>Upload Image</span>
                     </span>
-                    <span className={styles.action_remove}>Remove</span>
+                    <span
+                      className={styles.action_remove}
+                      onClick={handleRemove}
+                    >
+                      Remove
+                    </span>
                   </span>
                   <span className={styles.profile_hintText}>
                     We support PNGs, JPEGs and GIFs under 10MB
@@ -170,7 +255,13 @@ const Profile = () => {
                 <div className={styles.dual_input_container}>
                   <span className={styles.input_container}>
                     <div className={styles.input_title}>Email</div>
-                    <input type="email" className={styles.input} />
+                    <input
+                      type="email"
+                      className={styles.input}
+                      value={profileData.email}
+                      disabled
+                      style={{ cursor: "not-allowed" }}
+                    />
                   </span>
 
                   <span className={styles.input_container}>
@@ -222,12 +313,17 @@ const Profile = () => {
                   Save Changes
                 </div>
 
-                <div className={styles.action_reset}>Reset Password</div>
+                <div
+                  className={styles.action_reset}
+                  onClick={handleResetPassword}
+                >
+                  Reset Password
+                </div>
               </div>
             </div>
           </div>
 
-          <div className={styles.account}>
+          {/* <div className={styles.account}>
             <div className={styles.account_left}>
               <div className={styles.profile_header}>Your Organization</div>
               <div className={styles.input_title}>
@@ -311,7 +407,7 @@ const Profile = () => {
               <UserCard />
               <UserCard />
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

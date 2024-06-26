@@ -1,5 +1,6 @@
 "use client";
 import { Inter } from "next/font/google";
+import {useState} from 'react';
 import "./../globals.css";
 import styles from "./layout.module.css";
 import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
@@ -23,6 +24,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [event,setEvent]=useState();
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
@@ -30,10 +32,10 @@ export default function RootLayout({
         <AuthContextProvider>
           <ThemeProvider>
             <div className="desktop_view tablet_view">
-              <Sidebar />
+              <Sidebar/>
             </div>
 
-            <Navbar />
+            <Navbar/>
             <div className="body_layout">{children}</div>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>

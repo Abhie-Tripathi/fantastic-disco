@@ -70,22 +70,22 @@ interface FilterValue {
   reputationScore: any;
   maturity: any;
   internationalScore: any;
-  inboundScore: any;
-  userRating: string;
-  exhibitScore: string;
-  total_attendance_gte: any;
-  total_attendance_lte: any;
-  location: string[];
-  startDate: string;
-  endDate: string;
-  eventRating: string;
-  eventKeywords: any;
-  eventCategory: any;
-  editionRange: number;
-  eventSize: any;
-  eventCity: any;
-  eventCountry: [];
-  eventAttendanceRange: any;
+  inboundScore:any;
+  userRating:string;
+  exhibitScore:string;
+  total_attendance_gte:any;
+  total_attendance_lte:any;
+  location:string[];
+  startDate:string;
+  endDate:string;
+  eventRating:string;
+  eventKeywords:any;
+  eventCategory:any;
+  editionRange:number;
+  eventSize:any;
+  eventCity:any;
+  eventCountry:any;
+  eventAttendanceRange:any;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -297,22 +297,12 @@ const Pages = () => {
       const formData = {
         name: trackerName,
         filterValue: {
-          ...(selectedLabels?.length > 0 && {
-            labels: selectedLabels.join(","),
-          }),
-          ...(selectedEventEdition > 0 && {
-            editionRange: selectedEventEdition.toString(),
-          }),
-          ...(selectedEventKeywords.length > 0 && {
-            eventKeywords: selectedEventKeywords.join(","),
-          }),
-          ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
-          }),
-          ...(selectedExhibitScore?.length > 0 && {
-            eventSize: selectedExhibitScore.join(","),
-          }),
-          brandedEvent: selectedBrandedEvent?.toString(),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
+          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
+          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          brandedEvent:selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(Object.entries(selectedCountry).length > 0 && {
@@ -430,31 +420,15 @@ const Pages = () => {
       const formData = {
         name: trackerName,
         filterValue: {
-          ...(selectedEventRanking?.length > 0 && {
-            eventRanking: selectedEventRanking.join(","),
-          }),
-          ...(Object.entries(selectedCountry).length > 0 && {
-            eventCountry: Object.keys(selectedCountry).join(","),
-          }),
-          ...(Object.entries(selectedCity).length > 0 && {
-            eventCity: Object.keys(selectedCity).join(","),
-          }),
-          ...(selectedLabels?.length > 0 && {
-            labels: selectedLabels.join(","),
-          }),
-          ...(selectedEventEdition > 0 && {
-            editionRange: selectedEventEdition.toString(),
-          }),
-          ...(selectedEventKeywords.length > 0 && {
-            eventKeywords: selectedEventKeywords.join(","),
-          }),
-          ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
-          }),
-          ...(selectedExhibitScore?.length > 0 && {
-            eventSize: selectedExhibitScore.join(","),
-          }),
-          brandedEvent: selectedBrandedEvent.toString(),
+         ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
+          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
+          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
+          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
+          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
+          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          brandedEvent:selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
@@ -594,17 +568,9 @@ const Pages = () => {
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
-      setSelectedEventKeywords(
-        editData?.tracker?.filterValue?.eventKeywords?.length > 0
-          ? editData?.tracker?.filterValue?.eventKeywords?.split(",")
-          : []
-      );
-      setTrackerName(editData?.tracker?.name || "");
-      setSelectedLabels(
-        editData?.tracker?.filterValue?.labels?.length > 0
-          ? editData?.tracker?.filterValue?.labels?.split(",")
-          : []
-      );
+      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split('+') : [])
+      setTrackerName(editData?.tracker?.name || '');
+      setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
           ? editData?.tracker?.filterValue?.eventCategory?.map(
@@ -612,111 +578,43 @@ const Pages = () => {
             )
           : []
       );
-      setSelectedEventFormat(
-        editData?.tracker?.filterValue?.eventFormat?.length > 0
-          ? editData?.tracker?.filterValue?.eventFormat?.split(",")
-          : []
-      );
-      setIntScore(
-        editData?.tracker?.filterValue?.internationalScore?.length > 0
-          ? editData?.tracker?.filterValue?.internationalScore
-          : ""
-      );
-      setSelectedEventStatus(
-        editData?.tracker?.filterValue?.eventStatus &&
-          editData?.tracker?.filterValue?.eventStatus?.length !== 0
-          ? editData?.tracker?.filterValue?.eventStatus?.split(",")
-          : []
-      );
-      setSelectedDateRange(
-        editData?.tracker?.filterValue?.startDate?.length > 0
-          ? [
-              editData?.tracker?.filterValue?.startDate?.split(",")[0],
-              editData?.tracker?.filterValue?.startDate?.split(",")[1],
-            ]
-          : []
-      );
-      setCategorySlug(
-        editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
-              (cat: Cat) => cat.name
-            )
-          : []
-      );
-      const eventCountry = editData?.tracker?.filterValue?.eventCountry || [];
-      const eventCity = editData?.tracker?.filterValue?.eventCity || [];
-
-      setSelectedLocations([...eventCountry, ...eventCity]);
-      setSelectedEventFrequency(
-        editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
-          : []
-      );
-      setSelectedEntry(
-        editData.tracker.filterValue?.eventEntry &&
-          editData.tracker.filterValue?.eventEntry?.length !== 0
-          ? editData.tracker.filterValue?.eventEntry?.split(",")
-          : []
-      );
-      setSelectedEventEdition(
-        editData.tracker.filterValue?.editionRange > 0
-          ? editData.tracker.filterValue?.editionRange
-          : 0
-      );
-      setSelectedEventRanking(
-        editData.tracker.filterValue?.eventRanking?.split(",") || []
-      );
+      setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
+      setIntScore(editData?.tracker?.filterValue?.internationalScore?.length>0?editData?.tracker?.filterValue?.internationalScore:"")
+      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus && editData?.tracker?.filterValue?.eventStatus?.length!==0?editData?.tracker?.filterValue?.eventStatus?.split(','):[]);
+      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0?[editData?.tracker?.filterValue?.startDate?.split(',')[0],editData?.tracker?.filterValue?.startDate?.split(',')[1]]:[]);
+      setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
+        ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
+        : []);
+        const eventCountry = editData?.tracker?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+        const eventCity = editData?.tracker?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+        
+        setSelectedLocations([...eventCountry, ...eventCity]);
+      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
+      setSelectedEntry(editData.tracker.filterValue?.eventEntry&&editData.tracker.filterValue?.eventEntry?.length!==0?editData.tracker.filterValue?.eventEntry?.split(','):[])
+      setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
+      setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
-      setSelectedCity(
-        editData.tracker.filterValue?.eventCity?.length > 0
-          ? editData.tracker.filterValue?.eventCity
+      setSelectedCountry(
+        editData.tracker.filterValue?.eventCountry?.length > 0
+          ? editData.tracker.filterValue.eventCountry.reduce((acc:any, current:any) => {
+              return { ...acc, ...current };
+            }, {})
           : {}
       );
-      setSelectedTrustScore(
-        editData.tracker.filterValue?.trustScore > 0
-          ? editData.tracker.filterValue?.trustScore
-          : 0
-      );
-      setSelectedEventSeries(
-        editData.tracker.filterValue?.eventSeries.toString() === "true"
-      );
-      setMaturity(
-        editData.tracker.filterValue?.maturity?.length > 0
-          ? editData.tracker.filterValue?.maturity
-          : ""
-      );
-      setSelectedReptScore(
-        editData.tracker.filterValue?.reputationScore > 0
-          ? editData.tracker.filterValue?.reputationScore
-          : 0
-      );
-      setSelectedMaturity(
-        editData.tracker.filterValue?.maturity > 0
-          ? editData.tracker.filterValue?.maturity
-          : 0
-      );
-      setSelectedINScore(
-        editData.tracker.filterValue?.internationalScore > 0
-          ? editData.tracker.filterValue?.internationalScore
-          : 0
-      );
-      setSelectedInboundScore(
-        editData.tracker.filterValue?.inboundScore > 0
-          ? editData.tracker.filterValue?.inboundScore
-          : 0
-      );
-      setSelectedUserRatings(
-        editData.tracker.filterValue?.eventRating &&
-          editData.tracker.filterValue?.eventRating?.length !== 0
-          ? editData.tracker.filterValue?.eventRating?.split(",")
-          : []
-      );
-      setSelectedExhibitScore(
-        editData.tracker.filterValue?.eventSize &&
-          editData.tracker.filterValue?.eventSize?.length !== 0
-          ? editData.tracker.filterValue?.eventSize?.split(",")
-          : []
-      );
+      setSelectedCity(editData.tracker.filterValue?.eventCity?.length > 0
+        ? editData.tracker.filterValue.eventCity.reduce((acc:any, current:any) => {
+            return { ...acc, ...current };
+          }, {})
+        : {});
+      setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
+      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries?.toString() === "true");
+      setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
+      setSelectedReptScore(editData.tracker.filterValue?.reputationScore>0?editData.tracker.filterValue?.reputationScore:0);
+      setSelectedMaturity(editData.tracker.filterValue?.maturity>0?editData.tracker.filterValue?.maturity:0)
+      setSelectedINScore(editData.tracker.filterValue?.internationalScore>0?editData.tracker.filterValue?.internationalScore:0)
+      setSelectedInboundScore(editData.tracker.filterValue?.inboundScore>0?editData.tracker.filterValue?.inboundScore :0)
+      setSelectedUserRatings(editData.tracker.filterValue?.eventRating && editData.tracker.filterValue?.eventRating?.length!==0?editData.tracker.filterValue?.eventRating?.split(',') : [])
+      setSelectedExhibitScore(editData.tracker.filterValue?.eventSize &&  editData.tracker.filterValue?.eventSize?.length!==0?editData.tracker.filterValue?.eventSize?.split(','): [])
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange((prevArray) => {

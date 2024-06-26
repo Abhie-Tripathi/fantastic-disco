@@ -11,8 +11,8 @@
 .account {
   display: flex;
   gap: 50px;
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd;
+  /* padding: 20px 0; */
+  /* border-bottom: 1px solid #ddd; */
 }
 
 .account_left {
@@ -40,6 +40,18 @@
   height: 76px;
   border: 1px solid #ddd;
   border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.no_pic {
+  /* position: absolute; */
+  font-size: 28px;
+  /* transform: translate(20px, 20px); */
 }
 
 .account_basicInfo_picInfo {

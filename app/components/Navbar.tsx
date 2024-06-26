@@ -22,10 +22,22 @@ interface UserDetail {
   lastname: string;
 }
 
+const routeMap = {
+  "/internal": "Dashboard",
+  "/internal/coordinate": "Coordinate",
+  "/internal/search/events": "Research",
+  "/internal/trackers": "Trackers",
+  "/internal/outreach": "Outreach",
+  "/internal/trends": "Event Trends",
+};
+
+type RouteMap = typeof routeMap;
+type RouteMapKey = keyof RouteMap;
+
 const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
-  // console.log("height is "+height);
+  const [title, setTitle] = useState("");
 
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -46,6 +58,7 @@ const Navbar = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
   };
   const pathName = usePathname().split("/")[1];
+  const currPath = usePathname() as RouteMapKey;
 
   const themeSwitchHandler = () => {
     toggleTheme();
@@ -81,6 +94,12 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (routeMap.hasOwnProperty(currPath)) {
+      setTitle(routeMap[currPath]);
+    }
+  }, [currPath]);
+
   return (
     <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
       <div
@@ -99,15 +118,7 @@ const Navbar = () => {
           />
         )}
         {pathName === "internal" ? (
-          <Link href="/internal">
-            <Image
-              className={styles.logo}
-              src={logo}
-              width={40}
-              height={48}
-              alt="logo"
-            />
-          </Link>
+          <div className={styles.page_title}>{title.length !== 0 && title}</div>
         ) : (
           <Link href="/">
             <Image

@@ -330,7 +330,13 @@
 }
 .table_saveBtn{
   color: white;
+  background-color: #6750A4;
+  padding: 6px 16px;
+  border-radius: 6px;
 }
 .table_saveBtn_light{
-  color: black;
+  /* color: black; */
+  background-color: #6750A4;
+  padding: 6px 16px;
+  border-radius: 6px;
 }

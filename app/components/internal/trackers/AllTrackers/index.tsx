@@ -81,8 +81,10 @@ const AllTrackers = ({ item }: any) => {
   const [locations, setLocations] = useState<any>();
 
   useEffect(() => {
-    const eventCountry = item?.filterValue?.eventCountry || [];
-    const eventCity = item?.filterValue?.eventCity || [];
+    console.log(item?.tracker?.eventCountry);
+    
+    const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+    const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
     setLocations([...eventCountry, ...eventCity]);
   }, [item]);
   return (

@@ -61,9 +61,9 @@ const Index = () => {
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
           <div className={styles.tooltipContainer}>
-          {data?.tracker?.name?.length>7?data?.tracker?.name?.substring(0,7)+'...':data?.tracker?.name}
-          
-  <span className={styles.tooltipText}>{data?.tracker?.name}</span>
+          {data?.tracker?.name?.length>20?data?.tracker?.name?.substring(0,20)+'...':data?.tracker?.name}
+        {data?.tracker?.name?.length>20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}  
+  
 </div>
         </div>
        
@@ -89,13 +89,15 @@ const Index = () => {
             </div>
             <div className={styles.configAccess}>
               <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
-                <div style={{padding:"10px"}} className={`${styles.heading} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`}onClick={() => setTrackerSection("Tracker Configurations")}>
+                <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`}onClick={() => setTrackerSection("Tracker Configurations")}>
                   <Image src={Settings} alt="setting" /> 
+                  <span className={styles.tooltipText}>Configurations</span>
                 </div>
               </Link>
               <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
-                <div style={{padding:"10px"}} className={`${styles.heading} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+                <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
                   <Image src={Manage} alt="setting" /> 
+                  <span className={styles.tooltipText}>Manage Access</span>
                 </div>
               </Link>
             </div>
