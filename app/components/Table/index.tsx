@@ -17,6 +17,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
+import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 
 interface FormDataType {
@@ -194,11 +195,13 @@ const Table = ({
   showInsights,
   queryString,
   eventType,
+  setActiveValue,
 }: {
   eventData?: any;
   showInsights: any;
   queryString?: string;
-  eventType?: string;
+  eventType?:string;
+  setActiveValue?:any;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
@@ -526,6 +529,7 @@ const Table = ({
     if (data) {
       console.log(data);
       if (data?.events?.length > 0) {
+        setActiveValue(data.totalEvents);
         setEventPerPage(data.events);
       }
       // setCatgeoryData(data);
@@ -561,8 +565,10 @@ const Table = ({
 
       if (data) {
         console.log(data);
+        showToast('success',"Event saved");
       } else {
         console.log(error);
+        showToast('error',error.message);
       }
     } catch (err) {
       console.error("Error saving event:", err);
@@ -602,21 +608,22 @@ const Table = ({
         body: JSON.stringify(dataToSend),
       });
 
-      if (data) {
-        console.log(data);
-        const newData = eventPerPage.filter(
-          (event) => event?.eventGroupId !== groupId
-        );
-        setEventPerPage(newData);
-      } else {
-        console.log(error);
-      }
-    } catch (err) {
-      console.error("Error deleting event:", err);
-    } finally {
-      setIsDelete(false);
+    if (data) {
+      console.log(data);
+      showToast('default',"Saved event deleted");
+      const newData = eventPerPage.filter(event => event?.eventGroupId !== groupId);
+      setEventPerPage(newData);
+    } else {
+      console.log(error);
+      showToast('error',error.message);
     }
-  };
+  } catch (err) {
+    console.error("Error deleting event:", err);
+    // showToast('error',err?.message);
+  } finally {
+    setIsDelete(false);
+  }
+};
 
   if (!isLoaded) {
     return <Loading />;

@@ -25,6 +25,7 @@ console.log(locations);
       <div className={styles.location}>
         <div style={{color:"#6750A4"}}>Location</div>
         <div style={{color:'#696B83'}}>
+          {locations?.length===0 && "-"}
         {locations?.map((item:string) => (
   <div key={item}>{item}</div>
 ))}

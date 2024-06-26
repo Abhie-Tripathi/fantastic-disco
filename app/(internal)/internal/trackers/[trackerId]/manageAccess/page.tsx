@@ -3,16 +3,67 @@ import React, { useState, useEffect } from 'react';
 import styles from './manageAccess.style.module.css';
 import TrackerOwner from '@/app/components/trackers/trackerOwner';
 import TrackerUser from '@/app/components/trackers/trackerUser';
-import Account from '/public/account.svg'
+import Account from '/public/account.svg';
 import Image from 'next/image';
 import Link from 'next/link';
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
+import { showToast } from "@/utils/showToast";
+
 const Page = () => {
+    const [currentUrl, setCurrentUrl] = useState('');
+    const [data, setData] = useState([]);
+    const [id, setId] = useState<string>("");
+    const [filteredData, setFilteredData] = useState([]);
+    const [filter, setFilter] = useState('');
+
+    useEffect(() => {
+      setDrop(true);
+        const result = data.filter((item: any) =>
+            item?.aliasName.toLowerCase().includes(filter.toLowerCase())
+        );
+        setFilteredData(result);
+    }, [filter, data]);
+
+    const handleFilterChange = (e: any) => {
+        setFilter(e.target.value);
+    };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const url = window.location.href;
+            const baseUrl = url.substring(0, url.lastIndexOf('/'));
+            setCurrentUrl(`${baseUrl}/trackedEvents`);
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const url = `${baseUrl}/auth/users`;
+            try {
+                const { data, error } = await myFetch(url, {
+                    method: 'GET'
+                });
+                if (error) {
+                    console.error('Error fetching data:', error);
+                } else {
+                    console.log('Data fetched:', data);
+                    setData(data);
+                }
+            } catch (err) {
+                console.error('Fetch failed:', err);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [share, setShare] = useState(false);
-    const path=usePathname().split('/');
+    const path = usePathname().split('/');
+    const [drop,setDrop]=useState(true);
     const shareFunction = () => {
         if (!share) {
-            // Add a custom state to the history
             window.history.pushState({ shareOpen: true }, '');
             setShare(true);
             document.body.style.height = '100vh';
@@ -39,10 +90,8 @@ const Page = () => {
             }
         };
 
-        // Add event listener for popstate
         window.addEventListener('popstate', handlePopState);
 
-        // Remove event listener when component unmounts
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
@@ -54,9 +103,52 @@ const Page = () => {
             closeShareModal();
         }
     };
+
     const queryParams = {
-        id: path[path.length-2],
-      };
+        id: path[path.length - 2],
+    };
+    console.log(path);
+
+    const copyURL = () => {
+        navigator.clipboard.writeText(currentUrl);
+        showToast('success', "Copied");
+    }
+
+    const shareInvite = async () => {
+        const formData = {
+            accessEntity: "tracker",
+            accessEntityId: path[path.length - 2],
+            entityType: "employee",
+            entityId: id,
+            accessLevel: "EDIT",
+            redirectUrl: currentUrl
+        };
+        const url = `${baseUrl}/access`;
+        try {
+            const { data, error } = await myFetch(url, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                console.log('Data fetched:', data);
+                setData(data);
+            }
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        }
+    }
+
+    const saveShareInvite = (id: string, name: string) => {
+        setId(id);
+        setFilter(name);
+        setFilteredData([]);
+        setDrop(false);
+    }
 
     return (
         <div className={styles.container}>
@@ -90,23 +182,32 @@ const Page = () => {
                         <div className={styles.shareHead}>Share Tracker</div>
                         <div className={styles.bar}></div>
                         <div className={styles.linkCopy}>
-                            <div className={styles.link}>https://Eventgeni.internal/trackers/eventinbangalore</div>
-                            <div className={styles.copy}>Copy link</div>
+                            <div className={styles.link}>{currentUrl}</div>
+                            <div className={styles.copy} onClick={copyURL}>Copy link</div>
                         </div>
                         <div className={styles.inviteAccess}>
                             <Image src={Account} alt="account" />
                             <div className={styles.inputArea}>
-                                <input type="text" placeholder='Invite others by name or email' />
-
+                                <input type="text" 
+                                value={filter}
+                                placeholder='Invite others by name or email' onChange={handleFilterChange} />
                             </div>
                         </div>
+                       
+                               {drop &&
+                            <div className={styles.dropdown}>
+                                <div className={styles.dropdownContent}>
+                                    {filteredData.map((item: any) => (
+                                        <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName)}>
+                                            {item?.aliasName}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>}
+                            
                         <div className={styles.buttons}>
-                            <Link href={{ pathname: '/signin', query: queryParams }} legacyBehavior>
-                                <a target="_blank" rel="noopener noreferrer">
-                                    <button className={styles.send}>Send Invite</button>
-                                </a>
-                            </Link>
-                            <button className={styles.cancel} onClick={closeModal}>Cancel</button>
+                            <button className={styles.send} onClick={shareInvite}>Send Invite</button>
+                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
                         </div>
                     </div>
                 </div>
