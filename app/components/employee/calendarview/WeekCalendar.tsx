@@ -371,7 +371,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
         var eventIds: string[] = [];
         Object.keys(apiData.data).forEach(function (key) {
           apiData.data[key].event.map((event: any, index: number) => {
-            if (!eventIds.includes(event.id)) {
+            if (event.id && !eventIds.includes(event.id)) {
               eventIds.push(event.id);
               let e_startDayNo = new Date(event.startDate).getDay();
               let e_duration = getDurationInDays(event.startDate, event.endDate);
@@ -412,6 +412,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setApiResult({})
     }
   }
 
@@ -431,7 +432,8 @@ const WeekCalendar = (props: WeekCalendarProps) => {
   }
 
   useEffect(() => {
-    fetchEventsData();
+    if(props.queryString)
+      fetchEventsData();
   }, [weekDates, props.queryString]);
 
   useEffect(() => {

@@ -99,11 +99,11 @@ const index = ({ format, freq, entry, rank, keywords }: any) => {
                         {keywords?.map((item: string, id: number) => (
                             item?.charAt(0) !== '-' ? (
                                 <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
-                                <span className={styles.tooltipText}>Positive</span>
+                                <span className={styles.tooltipText}>Include Keyword</span>
                                 </div>
                             ) : (
                                 <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.substring(1)}
-                                <span className={styles.tooltipText}>Negative</span>
+                                <span className={styles.tooltipText}>Exclude Keyword</span>
                                 </div>
                             )
                         ))}

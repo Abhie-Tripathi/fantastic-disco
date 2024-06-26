@@ -1,30 +1,30 @@
-'use client'
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import MoreIcon from "/public/dots.svg";
-import Back from '/public/back.svg';
-import Table from '@/app/components/Table';
+import Back from "/public/back.svg";
+import Table from "@/app/components/Table";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
-import Add from '/public/add.svg';
+import Add from "/public/add.svg";
 import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
-import Expand from '/public/expand_more.svg';
-import Template from '/public/template.svg';
-import People from '/public/ionPeople.svg';
-import PeopleFinder from '/public/peopleFinder.svg';
-import Competitor from '/public/competitor.svg';
-import Speaking from '/public/speaking.svg';
-import Audience from '/public/audience.svg';
-import Customer from '/public/customer.svg';
-import Keywords from '/public/keywords.svg';
-import SocialCause from '/public/socialCause.svg';
-import Brand from '/public/brand.svg';
-import Vector1 from '/public/vectorTemplate.svg';
-import Vector3 from '/public/Vector3.svg';
-import Vector4 from '/public/Vector4.svg';
-import MyTracker from '@/app/components/internal/trackers/MyTrackers'
+import Expand from "/public/expand_more.svg";
+import Template from "/public/template.svg";
+import People from "/public/ionPeople.svg";
+import PeopleFinder from "/public/peopleFinder.svg";
+import Competitor from "/public/competitor.svg";
+import Speaking from "/public/speaking.svg";
+import Audience from "/public/audience.svg";
+import Customer from "/public/customer.svg";
+import Keywords from "/public/keywords.svg";
+import SocialCause from "/public/socialCause.svg";
+import Brand from "/public/brand.svg";
+import Vector1 from "/public/vectorTemplate.svg";
+import Vector3 from "/public/Vector3.svg";
+import Vector4 from "/public/Vector4.svg";
+import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 function AllTrackers({ fillColor }: { fillColor: string }) {
@@ -53,21 +53,20 @@ function Bookmark({ fillColor }: { fillColor: string }){
   return (
     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M120-40v-640q0-33 23.5-56.5T200-760h400q33 0 56.5 23.5T680-680v640L400-160 120-40Zm80-122 200-86 200 86v-518H200v518Zm560 2v-680H240v-80h520q33 0 56.5 23.5T840-840v680h-80ZM200-680h400-400Z" fill={fillColor}/></svg>
   )
-}
+}import { GAEvent } from "@/utils/GAEvent";
+
 const Trackers = () => {
   const [trackers, setTrackers] = useState<any[]>([]);
   const [type,setType]=useState("All Trackers");
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [showModal,setShowModal]=useState(false);
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
-   
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
     //   document.body.classList.remove(styles.bodyOverflowHidden);
-     if(document.body.style.height==='100vh'){
-      document.body.style.height="";
-     }
-  
+    if (document.body.style.height === "100vh") {
+      document.body.style.height = "";
+    }
   }, []);
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -101,84 +100,92 @@ const Trackers = () => {
     growth: true,
     repeatSent: true,
   };
-const data=[
-  {
-    type:'template',
-    domain:'Human Resource',
-    img:People,
-    trackerName:'Recruitment',
-    content:'Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...'
-  },
-  {
-    type:'template',
-    domain:'Human Resource',
-    img:PeopleFinder,
-    trackerName:'People Finder',
-    content:'Track experts, influencers and where they might be participating in various events'
-  },
-  {
-    type:'template',
-    domain:'Human Resource',
-    img:Competitor,
-    trackerName:'Competitor',
-    content:'Track your competitor experts, influencers and where they might be participating in events'
-  },
-  {
-    type:'template',
-    domain:'Human Resource',
-    img:Speaking,
-    trackerName:'Speaking Opportunity',
-    content:'Input team members and their details to keep track of the events with speaking opportunities.'
-  }
-  ,
-  {
-    type:'template',
-    domain:'Sales',
-    img:Audience,
-    trackerName:'Audience Dept. & Profiles',
-    content:'Track events for the specific organizational departments or audience profiles'
-  },
-  {
-    type:'template',
-    domain:'Sales',
-    img:Customer,
-    trackerName:'Customer ICP',
-    content:'Input ideal customer profile details like company, location or websites to track their interests'
-  },
-  {
-    type:'template',
-    domain:'Sales',
-    img:Keywords,
-    trackerName:'Product Keywords',
-    content:'List all the events which belongs to given industry or associated with keywords.'
-  },
-  {
-    type:'template',
-    domain:'Sales',
-    img:SocialCause,
-    trackerName:'Social Cause',
-    content:'Track social cause events that interests audience to be socially active and enhance their reach',
-  },
-  {
-    type:'template',
-    img:Brand,
-    domain:'Sales',
-    trackerName:'Brand Building',
-    content:'Input designations and keywords, and upload job descriptions to identify relevant events effortles',
-  }
-]
-const [hide,setHide]=useState(false);
+  const data = [
+    {
+      type: "template",
+      domain: "Human Resource",
+      img: People,
+      trackerName: "Recruitment",
+      content:
+        "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
+    },
+    {
+      type: "template",
+      domain: "Human Resource",
+      img: PeopleFinder,
+      trackerName: "People Finder",
+      content:
+        "Track experts, influencers and where they might be participating in various events",
+    },
+    {
+      type: "template",
+      domain: "Human Resource",
+      img: Competitor,
+      trackerName: "Competitor",
+      content:
+        "Track your competitor experts, influencers and where they might be participating in events",
+    },
+    {
+      type: "template",
+      domain: "Human Resource",
+      img: Speaking,
+      trackerName: "Speaking Opportunity",
+      content:
+        "Input team members and their details to keep track of the events with speaking opportunities.",
+    },
+    {
+      type: "template",
+      domain: "Sales",
+      img: Audience,
+      trackerName: "Audience Dept. & Profiles",
+      content:
+        "Track events for the specific organizational departments or audience profiles",
+    },
+    {
+      type: "template",
+      domain: "Sales",
+      img: Customer,
+      trackerName: "Customer ICP",
+      content:
+        "Input ideal customer profile details like company, location or websites to track their interests",
+    },
+    {
+      type: "template",
+      domain: "Sales",
+      img: Keywords,
+      trackerName: "Product Keywords",
+      content:
+        "List all the events which belongs to given industry or associated with keywords.",
+    },
+    {
+      type: "template",
+      domain: "Sales",
+      img: SocialCause,
+      trackerName: "Social Cause",
+      content:
+        "Track social cause events that interests audience to be socially active and enhance their reach",
+    },
+    {
+      type: "template",
+      img: Brand,
+      domain: "Sales",
+      trackerName: "Brand Building",
+      content:
+        "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
+    },
+  ];
+  const [hide, setHide] = useState(false);
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
   const modalOpen = () => {
     setShowModal(true);
     console.log(document.body.style);
-    
-    document.body.style.height = '100vh';
-   
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
+
+    document.body.style.height = "100vh";
+
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
   };
 
   const closeModal = (e: any) => {
@@ -188,14 +195,14 @@ const [hide,setHide]=useState(false);
       targetElement.classList.contains(styles.modalInnerContainer)
     ) {
       setShowModal(false);
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
   };
-  const [showTracker,setShowTracker]=useState(false);
-  const viewTracker=()=>{
+  const [showTracker, setShowTracker] = useState(false);
+  const viewTracker = () => {
     setShowTracker(true);
-  }
-  const [hideTemplate,setHideTemplate]=useState(false);
+  };
+  const [hideTemplate, setHideTemplate] = useState(false);
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -215,22 +222,21 @@ const [hide,setHide]=useState(false);
     //     )}
     //   </div>
     // </div>
-   <div className={styles.outerContainer} >
- <div className={styles.header_container}>
+    <div className={styles.outerContainer}>
+      <div className={styles.header_container}>
         <div className={styles.tab_container}>
-          {showTracker?(
-            <div className={styles.backDiv} onClick={()=>setShowTracker(false)}>
-            <Image src={Back} alt="back"/>
-            <div className={styles.back}>Back</div>  
-            </div>
-          ):(
-              <div
-              className={`${styles.tab }`}
+          {showTracker ? (
+            <div
+              className={styles.backDiv}
+              onClick={() => setShowTracker(false)}
             >
-              Create Your Event Tracker
+              <Image src={Back} alt="back" />
+              <div className={styles.back}>Back</div>
             </div>
+          ) : (
+            <div className={`${styles.tab}`}>Create Your Event Tracker</div>
           )}
-          
+
           {/* <Link
             href="/internal/trackers/savedevents"
             className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
@@ -240,29 +246,40 @@ const [hide,setHide]=useState(false);
           </Link> */}
         </div>
         <div className={styles.trackers_header}>
-        <div
-            className={styles.trackers_header_newtracker_button}
-           
-          >
-           
-            {hideTemplate ?
-            <Link href='/internal/trackers/create'>
-              Create Tracker
-             
-            </Link>: <div  onClick={viewTracker}>Template Gallery</div>
-            }
+          <div className={styles.trackers_header_newtracker_button}>
+            {hideTemplate ? (
+              <Link
+                href="/internal/trackers/create"
+                onClick={() =>
+                  GAEvent(
+                    "trackers",
+                    "Trackers",
+                    "Saved Tracker | New Tracker Created",
+                    "Create New Tracker"
+                  )
+                }
+              >
+                Create Tracker
+              </Link>
+            ) : (
+              <div onClick={viewTracker}>Template Gallery</div>
+            )}
             {/* <Image src={Add} alt="add" /> */}
           </div>
-          <div onClick={()=>setHide(!hide)} className={styles.trackers_header_more_button}>
+          <div
+            onClick={() => setHide(!hide)}
+            className={styles.trackers_header_more_button}
+          >
             <Image src={MoreIcon} alt="moreicon" />
-            {hide && <div className={styles.hide} onClick={()=>setHideTemplate(!hideTemplate)}>{!hideTemplate?
-          "Hide Templates"
-           
-      
-            :
-            "Show Templates"}</div>}
+            {hide && (
+              <div
+                className={styles.hide}
+                onClick={() => setHideTemplate(!hideTemplate)}
+              >
+                {!hideTemplate ? "Hide Templates" : "Show Templates"}
+              </div>
+            )}
           </div>
-          
         </div>
       </div>
       {!hideTemplate &&
@@ -327,27 +344,35 @@ const [hide,setHide]=useState(false);
         <div className={styles.modalInnerContainer}>
           
             <div className={styles.newTrackerHead}>Choose Tracker Type</div>
-            <Link href='/internal/trackers/create'>
-            <div className={styles.customTracker}>
-              <div style={{display:'flex'}}><Image src={Vector3} alt="vector3"/></div>
-              <div>
-                <div className={styles.head}>Custom Tracker</div>
-                <div className={styles.content}>Select from the available data filters to create a tracker</div>
+            <Link href="/internal/trackers/create">
+              <div className={styles.customTracker}>
+                <div style={{ display: "flex" }}>
+                  <Image src={Vector3} alt="vector3" />
+                </div>
+                <div>
+                  <div className={styles.head}>Custom Tracker</div>
+                  <div className={styles.content}>
+                    Select from the available data filters to create a tracker
+                  </div>
+                </div>
               </div>
-            </div>
             </Link>
             <div className={styles.customTracker}>
-              <div style={{display:'flex'}}><Image src={Vector4} alt="vector4"/></div>
+              <div style={{ display: "flex" }}>
+                <Image src={Vector4} alt="vector4" />
+              </div>
               <div>
                 <div className={styles.head}>Premium Tracker</div>
-                <div className={styles.content}>Seamlessly integrate your own data to tailor your event tracking experience.</div>
+                <div className={styles.content}>
+                  Seamlessly integrate your own data to tailor your event
+                  tracking experience.
+                </div>
               </div>
             </div>
+          </div>
         </div>
-      </div>
       }
-     
-      </div>
+    </div>
   );
 };
 
