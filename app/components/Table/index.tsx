@@ -493,7 +493,10 @@ const Table = ({
         } finally {
           setIsLoaded(true);
         }
-      } else setIsLoaded(true);
+      } else {
+        setIsLoaded(true);
+        setEventPerPage([]);
+      }
     }
   };
   useEffect(() => {
