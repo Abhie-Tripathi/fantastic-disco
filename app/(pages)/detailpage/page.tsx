@@ -12,11 +12,10 @@ interface PageProps {
     description: string;
     eventName: string;
     shareUrl: string;
-    title: string;
     media: string;
 }
 
-const Page = ({ hashtags, description, eventName, shareUrl, title, media }: PageProps) => {
+const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) => {
     return (
         <div className={styles.body}>
             <div className={styles.leftContainer}>
@@ -64,34 +63,34 @@ const Page = ({ hashtags, description, eventName, shareUrl, title, media }: Page
                 </form>
                 <div className={styles.shareContainer}>
                     <div className={styles.shareHeading}>Share</div>
-                    <ShareButtons shareUrl={shareUrl} title={title} />
+                    <ShareButtons shareUrl={shareUrl} title={eventName} />
                 </div>
             </div>
         </div>
     )
 }
-const DetailPage = async () => {
-    const eventName = "Painting Fest";
-    const description = "Unleash your creativity and immerse yourself in the world of art at the Painting Fest in New York. This vibrant celebration brings together artists, painters, and art enthusiasts from all walks of life to celebrate the joy of creation. Whether you're a seasoned artist or a novice, the festival offers a welcoming space to express yourself and explore new artistic horizons. From live painting demonstrations to interactive workshops, there's something for everyone to enjoy. Join us for a weekend filled with color, inspiration, and community as we come together to paint the town red, blue, and every color of the rainbow.";
+const fetchData = async () => {
+    const eventName = "Tomartina Tomato Fest";
+    const description = "Get ready for a tomato-filled adventure at the annual Tomartina Tomato Fest in Italy. This lively celebration brings together locals and visitors alike for a fun-filled day of festivities centered around everyone's favorite red fruit. From tomato-themed games and competitions to juicy tomato tastings and street parades, there's no shortage of excitement at this one-of-a-kind event. Whether you're dodging tomatoes in the streets or indulging in tomato-inspired delicacies, the Tomartina Tomato Fest is an experience not to be missed.";
     const hashtags = await generateHashtags(eventName, description);
-
     const shareUrl = "http://console.eventgeni.com/detailpage";
-    const title = "Check out this amazing content!";
-    const media = "https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg";
+    const media = "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1";
 
-    return <Page hashtags={hashtags} description={description} eventName={eventName} shareUrl={shareUrl} title={title} media={media} />;
+    return { eventName, description, hashtags, shareUrl, media };
+};
+const DetailPage = async () => {
+    const data = await fetchData();
+    return <Page {...data} />;
 };
 export default DetailPage;
 
-export function generateMetadata() {
-    const title = 'My Detail Page';
-    const description = 'My Detail page description';
-
+export async function generateMetadata() {
+    const { eventName, description } = await fetchData();
     return {
-        title,
-        description,
+        title: `${eventName} - Event Details`,
+        description: description,
         openGraph: {
-            images: ['https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg']
+          images: ['https://palmbeach.floridaweekly.com/wp-content/uploads/images/2023-02-23/27p1.jpg']
         }
-    };
+      };
 }
