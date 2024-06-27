@@ -54,7 +54,7 @@
   display: flex;
   box-shadow: 0px 8px 40px -2px #060c3b14;
   width: 80%;
-  height: 90%;
+  height: 100%;
   align-items: center;
   justify-content: center;
   margin: 20px;
@@ -176,6 +176,7 @@
   cursor: pointer;
   width: 100%;
   border: none;
+  margin-bottom: 10px;
 }
 
 .new_account {

@@ -1,15 +1,21 @@
 "use client";
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 
 type Theme = "dark" | "light";
 
 interface ThemeContextType {
-  theme: Theme | null;
+  theme: Theme | null | string;
   toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "dark",
+  theme: localStorage.getItem('theme') || 'light',
   toggleTheme: () => {},
 });
 
@@ -27,7 +33,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (theme !== null && typeof window !== "undefined") {
       localStorage.setItem("theme", theme);
-      document.body.setAttribute('data-theme', theme);
+      document.body.setAttribute("data-theme", theme);
     }
   }, [theme]);
 
