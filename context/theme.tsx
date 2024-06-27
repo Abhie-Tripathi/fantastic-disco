@@ -4,7 +4,6 @@ import React, {
   useState,
   useContext,
   useEffect,
-  useLayoutEffect,
 } from "react";
 
 type Theme = "dark" | "light";
@@ -15,7 +14,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: localStorage.getItem('theme') || 'light',
+  theme: typeof window !== 'undefined' ? localStorage.getItem("theme") : "light",
   toggleTheme: () => {},
 });
 
@@ -32,7 +31,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (theme !== null && typeof window !== "undefined") {
-      localStorage.setItem("theme", theme);
+      window.localStorage.setItem("theme", theme);
       document.body.setAttribute("data-theme", theme);
     }
   }, [theme]);
