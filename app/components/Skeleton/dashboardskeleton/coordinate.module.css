@@ -9,7 +9,6 @@
     flex-direction: column;
     min-width: 170px;
     gap: 20px;
-    background-color: #1a1a1a;
   }
 
   .inner_card_container{

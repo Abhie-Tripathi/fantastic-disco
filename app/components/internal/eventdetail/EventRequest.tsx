@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTheme } from "@/context";
 import PeopleIcon from "/public/people.svg";
 import AttendeeCard from "./AttendeeCard";
+import downArrowIcon from "/public/arrow_down.svg";
 interface DetailsProps {
   open: boolean;
 }
@@ -25,7 +26,12 @@ const EventRequest = ({ open }: DetailsProps) => {
         onClick={() => setAccordianToggle(!accordianToggle)}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
-        <div>Event Request</div>
+        <div className={styles.eventRequest_header}>
+          Event Request
+          <span className={styles.image_container}>
+            <Image src={downArrowIcon} alt="dropdown" width={15} height={15} />
+          </span>
+        </div>
       </div>
       {accordianToggle && (
         <div className={styles.accordian}>

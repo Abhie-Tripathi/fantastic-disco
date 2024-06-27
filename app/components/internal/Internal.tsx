@@ -8,12 +8,12 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 
 interface Props{
-    handleModal : (id: string) => void,
+    handleModal : (id: string,enquiryId:string) => void,
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
     cardUpdated: boolean;
 }
 
-const Internal = ({handleModal, handleShortlistModal, cardUpdated} : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
     let prevDate: any = null;
 
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
