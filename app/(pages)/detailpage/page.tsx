@@ -7,6 +7,7 @@ import FestIcon from '/public/festival.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 import MoreEvents from '@/app/components/DetailPage/MoreEvents'
+import Script from 'next/script'
 
 interface PageProps {
     hashtags: string[];
@@ -19,6 +20,8 @@ interface PageProps {
 const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) => {
     return (
         <div className={styles.body}>
+            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
+            <popup-widget/>
             <div className={styles.eventDetailContainer}>
                 <div className={styles.leftContainer}>
                     <div className={styles.headerContainer}>
@@ -65,7 +68,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) 
                     </form>
                     <div className={styles.shareContainer}>
                         <div className={styles.shareHeading}>Share</div>
-                        <ShareButtons shareUrl={shareUrl} title={eventName} />
+                        <ShareButtons shareUrl={shareUrl} title={eventName} hashtags = {hashtags}/>
                     </div>
                 </div>
             </div>
