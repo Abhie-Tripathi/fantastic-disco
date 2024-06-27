@@ -6,12 +6,12 @@ import TickIcon from '/public/tick.svg'
 import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, FacebookIcon, LinkedinIcon, TwitterIcon } from 'react-share';
 import Image from 'next/image'
 
-interface Props{
-    shareUrl : string;
-    title : string;
+interface Props {
+    shareUrl: string;
+    title: string;
 }
 
-const ShareButtons = ({shareUrl,title}: Props) => {
+const ShareButtons = ({ shareUrl, title }: Props) => {
 
     const [copyClick, setCopyClick] = useState(false)
     const handleCopy = () => {
@@ -28,7 +28,7 @@ const ShareButtons = ({shareUrl,title}: Props) => {
             <TwitterShareButton url={shareUrl} title={title}>
                 <TwitterIcon size={32} round={true} />
             </TwitterShareButton>
-            <LinkedinShareButton url={shareUrl} title={title} summary="This is a summary of the content" source="Your Website">
+            <LinkedinShareButton url={shareUrl} summary="This is a summary of the content" source="Your Website">
                 <LinkedinIcon size={32} round={true} />
             </LinkedinShareButton>
             {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>

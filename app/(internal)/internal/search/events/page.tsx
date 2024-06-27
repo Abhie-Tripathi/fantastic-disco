@@ -95,6 +95,7 @@ const Search = () => {
   }
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
+  const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
   );
@@ -285,6 +286,11 @@ const Search = () => {
     // Event City
     if (Object.entries(selectedCity).length > 0) {
       queryString.eventCity = Object.keys(selectedCity);
+    }
+
+    // Event zone
+    if(selectedZone.length > 0) {
+      queryString.eventRegion = selectedZone;
     }
 
     // Labels
@@ -587,9 +593,10 @@ const Search = () => {
     };
   }, [selectedEventSeries]);
 
+  // Auto apply search on filter change
   useEffect(() => {
     createQueryString();
-  }, [selectedEventSeries, selectedBrandedEvent]);
+  }, [selectedEventSeries, selectedBrandedEvent, selectedCategories, selectedLabels, selectedEventStatus, selectedDateRange, selectedEventFormat, selectedEventFrequency, selectedEntry, selectedEventEdition, selectedEventKeywords, selectedTrustScore, selectedReptScore, selectedMaturity, selectedINScore, selectedInboundScore, selectedUserRatings, selectedExhibitScore, selectedLocations]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -767,6 +774,8 @@ const Search = () => {
                       setSelectedCity={setSelectedCity}
                       selectedCountry={selectedCountry}
                       setSelectedCountry={setSelectedCountry}
+                      selectedZone={selectedZone}
+                      setSelectedZone={setSelectedZone}
                     />
                   )}
                 </Dialog>

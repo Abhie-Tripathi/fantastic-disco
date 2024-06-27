@@ -31,7 +31,7 @@
   }
   .leftContainer{
     display: flex;
-    width: 55%;
+    width: 50%;
     justify-content: center;
     /* flex-direction: column; */
     /* gap: 10px; */
@@ -42,7 +42,7 @@
     align-items: center;
     height: 60px;
     gap: 10px;
-    padding: 18px 40px;
+    padding: 18px;
     border-bottom: 4px solid #F8F8F8;
     font-size: 16px;
     font-weight: 500;
@@ -72,6 +72,7 @@
 .leftNav{
   color: #6750A4;
   display: flex;
+  width: 25%;
   align-items: center;
   font-size: 18px;
   gap:5px;

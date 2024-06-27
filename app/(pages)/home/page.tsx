@@ -4,49 +4,45 @@ import styles from './page.style.module.css';
 import Link from 'next/link';
 import RightArrow from '/public/rightArrow.svg'
 import Image from 'next/image';
-
-interface Event {
-    id: number;
-    name: string;
-    date: string;
-    location: string;
-}
+import { ApiResponse } from '@/types/fetchEventsApiType';
+import { baseUrl } from '@/constants';
 
 const Page: React.FC = () => {
-    const events = ([
-        { id: 1, name: 'Event 1', date: '2024-06-01', location: 'Location 1' },
-        { id: 2, name: 'Event 2', date: '2024-06-15', location: 'Location 2' },
-        { id: 3, name: 'Event 3', date: '2024-07-01', location: 'Location 3' },]);
 
-    const [btnClick, setBtnClick] = useState<boolean>(false);
+    const [events, setEvents] = useState<ApiResponse | null>(null);
+    const [input, setInput] = useState<string>("");
+    
+    const fetchData = async()=>{  
+        try {
+            const response = await fetch(`${baseUrl}/event/search?orgWebsite=${input}`, {
+                method: 'GET',
+                credentials: 'include' // This will include cookies in the request
+            });
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+            const data = await response.json();
+            setEvents(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={styles.websiteContainer}>
                 <div className={styles.websiteContent}>Get Started</div>
                 <div className={styles.websiteContentTwo}>Enter your Website</div>
-                <input type="text" className={styles.websiteInput} placeholder="Enter Website URL" />
-                <button type="button" className={styles.btn} onClick={()=>setBtnClick(true)}>Extract</button>
+                <input type="text" className={styles.websiteInput} placeholder="Enter Website URL" onChange={(e)=>setInput(e.target.value)} />
+                <div className={styles.example}>eg : 10times.com</div>
+                <button type="button" className={styles.btn} onClick={fetchData}>Extract</button>
             </div>
             <div className={styles.rightContent}>
                 <div className={styles.eventHeading}>Your Events</div>
-                {btnClick && (
-                    <div className={styles.events_btnContainer}>
-                        <ul className={styles.eventList}>
-                            {events.map(event => (
-                                <li key={event.id} className={styles.eventItem}>
-                                    <div className={styles.eventName}>{event.name}</div>
-                                    <div className={styles.eventDate}>{event.date}</div>
-                                    <div className={styles.eventLocation}>{event.location}</div>
-                                </li>
-                            ))}
-                        </ul>
-                        <Link href={"/templates"} className={styles.nextBtn}>
-                            <div>Add Widget</div>
-                            <Image src={RightArrow} alt='right'/>
-                        </Link>
-                    </div>
-                )}
-
+                <div className={styles.events}>
+                    {events?.data.events.map((event : any,key : any)=>(
+                        <div key={key} className={styles.eventName}>{event.name}</div>
+                    ))}
+                </div>
             </div>
         </div>
     );

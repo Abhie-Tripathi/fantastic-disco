@@ -806,7 +806,7 @@ const Comment = ({
   const { theme } = useTheme();
   return (
     <>
-      {comment.content &&
+      {
         comment.type === "MESSAGE" ? (
         <>
           <div className={styles.comment__user}>

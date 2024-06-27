@@ -41,6 +41,8 @@ interface LocationDropdown {
   setSelectedCity?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
   selectedCountry?: {[id: string]: string};
   setSelectedCountry?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
+  selectedZone?: string[];
+  setSelectedZone?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const LocationDropdown = ({
@@ -52,6 +54,8 @@ const LocationDropdown = ({
   setSelectedCity,
   selectedCountry,
   setSelectedCountry,
+  selectedZone,
+  setSelectedZone,
 }: LocationDropdown) => {
   const menuNode = useRef(null);
   const {theme} = useTheme()
@@ -62,32 +66,40 @@ const LocationDropdown = ({
   const [cityData, setCityData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [countryData, setCountryData] = useState([]);
+  const [zoneData, setZoneData] = useState([]);
 
   const [inputText, setInputText] = useState("");
   const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
 
-  useEffect(() => {
-    setState(selectedLocation);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLocation]);
-
   const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setInputText(newValue);
-  
+    if(newValue.trim() != '') setInputText(newValue.trim());
+  };
+
+  const fetchSuggestions = async(text: string) => {
     try {
       const [suggestionResponse, countryResponse] = await Promise.all([
-        myFetch(`${baseUrl}/location/suggestion?q=${newValue}`),
-        myFetch(`${baseUrl}/location/country?name=${newValue}`),
+        myFetch(`${baseUrl}/location/suggestion?q=${text}`),
+        myFetch(`${baseUrl}/location/country?name=${text}`),
       ]);
   
       setCityData(suggestionResponse.data.city);
       setStateData(suggestionResponse.data.state);
       setCountryData(countryResponse.data);
+      setZoneData(suggestionResponse.data.zone);
     } catch (error) {
       console.error("Error fetching location data:", error);
     }
-  };
+  }
+
+  useEffect(() => {
+    if(inputText != ''){
+      const debounceTimeout = setTimeout(() => {
+        fetchSuggestions(inputText);
+      }, 500);
+      return () => clearTimeout(debounceTimeout);
+    }
+  }, [inputText]);
 
   const locationSelectHandler = (arg1: string, arg2?: string) => {
     let name;
@@ -100,7 +112,12 @@ const LocationDropdown = ({
     if (!selectedLocation.includes(name)) {
       setSelectedLocations((prev) => [...prev, name]);
     }
-    setState(selectedLocation);
+    // setState(selectedLocation);
+  };
+
+  const handleSaveData = () => {
+    setState(selectedLocation)
+    onClose();
   };
 
   const removeSelectionHandler = (name: string) => {
@@ -114,6 +131,11 @@ const LocationDropdown = ({
     else if(type === 'country' && setSelectedCountry) {
       setSelectedCountry((prev) => ({...prev, [id]: name }));
     }
+    else if(type === 'zone' && setSelectedZone && selectedZone) {
+      if (!selectedZone.includes(name)) {
+        setSelectedZone((prev: string[]) => [...prev, name]);
+      }
+    }
   }
 
   const removeLocationHandler = (type: string, id: string) => {
@@ -124,6 +146,9 @@ const LocationDropdown = ({
     else if(type === 'country' && setSelectedCountry && selectedCountry){
       const entries = Object.entries(selectedCountry).filter(([key]) => key!== id);
       setSelectedCountry(Object.fromEntries(entries));
+    }
+    else if(type === 'zone' && setSelectedZone && selectedZone) {
+      setSelectedZone((prev) => prev.filter((item) => item !== id));
     }
   };
 console.log(selectedCity);
@@ -183,11 +208,29 @@ console.log(selectedCountry);
                 </div>
               ))
             }
+            {selectedZone && selectedZone.length > 0 &&
+              selectedZone.map((data, index) => (
+                <div className={styles.keyword_chip} key={index}>
+                  <span>{data}</span>
+                  <Image
+                    src={CloseIcon}
+                    width={20}
+                    height={20}
+                    alt="close"
+                    className={styles.closeChip}
+                    onClick={() => {
+                      removeLocationHandler('zone', data)
+                      removeSelectionHandler(data)
+                    }}
+                  />
+                </div>
+              ))
+            }
         </div>
         <div className={styles.header}>
           <div className={styles.header_title}>LOCATIONS</div>
 
-          <div className={styles.header_button} onClick={() => onClose()}>
+          <div className={styles.header_button} onClick={handleSaveData}>
             Done
           </div>
         </div>
@@ -311,6 +354,19 @@ console.log(selectedCountry);
             key={data.id}
           >
             {data?.name}
+          </div>
+        ))}
+
+        {zoneData.map((data: any) => (
+          <div
+            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
+            onClick={() => {
+              locationSelectHandler(data)
+              addLocationHandler('zone', data, data)
+            }}
+            key={data}
+          >
+            {data}
           </div>
         ))}
 
