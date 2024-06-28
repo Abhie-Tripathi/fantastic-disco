@@ -223,7 +223,7 @@
 
 .tracker_container_header,
 .trends_container_header {
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   padding: 10px 15px;
   color: inherit;
   font-weight: 500;
@@ -233,7 +233,7 @@
 }
 
 .tracker_card {
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   border: 1px solid grey;
   padding: 20px;
   border-radius: 8px;

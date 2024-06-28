@@ -110,14 +110,14 @@
   height: 40px;
   font-size: inherit;
   font-family: inherit;
-  background: #131313;
-  color: white;
+  /* background: #ffffff; */
+  /* color: white; */
   border: none;
   cursor: pointer;
 }
 
 .viewTypeButtons_light button {
-  background: white;
+  /* background: white; */
   color: inherit;
 }
 
@@ -227,8 +227,8 @@
 }
 
 .viewContainer {
-  /* background-color: #fbf8ff; */
-  background-color: #1a1a1a;
+  /* background-color: #fbf8ff;
+  background-color: #f6edff; */
   padding: 10px 0px;
   border-radius: 12px;
   margin: 25px 0px;
@@ -239,7 +239,7 @@
 }
 
 .viewContainer_light {
-  background-color: #FBF8FF;
+  /* background-color: #FBF8FF; */
 }
 
 .exportedno_container {

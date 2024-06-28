@@ -93,7 +93,7 @@ const Widget = () => {
 
   return (
     <div className={`${Styles.outerContainer}`}>
-      <div className={`${Styles.containerOne} ${theme === 'light' ? Styles.containerOne_light : ""}`}>
+      <div className={`${Styles.containerOne} ${theme === 'dark' ? 'darkMode' : "lightMode_secondary"}`}>
         <div className={Styles.c1left}>Widgets <span className={Styles.widgetCount}>{`${widgets.length > 0 ? `(${widgets.length})` : ``}`}</span></div>
         <div className={Styles.c1right}>
           <div className={Styles.threeDots}><Image src={More} alt="more" /></div>

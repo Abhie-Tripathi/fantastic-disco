@@ -1,6 +1,6 @@
 .navbar {
-  background-color: #1a1a1a;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
   /* padding: 12px 28px 12px 28px; */
   padding: 8px;
   display: flex;
@@ -76,11 +76,11 @@
   background-color: #6750a4;
 }
 
-.light {
-  color: #131313;
+.dark {
+  color: white;
   /* background-color: var(--secondary-bg-light); */
-  background-color: white;
-  border-bottom: 1px solid #dcdfe4;
+  background-color: #1a1a1a;
+  /* border-bottom: 1px solid #dcdfe4; */
 }
 
 .mobile_sidebar {
