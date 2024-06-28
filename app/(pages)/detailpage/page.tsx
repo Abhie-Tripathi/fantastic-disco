@@ -6,6 +6,7 @@ import Organiser from '@/app/components/internal/eventdetail/Organiser'
 import FestIcon from '/public/festival.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { generateHashtags } from '@/hooks/usHashtagsGenerator'
+import { generateEmailContent } from '@/hooks/useEmailBody'
 import MoreEvents from '@/app/components/DetailPage/MoreEvents'
 import Script from 'next/script'
 import { url } from 'inspector'
@@ -16,9 +17,12 @@ interface PageProps {
     eventName: string;
     shareUrl: string
     media: string;
+    emailSubject : string;
+    emailBody : string;
+
 }
 
-const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) => {
+const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject, emailBody }: PageProps) => {
     return (
         <div className={styles.body}>
             <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
@@ -69,7 +73,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) 
                     </form>
                     <div className={styles.shareContainer}>
                         <div className={styles.shareHeading}>Share</div>
-                        <ShareButtons shareUrl={shareUrl} title={eventName} hashtags = {hashtags}/>
+                        <ShareButtons shareUrl={shareUrl} title={eventName} hashtags = {hashtags} emailSubject={emailSubject} emailBody={emailBody}/>
                     </div>
                 </div>
             </div>
@@ -83,10 +87,13 @@ const fetchData = async () => {
     const eventName = "Tomartina Tomato Fest";
     const description = "Get ready for a tomato-filled adventure at the annual Tomartina Tomato Fest in Italy. This lively celebration brings together locals and visitors alike for a fun-filled day of festivities centered around everyone's favorite red fruit. From tomato-themed games and competitions to juicy tomato tastings and street parades, there's no shortage of excitement at this one-of-a-kind event. Whether you're dodging tomatoes in the streets or indulging in tomato-inspired delicacies, the Tomartina Tomato Fest is an experience not to be missed.";
     const hashtags = await generateHashtags(eventName, description);
+    const {emailSubject, emailBody} = await generateEmailContent(eventName, description)
+
+    console.log("email body", emailBody)
     const shareUrl = "https://console.eventgeni.com/detailpage";
     const media = "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1";
 
-    return { eventName, description, hashtags, shareUrl, media };
+    return { eventName, description, hashtags, shareUrl, media, emailSubject, emailBody };
 };
 const DetailPage = async () => {
     const data = await fetchData();
