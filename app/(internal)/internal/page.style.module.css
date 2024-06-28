@@ -16,7 +16,7 @@
   gap: 20px;
 }
 
-.primary_container{
+.primary_container {
   width: 100%;
 }
 
@@ -26,6 +26,10 @@
   color: inherit;
 }
 
+.secondary_header {
+  font-size: 13px;
+  margin-top: 2px;
+}
 .primary_description {
   padding-top: 5px;
   color: grey;
@@ -41,7 +45,7 @@
   scrollbar-width: none;
 }
 
-.outreach_count{
+.outreach_count {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -50,7 +54,7 @@
 .linkCard {
   flex: 1;
   height: 175px;
-  border: 1px solid grey;
+  border: 1px solid #ececf9;
   box-shadow: 0px 4px 20px 0px #00000008;
   border-radius: 12px;
   position: relative;
@@ -61,7 +65,6 @@
   overflow: hidden;
   /* justify-content: space-between; */
   /* max-width: 250px; */
-
 }
 
 .linkCard_tagsOuterContainer {
@@ -97,7 +100,7 @@
   right: 0;
   bottom: 0;
 }
-.linkCard_tagsName{
+.linkCard_tagsName {
   display: flex;
 }
 
@@ -132,8 +135,9 @@
 }
 
 .divider {
-  border-left: 2px solid grey;
+  border-left: 2px solid #dcdfe4;
   height: 250px;
+  width: 1px;
 }
 
 .notification_header_title {
@@ -158,12 +162,13 @@
 .notification_card {
   margin-top: 5px;
   border-radius: 12px;
-  border: 1px solid grey;
+  border: 1px solid #ececf9;
   height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
+  color: #696b83;
 }
 
 .notification_card::-webkit-scrollbar {
@@ -179,7 +184,7 @@
   cursor: pointer;
   font-size: 14px;
   padding: 10px;
-  border-bottom: 1px solid rgb(51, 51, 51);
+  border-bottom: 1px solid #ececf9;
 }
 
 .notification:hover {
@@ -272,7 +277,7 @@
   align-items: center;
   border-radius: 8px;
 }
-.skelton_eventCard{
+.skelton_eventCard {
   width: 110px;
   /* background-color:  #c3c3c3; */
   display: flex;
@@ -281,7 +286,7 @@
   align-items: center;
   border-radius: 8px;
 }
-.tracker_skeleton{
+.tracker_skeleton {
   /* background-color: #c3c3c3; */
   border-radius: 50%;
   display: flex;
@@ -290,7 +295,7 @@
   align-items: center;
 }
 
-.event_city{
+.event_city {
   /* background-color: #c3c3c3;  */
   border-radius: 5px;
   display: flex;
@@ -401,12 +406,15 @@
 }
 
 .body_divider {
-  border-left: 2px solid grey;
+  border-left: 2px solid #dcdfe4;
+  height: 250px;
+  width: 1px;
 }
 
 .savedEvent_coordinateContainer {
   /* display: flex; */
-  width: 100%;
+  /* width: 100%; */
+  flex: 1;
 }
 
 .savedEventsContainer {
@@ -515,5 +523,3 @@
     padding: 4px 15px;
   }
 }
-
-

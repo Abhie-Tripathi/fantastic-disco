@@ -22,11 +22,11 @@ import { toast } from "react-toastify";
 
 interface EventData {
   id: string;
-  eventGroupId: string,
+  eventGroupId: string;
   imageUrl: string;
   name: string;
   description: string;
-  enquiryId?: string;
+  enquiryId: string;
 }
 interface Props {
   openEventDetails: boolean;
@@ -34,11 +34,11 @@ interface Props {
   openPocDetails: boolean;
   closeBtn: boolean;
   openEventRequest: boolean;
-  handleModal: (id: string) => void;
-  eventId: string,
-  enquiryId?: string,
-  currentEnquiryStatus?: string,
-  handleRefresh?: () => void,
+  handleModal: (id: string, enquiryId: string) => void;
+  eventId: string;
+  enquiryId: string;
+  currentEnquiryStatus?: string;
+  handleRefresh?: () => void;
 }
 
 const EventDetail = ({
@@ -58,23 +58,13 @@ const EventDetail = ({
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
   const [stage, setStage] = useState<string>("");
-  const [singleEventData, setSingleEventData] = useState<EventData>();
-  const urlPath = usePathname().split('/')[2]
+  const [singleEventData, setSingleEventData] = useState<EventData | any>();
+  const urlPath = usePathname().split("/")[2];
   useEffect(() => {
     if (urlPath === "outreach") setStage("OUTREACH");
-    else if (urlPath === "coordinate") setStage("INTERNAL")
+    else if (urlPath === "coordinate") setStage("INTERNAL");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // const singledata: EventData = {
-  //   id: 12,
-  //   imageUrl:
-  //     "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
-  //   name: "Great Indian Food Festival",
-  //   description:
-  //     "Celebrate the rich diversity of Indian cuisine at the Great Indian Food Festival in Gurgaon. Indulge in a feast for the senses as you explore a myriad of flavors, aromas, and textures from across the subcontinent. From spicy street food to traditional delicacies, the festival showcases the best of Indian culinary heritage. Discover hidden gems, sample regional specialties, and immerse yourself in the vibrant ambiance of this culinary extravaganza. Whether you're a foodie, a gourmand, or simply curious to explore new tastes, the Great Indian Food Festival offers an unparalleled culinary experience that will leave you craving for more.",
-  //     // enquiryId: singleEventData[0].enquiryId,
-  // };
+  }, []);
 
   const [status, setStatus] = useState<number>(1);
   const statusValues: { [key: string]: string } = {
@@ -85,7 +75,7 @@ const EventDetail = ({
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
-    if (enquiryId && enquiryId != '') {
+    if (enquiryId && enquiryId != "") {
       let payloadData = {
         enquiryId: enquiryId,
         enquiryStatus: statusValues[changeStatusTo],
@@ -98,18 +88,16 @@ const EventDetail = ({
           body: JSON.stringify(payloadData),
         });
         if (apiData.data.message === "Data updated") {
-          if (handleRefresh)
-            handleRefresh();
-          toast.success('Enquiry status updated!', {
-            position: 'bottom-right',
+          if (handleRefresh) handleRefresh();
+          toast.success("Enquiry status updated!", {
+            position: "bottom-right",
             autoClose: 2000,
             closeButton: false,
             hideProgressBar: true,
           });
         }
-
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     }
   };
@@ -122,7 +110,7 @@ const EventDetail = ({
     }
     const fetchEventData = async () => {
       try {
-        const apiUrl = 'https://api.eventgeni.com/event/' + eventId;
+        const apiUrl = "https://api.eventgeni.com/event/" + eventId;
         const apiData = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
@@ -138,21 +126,20 @@ const EventDetail = ({
             description: eventsData.description,
           });
         }
-
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
-    }
-    if (eventId != '')
-      fetchEventData();
+    };
+    if (eventId != "") fetchEventData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => {
     if (handleModal) {
-      handleModal('');
+      handleModal("", "");
     }
   };
+
   return (
     <div
       className={
@@ -168,36 +155,42 @@ const EventDetail = ({
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
-              <OwnerList label="test" eventId={123} />
-              {pathName && pathName === "outreach" &&
+              <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
+              {pathName && pathName === "outreach" && (
                 <StatusChangeDropdown
                   label=""
                   eventId={123}
                   handleStatusChange={handleStatusChange}
-                  currentValue={currentEnquiryStatus ? currentEnquiryStatus : ''}
+                  currentValue={
+                    currentEnquiryStatus ? currentEnquiryStatus : ""
+                  }
                 />
-              }
+              )}
             </div>
-            {singleEventData &&
+            {singleEventData && (
               <>
                 <SingleEvent {...singleEventData} />
                 <EventDescription
                   description={singleEventData.description}
-                  open={openEventDetails} speakers={true} shortlist={false}
+                  open={openEventDetails}
+                  speakers={true}
+                  shortlist={false}
                 />
               </>
-            }
-            <EventRequest
-              open={openEventRequest}
-            />
-            <Organiser open={openOrganiserDetails} />
-            <EventPoc open={openPocDetails} />
-            <Follower />
+            )}
+            <EventRequest open={openEventRequest} />
+            <Organiser open={openOrganiserDetails}/>
+            <EventPoc open={openPocDetails} eventId={eventId} />
+            <Follower eventId={eventId} enquiryId={enquiryId} />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-            {singleEventData &&
-              <Notes eventId={singleEventData.id} eventGroupId={singleEventData.eventGroupId} stage={stage} />
-            }
+            {singleEventData && (
+              <Notes
+                eventId={singleEventData.id}
+                eventGroupId={singleEventData.eventGroupId}
+                stage={stage}
+              />
+            )}
           </div>
         </div>
       </div>

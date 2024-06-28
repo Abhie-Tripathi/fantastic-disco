@@ -174,12 +174,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div
-      className={styles.container}
-    >
+    <div className={styles.container}>
       <div className={styles.header_container}>
         <div className={styles.primary_container}>
           <div className={styles.primary_header}>Welcome back!</div>
+          <div className={styles.secondary_header}>
+            Unlock the possibility of EventGeni
+          </div>
           {isLoading ? (
             <>
               <SkeletonCards />
@@ -479,7 +480,11 @@ const Dashboard = () => {
         <span className={styles.body_divider}></span>
         <div className={styles.savedEvent_coordinateContainer}>
           <div className={styles.savedEventsContainer}>
-            <div className={styles.savedEventsHeader}>
+            <div
+              className={`${styles.tracker_container_header} ${
+                theme === "light" ? styles.tracker_content_light : ""
+              }`}
+            >
               <Image src={Bookmark} alt="save" className={iconClass} />
               <div
                 style={{ cursor: "pointer" }}
