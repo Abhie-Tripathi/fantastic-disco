@@ -124,9 +124,9 @@ export const AddComment = ({
   // Function to fetch users from the API
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
-    if (data) {
+    if (data && data.length>0) {
       setApiUserData(data);
-      const usernames = data.map((item: any) => "@" + item.firstname + item.lastname);
+      const usernames = data?.map((item: any) => "@" + item.firstname + item.lastname);
       setUsers(usernames);
     }
   };

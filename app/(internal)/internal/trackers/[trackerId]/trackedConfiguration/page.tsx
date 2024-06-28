@@ -147,7 +147,7 @@ useEffect(() => {
         </div>
         <div className={styles.outerRight}>
         <div className={styles.containerTopRightTwo} >
-          <button onClick={()=>setDel(true)}>Delete Tracker</button>
+          <button onClick={()=>setDel(true)}>Delete</button>
           </div>
         <div className={styles.containerTopRight}>
           <Link href={`/internal/trackers/${last}/editTracker`}>
@@ -161,7 +161,7 @@ useEffect(() => {
                 )
               }
             >
-              Edit Tracker
+              Edit
             </button>
           </Link>
         </div>
