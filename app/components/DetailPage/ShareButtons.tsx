@@ -9,10 +9,10 @@ import Image from 'next/image'
 interface Props {
     shareUrl: string;
     title: string;
+    hashtags : string[];
 }
 
-const ShareButtons = ({ shareUrl, title }: Props) => {
-
+const ShareButtons = ({ shareUrl, title,hashtags }: Props) => {
     const [copyClick, setCopyClick] = useState(false)
     const handleCopy = () => {
         setCopyClick(true)
@@ -22,13 +22,13 @@ const ShareButtons = ({ shareUrl, title }: Props) => {
 
     return (
         <div className={styles.shareIconContainer}>
-            <FacebookShareButton url={shareUrl} title={title} hashtag='paintfest'>
+            <FacebookShareButton url={shareUrl} title={title} hashtag={hashtags[0]}>
                 <FacebookIcon size={32} round={true} />
             </FacebookShareButton>
-            <TwitterShareButton url={shareUrl} title={title}>
+            <TwitterShareButton url={shareUrl} title={title} hashtags={hashtags}>
                 <TwitterIcon size={32} round={true} />
             </TwitterShareButton>
-            <LinkedinShareButton url={shareUrl} summary="This is a summary of the content" source="Your Website">
+            <LinkedinShareButton url={shareUrl} title={title} source='Eventgeni'>
                 <LinkedinIcon size={32} round={true} />
             </LinkedinShareButton>
             {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
