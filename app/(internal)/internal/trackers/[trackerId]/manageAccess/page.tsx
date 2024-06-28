@@ -25,7 +25,7 @@ const Page = () => {
       setDrop(true);
       if(data?.length>0)
        { const result = data?.filter((item: any) =>
-            item?.aliasName?.toLowerCase()?.includes(filter.toLowerCase())
+            item?.name?.toLowerCase()?.includes(filter?.toLowerCase())
         );
         setFilteredData(result);}
     }, [filter, data]);
@@ -148,7 +148,7 @@ const Page = () => {
                 console.error('Error fetching data:', error);
             } else {
                 console.log('Data fetched:', data);
-                window.location.reload;
+                window.location.reload();
                 if(share) setShare(false);
                 if(sendInvite) setSendInvite(false);
                 setAccessData(data);
@@ -290,12 +290,12 @@ const Page = () => {
                   </div>
                   </div>
                  
-                         {drop &&filter.length>0 &&
+                         {drop &&filter?.length>0 &&
                       <div className={styles.dropdown}>
                           <div className={styles.dropdownContent}>
                               {filteredData.map((item: any) => (
-                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName)}>
-                                      {item?.aliasName}
+                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.name)}>
+                                      {item?.name}
                                   </div>
                               ))}
                           </div>
