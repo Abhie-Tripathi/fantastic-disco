@@ -1,11 +1,11 @@
 .navbar{
     display: flex;
     justify-content: space-between;
-    background-color: #1A1A1A;
+    /* background-color: #efecec; */
     padding: 18px;
     margin-bottom: 65px;
     width: 100%;
-    color: #ffffff;
+    /* color: #ffffff; */
 }
 .navbar .heading{
     display: flex;

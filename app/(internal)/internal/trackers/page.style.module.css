@@ -151,7 +151,7 @@
         justify-content: center;
     }
     .topView{
-        background-color: #F9F9FF;
+        /* background-color: #F9F9FF; */
         width: 100%;
         align-items: center;
         display: flex;
@@ -178,7 +178,7 @@
 }
 .domain{
     padding: 4px 8px;
-    background-color: #FFEFEF;
+    /* background-color: #FFEFEF; */
     border-radius: 6px;
     color: #6750A4;
     font-size: 12px;
@@ -245,7 +245,7 @@ color:#6E6F89;
     font-size: 12px;
   }
   .trackers{
-    background-color: #F8F8F8;
+    /* background-color: #F8F8F8; */
     /* padding: 18px 20px; */
     margin: 20px -15px;
     gap:20px;

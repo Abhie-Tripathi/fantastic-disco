@@ -48,7 +48,6 @@ const Navbar = () => {
     user ? user : null
   );
 
-  console.log(userDetail);
 
   useEffect(() => {
     setUserDetail(user);
@@ -101,7 +100,7 @@ const Navbar = () => {
   }, [currPath]);
 
   return (
-    <div className={`${styles.navbar} ${theme === "light" && styles.light}`}>
+    <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
       <div
         style={{
           display: "flex",

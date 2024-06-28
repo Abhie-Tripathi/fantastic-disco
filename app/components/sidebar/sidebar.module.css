@@ -4,7 +4,7 @@
   height: 100vh;
   width: 80px;
   padding: 20px 0px;
-  background-color: #1a1a1a;
+  background-color: #ffffff;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -25,8 +25,8 @@
   margin-bottom: 17px;
   margin-left: 5px;
 }
-.container_light {
-  background-color: white;
+.container_dark {
+  background-color: #1a1a1a;
   border-right: 1px solid #dcdfe4;
 }
 
@@ -73,13 +73,15 @@
 .link.active {
   padding-left: 21px;
   border-left: 6px solid #8f68ce;
-  background-color: #292929;
+  /* background-color: #f6edff; */
   font-weight: 500;
   color: #8f68ce;
 }
-.container_light .link.active {
-  background-color: #f6edff;
+
+.link.active_dark {
+  background-color: #242424;
 }
+
 .sublink {
   font-size: 14px;
   padding: 10px 0px 10px 79px;

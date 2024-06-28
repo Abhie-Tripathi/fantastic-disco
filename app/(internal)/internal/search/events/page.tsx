@@ -289,7 +289,7 @@ const Search = () => {
     }
 
     // Event zone
-    if(selectedZone.length > 0) {
+    if (selectedZone.length > 0) {
       queryString.eventRegion = selectedZone;
     }
 
@@ -355,7 +355,7 @@ const Search = () => {
 
     // Event Keywords
     if (selectedEventKeywords.length > 0) {
-      queryString.eventKeywords = selectedEventKeywords.join('+');
+      queryString.eventKeywords = selectedEventKeywords.join("+");
     }
 
     // Event Ranking
@@ -596,7 +596,27 @@ const Search = () => {
   // Auto apply search on filter change
   useEffect(() => {
     createQueryString();
-  }, [selectedEventSeries, selectedBrandedEvent, selectedCategories, selectedLabels, selectedEventStatus, selectedDateRange, selectedEventFormat, selectedEventFrequency, selectedEntry, selectedEventEdition, selectedEventKeywords, selectedTrustScore, selectedReptScore, selectedMaturity, selectedINScore, selectedInboundScore, selectedUserRatings, selectedExhibitScore, selectedLocations]);
+  }, [
+    selectedEventSeries,
+    selectedBrandedEvent,
+    selectedCategories,
+    selectedLabels,
+    selectedEventStatus,
+    selectedDateRange,
+    selectedEventFormat,
+    selectedEventFrequency,
+    selectedEntry,
+    selectedEventEdition,
+    selectedEventKeywords,
+    selectedTrustScore,
+    selectedReptScore,
+    selectedMaturity,
+    selectedINScore,
+    selectedInboundScore,
+    selectedUserRatings,
+    selectedExhibitScore,
+    selectedLocations,
+  ]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -1023,7 +1043,7 @@ const Search = () => {
           <div>
             <div
               className={`${styles.viewContainer} ${
-                theme === "light" ? styles.viewContainer_light : ""
+                theme === "dark" ? "darkMode" : "lightMode_secondary"
               }`}
             >
               <div className={styles.viewTypeButtons_container}>
@@ -1617,7 +1637,7 @@ const Search = () => {
 
         <div
           className={`${styles.viewContainer} ${
-            theme === "light" ? styles.viewContainer_light : ""
+            theme === "dark" ? "darkMode" : "lightMode_secondary"
           }`}
         >
           <div
@@ -1630,7 +1650,7 @@ const Search = () => {
                 onClick={() => setSelectedView("list")}
                 className={`${styles.listBtn} ${
                   selectedView === "list" ? styles.active : ""
-                }`}
+                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
               >
                 List
               </button>
@@ -1638,7 +1658,7 @@ const Search = () => {
                 onClick={() => setSelectedView("map")}
                 className={`${styles.mapBtn} ${
                   selectedView === "map" ? styles.active : ""
-                }`}
+                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
               >
                 Map
               </button>
@@ -1646,7 +1666,7 @@ const Search = () => {
                 onClick={() => setSelectedView("calendar")}
                 className={`${styles.calendarBtn} ${
                   selectedView === "calendar" ? styles.active : ""
-                }`}
+                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
               >
                 Calendar
               </button>

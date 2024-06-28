@@ -7,7 +7,7 @@
   width: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #6750A4;
+  background-color: #6750a4;
   border-radius: 10px;
 }
 
@@ -34,8 +34,7 @@
   --primary-color-light: #000000;
   --secondary-bg-light: #efecec;
 }
-html{
-  
+html {
 }
 html,
 body {
@@ -45,13 +44,13 @@ body {
   /* background-color: #131313;
   color: #FFFFFF; */
 }
-body[data-theme='dark'] {
+body[data-theme="dark"] {
   color: #ffffff;
   background: #131313;
 }
-body[data-theme='light']{ 
+body[data-theme="light"] {
   background-color: var(--primary-bg-light);
-    color: var(--primary-color-light);
+  color: var(--primary-color-light);
 }
 a {
   color: inherit;
@@ -64,12 +63,11 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-
-button{
+button {
   background-color: transparent;
   border: none;
   font-size: inherit;
@@ -101,6 +99,27 @@ button{
 
 .desktop_view {
   display: none;
+}
+
+.darkMode {
+  background-color: #1a1a1a !important;
+  color: #ffffff;
+}
+
+.darkMode_secondary {
+  background-color: #242424;
+  /* background-color: black; */
+  color: white;
+}
+
+.lightMode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.lightMode_secondary {
+  background-color: #f6edff !important;
+  color: black;
 }
 
 @media (prefers-color-scheme: dark) {
