@@ -7,6 +7,8 @@ import FestIcon from '/public/festival.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 import MoreEvents from '@/app/components/DetailPage/MoreEvents'
+import Script from 'next/script'
+import { url } from 'inspector'
 
 interface PageProps {
     hashtags: string[];
@@ -19,6 +21,8 @@ interface PageProps {
 const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) => {
     return (
         <div className={styles.body}>
+            <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
+            <popup-widget/>
             <div className={styles.eventDetailContainer}>
                 <div className={styles.leftContainer}>
                     <div className={styles.headerContainer}>
@@ -65,7 +69,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media }: PageProps) 
                     </form>
                     <div className={styles.shareContainer}>
                         <div className={styles.shareHeading}>Share</div>
-                        <ShareButtons shareUrl={shareUrl} title={eventName} />
+                        <ShareButtons shareUrl={shareUrl} title={eventName} hashtags = {hashtags}/>
                     </div>
                 </div>
             </div>
@@ -79,7 +83,7 @@ const fetchData = async () => {
     const eventName = "Tomartina Tomato Fest";
     const description = "Get ready for a tomato-filled adventure at the annual Tomartina Tomato Fest in Italy. This lively celebration brings together locals and visitors alike for a fun-filled day of festivities centered around everyone's favorite red fruit. From tomato-themed games and competitions to juicy tomato tastings and street parades, there's no shortage of excitement at this one-of-a-kind event. Whether you're dodging tomatoes in the streets or indulging in tomato-inspired delicacies, the Tomartina Tomato Fest is an experience not to be missed.";
     const hashtags = await generateHashtags(eventName, description);
-    const shareUrl = "http://console.eventgeni.com/detailpage";
+    const shareUrl = "https://console.eventgeni.com/detailpage";
     const media = "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1";
 
     return { eventName, description, hashtags, shareUrl, media };
@@ -91,12 +95,16 @@ const DetailPage = async () => {
 export default DetailPage;
 
 export async function generateMetadata() {
-    const { eventName, description, media } = await fetchData();
+    const { eventName, description, media, shareUrl } = await fetchData();
     return {
         title: eventName,
         description: description,
         openGraph: {
-            images: [media]
-        }
+            title: eventName, 
+            description: description, 
+            images: [media],
+            url: shareUrl 
+        },
+        
     };
 }
