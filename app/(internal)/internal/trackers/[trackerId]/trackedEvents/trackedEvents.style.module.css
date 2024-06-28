@@ -128,4 +128,7 @@
     justify-content: space-between;
     /* Your other styles */
   }
-  
+  .active > .circle{
+    background-color: white;
+    color: #6750A4;
+  }

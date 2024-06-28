@@ -1,12 +1,12 @@
 "use client";
-import { createContext, useContext, useLayoutEffect, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
 import { UserResponse } from "../types/user";
 import { SignUpResponse, SignInResponse } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type authContextType = {
   user: UserResponse | null;
@@ -20,7 +20,7 @@ const authContextDefaultValues: authContextType = {
   user: null,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
-  signOut: () => {},
+  signOut: () => { },
   verifyOtp: () => Promise.resolve(null),
 };
 
@@ -38,6 +38,9 @@ export const AuthContextProvider = ({ children }: any) => {
     data?: SignUpResponse;
     error?: any;
   }
+  const searchParams = useSearchParams()
+
+  const token = searchParams.get('token')
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto);
     const url = baseUrl + authEndpoints.signup;
@@ -67,6 +70,41 @@ export const AuthContextProvider = ({ children }: any) => {
     data?: SignInResponse;
     error?: any;
   }
+  const [isVerifiedToken,setIsVerifiedToken]=useState(false);
+  useEffect(() => {
+    if (token && token.length > 0) {
+      const verifyToken = async () => {
+        const formData = {
+          token: token,
+          invite: true,
+        }
+        const url = `${baseUrl}/auth/customer/reset-password/page`
+        try {
+          const { data, error } = await myFetch(url, {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (error) {
+            console.error('Error fetching data:', error);
+            router.push("/signin");
+          } else {
+            console.log('Data fetched:', data);
+            // const { id, firstname, lastname, email, role }=data.info;
+            // const user = { id, firstname, lastname, email, role };
+            setUser(data.info);
+            setLocalStorage(data.info);
+          }
+        } catch (err) {
+          console.error('Fetch failed:', err);
+          router.push("/signin");
+        }
+      }
+      verifyToken();
+    }
+  }, [])
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
     const url = baseUrl + authEndpoints.signin;
@@ -155,6 +193,10 @@ export const AuthContextProvider = ({ children }: any) => {
     console.log(user);
 
     if (user) {
+      // if(!user?.user){
+      //   // console.log(1);
+      //   setUser(JSON.parse(user));
+      // }else 
       setUser(JSON.parse(user).user);
     } else {
       // Define an array of public paths
@@ -162,7 +204,7 @@ export const AuthContextProvider = ({ children }: any) => {
 
       // Check if the current path is in public paths or matches the dynamic /reset route
       const isPublicPath =
-        publicPaths.includes(pathName) || pathName.startsWith("/reset");
+        publicPaths.includes(pathName) || pathName.startsWith("/reset") || (token && token.length>0);
 
       if (!isPublicPath) {
         router.push("/signin");

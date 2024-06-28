@@ -51,6 +51,7 @@ const Navbar = () => {
   console.log(userDetail);
 
   useEffect(() => {
+    if(user)
     setUserDetail(user);
   }, [user]);
 
@@ -245,8 +246,8 @@ const Navbar = () => {
               onClick={toggleDropdown}
             >
               <div className={styles.circle} data-name="Username">
-                {userDetail?.firstname.charAt(0)}
-                {userDetail?.lastname.charAt(0)}
+                {userDetail?.firstname?.charAt(0)}
+                {userDetail?.lastname?.charAt(0)}
               </div>
               <div className={styles.userDetails}>
                 <div>

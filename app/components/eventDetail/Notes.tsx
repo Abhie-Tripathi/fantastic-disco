@@ -576,11 +576,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
 
-    if (data) {
+    if (data && data.length>0) {
       console.log(data);
 
       // Collect new items to add to the array
-      const newItems = data.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+      const newItems = data?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
 
 
       // Use functional form to update state
