@@ -110,7 +110,7 @@ const AddEventForm = () => {
 
     const handlePoster = () => {
         if (location && description) {
-            generatePrompt(location, description)
+            generatePrompt(location, description, searchInput)
         }
     }
 
@@ -151,7 +151,7 @@ const AddEventForm = () => {
 
     useEffect(() => {
         if (location && description) {
-            generatePrompt(location, description)
+            generatePrompt(location, description, searchInput)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [description, location])

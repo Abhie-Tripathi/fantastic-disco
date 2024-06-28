@@ -16,6 +16,25 @@
     cursor: pointer;
 }
 
+.eventRequest_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.image_container {
+  border: 1px solid #6750a4;
+  background: #6750a4;
+  padding: 4px;
+  display: flex;
+  width: 45px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+}
+
 .accordian {
     border-top: 1px solid #2d2741;
     margin-top: 20px;

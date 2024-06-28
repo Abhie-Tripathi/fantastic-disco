@@ -1,14 +1,14 @@
 "use client";
 
-import UserCard from "@/app/components/profile/UserCard";
 import styles from "./page.style.module.css";
 import uploadIcon from "/public/upload.svg";
 import Image from "next/image";
-import searchIcon from "/public/searchIcon.svg";
 import { useEffect, useRef, useState } from "react";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
+import { useAuthContext } from "@/context";
+import { UserResponse } from "@/types/user";
 
 interface Profile {
   firstname: string;
@@ -21,6 +21,7 @@ interface Profile {
 }
 
 const Profile = () => {
+  const { user, setIsProfileUpdated } = useAuthContext();
   const [profileData, setProfileData] = useState<Profile>();
   const [name, setname] = useState("");
   const [role, setRole] = useState("");
@@ -29,12 +30,14 @@ const Profile = () => {
   const [picFile, setPicFile] = useState<any>(null);
   const fileInputRef = useRef<any>();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false); // New loading state
 
   const handleUploadClick = () => {
     const fileRef = fileInputRef.current as HTMLDivElement;
     fileRef.click();
   };
 
+  const loginedUser = user;
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
@@ -97,22 +100,37 @@ const Profile = () => {
     formData.append("phoneNumber", mobileNo);
     formData.append("designation", role);
     formData.append("department", dept);
-    formData.append("file", picFile);
+    if (picFile !== null) {
+      formData.append("file", picFile);
+    }
 
+    setIsSaving(true);
     const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
       method: "PATCH",
       body: formData,
     });
 
+    setIsSaving(false);
+
     if (data) {
       console.log(data);
+      setProfileData(data.user);
       showToast("success", "Data Saved Successfully");
       setname("");
       setRole("");
       setMobileNo("");
       setDept("");
       setPicFile("");
-      return;
+
+      const newUser = {
+        user: {
+          ...loginedUser,
+          firstname: data.user.firstname || loginedUser!.firstname,
+          lastname: data.user.lastname || loginedUser!.lastname,
+        },
+      };
+      window.localStorage.setItem("user", JSON.stringify(newUser));
+      setIsProfileUpdated(true);
     }
 
     if (error) {
@@ -172,7 +190,6 @@ const Profile = () => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.header}>User Profile</div> */}
       {profileData && (
         <div>
           <div className={styles.account}>
@@ -246,6 +263,7 @@ const Profile = () => {
                       errors.name && styles.error_boundary
                     }`}
                     onChange={(e) => setname(e.target.value)}
+                    value={name}
                   />
                   {errors.name && (
                     <div className={styles.error}>{errors.name}</div>
@@ -309,8 +327,11 @@ const Profile = () => {
                   </span>
                 </div>
 
-                <div className={styles.action_button} onClick={saveDataHandler}>
-                  Save Changes
+                <div
+                  className={styles.action_button}
+                  onClick={isSaving ? undefined : saveDataHandler}
+                >
+                  {isSaving ? "Saving..." : "Save Changes"}
                 </div>
 
                 <div
@@ -322,92 +343,6 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          {/* <div className={styles.account}>
-            <div className={styles.account_left}>
-              <div className={styles.profile_header}>Your Organization</div>
-              <div className={styles.input_title}>
-                Here you can manage and update your organization’s details, view
-                activity reports, and configure settings and manage users.
-              </div>
-            </div>
-            <div className={styles.account_right}>
-              <div className={styles.account_details}>
-                <div className={styles.input_container}>
-                  <div className={styles.input_title}>Organization name</div>
-                  <input type="text" className={styles.input} />
-                </div>
-
-                <div className={styles.input_container}>
-                  <div className={styles.input_title}>Industry</div>
-                  <input type="text" className={styles.input} />
-                </div>
-
-                <div className={styles.input_container}>
-                  <div className={styles.input_title}>Use Case</div>
-                  <input type="text" className={styles.input} />
-                </div>
-
-                <div className={styles.input_container}>
-                  <div className={styles.input_title}>Location</div>
-                  <input type="text" className={styles.input} />
-                </div>
-
-                <div className={styles.action_button}>Save Changes</div>
-
-                <div className={styles.action_reset}>
-                  Delete My Organization
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.account}>
-            <div className={styles.account_left}>
-              <div className={styles.profile_header}>Admin (1)</div>
-              <div className={styles.searchBar_container}>
-                <span>
-                  <Image
-                    src={searchIcon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className={styles.search}
-                  />
-                </span>
-                <input
-                  type="text"
-                  className={styles.input1}
-                  placeholder="Search Members"
-                />
-              </div>
-              <UserCard />
-            </div>
-            <div className={styles.account_right}>
-              <div className={styles.profile_header}>Users (12)</div>
-              <div className={styles.searchBar_container}>
-                <span>
-                  <Image
-                    src={searchIcon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className={styles.search}
-                  />
-                </span>
-                <input
-                  type="text"
-                  className={styles.input1}
-                  placeholder="Search Members"
-                />
-                <span className={styles.action_invite}>Send Invite</span>
-              </div>
-              <UserCard />
-              <UserCard />
-              <UserCard />
-              <UserCard />
-            </div>
-          </div> */}
         </div>
       )}
     </div>

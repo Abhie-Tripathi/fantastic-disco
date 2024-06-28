@@ -138,7 +138,7 @@ const Navbar = () => {
         {pathName === "internal" && (
           <div className="mobile_view">
             <div
-              className={`${styles.circle} `}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               data-name="Notification"
             >
@@ -151,7 +151,7 @@ const Navbar = () => {
         {pathName === "internal" && (
           <div className="desktop_view tablet_view">
             <div
-              className={`${styles.circle}`}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
@@ -166,7 +166,7 @@ const Navbar = () => {
           <div className="desktop_view tablet_view">
             <Link
               href="/"
-              className={`${styles.circle} desktop_view tablet_view`}
+              className={`${styles.circle} ${iconClass} desktop_view tablet_view`}
               style={{ marginRight: "10px" }}
               data-name="Home"
             >
@@ -178,7 +178,7 @@ const Navbar = () => {
         {/* Settings */}
         {pathName === "internal" && (
           <Link
-            className={`${styles.circle}`}
+            className={`${styles.circle} ${iconClass}`}
             style={{ marginRight: "10px" }}
             href={"/settings"}
             data-name="Settings"
@@ -190,7 +190,7 @@ const Navbar = () => {
         {pathName !== "internal" && (
           <>
             <div
-              className={`${styles.circle}`}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
@@ -198,7 +198,7 @@ const Navbar = () => {
               <Image src={lightModeIcon} alt="theme" />
             </div>
             <Link
-              className={styles.circle}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               href={"/internal"}
               data-name="Internal"
@@ -211,7 +211,7 @@ const Navbar = () => {
         {pathName !== "internal" && (
           <>
             <Link
-              className={styles.circle}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               href={"/widget"}
               data-name="Widget"
@@ -220,7 +220,7 @@ const Navbar = () => {
             </Link>
 
             <Link
-              className={styles.circle}
+              className={`${styles.circle} ${iconClass}`}
               style={{ marginRight: "10px" }}
               href={"/settings"}
               data-name="Settings"
@@ -245,7 +245,7 @@ const Navbar = () => {
               ref={profilectas.dropdownRef}
               onClick={toggleDropdown}
             >
-              <div className={styles.circle} data-name="Username">
+              <div className={`${styles.circle} ${iconClass}`} data-name="Username">
                 {userDetail?.firstname?.charAt(0)}
                 {userDetail?.lastname?.charAt(0)}
               </div>

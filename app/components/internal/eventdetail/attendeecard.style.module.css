@@ -1,5 +1,4 @@
 .card_container {
-    background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%);
     border: 0.9px solid #262626;
     padding: 25px;
     border-radius: 16px;
@@ -36,7 +35,7 @@
     align-items: center;
     gap: 10px;
     border-radius: 10px;
-    background: #282727;
+    /* background: #282727; */
 }
 
 .searchInput {

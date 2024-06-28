@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import styles from './caraouselview.style.module.css'
 import HeroBanner from '../MultipleEvents/HeroBanner'
+import EventCard from '../../EventCard'
+
+
 
 const CaraouselView = () => {
     const [currentIndex, setCurrentIndex] = useState(0);

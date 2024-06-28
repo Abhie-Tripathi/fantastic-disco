@@ -100,8 +100,9 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
               <div className={styles.square} onClick={() => deleteEntry(item.id, item.accessId)}>-</div>
               <div className={styles.profileCircle}>{abbreviation(item.name)}</div>
               <div>
-                <div className={styles.name}>{item.name}{" "}<span className={styles.tag}>{userHandle(item.name)}</span></div>
-                <div className={styles.email}>{item?.email}</div>
+                <div className={styles.name}>{item.name}{" "}</div>
+                <span className={styles.tag}>{userHandle(item.name)}</span>
+                {/* <div className={styles.email}>{item?.email}</div> */}
               </div>
             </div>
             <div

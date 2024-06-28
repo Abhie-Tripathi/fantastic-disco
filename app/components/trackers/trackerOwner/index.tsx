@@ -44,9 +44,10 @@ const TrackerOwner: React.FC<TrackerOwnerProps> = ({ adminData }) => {
                 <div>
                   <div className={styles.name}>
                     {item.name}{" "}
-                    <span className={styles.tag}>{userHandle(item.name)}</span>
+                    
                   </div>
-                  <div className={styles.email}>{item?.email}</div>
+                  <span className={styles.tag}>{userHandle(item.name)}</span>
+                  {/* <div className={styles.email}>{item?.email}</div> */}
                 </div>
               </div>
               <div className={styles.add} style={{ textDecoration: "none" }}>

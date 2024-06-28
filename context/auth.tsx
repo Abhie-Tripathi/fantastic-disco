@@ -1,5 +1,13 @@
 "use client";
-import { createContext, useContext, useLayoutEffect, useState, useEffect } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState
+} from "react";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
 import { UserResponse } from "../types/user";
@@ -14,6 +22,7 @@ type authContextType = {
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
   verifyOtp: (user: any) => Promise<any>;
+  setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
 };
 
 const authContextDefaultValues: authContextType = {
@@ -22,6 +31,7 @@ const authContextDefaultValues: authContextType = {
   signin: () => Promise.resolve(null),
   signOut: () => { },
   verifyOtp: () => Promise.resolve(null),
+  setIsProfileUpdated: () => {},
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -33,6 +43,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
+  const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const router = useRouter();
   interface SignUp {
     data?: SignUpResponse;
@@ -170,11 +181,9 @@ export const AuthContextProvider = ({ children }: any) => {
     if (data) {
       console.log(data);
       if (!data.user.isVerified) {
-        // console.log("Not Verified");
         return;
       }
       if (data.user.isVerified) {
-        // console.log("Data is verified");
         setUser(data);
         setLocalStorage(data);
       }
@@ -199,10 +208,8 @@ export const AuthContextProvider = ({ children }: any) => {
       // }else 
       setUser(JSON.parse(user).user);
     } else {
-      // Define an array of public paths
       const publicPaths = ["/signup", "/forgot-password"];
 
-      // Check if the current path is in public paths or matches the dynamic /reset route
       const isPublicPath =
         publicPaths.includes(pathName) || pathName.startsWith("/reset") || (token && token.length>0);
 
@@ -210,7 +217,7 @@ export const AuthContextProvider = ({ children }: any) => {
         router.push("/signin");
       }
     }
-  }, [pathName, router]);
+  }, [pathName, router, isProfileUpdated]);
 
   const value = {
     user,
@@ -218,6 +225,8 @@ export const AuthContextProvider = ({ children }: any) => {
     signin,
     signOut,
     verifyOtp,
+    isProfileUpdated,
+    setIsProfileUpdated,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
