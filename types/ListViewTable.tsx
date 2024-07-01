@@ -27,6 +27,7 @@ export interface EventTableType {
         globalRank: number;
         countryRank: number;
         categoryRank: [{name: string, rank: number}]
+        eventRank: number;
     };
     reputationSentiment: number;
     interestsGrowth: number;
