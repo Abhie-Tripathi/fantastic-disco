@@ -8,6 +8,7 @@ import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Image from 'next/image';
+import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
 import { usePathname, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
@@ -238,6 +239,8 @@ console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.acti
       </div>
       <div className={styles.topRight}></div>
     </div> */}
+    <div className={styles.innerLeft}><Trackers/></div>
+    <div className={styles.innerRight}>
     <div className={styles.eventStatus}>
       <div className={styles.eventStatusLeft}>
         <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>
@@ -280,6 +283,7 @@ console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.acti
                 </Dialog>
               </Modal>
             </ModalOverlay>} */}
+  </div>
   </div>
   
   // <div>

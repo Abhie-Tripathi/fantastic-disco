@@ -24,7 +24,16 @@ type authContextType = {
   verifyOtp: (user: any) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
 };
-
+interface newUserResponse {
+  user:{
+    id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    token?: string;
+  }
+  
+}
 const authContextDefaultValues: authContextType = {
   user: null,
   signup: () => Promise.resolve(null),
@@ -103,10 +112,26 @@ export const AuthContextProvider = ({ children }: any) => {
             router.push("/signin");
           } else {
             console.log('Data fetched:', data);
-            // const { id, firstname, lastname, email, role }=data.info;
+            const { id, firstname, lastname, email, role }=data.info;
+            const user={
+              user:{
+                  id:id,
+                  firstname:firstname,
+                  lastname:lastname,
+                  email:email,
+                  role:role
+              }
+            }
             // const user = { id, firstname, lastname, email, role };
+            const userObject = { user: {
+              id:id,
+              firstname:firstname,
+              lastname:lastname,
+              email:email,
+              role:role
+            } };
             setUser(data.info);
-            setLocalStorage(data.info);
+            setLocalStorage(userObject);
           }
         } catch (err) {
           console.error('Fetch failed:', err);
@@ -153,7 +178,7 @@ export const AuthContextProvider = ({ children }: any) => {
     router.push("/signin");
   };
 
-  const setLocalStorage = (user?: UserResponse) => {
+  const setLocalStorage = (user?: UserResponse | newUserResponse) => {
     window.localStorage.setItem("user", JSON.stringify(user));
   };
 

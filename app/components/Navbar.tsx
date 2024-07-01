@@ -63,6 +63,7 @@ const Navbar = () => {
   const themeSwitchHandler = () => {
     toggleTheme();
   };
+console.log(user);
 
   const handelSideShow = () => {
     setShowSidebar(true);

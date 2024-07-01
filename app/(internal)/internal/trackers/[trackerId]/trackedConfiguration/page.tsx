@@ -128,7 +128,8 @@ const Page = () => {
 useEffect(() => {
   const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj:any) => Object.values(countryObj)[0])||[];
   const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj:any) => Object.values(cityObj)[0])||[];
-  setLocations([...eventCountry, ...eventCity]);
+  const eventZone=data?.tracker?.filterValue?.eventRegion?.split(",")||[];
+  setLocations([...eventCountry, ...eventCity, ...eventZone]);
 }, [data]);
   
   return (
