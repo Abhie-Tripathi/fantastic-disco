@@ -1,13 +1,12 @@
 .card{
-    width: 305px;
-    height: 337px;
+    min-width: 305px;
+    min-height: 337px;
     border-radius: 25px;
     background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    
 }
 .banner{
     width: 291px;

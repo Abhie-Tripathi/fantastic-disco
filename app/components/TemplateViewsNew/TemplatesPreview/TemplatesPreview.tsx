@@ -41,7 +41,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>Preview</div>
-                    {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG") && <div className={styles.listTemplateBtns}>
+                    {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll") && <div className={styles.listTemplateBtns}>
                         <button className={`${styles.listTemplateBtn} ${selectedCard === "card1" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card1")}>Card Style 1</button>
                         <button className={`${styles.listTemplateBtn} ${selectedCard === "card2" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card2")}>Card Style 2</button>
                         <button className={`${styles.listTemplateBtn} ${selectedCard === "card3" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card3")}>Card Style 3</button>
@@ -65,9 +65,9 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                                                     selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard = {selectedCard}/> :
                                                         selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard = {selectedCard}/> :
                                                             selectedTemplate === "CV" ? <CaraouselView /> :
-                                                                selectedTemplate === "HS" ? <ScrollView type='top' /> :
-                                                                    selectedTemplate === "LScroll" ? <ScrollView type='left' /> :
-                                                                        selectedTemplate === "RScroll" ? <ScrollView type='right' /> :
+                                                                selectedTemplate === "HS" ? <ScrollView type='top' selectedCard = {selectedCard}/> :
+                                                                    selectedTemplate === "LScroll" ? <ScrollView selectedCard = {selectedCard} type='left' /> :
+                                                                        selectedTemplate === "RScroll" ? <ScrollView selectedCard = {selectedCard} type='right' /> :
                                                                             selectedTemplate === "PUV" ? <Popup /> : <></>}
                     </div>
                     <div className={styles.previewBtnContainer}>
