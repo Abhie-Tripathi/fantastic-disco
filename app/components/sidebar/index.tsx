@@ -51,19 +51,19 @@ const Sidebar = () => {
     </Link>
 
     <Link
-      href="/internal/coordinate"
-      className={`${styles.link} ${getActiveClass("/internal/coordinate")}`}
-    >
-      <CoordinateIcon />
-      <div className={styles.linkName}>Coordinate</div>
-    </Link>
-
-    <Link
       href="/internal/search/events"
       className={`${styles.link} ${getActiveClass("/internal/search/events")}`}
     >
       <SearchIcon />
       <div className={styles.linkName}>Research</div>
+    </Link>
+
+    <Link
+      href="/internal/trends"
+      className={`${styles.link} ${getActiveClass("/internal/trends")}`}
+    >
+      <EventTrends />
+      <div className={styles.linkName}>Event Trends</div>
     </Link>
 
     <Link
@@ -75,6 +75,14 @@ const Sidebar = () => {
     </Link>
 
     <Link
+      href="/internal/coordinate"
+      className={`${styles.link} ${getActiveClass("/internal/coordinate")}`}
+    >
+      <CoordinateIcon />
+      <div className={styles.linkName}>Coordinate</div>
+    </Link>
+
+    <Link
       href="/internal/outreach"
       className={`${styles.link} ${getActiveClass("/internal/outreach")}`}
     >
@@ -82,13 +90,6 @@ const Sidebar = () => {
       <div className={styles.linkName}>Outreach</div>
     </Link>
 
-    <Link
-      href="/internal/trends"
-      className={`${styles.link} ${getActiveClass("/internal/trends")}`}
-    >
-      <EventTrends />
-      <div className={styles.linkName}>Event Trends</div>
-    </Link>
   </div>
   );
 };

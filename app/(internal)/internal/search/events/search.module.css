@@ -55,9 +55,21 @@
 }
 
 .sub_container {
+  /* padding: 24px 0px; */
+  /* display: flex; */
+  border-bottom: 1px solid #e0e0e080;
+}
+
+.basicFilters_container {
   padding: 24px 0px;
   display: flex;
-  border-bottom: 1px solid #e0e0e080;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filtersRow {
+  display: flex;
+  gap: 15px;
 }
 
 .buttons_container {
@@ -66,6 +78,15 @@
   gap: 26px;
   padding: 7px;
   flex-direction: column;
+  align-items: center;
+}
+
+.buttons_container2 {
+  /* flex: 1 1; */
+  display: flex;
+  gap: 26px;
+  padding: 7px;
+  /* flex-direction: column; */
   align-items: center;
 }
 
@@ -194,6 +215,7 @@
   border-color: #6750a4;
   border-bottom-style: solid;
   border-bottom-width: 2px;
+  text-wrap: nowrap;
 }
 
 .input {
