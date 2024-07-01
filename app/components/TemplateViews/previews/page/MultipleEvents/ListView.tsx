@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ElementType, useState } from 'react'
 import styles from './listview.style.module.css'
 import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
 
 interface EditProps {
-    bgColor? :string;
+    bgColor?: string;
     cardRadius?: number;
     cardBgColor?: string;
     eventNameColor?: string;
@@ -18,6 +18,7 @@ interface EditProps {
     btnBorderColor?: string;
     btnRadius?: number;
     btnFontSize?: number;
+    selectedCard: string;
 }
 
 
@@ -32,13 +33,78 @@ const ListView = ({ cardRadius,
     btnBorderWidth,
     btnBorderColor,
     btnRadius,
-    btnFontSize }: EditProps) => {
+    btnFontSize,
+    selectedCard }: EditProps) => {
+    let EventListCard: ElementType;
+
+    switch (selectedCard) {
+        case 'card1':
+            EventListCard = EventListCard1;
+            break;
+        case 'card2':
+            EventListCard = EventListCard2;
+            break;
+        default:
+            EventListCard = EventListCard3; // Or some default component or message
+    }
     return (
         <div className={styles.listView}>
-            <EventListCard2 cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventListCard1 cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/>
-            <EventListCard3 cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/>
-            <EventListCard1 cardRadius = {cardRadius} cardBgColor = {cardBgColor} eventNameColor = {eventNameColor} eventNameSize = {eventNameSize} dateFontSize ={dateFontSize} locationFontSize={locationFontSize} btnBgColor = {btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize}/>
+            <EventListCard
+                cardRadius={cardRadius}
+                cardBgColor={cardBgColor}
+                eventNameColor={eventNameColor}
+                eventNameSize={eventNameSize}
+                dateFontSize={dateFontSize}
+                locationFontSize={locationFontSize}
+                btnBgColor={btnBgColor}
+                btnFontColor={btnFontColor}
+                btnBorderWidth={btnBorderWidth}
+                btnBorderColor={btnBorderColor}
+                btnRadius={btnRadius}
+                btnFontSize={btnFontSize}
+            />
+                  <EventListCard
+                cardRadius={cardRadius}
+                cardBgColor={cardBgColor}
+                eventNameColor={eventNameColor}
+                eventNameSize={eventNameSize}
+                dateFontSize={dateFontSize}
+                locationFontSize={locationFontSize}
+                btnBgColor={btnBgColor}
+                btnFontColor={btnFontColor}
+                btnBorderWidth={btnBorderWidth}
+                btnBorderColor={btnBorderColor}
+                btnRadius={btnRadius}
+                btnFontSize={btnFontSize}
+            />
+                  <EventListCard
+                cardRadius={cardRadius}
+                cardBgColor={cardBgColor}
+                eventNameColor={eventNameColor}
+                eventNameSize={eventNameSize}
+                dateFontSize={dateFontSize}
+                locationFontSize={locationFontSize}
+                btnBgColor={btnBgColor}
+                btnFontColor={btnFontColor}
+                btnBorderWidth={btnBorderWidth}
+                btnBorderColor={btnBorderColor}
+                btnRadius={btnRadius}
+                btnFontSize={btnFontSize}
+            />
+                  <EventListCard
+                cardRadius={cardRadius}
+                cardBgColor={cardBgColor}
+                eventNameColor={eventNameColor}
+                eventNameSize={eventNameSize}
+                dateFontSize={dateFontSize}
+                locationFontSize={locationFontSize}
+                btnBgColor={btnBgColor}
+                btnFontColor={btnFontColor}
+                btnBorderWidth={btnBorderWidth}
+                btnBorderColor={btnBorderColor}
+                btnRadius={btnRadius}
+                btnFontSize={btnFontSize}
+            />
         </div>
     )
 }

@@ -27,6 +27,25 @@
     width: 100%;
     border-radius: 10px;
 }
+.listTemplateBtns{
+    display: flex;
+    gap: 10px;
+    background-color: #a099e0;
+    border-radius: 10px;    
+    padding: 10px;
+}
+.listTemplateBtn{
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid white;
+    color: white;
+}
+.activeBtn{
+    border: none;
+    background-color: #6760a4;
+    color: white;
+}
+
 .preview{
     height: 92%;
     /* border: 1px solid red; */
