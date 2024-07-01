@@ -1,4 +1,4 @@
-import React, { use, useRef } from "react";
+import React, { useState } from "react";
 import styles from "./eventAttendance.module.css";
 import { useTheme } from "@/context";
 
@@ -17,11 +17,20 @@ const EventAttendance = ({
 }: EventAttendanceProps) => {
   const {theme} = useTheme();
 
+  const [eventAttendanceRange, setEventAttendanceRange] = useState<string[]>(state);
+
+  const handleSave = () => {
+    if(eventAttendanceRange[0] && eventAttendanceRange[1]){
+      setState(eventAttendanceRange);
+      onClose();
+    }
+  }
+
   return (
     <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Event Attendance</div>
-        <div className={styles.header_button} onClick={() => onClose()}>
+        <div className={styles.header_button} onClick={handleSave}>
           Done
         </div>
       </div>
@@ -31,8 +40,8 @@ const EventAttendance = ({
           <div className={styles.input_title}>From</div>
           <input
             placeholder="0"
-            value={state[0]}
-            onChange={(e) => setState([e.target.value, state[1]])}
+            value={eventAttendanceRange[0]?eventAttendanceRange[0]:''}
+            onChange={(e) => setEventAttendanceRange([e.target.value, eventAttendanceRange[1]])}
             type="number"
           />
         </div>
@@ -41,8 +50,8 @@ const EventAttendance = ({
           <div className={styles.input_title}>To</div>
           <input
             placeholder="Unlimited"
-            value={state[1]}
-            onChange={(e) => setState([state[0], e.target.value])}
+            value={eventAttendanceRange[1]?eventAttendanceRange[1]:''}
+            onChange={(e) => setEventAttendanceRange([eventAttendanceRange[0], e.target.value])}
             type="number"
           />
         </div>

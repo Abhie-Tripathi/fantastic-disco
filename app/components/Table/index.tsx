@@ -19,6 +19,12 @@ import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import {
+  TooltipTrigger,
+  Button,
+  Tooltip,
+  OverlayArrow,
+} from "react-aria-components";
 
 interface FormDataType {
   entityId_id?: string | number | null;
@@ -789,14 +795,21 @@ const Table = ({
                     ) : (
                       <>
                         {event.eventKeywords[0]}&nbsp;
-                        <a
+                        {/* <a
                           className={styles["products-list"]}
                           href="javascript:void(0)"
                           data-toggle="tooltip"
                           title={listProducts(event.eventKeywords)}
                         >
                           +{event.eventKeywords.length - 1}
-                        </a>
+                        </a> */}
+
+                        <TooltipTrigger>
+                          <Button className={styles["products-list"]} >+{event.eventKeywords.length - 1}</Button>
+                          <Tooltip className={styles['react-aria-Tooltip']}>
+                            {listProducts(event.eventKeywords)}
+                          </Tooltip>
+                        </TooltipTrigger>
                       </>
                     )}
                   </td>
@@ -811,14 +824,20 @@ const Table = ({
                       ) : (
                         <>
                           {event.matchedKeywords[0]}&nbsp;
-                          <a
+                          {/* <a
                             className={styles["products-list"]}
                             href="javascript:void(0)"
                             data-toggle="tooltip"
                             title={listProducts(event.matchedKeywords)}
                           >
                             +{event.matchedKeywords.length - 1}
-                          </a>
+                          </a> */}
+                          <TooltipTrigger>
+                            <Button className={styles["products-list"]} >+{event.matchedKeywords.length - 1}</Button>
+                            <Tooltip className={styles['react-aria-Tooltip']}>
+                              {listProducts(event.matchedKeywords)}
+                            </Tooltip>
+                          </TooltipTrigger>
                         </>
                       )}
                     </td>
@@ -844,7 +863,13 @@ const Table = ({
                   {event.categories !== undefined &&
                   event.categories.length > 0 ? (
                     <span style={{ textTransform: "capitalize" }}>
-                      {event.categories[0].name}
+                      {event.categories[0].name}&nbsp;
+                      <TooltipTrigger>
+                        <Button className={styles["products-list"]} >+{event.categories.length - 1}</Button>
+                        <Tooltip className={styles['react-aria-Tooltip']}>
+                          {event.categories.map((item) => item.name).join(" | ")}
+                        </Tooltip>
+                      </TooltipTrigger>
                     </span>
                   ) : (
                     "-"
@@ -856,9 +881,9 @@ const Table = ({
                   ))}
                 {showInsights.eventRank && (
                   <td>
-                    {event.rank?.globalRank ? (
+                    {event.rank?.eventRank ? (
                       <>
-                        {getEventRank(event.rank.globalRank)}
+                        {getEventRank(event.rank.eventRank)}
                         <span className={styles.rank_tag}>Global</span>
                       </>
                     ) : (
