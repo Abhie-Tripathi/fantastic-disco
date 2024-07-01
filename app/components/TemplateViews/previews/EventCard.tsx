@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './eventcard.style.module.css'
 import Image from 'next/image'
 import placeholder from '/public/placeholder.png'
+import locationIcon from '/public/location_on.svg'
 
 interface CardProps {
     cardRadius?: number;
@@ -34,57 +35,25 @@ const EventCard = ({
 }: CardProps) => {
 
     return (
-        <div
-            className={styles.card}
-            style={{
-                borderRadius: `${cardRadius}px`,
-                backgroundColor: cardBgColor
-            }}
-        >
-            <Image src={placeholder} alt="author" className={styles.banner} style={{borderTopLeftRadius : `${cardRadius}px`, borderTopRightRadius : `${cardRadius}px`}} />
-            <div className={styles.content}>
-                <div className={styles.tag}>Type</div>
-                <div
-                    className={styles.date}
-                    style={{
-                        fontSize: `${dateFontSize}px`
-                    }}
-                >
-                    Date
+        <div className={styles.card}>
+            <Image src={placeholder} alt='placeholder' className={styles.banner}/>
+            <div className={styles.date_location_nameContainer}>
+                <div className={styles.dateContainer}><span className={styles.date}>29</span>
+                <span className={styles.month}>Jan</span></div>
+                <div className={styles.line}></div>
+                <div className={styles.name_locationContainer}>
+                    <div className={styles.locationContainer}>
+                        <Image src={locationIcon} alt='location'/>
+                        <div className={styles.location}>Corpus Christi, USA</div>
+                    </div>
+                    <div className={styles.eventName}>Join Gifts World Expo 2024</div>
                 </div>
-                <div
-                    className={styles.eventName}
-                    style={{
-                        fontSize: `${eventNameSize}px`,
-                        color: eventNameColor
-                    }}
-                >
-                    Event Name
-                </div>
-                <div
-                    className={styles.location}
-                    style={{
-                        fontSize: `${locationFontSize}px`
-                    }}
-                >
-                    Location
-                </div>
-                <div
-                    className={styles.btn}
-                    style={{
-                        backgroundColor: btnBgColor,
-                        color: btnFontColor,
-                        borderWidth: `${btnBorderWidth}px`,
-                        borderColor: btnBorderColor,
-                        borderRadius: `${btnRadius}px`,
-                        fontSize: `${btnFontSize}px`,
-                        borderStyle: 'solid',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Register
-                </div>
+            </div>
+            <div className={styles.dividerLine}></div>
+            <div className={styles.dateRange_typeContainer}>
+                <div className={`${styles.pill} ${styles.dateRange}`}>29 Jan - 5 Feb</div>
+                <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
+                <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
             </div>
         </div>
     )

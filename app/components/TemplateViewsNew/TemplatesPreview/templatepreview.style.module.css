@@ -21,13 +21,15 @@
 }
 .preview_btnContainer{
     margin-top: 20px;
-    background-color: #FAFAFA;
+    /* background-color: #FAFAFA; */
+    background-color: #545454;
     height:95%;
     width: 100%;
     border-radius: 10px;
 }
 .preview{
     height: 92%;
+    /* border: 1px solid red; */
     overflow-y: auto;
     display: flex;
     align-items: center;

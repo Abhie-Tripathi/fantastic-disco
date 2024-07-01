@@ -110,7 +110,8 @@ export async function generateMetadata() {
             title: eventName, 
             description: description, 
             images: [media],
-            url: shareUrl 
+            url: shareUrl ,
+            type : "website"
         },
         
     };
