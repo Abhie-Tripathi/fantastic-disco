@@ -8,7 +8,8 @@ import styles from './trackedEvents.style.module.css'
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
+import { usePathname, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import {
@@ -26,6 +27,10 @@ const Page = () => {
   const [type,setType]=useState<string|undefined>();
   const [activeValue,setActiveValue]=useState();
   const pathName = usePathname().split('/');
+  const searchParams = useSearchParams()
+ 
+  const token = searchParams.get('token')
+
   // const [showInsights,setShowInsights]=useState();
   const id=pathName[pathName.length-2];
   console.log(active);
@@ -168,6 +173,35 @@ console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.acti
     }
     return count;
 };
+// useEffect(()=>{
+//     if(token.length>0){
+//     const setToken=async()=>{  
+//       const formData={
+//           token:token,
+//           invite:true,
+//       }
+//       const url=`${baseUrl}/auth/customer/reset-password/page`
+//       try {
+//         const { data, error } = await myFetch(url, {
+//             method: 'POST',
+//             body: JSON.stringify(formData),
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//         });
+//         if (error) {
+//             console.error('Error fetching data:', error);
+//         } else {
+//             console.log('Data fetched:', data);
+//             window.localStorage.setItem("user", JSON.stringify(data.info));
+//         }
+//     } catch (err) {
+//         console.error('Fetch failed:', err);
+//     }
+//     }
+//     setToken();
+//   }
+// },[])
   return (
     // <div className={styles.containerOne}>
     
@@ -205,19 +239,21 @@ console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.acti
       </div>
       <div className={styles.topRight}></div>
     </div> */}
+    <div className={styles.innerLeft}><Trackers/></div>
+    <div className={styles.innerRight}>
     <div className={styles.eventStatus}>
       <div className={styles.eventStatusLeft}>
         <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>
           Active Events 
-          {active !== "Active Events"&& <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active}</div> }
+          { <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active}</div> }
           
         </button>
         <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => setActive("New Events")}>
           New Events
-          {active !== "New Events"&& <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new}</div> }
+          { <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new}</div> }
         </button>
         <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => setActive("Expired Events")}>Expired Events
-        {active !== "Expired Events"&& <div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div> }
+        {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div> }
         </button>
       </div>
       {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
@@ -247,6 +283,7 @@ console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.acti
                 </Dialog>
               </Modal>
             </ModalOverlay>} */}
+  </div>
   </div>
   
   // <div>

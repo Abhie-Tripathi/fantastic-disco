@@ -1,5 +1,14 @@
 .container{
     height: 650px;
-    width: 90%;
+    width: 65%;
 
 }
+.outerContainer{
+    display: flex;
+    gap:20px;
+    width: 100%;
+}
+.innerLeft{
+    display: flex;
+    width: 35%;
+  }

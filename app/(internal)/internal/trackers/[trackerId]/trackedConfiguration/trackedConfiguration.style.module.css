@@ -37,6 +37,8 @@
     padding: 8px 24px;
     background-color: #6750A4;
     color: white;
+    width: 100px;
+    border: 1px solid #6750A4;
     border-radius: 12px;
 }
 .containerTopTwo{
@@ -90,6 +92,7 @@
     font-size: 16px;
     font-weight: 500;
     padding: 8px 24px;
+    width: 100px;
     background-color: white;
     color: #6750A4;
     border: 1px solid #6750A4;

@@ -70,22 +70,23 @@ interface FilterValue {
   reputationScore: any;
   maturity: any;
   internationalScore: any;
-  inboundScore:any;
-  userRating:string;
-  exhibitScore:string;
-  total_attendance_gte:any;
-  total_attendance_lte:any;
-  location:string[];
-  startDate:string;
-  endDate:string;
-  eventRating:string;
-  eventKeywords:any;
-  eventCategory:any;
-  editionRange:number;
-  eventSize:any;
-  eventCity:any;
-  eventCountry:any;
-  eventAttendanceRange:any;
+  inboundScore: any;
+  userRating: string;
+  exhibitScore: string;
+  total_attendance_gte: any;
+  total_attendance_lte: any;
+  location: string[];
+  startDate: string;
+  endDate: string;
+  eventRating: string;
+  eventKeywords: any;
+  eventCategory: any;
+  editionRange: number;
+  eventSize: any;
+  eventCity: any;
+  eventCountry: any;
+  eventRegion:string;
+  eventAttendanceRange: any;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -121,7 +122,7 @@ const Pages = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
-
+  const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
@@ -286,7 +287,12 @@ const Pages = () => {
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
 
-    GAEvent('trackers','Trackers','Saved Tracker | New Tracker Created', 'Create')
+    GAEvent(
+      "trackers",
+      "Trackers",
+      "Saved Tracker | New Tracker Created",
+      "Create"
+    );
     if (isCreating) return;
     setIsCreating(true);
 
@@ -297,12 +303,25 @@ const Pages = () => {
       const formData = {
         name: trackerName,
         filterValue: {
-          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
-          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
-          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent?.toString(),
+          ...(selectedLabels?.length > 0 && {
+            labels: selectedLabels.join(","),
+          }),
+          ...(selectedEventEdition > 0 && {
+            editionRange: selectedEventEdition.toString(),
+          }),
+          ...(selectedEventKeywords.length > 0 && {
+            eventKeywords: selectedEventKeywords.join("+"),
+          }),
+          ...(selectedCategories?.length > 0 && {
+            eventCategory: selectedCategories.join(","),
+          }),
+          ...(selectedExhibitScore?.length > 0 && {
+            eventSize: selectedExhibitScore.join(","),
+          }),
+         ...(selectedZone?.length>0 && {
+            eventRegion:selectedZone.join(',')
+         }),
+          brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(Object.entries(selectedCountry).length > 0 && {
@@ -420,20 +439,39 @@ const Pages = () => {
       const formData = {
         name: trackerName,
         filterValue: {
-         ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
-          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
-          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
-          ...(selectedLabels?.length>0&&{labels: selectedLabels.join(',')}),
-          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
-          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent.toString(),
+          ...(selectedEventRanking?.length > 0 && {
+            eventRanking: selectedEventRanking.join(","),
+          }),
+          ...(Object.entries(selectedCountry).length > 0 && {
+            eventCountry: Object.keys(selectedCountry).join(","),
+          }),
+          ...(Object.entries(selectedCity).length > 0 && {
+            eventCity: Object.keys(selectedCity).join(","),
+          }),
+          ...(selectedLabels?.length > 0 && {
+            labels: selectedLabels.join(","),
+          }),
+          ...(selectedEventEdition > 0 && {
+            editionRange: selectedEventEdition.toString(),
+          }),
+          ...(selectedEventKeywords.length > 0 && {
+            eventKeywords: selectedEventKeywords.join("+"),
+          }),
+          ...(selectedCategories?.length > 0 && {
+            eventCategory: selectedCategories.join(","),
+          }),
+          ...(selectedExhibitScore?.length > 0 && {
+            eventSize: selectedExhibitScore.join(","),
+          }),
+          brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
+          ...(selectedZone?.length>0 && {
+            eventRegion:selectedZone.join(',')
+         }),
           eventSeries: selectedEventSeries.toString(),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
@@ -568,9 +606,17 @@ const Pages = () => {
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
-      setSelectedEventKeywords(editData?.tracker?.filterValue?.eventKeywords?.length>0?editData?.tracker?.filterValue?.eventKeywords?.split('+') : [])
-      setTrackerName(editData?.tracker?.name || '');
-      setSelectedLabels(editData?.tracker?.filterValue?.labels?.length>0?editData?.tracker?.filterValue?.labels?.split(',') : []);
+      setSelectedEventKeywords(
+        editData?.tracker?.filterValue?.eventKeywords?.length > 0
+          ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
+          : []
+      );
+      setTrackerName(editData?.tracker?.name || "");
+      setSelectedLabels(
+        editData?.tracker?.filterValue?.labels?.length > 0
+          ? editData?.tracker?.filterValue?.labels?.split(",")
+          : []
+      );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
           ? editData?.tracker?.filterValue?.eventCategory?.map(
@@ -578,43 +624,133 @@ const Pages = () => {
             )
           : []
       );
-      setSelectedEventFormat(editData?.tracker?.filterValue?.eventFormat?.length>0?editData?.tracker?.filterValue?.eventFormat?.split(','):[]);
-      setIntScore(editData?.tracker?.filterValue?.internationalScore?.length>0?editData?.tracker?.filterValue?.internationalScore:"")
-      setSelectedEventStatus(editData?.tracker?.filterValue?.eventStatus && editData?.tracker?.filterValue?.eventStatus?.length!==0?editData?.tracker?.filterValue?.eventStatus?.split(','):[]);
-      setSelectedDateRange(editData?.tracker?.filterValue?.startDate?.length>0?[editData?.tracker?.filterValue?.startDate?.split(',')[0],editData?.tracker?.filterValue?.startDate?.split(',')[1]]:[]);
-      setCategorySlug(editData?.tracker?.filterValue?.eventCategory?.length > 0
-        ? editData?.tracker?.filterValue?.eventCategory?.map((cat:Cat) => cat.name)
-        : []);
-        const eventCountry = editData?.tracker?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-        const eventCity = editData?.tracker?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
-        
-        setSelectedLocations([...eventCountry, ...eventCity]);
-      setSelectedEventFrequency(editData?.tracker?.filterValue?.eventFrequency?.length>0?editData?.tracker?.filterValue?.eventFrequency?.split(','):[])
-      setSelectedEntry(editData.tracker.filterValue?.eventEntry&&editData.tracker.filterValue?.eventEntry?.length!==0?editData.tracker.filterValue?.eventEntry?.split(','):[])
-      setSelectedEventEdition(editData.tracker.filterValue?.editionRange>0?editData.tracker.filterValue?.editionRange:0)
-      setSelectedEventRanking(editData.tracker.filterValue?.eventRanking?.split(',') || [])
+      setSelectedEventFormat(
+        editData?.tracker?.filterValue?.eventFormat?.length > 0
+          ? editData?.tracker?.filterValue?.eventFormat?.split(",")
+          : []
+      );
+      setIntScore(
+        editData?.tracker?.filterValue?.internationalScore?.length > 0
+          ? editData?.tracker?.filterValue?.internationalScore
+          : ""
+      );
+      setSelectedEventStatus(
+        editData?.tracker?.filterValue?.eventStatus &&
+          editData?.tracker?.filterValue?.eventStatus?.length !== 0
+          ? editData?.tracker?.filterValue?.eventStatus?.split(",")
+          : []
+      );
+      setSelectedDateRange(
+        editData?.tracker?.filterValue?.startDate?.length > 0
+          ? [
+              editData?.tracker?.filterValue?.startDate?.split(",")[0],
+              editData?.tracker?.filterValue?.startDate?.split(",")[1],
+            ]
+          : []
+      );
+      setCategorySlug(
+        editData?.tracker?.filterValue?.eventCategory?.length > 0
+          ? editData?.tracker?.filterValue?.eventCategory?.map(
+              (cat: Cat) => cat.name
+            )
+          : []
+      );
+      const eventCountry =
+        editData?.tracker?.filterValue?.eventCountry?.map(
+          (countryObj: {}) => Object.values(countryObj)[0]
+        ) || [];
+      const eventCity =
+        editData?.tracker?.filterValue?.eventCity?.map(
+          (cityObj: {}) => Object.values(cityObj)[0]
+        ) || [];
+
+      setSelectedLocations([...eventCountry, ...eventCity]);
+      setSelectedEventFrequency(
+        editData?.tracker?.filterValue?.eventFrequency?.length > 0
+          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
+          : []
+      );
+      setSelectedEntry(
+        editData.tracker.filterValue?.eventEntry &&
+          editData.tracker.filterValue?.eventEntry?.length !== 0
+          ? editData.tracker.filterValue?.eventEntry?.split(",")
+          : []
+      );
+      setSelectedEventEdition(
+        editData.tracker.filterValue?.editionRange > 0
+          ? editData.tracker.filterValue?.editionRange
+          : 0
+      );
+      setSelectedEventRanking(
+        editData.tracker.filterValue?.eventRanking?.split(",") || []
+      );
       setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
       setSelectedCountry(
         editData.tracker.filterValue?.eventCountry?.length > 0
-          ? editData.tracker.filterValue.eventCountry.reduce((acc:any, current:any) => {
-              return { ...acc, ...current };
-            }, {})
+          ? editData.tracker.filterValue.eventCountry.reduce(
+              (acc: any, current: any) => {
+                return { ...acc, ...current };
+              },
+              {}
+            )
           : {}
       );
-      setSelectedCity(editData.tracker.filterValue?.eventCity?.length > 0
-        ? editData.tracker.filterValue.eventCity.reduce((acc:any, current:any) => {
-            return { ...acc, ...current };
-          }, {})
-        : {});
-      setSelectedTrustScore(editData.tracker.filterValue?.trustScore>0?editData.tracker.filterValue?.trustScore:0);
-      setSelectedEventSeries(editData.tracker.filterValue?.eventSeries?.toString() === "true");
-      setMaturity(editData.tracker.filterValue?.maturity?.length>0?editData.tracker.filterValue?.maturity:"")
-      setSelectedReptScore(editData.tracker.filterValue?.reputationScore>0?editData.tracker.filterValue?.reputationScore:0);
-      setSelectedMaturity(editData.tracker.filterValue?.maturity>0?editData.tracker.filterValue?.maturity:0)
-      setSelectedINScore(editData.tracker.filterValue?.internationalScore>0?editData.tracker.filterValue?.internationalScore:0)
-      setSelectedInboundScore(editData.tracker.filterValue?.inboundScore>0?editData.tracker.filterValue?.inboundScore :0)
-      setSelectedUserRatings(editData.tracker.filterValue?.eventRating && editData.tracker.filterValue?.eventRating?.length!==0?editData.tracker.filterValue?.eventRating?.split(',') : [])
-      setSelectedExhibitScore(editData.tracker.filterValue?.eventSize &&  editData.tracker.filterValue?.eventSize?.length!==0?editData.tracker.filterValue?.eventSize?.split(','): [])
+      setSelectedZone(editData.tracker.filterValue?.eventRegion?.length > 0?  editData.tracker.filterValue?.eventRegion?.split(','):[]);
+      setSelectedCity(
+        editData.tracker.filterValue?.eventCity?.length > 0
+          ? editData.tracker.filterValue.eventCity.reduce(
+              (acc: any, current: any) => {
+                return { ...acc, ...current };
+              },
+              {}
+            )
+          : {}
+      );
+      setSelectedTrustScore(
+        editData.tracker.filterValue?.trustScore > 0
+          ? editData.tracker.filterValue?.trustScore
+          : 0
+      );
+      setSelectedEventSeries(
+        editData.tracker.filterValue?.eventSeries?.toString() === "true"
+      );
+      setMaturity(
+        editData.tracker.filterValue?.maturity?.length > 0
+          ? editData.tracker.filterValue?.maturity
+          : ""
+      );
+      setSelectedReptScore(
+        editData.tracker.filterValue?.reputationScore > 0
+          ? editData.tracker.filterValue?.reputationScore
+          : 0
+      );
+      setSelectedMaturity(
+        editData.tracker.filterValue?.maturity > 0
+          ? editData.tracker.filterValue?.maturity
+          : 0
+      );
+      setSelectedINScore(
+        editData.tracker.filterValue?.internationalScore > 0
+          ? editData.tracker.filterValue?.internationalScore
+          : 0
+      );
+      setSelectedInboundScore(
+        editData.tracker.filterValue?.inboundScore > 0
+          ? editData.tracker.filterValue?.inboundScore
+          : 0
+      );
+      setSelectedUserRatings(
+        editData.tracker.filterValue?.eventRating &&
+          editData.tracker.filterValue?.eventRating?.length !== 0
+          ? editData.tracker.filterValue?.eventRating?.split(",")
+          : []
+      );
+      setSelectedExhibitScore(
+        editData.tracker.filterValue?.eventSize &&
+          editData.tracker.filterValue?.eventSize?.length !== 0
+          ? editData.tracker.filterValue?.eventSize?.split(",")
+          : []
+      );
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange((prevArray) => {
@@ -658,7 +794,11 @@ const Pages = () => {
 
   return (
     <>
-      <div className={styles.topContainer}>
+      <div
+        className={`${styles.topContainer} ${
+          theme === "dark" ? "darkMode" : "lightMode_secondary"
+        }`}
+      >
         <div className={styles.topInnerContainerLeft}>
           <div>
             <Image src={userOne} alt="userOne" />
@@ -781,6 +921,8 @@ const Pages = () => {
                         setState={setSelectedLocations}
                         onClose={close}
                         selectedCity={selectedCity}
+                        selectedZone={selectedZone}
+                        setSelectedZone={setSelectedZone}
                         setSelectedCity={setSelectedCity}
                         selectedCountry={selectedCountry}
                         setSelectedCountry={setSelectedCountry}
@@ -1028,9 +1170,7 @@ const Pages = () => {
           <div>
             <div
               className={`${styles.viewContainer} ${
-                theme === "light"
-                  ? styles.viewContainerLight
-                  : styles.viewContainerDark
+                theme === "dark" ? "darkMode" : "lightMode_secondary"
               }`}
             >
               <div className={styles.viewTypeButtons_container}>
@@ -1039,8 +1179,7 @@ const Pages = () => {
                     onClick={() => setSelectedAdvFilter("AP")}
                     className={`${styles.listBtn} ${
                       selectedAdvFilter === "AP" ? styles.active : ""
-                    } `}
-                    style={{ background: theme === "light" ? "white" : "" }}
+                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
                   >
                     Advanced Details
                   </button>
@@ -1048,8 +1187,7 @@ const Pages = () => {
                     onClick={() => setSelectedAdvFilter("IS")}
                     className={`${styles.mapBtn} ${
                       selectedAdvFilter === "IS" ? styles.active : ""
-                    }`}
-                    style={{ background: theme === "light" ? "white" : "" }}
+                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
                   >
                     Insights and Score
                   </button>
@@ -1057,8 +1195,7 @@ const Pages = () => {
                     onClick={() => setSelectedAdvFilter("AI")}
                     className={`${styles.calendarBtn} ${
                       selectedAdvFilter === "AI" ? styles.active : ""
-                    }`}
-                    style={{ background: theme === "light" ? "white" : "" }}
+                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"} `}
                   >
                     Audience Intel
                   </button>

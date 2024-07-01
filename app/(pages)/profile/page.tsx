@@ -18,6 +18,8 @@ interface Profile {
   profilePicture: string;
   fileType: string;
   email: string;
+  phoneNumber: string;
+  department: string;
 }
 
 const Profile = () => {
@@ -37,23 +39,26 @@ const Profile = () => {
     fileRef.click();
   };
 
+  const fetchData = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
+
+    if (error) {
+      console.log(error);
+      showToast("error", error);
+      return;
+    }
+
+    if (data) {
+      console.log(data);
+      setProfileData(data.user);
+      setname(data.user.firstname + " " + data.user.lastname);
+      setMobileNo(data.user.phoneNumber);
+      setDept(data.user.department);
+      setRole(data.user.designation);
+    }
+  };
   const loginedUser = user;
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
-
-      if (error) {
-        console.log(error);
-        showToast("error", error);
-        return;
-      }
-
-      if (data) {
-        console.log(data);
-        setProfileData(data.user);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -93,6 +98,8 @@ const Profile = () => {
       return;
     }
 
+    console.log(name,role,dept,mobileNo)
+
     setErrors({});
     const formData = new FormData();
     formData.append("firstname", splitName[0]);
@@ -116,11 +123,7 @@ const Profile = () => {
       console.log(data);
       setProfileData(data.user);
       showToast("success", "Data Saved Successfully");
-      setname("");
-      setRole("");
-      setMobileNo("");
-      setDept("");
-      setPicFile("");
+      fetchData();
 
       const newUser = {
         user: {
@@ -289,6 +292,7 @@ const Profile = () => {
                       className={`${styles.input} ${
                         errors.mobileNo && styles.error_boundary
                       }`}
+                      value={mobileNo}
                       onChange={(e) => setMobileNo(e.target.value)}
                     />
                     {errors.mobileNo && (
@@ -305,6 +309,7 @@ const Profile = () => {
                       className={`${styles.input} ${
                         errors.dept && styles.error_boundary
                       }`}
+                      value={dept}
                       onChange={(e) => setDept(e.target.value)}
                     />
                     {errors.dept && (
@@ -319,6 +324,7 @@ const Profile = () => {
                       className={`${styles.input} ${
                         errors.role && styles.error_boundary
                       }`}
+                      value={role}
                       onChange={(e) => setRole(e.target.value)}
                     />
                     {errors.role && (

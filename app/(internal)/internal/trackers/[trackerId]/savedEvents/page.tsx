@@ -7,6 +7,7 @@ import { useTheme } from '@/context/theme'
 import { myFetch} from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import Table from '@/app/components/Table';
+import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
 const Page = () => {
   const urlPath=usePathname().split('/');
   const lastParam=urlPath[urlPath.length-1];
@@ -244,13 +245,18 @@ const Page = () => {
     {/* {data && data?.map((item,ind)=>(
       
     ))} */}
-    {lastParam==="savedEvents" &&
+    {/* {lastParam==="savedEvents" &&
     <div className={styles.savedDiv}>
       <div className={styles.saved}>Saved Events</div>
-      {/* <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div> */}
+      <div className={styles.deleteBtn} onClick={()=>setOpenCheck(!openCheck)}>Delete</div>
     </div>
-    }
+    } */}
+    <div className={styles.outerContainer} >
+      <div className={styles.innerLeft}><Trackers /></div>
+      <div className={styles.innerRight}>
    <Table showInsights={showInsights}/>
+   </div>
+   </div>
     </div>
   )
 }

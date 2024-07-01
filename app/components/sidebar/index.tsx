@@ -18,85 +18,78 @@ const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
   const { theme } = useTheme();
 
+  const getActiveClass = (path: string) => {
+    return pathName === path
+      ? `${styles.active} ${
+          theme === "dark" ? "darkMode_secondary" : "lightMode_secondary"
+        }`
+      : "";
+  };
+
   return (
     <div
-      className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
-      onMouseEnter={() => setIsSidebarOpen(true)}
-      onMouseLeave={() => setIsSidebarOpen(false)}
+    className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""} ${
+      theme === "dark" ? 'darkMode' : ""
+    }`}
+    onMouseEnter={() => setIsSidebarOpen(true)}
+    onMouseLeave={() => setIsSidebarOpen(false)}
+  >
+    <Link href="/internal" className={`${styles.link} `}>
+      <Image
+        className={styles.logo_image}
+        src={logo}
+        width={40}
+        height={48}
+        alt="logo"
+      />
+      <div className={styles.logo_title}>EventGeni</div>
+    </Link>
+
+    <Link href="/internal" className={`${styles.link} ${getActiveClass("/internal")}`}>
+      <DashboardIcon />
+      <div className={styles.linkName}>Dashboard</div>
+    </Link>
+
+    <Link
+      href="/internal/coordinate"
+      className={`${styles.link} ${getActiveClass("/internal/coordinate")}`}
     >
-      <Link href="/internal" className={`${styles.link} `}>
-        <Image
-          className={styles.logo_image}
-          src={logo}
-          width={40}
-          height={48}
-          alt="logo"
-        />
-        <div className={styles.logo_title}>EventGeni</div>
-      </Link>
+      <CoordinateIcon />
+      <div className={styles.linkName}>Coordinate</div>
+    </Link>
 
-      <Link
-        href="/internal"
-        className={`${styles.link} ${
-          pathName === "/internal" ? styles.active : ""
-        }`}
-      >
-        <DashboardIcon />
-        <div className={styles.linkName}>Dashboard</div>
-      </Link>
+    <Link
+      href="/internal/search/events"
+      className={`${styles.link} ${getActiveClass("/internal/search/events")}`}
+    >
+      <SearchIcon />
+      <div className={styles.linkName}>Research</div>
+    </Link>
 
-      <Link
-        href="/internal/coordinate"
-        className={`${styles.link} ${
-          pathName === "/internal/coordinate" ? styles.active : ""
-        }`}
-      >
-        <CoordinateIcon />
-        <div className={styles.linkName}>Coordinate</div>
-      </Link>
+    <Link
+      href="/internal/trackers"
+      className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
+    >
+      <Tracker />
+      <div className={styles.linkName}>Trackers</div>
+    </Link>
 
-      <Link
-        href="/internal/search/events"
-        className={`${styles.link} ${
-          pathName === "/internal/search/events" ? styles.active : ""
-        }`}
-      >
-        <SearchIcon />
-        <div className={styles.linkName}>Research</div>
-      </Link>
+    <Link
+      href="/internal/outreach"
+      className={`${styles.link} ${getActiveClass("/internal/outreach")}`}
+    >
+      <OutreachIcon />
+      <div className={styles.linkName}>Outreach</div>
+    </Link>
 
-      <Link
-        href="/internal/trackers"
-        className={`${styles.link} ${
-          pathName === "/internal/trackers" ? styles.active : ""
-        }`}
-      >
-        <Tracker />
-        <div className={styles.linkName}>Trackers</div>
-      </Link>
-
-      <Link
-        href="/internal/outreach"
-        className={`${styles.link} ${
-          pathName === "/internal/outreach" ? styles.active : ""
-        }`}
-      >
-        <OutreachIcon />
-        <div className={styles.linkName}>Outreach</div>
-      </Link>
-
-      <Link
-        href="/internal/trends"
-        className={`${styles.link} ${
-          pathName === "/internal/trends" ? styles.active : ""
-        }`}
-      >
-        <EventTrends />
-        <div className={styles.linkName}>Event Trends</div>
-      </Link>
-    </div>
+    <Link
+      href="/internal/trends"
+      className={`${styles.link} ${getActiveClass("/internal/trends")}`}
+    >
+      <EventTrends />
+      <div className={styles.linkName}>Event Trends</div>
+    </Link>
+  </div>
   );
 };
 export default Sidebar;

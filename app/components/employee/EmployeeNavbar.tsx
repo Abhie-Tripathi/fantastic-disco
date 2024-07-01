@@ -14,7 +14,7 @@ const EmployeeNavbar: React.FC<Props> = ({ handleAddEvent }) => {
   const { theme } = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   return (
-    <div className={`${styles.navbar} ${theme === 'light' ? styles.light : ""}`}>
+    <div className={`${styles.navbar} ${theme === 'dark' ? 'darkMode' : "lightMode_secondary"}`}>
       <div className={styles.heading}>
         <Image src={CalendarIcon} alt="calendarIcon" className={iconClass} />
         <div>Upcoming Events</div>

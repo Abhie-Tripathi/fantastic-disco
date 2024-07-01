@@ -131,7 +131,7 @@
     height: 40px;
     font-size: inherit;
     font-family: inherit;
-    background: #131313;
+    /* background: #131313; */
     color: inherit;
     border: none;
     cursor: pointer;
@@ -211,12 +211,7 @@
     font-weight: 500;
     vertical-align: middle;
   }
-  .viewContainerLight{
-    background-color: #F7F7F9;
-  }
-  .viewContainerDark{
-    background-color: #1a1a1a;
-  }
+
   .viewContainer {
     /* background-color: #fbf8ff; */
     
@@ -353,10 +348,10 @@
 
 
   .topContainer{
-    background: #F7F7F9;
+    /* background: #F7F7F9; */
     display: flex;
     justify-content: space-between;
-    border: 1px solid #F9F9FF;
+    /* border: 1px solid #F9F9FF; */
     padding:18px;
   }
   .topInnerContainerLeft{

@@ -1,6 +1,6 @@
 .bodyContainer {
   /* height: calc(100vh - 80px); */
-  background-color: #131313;
+  /* background-color: #ffffff; */
   /* min-width: 600px; */
 }
 .bodyContainer_light {
@@ -48,7 +48,7 @@
   padding-top: 24px;
   padding-bottom: 24px;
   height: calc(100vh - 220px);
-  background-color: #1d1d1d;
+  /* background-color: #f6edff; */
   border-radius: 10px;
   margin-top: 24px;
   display: flex;
@@ -67,10 +67,7 @@
   border-radius: 12px;
 }
 
-.cardsContainer_light {
-  background-color: var(--secondary-bg-light);
-  color: var(--primary-color-light);
-}
+
 
 .cards {
   width: 90%;

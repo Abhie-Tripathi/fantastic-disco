@@ -14,15 +14,12 @@
 .containerOne {
     position: relative;
     display: flex;
-    background-color: #1A1A1A;
+    /* background-color: #1A1A1A; */
     padding: 18px;
     width: 90%;
 }
 
-.containerOne_light{
-    background-color: var(--secondary-bg-light);
-    color: var(--primary-color-light);
-}
+
 
 .c1left {
     font-weight: 700;
