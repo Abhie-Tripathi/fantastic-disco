@@ -13,6 +13,7 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import {EventTableType} from "@/types/ListViewTable";
+import Loading from "@/app/components/UI/Loading";
 
 const EventListCard = (event: any) => {
   const { theme } = useTheme();
@@ -72,6 +73,7 @@ const Map = (props: MapProps) => {
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
   const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
@@ -110,6 +112,7 @@ const Map = (props: MapProps) => {
         mapViewType = 'country';
       }
     }
+    setIsLoaded(false);
     try {
       let apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=10&offset=0&${props.queryString}`;
       if(mapViewType == 'country')
@@ -139,12 +142,16 @@ const Map = (props: MapProps) => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setIsLoaded(true);
     }
   }
 
   useEffect(() => {
     if(props.queryString)
       fetchEventsData();
+    else
+      setIsLoaded(true);
   }, [props.queryString]);
 
   const [currPage, setCurrPage] = useState(1);
@@ -213,6 +220,16 @@ const Map = (props: MapProps) => {
   });
 
   const zoneLevelProps = {zoom:1};
+
+  if (!isLoaded) {
+    return <Loading />;
+  } else if (isLoaded && (eventPerPage.length == 0 && countryPerPage.length == 0)) {
+    return (
+      <div className={styles.noData}>
+        No results containing all your search terms were found.
+      </div>
+    );
+  }
 
   return (
     <div className={styles.map}>

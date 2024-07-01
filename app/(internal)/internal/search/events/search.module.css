@@ -503,3 +503,14 @@ input:checked + .slider:before {
   border: none;
   outline: none;
 }
+
+.seeTracker-btn{
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #6750a4;
+  color: #fff;
+  margin-top: 6px;
+}

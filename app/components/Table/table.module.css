@@ -340,3 +340,19 @@
   padding: 6px 16px;
   border-radius: 6px;
 }
+
+
+.react-aria-Tooltip {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 20px;
+  border-radius: 4px;
+  outline: none;
+  padding: 8px 12px;
+  max-width: 40vw;
+  max-height: 30vh;
+  transform: translate3d(0px, 0px, 0px);
+  overflow-y: auto;
+  background: white;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.3px;
+}
