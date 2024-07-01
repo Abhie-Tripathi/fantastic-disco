@@ -19,7 +19,7 @@ interface EditProps {
     btnBorderColor?: string;
     btnRadius?: number;
     btnFontSize?: number;
-    selectedCard: string;
+    selectedCard?: string;
 }
 const HeroBannerAndViews = ({ cardRadius,
     cardBgColor,

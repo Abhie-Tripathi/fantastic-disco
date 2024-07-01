@@ -7,7 +7,7 @@ import ListAndGridView from '../MultipleEvents/ListAndGridView';
 
 interface Props {
   type: string;
-  selectedCard: string;
+  selectedCard?: string;
 }
 
 const CaraouselAndViews = ({ type, selectedCard }: Props) => {

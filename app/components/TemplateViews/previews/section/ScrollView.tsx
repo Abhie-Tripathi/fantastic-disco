@@ -6,7 +6,7 @@ import EventCard3 from '../cardstyles/EventCard3';
 
 interface Props{
     type : string;
-    selectedCard : string;
+    selectedCard? : string;
 }
 
 const ScrollView = ({type, selectedCard}: Props) => {

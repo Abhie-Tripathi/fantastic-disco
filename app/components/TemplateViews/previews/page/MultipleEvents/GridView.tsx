@@ -17,7 +17,7 @@ interface EditProps {
     btnBorderColor?: string;
     btnRadius?: number;
     btnFontSize?: number;
-    selectedCard: string;
+    selectedCard?: string;
 }
 
 const GridView = ({ cardRadius,

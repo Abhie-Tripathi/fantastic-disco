@@ -9,7 +9,6 @@ export const generateEmailContent = async (eventName: string, description: strin
     const result = await model.generateContent(promptText);
     const response = result.response;
     const text = response.text();
-    console.log(text)
     // Extract the title and body from the response
     const titleMatch = text.match(/Email Title:\s*(.*)/);
     const bodyMatch = text.match(/Email Body:\s*([\s\S]*)/);
