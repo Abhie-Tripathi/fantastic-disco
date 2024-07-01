@@ -270,7 +270,10 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             <div className={styles.exportedfiles_header}>
               <div className={styles.exportedfiles_header_title}>
                 Exported Files
-                <span className={styles.exportedfiles_stats}>2</span>
+                {exportList.length>0 && 
+                <span className={styles.exportedfiles_stats}>{exportList.length}</span>
+                }
+                
               </div>
 
               <div className={styles.refresh_button} onClick={fetchData}>

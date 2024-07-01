@@ -345,7 +345,23 @@
    cursor: pointer;
   }
   .container{
+    display:flex;
+    gap:20px;
+    width: 100%;
+    /* flex-direction: column; */
+}
+  .outerContainer{
     display: flex;
-    flex-direction: column;
-    width: 90%;
-  }
+    gap:20px;
+    width: 100%;
+}
+.innerLeft{
+  display: flex;
+  width: 35%;
+}
+.innerRight{
+  display: flex;
+  width: 65%;
+  margin-top: -25px;
+  flex-direction: column;
+}

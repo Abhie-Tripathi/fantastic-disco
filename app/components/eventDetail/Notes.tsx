@@ -109,14 +109,14 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
     const { data, error } = await myFetch(url);
     console.log(data);
-    if (data && urlPath === "coordinate") {
+    if (data && path[path.length-1] === "coordinate") {
       // setNotes([]);
       console.log(data);
       // setNotes(data.comments.reverse());
       if (data.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
-    if (data && urlPath === "outreach") {
+    if (data && path[path.length-1] === "outreach") {
       // setNotes([]);
 
       console.log(data);
@@ -124,7 +124,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       if (data.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     }
-    else setNotes(CommentsData );
+    // else setNotes(CommentsData );
   }
   }
   // const isInitialMount = useRef(true);
@@ -255,6 +255,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         "type": type,
         "content": note,
         "source": "GTM",
+        "entityType":"ENQUIRY",
         ...(type !== 'MESSAGE' && { "interestType": interestType }),
         ...(type === "RECOMMEND" && {
           "recommendUserId": suggest
