@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './scrollview.style.module.css'
-import EventCard from '../EventCard';
+import EventCard from '../cardstyles/EventCard1';
 
 interface Props{
     type : string;

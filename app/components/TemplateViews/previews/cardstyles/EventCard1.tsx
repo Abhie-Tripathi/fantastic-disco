@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './eventcard.style.module.css'
+import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 import placeholder from '/public/placeholder.png'
 import locationIcon from '/public/location_on.svg'
@@ -19,7 +19,7 @@ interface CardProps {
     btnFontSize?: number;
 }
 
-const EventCard = ({
+const EventCard1 = ({
     cardRadius = 8, // default value
     cardBgColor = '#1a1a1a', // default value
     eventNameColor = '#ffffff', // default value
@@ -59,4 +59,4 @@ const EventCard = ({
     )
 }
 
-export default EventCard
+export default EventCard1

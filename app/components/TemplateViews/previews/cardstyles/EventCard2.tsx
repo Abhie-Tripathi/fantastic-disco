@@ -39,18 +39,17 @@ const EventCard2 = ({
     return (
         <div className={styles.card}>
             <div className={styles.eventName}>Hampton Jazz Festival 2024</div>
-            <Image src={placeholder} alt='placeholder' className={styles.banner} />
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <Image src={locationIcon} alt='location' />
                     <div className={styles.location}>Corpus Christi, USA</div>
                 </div>
                 <div className={styles.dateContainer}>
-                    {/* <Image src={DateIcon} alt='location' /> */}
                     <DateIcon />
                     <div className={styles.date}>1st Apr 2024 - 20th Apr 2024</div>
                 </div>
             </div>
+            <Image src={placeholder} alt='placeholder' className={styles.banner} />
             <div className={styles.dividerLine}></div>
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>

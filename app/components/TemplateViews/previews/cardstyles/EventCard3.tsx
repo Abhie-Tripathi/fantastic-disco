@@ -1,10 +1,8 @@
 import React from 'react'
-import styles from './eventcard4.style.module.css'
+import styles from './eventcard3.style.module.css'
 import Image from 'next/image'
 import placeholder from '/public/placeholder.png'
 import locationIcon from '/public/location_on.svg'
-import person1 from "@/public/person1.svg";
-import person2 from "@/public/person2.svg";
 
 interface CardProps {
     cardRadius?: number;
@@ -21,7 +19,7 @@ interface CardProps {
     btnFontSize?: number;
 }
 
-const EventCard4 = ({
+const EventCard3 = ({
     cardRadius = 8, // default value
     cardBgColor = '#1a1a1a', // default value
     eventNameColor = '#ffffff', // default value
@@ -43,7 +41,7 @@ const EventCard4 = ({
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <Image src={locationIcon} alt='location' />
-                    <div className={styles.location}>Corpus Christi, USA</div>
+                    <div className={styles.location}>Corpus Christi, USA</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon />
@@ -54,7 +52,7 @@ const EventCard4 = ({
     )
 }
 
-export default EventCard4
+export default EventCard3
 
 function DateIcon() {
     return (
