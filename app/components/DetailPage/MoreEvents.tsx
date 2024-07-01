@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './moreevent.style.module.css'
-import EventCard from '../TemplateViews/previews/EventCard'
+import EventCard from '../TemplateViews/previews/cardstyles/EventCard1'
 
 const MoreEvents = () => {
     const [currentIndex, setCurrentIndex] = useState(0);

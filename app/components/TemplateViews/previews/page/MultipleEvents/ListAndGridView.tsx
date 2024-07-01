@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './listandgrid.style.module.css'
-import EventListCard from '../../EventListCard'
+import EventListCard from '../../listcardsstyles/EventListCard1'
 
 const ListAndGridView = () => {
     return (

@@ -3,16 +3,18 @@ import React, { useState } from 'react'
 import styles from './sharebtns.style.module.css'
 import CopyIcon from '/public/page.svg'
 import TickIcon from '/public/tick.svg'
-import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, FacebookIcon, LinkedinIcon, TwitterIcon } from 'react-share';
+import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, FacebookIcon, LinkedinIcon, TwitterIcon, EmailShareButton, EmailIcon } from 'react-share';
 import Image from 'next/image'
 
 interface Props {
     shareUrl: string;
     title: string;
     hashtags : string[];
+    emailSubject : string;
+    emailBody : string;
 }
 
-const ShareButtons = ({ shareUrl, title,hashtags }: Props) => {
+const ShareButtons = ({ shareUrl, title,hashtags, emailSubject, emailBody }: Props) => {
     const [copyClick, setCopyClick] = useState(false)
     const handleCopy = () => {
         setCopyClick(true)
@@ -31,6 +33,9 @@ const ShareButtons = ({ shareUrl, title,hashtags }: Props) => {
             <LinkedinShareButton url={shareUrl} title={title} source='Eventgeni'>
                 <LinkedinIcon size={32} round={true} />
             </LinkedinShareButton>
+            <EmailShareButton url={shareUrl} title={title} body={emailBody} subject={emailSubject}>
+                <EmailIcon size={32} round={true} />
+            </EmailShareButton>
             {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
                 <Image src={CopyIcon} alt='copy' className={styles.copyIcon} />
             </div>}
