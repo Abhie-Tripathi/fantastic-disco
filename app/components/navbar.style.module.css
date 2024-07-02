@@ -1,32 +1,32 @@
 .navbar {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--primary-foreground);
+  color: var(--primary-text-color);
   /* padding: 12px 28px 12px 28px; */
-  padding: 8px;
+  padding: 15px 30px;
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   z-index: 111;
   height: 80px;
-  border-bottom: 1px solid #2c2c2c;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .settings {
   display: flex;
   align-items: center;
   gap: 10px;
-  position: absolute;
+  /* position: absolute; */
   right: 0;
 }
 
 .circle {
   border-radius: 50%;
   display: flex;
-  background-color: #313131;
-  width: 35px;
-  height: 35px;
+  background-color: var(--buttons-background-color);
+  width: 45px;
+  height: 45px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -53,6 +53,10 @@
   opacity: 1;
 }
 
+.userCircle {
+  background-color: #5f5fa3;
+}
+
 .mobile_menuIcon {
   display: none;
 }
@@ -60,28 +64,34 @@
 .userDropdown {
   position: absolute;
   top: 56px;
+  right: 0;
   z-index: 11;
-  background: black;
-  color: white;
-  width: 100%;
+  background: var(--primary-light-color);
+  color: var(--primary-text-color);
+  width: 14vw;
   text-align: center;
+  /* font-size: var(--font-size-h6); */
+  /* padding: 8px; */
+  border-radius: 6px;
 }
 
 .btns {
   padding: 10px 5px;
   cursor: pointer;
+  border-radius: 6px;
 }
 
 .btns:hover {
-  background-color: #6750a4;
+  background-color: var(--primary-color-hover);
+  color: white;
 }
 
-.dark {
-  color: white;
+/* .dark { */
+  /* color: white; */
   /* background-color: var(--secondary-bg-light); */
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   /* border-bottom: 1px solid #dcdfe4; */
-}
+/* } */
 
 .mobile_sidebar {
   background: purple;
@@ -101,9 +111,9 @@
 }
 
 .page_title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-left: 100px;
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-medium);
+  margin-left: 80px;
 }
 
 @media screen and (max-width: 500px) {
