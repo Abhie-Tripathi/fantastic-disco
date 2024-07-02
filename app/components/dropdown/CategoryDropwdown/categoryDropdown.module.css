@@ -32,10 +32,13 @@
 }
 
 .list {
-  padding-top: 10px;
+  /* padding-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 10px; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 30px;
 }
 
 .list li {
