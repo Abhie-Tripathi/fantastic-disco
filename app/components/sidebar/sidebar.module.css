@@ -11,7 +11,7 @@
   transition: width 0.3s ease;
   overflow: hidden;
   padding-top: 22.5px;
-  border-right: 1px solid #2c2c2c;
+  border-right: 1px solid #DCDFE4;
   z-index: 120;
 }
 

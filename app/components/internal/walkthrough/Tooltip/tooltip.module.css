@@ -1,0 +1,42 @@
+.container {
+    border: 1px solid #ececf9;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0px 4px 20px 0px #00000008;
+    width: 350px;
+    height: 150px;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .container nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+    color: #6750a4;
+  }
+  
+  .container nav button {
+    color: #6750a4;
+    font-size: inherit;
+    font-family: inherit;
+  }
+  
+  .container nav h2 {
+    font-size: 16px;
+  }
+  
+  .content {
+    color: #696b83;
+    font-weight: 500;
+  }
+  
+  .container footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0px;
+  }

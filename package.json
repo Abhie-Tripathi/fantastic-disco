@@ -26,6 +26,7 @@
     "react-circular-slider-svg": "^0.3.0",
     "react-color": "^2.19.3",
     "react-dom": "^18",
+    "react-joyride": "^2.8.2",
     "react-map-gl": "^4.1.16",
     "react-otp-input": "^3.1.1",
     "react-share": "^5.1.0",

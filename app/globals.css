@@ -108,7 +108,6 @@ button {
 
 .darkMode_secondary {
   background-color: #242424;
-  /* background-color: black; */
   color: white;
 }
 
@@ -122,11 +121,11 @@ button {
   color: black;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
-}
+} */
 
 @media screen and (min-width: 993px) {
   .desktop_view {

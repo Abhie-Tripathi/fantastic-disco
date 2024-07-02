@@ -68,6 +68,8 @@ import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import { toast, ToastContainer } from "react-toastify";
 import { GAEvent } from "@/utils/GAEvent";
+import { Step } from "react-joyride";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -146,6 +148,15 @@ const Search = () => {
   const [selectedINScore, setSelectedINScore] = useState(0);
 
   const [categoryData, setCatgeoryData] = useState([]);
+
+  //WalkThrough
+  const [steps, setSteps] = useState<Step[]>([]);
+
+  // Refs for WalkThrough...
+  const searchbarRef = useRef(null);
+  const basicFilterRef = useRef(null);
+  const advanceFilterRef = useRef(null);
+  const [run, setRun] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -625,11 +636,51 @@ const Search = () => {
     return () => clearTimeout(debounceTimeout);
   }, [text]);
 
+  useEffect(() => {
+    if (searchbarRef.current && basicFilterRef.current && advanceFilterRef.current) {
+      const newSteps: Step[] = [
+        {
+          target: searchbarRef.current,
+          title: "Search Events",
+          content: "Search for relevant events happening in any location",
+          disableBeacon: true,
+        },
+        {
+          target: basicFilterRef.current,
+          title: "Search Events",
+          content: "Search for relevant events happening in any location",
+          disableBeacon: true,
+        },
+        {
+          target: advanceFilterRef.current,
+          title: "Search Events",
+          content: "Search for relevant events happening in any location",
+          disableBeacon: true,
+        },
+      ];
+
+      const walkthroughCompleted: string[] = JSON.parse(
+        localStorage.getItem("walkthroughCompleted") || "[]"
+      );
+      if (!walkthroughCompleted.includes("research")) {
+        setSteps(newSteps);
+        setRun(true);
+      }
+    }
+  }, [searchbarRef.current, basicFilterRef.current, advanceFilterRef.current]);
+
   return (
     <Suspense fallback={<Loading />}>
       <div className={styles.container}>
+        {steps.length > 0 && (
+          <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+          />
+        )}
         <div className={styles.searchContainer}>
-          <div className={styles.searchbar}>
+          <div className={styles.searchbar} ref={searchbarRef}>
             {Object.keys(selectedEvents).length > 0 && !showAllEvents && (
               <div className={styles.eventName_container}>
                 {Object.entries(selectedEvents).map(
@@ -716,7 +767,7 @@ const Search = () => {
             ))}
           </div>
         )}
-        <div className={styles.sub_container}>
+        <div className={styles.sub_container} ref={basicFilterRef}>
           <div className={styles.inputdropdowns_container}>
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
@@ -1650,7 +1701,7 @@ const Search = () => {
                 onClick={() => setSelectedView("list")}
                 className={`${styles.listBtn} ${
                   selectedView === "list" ? styles.active : ""
-                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
+                } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
               >
                 List
               </button>
@@ -1658,7 +1709,7 @@ const Search = () => {
                 onClick={() => setSelectedView("map")}
                 className={`${styles.mapBtn} ${
                   selectedView === "map" ? styles.active : ""
-                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
+                } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
               >
                 Map
               </button>
@@ -1666,7 +1717,7 @@ const Search = () => {
                 onClick={() => setSelectedView("calendar")}
                 className={`${styles.calendarBtn} ${
                   selectedView === "calendar" ? styles.active : ""
-                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
+                } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
               >
                 Calendar
               </button>

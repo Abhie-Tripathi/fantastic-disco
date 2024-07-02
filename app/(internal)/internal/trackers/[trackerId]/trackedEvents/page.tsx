@@ -1,16 +1,16 @@
-"use client"
-import React,{useEffect, useState} from 'react'
-import Expand from '/public/expand_more.svg';
-import { Notes } from '@/app/components/eventDetail/Notes';
-import ExportModal from '@/app/components/Search/ExportModal';
-import Table from '@/app/components/Table';
-import styles from './trackedEvents.style.module.css'
+"use client";
+import React, { useEffect, useState } from "react";
+import Expand from "/public/expand_more.svg";
+import { Notes } from "@/app/components/eventDetail/Notes";
+import ExportModal from "@/app/components/Search/ExportModal";
+import Table from "@/app/components/Table";
+import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { myFetch } from '@/utils/myFetch';
-import { baseUrl } from '@/context';
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/context";
 import {
   Button,
   Dialog,
@@ -22,17 +22,17 @@ import {
 } from "react-aria-components";
 // import Table from '@/app/components/Table'
 const Page = () => {
-  const [active,setActive]=useState("Active Events")
-  const [type,setType]=useState<string|undefined>();
-  const [activeValue,setActiveValue]=useState();
-  const pathName = usePathname().split('/');
+  const [active, setActive] = useState("Active Events");
+  const [type, setType] = useState<string | undefined>();
+  const [activeValue, setActiveValue] = useState();
+  const pathName = usePathname().split("/");
   // const [showInsights,setShowInsights]=useState();
-  const id=pathName[pathName.length-2];
+  const id = pathName[pathName.length - 2];
   console.log(active);
-  const [data,setData]=useState<any>();
-  const [open,setOpen]=useState(false);
-  const [eventType,setEventType]=useState("active");
-  
+  const [data, setData] = useState<any>();
+  const [open, setOpen] = useState(false);
+  const [eventType, setEventType] = useState("active");
+
   const showInsights = {
     eventSize: true,
     eventKeywords: true,
@@ -45,7 +45,21 @@ const Page = () => {
     repeatSent: true,
   };
   const lineData = {
-    labels: ["01", "02", "03", "04", "05", "06", "07","08","09","10","11","12","13"],
+    labels: [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+    ],
     datasets: [
       {
         label: "First dataset",
@@ -59,25 +73,24 @@ const Page = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-        const url = `${baseUrl}/tracker/${id}`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'GET'
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                setData(data);
-                
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
+      const url = `${baseUrl}/tracker/${id}`;
+      try {
+        const { data, error } = await myFetch(url, {
+          method: "GET",
+        });
+        if (error) {
+          console.error("Error fetching data:", error);
+        } else {
+          setData(data);
         }
+      } catch (err) {
+        console.error("Fetch failed:", err);
+      }
     };
 
     fetchData();
-}, []);
-  
+  }, []);
+
   const lineOptions = {
     plugins: {
       legend: {
@@ -111,34 +124,37 @@ const Page = () => {
     responsive: true,
     maintainAspectRatio: false,
   };
-  useEffect(()=>{
-      setOpen(true);
-  },[])
-  const [exp,setExp]=useState(false);
-  const exportData=async()=>{
-    let dataToSend={}
-    if(active==="Active Events"){
-      dataToSend={
-        type:"ACTIVE",
-      }
-    }else if(active==="New Events"){
-      dataToSend={
-        type:"NEW",
-      }
-    }else{
-      dataToSend={
-        type:"EXPIRED",
-      }
+  useEffect(() => {
+    setOpen(true);
+  }, []);
+  const [exp, setExp] = useState(false);
+  const exportData = async () => {
+    let dataToSend = {};
+    if (active === "Active Events") {
+      dataToSend = {
+        type: "ACTIVE",
+      };
+    } else if (active === "New Events") {
+      dataToSend = {
+        type: "NEW",
+      };
+    } else {
+      dataToSend = {
+        type: "EXPIRED",
+      };
     }
     try {
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${pathName[pathName.length-2]}/export`, {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
+      const { data, error } = await myFetch(
+        `${baseUrl}/tracker/${pathName[pathName.length - 2]}/export`,
+        {
+          method: "POST",
+          body: JSON.stringify(dataToSend),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       if (data) {
         console.log(data);
       } else {
@@ -147,128 +163,103 @@ const Page = () => {
     } catch (err) {
       console.error("Error saving event:", err);
     } finally {
-      
       // setIsSaving(false);
     }
-  }
-  useEffect(()=>{
-      if(active==="Active Events") setType('ACTIVE');
-      if(active==="New Events") setType('NEW');
-      if(active==="Expired Events") setType('EXPIRED')
-  },[active])
-useEffect(()=>{
-console.log(activeValue);
-},[active])
+  };
+  useEffect(() => {
+    if (active === "Active Events") setType("ACTIVE");
+    if (active === "New Events") setType("NEW");
+    if (active === "Expired Events") setType("EXPIRED");
+  }, [active]);
+  useEffect(() => {
+    console.log(activeValue);
+  }, [active]);
 
-console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.active
-  )
-  const formatCount = (count:number) => {
+  console.log(
+    data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.active
+  );
+  const formatCount = (count: number) => {
     if (count >= 1000) {
-        return `${(count / 1000).toFixed(1)}k`;
+      return `${(count / 1000).toFixed(1)}k`;
     }
     return count;
-};
+  };
   return (
     // <div className={styles.containerOne}>
-    
+
     <div className={styles.container}>
-    {/* <div className={styles.top}>
-      <div className={styles.topLeft} onClick={() => setOpen(!open)}>
-        <div style={{ color: "#6750A4", fontWeight: "500" }}>Tracker Trends and Analytics</div>
-        <div>
-          <Image
-            style={{
-              transform: !open ? "rotate(-90deg)" : "none",
-              transition: "transform 0.3s ease-in-out"
-            }}
-            src={Expand}
-            alt="expand_more"
-          />
+      <div className={styles.eventStatus}>
+        <div className={styles.eventStatusLeft}>
+          <button
+            className={`${styles.eventStatusBtn} ${
+              active === "Active Events" ? styles.active : ""
+            }`}
+            onClick={() => setActive("Active Events")}
+          >
+            Active Events
+            {active !== "Active Events" && (
+              <div className={styles.circle}>
+                {
+                  data?.tracker?.groupedEventsCountByStatus
+                    ?.groupedEventsByStatus.active
+                }
+              </div>
+            )}
+          </button>
+          <button
+            className={`${styles.eventStatusBtn} ${
+              active === "New Events" ? styles.active : ""
+            }`}
+            onClick={() => setActive("New Events")}
+          >
+            New Events
+            {active !== "New Events" && (
+              <div className={styles.circle}>
+                {
+                  data?.tracker?.groupedEventsCountByStatus
+                    ?.groupedEventsByStatus.new
+                }
+              </div>
+            )}
+          </button>
+          <button
+            className={`${styles.eventStatusBtn} ${
+              active === "Expired Events" ? styles.active : ""
+            }`}
+            onClick={() => setActive("Expired Events")}
+          >
+            Expired Events
+            {active !== "Expired Events" && (
+              <div className={styles.circle}>
+                {formatCount(
+                  data?.tracker?.groupedEventsCountByStatus
+                    ?.groupedEventsByStatus.expired
+                )}
+              </div>
+            )}
+          </button>
         </div>
+        {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
+        <DialogTrigger>
+          <Button className={styles.exportButton}>
+            <div className={styles.eventStatusRight}>Export Data</div>
+          </Button>
+          <ModalOverlay isDismissable className={styles.modalOverlay}>
+            <Modal>
+              <Dialog>
+                {({ close }) => <ExportModal onClose={close} type={type} />}
+              </Dialog>
+            </Modal>
+          </ModalOverlay>
+        </DialogTrigger>
       </div>
-      <div className={`${styles.transition} ${open ? styles.transitionOpen : ""}`}>
-        <div className={styles.topFirst}>
-          <div className={styles.topFirstLeft}>
-            <div className={styles.overView}>Tracker Overview</div>
-            <div className={styles.overViewContent}>Have a quick overview of all trackers and addition of any new events</div>
-          </div>
-          <div className={styles.topFirstRight}>
-            <div className={styles.totalEvent}>Total Events</div>
-            <div className={styles.overView} style={{ color: "#6750A4" }}>189</div>
-          </div>
-        </div>
-        <div className={styles.lineChart}>
-          <div className={styles.data}>
-            <Line style={{ height: "200px" }} data={lineData} options={lineOptions} />
-          </div>
-        </div>
-      </div>
-      <div className={styles.topRight}></div>
-    </div> */}
-    <div className={styles.eventStatus}>
-      <div className={styles.eventStatusLeft}>
-        <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>
-          Active Events 
-          {active !== "Active Events"&& <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active}</div> }
-          
-        </button>
-        <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => setActive("New Events")}>
-          New Events
-          {active !== "New Events"&& <div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new}</div> }
-        </button>
-        <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => setActive("Expired Events")}>Expired Events
-        {active !== "Expired Events"&& <div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div> }
-        </button>
-      </div>
-      {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
-      <DialogTrigger>
-            <Button className={styles.exportButton}>
-              
-              <div className={styles.eventStatusRight}>Export Data</div>
-            </Button>
-            <ModalOverlay isDismissable className={styles.modalOverlay}>
-              <Modal>
-                <Dialog>
-                  {({ close }) => (
-                    <ExportModal onClose={close} type={type}/>
-                  )}
-                </Dialog>
-              </Modal>
-            </ModalOverlay>
-          </DialogTrigger>
+      <Table
+        showInsights={showInsights}
+        eventType={active}
+        setActiveValue={setActiveValue}
+      />
     </div>
-    <Table showInsights={showInsights} eventType={active} setActiveValue={setActiveValue}/>
-    {/* {exp && <ModalOverlay isDismissable className={styles.modalOverlay}>
-              <Modal>
-                <Dialog>
-                  {({ close }) => (
-                    <ExportModal onClose={close} filterValue={filters} />
-                  )}
-                </Dialog>
-              </Modal>
-            </ModalOverlay>} */}
-  </div>
-  
-  // <div>
-  //           {/* <Notes/> */}
-  // </div>
-  // </div>
-  )
-}
+  );
+};
 
 export default Page;
-{/* <DialogTrigger>
-            <Button className={styles.exportButton}>
-              
-              <div className={styles.eventStatusRight}>Export Data</div>
-            </Button>
-            <ModalOverlay isDismissable className={styles.modalOverlay}>
-              <Modal>
-                <Dialog>
-                  {({ close }) => (
-                    <ExportModal onClose={close} />
-                  )}
-                </Dialog>
-              </Modal>
-            </ModalOverlay>
-          </DialogTrigger> */}
