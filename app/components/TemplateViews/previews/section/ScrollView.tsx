@@ -4,12 +4,12 @@ import EventCard1 from '../cardstyles/EventCard1';
 import EventCard2 from '../cardstyles/EventCard2';
 import EventCard3 from '../cardstyles/EventCard3';
 
-interface Props{
-    type : string;
-    selectedCard? : string;
+interface Props {
+    type: string;
+    selectedCard?: string;
 }
 
-const ScrollView = ({type, selectedCard}: Props) => {
+const ScrollView = ({ type, selectedCard }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -23,13 +23,15 @@ const ScrollView = ({type, selectedCard}: Props) => {
             EventCard = EventCard3; // Or some default component or message
     }
     return (
-       <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
-           <EventCard />
-           <EventCard />
-           <EventCard />
-           <EventCard />   
-           <EventCard />   
-       </div>
+        <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody}>
+            <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
+                <EventCard />
+                <EventCard />
+                <EventCard />
+                <EventCard />
+                <EventCard />
+            </div>
+        </div>
     )
 }
 
