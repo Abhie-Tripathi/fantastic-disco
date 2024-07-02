@@ -155,7 +155,8 @@ const Search = () => {
   // Refs for WalkThrough...
   const searchbarRef = useRef(null);
   const basicFilterRef = useRef(null);
-  const advanceFilterRef = useRef(null);
+  const advFilterShowBtnRef = useRef(null);
+  const advFilterDetailsRef = useRef(null);
   const [run, setRun] = useState<boolean>(true);
 
   useEffect(() => {
@@ -689,35 +690,6 @@ const Search = () => {
     };
   }, [selectedEventSeries, rankToggles]);
 
-  // Auto apply search on filter change
-  /*
-  useEffect(() => {
-    createQueryString();
-  }, [
-    selectedEventSeries,
-    selectedBrandedEvent,
-    selectedCategories,
-    selectedEventStatus,
-    selectedDateRange,
-    selectedEventFormat,
-    selectedEventFrequency,
-    selectedEntry,
-    selectedEventEdition,
-    selectedEventKeywords,
-    selectedTrustScore,
-    selectedReptScore,
-    selectedMaturity,
-    selectedINScore,
-    selectedInboundScore,
-    selectedUserRatings,
-    selectedExhibitScore,
-    selectedLocations,
-    selectedEventAttendanceRange,
-    selectedEventRank,
-    selectedLocalRank
-  ]);
-  */
-
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
       handleSearchInput(searchInput);
@@ -729,7 +701,7 @@ const Search = () => {
     if (
       searchbarRef.current &&
       basicFilterRef.current &&
-      advanceFilterRef.current
+      advFilterShowBtnRef.current
     ) {
       const newSteps: Step[] = [
         {
@@ -745,9 +717,9 @@ const Search = () => {
           disableBeacon: true,
         },
         {
-          target: advanceFilterRef.current,
-          title: "Search Events",
-          content: "Search for relevant events happening in any location",
+          target: advFilterShowBtnRef.current,
+          title: "Advance Filter",
+          content: "Click on the button to view Advance Filters",
           disableBeacon: true,
         },
       ];
@@ -760,7 +732,12 @@ const Search = () => {
         setRun(true);
       }
     }
-  }, [searchbarRef.current, basicFilterRef.current, advanceFilterRef.current]);
+  }, [
+    searchbarRef.current,
+    basicFilterRef.current,
+    advFilterShowBtnRef.current,
+    // advFilterDetailsRef.current
+  ]);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -770,6 +747,8 @@ const Search = () => {
             steps={steps}
             run={run}
             onFinish={() => setRun(false)}
+            pathName="research"
+            spotClicksIndex={[2]}
           />
         )}
         <div className={styles.searchContainer}>
@@ -947,40 +926,6 @@ const Search = () => {
                     </Dialog>
                   </Popover>
                 </MenuTrigger>
-
-                {/* <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.dropdown_button}>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Labels
-                        {selectedLabels?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedLabels.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedLabels[0]}
-                          </span>
-                        )}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  <LabelDropdown
-                    state={selectedLabels}
-                    setState={setSelectedLabels}
-                  />
-                </Popover>
-              </MenuTrigger> */}
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1171,6 +1116,7 @@ const Search = () => {
                     );
                   }}
                   style={{ display: "flex", alignItems: "center", gap: "4px" }}
+                  ref={advFilterShowBtnRef}
                 >
                   <Image
                     src={FilterIcon}
@@ -1179,7 +1125,6 @@ const Search = () => {
                     alt="filters"
                   />
                   <span className={styles.clearfilter_button}>
-                    {" "}
                     Advanced Filters
                   </span>
                 </button>
@@ -1191,37 +1136,7 @@ const Search = () => {
                 </button>
               </div>
             </div>
-
-            {/* <div className={styles.buttons_container}>
-            <button
-              className={styles.createtracker_button}
-              onClick={createTrackerHandler}
-            >
-              Save as Tracker
-            </button>
-            <button
-              onClick={() => {
-                setShowAdvanceFilter((prev) => !prev);
-                GAEvent(
-                  "research",
-                  "Filters",
-                  "All Filter Modal | Viewed",
-                  "More Filter Icon"
-                );
-              }}
-              style={{ display: "flex", alignItems: "center", gap: "4px" }}
-            >
-              <Image src={FilterIcon} width={18} height={18} alt="filters" />
-              <span className={styles.clearfilter_button}>
-                {" "}
-                Advanced Filters
-              </span>
-            </button>
-          </div> */}
           </div>
-          {/* {showRecentSearches && (
-          // <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-        )} */}
 
           {/*   ADVANCE FILTER SECTION */}
           {showAdvanceFilter && (
@@ -1268,7 +1183,10 @@ const Search = () => {
 
               {/* ADVANCE DETAILS SECTION */}
               {showAdvanceFilter && selectedAdvFilter === "AP" && (
-                <div className={styles.inputdropdowns_container}>
+                <div
+                  className={styles.inputdropdowns_container}
+                  ref={advFilterDetailsRef}
+                >
                   <MenuTrigger onOpenChange={setMenuOpen}>
                     <Button className={styles.dropdown_button}>
                       <div className={styles.input_container}>
@@ -1452,41 +1370,6 @@ const Search = () => {
                       </Dialog>
                     </Popover>
                   </MenuTrigger>
-
-                  {/* <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Rankings
-                          {selectedEventRanking?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventRanking.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventRanking[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <EventAdvFilter
-                      state={selectedEventRanking}
-                      setState={setSelectedEventRanking}
-                      data={eventRankData}
-                    />
-                  </Popover>
-                </MenuTrigger> */}
                 </div>
               )}
 
@@ -1909,19 +1792,6 @@ const Search = () => {
           </div>
         )}
       </div>
-      {/* {selectedView === "map" && (
-        <Suspense fallback={<Loading />}>
-          <Map
-            eventData={eventData}
-            mapStyle={MapStyle.Light}
-            style={{
-              width: "calc(100vw - 97px)",
-              height: "90vh",
-            }}
-          />
-          <Map queryString={urlQueryString} />
-        </Suspense>
-      )} */}
       <ToastContainer />
     </Suspense>
   );

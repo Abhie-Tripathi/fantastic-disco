@@ -45,6 +45,24 @@ interface CoordinateType {
   count: string;
 }
 
+const trackerCardsData = [
+  {
+    icon: NewEvent,
+    title: "New",
+    stats: "0",
+  },
+  {
+    icon: Timer,
+    title: "Active",
+    stats: "0",
+  },
+  {
+    icon: CircleCross,
+    title: "Expired",
+    stats: "0",
+  },
+];
+
 const notifications = [
   "@Walterwhite recommended you as a Speaker for Las vegas Event",
   "@Gusfring recommended you as a Atendee for Pollos Event",
@@ -73,6 +91,7 @@ const Dashboard = () => {
   const outreachRef = useRef(null);
   const trackerRef = useRef(null);
   const notificationRef = useRef(null);
+  const coordinateRef = useRef(null);
 
   useEffect(() => {
     const getListOfTrackers = async () => {
@@ -91,7 +110,7 @@ const Dashboard = () => {
 
   const getSavedEvents = async () => {
     try {
-      const {data} = await myFetch(`${baseUrl}/tracker/saved-events`);
+      const { data } = await myFetch(`${baseUrl}/tracker/saved-events`);
       console.log("saved_events", data?.data);
       setSavedEventsList(data?.result);
     } catch (error) {
@@ -171,7 +190,8 @@ const Dashboard = () => {
       researchRef.current &&
       outreachRef.current &&
       trackerRef.current &&
-      notificationRef.current
+      notificationRef.current && 
+      coordinateRef.current
     ) {
       const newSteps: Step[] = [
         {
@@ -201,6 +221,13 @@ const Dashboard = () => {
             "Realtime alerts about new events reschedules weather alerts etc.",
           disableBeacon: true,
         },
+        {
+          target: coordinateRef.current,
+          title: "Alerts",
+          content:
+            "Realtime alerts about new events reschedules weather alerts etc.",
+          disableBeacon: true,
+        },
       ];
 
       const walkthroughCompleted: string[] = JSON.parse(
@@ -216,6 +243,7 @@ const Dashboard = () => {
     outreachRef.current,
     trackerRef.current,
     notificationRef.current,
+    coordinateRef.current
   ]);
 
   return (
@@ -226,6 +254,7 @@ const Dashboard = () => {
             steps={steps}
             run={run}
             onFinish={() => setRun(false)}
+            pathName="internalDashboard"
           />
         )}
 
@@ -249,7 +278,7 @@ const Dashboard = () => {
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image src={Research} alt="search" />
-                      <span>Continue Research</span>
+                      <span>Research</span>
                     </div>
                     <Image
                       src={GotoIcon}
@@ -302,6 +331,7 @@ const Dashboard = () => {
                           fontSize: "13px",
                           padding: "10px",
                         }}
+                        
                       >
                         Connect efficiently with stakeholders and amplify
                         engagement.
@@ -382,14 +412,13 @@ const Dashboard = () => {
                 theme === "light" ? styles.tracker_content_light : ""
               }`}
             >
-              {/* <Image src={Stars} alt="stars" /> */}
               <div>Here &apos;s what&apos;s new since you last checked in</div>
             </div>
 
             {isLoading ? (
               <TrackerSkeleton />
             ) : (
-              trackerList.map((tracker: any) => (
+              trackerList.length > 0 ? trackerList.map((tracker: any) => (
                 <Link
                   href={`/internal/trackers/${tracker.id}/trackedEvents`}
                   className={`${styles.tracker_card} ${
@@ -458,7 +487,31 @@ const Dashboard = () => {
                   </>
                 </Link>
               ))
-            )}
+            : <div className={styles.tracker_card} ref={trackerRef}>
+            {/* <div className={styles.tracker_card_header}>
+              <span>Tracker 1 - Events in Bangalore</span>
+              <Image src={GotoIcon} alt="goto" />
+            </div> */}
+
+            <div className={styles.event_cards_container}>
+              {trackerCardsData.map((trackerCard) => (
+                <div key={trackerCard.title} className={styles.eventCard}>
+                  <div className={styles.eventCard_title}>
+                    <Image src={trackerCard.icon} alt="newevent" />
+                    <span>{trackerCard.title}</span>
+                  </div>
+                  <div className={styles.eventCard_stats}>
+                    <div className={styles.eventCard_stats_no}>
+                      {trackerCard.stats}
+                    </div>
+                    <div className={styles.eventCard_description}>Events</div>
+                  </div>
+                </div>
+              ))}
+
+              <PolarAreaChart className={styles.events_stats_polarChart} />
+            </div>
+          </div>)}
           </div>
 
           <span className={styles.body_divider}></span>
@@ -487,23 +540,30 @@ const Dashboard = () => {
                     theme === "light" && styles.savedEventsData_light
                   }`}
                 >
-                  {savedEventsList?.map((event:any) => (
-                    <div
-                      className={`${styles.savedEvent} ${
-                        theme === "light" && styles.savedEvent_light
-                      }`}
-                      key={event.id}
-                    >
-                      <div>{event.name}</div>
+                  {savedEventsList.length > 0 ? (
+                    savedEventsList?.map((event: any) => (
                       <div
-                        onClick={() => {
-                          unsavedEvent(event?.eventGroupId);
-                        }}
+                        className={`${styles.savedEvent} ${
+                          theme === "light" && styles.savedEvent_light
+                        }`}
+                        key={event.id}
                       >
-                        <BookmarkIcon fillColor={"#ff851b"} />
+                        <div>{event.name}</div>
+                        <div
+                          onClick={() => {
+                            unsavedEvent(event?.eventGroupId);
+                          }}
+                        >
+                          <BookmarkIcon fillColor={"#ff851b"} />
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "13px", fontSize: "14px" }}>
+                      Stay informed about the latest industry events and save
+                      them to stay updated on event updates.
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
             </div>
@@ -515,7 +575,7 @@ const Dashboard = () => {
                   <CoordinateSkeleton />
                 </>
               ) : (
-                <Link href={"/internal/coordinate"} className={styles.linkCard}>
+                <Link href={"/internal/coordinate"} className={styles.linkCard} ref={coordinateRef}>
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image
@@ -559,6 +619,7 @@ const Dashboard = () => {
                         marginTop: "10px",
                         padding: "10px",
                       }}
+                      ref={coordinateRef}
                     >
                       An effective event communication and relationship
                       management dashboard that keeps your team on the same page

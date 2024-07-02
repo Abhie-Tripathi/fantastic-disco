@@ -9,7 +9,7 @@ const PolarAreaChart = ({ className }: { className?: string }) => {
     datasets: [
       {
         label: "# of Votes",
-        data: [18, 16, 13, 14, 16, 17],
+        data: [],
         backgroundColor: [
           "#6750A4",
           "#EADDFF",
@@ -47,7 +47,7 @@ const PolarAreaChart = ({ className }: { className?: string }) => {
       <PolarArea data={polarData} options={polarOptions} />
       <div className={styles.polarChart_circle}>
         <div className={styles.polarChart_circle_innerborder}>
-          <div className={styles.polarChart_totalNo}>206</div>
+          <div className={styles.polarChart_totalNo}>0</div>
           <div className={styles.polarChart_totalNo_title}>events</div>
         </div>
       </div>

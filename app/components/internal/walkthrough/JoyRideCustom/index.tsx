@@ -1,6 +1,6 @@
 // components/JoyrideComponent.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "../Tooltip"; // Assuming you have this tooltip component
 
@@ -8,14 +8,36 @@ interface Props {
   steps: Step[];
   run: boolean;
   onFinish?: () => void;
+  pathName: string;
+  spotClicksIndex?: number[];
 }
 
-const JoyRideCustom: React.FC<Props> = ({ steps, run, onFinish }) => {
+const JoyRideCustom: React.FC<Props> = ({
+  steps,
+  run,
+  onFinish,
+  pathName,
+  spotClicksIndex = [],
+}) => {
   const [joyrideRun, setJoyrideRun] = useState(run);
+  const [currIndex, setCurrIndex] = useState(0);
 
   const joyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { status, index } = data;
+    setCurrIndex(index);
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+      let walkthroughCompleted: string[] = JSON.parse(
+        localStorage.getItem("walkthroughCompleted") || "[]"
+      );
+
+      if (!walkthroughCompleted.includes(pathName)) {
+        walkthroughCompleted.push(pathName);
+
+        localStorage.setItem(
+          "walkthroughCompleted",
+          JSON.stringify(walkthroughCompleted)
+        );
+      }
       setJoyrideRun(false);
       if (onFinish) onFinish();
     }
@@ -35,6 +57,7 @@ const JoyRideCustom: React.FC<Props> = ({ steps, run, onFinish }) => {
       disableScrolling
       disableScrollParentFix
       disableOverlayClose
+      spotlightClicks={spotClicksIndex.includes(currIndex)}
       styles={{
         options: {
           arrowColor: "#ffffff",
