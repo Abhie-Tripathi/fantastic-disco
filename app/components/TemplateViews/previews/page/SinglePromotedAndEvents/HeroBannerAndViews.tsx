@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './style.module.css'
-import HeroBanner from '../MultipleEvents/HeroBanner';
+import HeroBanner from '../../section/Herobanner/HeroBanner1';
 import ListView from '../MultipleEvents/ListView';
 import GridView from '../MultipleEvents/GridView';
 import ListAndGridView from '../MultipleEvents/ListAndGridView';

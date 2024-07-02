@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './eventcard2.style.module.css'
 import Image from 'next/image'
-import placeholder from '/public/placeholder.png'
+import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
@@ -49,7 +49,7 @@ const EventCard2 = ({
                     <div className={styles.date}>1st Apr 2024 - 20th Apr 2024</div>
                 </div>
             </div>
-            <Image src={placeholder} alt='placeholder' className={styles.banner} />
+            <Image src={placeholder2} alt='placeholder' className={styles.banner} />
             <div className={styles.dividerLine}></div>
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>

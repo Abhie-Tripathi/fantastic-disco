@@ -5,7 +5,7 @@ import Designs from "@/app/components/TemplateViews/designs/Designs";
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
-import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
+import HeroBanner1 from '@/app/components/TemplateViews/previews/section/Herobanner/HeroBanner1';
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
@@ -127,7 +127,7 @@ const Page = () => {
             <div className={styles.preview}>
               {preview === "stickytop" ? <StickyPreview type="top" /> :
                 preview === "stickydown" ? <StickyPreview type="down" /> :
-                  preview === "sehb" ? <HeroBanner /> :
+                  preview === "sehb" ? <HeroBanner1 /> :
                     preview === "megv" ? <GridView /> :
                       preview === "melv" ? <ListView /> :
                           preview === "melgv" ? <ListAndGridView /> :

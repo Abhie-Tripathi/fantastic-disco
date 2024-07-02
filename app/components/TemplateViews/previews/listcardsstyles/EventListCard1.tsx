@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './eventlistcard1.style.module.css'
 import Image from 'next/image'
-import placeholder from '/public/placeholder.png'
+import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 
 interface CardProps {
@@ -34,8 +34,7 @@ const EventListCard1 = ({
   btnFontSize = 14 }: CardProps) => {
   return (
     <div className={styles.card}>
-      <Image src={placeholder} alt='banner' className={styles.banner} />
-
+      <Image src={placeholder2} alt='banner' className={styles.banner} />
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}><span className={styles.date}>29</span>

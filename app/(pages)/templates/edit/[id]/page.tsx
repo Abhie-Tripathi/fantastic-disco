@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
-import HeroBanner from '@/app/components/TemplateViews/previews/page/MultipleEvents/HeroBanner'
+import HeroBanner from '@/app/components/TemplateViews/previews/section/HeroBanner'
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
