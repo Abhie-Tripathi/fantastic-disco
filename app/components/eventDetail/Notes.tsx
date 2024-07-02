@@ -108,22 +108,13 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
 
     const { data, error } = await myFetch(url);
-    console.log(data);
-    if (data && path[path.length-1] === "coordinate") {
-      // setNotes([]);
-      console.log(data);
-      // setNotes(data.comments.reverse());
-      if (data.comments?.length > 0)
-        setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-    }
-    if (data && path[path.length-1] === "outreach") {
+    
       // setNotes([]);
 
       console.log(data);
       // setNotes(data.comments.reverse());
       if (data.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-    }
     // else setNotes(CommentsData );
   }
   }

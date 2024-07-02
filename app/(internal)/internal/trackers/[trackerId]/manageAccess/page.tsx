@@ -290,7 +290,7 @@ const Page = () => {
                   </div>
                   </div>
                  
-                         {drop &&filter?.length>0 &&
+                         {filter.length > 0 && filteredData?.length > 0 && drop &&
                       <div className={styles.dropdown}>
                           <div className={styles.dropdownContent}>
                               {filteredData.map((item: any) => (

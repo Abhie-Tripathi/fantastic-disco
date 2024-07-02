@@ -62,7 +62,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [page, setPage] = useState(0);
-  const [trackerPerPage, setTrackerPerPage] = useState(4);
+  const [trackerPerPage, setTrackerPerPage] = useState(20);
   const [totalPage, setTotalPage] = useState<number>(0);
 
   // Replace with your actual base URL
@@ -158,7 +158,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                paddingTop: "15px",
+                paddingTop: "20px",
               }}
             >
               <div className={styles.btn} onClick={handlePrevPage}>

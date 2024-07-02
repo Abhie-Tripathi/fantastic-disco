@@ -245,9 +245,7 @@ color:#6E6F89;
     font-size: 12px;
   }
   .trackers{
-    /* background-color: #F8F8F8; */
-    /* padding: 18px 20px; */
-    margin: 20px -15px;
+    margin: 10px -15px;
     gap:20px;
     color: #696B83;
     display: flex;
