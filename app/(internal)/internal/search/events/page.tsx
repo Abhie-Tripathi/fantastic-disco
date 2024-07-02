@@ -42,6 +42,9 @@ import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
 import CloseIcon from "/public/internal/cross.svg";
 import FilterIcon from "/public/internal/advanceFilter.svg";
+import {
+  Button as Button10x,
+} from "10xui";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));

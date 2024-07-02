@@ -1,6 +1,6 @@
 .navbar {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--primary-foreground);
+  color: var(--primary-text-color);
   /* padding: 12px 28px 12px 28px; */
   padding: 8px;
   display: flex;
@@ -10,7 +10,7 @@
   width: 100%;
   z-index: 111;
   height: 80px;
-  border-bottom: 1px solid #2c2c2c;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .settings {
@@ -76,12 +76,12 @@
   background-color: #6750a4;
 }
 
-.dark {
-  color: white;
+/* .dark { */
+  /* color: white; */
   /* background-color: var(--secondary-bg-light); */
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   /* border-bottom: 1px solid #dcdfe4; */
-}
+/* } */
 
 .mobile_sidebar {
   background: purple;
