@@ -1,6 +1,6 @@
 .container{
     height: 650px;
-    width: 65%;
+    width: 75%;
 
 }
 .outerContainer{
@@ -10,5 +10,5 @@
 }
 .innerLeft{
     display: flex;
-    width: 35%;
+    width: 25%;
   }
