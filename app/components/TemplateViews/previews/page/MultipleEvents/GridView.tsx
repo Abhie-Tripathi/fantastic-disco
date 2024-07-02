@@ -1,6 +1,8 @@
-import React from 'react'
-import styles from './gridview.style.module.css'
-import EventCard from '../../EventCard';
+import React, { ElementType } from 'react'
+import styles from './gridview.style.module.css';
+import EventCard1 from '../../cardstyles/EventCard1';
+import EventCard2 from '../../cardstyles/EventCard2';
+import EventCard3 from '../../cardstyles/EventCard3';
 
 interface EditProps {
     cardRadius?: number;
@@ -15,6 +17,7 @@ interface EditProps {
     btnBorderColor?: string;
     btnRadius?: number;
     btnFontSize?: number;
+    selectedCard?: string;
 }
 
 const GridView = ({ cardRadius,
@@ -28,9 +31,25 @@ const GridView = ({ cardRadius,
     btnBorderWidth,
     btnBorderColor,
     btnRadius,
-    btnFontSize }: EditProps) => {
+    btnFontSize,
+    selectedCard }: EditProps) => {
+
+    let EventCard: ElementType;
+
+    switch (selectedCard) {
+        case 'card1':
+            EventCard = EventCard1;
+            break;
+        case 'card2':
+            EventCard = EventCard2;
+            break;
+        default:
+            EventCard = EventCard3; // Or some default component or message
+    }
     return (
         <div className={styles.gridView}>
+            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
+            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
             <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
             <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
             <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />

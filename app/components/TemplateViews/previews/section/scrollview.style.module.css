@@ -1,34 +1,15 @@
-.topBody{
-    height: 95%;
-    width: 100%;
-    margin-top: 20px;
-    background-color: rgb(217, 217, 217);
-    padding: 20px;
-}
-.leftBody{
-    height: 95%;
-    width: 100%;
-    margin-top: 20px;
-    background-color: rgb(217, 217, 217);
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-}
 .horizontalScroll{
+    padding: 10px;
     display: flex;
-    gap: 20px;
     overflow-x: auto;
+    gap: 20px;
 }
 .verticalScroll{
+    padding: 10px;
     display: flex;
     flex-direction: column;
+    height: 100%;
     gap: 20px;
     overflow-y: auto;
-}
-.website{
-    height: 150vh;
-    color: black;
-    margin-top: 20px;
-    text-align: center;
-    font-size: 20px;
+    overflow-x: hidden;
 }

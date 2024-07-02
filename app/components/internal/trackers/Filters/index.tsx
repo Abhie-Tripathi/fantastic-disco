@@ -85,6 +85,7 @@ interface FilterValue {
   eventSize: any;
   eventCity: any;
   eventCountry: any;
+  eventRegion:string;
   eventAttendanceRange: any;
 }
 interface CategoryData {
@@ -121,7 +122,7 @@ const Pages = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
-
+  const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
@@ -317,6 +318,9 @@ const Pages = () => {
           ...(selectedExhibitScore?.length > 0 && {
             eventSize: selectedExhibitScore.join(","),
           }),
+         ...(selectedZone?.length>0 && {
+            eventRegion:selectedZone.join(',')
+         }),
           brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
@@ -465,6 +469,9 @@ const Pages = () => {
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
+          ...(selectedZone?.length>0 && {
+            eventRegion:selectedZone.join(',')
+         }),
           eventSeries: selectedEventSeries.toString(),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
@@ -688,6 +695,7 @@ const Pages = () => {
             )
           : {}
       );
+      setSelectedZone(editData.tracker.filterValue?.eventRegion?.length > 0?  editData.tracker.filterValue?.eventRegion?.split(','):[]);
       setSelectedCity(
         editData.tracker.filterValue?.eventCity?.length > 0
           ? editData.tracker.filterValue.eventCity.reduce(
@@ -913,6 +921,8 @@ const Pages = () => {
                         setState={setSelectedLocations}
                         onClose={close}
                         selectedCity={selectedCity}
+                        selectedZone={selectedZone}
+                        setSelectedZone={setSelectedZone}
                         setSelectedCity={setSelectedCity}
                         selectedCountry={selectedCountry}
                         setSelectedCountry={setSelectedCountry}

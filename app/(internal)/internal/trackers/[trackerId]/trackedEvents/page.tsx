@@ -8,7 +8,8 @@ import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import Trackers from "@/app/components/internal/trackers/CommonTrackerCard";
+import { usePathname, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
 import {
@@ -26,6 +27,10 @@ const Page = () => {
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const pathName = usePathname().split("/");
+  const searchParams = useSearchParams();
+
+  const token = searchParams.get("token");
+
   // const [showInsights,setShowInsights]=useState();
   const id = pathName[pathName.length - 2];
   console.log(active);
@@ -185,79 +190,180 @@ const Page = () => {
     return count;
   };
   return (
-    // <div className={styles.containerOne}>
-
-    <div className={styles.container}>
-      <div className={styles.eventStatus}>
-        <div className={styles.eventStatusLeft}>
-          <button
-            className={`${styles.eventStatusBtn} ${
-              active === "Active Events" ? styles.active : ""
-            }`}
-            onClick={() => setActive("Active Events")}
-          >
-            Active Events
-            {active !== "Active Events" && (
-              <div className={styles.circle}>
-                {
-                  data?.tracker?.groupedEventsCountByStatus
-                    ?.groupedEventsByStatus.active
-                }
-              </div>
-            )}
-          </button>
-          <button
-            className={`${styles.eventStatusBtn} ${
-              active === "New Events" ? styles.active : ""
-            }`}
-            onClick={() => setActive("New Events")}
-          >
-            New Events
-            {active !== "New Events" && (
-              <div className={styles.circle}>
-                {
-                  data?.tracker?.groupedEventsCountByStatus
-                    ?.groupedEventsByStatus.new
-                }
-              </div>
-            )}
-          </button>
-          <button
-            className={`${styles.eventStatusBtn} ${
-              active === "Expired Events" ? styles.active : ""
-            }`}
-            onClick={() => setActive("Expired Events")}
-          >
-            Expired Events
-            {active !== "Expired Events" && (
-              <div className={styles.circle}>
-                {formatCount(
-                  data?.tracker?.groupedEventsCountByStatus
-                    ?.groupedEventsByStatus.expired
-                )}
-              </div>
-            )}
-          </button>
+    <div className={styles.containerOne}>
+      <div className={styles.container}>
+        <div className={styles.eventStatus}>
+          <div className={styles.eventStatusLeft}>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "Active Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("Active Events")}
+            >
+              Active Events
+              {active !== "Active Events" && (
+                <div className={styles.circle}>
+                  {
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.active
+                  }
+                </div>
+              )}
+            </button>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "New Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("New Events")}
+            >
+              New Events
+              {active !== "New Events" && (
+                <div className={styles.circle}>
+                  {
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.new
+                  }
+                </div>
+              )}
+            </button>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "Expired Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("Expired Events")}
+            >
+              Expired Events
+              {active !== "Expired Events" && (
+                <div className={styles.circle}>
+                  {formatCount(
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.expired
+                  )}
+                </div>
+              )}
+            </button>
+          </div>
+          {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
+          <DialogTrigger>
+            <Button className={styles.exportButton}>
+              <div className={styles.eventStatusRight}>Export Data</div>
+            </Button>
+            <ModalOverlay isDismissable className={styles.modalOverlay}>
+              <Modal>
+                <Dialog>
+                  {({ close }) => <ExportModal onClose={close} type={type} />}
+                </Dialog>
+              </Modal>
+            </ModalOverlay>
+          </DialogTrigger>
         </div>
-        {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
-        <DialogTrigger>
-          <Button className={styles.exportButton}>
-            <div className={styles.eventStatusRight}>Export Data</div>
-          </Button>
-          <ModalOverlay isDismissable className={styles.modalOverlay}>
-            <Modal>
-              <Dialog>
-                {({ close }) => <ExportModal onClose={close} type={type} />}
-              </Dialog>
-            </Modal>
-          </ModalOverlay>
-        </DialogTrigger>
+        <div
+          className={`${styles.transition} ${
+            open ? styles.transitionOpen : ""
+          }`}
+        >
+          <div className={styles.topFirst}>
+            <div className={styles.topFirstLeft}>
+              <div className={styles.overView}>Tracker Overview</div>
+              <div className={styles.overViewContent}>
+                Have a quick overview of all trackers and addition of any new
+                events
+              </div>
+            </div>
+            <div className={styles.topFirstRight}>
+              <div className={styles.totalEvent}>Total Events</div>
+              <div className={styles.overView} style={{ color: "#6750A4" }}>
+                189
+              </div>
+            </div>
+          </div>
+          <div className={styles.lineChart}>
+            <div className={styles.data}>
+              <Line
+                style={{ height: "200px" }}
+                data={lineData}
+                options={lineOptions}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={styles.topRight}></div>
       </div>
-      <Table
-        showInsights={showInsights}
-        eventType={active}
-        setActiveValue={setActiveValue}
-      />
+      <div className={styles.innerLeft}>
+        <Trackers />
+      </div>
+      <div className={styles.innerRight}>
+        <div className={styles.eventStatus}>
+          <div className={styles.eventStatusLeft}>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "Active Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("Active Events")}
+            >
+              Active Events
+              {
+                <div className={styles.circle}>
+                  {
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.active
+                  }
+                </div>
+              }
+            </button>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "New Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("New Events")}
+            >
+              New Events
+              {
+                <div className={styles.circle}>
+                  {
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.new
+                  }
+                </div>
+              }
+            </button>
+            <button
+              className={`${styles.eventStatusBtn} ${
+                active === "Expired Events" ? styles.active : ""
+              }`}
+              onClick={() => setActive("Expired Events")}
+            >
+              Expired Events
+              {
+                <div className={styles.circle}>
+                  {formatCount(
+                    data?.tracker?.groupedEventsCountByStatus
+                      ?.groupedEventsByStatus.expired
+                  )}
+                </div>
+              }
+            </button>
+          </div>
+          {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
+          <DialogTrigger>
+            <Button className={styles.exportButton}>
+              <div className={styles.eventStatusRight}>Export Data</div>
+            </Button>
+            <ModalOverlay isDismissable className={styles.modalOverlay}>
+              <Modal>
+                <Dialog>
+                  {({ close }) => <ExportModal onClose={close} type={type} />}
+                </Dialog>
+              </Modal>
+            </ModalOverlay>
+          </DialogTrigger>
+        </div>
+        <Table
+          showInsights={showInsights}
+          eventType={active}
+          setActiveValue={setActiveValue}
+        />
+      </div>
     </div>
   );
 };

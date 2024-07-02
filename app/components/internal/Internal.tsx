@@ -19,6 +19,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
+    const [noData, setNoData] = useState<boolean>(false);
 
     const handleScrollEnd = () => {
         setTimeout(() => {
@@ -37,6 +38,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             if(apiData.data) {
                 if(page==1){
                     setEventData1(apiData.data.enquiry);
+                    if(apiData.data.enquiry.length == 0) setNoData(true);
                 }else if(page>1){
                     setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
                 }
@@ -82,6 +84,14 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             setPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardUpdated]);
+
+if(!noData){
+    return (
+        <div className={styles.noData}>
+          An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
+        </div>
+    );
+}
 
   return (
     <div className={styles.scrollContainer} ref={divRef} >

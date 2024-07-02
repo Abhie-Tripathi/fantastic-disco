@@ -4,6 +4,7 @@ import Trackers from ".././AllTrackers";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import Loading from "@/app/components/UI/Loading";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -55,7 +56,7 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 
-const Index = () => {
+const Index = ({setDataPresent}:{setDataPresent:any}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [allTracker, setAllTracker] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,6 +85,7 @@ const Index = () => {
         <div>error</div>;
         return;
       } else if (data) {
+        if(data.trackerData.length===0)  setDataPresent(false);
         setAllTracker(data.trackerData);
         setTotalPage(Math.ceil(data.totalCount / trackerPerPage));
         setLoading(false);
@@ -109,7 +111,6 @@ const Index = () => {
       setAllTracker([]);
     }
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.containerLeft}>
@@ -136,8 +137,9 @@ const Index = () => {
            </div> */}
       </div>
       <div style={{ width: "100%" }}>
+      {loading && <Loading/>}
         <div className={styles.containerRight}>
-          {loading && <div>Loading...</div>}
+          
           {error && <div>{error}</div>}
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||

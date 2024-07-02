@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Link from "next/link";
+import { Suspense, lazy } from 'react';
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
 import Table from "@/app/components/Table";
@@ -244,7 +245,12 @@ const Trackers = () => {
   const viewTracker = () => {
     setShowTracker(true);
   };
-  const [hideTemplate, setHideTemplate] = useState(false);
+  const [hideTemplate, setHideTemplate] = useState(true);
+  const [dataPresent,setDataPresent]=useState(true);
+  useEffect(()=>{
+    if(!dataPresent) setHideTemplate(false);
+},[dataPresent])
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -288,6 +294,7 @@ const Trackers = () => {
           </Link> */}
         </div>
         <div className={styles.trackers_header}>
+          
           <div className={styles.trackers_header_newtracker_button}>
             {hideTemplate ? (
               <Link
@@ -306,6 +313,7 @@ const Trackers = () => {
             ) : (
               <div onClick={viewTracker}>Template Gallery</div>
             )}
+            
             {/* <Image src={Add} alt="add" /> */}
           </div>
           <div
@@ -431,9 +439,9 @@ const Trackers = () => {
               Saved Events
             </div>
           </div>
-          {type === "All Trackers" && <MyTracker />}
-          {type === "Custom Trackers" && <MyTracker />}
-          {type === "Premium Trackers" && <div>Create your first tracker!</div>}
+          {type === "All Trackers" && <MyTracker setDataPresent={setDataPresent}/>}
+          {type === "Custom Trackers" && <MyTracker setDataPresent={setDataPresent}/>}
+          {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>}
           {type === "Saved Events" && (
             <div style={{ margin: "-25px 0px" }}>
               <Table showInsights={showInsights} />

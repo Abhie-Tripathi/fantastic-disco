@@ -104,7 +104,7 @@
     align-items: center;
 }
 .inviteAccess input{
-    width: 60%;
+    width: 100%;
     border: none;
     outline: none;
     padding: 10px;

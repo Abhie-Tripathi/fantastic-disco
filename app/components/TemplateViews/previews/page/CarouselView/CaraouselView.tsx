@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './caraouselview.style.module.css'
 import HeroBanner from '../MultipleEvents/HeroBanner'
-import EventCard from '../../EventCard'
+import EventCard from '../../cardstyles/EventCard1'
 
 
 

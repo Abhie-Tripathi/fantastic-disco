@@ -275,3 +275,8 @@
     outline: none;
     font-weight: 500;
 }
+
+.noData {
+    padding: 20px;
+    text-align: center;
+}

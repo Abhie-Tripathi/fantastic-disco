@@ -85,7 +85,8 @@ const AllTrackers = ({ item }: any) => {
     
     const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
     const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
-    setLocations([...eventCountry, ...eventCity]);
+    const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
+    setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
   return (
     <div className={styles.container}>
@@ -123,7 +124,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore6} alt="newVector" />
                 New
               </div>
-              <div className={styles.number} style={{ color: "black" }}>
+              <div className={styles.number} style={{ color: "#454459" }}>
                 {item.groupedEventsCountByStatus.groupedEventsByStatus.new}
               </div>
               <div className={styles.events}>Events</div>
@@ -133,7 +134,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
               </div>
-              <div className={styles.number} style={{ color: "black" }}>
+              <div className={styles.number} style={{ color: "#454459" }}>
                 {item.groupedEventsCountByStatus.groupedEventsByStatus.active}
               </div>
               <div className={styles.events}>Events</div>
@@ -143,7 +144,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore8} alt="expired" />
                 Expired
               </div>
-              <div className={styles.number} style={{ color: "black" }}>
+              <div className={styles.number} style={{ color: "#454459" }}>
                 {item.groupedEventsCountByStatus.groupedEventsByStatus.expired}
               </div>
               <div className={styles.events}>Events</div>
