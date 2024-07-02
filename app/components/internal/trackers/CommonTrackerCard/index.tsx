@@ -147,7 +147,7 @@ const CommonTrackerCard = () => {
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
                     <Image src={Vectore6} alt="newVector" />
-                    <div >New Events</div>
+                    <div >New</div>
                   </div>
                 </div>
                 <div className={styles.cardType} style={{ width: "50%" }}>
@@ -160,7 +160,7 @@ const CommonTrackerCard = () => {
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" />
-                    Active Events</div>
+                    Active</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: "20px" }}>
@@ -170,7 +170,7 @@ const CommonTrackerCard = () => {
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />
-                    Expired Events</div>
+                    Expired</div>
                 </div>
                 <div className={styles.cardType} style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
@@ -178,7 +178,7 @@ const CommonTrackerCard = () => {
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />
-                    Saved Events</div>
+                    Saved</div>
                 </div>
               </div>
             </div>
