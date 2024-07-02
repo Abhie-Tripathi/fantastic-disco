@@ -5,7 +5,7 @@ import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 
 interface Props {
-    selectedCard: string;
+    selectedCard?: string;
     isFullScreen : boolean;
 }
 

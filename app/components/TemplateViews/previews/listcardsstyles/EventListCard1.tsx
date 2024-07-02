@@ -55,8 +55,6 @@ const EventListCard1 = ({
           <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
         </div>
       </div>
-
-
     </div>
   );
 }

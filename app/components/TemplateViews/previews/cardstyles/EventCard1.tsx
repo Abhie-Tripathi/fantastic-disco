@@ -44,7 +44,7 @@ const EventCard1 = ({
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
                         <Image src={locationIcon} alt='location'/>
-                        <div className={styles.location}>Corpus Christi, USA</div>
+                        <div className={styles.location}>Corpus Christi, USA</div>
                     </div>
                     <div className={styles.eventName}>Join Gifts World Expo 2024</div>
                 </div>
