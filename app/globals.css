@@ -130,6 +130,7 @@ button {
   --card-background-color: #1d1f36;
 
   --border-color: #dcdfe4;
+  --buttons-background-color: #1f1f1f;
   /* --link-color: #053c34;
   --link-hover-color: #066d5b;
   --link-visited-color: #042f29;
@@ -166,6 +167,7 @@ button {
   --primary-foreground: #171717;
   --primary-text-color: #ffffff;
   --border-color: #2c2c2c;
+  --primary-light-color: #1a1a1a;
 }
 
 /* :root {

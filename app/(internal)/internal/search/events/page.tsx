@@ -979,16 +979,11 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container}>
-              <button
-                className={styles.createtracker_button}
-                onClick={searchHandler}
-              >
-                Apply
-              </button>
+              <Button10x style={{width:"60px"}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
             </div>
           </div>
           <div className={styles.filtersRow} >
-            <div className={styles.inputdropdowns_container}>
+            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(3, minmax(0px, 245px))'}}>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
@@ -1065,7 +1060,7 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container2}>
-              <button
+              {/* <button
                 onClick={() => {
                   setShowAdvanceFilter((prev) => !prev);
                   GAEvent(
@@ -1082,13 +1077,23 @@ const Search = () => {
                   {" "}
                   Advanced Filters
                 </span>
-              </button>
-              <button
-                className={styles.createtracker_button}
-                onClick={createTrackerHandler}
+              </button> */}
+              <Button10x color={'primary'} style={{textWrap: 'nowrap', border:'unset'}} variant={'secondary'} size={'md'} 
+                onClick={() => {
+                  setShowAdvanceFilter((prev) => !prev);
+                  GAEvent(
+                    "research",
+                    "Filters",
+                    "All Filter Modal | Viewed",
+                    "More Filter Icon"
+                  );
+                }} 
               >
-                Save as Tracker
-              </button>
+                <Image src={FilterIcon} width={16} height={16} alt="filters" />
+                {" "}
+                Advanced Filters
+              </Button10x>
+              <Button10x style={{textWrap: 'nowrap', color: 'var(----primary-text-color)', border:'unset'}} variant={'secondary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x>
             </div>
           </div>
 
