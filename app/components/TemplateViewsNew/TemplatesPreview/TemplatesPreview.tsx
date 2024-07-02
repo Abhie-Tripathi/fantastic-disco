@@ -64,7 +64,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                                                 selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard = {selectedCard}/> :
                                                     selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard = {selectedCard}/> :
                                                         selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard = {selectedCard}/> :
-                                                            selectedTemplate === "CV" ? <CaraouselView selectedCard = {selectedCard}/> :
+                                                            selectedTemplate === "CV" ? <CaraouselView selectedCard = {selectedCard} isFullScreen={isFullScreen}/> :
                                                                 selectedTemplate === "HS" ? <ScrollView type='top' selectedCard = {selectedCard}/> :
                                                                     selectedTemplate === "LScroll" ? <ScrollView selectedCard = {selectedCard} type='left' /> :
                                                                         selectedTemplate === "RScroll" ? <ScrollView selectedCard = {selectedCard} type='right' /> :
