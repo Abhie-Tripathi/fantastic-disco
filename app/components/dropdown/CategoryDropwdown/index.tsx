@@ -3,6 +3,7 @@ import styles from "./categoryDropdown.module.css";
 import CheckboxInput from "../../UI/CheckBoxInput";
 import { useTheme } from "@/context";
 import { usePathname } from "next/navigation";
+import categoryJson from "@/public/data/categoryData.json";
 
 interface CategoryDropdownProps {
   className?: string;
@@ -21,10 +22,11 @@ const CategoryDropdown = ({
   setState,
   categorySlug,
   setCategorySlug,
-  categoryData,
+  // categoryData,
 }: CategoryDropdownProps) => {
   const { theme } = useTheme()
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>(categorySlug);
+  const categoryData = categoryJson;
   const getPath=usePathname().split('/');
   const last=getPath[getPath.length-1];
   const onClickHandler = (id: string, slug: string) => {
@@ -49,16 +51,16 @@ const CategoryDropdown = ({
     });
   }
 
-  const attended = categoryData?.attendedCategories!.map(
+  const attended = categoryData?.map(
     (category: any) => category.slug
   );
-  const nonAttended = categoryData?.nonAttendedCategories!.map(
-    (category: any) => category.slug
-  );
+  // const nonAttended = categoryData?.nonAttendedCategories!.map(
+  //   (category: any) => category.slug
+  // );
 
-  const unscheduled = categoryData?.unscheduledCategories!.map(
-    (category: any) => category.slug
-  );
+  // const unscheduled = categoryData?.unscheduledCategories!.map(
+  //   (category: any) => category.slug
+  // );
 
   const selectAllHandler = (categories: any[]) => {
     const categoryIds = categories.map((category) => category.id);
@@ -83,17 +85,17 @@ const CategoryDropdown = ({
   return (
     <div className={styles.container} style={{background: theme==="light"?"white":""}}>
       <div>
-        <div className={styles.heading}>Attended</div>
+        {/* <div className={styles.heading}>Attended</div> */}
         <div className={styles.list}>
           <li key="selectAllAttended">
             <CheckboxInput
               id="selectAllAttended"
-              onChange={() => selectAllHandler(categoryData.attendedCategories)}
+              onChange={() => selectAllHandler(categoryData)}
               checked={containsSubarray(attended)}
             />
             <label htmlFor="selectAllAttended">Select All</label>
           </li>
-          {categoryData?.attendedCategories?.map((attendedCategory: any) => {
+          {categoryData?.map((attendedCategory: any) => {
             return (
               <li key={attendedCategory.id}>
                 <CheckboxInput
@@ -111,7 +113,7 @@ const CategoryDropdown = ({
           })}
         </div>
       </div>
-      <div>
+      {/* <div>
         <div className={styles.heading}>Non-Attended</div>
         <ul className={styles.list}>
           <li key="selectAllNonAttended">
@@ -146,9 +148,9 @@ const CategoryDropdown = ({
             }
           )}
         </ul>
-      </div>
+      </div> */}
 
-      <div>
+      {/* <div>
         <div className={styles.heading}>Unscheduled</div>
         <ul className={styles.list}>
           <li key="selectAllUnscheduled">
@@ -183,7 +185,7 @@ const CategoryDropdown = ({
             }
           )}
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };
