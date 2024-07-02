@@ -32,7 +32,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (theme !== null && typeof window !== "undefined") {
       window.localStorage.setItem("theme", theme);
       document.body.setAttribute("data-theme", theme);
-      document.documentElement.setAttribute('data-theme', theme);
     }
   }, [theme]);
 
