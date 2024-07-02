@@ -163,7 +163,7 @@ button {
   --neutral-light-color: #ebebeb;
 }
 
-:root[data-theme="dark"] {
+body[data-theme="dark"] {
   --primary-foreground: #171717;
   --primary-text-color: #ffffff;
   --border-color: #2c2c2c;
