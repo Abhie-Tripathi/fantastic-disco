@@ -9,11 +9,11 @@
   transition: transform 0.5s ease-in-out;
 }
 
-.banner {
-  flex: 0 0 200px; /* Adjust based on your card's width */
-  box-sizing: border-box;
-  padding: 12px;
-}
+  .banner {
+    /* flex: 0 0 200px;
+    box-sizing: border-box; */
+    padding: 12px;
+  }
 
 .navButton {
   position: absolute;

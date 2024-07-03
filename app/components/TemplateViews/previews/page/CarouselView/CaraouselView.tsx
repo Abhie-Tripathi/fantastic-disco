@@ -43,7 +43,6 @@ const CarouselView = ({ selectedCard,isFullScreen }: Props) => {
                 const containerWidth = carouselRef.current.offsetWidth;
                 const cardWidth = 300; // Adjust based on your card's width
                 const newBannersPerPage = Math.floor(containerWidth / cardWidth);
-                console.log("banners",newBannersPerPage)
                 setBannersPerPage(newBannersPerPage > 0 ? newBannersPerPage : 1);
             }
         };
@@ -72,17 +71,10 @@ const CarouselView = ({ selectedCard,isFullScreen }: Props) => {
 
     return (
         <div className={styles.carousel} ref={carouselRef}>
-            <button
-                className={styles.navButton}
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
-            >
+            <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
                 &lt;
             </button>
-            <div
-                className={styles.innerSlider}
-                style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}
-            >
+            <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
                 {banners.map((banner, index) => (
                     <div className={styles.banner} key={index}>
                         {banner}
