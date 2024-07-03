@@ -301,7 +301,7 @@ const Trackers = () => {
         
         <div className={styles.trackers_header}>
           
-          <div className={styles.trackers_header_newtracker_button}>
+          <div>
             {hideTemplate ? (
               <Link
                 href="/internal/trackers/create"
@@ -313,11 +313,12 @@ const Trackers = () => {
                     "Create New Tracker"
                   )
                 }
+                className={styles.trackers_header_newtracker_button}
               >
                 Create Tracker
               </Link>
             ) : (
-              <div onClick={viewTracker}>Template Gallery</div>
+              <div className={styles.trackers_header_newtracker_button} onClick={viewTracker}>Template Gallery</div>
             )}
             
             {/* <Image src={Add} alt="add" /> */}
@@ -393,6 +394,7 @@ const Trackers = () => {
             </div>
           ))}
         </div>
+        
       )}
      
       {!showTracker  && (

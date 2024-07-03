@@ -370,10 +370,10 @@ const Pages = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedEventRank.length>0 && {
+          ...(rankToggles?.isEventRank===true && {
             eventRank: selectedEventRank.join(",")
           }),
-          ...(selectedLocalRank.length>0 && {
+          ...(rankToggles?.isLocalRank===true && {
             localRank:selectedLocalRank.join(',')
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore }),
@@ -456,10 +456,10 @@ const Pages = () => {
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
           }),
-          ...(selectedEventRank.length>0 && {
+          ...(rankToggles?.isEventRank===true && {
             eventRank: selectedEventRank.join(",")
           }),
-          ...(selectedLocalRank.length>0 && {
+          ...(rankToggles?.isLocalRank===true && {
             localRank:selectedLocalRank.join(',')
           }),
           ...(selectedLabels?.length > 0 && {
@@ -617,12 +617,12 @@ const Pages = () => {
         setSelectedMaturity(25);
       }
       
-      if (editData.tracker.filterValue?.localRank.length > 0 || editData.tracker.filterValue?.eventRank.length > 0) {
+      if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
-        if (editData.tracker.filterValue?.localRank.length > 0) {
+        if (editData?.tracker?.filterValue?.localRank?.length > 0) {
           newToggles.isLocalRank = true;
         }
-        if (editData.tracker.filterValue?.eventRank.length > 0) {
+        if (editData?.tracker?.filterValue?.eventRank?.length > 0) {
           newToggles.isEventRank = true;
         }
         setRankToggles(newToggles);
@@ -744,12 +744,12 @@ const Pages = () => {
           ? editData.tracker.filterValue?.maturity
           : ""
       );
-      setSelectedEventRank( editData.tracker.filterValue?.eventRank?.length > 0
+      setSelectedEventRank(editData.tracker.filterValue?.eventRank?.length>0
         ? editData.tracker.filterValue?.eventRank?.split(',')
-        : []);
-        setSelectedLocalRank( editData.tracker.filterValue?.localRank?.length > 0
+        : [0,100]);
+        setSelectedLocalRank( editData.tracker.filterValue?.localRank?.length>0
           ? editData.tracker.filterValue?.localRank?.split(',')
-          : [])
+          : [0,100])
       setSelectedReptScore(
         editData.tracker.filterValue?.reputationScore > 0
           ? editData.tracker.filterValue?.reputationScore
