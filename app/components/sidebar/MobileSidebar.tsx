@@ -110,19 +110,6 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             </Link>
 
             <Link
-              href="/internal/coordinate"
-              className={`${styles.link} ${
-                pathname === "/internal/coordinate"
-                  ? styles.active
-                  : ""
-              }`}
-              onClick={onClose}
-            >
-              <CoordinateIcon />
-              <div className={styles.linkName}>Coordinate</div>
-            </Link>
-
-            <Link
               href="/internal/search/events"
               className={`${styles.link} ${
                 pathname === "/internal/search/events"
@@ -133,6 +120,19 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             >
               <SearchIcon />
               <div className={styles.linkName}>Research</div>
+            </Link>
+
+            <Link
+              href="/internal/trends"
+              className={`${styles.link} ${
+                pathname === "/internal/trends"
+                  ? styles.active
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <EventTrends />
+              <div className={styles.linkName}>Event Trends</div>
             </Link>
 
             <Link
@@ -149,6 +149,19 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             </Link>
 
             <Link
+              href="/internal/coordinate"
+              className={`${styles.link} ${
+                pathname === "/internal/coordinate"
+                  ? styles.active
+                  : ""
+              }`}
+              onClick={onClose}
+            >
+              <CoordinateIcon />
+              <div className={styles.linkName}>Coordinate</div>
+            </Link>
+
+            <Link
               href="/internal/outreach"
               className={`${styles.link} ${
                 pathname === "/internal/outreach"
@@ -159,19 +172,6 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
             >
               <OutreachIcon />
               <div className={styles.linkName}>Outreach</div>
-            </Link>
-
-            <Link
-              href="/internal/trends"
-              className={`${styles.link} ${
-                pathname === "/internal/trends"
-                  ? styles.active
-                  : ""
-              }`}
-              onClick={onClose}
-            >
-              <EventTrends />
-              <div className={styles.linkName}>Event Trends</div>
             </Link>
           </div>
         </div>

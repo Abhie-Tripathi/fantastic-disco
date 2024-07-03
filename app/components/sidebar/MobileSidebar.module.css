@@ -8,19 +8,19 @@
   width: 60%;
   /* margin-top: 80px; */
   padding: 0px;
-  background-color: #1a1a1a;
+  background-color: var(--primary-foreground);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   /* gap: 10px; */
   transition: width 0.3s ease-in-out;
-  border-right: 1px solid #2c2c2c;
+  border-right: 1px solid var(--border-color);
 }
 
-.container_light {
+/* .container_light {
   background-color: white;
   border-right: 1px solid #dcdfe4;
-}
+} */
 
 .container.open {
   width: 280px;

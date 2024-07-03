@@ -50,12 +50,6 @@
     cursor: pointer;
   }
   
-  .sub_container {
-    padding: 24px 0px;
-    /* display: flex; */
-    border-bottom: 1px solid #e0e0e080;
-  }
-  
   .buttons_container {
     flex: 1 1;
     display: flex;

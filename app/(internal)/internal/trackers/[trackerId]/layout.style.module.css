@@ -20,8 +20,8 @@
 .containerBottom{
     display:flex;
     flex-direction: column;
-    gap:30px;
-    padding: 20px;
+    gap:20px;
+    /* padding: 20px; */
   }
   .containerLeft{
     /* border-left: 2px solid #ECECF9; */

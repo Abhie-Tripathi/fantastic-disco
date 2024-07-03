@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
-  border: 1px solid #262626;
+  border: 0.5px solid #DEDEDE;
   border-radius: 18px;
   overflow-y: scroll;
 }
@@ -389,7 +389,7 @@
 }
 
 .notesAdd {
-  padding: 20px;
+  padding: 10px;
   width: 100%;
   border-top: 1px solid #c3c3c3;
   border-radius: 0px 0px 12px 12px;
@@ -602,7 +602,7 @@
  z-index: 111; */
 }
 .cont{
-  min-height:500px ;
+  min-height:100% ;
 }
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;

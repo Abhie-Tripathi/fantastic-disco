@@ -98,7 +98,7 @@
 .tooltipContainer {
   position: relative;
   display: inline-block;
-  cursor: pointer;
+  
 }
 
 .tooltipContainer .tooltipText {

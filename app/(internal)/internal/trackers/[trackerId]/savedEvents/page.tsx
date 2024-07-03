@@ -1,5 +1,5 @@
 "use client"
-import React,{useEffect, useState} from 'react'
+import React,{Suspense, useEffect, useState} from 'react'
 import styles from './savedEvent.style.module.css'
 import ExpandAll from "/public/expandAll.svg";
 import { usePathname } from 'next/navigation';
@@ -241,6 +241,7 @@ const Page = () => {
   repeatSent: true,
 };
   return (
+   
     <div className={styles.container}>
     {/* {data && data?.map((item,ind)=>(
       
