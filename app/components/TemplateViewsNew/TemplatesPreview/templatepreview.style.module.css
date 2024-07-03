@@ -21,29 +21,30 @@
 }
 .preview_btnContainer{
     margin-top: 20px;
-    /* background-color: #FAFAFA; */
-    background-color: #545454;
+
+    background-color: #e2e2e2;
     height:95%;
     width: 100%;
     border-radius: 10px;
 }
-.listTemplateBtns{
+.styleBtns{
     display: flex;
     gap: 10px;
-    background-color: #f3f3f3;
+    background-color: #6650a418;
     border-radius: 10px;    
     padding: 10px;
 }
-.listTemplateBtn{
+.styleBtn{
     padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid #6750a4;
-    color: #6750a4;
+    border-radius: 3px;
+    background-color: white;
+    color: black;
+    filter: drop-shadow(1px 1px 2px rgb(205, 205, 205));
 }
 .activeBtn{
     border: none;
-    background-color: #6750a4;
-    color: white;
+    border: 1px solid #6750a4;
+    color: black;
 }
 
 .preview{
