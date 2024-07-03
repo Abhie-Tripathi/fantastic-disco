@@ -13,6 +13,7 @@ import Loading from "../../UI/Loading";
 import backIcon from "/public/internal/back_arrow.svg";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
+import { showToast } from "@/utils/showToast";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -124,6 +125,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
       // console.log(data);
       if (data) {
         console.log("Export Post Api", data);
+        showToast('success', "Export request raised", {closeButton: false});
         setShowExportedFiles(true);
       }
     }else{
@@ -148,6 +150,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
     // console.log(data);
     if (data) {
       console.log("Export Post Api", data);
+      showToast('success', "Export request raised", {closeButton: false});
       setShowExportedFiles(true);
     }
   }
@@ -209,7 +212,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             />
           </div>
 
-          <div className={styles.tabs_container}>
+          {/* <div className={styles.tabs_container}>
             <div
               className={`${styles.tab} ${
                 activeTab == "CSV" ? styles.active : ""
@@ -226,7 +229,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             >
               JSONL
             </div>
-          </div>
+          </div> */}
 
           <div className={styles.exportType_modal_description}>
             Exporting a large number of records will take some time to process.
