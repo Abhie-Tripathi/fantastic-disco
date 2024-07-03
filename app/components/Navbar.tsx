@@ -245,16 +245,16 @@ console.log(user);
               ref={profilectas.dropdownRef}
               onClick={toggleDropdown}
             >
-              <div className={`${styles.circle} ${iconClass}`} data-name="Username">
+              <div className={`${styles.circle} ${styles.userCircle}`} data-name="Username">
                 {userDetail?.firstname?.charAt(0)}
                 {userDetail?.lastname?.charAt(0)}
               </div>
-              <div className={styles.userDetails}>
+              {/* <div className={styles.userDetails}>
                 <div>
                   {userDetail?.firstname} {userDetail?.lastname}
                 </div>
                 <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-              </div>
+              </div> */}
               {profilectas.isOpen && (
                 <div
                   className={`${styles.userDropdown} ${

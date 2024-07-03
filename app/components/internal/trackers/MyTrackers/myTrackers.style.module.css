@@ -10,7 +10,7 @@
     /* width: 80%; */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(470px, 1fr));
-    gap: 10px;
+    gap: 20px;
 }
 .leftContainer{
     display: flex;

@@ -101,8 +101,9 @@ const Trackers = () => {
   const [trackers, setTrackers] = useState<any[]>([]);
   const [type, setType] = useState("All Trackers");
   const [offset, setOffset] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+ 
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -218,6 +219,7 @@ const Trackers = () => {
     },
   ];
   const [hide, setHide] = useState(false);
+  const [loading, setLoading] = useState(true);
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
@@ -249,6 +251,8 @@ const Trackers = () => {
   const [dataPresent,setDataPresent]=useState(true);
   useEffect(()=>{
     if(!dataPresent) setHideTemplate(false);
+    console.log(dataPresent);
+    
 },[dataPresent])
   
   return (
@@ -271,6 +275,7 @@ const Trackers = () => {
     //   </div>
     // </div>
     <div className={styles.outerContainer}>
+      
       <div className={styles.header_container}>
         <div className={styles.tab_container}>
           {showTracker ? (
@@ -293,6 +298,7 @@ const Trackers = () => {
             Saved Events
           </Link> */}
         </div>
+        
         <div className={styles.trackers_header}>
           
           <div className={styles.trackers_header_newtracker_button}>
@@ -332,6 +338,7 @@ const Trackers = () => {
           </div>
         </div>
       </div>
+      
       {!hideTemplate && (
         <div className={styles.container}>
           {!showTracker && (
@@ -387,8 +394,10 @@ const Trackers = () => {
           ))}
         </div>
       )}
-      {!showTracker && (
+     
+      {!showTracker  && (
         <>
+        {/* {loading ? <Loading/>:<> */}
           <div
             className={`${styles.trackers} ${
               theme === "dark" ? "darkMode" : "lightMode_secondary"
@@ -416,7 +425,7 @@ const Trackers = () => {
               />
               Custom Trackers
             </div>
-            <div
+            {/* <div
               className={`${styles.trackersHead} ${
                 type === "Premium Trackers" ? styles.active : ""
               }`}
@@ -426,7 +435,7 @@ const Trackers = () => {
                 fillColor={type === "Premium Trackers" ? "#6750A4" : "#696B83"}
               />
               Premium Trackers
-            </div>
+            </div> */}
             <div
               className={`${styles.trackersHead} ${
                 type === "Saved Events" ? styles.active : ""
@@ -439,9 +448,11 @@ const Trackers = () => {
               Saved Events
             </div>
           </div>
+          {/* </>
+    } */}
           {type === "All Trackers" && <MyTracker setDataPresent={setDataPresent}/>}
           {type === "Custom Trackers" && <MyTracker setDataPresent={setDataPresent}/>}
-          {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>}
+          {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (
             <div style={{ margin: "-25px 0px" }}>
               <Table showInsights={showInsights} />
@@ -449,7 +460,7 @@ const Trackers = () => {
           )}
         </>
       )}
-
+      
       {showModal && (
         <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
           <div className={styles.modalInnerContainer}>

@@ -336,6 +336,7 @@ const Dashboard = () => {
                   className={`${styles.tracker_card} ${
                     theme === "light" && styles.tracker_content_light
                   }`}
+                  key={tracker.id}
                 >
                   <>
                     <div className={styles.tracker_card_header}>

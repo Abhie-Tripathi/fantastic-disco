@@ -49,6 +49,9 @@ import RangeSlider from "@/app/components/UI/Slider";
 import { useTheme } from "@/context";
 import CloseIcon from "/public/internal/cross.svg";
 import FilterIcon from "/public/internal/advanceFilter.svg";
+import {
+  Button as Button10x,
+} from "10xui";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
@@ -1084,52 +1087,48 @@ const Search = () => {
                 </MenuTrigger>
               </div>
 
-              <div className={styles.buttons_container}>
-                <button
-                  className={styles.createtracker_button}
-                  onClick={searchHandler}
-                >
-                  Apply
-                </button>
-              </div>
+            <div className={styles.buttons_container}>
+              <Button10x style={{width:"60px"}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
             </div>
-            <div className={styles.filtersRow}>
-              <div className={styles.inputdropdowns_container}>
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Status
-                          {selectedEventStatus?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventStatus.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventStatus[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
+          </div>
+          <div className={styles.filtersRow} >
+            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(3, minmax(0px, 245px))'}}>
+
+              <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Event Status
+                        {selectedEventStatus?.length > 1 ? (
+                          <span className={styles.input_selected_no}>
+                            {selectedEventStatus.length}
+                          </span>
+                        ) : (
+                          <span className={styles.input_selected_title}>
+                            {selectedEventStatus[0]}
+                          </span>
+                        )}
                       </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
+                      />
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
-                    <EventStatus
-                      state={selectedEventStatus}
-                      setState={setSelectedEventStatus}
-                    />
-                    {/* </Dialog> */}
-                  </Popover>
-                </MenuTrigger>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  {/* <Dialog> */}
+                  <EventStatus
+                    state={selectedEventStatus}
+                    setState={setSelectedEventStatus}
+                  />
+                  {/* </Dialog> */}
+                </Popover>
+              </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>

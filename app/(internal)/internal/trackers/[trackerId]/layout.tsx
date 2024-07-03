@@ -1,10 +1,11 @@
 
-import React from "react";
+import React,{Suspense} from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
 import Back from '/public/back.svg';
 import Link from "next/link";
 import Image from "next/image";
+import Loading from "@/app/components/UI/Loading";
 // import { useTheme } from "@/context/theme";
 // import Image from "next/image";
 // import MoreIcon from "/public/dots.svg";
@@ -36,7 +37,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <SideNav/>
       </div>
       <div className={styles.containerRight}>
+      <Suspense fallback={<Loading/>}>
       {children}
+      </Suspense>
       </div>
     </div>
       
