@@ -616,6 +616,17 @@ const Pages = () => {
       if (editData.tracker.filterValue?.maturity == "low") {
         setSelectedMaturity(25);
       }
+      
+      if (editData.tracker.filterValue?.localRank.length > 0 || editData.tracker.filterValue?.eventRank.length > 0) {
+        const newToggles = { ...rankToggles };
+        if (editData.tracker.filterValue?.localRank.length > 0) {
+          newToggles.isLocalRank = true;
+        }
+        if (editData.tracker.filterValue?.eventRank.length > 0) {
+          newToggles.isEventRank = true;
+        }
+        setRankToggles(newToggles);
+      }
       // const filteredArr = newArr
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);

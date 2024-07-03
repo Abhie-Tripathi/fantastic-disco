@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({ format, freq, entry, rank, keywords }: any) => {
+const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -74,21 +74,12 @@ const index = ({ format, freq, entry, rank, keywords }: any) => {
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Rankings</div>
                     <div className={styles.allCat}>
-                        {rank?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
-
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={styles.item}>{item}</span>
-                                </label>
-                            </>
-                        ))}
+                        {eventRank.length!==0 && 
+                        <div className={styles.item}>Event Rank: {eventRank[0]}-{eventRank[1]}</div>
+                        }
+                        {localRank.length!==0 && 
+                        <div className={styles.item}>Local Rank: {localRank[0]}-{localRank[1]}</div>
+                        }
                     </div>
                 </div>
             </div>

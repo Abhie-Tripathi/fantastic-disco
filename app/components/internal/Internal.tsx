@@ -85,7 +85,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardUpdated]);
 
-if(!noData){
+if(noData){
     return (
         <div className={styles.noData}>
           An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.

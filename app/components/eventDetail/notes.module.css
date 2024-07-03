@@ -389,7 +389,7 @@
 }
 
 .notesAdd {
-  padding: 20px;
+  padding: 10px;
   width: 100%;
   border-top: 1px solid #c3c3c3;
   border-radius: 0px 0px 12px 12px;
@@ -602,7 +602,7 @@
  z-index: 111; */
 }
 .cont{
-  min-height:500px ;
+  min-height:100% ;
 }
 /* .container::-webkit-scrollbar-thumb{
     background:#2B233D;

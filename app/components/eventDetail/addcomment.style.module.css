@@ -2,7 +2,6 @@
   margin: 1rem 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .userAccount {
@@ -154,13 +153,14 @@
 .recommendBtn {
   display: flex;
   gap: 10px;
+  padding-bottom: 20px;
 }
 .recommendBtn button {
   padding: 5px 10px;
   cursor: pointer;
 }
 .form {
-  gap: 10px;
+  /* gap: 10px; */
   /* width: 100%; */
   flex-direction: column;
   display: flex;
