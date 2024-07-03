@@ -48,7 +48,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     setIsLoading(false);
 
     if (response?.isVerified) {
-      router.push("/");
+      router.push("/internal");
     } else {
       setErrors({ otpError: "Invalid Code. Please retry" });
       return;

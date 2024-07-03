@@ -187,6 +187,16 @@
   border-bottom: 1px solid #ececf9;
 }
 
+.notification_defaultText {
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .notification:hover {
   background-color: #1a1a1a;
 }
@@ -431,18 +441,18 @@
 .savedEventsData {
   width: 100%;
   margin-top: 20px;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; */
   border-radius: 12px;
   /* padding: 15px; */
 }
 
 .savedEventsData_light {
-  background-color: var(--secondary-bg-light);
+  /* background-color: var(--secondary-bg-light); */
   color: var(--primary-color-light);
 }
 
 .savedEvent {
-  border-bottom: 1px solid rgb(51, 51, 51);
+  border-bottom: 1px solid #dcdfe4;
   padding: 15px;
   display: flex;
   align-items: center;
@@ -460,6 +470,8 @@
 
 .coordinateCard {
   /* margin-top: -30px; */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Mobile Styling */

@@ -25,8 +25,6 @@ import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/Sav
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
 import CoordinateSkeleton from "@/app/components/Skeleton/dashboardskeleton/CoordinateSkeleton";
 import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/NotificationSkeleton";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-import { Step } from "react-joyride";
 
 interface SavedEvent {
   title: string;
@@ -83,15 +81,8 @@ const Dashboard = () => {
   const [prefinal, setPrefinal] = useState("");
   const [totalEvent, setTotalEvents] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [run, setRun] = useState(true);
-  const [steps, setSteps] = useState<Step[]>([]);
 
   const router = useRouter();
-  const researchRef = useRef(null);
-  const outreachRef = useRef(null);
-  const trackerRef = useRef(null);
-  const notificationRef = useRef(null);
-  const coordinateRef = useRef(null);
 
   useEffect(() => {
     const getListOfTrackers = async () => {
@@ -110,7 +101,7 @@ const Dashboard = () => {
 
   const getSavedEvents = async () => {
     try {
-      const { data } = await myFetch(`${baseUrl}/tracker/saved-events`);
+      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=4`);
       console.log("saved_events", data?.data);
       setSavedEventsList(data?.result);
     } catch (error) {
@@ -185,79 +176,9 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (
-      researchRef.current &&
-      outreachRef.current &&
-      trackerRef.current &&
-      notificationRef.current && 
-      coordinateRef.current
-    ) {
-      const newSteps: Step[] = [
-        {
-          target: researchRef.current,
-          title: "Search Events",
-          content: "Search for relevant events happening in any location",
-          disableBeacon: true,
-        },
-        {
-          target: outreachRef.current,
-          title: "Choose Location",
-          content:
-            "Get insights into patterns in demand and future demands for a particular location",
-          disableBeacon: true,
-        },
-        {
-          target: trackerRef.current,
-          title: "Alerts",
-          content:
-            "Realtime alerts about new events reschedules weather alerts etc.",
-          disableBeacon: true,
-        },
-        {
-          target: notificationRef.current,
-          title: "Alerts",
-          content:
-            "Realtime alerts about new events reschedules weather alerts etc.",
-          disableBeacon: true,
-        },
-        {
-          target: coordinateRef.current,
-          title: "Alerts",
-          content:
-            "Realtime alerts about new events reschedules weather alerts etc.",
-          disableBeacon: true,
-        },
-      ];
-
-      const walkthroughCompleted: string[] = JSON.parse(
-        localStorage.getItem("walkthroughCompleted") || "[]"
-      );
-      if (!walkthroughCompleted.includes("internalDashboard")) {
-        setSteps(newSteps);
-        setRun(true);
-      }
-    }
-  }, [
-    researchRef.current,
-    outreachRef.current,
-    trackerRef.current,
-    notificationRef.current,
-    coordinateRef.current
-  ]);
-
   return (
     <>
       <div className={styles.container}>
-        {steps.length > 0 && (
-          <JoyRideCustom
-            steps={steps}
-            run={run}
-            onFinish={() => setRun(false)}
-            pathName="internalDashboard"
-          />
-        )}
-
         <div className={styles.header_container}>
           <div className={styles.primary_container}>
             <div className={styles.primary_header}>Welcome back!</div>
@@ -273,7 +194,6 @@ const Dashboard = () => {
                 <Link
                   href={`internal/search/events`}
                   className={styles.linkCard}
-                  ref={researchRef}
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
@@ -288,22 +208,17 @@ const Dashboard = () => {
                   </div>
 
                   <div className={styles.linkCard_heading}>
-                    <span>Bengaluru</span>
+                    {/* <span>Bengaluru</span> */}
                   </div>
 
                   <div className={styles.linkCard_description}>
-                    <div>
-                      <span>Bengaluru, Karnataka, India(1.34mi radius)</span>
-                    </div>
+                    Discover insights on business trends filtered by geography
+                    and category, all in one glance.
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}></div>
                 </Link>
 
-                <Link
-                  href={"internal/outreach"}
-                  className={styles.linkCard}
-                  ref={outreachRef}
-                >
+                <Link href={"internal/outreach"} className={styles.linkCard}>
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image src={ExhibitIcon} alt="search" />
@@ -326,13 +241,7 @@ const Dashboard = () => {
                         <span>Pre Finalised Events: {prefinal}</span>
                       </div>
                     ) : (
-                      <div
-                        style={{
-                          fontSize: "13px",
-                          padding: "10px",
-                        }}
-                        
-                      >
+                      <div className={styles.linkCard_description}>
                         Connect efficiently with stakeholders and amplify
                         engagement.
                       </div>
@@ -344,7 +253,6 @@ const Dashboard = () => {
                 <Link
                   href={"/internal/trackers/create"}
                   className={styles.linkCard}
-                  ref={trackerRef}
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
@@ -375,7 +283,7 @@ const Dashboard = () => {
             )}
           </div>
           <span className={styles.divider}></span>
-          <div className={styles.notification_container} ref={notificationRef}>
+          <div className={styles.notification_container}>
             <div className={styles.notification_header_title}>
               <Image
                 src={BellIcon}
@@ -390,7 +298,7 @@ const Dashboard = () => {
               </>
             ) : (
               <div className={styles.notification_card}>
-                {notifications.map((notification, key) => (
+                {/* {notifications.map((notification, key) => (
                   <div
                     key={key}
                     className={`${styles.notification} ${
@@ -399,7 +307,11 @@ const Dashboard = () => {
                   >
                     {notification}
                   </div>
-                ))}
+                ))} */}
+                <div className={styles.notification_defaultText}>
+                  Stay updated with all your notifications in one place. No new
+                  notification found.
+                </div>
               </div>
             )}
           </div>
@@ -417,8 +329,8 @@ const Dashboard = () => {
 
             {isLoading ? (
               <TrackerSkeleton />
-            ) : (
-              trackerList.length > 0 ? trackerList.map((tracker: any) => (
+            ) : trackerList.length > 0 ? (
+              trackerList.map((tracker: any) => (
                 <Link
                   href={`/internal/trackers/${tracker.id}/trackedEvents`}
                   className={`${styles.tracker_card} ${
@@ -487,31 +399,35 @@ const Dashboard = () => {
                   </>
                 </Link>
               ))
-            : <div className={styles.tracker_card} ref={trackerRef}>
-            {/* <div className={styles.tracker_card_header}>
+            ) : (
+              <div className={styles.tracker_card}>
+                {/* <div className={styles.tracker_card_header}>
               <span>Tracker 1 - Events in Bangalore</span>
               <Image src={GotoIcon} alt="goto" />
             </div> */}
 
-            <div className={styles.event_cards_container}>
-              {trackerCardsData.map((trackerCard) => (
-                <div key={trackerCard.title} className={styles.eventCard}>
-                  <div className={styles.eventCard_title}>
-                    <Image src={trackerCard.icon} alt="newevent" />
-                    <span>{trackerCard.title}</span>
-                  </div>
-                  <div className={styles.eventCard_stats}>
-                    <div className={styles.eventCard_stats_no}>
-                      {trackerCard.stats}
+                <div className={styles.event_cards_container}>
+                  {trackerCardsData.map((trackerCard) => (
+                    <div key={trackerCard.title} className={styles.eventCard}>
+                      <div className={styles.eventCard_title}>
+                        <Image src={trackerCard.icon} alt="newevent" />
+                        <span>{trackerCard.title}</span>
+                      </div>
+                      <div className={styles.eventCard_stats}>
+                        <div className={styles.eventCard_stats_no}>
+                          {trackerCard.stats}
+                        </div>
+                        <div className={styles.eventCard_description}>
+                          Events
+                        </div>
+                      </div>
                     </div>
-                    <div className={styles.eventCard_description}>Events</div>
-                  </div>
-                </div>
-              ))}
+                  ))}
 
-              <PolarAreaChart className={styles.events_stats_polarChart} />
-            </div>
-          </div>)}
+                  <PolarAreaChart className={styles.events_stats_polarChart} />
+                </div>
+              </div>
+            )}
           </div>
 
           <span className={styles.body_divider}></span>
@@ -570,12 +486,20 @@ const Dashboard = () => {
             <div
               className={`${styles.linkCard_container} ${styles.coordinateCard}`}
             >
+              <div
+                className={`${styles.tracker_container_header} ${
+                  theme === "light" ? styles.tracker_content_light : ""
+                }`}
+              >
+                Event shortlisting and Co-ordination
+              </div>
+
               {isLoading ? (
                 <>
                   <CoordinateSkeleton />
                 </>
               ) : (
-                <Link href={"/internal/coordinate"} className={styles.linkCard} ref={coordinateRef}>
+                <Link href={"/internal/coordinate"} className={styles.linkCard}>
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image
@@ -619,7 +543,6 @@ const Dashboard = () => {
                         marginTop: "10px",
                         padding: "10px",
                       }}
-                      ref={coordinateRef}
                     >
                       An effective event communication and relationship
                       management dashboard that keeps your team on the same page
