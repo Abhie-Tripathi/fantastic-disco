@@ -134,9 +134,9 @@ const Page = () => {
                             preview === "phblv" ? <HeroBannerAndViews type='list' /> :
                               preview === "phbgv" ? <HeroBannerAndViews type='grid' /> :
                                 preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                                  preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                    preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                      preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                  preview === "pcslv" ? <CaraouselAndViews type='list' isFullScreen={isFullScreen}/> :
+                                    preview === "pcsgv" ? <CaraouselAndViews type='grid' isFullScreen={isFullScreen}/> :
+                                      preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' isFullScreen={isFullScreen}/> :
                                         preview === "tscv" ? <CaraouselTop /> :
                                           preview === "tshs" ? <ScrollView type='top' /> :
                                             preview === "lsvs" ?

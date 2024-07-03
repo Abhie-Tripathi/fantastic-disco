@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import styles from './page.style.module.css';
 import BrandKit from "@/app/components/TemplateViews/brandkit/BrandKit";
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
-import HeroBanner from '@/app/components/TemplateViews/previews/section/HeroBanner'
+import HeroBanner from "@/app/components/TemplateViews/previews/section/Herobanner/HeroBanner";
 import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
 import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
@@ -184,16 +184,16 @@ const Page = () => {
           <div className={styles.preview}>
             {preview === "stickytop" ? <StickyPreview type="top" /> :
               preview === "stickydown" ? <StickyPreview type="down" /> :
-                preview === "sehb" ? <HeroBanner cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                preview === "sehb" ? <HeroBanner/> :
                   preview === "megv" ? <GridView cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                     preview === "melv" ? <ListView cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                       preview === "melgv" ? <ListAndGridView /> :
                         preview === "phblv" ? <HeroBannerAndViews type='list' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                           preview === "phbgv" ? <HeroBannerAndViews type='grid' cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
                               preview === "phblgv" ? <HeroBannerAndViews type='listandgrid' /> :
-                                preview === "pcslv" ? <CaraouselAndViews type='list' /> :
-                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' /> :
-                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' /> :
+                                preview === "pcslv" ? <CaraouselAndViews type='list' isFullScreen={isFullScreen}/> :
+                                  preview === "pcsgv" ? <CaraouselAndViews type='grid' isFullScreen={isFullScreen}/> :
+                                    preview === "pcslgv" ? <CaraouselAndViews type='listandgrid' isFullScreen={isFullScreen}/> :
                                       preview === "tscv" ? <CaraouselTop /> :
                                         preview === "tshs" ? <ScrollView type='top' /> :
                                           preview === "lsvs" ?
