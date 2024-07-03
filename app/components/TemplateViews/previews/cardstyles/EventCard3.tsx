@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './eventcard3.style.module.css'
 import Image from 'next/image'
-import placeholder from '/public/placeholder.png'
+import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 
 interface CardProps {
@@ -36,7 +36,7 @@ const EventCard3 = ({
 
     return (
         <div className={styles.card}>
-            <Image src={placeholder} alt='placeholder' className={styles.banner} />
+            <Image src={placeholder2} alt='placeholder' className={styles.banner} />
             <div className={styles.eventName}>East Midlands Young Planners</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>

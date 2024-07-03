@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './pagetemplates.style.module.css'
 import TemplateCard from '../TemplatesPreview/TemplateCard'
-import HeroBannerImage from '/public/widgetimages/pageimages/herobanner.png'
+
 import ListViewImage from '/public/widgetimages/pageimages/listview.png'
 import GridViewImage from '/public/widgetimages/pageimages/gridview.png'
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
@@ -17,7 +17,7 @@ const PageTemplates = ({setSelectedTemplate} : Props) => {
 
     const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted")
     const NonHighlightedTemplates =
-        [{ key: "HB", name: "Hero Banner", desc: "Hero Banner to captivate your audience with a stunning, prominent display", tag: "Single Event", image : HeroBannerImage },
+        [
         { key: "GS", name: "Grid Style", desc: "Display Multiple Events as a Grid View for a clear and organized presentation .", tag: "Multiple Events", image : GridViewImage },
         { key: "LS", name: "List Style", desc: "Present Multiple Events as a List View for a streamlined, easy-to-read schedule display.", tag: "Multiple Events", image : ListViewImage }
         ]

@@ -5,7 +5,7 @@ import CaraouselView from '../page/CarouselView/CaraouselView'
 const CaraouselTop = () => {
     return (
         <div className={styles.body}>
-            <CaraouselView />
+            {/* <CaraouselView /> */}
             <div className={styles.heading}>Rest of Your Website</div>
         </div>
     )
