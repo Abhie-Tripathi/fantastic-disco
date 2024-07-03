@@ -9,17 +9,57 @@ import {
   Heading,
   RangeCalendar,
 } from "react-aria-components";
-import { useTheme } from "@/context";
+
+const currentDate = new Date();
 
 const rangeButtons = [
-  "Any",
-  "Today",
-  "This week",
-  "This month",
-  "3 months",
-  "6 months",
-  "9 Months",
-  "12 months",
+  { title: "Any", range: [null, null] },
+  {
+    title: "Today",
+    range: [currentDate.toISOString(), currentDate.toISOString()],
+  },
+  {
+    title: "This week",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
+  {
+    title: "This month",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
+  {
+    title: "3 months",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
+  {
+    title: "6 months",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
+  {
+    title: "9 months",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 270 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
+  {
+    title: "12 months",
+    range: [
+      currentDate.toISOString(),
+      new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+    ],
+  },
 ];
 
 interface DateRangeProps {
@@ -33,19 +73,18 @@ function convertToISOFormat(dateString: string) {
 }
 
 const DateRange = ({ state, setState }: DateRangeProps) => {
-const {theme} = useTheme()
-
+  rangeButtons.map((range) => console.log(range.range));
   return (
-    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
+    <div className={styles.container}>
       <RangeCalendar
         aria-label="input dates"
         className={styles.picker_container}
-        onChange={(value) =>
+        onChange={(value) => {
           setState([
             convertToISOFormat(value.start.toString()),
             convertToISOFormat(value.end.toString()),
-          ])
-        }
+          ]);
+        }}
       >
         <div className={styles.picker_header}>
           <Heading />
@@ -71,7 +110,14 @@ const {theme} = useTheme()
 
       <div className={styles.range_buttons_container}>
         {rangeButtons.map((range) => (
-          <button key={range}>{range}</button>
+          <button
+            key={range.title}
+            onClick={(value) => {
+              setState([range.range[0], range.range[1]]);
+            }}
+          >
+            {range.title}
+          </button>
         ))}
       </div>
     </div>
