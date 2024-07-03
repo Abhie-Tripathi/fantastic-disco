@@ -138,6 +138,9 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
       </div>
       <div style={{ width: "100%" }}>
       {loading && <Loading/>}
+      {allTracker.length === 0 && !loading && (
+            <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
+          )}
         <div className={styles.containerRight}>
           
           {error && <div>{error}</div>}
@@ -145,9 +148,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => <Trackers key={id} item={item} />)}
-          {allTracker.length === 0 && !loading && (
-            <div>Create your first tracker!</div>
-          )}
+          
           {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
         </div>
         {totalPage > 1 &&
