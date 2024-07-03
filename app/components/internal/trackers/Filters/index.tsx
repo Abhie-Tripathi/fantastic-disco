@@ -79,6 +79,8 @@ interface FilterValue {
   startDate: string;
   endDate: string;
   eventRating: string;
+  eventRank:any;
+  localRank:any;
   eventKeywords: any;
   eventCategory: any;
   editionRange: number;
@@ -368,6 +370,12 @@ const Pages = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
+          ...(selectedEventRank.length>0 && {
+            eventRank: selectedEventRank.join(",")
+          }),
+          ...(selectedLocalRank.length>0 && {
+            localRank:selectedLocalRank.join(',')
+          }),
           ...(selectedINScore > 0 && { internationalScore: intScore }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
@@ -447,6 +455,12 @@ const Pages = () => {
           }),
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
+          }),
+          ...(selectedEventRank.length>0 && {
+            eventRank: selectedEventRank.join(",")
+          }),
+          ...(selectedLocalRank.length>0 && {
+            localRank:selectedLocalRank.join(',')
           }),
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -719,6 +733,12 @@ const Pages = () => {
           ? editData.tracker.filterValue?.maturity
           : ""
       );
+      setSelectedEventRank( editData.tracker.filterValue?.eventRank?.length > 0
+        ? editData.tracker.filterValue?.eventRank?.split(',')
+        : []);
+        setSelectedLocalRank( editData.tracker.filterValue?.localRank?.length > 0
+          ? editData.tracker.filterValue?.localRank?.split(',')
+          : [])
       setSelectedReptScore(
         editData.tracker.filterValue?.reputationScore > 0
           ? editData.tracker.filterValue?.reputationScore
@@ -791,6 +811,7 @@ const Pages = () => {
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
+console.log(selectedEventRank);
 
   return (
     <>
@@ -888,7 +909,12 @@ const Pages = () => {
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
-                  <div className={styles.input_container}>
+                  <div className={styles.input_container}
+                  style={{
+                    border:
+                      isMandatory && selectedLocations.length === 0 ? "2px solid red" : "",
+                  }}
+                  >
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Location
@@ -927,6 +953,44 @@ const Pages = () => {
                       />
                     )}
                   </Dialog>
+                </Popover>
+              </MenuTrigger>
+
+              <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Dates
+                        {selectedDateRange.length > 0 &&
+                        selectedDateRange[0] !== null ? (
+                          <span className={styles.input_selected_title}>
+                            {`${convertISOToOriginalFormat(
+                              selectedDateRange[0]
+                            )} - ${convertISOToOriginalFormat(
+                              selectedDateRange[1]
+                            )}`}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  {/* <Dialog> */}
+                  <DateRange
+                    state={selectedDateRange}
+                    setState={setSelectedDateRange}
+                  />
+                  {/* </Dialog> */}
                 </Popover>
               </MenuTrigger>
 
@@ -999,71 +1063,52 @@ const Pages = () => {
               </Popover>
             </MenuTrigger> */}
 
-              {/* <MenuTrigger>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>Rank</div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={20}
-                      height={20}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog>
-                  {({ close }) => (
-                    <RankInput
-                      selectedEventRank={selectedEventRank}
-                      setSelectedEventRank={setSelectedEventRank}
-                      selectedLocalRank={selectedLocalRank}
-                      setSelectedLocalRank={setSelectedLocalRank}
-                      selectedAviationRank={selectedAviationRank}
-                      setSelectedAviationRank={setSelectedAviationRank}
-                      rankToggles={rankToggles}
-                      setRankToggles={setRankToggles}
-                      onClose={close}
-                    />
-                  )}
-                </Dialog>
-              </Popover>
-            </MenuTrigger> */}
-
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Dates
-                      {selectedDateRange.length > 0 &&
-                      selectedDateRange[0] !== null ? (
-                        <span className={styles.input_selected_title}>
-                          {`${convertISOToOriginalFormat(
-                            selectedDateRange[0]
-                          )} - ${convertISOToOriginalFormat(
-                            selectedDateRange[1]
-                          )}`}
-                        </span>
-                      ) : (
-                        ""
-                      )}
+<MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Rank
+                        {rankToggles.isEventRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                          </span>
+                        )}
+                        {rankToggles.isLocalRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                          </span>
+                        )}
+                        {rankToggles.isAviationRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                          </span>
+                        )}
+                      </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                      />
                     </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={20}
-                      height={20}
-                    />
                   </div>
                 </Button>
-                <Popover>
-                  <Dialog>
-                    <DateRange
-                      state={selectedDateRange}
-                      setState={setSelectedDateRange}
-                    />
+                <Popover className={styles.filterPopover}>
+                  <Dialog className={styles.dialogBorder}>
+                    {({ close }) => (
+                      <RankInput
+                        selectedEventRank={selectedEventRank}
+                        setSelectedEventRank={setSelectedEventRank}
+                        selectedLocalRank={selectedLocalRank}
+                        setSelectedLocalRank={setSelectedLocalRank}
+                        selectedAviationRank={selectedAviationRank}
+                        setSelectedAviationRank={setSelectedAviationRank}
+                        rankToggles={rankToggles}
+                        setRankToggles={setRankToggles}
+                        onClose={close}
+                      />
+                    )}
                   </Dialog>
                 </Popover>
               </MenuTrigger>
@@ -1383,7 +1428,7 @@ const Pages = () => {
                   </Popover>
                 </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1417,7 +1462,7 @@ const Pages = () => {
                       />
                     </Dialog>
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
               </div>
             )}
 

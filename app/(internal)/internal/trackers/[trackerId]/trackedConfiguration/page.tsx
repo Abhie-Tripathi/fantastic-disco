@@ -199,7 +199,7 @@ useEffect(() => {
               locations={locations}
             />
           )}
-          {data && (
+          {/* {data && (
             <Labels
               labels={
                 data?.tracker?.filterValue?.labels
@@ -207,7 +207,7 @@ useEffect(() => {
                   : []
               }
             />
-          )}
+          )} */}
         </div>
       </div>
       <div className={styles.line}></div>

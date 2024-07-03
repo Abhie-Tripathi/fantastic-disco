@@ -52,7 +52,7 @@ const Index = () => {
       <div className={styles.bar}>
         <div className={styles.leftNav}>
           <Link className={styles.bottom} href={
-            last === "trackedConfiguration" || last === "editTracker"
+            last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration`
                 : `/internal/trackers/${secondLast}/trackedEvents`)
@@ -60,11 +60,11 @@ const Index = () => {
           } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          <div className={styles.tooltipContainer} style={{cursor: data?.tracker?.name?.length>20?"pointer":"default"}}>
+          {/* <div className={styles.tooltipContainer} style={{cursor: data?.tracker?.name?.length>20?"pointer":"default"}}>
           {data?.tracker?.name?.length>20?data?.tracker?.name?.substring(0,20)+'...':data?.tracker?.name}
         {data?.tracker?.name?.length>20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}  
   
-</div>
+</div> */}
         </div>
        
           <>
