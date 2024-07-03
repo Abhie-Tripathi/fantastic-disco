@@ -51,7 +51,7 @@
 .searchbar button {
   border: none;
   background: none;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .sub_container {
