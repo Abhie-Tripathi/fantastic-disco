@@ -11,7 +11,8 @@ import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvent
 import ListAndGridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListAndGridView'
 import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndViews'
 import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
-import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+import PortraitPopup from '@/app/components/TemplateViews/previews/popup/portraitstyles/PortraitPopup';
+import LandscapePopup from '@/app/components/TemplateViews/previews/popup/landscapesstyles/LandscapePopup';
 import CaraouselTop from '@/app/components/TemplateViews/previews/section/CaraouselTop'
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
@@ -141,7 +142,7 @@ const Page = () => {
                                           preview === "tshs" ? <ScrollView type='top' /> :
                                             preview === "lsvs" ?
                                               <ScrollView type='left' /> :
-                                              preview === "popup" ? <Popup /> : <></>}
+                                              preview === "popup" ? <PortraitPopup /> : <></>}
             </div>
             <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
           </div>
