@@ -13,7 +13,7 @@ import CaraouselTop from '@/app/components/TemplateViews/previews/section/Caraou
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import Filters from "@/app/components/TemplateViews/filter/Filters";
 import CodeWindow from '@/app/components/widgetconfigure/CodeWindow'
-import Popup from "@/app/components/TemplateViews/previews/popup/Popup";
+import PortraitPopup from '@/app/components/TemplateViews/previews/popup/portraitstyles/PortraitPopup';
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import Image from "next/image";
 import FullScreeIcon from '/public/fullscreen.svg'
@@ -198,7 +198,7 @@ const Page = () => {
                                         preview === "tshs" ? <ScrollView type='top' /> :
                                           preview === "lsvs" ?
                                             <ScrollView type='left' /> :
-                                            preview === "popup" ? <Popup cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> : <></>}
+                                            preview === "popup" ? <PortraitPopup/> : <></>}
           </div>
           <Image src={FullScreeIcon} alt="expand" className={styles.fullScreenIcon} onClick={() => setIsFullScreen(!isFullScreen)} />
         </div>

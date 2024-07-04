@@ -1,0 +1,110 @@
+.card{
+    width: 800px;
+    height:400px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding-left: 10px;
+    /* padding: 0px 12px 12px 10px; */
+    background-color: white;
+    border-radius: 10px;
+}
+.banner{
+    width: 380px;
+    height: 385px;
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
+    filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+}
+.detailsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 10px;
+}
+.date_location_nameContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dateContainer{
+    background-color: #F6F6F6;
+    border-radius: 9px;
+    width: 60px;
+    height: 78px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.date{
+    color: black;
+    font-size: 20px;
+    font-weight: 600;
+}
+.month{
+    color: black;
+    font-weight: 400;
+}
+.line{
+    height: 70px;
+    border-left: 1px solid #F6F6F6;
+}
+.name_locationContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 70%;
+}
+.locationContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.location{
+    color: #6E6F89;
+    font-weight: 500;
+}
+.eventName{
+    font-weight: 700;
+    font-size: 25px;
+    color: black;
+}
+.description{
+    /* font-size: 10px; */
+    color: #6E6F89;
+    font-weight: 500;
+    line-height: 20px;
+}
+.dateRange_typeContainer{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 7px;
+}
+.pill{
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-weight: 500;
+}
+.dateRange{
+    background-color: #F5F5F5;
+    color: #6A77A6;
+}
+.type1{
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+.type2{
+    background-color: #F7E5EE;
+    color: #6750A4;
+}
+.btn{
+    margin-top: 20px;
+    background-color: #6750A4;
+    border-radius: 3px;
+    color: white;
+    padding: 10px 20px;
+}
