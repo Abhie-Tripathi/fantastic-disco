@@ -486,29 +486,34 @@ const Search = () => {
       queryString.eventSize = selectedExhibitScore;
     }
 
-    console.log('queryString', queryString);
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
   };
 
-  const [popoverState, setPopoverState] = useState<boolean>(false);
+  const [popoverState, setPopoverState] = useState<boolean | null>(null);
   const setMenuOpen = () => {
-    setPopoverState(!popoverState);
+    if(popoverState === null) {
+      setPopoverState(false);
+    }else
+      setPopoverState(!popoverState);
   };
 
   useEffect(() => {
+    if(popoverState === null) {
+      document.body.removeAttribute("popover-status");return;
+    }
     const modalStatus = document.body.getAttribute("popover-status");
 
-    if (modalStatus && modalStatus == "close") {
+    if (modalStatus && modalStatus == "open") {
+      document.body.setAttribute("popover-status", "close");
+    } else {
       document.body.setAttribute("popover-status", "open");
       document.documentElement.style.overflow = "";
       document.documentElement.style.paddingRight = "";
-    } else {
-      document.body.setAttribute("popover-status", "close");
     }
     return () => {
-      document.body.removeAttribute("your-attribute");
+      document.body.removeAttribute("popover-status");
     };
   }, [popoverState]);
 
