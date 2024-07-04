@@ -1,0 +1,55 @@
+.card {
+    width: 450px;
+    height: 530px;
+    border-radius: 8px;
+    background-color: white;
+    padding: 12px 14px 24px 12px;
+}
+.banner{
+    height: 240px;
+    width: 100%;
+    border-radius: 8px;
+}
+.eventName{
+    margin-top: 20px;
+    color: #6750A4;
+    font-size: 25px;
+    font-weight: 700;
+}
+.location_dateContainer{
+    margin-top: 12px;
+}
+.locationContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6E6F89;
+    font-size: 15px;
+    font-weight: 500;
+}
+.dateContainer{
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6E6F89;
+    font-weight: 400;
+}
+.desc{
+    width: 100%;
+    color: #6E6F89;
+    font-weight: 500;
+    margin-top: 20px;
+}
+.btnContainer{
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.btn{
+    background-color: #6750A4;
+    border-radius: 3px;
+    color: white;
+    padding: 10px 20px;
+}

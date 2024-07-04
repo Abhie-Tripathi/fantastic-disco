@@ -1,12 +1,7 @@
-.list{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.body{
+    height: 100vh;
+    width: 100%;
 }
-.listItem{
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    padding: 10px;
-    width: fit-content;
-    cursor: pointer;
+.notes{
+    height: 80%;
 }
