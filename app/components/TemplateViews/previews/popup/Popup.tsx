@@ -1,60 +1,30 @@
-import React from 'react'
+import React, { ElementType } from 'react'
 import styles from './popup.style.module.css'
 import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
+import Popup1 from './Popup1'
+import Popup2 from './Popup2'
+import Popup3 from './Popup3'
 
-interface EditProps {
-    cardRadius?: number;
-    cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
+interface Props {
+    selectedCard?: string;
 }
 
-const Popup = ({ 
-    cardRadius = 10,
-    cardBgColor = '#1a1a1a',
-    eventNameColor = '#ffffff',
-    eventNameSize = 30,
-    btnBgColor = '#6750a4',
-    btnFontColor = '#fff',
-    btnBorderWidth = 1,
-    btnBorderColor = '#black',
-    btnRadius = 5,
-    btnFontSize = 14}: EditProps) => {
+const Popup = ({selectedCard }: Props) => {
+    let EventCard: ElementType;
+
+    switch (selectedCard) {
+        case 'card1':
+            EventCard = Popup1;
+            break;
+        case 'card2':
+            EventCard = Popup2;
+            break;
+        default:
+            EventCard = Popup3; // Or some default component or message
+    }
         return (
-            <div className={styles.popup} style={{ backgroundColor: cardBgColor, borderRadius: `${cardRadius}px` }}>
-                <Image className={styles.poster} src={Placeholder} alt="Event Poster" style={{borderTopLeftRadius:`${cardRadius}px`, borderTopRightRadius:`${cardRadius}px` }}/>
-                <div className={styles.eventname} style={{ color: eventNameColor, fontSize: `${eventNameSize}px` }}>
-                    Theatre Festival
-                </div>
-                <div className={styles.description}>
-                    The Delhi Theatre scene is waiting in the wings for a renaissance, and we have taken the onus to make it happen.
-                </div>
-                <button 
-                    className={styles.registerbtn} 
-                    type="button" 
-                    style={{ 
-                        backgroundColor: btnBgColor, 
-                        color: btnFontColor, 
-                        borderWidth: `${btnBorderWidth}px`, 
-                        borderColor: btnBorderColor, 
-                        borderRadius: `${btnRadius}px`, 
-                        fontSize: `${btnFontSize}px` ,
-                        borderStyle : "solid"
-                    }}
-                >
-                    Register
-                </button>
-                <button className={styles.closebtn} style={{ color: btnFontColor }}>
-                    Close
-                </button>
-            </div>
+            <EventCard/>
         )
 }
 

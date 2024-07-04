@@ -41,10 +41,10 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>Preview</div>
-                    {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll"|| selectedTemplate === "CV" || selectedTemplate === "HB") && <div className={styles.styleBtns}>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card1" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card1")}>Card Style 1</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card2" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card2")}>Card Style 2</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card3" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card3")}>Card Style 3</button>
+                    {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll"|| selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUV") && <div className={styles.styleBtns}>
+                        <button className={`${styles.styleBtn} ${selectedCard === "card1" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card1")}>Style 1</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "card2" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card2")}>Style 2</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "card3" ? styles.activeBtn : ""}`} onClick={() => setSelectedCard("card3")}>Style 3</button>
                     </div>}
                     <div className={styles.btnContainer}>
                         <Image src={MobileIcon} alt='mobile' />
@@ -68,7 +68,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                                                                 selectedTemplate === "HS" ? <ScrollView type='top' selectedCard = {selectedCard}/> :
                                                                     selectedTemplate === "LScroll" ? <ScrollView selectedCard = {selectedCard} type='left' /> :
                                                                         selectedTemplate === "RScroll" ? <ScrollView selectedCard = {selectedCard} type='right' /> :
-                                                                            selectedTemplate === "PUV" ? <Popup /> : <></>}
+                                                                            selectedTemplate === "PUV" ? <Popup selectedCard = {selectedCard} /> : <></>}
                     </div>
                     <div className={styles.previewBtnContainer}>
                         <button className={styles.previewBtn}>Save to my widgets</button>
