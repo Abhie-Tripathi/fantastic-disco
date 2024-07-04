@@ -193,7 +193,7 @@ const Dashboard = () => {
               <div className={styles.linkCard_container}>
                 <Link
                   href={`internal/search/events`}
-                  className={styles.linkCard}
+                  className={`${styles.linkCard} card`}
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
@@ -218,7 +218,10 @@ const Dashboard = () => {
                   <div className={styles.linkCard_tagsOuterContainer}></div>
                 </Link>
 
-                <Link href={"internal/outreach"} className={styles.linkCard}>
+                <Link
+                  href={"internal/outreach"}
+                  className={`${styles.linkCard} card`}
+                >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image src={ExhibitIcon} alt="search" />
@@ -252,7 +255,7 @@ const Dashboard = () => {
 
                 <Link
                   href={"/internal/trackers/create"}
-                  className={styles.linkCard}
+                  className={`${styles.linkCard} card`}
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
@@ -293,11 +296,11 @@ const Dashboard = () => {
               <span>Notification</span>
             </div>
             {isLoading ? (
-              <>
+              <div style={{ flex: 1 }}>
                 <NotificationSkeleton />
-              </>
+              </div>
             ) : (
-              <div className={styles.notification_card}>
+              <div className={`${styles.notification_card} card`}>
                 {/* {notifications.map((notification, key) => (
                   <div
                     key={key}
@@ -319,11 +322,7 @@ const Dashboard = () => {
 
         <div className={styles.body_container}>
           <div className={styles.trackers_container}>
-            <div
-              className={`${styles.tracker_container_header} ${
-                theme === "light" ? styles.tracker_content_light : ""
-              }`}
-            >
+            <div className={`${styles.tracker_container_header} `}>
               <div>Here &apos;s what&apos;s new since you last checked in</div>
             </div>
 
@@ -333,19 +332,17 @@ const Dashboard = () => {
               trackerList.map((tracker: any) => (
                 <Link
                   href={`/internal/trackers/${tracker.id}/trackedEvents`}
-                  className={`${styles.tracker_card} ${
-                    theme === "light" && styles.tracker_content_light
-                  }`}
+                  className={`${styles.tracker_card} card `}
                   key={tracker.id}
                 >
                   <>
                     <div className={styles.tracker_card_header}>
                       <span>{tracker.name}</span>
-                      <Image src={GotoIcon} alt="goto" />
+                      <Image src={GotoIcon} alt="goto" className={iconClass} />
                     </div>
 
                     <div className={styles.desktop_trackerCard_container}>
-                      <div className={styles.eventCard}>
+                      <div className={`${styles.eventCard} card`}>
                         <div className={styles.eventCard_title}>
                           <Image src={NewEvent} alt="newevent" />
                           <span>New</span>
@@ -361,7 +358,7 @@ const Dashboard = () => {
                         </div>
                       </div>
 
-                      <div className={styles.eventCard}>
+                      <div className={`${styles.eventCard} card`}>
                         <div className={styles.eventCard_title}>
                           <Image src={Timer} alt="active" />
                           <span>Active</span>
@@ -377,7 +374,7 @@ const Dashboard = () => {
                         </div>
                       </div>
 
-                      <div className={styles.eventCard}>
+                      <div className={`${styles.eventCard} card`}>
                         <div className={styles.eventCard_title}>
                           <Image src={CircleCross} alt="expired" />
                           <span>Expired</span>
@@ -393,39 +390,25 @@ const Dashboard = () => {
                         </div>
                       </div>
 
-                      <PolarAreaChart
+                      {/* <PolarAreaChart
                         className={styles.events_stats_polarChart}
-                      />
+                      /> */}
                     </div>
                   </>
                 </Link>
               ))
             ) : (
-              <div className={styles.tracker_card}>
+              <div className={styles.tracker_card_defaultText}>
                 {/* <div className={styles.tracker_card_header}>
               <span>Tracker 1 - Events in Bangalore</span>
               <Image src={GotoIcon} alt="goto" />
             </div> */}
 
                 <div className={styles.event_cards_container}>
-                  {trackerCardsData.map((trackerCard) => (
-                    <div key={trackerCard.title} className={styles.eventCard}>
-                      <div className={styles.eventCard_title}>
-                        <Image src={trackerCard.icon} alt="newevent" />
-                        <span>{trackerCard.title}</span>
-                      </div>
-                      <div className={styles.eventCard_stats}>
-                        <div className={styles.eventCard_stats_no}>
-                          {trackerCard.stats}
-                        </div>
-                        <div className={styles.eventCard_description}>
-                          Events
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  <PolarAreaChart className={styles.events_stats_polarChart} />
+                  <div className={styles.linkCard_description}>
+                    Track key events in real-time to make informed decisions and
+                    seize opportunities as they arise.
+                  </div>
                 </div>
               </div>
             )}
@@ -434,11 +417,7 @@ const Dashboard = () => {
           <span className={styles.body_divider}></span>
           <div className={styles.savedEvent_coordinateContainer}>
             <div className={styles.savedEventsContainer}>
-              <div
-                className={`${styles.tracker_container_header} ${
-                  theme === "light" ? styles.tracker_content_light : ""
-                }`}
-              >
+              <div className={`${styles.tracker_container_header}`}>
                 <Image src={Bookmark} alt="save" className={iconClass} />
                 <div
                   style={{ cursor: "pointer" }}
@@ -453,9 +432,8 @@ const Dashboard = () => {
                 <SavedEventsSkeleton />
               ) : (
                 <div
-                  className={`${styles.savedEventsData} ${
-                    theme === "light" && styles.savedEventsData_light
-                  }`}
+                  className={`${styles.savedEventsData} card`}
+                  style={{padding:'unset'}}
                 >
                   {savedEventsList.length > 0 ? (
                     savedEventsList?.map((event: any) => (
@@ -487,11 +465,7 @@ const Dashboard = () => {
             <div
               className={`${styles.linkCard_container} ${styles.coordinateCard}`}
             >
-              <div
-                className={`${styles.tracker_container_header} ${
-                  theme === "light" ? styles.tracker_content_light : ""
-                }`}
-              >
+              <div className={`${styles.tracker_container_header}`}>
                 Event shortlisting and Co-ordination
               </div>
 
@@ -500,7 +474,10 @@ const Dashboard = () => {
                   <CoordinateSkeleton />
                 </>
               ) : (
-                <Link href={"/internal/coordinate"} className={styles.linkCard}>
+                <Link
+                  href={"/internal/coordinate"}
+                  className={`${styles.linkCard} card`}
+                >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
                       <Image
@@ -538,13 +515,7 @@ const Dashboard = () => {
                       </div>
                     </>
                   ) : (
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        marginTop: "10px",
-                        padding: "10px",
-                      }}
-                    >
+                    <div className={styles.linkCard_description}>
                       An effective event communication and relationship
                       management dashboard that keeps your team on the same page
                       and makes coordination both internally and with events

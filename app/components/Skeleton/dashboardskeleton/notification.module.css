@@ -1,18 +1,19 @@
 .card_skeleton_container {
-    display: flex;
-    gap: 30px;
-    /* padding: 16px; */
-    /* background-color: #1a1a1a; */
-    border: 1px solid grey;
-    margin-top: 10px;
-    border-radius: 8px;
-
+  margin-top: 25px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  height: 175px;
+  display: flex;
+  width: 395px;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
 }
 
 .innerContainer {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
