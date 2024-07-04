@@ -356,8 +356,8 @@ const Trackers = () => {
             </div>
           )}
           {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
-            <Link href={`/internal/trackers/1/trackedEvents`}>
-            <div className={styles.innerContainerTwo} key={ind}>
+            <Link href={`/internal/trackers/1/trackedEvents`} key={ind}>
+            <div className={styles.innerContainerTwo} >
               <div
                 className={`${styles.topView} ${
                   theme === "dark" ? "darkMode" : "lightMode_secondary"
