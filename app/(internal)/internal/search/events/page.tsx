@@ -44,6 +44,10 @@ import CloseIcon from "/public/internal/cross.svg";
 import FilterIcon from "/public/internal/advanceFilter.svg";
 import {
   Button as Button10x,
+  Dialog as Dialog10x,
+  DialogContent as DialogContent10x,
+  DialogTitle as DialogTitle10x,
+  Input as Input10x,
 } from "10xui";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
@@ -71,6 +75,7 @@ import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import { toast, ToastContainer } from "react-toastify";
 import { GAEvent } from "@/utils/GAEvent";
+import { Cross } from "geist-icons";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -168,77 +173,112 @@ const Search = () => {
   console.log(selectedUserRatings);
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
 
+  const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
+  const [customTrackerName, setCustomTrackerName] = useState<string>('');
+
+  const saveTrackerHandler = async() => {
+    if(customTrackerName != '') {
+      const formData = {
+        name: customTrackerName,
+        filterValue: {
+         ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
+          ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
+          ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
+          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
+          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          brandedEvent:selectedBrandedEvent.toString(),
+          // labels:selectedLabels.join(','),
+          // eventKeywords:selectedEventKeywords.join(','),
+          ...(selectedEventFormat?.length > 0 && {
+            eventFormat: selectedEventFormat.join(","),
+          }),
+          eventSeries: selectedEventSeries.toString(),
+          ...(selectedEventStatus?.length > 0 && {
+            eventStatus: selectedEventStatus.join(","),
+          }),
+          ...(selectedEntry?.length > 0 && {
+            eventEntry: selectedEntry.join(","),
+          }),
+          ...(selectedTrustScore > 0 && {
+            trustScore: selectedTrustScore.toString(),
+          }),
+          ...(selectedEventFrequency?.length > 0 && {
+            eventFrequency: selectedEventFrequency.join(","),
+          }),
+          ...(selectedReptScore > 0 && {
+            reputationScore: selectedReptScore.toString(),
+          }),
+          ...(selectedMaturity > 0 && { maturity: 
+            (selectedMaturity >= 1 && selectedMaturity <= 25) ? "new" :
+            (selectedMaturity >= 26 && selectedMaturity <= 50) ? "low" :
+            (selectedMaturity >= 51 && selectedMaturity <= 75) ? "medium" : "High" }),
+          ...(selectedDateRange?.length === 2 && {
+            startDate: [
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
+          }),
+          ...(selectedDateRange?.length === 2 && {
+            endDate: [
+              new Date(selectedDateRange[0]).toISOString().split("T")[0],
+              new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","),
+          }),
+          ...(selectedUserRatings?.length > 0 && {
+            eventRating: selectedUserRatings.join(","),
+          }),
+          ...(selectedINScore > 0 && { internationalScore: (selectedINScore >= 1 && selectedINScore <= 25) ? "local" :
+            (selectedINScore >= 26 && selectedINScore <= 50) ? "National" :
+            (selectedINScore >= 51 && selectedINScore <= 75) ? "Regional" : "International" }),
+          ...(selectedInboundScore > 0 && {
+            inboundScore: selectedInboundScore.toString(),
+          }),
+          ...(selectedEventAttendanceRange?.length === 2 && {
+            eventAttendanceRange: [
+              +selectedEventAttendanceRange[0],
+              +selectedEventAttendanceRange[1],
+            ].join(","),
+          }),
+          ...(selectedZone?.length>0 && {
+            eventRegion:selectedZone.join(',')
+         }),
+        },
+      };
+
+      try{
+        const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(data);
+    
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if (data) {
+          toast.success(<div style={{display:"flex", flexWrap:"wrap"}}>Tracker created successfully! <span className={styles['seeTracker-btn']} onClick={() => router.replace("/internal/trackers")}>See Tracker</span></div>, {
+            position: "bottom-right",
+            autoClose: 2000,
+            // closeButton: false,
+            hideProgressBar: true,
+          });
+        }
+      } catch (error) {
+        console.error("Error saving tracker:", error);
+      } finally {
+        setTrackerModalOpen(false);
+      }
+    }
+  }
+
   const createTrackerHandler = async() => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
-
-    const formData = {
-      name: "Default Tracker",
-      filterValue: {
-       ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
-        ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
-        ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
-        ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
-        ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
-        ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-        ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
-        brandedEvent:selectedBrandedEvent.toString(),
-        // labels:selectedLabels.join(','),
-        // eventKeywords:selectedEventKeywords.join(','),
-        ...(selectedEventFormat?.length > 0 && {
-          eventFormat: selectedEventFormat.join(","),
-        }),
-        eventSeries: selectedEventSeries.toString(),
-        ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.join(","),
-        }),
-        ...(selectedEntry?.length > 0 && {
-          eventEntry: selectedEntry.join(","),
-        }),
-        ...(selectedTrustScore > 0 && {
-          trustScore: selectedTrustScore.toString(),
-        }),
-        ...(selectedEventFrequency?.length > 0 && {
-          eventFrequency: selectedEventFrequency.join(","),
-        }),
-        ...(selectedReptScore > 0 && {
-          reputationScore: selectedReptScore.toString(),
-        }),
-        ...(selectedMaturity > 0 && { maturity: 
-          (selectedMaturity >= 1 && selectedMaturity <= 25) ? "new" :
-          (selectedMaturity >= 26 && selectedMaturity <= 50) ? "low" :
-          (selectedMaturity >= 51 && selectedMaturity <= 75) ? "medium" : "High" }),
-        ...(selectedDateRange?.length === 2 && {
-          startDate: [
-            new Date(selectedDateRange[0]).toISOString().split("T")[0],
-            new Date(selectedDateRange[1]).toISOString().split("T")[0],
-          ].join(","),
-        }),
-        ...(selectedDateRange?.length === 2 && {
-          endDate: [
-            new Date(selectedDateRange[0]).toISOString().split("T")[0],
-            new Date(selectedDateRange[1]).toISOString().split("T")[0],
-          ].join(","),
-        }),
-        ...(selectedUserRatings?.length > 0 && {
-          eventRating: selectedUserRatings.join(","),
-        }),
-        ...(selectedINScore > 0 && { internationalScore: (selectedINScore >= 1 && selectedINScore <= 25) ? "local" :
-          (selectedINScore >= 26 && selectedINScore <= 50) ? "National" :
-          (selectedINScore >= 51 && selectedINScore <= 75) ? "Regional" : "International" }),
-        ...(selectedInboundScore > 0 && {
-          inboundScore: selectedInboundScore.toString(),
-        }),
-        ...(selectedEventAttendanceRange?.length === 2 && {
-          eventAttendanceRange: [
-            +selectedEventAttendanceRange[0],
-            +selectedEventAttendanceRange[1],
-          ].join(","),
-        }),
-        ...(selectedZone?.length>0 && {
-          eventRegion:selectedZone.join(',')
-       }),
-      },
-    };
 
     if (selectedLocations.length === 0) {
       toast.error("Please select location", {
@@ -247,30 +287,10 @@ const Search = () => {
         // closeButton: false,
         hideProgressBar: true,
       });
-      return;
     }
-    const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    console.log(data);
-
-    if (error) {
-      console.log(error);
-      return;
+    else {
+      setTrackerModalOpen(true);
     }
-    if (data) {
-      toast.success(<div style={{display:"flex", flexWrap:"wrap"}}>Tracker created successfully! <span className={styles['seeTracker-btn']} onClick={() => router.replace("/internal/trackers")}>See Tracker</span></div>, {
-        position: "bottom-right",
-        autoClose: 2000,
-        // closeButton: false,
-        hideProgressBar: true,
-      });
-    }
-
   };
 
   const searchHandler = () => {
@@ -344,12 +364,12 @@ const Search = () => {
     // }
 
     // Rank
-    if (rankToggles.isEventRank && (selectedEventRank[0] !== 0 || selectedEventRank[1] !== 100)) {
+    if (rankToggles.isEventRank) {
       queryString.eventRank = selectedEventRank;
     }
 
     // Local Rank
-    if (rankToggles.isLocalRank && (selectedLocalRank[0] !== 0 || selectedLocalRank[1] !== 100)) {
+    if (rankToggles.isLocalRank) {
       queryString.localRank = selectedLocalRank;
     }
 
@@ -466,6 +486,7 @@ const Search = () => {
       queryString.eventSize = selectedExhibitScore;
     }
 
+    console.log('queryString', queryString);
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
@@ -716,9 +737,9 @@ const Search = () => {
             >
               Recent searches
             </div> */}
-            <button>
+            <span>
               <Image src={SearchIcon} alt="search" className={iconClass} />
-            </button>
+            </span>
           </div>
 
           {Object.keys(selectedEvents).length > 0 && showAllEvents && (
@@ -979,7 +1000,7 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container}>
-              <Button10x style={{width:"60px"}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
+              <Button10x variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
             </div>
           </div>
           <div className={styles.filtersRow} >
@@ -1060,7 +1081,7 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container2}>
-              {/* <button
+              <button
                 onClick={() => {
                   setShowAdvanceFilter((prev) => !prev);
                   GAEvent(
@@ -1077,23 +1098,8 @@ const Search = () => {
                   {" "}
                   Advanced Filters
                 </span>
-              </button> */}
-              <Button10x color={'primary'} style={{textWrap: 'nowrap', border:'unset'}} variant={'secondary'} size={'md'} 
-                onClick={() => {
-                  setShowAdvanceFilter((prev) => !prev);
-                  GAEvent(
-                    "research",
-                    "Filters",
-                    "All Filter Modal | Viewed",
-                    "More Filter Icon"
-                  );
-                }} 
-              >
-                <Image src={FilterIcon} width={16} height={16} alt="filters" />
-                {" "}
-                Advanced Filters
-              </Button10x>
-              <Button10x style={{textWrap: 'nowrap', color: 'var(----primary-text-color)', border:'unset'}} variant={'secondary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x>
+              </button>
+              <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x>
             </div>
           </div>
 
@@ -1830,6 +1836,23 @@ const Search = () => {
         </Suspense>
       )} */}
       <ToastContainer />
+      <Dialog10x open={trackerModalOpen} >
+        <DialogContent10x>
+          <DialogTitle10x style={{width:'35vw'}}><span>Create Tracker</span>
+              <Cross onClick={()=>setTrackerModalOpen(false)} style={{float:'right', cursor:'pointer'}} color={'primary'} height= {'15px'} width={'15px'} />
+          </DialogTitle10x>
+          <div>
+            <Input10x 
+              placeholder="Enter Tracker Name"
+              onChange={(e)=>setCustomTrackerName(e.target.value)}
+              value={customTrackerName}  
+            />
+          </div>
+          <div>
+            <Button10x onClick={saveTrackerHandler} style={{float:'right', border:'unset'}} color={'primary'} variant={'secondary'}  >Save</Button10x>
+          </div>
+        </DialogContent10x>
+      </Dialog10x>
     </Suspense>
   );
 };
