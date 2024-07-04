@@ -1,6 +1,6 @@
 .card_skeleton_container {
   margin-top: 25px;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
   height: 175px;
   display: flex;

@@ -1,7 +1,7 @@
 .container {
-    border: 1px solid #ececf9;
-    border-radius: 12px;
-    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    background: var(--primary-foreground);
     box-shadow: 0px 4px 20px 0px #00000008;
     width: 350px;
     height: fit-content;
@@ -25,7 +25,7 @@
   }
   
   .container nav h2 {
-    font-size: 16px;
+    font-size: var(--font-size-h6);
   }
   
   .content {
