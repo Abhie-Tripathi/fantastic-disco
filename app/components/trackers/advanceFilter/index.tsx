@@ -74,10 +74,10 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: an
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Rankings</div>
                     <div className={styles.allCat}>
-                        {eventRank.length!==0 && 
+                        {eventRank?.length!==0 && 
                         <div className={styles.item}>Event Rank: {eventRank[0]}-{eventRank[1]}</div>
                         }
-                        {localRank.length!==0 && 
+                        {localRank?.length!==0 && 
                         <div className={styles.item}>Local Rank: {localRank[0]}-{localRank[1]}</div>
                         }
                     </div>

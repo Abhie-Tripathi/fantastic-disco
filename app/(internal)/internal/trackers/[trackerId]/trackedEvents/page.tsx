@@ -10,7 +10,7 @@ import Image from 'next/image';
 // import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
 const Trackers = React.lazy(() => import('@/app/components/internal/trackers/CommonTrackerCard'));
 import Table from '@/app/components/Table';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import {
@@ -30,7 +30,7 @@ const Page = () => {
   const [activeValue, setActiveValue] = useState();
   const pathName = usePathname().split('/');
   const searchParams = useSearchParams()
-
+  const router = useRouter();
   const token = searchParams.get('token')
 
   // const [showInsights,setShowInsights]=useState();
@@ -175,7 +175,31 @@ const Page = () => {
     }
     return count;
   };
+  const saveTracker=async()=>{
+    const selectedEventCat=["671b1a45-d40f-4559-959f-cd7a9b1617de","4612db12-9084-4d61-901d-ab7bd3120ade"]
+    const formData = {
+      name: "one",
+      filterValue:{
+          eventCategory:selectedEventCat.join(',')
+      }
+    }
+    const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (error) {
+      console.log(error);
+      return;
+    }
+    if (data) {
+      console.log(data);
 
+      router.replace("/internal/trackers");
+    }
+  }
   return (
     // <div className={styles.containerOne}>
     <div className={styles.container}>
@@ -235,21 +259,26 @@ const Page = () => {
             </button>
           </div>
           {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
+          {id==="1"?
+          <div onClick={()=>saveTracker()} className={styles.eventStatusRight}>Save</div>:
           <DialogTrigger>
-            <Button className={styles.exportButton}>
+          <Button className={styles.exportButton}>
 
-              <div className={styles.eventStatusRight}>Export Data</div>
-            </Button>
-            <ModalOverlay isDismissable className={styles.modalOverlay}>
-              <Modal>
-                <Dialog>
-                  {({ close }) => (
-                    <ExportModal onClose={close} type={type} />
-                  )}
-                </Dialog>
-              </Modal>
-            </ModalOverlay>
-          </DialogTrigger>
+            <div className={styles.eventStatusRight}>{"Export Data"}</div>
+          </Button>
+          <ModalOverlay isDismissable className={styles.modalOverlay}>
+            <Modal>
+              <Dialog>
+                {({ close }) => (
+                  <ExportModal onClose={close} type={type} />
+                )}
+              </Dialog>
+            </Modal>
+          </ModalOverlay>
+        </DialogTrigger>
+          }
+          
+         
         </div>
         <Table showInsights={showInsights} eventType={active} setActiveValue={setActiveValue} />
         {/* {exp && <ModalOverlay isDismissable className={styles.modalOverlay}>
