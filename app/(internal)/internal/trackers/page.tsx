@@ -463,7 +463,7 @@ const Trackers = () => {
           {type === "Custom Trackers" && <MyTracker setDataPresent={setDataPresent}/>}
           {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (
-            <div style={{ margin: "-25px 0px" }}>
+            <div>
               <Table showInsights={showInsights} />
             </div>
           )}

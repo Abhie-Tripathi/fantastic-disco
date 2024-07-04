@@ -419,6 +419,7 @@ export const AddComment = ({
   const formRef1 = useRef(null);
 
   useEffect(() => {
+    if(last!=="notesDiscussion"){
     if (note?.includes("#speak")) {
       handleSelectSpeak();
     }
@@ -428,6 +429,7 @@ export const AddComment = ({
     if (note?.includes("#recommend")) {
       handleRecommend(event);
     }
+  }
     // if (note?.charAt(note.length - 1) === "@") {
     //   handleRecommend(event);
     // }

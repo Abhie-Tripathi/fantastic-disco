@@ -227,7 +227,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       if(path[path.length-1]==="notesDiscussion"){
         const dataToSend = {
           "stage": "INTERNAL",
-          "type": type,
+          "type": "MESSAGE",
           "content": note,
           "source": "GTM",
           "entityType": "TRACKER",
