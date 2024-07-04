@@ -36,7 +36,10 @@ const EventCard3 = ({
 
     return (
         <div className={styles.card}>
-            <Image src={placeholder2} alt='placeholder' className={styles.banner} />
+            <div className={styles.bannerContainer}>
+                <Image src={placeholder2} alt='placeholder' className={styles.banner} />
+                <div className={styles.type}>Workshop</div>
+            </div>
             <div className={styles.eventName}>East Midlands Young Planners</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
