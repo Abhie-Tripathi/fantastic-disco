@@ -345,12 +345,18 @@ const Trackers = () => {
           {!showTracker && (
             <div className={styles.innerContainerOne}>
               <Image src={Add} alt="add" />
-              <button className={styles.createBtn} onClick={() => modalOpen()}>
+              <Link href="/internal/trackers/create" className={styles.createUrl}>
+              <button  
+              // onClick={() => modalOpen()}
+              className={styles.createBtn}
+              >
                 Create Tracker
               </button>
+              </Link>
             </div>
           )}
           {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
+            <Link href={`/internal/trackers/1/trackedEvents`}>
             <div className={styles.innerContainerTwo} key={ind}>
               <div
                 className={`${styles.topView} ${
@@ -392,6 +398,7 @@ const Trackers = () => {
                 <div className={styles.text}>{item?.content}</div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
         

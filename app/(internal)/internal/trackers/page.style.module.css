@@ -1,7 +1,6 @@
     /* .body {
         min-width: 810px;
     } */
-
     .header_container {
         display: flex;
         align-items: center;
@@ -122,7 +121,7 @@
         border-radius: 15px;
         border: 1px solid #E0E1E4;
     }
-    .createBtn{
+    .createUrl{
        padding: 6px 20px;
        position: absolute;
        border-radius: 6px;
@@ -285,4 +284,7 @@ color:#6E6F89;
     color: #6750A4;
     box-shadow: -4px 4px 15px 0px #E8E8E84D;
     padding: 10px 0px;
+  }
+  .createBtn{
+    color: white;
   }
