@@ -1,7 +1,6 @@
 .container {
   padding: 20px;
   min-width: 400px;
-  color: var(--tertiary-text-color);
 }
 
 .header_container {

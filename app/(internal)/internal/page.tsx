@@ -422,7 +422,7 @@ const Dashboard = () => {
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    router.push("internal/trackers/savedevents");
+                    router.push("internal/trackers");
                   }}
                 >
                   Saved Events
