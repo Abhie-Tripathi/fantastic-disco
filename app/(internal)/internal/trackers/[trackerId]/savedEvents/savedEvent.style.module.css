@@ -357,11 +357,11 @@
 }
 .innerLeft{
   display: flex;
-  width: 25%;
+  width: 30%;
 }
 .innerRight{
   display: flex;
-  width: 75%;
-  margin-top: -25px;
+  width: 70%;
+  /* margin-top: -25px; */
   flex-direction: column;
 }

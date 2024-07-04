@@ -225,9 +225,9 @@ useEffect(() => {
         <div className={styles.innerContainerRight}>
           <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []} 
           localRank={
-            data?.tracker?.filterValue?.localRank.length>0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+            data?.tracker?.filterValue?.localRank?.length>0 ? data?.tracker?.filterValue?.localRank.split(',') : []
           }
-          eventRank={data?.tracker?.filterValue?.eventRank.length>0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+          eventRank={data?.tracker?.filterValue?.eventRank?.length>0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           />
         </div>
       </div>

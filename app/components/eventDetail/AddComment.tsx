@@ -117,15 +117,17 @@ export const AddComment = ({
     setUserDetail(user);
   }, [user]);
   useEffect(() => {
-    const url = `${baseUrl}/auth/users`;
+    const url = `${baseUrl}/auth/users?limit=100`;
     getAllUser(url);
   }, []);
 
   // Function to fetch users from the API
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
+    console.log(data);
+    
     if (data && data.length>0) {
-      setApiUserData(data);
+      setApiUserData(data.user);
       const usernames = data?.map((item: any) => "@" + item.firstname + item.lastname);
       setUsers(usernames);
     }
@@ -140,7 +142,8 @@ export const AddComment = ({
       // setShowUser(true);
       const searchTerm = trimmedNote.substring(trimmedNote.lastIndexOf("@") + 1).trim();
       console.log('searchTerm:', searchTerm);
-
+      console.log(users);
+      
       if (searchTerm) {
         const filtered = users.filter((user) => {
           return user.toLowerCase().includes(searchTerm.toLowerCase());
@@ -717,7 +720,7 @@ export const AddComment = ({
             readOnly={disable}
             ref={textareaRef}
             className={`${styles.textArea} ${theme === 'light' && styles.textArea_light}`}
-            placeholder="Take a note, @name"
+            placeholder="Take a note"
             value={note}
             onChange={(e) => noteFun(e)}
             rows={4}

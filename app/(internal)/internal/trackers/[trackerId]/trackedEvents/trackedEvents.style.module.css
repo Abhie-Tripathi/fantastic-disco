@@ -125,6 +125,7 @@
   
   .eventStatus {
     display: flex;
+    padding: 10px;
     justify-content: space-between;
     /* Your other styles */
   }
@@ -134,11 +135,12 @@
   }
   .innerLeft{
     display: flex;
-    width: 25%;
+    width: 30%;
   }
   .innerRight{
     display: flex;
-    width: 75%;
+    width: 70%;
+    gap:20px;
     flex-direction: column;
   }
   .center{

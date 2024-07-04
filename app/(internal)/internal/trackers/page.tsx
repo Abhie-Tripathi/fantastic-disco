@@ -301,7 +301,7 @@ const Trackers = () => {
         
         <div className={styles.trackers_header}>
           
-          <div className={styles.trackers_header_newtracker_button}>
+          <div>
             {hideTemplate ? (
               <Link
                 href="/internal/trackers/create"
@@ -313,11 +313,12 @@ const Trackers = () => {
                     "Create New Tracker"
                   )
                 }
+                className={styles.trackers_header_newtracker_button}
               >
                 Create Tracker
               </Link>
             ) : (
-              <div onClick={viewTracker}>Template Gallery</div>
+              <div className={styles.trackers_header_newtracker_button} onClick={viewTracker}>Template Gallery</div>
             )}
             
             {/* <Image src={Add} alt="add" /> */}
@@ -344,13 +345,19 @@ const Trackers = () => {
           {!showTracker && (
             <div className={styles.innerContainerOne}>
               <Image src={Add} alt="add" />
-              <button className={styles.createBtn} onClick={() => modalOpen()}>
+              <Link href="/internal/trackers/create" className={styles.createUrl}>
+              <button  
+              // onClick={() => modalOpen()}
+              className={styles.createBtn}
+              >
                 Create Tracker
               </button>
+              </Link>
             </div>
           )}
           {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
-            <div className={styles.innerContainerTwo} key={ind}>
+            <Link href={`/internal/trackers/1/trackedEvents`} key={ind}>
+            <div className={styles.innerContainerTwo} >
               <div
                 className={`${styles.topView} ${
                   theme === "dark" ? "darkMode" : "lightMode_secondary"
@@ -391,8 +398,10 @@ const Trackers = () => {
                 <div className={styles.text}>{item?.content}</div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
+        
       )}
      
       {!showTracker  && (
