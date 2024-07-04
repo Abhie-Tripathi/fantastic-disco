@@ -6,6 +6,21 @@
     background-color: white;
     padding: 12px 14px 24px 12px;
 }
+.bannerContainer{
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 10px;
+    right: 9px;
+}
 .banner{
     height: 192px;
     width: 100%;
