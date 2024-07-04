@@ -237,11 +237,7 @@ const Page = () => {
       <div className={styles.topRight}></div>
     </div> */}
 
-      <div className={styles.innerLeft}>
-        <Suspense>
-          <Trackers />
-        </Suspense>
-      </div>
+      
       <div className={styles.innerRight}>
         <div className={styles.eventStatus}>
           <div className={styles.eventStatusLeft}>

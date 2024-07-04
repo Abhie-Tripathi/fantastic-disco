@@ -118,7 +118,7 @@ const CommonTrackerCard = () => {
   return (
     <>
       {item?.tracker ? (
-        <div className={styles.container} style={{ width: "100%", height: "fit-content" }}>
+        <div className='card' style={{ width: "100%", height: "fit-content" }}>
 
           <div className={styles.cardOne}>
             <div className={styles.heading}>{item?.tracker?.name}</div>

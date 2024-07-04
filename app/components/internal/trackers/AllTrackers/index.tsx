@@ -89,7 +89,7 @@ const AllTrackers = ({ item }: any) => {
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
   return (
-    <div className={styles.container}>
+    <div className="card">
       <Link
         href={{
           pathname: `/internal/trackers/${item.id}/trackedEvents`,

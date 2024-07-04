@@ -112,9 +112,11 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
             >
               {item.accessLevel.charAt(0).toUpperCase()}{item.accessLevel.substring(1).toLowerCase()}
               {item.id === accessId && (
-                <div className={styles.dropdown}>
-                  <div onClick={() => changeAccess(item.accessId, "EDIT")}>Edit</div>
-                  <div onClick={() => changeAccess(item.accessId, "READ")}>Read</div>
+                <div className={styles.dropdownContainer}>
+                  <div className={styles.dropdown}>
+                  <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT")}>Edit</div>
+                  <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ")}>Read</div>
+                  </div>
                   {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
                 </div>
               )}

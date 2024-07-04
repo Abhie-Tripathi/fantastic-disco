@@ -212,6 +212,7 @@ export const AddComment = ({
     }
     if (key === "Enter" && !e.shiftKey && (showUser || types)) {
       e.preventDefault();
+      
       let newNote="";
       if(showUser){
         const lastAtIndex = note.lastIndexOf("@");

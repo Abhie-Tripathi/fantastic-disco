@@ -136,6 +136,7 @@ const Page = () => {
             redirectUrl: `${currentUrl}`
         };
         const url = `${baseUrl}/access`;
+        if(id){
         try {
             const { data, error } = await myFetch(url, {
                 method: 'POST',
@@ -156,14 +157,17 @@ const Page = () => {
         } catch (err) {
             console.error('Fetch failed:', err);
         }
+        }
     }
     const shareNewInvite=async()=>{
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const formData = 
         {
           firstname:filter.substring(0,filter.lastIndexOf('@')),
         lastname:"",
             email: filter
       };
+    if(emailRegex.test(filter)){
     const url = `${baseUrl}/tracker/invite`;
     try {
         const { data, error } = await myFetch(url, {
@@ -182,6 +186,7 @@ const Page = () => {
         }
     } catch (err) {
         console.error('Fetch failed:', err);
+    }
     }
     // setId("");
     }
@@ -285,7 +290,7 @@ const Page = () => {
                           value={filter}
                           placeholder='Invite others by name' onChange={handleFilterChange} />
                       </div>
-                      <div className={styles.buttons} style={{width:"150px"}}>
+                      <div className={styles.buttons} style={{width:"170px"}}>
                       <button className={styles.send} onClick={shareInvite}>Send Invite</button>
                   </div>
                   </div>
