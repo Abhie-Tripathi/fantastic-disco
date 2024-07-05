@@ -172,6 +172,7 @@ body[data-theme="dark"] {
   --primary-light-color: #1a1a1a;
   --card-border-color: #e3eaf32e;
   --heading-background-color: #212121;
+  --secondary-text-color: #696b83;
 }
 
 .card {

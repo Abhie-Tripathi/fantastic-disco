@@ -15,18 +15,18 @@
 
 .primary_header {
   font-size: var(--font-size-h3);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: inherit;
 }
 
 .secondary_header {
-  font-size: 13px;
+  font-size: var(--font-size-small);
   margin-top: 2px;
 }
 .primary_description {
   padding-top: 5px;
-  color: grey;
-  line-height: 21px;
+  color: var(--secondary-text-color);
+  line-height: var(--line-height-default);
 }
 
 .linkCard_container {
@@ -72,12 +72,10 @@
 
 .linkCard_tagsCount {
   display: flex;
-  background-color: #b8b7ea;
   justify-content: center;
   align-items: center;
   height: 20px;
   width: 20px;
-  color: black;
   border-radius: var(--border-radius-lg);
 }
 
@@ -94,7 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* color: #6750a4; */
+  /* color: var(--primary-color); */
 }
 
 .linkCard_header_title {
@@ -105,17 +103,17 @@
 
 .linkCard_header_title span {
   color: var(--primary-color);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .linkCard_heading {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   padding-top: 10px;
 }
 
 .linkCard_description {
   padding: 10px 0px;
-  color: #696b83;
+  color: var(--secondary-text-color);
   font-size: var(--font-size-default);
   line-height: var(--line-height-small);
 }
@@ -131,13 +129,12 @@
   align-items: center;
   gap: 5px;
   color: inherit;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-h4);
 }
 
 .notification_status {
-  background-color: #fffae2;
-  color: black;
+  color: var(--primary-text-color);
   padding: 8px 10px;
   border-radius: 32px;
   display: flex;
@@ -160,14 +157,14 @@
 }
 
 .notification_card::-webkit-scrollbar-thumb {
-  background: grey;
+  background: var(--secondary-text-color);
 }
 
 .notification {
   cursor: pointer;
   font-size: var(--font-size-default);
   padding: 10px;
-  border-bottom: 1px solid #ececf9;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .notification_defaultText {
@@ -175,15 +172,15 @@
   cursor: pointer;
   display: flex;
   height: 100%;
-  color: #696b83;
+  color: var(--secondary-text-color);
 }
 
 .notification:hover {
-  background-color: #1a1a1a;
+  background-color: var(--neutral-color-hover);
 }
 
 .notification_light:hover {
-  background-color: #eeeeee;
+  background-color: var(--neutral-light-color);
 }
 
 .viewButton {
@@ -191,10 +188,8 @@
 }
 
 .notification_description {
-  border: 1px solid #ececf9;
-  background-color: #fdfcff;
+  border: 1px solid var(--border-color);
   padding: 10px 20px;
-  /* color: #696b83; */
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-default);
   line-height: var(--line-height-default);
@@ -218,7 +213,7 @@
 
   padding: 10px 15px;
   color: inherit;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
@@ -232,7 +227,7 @@
 
 .tracker_card_header {
   color: inherit;
-  font-weight: 500;
+  font-weight: var(--font-weight-regular);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -256,7 +251,6 @@
   justify-content: space-evenly;
   gap: var(--spacing-sm);
   align-items: center;
-  /* flex-wrap: wrap; */
 }
 
 .eventCard {
@@ -267,7 +261,6 @@
 }
 .skelton_eventCard {
   width: 110px;
-  /* background-color:  #c3c3c3; */
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -276,7 +269,7 @@
 }
 .tracker_skeleton {
   /* background-color: #c3c3c3; */
-  border-radius: 50%;
+  border-radius: var(--border-radius-rounded);
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -294,7 +287,7 @@
 
 .event_city {
   /* background-color: #c3c3c3;  */
-  border-radius: 5px;
+  border-radius: var(--border-radius-sm);
   display: flex;
   flex-direction: column;
   padding: 5px;
@@ -304,9 +297,9 @@
 .eventCard_title {
   display: flex;
   align-items: center;
-  color: #6750a4;
+  color: var(--primary-color);
   padding-bottom: 10px;
-  gap: 2px;
+  gap: var(--spacing-xxs);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -315,15 +308,15 @@
 }
 
 .eventCard_stats_no {
-  color: #454459;
+  color: var(--secondary-text-color);
   font-size: var(--font-size-h4);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-align: center;
 }
 
 .eventCard_description {
-  color: #454459;
-  font-weight: 300;
+  color: var(--secondary-text-color);
+  font-weight: var(--font-weight-regular);
   font-size: var(--font-size-xs);
   text-align: center;
 }
@@ -347,22 +340,22 @@
   outline: none;
   border: none;
   background-color: transparent;
-  border: 1px solid #b8b7ea;
+  border: 1px solid var(--border-color);
   padding: 5px 15px;
-  color: #6750a4;
+  color: var(--primary-color);
   font-size: var(--font-size-default);
   border-radius: var(--border-radius-lg);
 }
 
 .trends_location_container {
   display: flex;
-  gap: 18px;
+  gap: var(--spacing-md);
   align-items: center;
   padding: 15px;
 }
 
 .trends_location_container span {
-  color: #696b83;
+  color: var(--secondary-text-color);
   font-size: var(--font-size-default);
   flex: 1;
 }
@@ -377,29 +370,29 @@
   gap: var(--spacing-sm);
 }
 
-.trends_location_container button > span {
+/* .trends_location_container button > span {
   color: white;
-}
+} */
 
 .tab_container {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
   margin: 0px 20px;
-  border-bottom: 1px solid #ececf9;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab {
   padding: 10px 0px;
-  color: #696b83;
+  color: var(--secondary-text-color);
   font-size: var(--font-size-default);
   cursor: pointer;
 }
 
 .tab.active {
-  border-bottom: 3px solid #6750a4;
-  color: #6750a4;
-  font-weight: 500;
+  border-bottom: 3px solid var(--border-color);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-medium);
 }
 
 .body_divider {
@@ -438,11 +431,11 @@
 }
 
 .savedEvent:hover {
-  background-color: #454459;
+  background-color: var(--neutral-color-hover);
 }
 
 .savedEvent_light:hover {
-  background-color: #e0e0e0;
+  background-color: var(--neutral-light-color);
 }
 
 .coordinateCard {
@@ -454,7 +447,7 @@
 /* Mobile Styling */
 
 .mobile_eventStats_container {
-  border: 1px solid #6750a4;
+  border: 1px solid var(--primary-color);
   border-radius: var(--border-radius-lg);
   padding: 3.79px 11.36px 3.79px 11.36px;
   margin-top: 4px;
@@ -462,13 +455,12 @@
 }
 
 .mobile_eventCard_title {
-  color: #6750a4;
+  color: var(--primary-color);
   font-size: var(--font-size-default);
 }
 
 .mobile_trackerCard_container {
   display: none;
-  /* justify-content: space-evenly; */
   gap: var(--spacing-sm);
 }
 
