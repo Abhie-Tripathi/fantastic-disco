@@ -1,6 +1,6 @@
 "use client";
 import { Inter } from "next/font/google";
-import {useState} from 'react';
+import { useState } from "react";
 import "./../globals.css";
 import styles from "./layout.module.css";
 import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
@@ -10,6 +10,7 @@ import Sidebar from "../components/sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Joyride from "react-joyride";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -24,7 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [event,setEvent]=useState();
+  const [event, setEvent] = useState();
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
@@ -32,10 +33,10 @@ export default function RootLayout({
         <AuthContextProvider>
           <ThemeProvider>
             <div className="desktop_view tablet_view">
-              <Sidebar/>
+              <Sidebar />
             </div>
 
-            <Navbar/>
+            <Navbar />
             <div className="body_layout">{children}</div>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>

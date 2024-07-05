@@ -128,9 +128,10 @@ button {
   --background-secondary-color-active: #545769;
   --background-color-faded: rgba(12, 15, 30, 0.1);
   --card-background-color: #1d1f36;
-  --card-border-color: #DCDFE4;
-  --border-color: #dcdfe4;
+  --heading-background-color: #f7f7f9;
+  --border-color: #ebebeb;
   --buttons-background-color: #1f1f1f;
+
   /* --link-color: #053c34;
   --link-hover-color: #066d5b;
   --link-visited-color: #042f29;
@@ -164,11 +165,19 @@ button {
 }
 
 body[data-theme="dark"] {
-  --primary-foreground: #171717;
-  --primary-text-color: #ffffff;
-  --border-color: #2c2c2c;
+  --primary-foreground: #131313;
+  --primary-text-color: #EDEDED;
+  --border-color: #2E2E2E;
   --primary-light-color: #1a1a1a;
-  --card-border-color: #e3eaf32e;
+  --heading-background-color: #212121;
+  --secondary-text-color: #A1A1A1;
+}
+
+.card {
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-small);
+  padding: 24px;
+  border: 1px solid var(--border-color);
 }
 
 /* :root {
@@ -412,7 +421,6 @@ input[type="number"] {
 
 .darkMode_secondary {
   background-color: #242424;
-  /* background-color: black; */
   color: white;
 }
 

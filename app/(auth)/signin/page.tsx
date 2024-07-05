@@ -62,7 +62,7 @@ const SignIn = () => {
         }
         if (id !== null) {
           router.push(`/internal/trackers/${id}/trackedEvents`);
-        } else router.push("/");
+        } else router.push("/internal");
       }
     } catch (error) {
       if (error instanceof ZodError) {

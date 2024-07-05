@@ -2,6 +2,7 @@
   padding: 20px;
   /* background-color: #131313;
   color: white; */
+  min-height: calc(100vh - 80px);
 }
 
 .inputfields_container {

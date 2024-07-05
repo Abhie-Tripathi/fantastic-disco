@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
+import React, { useState, useEffect, useRef, Suspense, lazy, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./search.module.css";
@@ -75,7 +75,9 @@ import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import { toast, ToastContainer } from "react-toastify";
 import { GAEvent } from "@/utils/GAEvent";
+import { Step } from "react-joyride";
 import { Cross } from "geist-icons";
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -154,6 +156,20 @@ const Search = () => {
   const [selectedINScore, setSelectedINScore] = useState(0);
 
   const [categoryData, setCatgeoryData] = useState([]);
+
+  //WalkThrough
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState<boolean>(true);
+
+  // Refs for WalkThrough...
+  const searchbarRef = useRef(null);
+  const basicFilterRef = useRef(null);
+  const advFilterShowBtnRef = useRef(null);
+  const advFilterDetailsRef = useRef(null);
+  const insightScoreBtnRef = useRef(null);
+  const intelBtnRef = useRef(null);
+  const insightScoreRef = useRef(null);
+  const intelRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -486,7 +502,6 @@ const Search = () => {
       queryString.eventSize = selectedExhibitScore;
     }
 
-    console.log('queryString', queryString);
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
@@ -695,11 +710,116 @@ const Search = () => {
     return () => clearTimeout(debounceTimeout);
   }, [text]);
 
+  const updateSteps = useCallback(() => {
+    const newSteps: Step[] = [];
+
+    if (searchbarRef.current) {
+      newSteps.push({
+        target: searchbarRef.current,
+        title: "Search Events",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (basicFilterRef.current) {
+      newSteps.push({
+        target: basicFilterRef.current,
+        title: "Search Events",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (advFilterShowBtnRef.current) {
+      newSteps.push({
+        target: advFilterShowBtnRef.current,
+        title: "Search Events",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (advFilterDetailsRef.current) {
+      console.log(advFilterDetailsRef);
+      newSteps.push({
+        target: advFilterDetailsRef.current,
+        title: "Search Events",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (insightScoreBtnRef.current) {
+      console.log(insightScoreBtnRef);
+      newSteps.push({
+        target: insightScoreBtnRef.current,
+        title: "Search Insights btn",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (insightScoreRef.current) {
+      newSteps.push({
+        target: insightScoreRef.current,
+        title: "Search Insigths Score",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (intelBtnRef.current) {
+      newSteps.push({
+        target: intelBtnRef.current,
+        title: "Search IntelBtn",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    if (intelRef.current) {
+      newSteps.push({
+        target: intelRef.current,
+        title: "Search Intel",
+        content: "Search for relevant events happening in any location",
+        disableBeacon: true,
+      });
+    }
+
+    setSteps(newSteps);
+  }, [
+    searchbarRef.current,
+    basicFilterRef.current,
+    showAdvanceFilter,
+    selectedAdvFilter,
+  ]);
+
+  useEffect(() => {
+    const walkthroughCompleted: string[] = JSON.parse(
+      localStorage.getItem("walkthroughCompleted") || "[]"
+    );
+
+    if (!walkthroughCompleted.includes("research")) {
+      updateSteps();
+      setRun(true);
+    }
+  }, [updateSteps]);
+
   return (
     <Suspense fallback={<Loading />}>
       <div className={styles.container}>
+        {steps.length > 0 && (
+          <JoyRideCustom
+            steps={steps}
+            run={run}
+            onFinish={() => setRun(false)}
+            pathName="research"
+            spotClicksIndex={[2, 4, 5]}
+          />
+        )}
         <div className={styles.searchContainer}>
-          <div className={styles.searchbar}>
+          <div className={styles.searchbar} ref={searchbarRef}>
             {Object.keys(selectedEvents).length > 0 && !showAllEvents && (
               <div className={styles.eventName_container}>
                 {Object.entries(selectedEvents).map(
@@ -786,7 +906,7 @@ const Search = () => {
             ))}
           </div>
         )}
-        <div className={styles.sub_container}>
+        <div className={styles.sub_container} ref={basicFilterRef}>
         <div className={styles.basicFilters_container}>
           <div className={styles.filtersRow} >
             <div className={styles.inputdropdowns_container}>
@@ -1092,8 +1212,14 @@ const Search = () => {
                   );
                 }}
                 style={{ display: "flex", alignItems: "center", gap: "4px" }}
-              >
-                <Image src={FilterIcon} width={18} height={18} alt="filters" />
+                  ref={advFilterShowBtnRef}
+                >
+                  <Image
+                    src={FilterIcon}
+                    width={18}
+                    height={18}
+                    alt="filters"
+                  />
                 <span className={styles.clearfilter_button}>
                   {" "}
                   Advanced Filters
@@ -1162,6 +1288,7 @@ const Search = () => {
                     className={`${styles.mapBtn} ${
                       selectedAdvFilter === "IS" ? styles.active : ""
                     }`}
+                      ref={insightScoreBtnRef}
                   >
                     Insights and Score
                   </button>
@@ -1170,6 +1297,7 @@ const Search = () => {
                     className={`${styles.calendarBtn} ${
                       selectedAdvFilter === "AI" ? styles.active : ""
                     }`}
+                      ref={intelBtnRef}
                   >
                     Audience Intel
                   </button>
@@ -1179,7 +1307,10 @@ const Search = () => {
 
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
-              <div className={styles.inputdropdowns_container}>
+                <div
+                  className={styles.inputdropdowns_container}
+                  ref={advFilterDetailsRef}
+                >
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div
@@ -1405,7 +1536,10 @@ const Search = () => {
 
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
-              <div className={styles.inputdropdowns_container}>
+                <div
+                  className={styles.inputdropdowns_container}
+                  ref={insightScoreRef}
+                >
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={styles.input_container}>
@@ -1580,7 +1714,10 @@ const Search = () => {
 
             {/* AUDIENCE INTEL */}
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
-              <div className={styles.inputdropdowns_container_AI}>
+                <div
+                  className={styles.inputdropdowns_container_AI}
+                  ref={intelRef}
+                >
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
