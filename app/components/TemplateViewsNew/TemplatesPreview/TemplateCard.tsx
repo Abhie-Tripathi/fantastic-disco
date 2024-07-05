@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './templatecard.style.module.css'
 import { StaticImageData } from 'next/image';
 import Image from 'next/image';
+import { useTheme } from "@/context";
 
 interface TemplateProps{
     widgetStyle : string;
@@ -13,6 +14,7 @@ interface TemplateProps{
 }
 
 const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templateKey } : TemplateProps) => {
+    const { theme } = useTheme();
     return (
         <div className={styles.body} onClick={()=>setSelectedTemplate(templateKey)}>
             <div className={styles.imageContainer}>
@@ -22,7 +24,7 @@ const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templa
                 <div className={styles.header}>{widgetStyle}</div>
                 <div className={styles.tag}>{tag}</div>
             </div>
-            <div className={styles.subHeading}>
+            <div className={`${styles.subHeading} ${theme === "dark" ?styles.darkSubheading : ""}`}>
                 {desc}
             </div>
         </div>

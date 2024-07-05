@@ -1,7 +1,7 @@
 .body{
     height: 300px;
     width: 95%;
-    border: 1px solid #E8DFFF;
+    border: 1px solid var(--card-border-color);
     border-radius: 8px;
     padding: 12px 12px 24px 12px;
     cursor: pointer;
@@ -42,4 +42,7 @@
     color: #6E6F89;
     font-size: 12px;
     font-weight: 500;
+}
+.darkSubheading{
+    color: #9d9db3;
 }

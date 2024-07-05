@@ -10,6 +10,9 @@
     gap: 18px;
     justify-content: center;
 }
+.darkbtnContainer{
+    background-color: #202020;
+}
 .btn{
     background-color: white;
     color: #424242;
