@@ -4,7 +4,7 @@ import styles from './page.style.module.css'
 import ResourceCard from '@/app/components/resources/ResourceCard'
 import DicussModal from '@/app/components/resources/DicussModal'
 
-const page = () => {
+const Page = () => {
 
     const promote = ["Wear Company T-Shirt", "Host an after party", "Give ads on Uber", "Mention logo and event Mails", "Give out Merchs"]
 
@@ -27,4 +27,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
