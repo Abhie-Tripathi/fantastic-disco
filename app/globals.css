@@ -131,7 +131,7 @@ button {
   --heading-background-color: #f7f7f9;
   --border-color: #ebebeb;
   --buttons-background-color: #1f1f1f;
-
+  --card-border-color: #DCDFE4;
   /* --link-color: #053c34;
   --link-hover-color: #066d5b;
   --link-visited-color: #042f29;
@@ -171,6 +171,7 @@ body[data-theme="dark"] {
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
   --secondary-text-color: #A1A1A1;
+  --card-border-color: #e3eaf32e;
 }
 
 .card {

@@ -47,10 +47,9 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                         <button className={`${styles.styleBtn} ${selectedCard === "card3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card3")}>Style 3</button>
                     </div>}
                     <div className={styles.btnContainer}>
-                        <MobileIcon color = {theme === "dark" ? "white" :"black"}/>
-                        <DesktopIcon color = {theme === "dark" ? "white" :"black"}/>
-                        <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color = {theme === "dark" ? "white" :"black"}/></div>
-                        
+                        <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
+                        <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>
+                        <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color={theme === "dark" ? "white" : "black"} /></div>
                     </div>
 
                 </div>
