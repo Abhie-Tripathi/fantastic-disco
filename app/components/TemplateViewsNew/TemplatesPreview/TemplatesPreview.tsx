@@ -54,7 +54,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                     </div>
 
                 </div>
-                <div className={styles.preview_btnContainer}>
+                <div className={`${styles.preview_btnContainer} ${theme === "dark" ? styles.darkpreview_btnContainer : ""}`}>
                     <div className={styles.preview}>
                         {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                             selectedTemplate === "SB" ? <StickyPreview type="down" /> :

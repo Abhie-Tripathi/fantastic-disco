@@ -45,7 +45,7 @@
 
 .hide_showBtn {
     border: 1px solid var(--card-border-color);
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 5px 17px;
     cursor: pointer;
 }
@@ -60,7 +60,7 @@
     align-items: center;
     gap: 8px;
     padding: 5px 12px;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: #6750A4;
     cursor: pointer;
 }
