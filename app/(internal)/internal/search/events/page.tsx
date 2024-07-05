@@ -1104,7 +1104,10 @@ const Search = () => {
                   Advanced Filters
                 </span>
               </button>
-              <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x>
+              {/* <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x> */}
+              <button onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
+                <span className={styles.clearfilter_button}>Save as Tracker</span>
+              </button>
             </div>
           </div>
 
@@ -1743,9 +1746,7 @@ const Search = () => {
         </div>
 
         <div
-          className={`${styles.viewContainer} ${
-            theme === "dark" ? "darkMode" : "lightMode_secondary"
-          }`}
+          className={`${styles.viewContainer}`}
         >
           <div
             className={`${styles.viewTypeButtons_container} ${
