@@ -52,9 +52,9 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
     const [templateLength, setTemplateLength] = useState(0);
     const [widgetDesc, setWidgetDesc] = useState("");
     const [bgColor, setBgColor] = useState("");
-    const [cardHeight, setCardHeight] = useState("300px")
-    const [imageHolderHeight, setImageHolderHeight] = useState("160px")
-    const [imageHeight, setImageHeight] = useState(161)
+    const [cardHeight, setCardHeight] = useState("250px")
+    const [imageHolderHeight, setImageHolderHeight] = useState("140px")
+    const [imageHeight, setImageHeight] = useState(140)
     const [imageWidth, setImageWidth] = useState(178)
 
     useEffect(()=>{

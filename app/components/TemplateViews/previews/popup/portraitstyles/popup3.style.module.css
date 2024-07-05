@@ -1,12 +1,12 @@
 .card {
     width: 450px;
-    height: 530px;
+    height: 480px;
     border-radius: 8px;
     background-color: white;
     padding: 12px 14px 24px 12px;
 }
 .banner{
-    height: 240px;
+    height: 220px;
     width: 100%;
     border-radius: 8px;
 }
