@@ -87,9 +87,9 @@ const Dashboard = () => {
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {
-        const data: any = await myFetch(`${baseUrl}/tracker`);
+        const { data, error } = await myFetch(`${baseUrl}/tracker`);
 
-        setTrackerList(data?.data?.trackerData);
+        setTrackerList(data.trackerData);
       } catch (error) {
         console.error("Error while fetching trackers:", error);
       } finally {
@@ -422,7 +422,7 @@ const Dashboard = () => {
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    router.push("internal/trackers");
+                    router.push("internal/trackers/savedevents");
                   }}
                 >
                   Saved Events
@@ -433,7 +433,7 @@ const Dashboard = () => {
               ) : (
                 <div
                   className={`${styles.savedEventsData} card`}
-                  style={{padding:'unset'}}
+                  style={{ padding: "unset" }}
                 >
                   {savedEventsList.length > 0 ? (
                     savedEventsList?.map((event: any) => (
