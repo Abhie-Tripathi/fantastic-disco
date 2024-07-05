@@ -785,7 +785,7 @@ const Search = () => {
               >
                 {item.name}
                 <span className={styles.resultData_subHeading}>
-                  {item.organizer.name}
+                  {item.organizer?.name}
                 </span>
               </div>
             ))}
@@ -1146,9 +1146,7 @@ const Search = () => {
         {showAdvanceFilter && (
           <div style={{paddingBottom: "24px"}}>
             <div
-              className={`${styles.viewContainer} ${
-                theme === "dark" ? "darkMode" : "lightMode_secondary"
-              }`}
+              className={`${styles.viewContainer}`}
               style={{marginTop: "0"}}
             >
               <div className={styles.viewTypeButtons_container}>
@@ -1749,9 +1747,7 @@ const Search = () => {
           className={`${styles.viewContainer}`}
         >
           <div
-            className={`${styles.viewTypeButtons_container} ${
-              theme === "light" ? styles.viewTypeButtons_light : ""
-            }`}
+            className={`${styles.viewTypeButtons_container}`}
           >
             <div className={styles.viewTypeButtons}>
               <button

@@ -24,7 +24,7 @@
 .circle {
   border-radius: 50%;
   display: flex;
-  background-color: var(--buttons-background-color);
+  background-color: var(--background-color-hover);
   width: 45px;
   height: 45px;
   align-items: center;

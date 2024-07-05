@@ -27,7 +27,7 @@ import {
 } from "react-aria-components";
 
 interface FormDataType {
-  entityId_id?: string | number | null;
+  entityId_id: string;
   markedInterest?: string | null;
   eventGroupId: string;
 }
@@ -227,7 +227,7 @@ const Table = ({
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [formData, setFormData] = useState<FormDataType>({
-    entityId_id: null,
+    entityId_id: "",
     markedInterest: null,
     eventGroupId: "",
   });
@@ -242,12 +242,11 @@ const Table = ({
     e.preventDefault();
     if (
       formData.entityId_id &&
-      formData.markedInterest &&
-      formData.eventGroupId
+      formData.markedInterest
     ) {
       if (formData.markedInterest == "bookmark") {
         let payloadData = {
-          eventGroupId: formData.eventGroupId,
+          eventId: formData.entityId_id,
         };
         try {
           const { data, error } = await myFetch(
@@ -271,7 +270,7 @@ const Table = ({
               closeButton: false,
               hideProgressBar: true,
             });
-            setBookmarkedEvent((prev) => [...prev, formData.eventGroupId]);
+            setBookmarkedEvent((prev) => [...prev, formData.entityId_id]);
           }
         } catch (error) {
           console.error("Error saving data:", error);
@@ -281,7 +280,7 @@ const Table = ({
       } else if (formData.markedInterest == "unbookmark") {
         try {
           let payloadData = {
-            eventGroupIds: [formData.eventGroupId],
+            eventId: formData.entityId_id,
           };
           const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
@@ -292,7 +291,7 @@ const Table = ({
           });
           if (response) {
             setBookmarkedEvent((prev) =>
-              prev.filter((id) => id !== formData.eventGroupId)
+              prev.filter((id) => id !== formData.entityId_id)
             );
             toast.success("Bookmarked event removed!", {
               position: "bottom-right",
@@ -353,7 +352,7 @@ const Table = ({
       }
       if (data) {
         let bookmarkGroupIds = data.result.map(
-          (event: any) => event.eventGroupId
+          (event: any) => event.id
         );
         setBookmarkedEvent(bookmarkGroupIds);
       }
@@ -372,7 +371,7 @@ const Table = ({
       });
     } else {
       setFormData({
-        entityId_id: null,
+        entityId_id: "",
         markedInterest: null,
         eventGroupId: "",
       });
@@ -658,9 +657,7 @@ const Table = ({
       >
         <table className={styles.table}>
           <thead
-            className={`${styles.table_head} ${
-              theme === "light" ? styles.table_head_light : ""
-            }`}
+            className={`${styles.table_head}`}
           >
             <tr className={styles.table_head_row}>
               <th className={styles.table_firstColumn}>Event</th>
@@ -684,7 +681,7 @@ const Table = ({
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header
-                } ${theme === "light" ? styles.table_actionColumn_light : ""}`}
+                }`}
               >
                 Actions
               </th>
@@ -707,7 +704,7 @@ const Table = ({
                       : event.name}
                   </Link>
                   <div className={styles.event_organizer}>
-                    {event.organizer.name}
+                    {event.organizer?.name}
                   </div>
                 </td>
                 <td>
@@ -990,9 +987,7 @@ const Table = ({
                   </td>
                 )}
                 <td
-                  className={`${styles.table_actionColumn} ${
-                    theme === "light" ? styles.table_actionColumn_light : ""
-                  }`}
+                  className={`${styles.table_actionColumn}`}
                 >
                   {path[path.length - 1] === "trackedEvents" ||
                   path[path.length - 1] === "savedEvents" ||
