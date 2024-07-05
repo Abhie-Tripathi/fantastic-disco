@@ -89,7 +89,7 @@
     align-items: center;
     gap: 8px;
 }
-.btnContainer img{
+.btnContainer div{
     cursor: pointer;
 }
 .heading{
