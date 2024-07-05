@@ -10,6 +10,9 @@
     gap: 18px;
     justify-content: center;
 }
+.darkbtnContainer{
+    background-color: #202020;
+}
 .btn{
     background-color: white;
     color: #424242;
@@ -17,6 +20,7 @@
     border-radius: 4px;
     filter: drop-shadow(1px 1px 1px #0000000A);
     height: 41px;
+    font-size: 13px;
     width: 300px;
 }
 .activeBtn{

@@ -11,14 +11,18 @@ const Page = () => {
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
     const [desc, setDesc] = useState("");
-    const [height, setHeight] = useState<number>(200);
-    const [width, setWidth] = useState<number>(200);
+    const [height, setHeight] = useState<number>(180);
+    const [width, setWidth] = useState<number>(320);
     const [image, setImage] = useState<string>("")
 
     const handlePoster = () => {
         generatePrompt(location, desc, name, height, width)
     }
     
+    useEffect(() => {
+        // Update the height to maintain 16:9 aspect ratio when width changes
+        setHeight(Math.round(width * 9 / 16));
+      }, [width]);
     useEffect(() => {
         // Update the image state when generatedImage change
         if (imageUrl) {
@@ -51,8 +55,8 @@ const Page = () => {
                     Width: {width}px
                     <input
                         type="range"
-                        min="200"
-                        max="700"
+                        min="180"
+                        max="1024"
                         step="50"
                         value={width}
                         onChange={(e) => setWidth(Number(e.target.value))}
