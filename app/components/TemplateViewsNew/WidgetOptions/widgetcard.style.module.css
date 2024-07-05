@@ -57,3 +57,8 @@
     top: 27px;
     left: 25px;
 }
+@media screen and (max-width : 1300px){
+    .body{
+        width: 100%;
+    }
+}
