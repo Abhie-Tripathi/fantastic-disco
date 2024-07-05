@@ -137,7 +137,7 @@ const CommonTrackerCard = () => {
           <div className={styles.cardThree} style={{ height: "auto" }}>
             <div className={styles.cardThreeLeft} style={{ flexDirection: "column" }}>
               <div style={{ display: "flex", gap: "20px" }}>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore6} alt="newVector" />
                 New
@@ -150,7 +150,7 @@ const CommonTrackerCard = () => {
                     <div >New</div>
                   </div>
                 </div>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
@@ -164,7 +164,7 @@ const CommonTrackerCard = () => {
                 </div>
               </div>
               <div style={{ display: "flex", gap: "20px" }}>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired}
                   </div>
@@ -172,9 +172,9 @@ const CommonTrackerCard = () => {
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
                     Expired</div>
                 </div>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired}
+                    0
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />

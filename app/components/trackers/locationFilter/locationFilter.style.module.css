@@ -1,6 +1,6 @@
 .container{
     display: flex;
-    border: 1px solid #EBEBEB;
+    border: 0.5px solid var(--card-border-color);
     /* justify-content: space-evenly; */
     border-radius: 5px;
     padding: 20px;

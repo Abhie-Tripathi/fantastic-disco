@@ -707,7 +707,7 @@ const Table = ({
                       : event.name}
                   </Link>
                   <div className={styles.event_organizer}>
-                    {event.organizer.name}
+                    {event?.organizer?.name}
                   </div>
                 </td>
                 <td>

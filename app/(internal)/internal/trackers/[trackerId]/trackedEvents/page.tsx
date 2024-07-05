@@ -173,6 +173,7 @@ const Page = () => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}k`;
     }
+    console.log(count);
     return count;
   };
   const saveTracker=async()=>{
@@ -243,12 +244,12 @@ const Page = () => {
           <div className={styles.eventStatusLeft}>
             <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>
               Active Events
-              {<div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active}</div>}
+              {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active)}</div>}
 
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => setActive("New Events")}>
               New Events
-              {<div className={styles.circle}>{data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new}</div>}
+              {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new)}</div>}
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => setActive("Expired Events")}>Expired Events
               {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div>}

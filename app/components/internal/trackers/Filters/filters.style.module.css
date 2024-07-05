@@ -38,7 +38,7 @@
   
   .recentSearches_button {
     background-color: white;
-    color: #6750a4;
+    color: var(--primary-color);
     cursor: pointer;
     border-radius: 6px;
     padding: 8px 16px;
@@ -110,7 +110,7 @@
     cursor: pointer;
   }
   .viewTypeButtons button.active {
-    background-color: #6750a4;
+    background-color: var(--primary-color);
     border-radius: 4px;
     color: white;
   }
@@ -131,16 +131,16 @@
     cursor: pointer;
   }
   .advanceFilterBtns button.active {
-    border: 1px solid #6750a4;
+    border: 1px solid var(--primary-color);
     border-radius: 4px;
     /* color: white; */
   }
   
   .message {
     margin-top: 30px;
-    color: #6750a4;
-    font-size: 30px;
-    font-weight: 600;
+    color: var(--primary-color);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
   }
   .viewTypeButton {
     margin-top: 60px;
@@ -148,30 +148,29 @@
   
   .input_container {
     width: 100%;
-    border: 1px solid #efefef;
+    border: 1px solid var(--card-border-color);
+    border-radius: var(--border-radius-sm);
     white-space: nowrap;
+    padding: 8px 16px;
     color: inherit;
-    padding: 10px 15px;
-    /* color: white; */
-    /* background-color: white; */
-    /* border-radius: 6px; */
+    background-color: inherit;
   }
   
   .createtracker_button {
     cursor: pointer;
     white-space: nowrap;
     padding: 8px 20px;
-    background-color: #6750a4;
+    background-color: var(--primary-color);
     color: white;
     border-radius: 6px;
   }
   
   .clearfilter_button {
-    color: #6750a4;
+    color: var(--primary-color);
     text-align: center;
     width: fit-content;
     padding-bottom: 1px;
-    border-color: #6750a4;
+    border-color: var(--primary-color);
     border-bottom-style: solid;
     border-bottom-width: 2px;
   }
@@ -185,12 +184,12 @@
   
   .input_selected_no {
     margin-left: 4px;
-    font-size: 10px;
+    font-size: var(--font-size-small);
     height: 20px;
     width: 20px;
-    background-color: #6750a4;
+    background-color: var(--primary-color);
     color: white;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -201,14 +200,14 @@
   .input_selected_title {
     padding-left: 4px;
     font-size: 10px;
-    color: #4d1bf3;
-    font-weight: 500;
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
     vertical-align: middle;
   }
 
   .viewContainer {
     /* background-color: #fbf8ff; */
-    
+    background: var(--tabs-background-color);
     padding: 10px 0px;
     border-radius: 12px;
     margin: 25px 0px;
@@ -217,32 +216,6 @@
     align-items: center;
     justify-content: center;
   }
-  
-  .exportedno_container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .exportedno {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    background-color: #4d1bf3;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .exportedno_title {
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #6750a4;
-    font-weight: 500;
-  }
-  
   .exportButton {
     position: absolute;
     right: 20px;
@@ -253,7 +226,7 @@
   }
   
   .exportButtonTitle {
-    color: #4d1bf3;
+    color: var(--primary-color);
   }
   
   .modalOverlay {
@@ -326,11 +299,11 @@
   }
   
   input:checked + .slider {
-    background-color: #6750a4;
+    background-color: var(--primary-color);
   }
   
   input:focus + .slider {
-    box-shadow: 0 0 1px #6750a4;
+    box-shadow: 0 0 1px var(--primary-color);
   }
   
   input:checked + .slider:before {
@@ -343,6 +316,7 @@
 
   .topContainer{
     /* background: #F7F7F9; */
+    background: var(--heading-background-color);
     display: flex;
     justify-content: space-between;
     /* border: 1px solid #F9F9FF; */
@@ -358,30 +332,30 @@
     gap:10px;
   }
   .createHead{
-    color: #6750A4;
+    color: var(--primary-color);
     font-weight: 700;
     font-size: 18px;
   }
   .createContent{
     color: #777777;
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
   }
   .cancel, .save{
     padding:0 20px;
-    color:#6750A4;
+    color:var(--primary-color);
   }
   .save{
-    background: #6750A4;
+    background: var(--primary-color);
     color: white;
-    border-radius: 12px;
-    border: 1px solid #B8B7EA
+    border-radius: var(--border-radius-sm);
+    /* border: 1px solid #B8B7EA */
   }
   .searchContainer{
     padding:4px 27px;
-    border-radius: 12px;
+    border-radius: var(--border-radius-sm);
     width: 100%;
-    border: 1px solid #D9D9D9
+    border: 1px solid var(--card-border-color);
   }
   .textArea{
     /* background: #808080; */
@@ -395,4 +369,7 @@
   .noBorder{
     border: none;
     outline: none;
+  }
+  .listBtn{
+    background-color: var(--primary-foreground);
   }

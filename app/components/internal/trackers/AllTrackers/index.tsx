@@ -119,17 +119,17 @@ const AllTrackers = ({ item }: any) => {
         </div>
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
-            <div className={styles.cardType}>
+            <div className={`${styles.cardType} card`}>
               <div className={styles.new}>
                 <Image src={Vectore6} alt="newVector" width={12} height={12}/>
                 New
               </div>
-              <div className={styles.number} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item.groupedEventsCountByStatus.groupedEventsByStatus.new}
               </div>
               <div className={styles.events}>Events</div>
             </div>
-            <div className={styles.cardType}>
+            <div className={`${styles.cardType} card`}>
               <div className={styles.new}>
                 <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                 Active
@@ -139,7 +139,7 @@ const AllTrackers = ({ item }: any) => {
               </div>
               <div className={styles.events}>Events</div>
             </div>
-            <div className={styles.cardType}>
+            <div className={`${styles.cardType} card`}>
               <div className={styles.new}>
                 <Image src={Vectore8} alt="expired" width={12} height={12}/>
                 Expired

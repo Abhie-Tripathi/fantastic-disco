@@ -9,7 +9,7 @@
     width:100%;
     align-items: center;
     justify-content: space-between;
-    background-color: #F7F7F9;
+    background: var(--heading-background-color);
     padding:12px;
 }
 .containerTopLeft{

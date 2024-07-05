@@ -11,7 +11,7 @@
 }
 .format{
     padding:12px 15px;
-    border: 1px solid #EBEBEB;
+    border: 1px solid var(--card-border-color);
     display: flex;
     gap:10px;
     flex-direction: column;

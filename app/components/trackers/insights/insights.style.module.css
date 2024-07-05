@@ -38,7 +38,7 @@
 }
 .branded{
     padding: 12px 15px;
-    border: 1px solid #EBEBEB;
+    border: 1px solid var(--card-border-color);;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -173,7 +173,7 @@ useEffect(() => {
       <div className={styles.innerContainer}>
         <div
           className={styles.innerContainerLeft}
-          style={{ border: "1px solid #EBEBEB" }}
+          style={{ border:"1px solid var(--card-border-color)" }}
         >
           {data && (
             <BasicFilter

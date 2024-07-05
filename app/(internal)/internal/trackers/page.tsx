@@ -408,9 +408,7 @@ const Trackers = () => {
         <>
         {/* {loading ? <Loading/>:<> */}
           <div
-            className={`${styles.trackers} ${
-              theme === "dark" ? "darkMode" : "lightMode_secondary"
-            }`}
+            className={`${styles.trackers}`}
           >
             <div
               className={`${styles.trackersHead} ${

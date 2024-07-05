@@ -111,13 +111,14 @@ const Pages = () => {
   interface SelectedLocation {
     [id: string]: string;
   }
+  const {theme}=useTheme();
+  const iconClass = theme !== "light" ? "icons_light" :"icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { theme } = useTheme();
   const [selectedView, setSelectedView] = useState("list");
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
   // const [categorySlug, setCategorySlug] = useState([]);
@@ -827,9 +828,7 @@ console.log(selectedEventRank);
   return (
     <>
       <div
-        className={`${styles.topContainer} ${
-          theme === "dark" ? "darkMode" : "lightMode_secondary"
-        }`}
+        className={`${styles.topContainer}`}
       >
         <div className={styles.topInnerContainerLeft}>
           <div>
@@ -901,6 +900,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -944,6 +944,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -991,6 +992,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -1101,6 +1103,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -1145,6 +1148,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -1180,6 +1184,7 @@ console.log(selectedEventRank);
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -1222,9 +1227,7 @@ console.log(selectedEventRank);
 
           <div>
             <div
-              className={`${styles.viewContainer} ${
-                theme === "dark" ? "darkMode" : "lightMode_secondary"
-              }`}
+              className={`${styles.viewContainer}`}
             >
               <div className={styles.viewTypeButtons_container}>
                 <div className={styles.advanceFilterBtns}>
@@ -1232,23 +1235,23 @@ console.log(selectedEventRank);
                     onClick={() => setSelectedAdvFilter("AP")}
                     className={`${styles.listBtn} ${
                       selectedAdvFilter === "AP" ? styles.active : ""
-                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
+                    }`}
                   >
                     Advanced Details
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("IS")}
-                    className={`${styles.mapBtn} ${
+                    className={`${styles.listBtn} ${
                       selectedAdvFilter === "IS" ? styles.active : ""
-                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"}`}
+                    }`}
                   >
                     Insights and Score
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("AI")}
-                    className={`${styles.calendarBtn} ${
+                    className={`${styles.listBtn} ${
                       selectedAdvFilter === "AI" ? styles.active : ""
-                    } ${theme === "dark" ? "darkMode_secondary" : "lightMode"} `}
+                    }`}
                   >
                     Audience Intel
                   </button>
@@ -1281,6 +1284,7 @@ console.log(selectedEventRank);
                         alt="dropicon"
                         width={20}
                         height={20}
+                        className={iconClass}
                       />
                     </div>
                   </div>
@@ -1319,6 +1323,7 @@ console.log(selectedEventRank);
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -1355,6 +1360,7 @@ console.log(selectedEventRank);
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -1387,6 +1393,7 @@ console.log(selectedEventRank);
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>
@@ -1422,6 +1429,7 @@ console.log(selectedEventRank);
                           alt="dropicon"
                           width={20}
                           height={20}
+                          className={iconClass}
                         />
                       </div>
                     </div>

@@ -163,6 +163,7 @@ button {
   --neutral-color: #7d7d7d;
   --neutral-color-hover: #a0a0a0;
   --neutral-light-color: #ebebeb;
+  --tabs-background-color: #FBF8FF;
 }
 
 body[data-theme="dark"] {
@@ -172,6 +173,7 @@ body[data-theme="dark"] {
   --primary-light-color: #1a1a1a;
   --card-border-color: #e3eaf32e;
   --heading-background-color: #212121;
+  --tabs-background-color: #1a1a1a;
 }
 
 .card {

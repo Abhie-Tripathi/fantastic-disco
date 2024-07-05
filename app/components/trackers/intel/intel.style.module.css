@@ -38,7 +38,7 @@
 }
 .branded{
     padding: 12px 15px;
-    border: 1px solid #EBEBEB;
+    border: 1px solid var(--card-border-color);;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,9 +46,9 @@
     /* flex-direction: column; */
     border-radius: 6px;
 }
-.brandeOne{
+.brandeOuter{
     padding: 12px 15px;
-    border: 1px solid #EBEBEB;
+    border: 1px solid var(--card-border-color);;
     display: flex;
     gap: 10px;
     justify-content: space-between;
