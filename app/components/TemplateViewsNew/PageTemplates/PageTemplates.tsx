@@ -30,8 +30,8 @@ const PageTemplates = ({setSelectedTemplate} : Props) => {
     return (
         <div className={`${styles.body}`}>
             <div className={`${styles.btnContainer} ${theme == "dark" ? styles.darkbtnContainer: ""}`}>
-                <button className={`${styles.btn} ${activeBtn === "Highlighted" ? styles.activeBtn : ""}`} onClick={() => setActiveBtn("Highlighted")}>Highlighted Event Styles</button>
-                <button className={`${styles.btn} ${activeBtn === "NonHighlighted" ? styles.activeBtn : ""}`} onClick={() => setActiveBtn("NonHighlighted")}>Non-Highlighted Event Styles</button>
+                <button className={`${styles.btn} ${activeBtn === "Highlighted" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkBtn : ""}`} onClick={() => setActiveBtn("Highlighted")}>Highlighted Event Styles</button>
+                <button className={`${styles.btn} ${activeBtn === "NonHighlighted" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkBtn : ""}`} onClick={() => setActiveBtn("NonHighlighted")}>Non-Highlighted Event Styles</button>
             </div>
             <div className={styles.templates}>
                 {activeBtn === "NonHighlighted" ? (
