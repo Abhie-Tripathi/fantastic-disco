@@ -1,7 +1,7 @@
 .body{
     width: 300px;
     border-radius:8px;
-    border: 1px solid #E0E1E4;
+    border: 1px solid var(--card-border-color);
     padding: 12px;
     cursor: pointer;
     position: relative;
@@ -41,12 +41,12 @@
     padding: 4px 8px;
 }
 .widgetName{
-    font-size: 18px;
+    /* font-size: 18px; */
     color: #6750a4;
     font-weight: 700;
 }
 .widgetDesc{
-    font-size: 14px;
+    font-size: 12px;
     color: #6E6F89;
 }
 .tickIcon{

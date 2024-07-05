@@ -6,10 +6,12 @@
     display: flex;
     gap: 16px;
 }
-.heading {
-    color: black;
-    font-weight: 500;
+.headingContainer{
+    /* color: black; */
 }
-.subheading {
-    color: black;
+.headingContainerDark{
+    color: white;
+}
+.heading {
+    font-weight: 500;
 }
