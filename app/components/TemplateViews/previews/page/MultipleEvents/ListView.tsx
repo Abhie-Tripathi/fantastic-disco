@@ -38,10 +38,10 @@ const ListView = ({ cardRadius,
     let EventListCard: ElementType;
 
     switch (selectedCard) {
-        case 'card1':
+        case 'style1':
             EventListCard = EventListCard1;
             break;
-        case 'card2':
+        case 'style2':
             EventListCard = EventListCard2;
             break;
         default:

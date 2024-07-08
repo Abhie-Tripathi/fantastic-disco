@@ -1,6 +1,6 @@
 .body{
     display: flex;
-    height: 600px;
+    height: 650px;
     gap: 30px;
 }
 .templatesContainer{
@@ -96,7 +96,7 @@
     font-size: 18px;
     font-weight: 500;
 }
-@media screen and (max-width: 1403px) {
+@media screen and (max-width: 1250px) {
     .body {
         flex-direction: column;
         height: fit-content;

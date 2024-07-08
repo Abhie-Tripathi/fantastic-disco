@@ -11,12 +11,13 @@ interface TemplateProps{
     image: StaticImageData; 
     setSelectedTemplate : (value : string) => void
     templateKey : string;
+    selectedTemplate : string;
 }
 
-const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templateKey } : TemplateProps) => {
+const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templateKey, selectedTemplate } : TemplateProps) => {
     const { theme } = useTheme();
     return (
-        <div className={styles.body} onClick={()=>setSelectedTemplate(templateKey)}>
+        <div className={`${styles.body} ${selectedTemplate === templateKey ? styles.activeBody : ""}`} onClick={()=>setSelectedTemplate(templateKey)}>
             <div className={styles.imageContainer}>
                 <Image src={image} alt='banner' className={styles.image}></Image>
             </div>
