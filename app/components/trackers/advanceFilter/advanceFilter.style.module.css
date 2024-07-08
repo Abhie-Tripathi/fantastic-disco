@@ -1,40 +1,40 @@
 .container{
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap: var(--spacing-sm);
 }
 .formatFreq{
     display: grid;
-    gap:10px;
+    gap: var(--spacing-sm);
     grid-template-columns: repeat(2, 1fr);
     /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
 }
 .format{
     padding:12px 15px;
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
     display: flex;
-    gap:10px;
+    gap: var(--spacing-sm);
     flex-direction: column;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 .formatHead{
-    color: #6750A4;
-    font-size: 14px;
-    font-weight: 500;
+    color: var(--primary-color);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-medium);
 }
 .allCat{
     display: flex;
-    gap: 10px;
+    gap: var(--spacing-sm);
     /* flex-direction: column; */
   }
   .item{
     color:#2D3748;
     padding-left: 5px;
-    font-size: 12px;
+    font-size: var(--font-size-small);
   }
   .formatFreq1{
     display: grid;
-    gap:10px;
+    gap: var(--spacing-sm);
     /* grid-template-columns: repeat(2, 1fr); */
   }
   .key{
@@ -42,22 +42,22 @@
     background-color: #F1FFF4;
     color: black;
     text-align: center;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-small);
   }
   .keyNegative{
     padding: 7px;
     background-color: #FFEFEF;
     color: black;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     text-align: center;
-    font-size: 12px;
+    font-size: var(--font-size-small);
   }
   .allCat1{
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-gap: 10px;
-    gap: 10px;
+    grid-gap: var(--spacing-sm);
+    gap: var(--spacing-sm);
   }
   @media (max-width:1550px) {
     .formatFreq{
@@ -77,7 +77,7 @@
     text-wrap: nowrap;
     color: #fff;
     text-align: center;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
     padding: 5px;
     position: absolute;
     z-index: 1;

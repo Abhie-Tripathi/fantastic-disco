@@ -115,6 +115,12 @@ const Page = () => {
     });
     if(data){
       showToast("success","Tracker deleted successfully")
+      GAEvent(
+        "trackers",
+        "Tracker Detail",
+        "Delete",
+        "Delete"
+      );
       router.replace(`/internal/trackers`);
     }
   } 
@@ -156,9 +162,9 @@ useEffect(() => {
               onClick={() =>
                 GAEvent(
                   "trackers",
-                  "Trackers",
-                  "Saved Tracker | Tracker Edited",
-                  "Edit tracker"
+                  "Tracker Detail",
+                  "Edit",
+                  "Edit"
                 )
               }
             >
@@ -173,7 +179,7 @@ useEffect(() => {
       <div className={styles.innerContainer}>
         <div
           className={styles.innerContainerLeft}
-          style={{ border:"1px solid var(--card-border-color)" }}
+          style={{ border:"1px solid var(--border-color)" }}
         >
           {data && (
             <BasicFilter

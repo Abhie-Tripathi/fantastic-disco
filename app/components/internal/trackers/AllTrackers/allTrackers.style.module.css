@@ -47,7 +47,7 @@
     justify-content: center;
     text-wrap: nowrap;
     gap:var(--spacing-xxs);
-    border-bottom: 0.39px solid var(--card-border-color);
+    border-bottom: 0.39px solid var(--border-color);
     padding-bottom: 10px;
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-medium);

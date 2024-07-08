@@ -6,6 +6,7 @@ import StickyWidgetImage from '/public/widgetimages/stickyimages/StickyWidgetIma
 import PopupWidgetImage from '/public/widgetimages/popupimages/PopupWidgetImage.svg'
 import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
+import { useTheme } from '@/context'
 
 interface WidgetCardProps {
     widgetType: 'Page' | 'Section' | 'Sticky' | 'Popup';
@@ -22,6 +23,7 @@ interface WidgetConfig {
 }
 
 const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
+    
     Page: {
         name: "Page Widget",
         length: 9,
@@ -48,18 +50,20 @@ const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
     },
 };
 const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}: WidgetCardProps) => {
+
+    const { theme } = useTheme();
     const [widgetName, setWidgetName] = useState("");
     const [templateLength, setTemplateLength] = useState(0);
     const [widgetDesc, setWidgetDesc] = useState("");
     const [bgColor, setBgColor] = useState("");
-    const [cardHeight, setCardHeight] = useState("399px")
-    const [imageHolderHeight, setImageHolderHeight] = useState("199px")
-    const [imageHeight, setImageHeight] = useState(200)
+    const [cardHeight, setCardHeight] = useState("250px")
+    const [imageHolderHeight, setImageHolderHeight] = useState("140px")
+    const [imageHeight, setImageHeight] = useState(140)
     const [imageWidth, setImageWidth] = useState(178)
 
     useEffect(()=>{
         if(smallCard){
-            setCardHeight("293px")
+            // setCardHeight("293px")
             setImageHolderHeight("108px")
             setImageHeight(108)
             setImageWidth(112)
@@ -76,7 +80,7 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
         }
     }, [widgetType]);
     return (
-        <div className={styles.body} style={{height : cardHeight}} onClick={()=>setWidgetSelected(widgetType)}>
+        <div className={styles.body} style={{height : ""}} onClick={()=>setWidgetSelected(widgetType)}>
             <div className={styles.banner} style={{height : imageHolderHeight}}>
                 <Image src={widgetType === "Page" ? PageWidgetImage :
                     widgetType === "Section" ? SectionWidgetImage :
@@ -92,7 +96,7 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
                     <div className={styles.widgetLengthContainer} style={{backgroundColor : bgColor}}>+{templateLength} styles</div>
                 </div>
                 <div className={styles.widgetName}>{widgetName}</div>
-                <div className={styles.widgetDesc}>{widgetDesc}</div>
+                <div className={`${styles.widgetDesc} ${theme === "dark" ?styles.darkDesc : ""}gti`}>{widgetDesc}</div>
             </div>
             {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon}/>}
         </div>

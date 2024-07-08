@@ -43,15 +43,6 @@ const TrackerSkeleton = () => {
           <Skeleton animation="wave" variant="rounded" width={80} height={30} />
           <Skeleton animation="wave" variant="rounded" width={80} height={30} />
         </div>
-
-        <div>
-          <Skeleton
-            animation="wave"
-            variant="circular"
-            width={100}
-            height={100}
-          />
-        </div>
       </div>
     </div>
   );

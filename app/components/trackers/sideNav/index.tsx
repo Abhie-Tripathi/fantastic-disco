@@ -11,6 +11,7 @@ import Image from "next/image";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
 import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import { GAEvent } from '@/utils/GAEvent';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -69,18 +70,45 @@ const Index = () => {
        
           <>
             <div className={styles.leftContainer}>
-              <Link href={`/internal/trackers/${secondLast}/trackedEvents`}>
+              <Link href={`/internal/trackers/${secondLast}/trackedEvents`}
+              onClick={()=>{
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                   "Tracked Events"
+                )
+              }}
+              >
                 <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
                   Tracked Events
                 </div>
               </Link>
 
-              <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}>
+              <Link href={`/internal/trackers/${secondLast}/notesDiscussion`} 
+              onClick={()=>{
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                   "Notes and Discussion"
+                )
+              }}
+              >
                 <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
                   Notes & Discussions
                 </div>
               </Link>
-              <Link href={`/internal/trackers/${secondLast}/savedEvents`}>
+              <Link href={`/internal/trackers/${secondLast}/savedEvents`}
+              onClick={()=>{
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                   "Saved Events"
+                )
+              }}
+              >
                 <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
                   Saved Events
                 </div>
@@ -88,13 +116,30 @@ const Index = () => {
 
             </div>
             <div className={styles.configAccess}>
-              <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}>
+              <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}
+              onClick={()=>{
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                   "Configuration"
+                )
+              }}>
                 <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`}onClick={() => setTrackerSection("Tracker Configurations")}>
                   <Image src={Settings} alt="setting" /> 
                   <span className={styles.tooltipText}>Configurations</span>
                 </div>
               </Link>
-              <Link href={`/internal/trackers/${secondLast}/manageAccess`}>
+              <Link href={`/internal/trackers/${secondLast}/manageAccess`} 
+              onClick={()=>{
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                   "User Access"
+                )
+              }}
+              >
                 <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
                   <Image src={Manage} alt="setting" /> 
                   <span className={styles.tooltipText}>Manage Access</span>

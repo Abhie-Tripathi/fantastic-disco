@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
 import styles from "./page.style.module.css";
 import Research from "/public/internal/research.svg";
 import Image from "next/image";
@@ -36,7 +37,7 @@ interface Outreach {
   Prefinal: number;
 }
 
-interface CordinateType {
+interface CoordinateType {
   id: number;
   name: string;
   count: string;
@@ -46,17 +47,17 @@ const trackerCardsData = [
   {
     icon: NewEvent,
     title: "New",
-    stats: "115",
+    stats: "0",
   },
   {
     icon: Timer,
     title: "Active",
-    stats: "74",
+    stats: "0",
   },
   {
     icon: CircleCross,
     title: "Expired",
-    stats: "41",
+    stats: "0",
   },
 ];
 
@@ -72,21 +73,23 @@ const Dashboard = () => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [trackerList, setTrackerList] = useState([]);
-  const [savedEvantsList, setSavedEventsList] = useState<SavedEvent[]>([]);
-  const [cordinateData, setCordinateData] = useState<CordinateType[]>([]);
+  const [savedEventsList, setSavedEventsList] = useState<SavedEvent[]>([]);
+  const [coordinateData, setCoordinateData] = useState<CoordinateType[]>([]);
   const [outReachData, setOutReachData] = useState<Outreach[]>([]);
   const [pendingEvent, setPendingEvents] = useState("");
   const [shortlisted, setShortListed] = useState("");
   const [prefinal, setPrefinal] = useState("");
   const [totalEvent, setTotalEvents] = useState("");
-
   const [isLoading, setIsLoading] = useState(true);
+
   const router = useRouter();
+
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {
-        const data: any = await myFetch(`${baseUrl}/tracker`);
-        setTrackerList(data?.data?.trackerData);
+        const { data, error } = await myFetch(`${baseUrl}/tracker`);
+
+        setTrackerList(data.trackerData);
       } catch (error) {
         console.error("Error while fetching trackers:", error);
       } finally {
@@ -98,9 +101,9 @@ const Dashboard = () => {
 
   const getSavedEvents = async () => {
     try {
-      const data = await myFetch(`${baseUrl}/tracker/saved-events`);
+      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=4`);
       console.log("saved_events", data?.data);
-      setSavedEventsList(data?.data?.savedEvents);
+      setSavedEventsList(data?.result);
     } catch (error) {
       console.error("Error while fetching saved events:", error);
     } finally {
@@ -119,7 +122,7 @@ const Dashboard = () => {
         console.log("cordinate", data?.data?.slice(1, data?.data.length));
         // setCordinateData(data.data[]);
         setTotalEvents(data?.data[0]?.totalEvent);
-        setCordinateData(data?.data?.slice(1, data?.data.length));
+        setCoordinateData(data?.data?.slice(1, data?.data.length));
       } catch (error) {
         console.error("Error while fetching cordinate list:", error);
       } finally {
@@ -174,116 +177,28 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header_container}>
-        <div className={styles.primary_container}>
-          <div className={styles.primary_header}>Welcome back!</div>
-          <div className={styles.secondary_header}>
-            Unlock the possibility of EventGeni
-          </div>
-          {isLoading ? (
-            <>
-              <SkeletonCards />
-            </>
-          ) : (
-            <div className={styles.linkCard_container}>
-              <Link href={`internal/search/events`} className={styles.linkCard}>
-                <div className={styles.linkCard_header}>
-                  <div className={styles.linkCard_header_title}>
-                    <Image src={Research} alt="search" />
-                    <span>Continue Research</span>
-                  </div>
-                  <Image
-                    src={GotoIcon}
-                    alt="goto"
-                    className={`${iconClass} ${styles.goto_icon}`}
-                  />
-                </div>
-
-                <div className={styles.linkCard_heading}>
-                  <span>Bengaluru</span>
-                </div>
-
-                <div className={styles.linkCard_description}>
-                  <div>
-                    <span>Bengaluru, Karnataka, India(1.34mi radius)</span>
-                  </div>
-                </div>
-                <div className={styles.linkCard_tagsOuterContainer}></div>
-              </Link>
-
-              <Link href={"internal/outreach"} className={styles.linkCard}>
-                <div className={styles.linkCard_header}>
-                  <div className={styles.linkCard_header_title}>
-                    <Image src={ExhibitIcon} alt="search" />
-                    <span>Outreach</span>
-                  </div>
-                  <Image
-                    src={GotoIcon}
-                    alt="goto"
-                    className={`${iconClass} ${styles.goto_icon}`}
-                  />
-                </div>
-
-                <div className={styles.linkCard_heading}></div>
-
-                <div className={styles.linkCard_description}>
-                  <div className={styles.outreach_count}>
-                    <span>Pending events to look at: {pendingEvent}</span>
-                    <span>Shortlisted Events: {shortlisted}</span>
-                    <span>Pre Finalised Events: {prefinal}</span>
-                  </div>
-                </div>
-                <div className={styles.linkCard_tagsOuterContainer}></div>
-              </Link>
-
-              <Link
-                href={"/internal/trackers/create"}
-                className={styles.linkCard}
-              >
-                <div className={styles.linkCard_header}>
-                  <div className={styles.linkCard_header_title}>
-                    <Image src={Trend} alt="search" />
-                    <span>Create Tracker</span>
-                  </div>
-                  <Image
-                    src={GotoIcon}
-                    alt="goto"
-                    className={`${iconClass} ${styles.goto_icon}`}
-                  />
-                </div>
-
-                <div
-                  key={"card.title"}
-                  className={styles.linkCard_heading}
-                ></div>
-
-                <div className={styles.linkCard_description}>
-                  <div>
-                    Track key events in real-time to make informed decisions and
-                    seize opportunities as they arise.
-                  </div>
-                </div>
-                <div className={styles.linkCard_tagsOuterContainer}></div>
-              </Link>
+    <>
+      <div className={styles.container}>
+        <div className={styles.header_container}>
+          <div className={styles.primary_container}>
+            <div className={styles.primary_header}>Welcome back!</div>
+            <div className={styles.secondary_header}>
+              Unlock the possibility of EventGeni
             </div>
-          )}
-
-          {/* Old One */}
-          {/* <div className={styles.linkCard_container}>
             {isLoading ? (
-              <SkeletonCards />
+              <>
+                <SkeletonCards />
+              </>
             ) : (
-              cardsData.map((card) => (
+              <div className={styles.linkCard_container}>
                 <Link
-                  href={card.link}
-                  className={styles.linkCard}
-                  key={card.title}
+                  href={`internal/search/events`}
+                  className={`${styles.linkCard} card`}
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
-                      <Image src={card.icon} alt="search" />
-                      <span>{card.title}</span>
+                      <Image src={Research} alt="search" />
+                      <span>Research</span>
                     </div>
                     <Image
                       src={GotoIcon}
@@ -292,278 +207,328 @@ const Dashboard = () => {
                     />
                   </div>
 
-                  {card?.heading && (
-                    <div key={card.title} className={styles.linkCard_heading}>
-                      {card.heading}
-                    </div>
-                  )}
+                  <div className={styles.linkCard_heading}>
+                    {/* <span>Bengaluru</span> */}
+                  </div>
+
                   <div className={styles.linkCard_description}>
-                    {card.description.map((desc, key) => (
-                      <div key={key}>{desc}</div>
-                    ))}
+                    Discover insights on business trends filtered by geography
+                    and category, all in one glance.
                   </div>
-                  <div className={styles.linkCard_tagsOuterContainer}>
-                  </div>
+                  <div className={styles.linkCard_tagsOuterContainer}></div>
                 </Link>
-              ))
-            )}
-          </div> */}
-        </div>
-        <span className={styles.divider}></span>
-        <div className={styles.notification_container}>
-          <div className={styles.notification_header_title}>
-            <Image
-              src={BellIcon}
-              alt="notificationsicon"
-              className={iconClass}
-            />
-            <span>Notification</span>
-          </div>
-          {isLoading ? (
-            <>
-              <NotificationSkeleton />
-            </>
-          ) : (
-            <div className={styles.notification_card}>
-              {notifications.map((notification, key) => (
-                <div
-                  key={key}
-                  className={`${styles.notification} ${
-                    theme === "light" && styles.notification_light
-                  }`}
+
+                <Link
+                  href={"internal/outreach"}
+                  className={`${styles.linkCard} card`}
                 >
-                  {notification}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className={styles.body_container}>
-        <div className={styles.trackers_container}>
-          <div
-            className={`${styles.tracker_container_header} ${
-              theme === "light" ? styles.tracker_content_light : ""
-            }`}
-          >
-            {/* <Image src={Stars} alt="stars" /> */}
-            <div>Here &apos;s what&apos;s new since you last checked in</div>
-          </div>
-
-          <div
-            className={`${styles.tracker_card} ${
-              theme === "light" && styles.tracker_content_light
-            }`}
-          >
-            {isLoading ? (
-              <>
-                <TrackerSkeleton />
-              </>
-            ) : (
-              trackerList?.slice(0, 1).map((item: any, id) => (
-                <Link href={`/internal/trackers/${item.id}`} key={id}>
-                  <div className={styles.tracker_card_header} key={id}>
-                    <span key={id}>{`${item.name}`} </span>
-
+                  <div className={styles.linkCard_header}>
+                    <div className={styles.linkCard_header_title}>
+                      <Image src={ExhibitIcon} alt="search" />
+                      <span>Outreach</span>
+                    </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass}`}
+                      className={`${iconClass} ${styles.goto_icon}`}
                     />
                   </div>
-                  <div className={styles.event_cards_container}>
-                    <div className={styles.desktop_trackerCard_container}>
-                      {item?.filterValue?.status?.map((card_status: any) => (
-                        <div key={item.id} className={styles.eventCard}>
-                          <div className={styles.eventCard_title}>
-                            <Image src={NewEvent} alt="status" />
-                            <span>{card_status}</span>
-                          </div>
 
-                          <div className={styles.eventCard_stats}>
-                            <div className={styles.eventCard_stats_no}>
-                              {/* {trackerCard.stats} */}
-                              {item.filterValue.event_rank_gte}
-                            </div>
-                            <div className={styles.eventCard_description}>
-                              Events
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className={styles.mobile_trackerCard_container}>
-                      {trackerCardsData.map((trackerCard, key) => (
-                        <div className={styles.mobile_eventCard} key={key}>
-                          <div className={styles.mobile_eventCard_title}>
-                            {trackerCard.title}
-                          </div>
-                          <div className={styles.mobile_eventStats_container}>
-                            {trackerCard.stats} Events
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <PolarAreaChart
-                      className={styles.events_stats_polarChart}
-                    />
+                  <div className={styles.linkCard_heading}></div>
+
+                  <div className={styles.linkCard_description}>
+                    {pendingEvent || shortlisted || prefinal ? (
+                      <div className={styles.outreach_count}>
+                        <span>Pending events to look at: {pendingEvent}</span>
+                        <span>Shortlisted Events: {shortlisted}</span>
+                        <span>Pre Finalised Events: {prefinal}</span>
+                      </div>
+                    ) : (
+                      <div className={styles.linkCard_description}>
+                        Connect efficiently with stakeholders and amplify
+                        engagement.
+                      </div>
+                    )}
                   </div>
+                  <div className={styles.linkCard_tagsOuterContainer}></div>
                 </Link>
-              ))
-            )}
-          </div>
-          <div
-            className={`${styles.tracker_card} ${
-              theme === "light" && styles.tracker_content_light
-            }`}
-          >
-            {isLoading ? (
-              <>
-                <TrackerSkeleton />
-              </>
-            ) : (
-              trackerList?.slice(1, 2).map((item: any, id) => (
-                <Link href={`/internal/trackers/${item.id}`} key={id}>
-                  <div className={styles.tracker_card_header} key={id}>
-                    <span key={id}>{`${item.name}`} </span>
 
+                <Link
+                  href={"/internal/trackers/create"}
+                  className={`${styles.linkCard} card`}
+                >
+                  <div className={styles.linkCard_header}>
+                    <div className={styles.linkCard_header_title}>
+                      <Image src={Trend} alt="search" />
+                      <span>Create Tracker</span>
+                    </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass}`}
+                      className={`${iconClass} ${styles.goto_icon}`}
                     />
                   </div>
-                  <div className={styles.event_cards_container}>
-                    <div className={styles.desktop_trackerCard_container}>
-                      {item?.filterValue?.status?.map((card_status: any) => (
-                        <div key={item.id} className={styles.eventCard}>
-                          <div className={styles.eventCard_title}>
-                            <Image src={NewEvent} alt="status" />
-                            <span>{card_status}</span>
-                          </div>
 
-                          <div className={styles.eventCard_stats}>
-                            <div className={styles.eventCard_stats_no}>
-                              {/* {trackerCard.stats} */}
-                              {item.filterValue.event_rank_gte}
-                            </div>
-                            <div className={styles.eventCard_description}>
-                              Events
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className={styles.mobile_trackerCard_container}>
-                      {trackerCardsData.map((trackerCard, key) => (
-                        <div className={styles.mobile_eventCard} key={key}>
-                          <div className={styles.mobile_eventCard_title}>
-                            {trackerCard.title}
-                          </div>
-                          <div className={styles.mobile_eventStats_container}>
-                            {trackerCard.stats} Events
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <PolarAreaChart
-                      className={styles.events_stats_polarChart}
-                    />
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-
-        <span className={styles.body_divider}></span>
-        <div className={styles.savedEvent_coordinateContainer}>
-          <div className={styles.savedEventsContainer}>
-            <div
-              className={`${styles.tracker_container_header} ${
-                theme === "light" ? styles.tracker_content_light : ""
-              }`}
-            >
-              <Image src={Bookmark} alt="save" className={iconClass} />
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  router.push("internal/trackers/savedevents");
-                }}
-              >
-                Saved Events
-              </div>
-            </div>
-            {isLoading ? (
-              <SavedEventsSkeleton />
-            ) : (
-              <div
-                className={`${styles.savedEventsData} ${
-                  theme === "light" && styles.savedEventsData_light
-                }`}
-              >
-                {savedEvantsList?.map((event, key) => (
                   <div
-                    className={`${styles.savedEvent} ${
-                      theme === "light" && styles.savedEvent_light
-                    }`}
-                    key={key}
-                  >
-                    <div>{event.title}</div>
-                    <div
-                      onClick={() => {
-                        unsavedEvent(event?.eventGroupId);
-                      }}
-                    >
-                      <BookmarkIcon fillColor={"#ff851b"} />
+                    key={"card.title"}
+                    className={styles.linkCard_heading}
+                  ></div>
+
+                  <div className={styles.linkCard_description}>
+                    <div>
+                      Track key events in real-time to make informed decisions
+                      and seize opportunities as they arise.
                     </div>
                   </div>
-                ))}
+                  <div className={styles.linkCard_tagsOuterContainer}></div>
+                </Link>
               </div>
             )}
           </div>
-          <div
-            className={`${styles.linkCard_container} ${styles.coordinateCard}`}
-          >
+          <span className={styles.divider}></span>
+          <div className={styles.notification_container}>
+            <div className={styles.notification_header_title}>
+              <Image
+                src={BellIcon}
+                alt="notificationsicon"
+                className={iconClass}
+              />
+              <span>Notification</span>
+            </div>
             {isLoading ? (
-              <>
-                <CoordinateSkeleton />
-              </>
+              <div style={{ flex: 1 }}>
+                <NotificationSkeleton />
+              </div>
             ) : (
-              <Link href={"/internal/coordinate"} className={styles.linkCard}>
-                <div className={styles.linkCard_header}>
-                  <div className={styles.linkCard_header_title}>
-                    <Image src={DatasetIcon} alt="data" className={iconClass} />
-                    <span>Coordiante</span>
+              <div className={`${styles.notification_card} card`}>
+                {/* {notifications.map((notification, key) => (
+                  <div
+                    key={key}
+                    className={`${styles.notification} ${
+                      theme === "light" && styles.notification_light
+                    }`}
+                  >
+                    {notification}
                   </div>
-                  <Image src={GotoIcon} alt="goto" className={`${iconClass}`} />
+                ))} */}
+                <div className={styles.notification_defaultText}>
+                  Stay updated with all your notifications in one place. No new
+                  notification found.
                 </div>
-                <div className={styles.linkCard_description}>
-                  <div>Total Events : {totalEvent}</div>
-                </div>
-                <div className={styles.linkCard_tagsOuterContainer}>
-                  {cordinateData &&
-                    cordinateData?.map((tag, key) => (
-                      <div
-                        className={styles.linkCard_tagsInnerContainer}
-                        key={key}
-                      >
-                        <div className={styles.linkCard_tagsName}>
-                          {tag.name}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.body_container}>
+          <div className={styles.trackers_container}>
+            <div className={`${styles.tracker_container_header} `}>
+              <div>Here &apos;s what&apos;s new since you last checked in</div>
+            </div>
+
+            {isLoading ? (
+              <TrackerSkeleton />
+            ) : trackerList.length > 0 ? (
+              trackerList.map((tracker: any) => (
+                <Link
+                  href={`/internal/trackers/${tracker.id}/trackedEvents`}
+                  className={`${styles.tracker_card} card `}
+                  key={tracker.id}
+                >
+                  <>
+                    <div className={styles.tracker_card_header}>
+                      <span>{tracker.name}</span>
+                      <Image src={GotoIcon} alt="goto" className={iconClass} />
+                    </div>
+
+                    <div className={styles.desktop_trackerCard_container}>
+                      <div className={`${styles.eventCard} card`}>
+                        <div className={styles.eventCard_title}>
+                          <Image src={NewEvent} alt="newevent" />
+                          <span>New</span>
                         </div>
-                        <div className={styles.linkCard_tagsCount}>
-                          {tag.count}
+                        <div className={styles.eventCard_stats}>
+                          <div className={styles.eventCard_stats_no}>
+                            {tracker.groupedEventsCountByStatus
+                              .groupedEventsByStatus.new || 0}
+                          </div>
+                          <div className={styles.eventCard_description}>
+                            Events
+                          </div>
                         </div>
                       </div>
-                    ))}
+
+                      <div className={`${styles.eventCard} card`}>
+                        <div className={styles.eventCard_title}>
+                          <Image src={Timer} alt="active" />
+                          <span>Active</span>
+                        </div>
+                        <div className={styles.eventCard_stats}>
+                          <div className={styles.eventCard_stats_no}>
+                            {tracker.groupedEventsCountByStatus
+                              .groupedEventsByStatus.active || 0}
+                          </div>
+                          <div className={styles.eventCard_description}>
+                            Events
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={`${styles.eventCard} card`}>
+                        <div className={styles.eventCard_title}>
+                          <Image src={CircleCross} alt="expired" />
+                          <span>Expired</span>
+                        </div>
+                        <div className={styles.eventCard_stats}>
+                          <div className={styles.eventCard_stats_no}>
+                            {tracker.groupedEventsCountByStatus
+                              .groupedEventsByStatus.expired || 0}
+                          </div>
+                          <div className={styles.eventCard_description}>
+                            Events
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* <PolarAreaChart
+                        className={styles.events_stats_polarChart}
+                      /> */}
+                    </div>
+                  </>
+                </Link>
+              ))
+            ) : (
+              <div className={styles.tracker_card_defaultText}>
+                {/* <div className={styles.tracker_card_header}>
+              <span>Tracker 1 - Events in Bangalore</span>
+              <Image src={GotoIcon} alt="goto" />
+            </div> */}
+
+                <div className={styles.event_cards_container}>
+                  <div className={styles.linkCard_description}>
+                    Track key events in real-time to make informed decisions and
+                    seize opportunities as they arise.
+                  </div>
                 </div>
-              </Link>
+              </div>
             )}
+          </div>
+
+          <span className={styles.body_divider}></span>
+          <div className={styles.savedEvent_coordinateContainer}>
+            <div className={styles.savedEventsContainer}>
+              <div className={`${styles.tracker_container_header}`}>
+                <Image src={Bookmark} alt="save" className={iconClass} />
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    router.push("internal/trackers/savedevents");
+                  }}
+                >
+                  Saved Events
+                </div>
+              </div>
+              {isLoading ? (
+                <SavedEventsSkeleton />
+              ) : (
+                <div
+                  className={`${styles.savedEventsData} card`}
+                  style={{ padding: "unset" }}
+                >
+                  {savedEventsList?.length > 0 ? (
+                    savedEventsList?.map((event: any) => (
+                      <div
+                        className={`${styles.savedEvent} ${
+                          theme === "light" && styles.savedEvent_light
+                        }`}
+                        key={event.id}
+                      >
+                        <div>{event.name}</div>
+                        <div
+                          onClick={() => {
+                            unsavedEvent(event?.eventGroupId);
+                          }}
+                        >
+                          <BookmarkIcon fillColor={"#ff851b"} />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "13px", fontSize: "14px" }}>
+                      Stay informed about the latest industry events and save
+                      them to stay updated on event updates.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div
+              className={`${styles.linkCard_container} ${styles.coordinateCard}`}
+            >
+              <div className={`${styles.tracker_container_header}`}>
+                Event shortlisting and Co-ordination
+              </div>
+
+              {isLoading ? (
+                <>
+                  <CoordinateSkeleton />
+                </>
+              ) : (
+                <Link
+                  href={"/internal/coordinate"}
+                  className={`${styles.linkCard} card`}
+                >
+                  <div className={styles.linkCard_header}>
+                    <div className={styles.linkCard_header_title}>
+                      <Image
+                        src={DatasetIcon}
+                        alt="data"
+                        className={iconClass}
+                      />
+                      <span>Coordinate</span>
+                    </div>
+                    <Image
+                      src={GotoIcon}
+                      alt="goto"
+                      className={`${iconClass}`}
+                    />
+                  </div>
+                  {coordinateData.length > 0 ? (
+                    <>
+                      <div className={styles.linkCard_description}>
+                        <div>Total Events : {totalEvent}</div>
+                      </div>
+                      <div className={styles.linkCard_tagsOuterContainer}>
+                        {coordinateData.map((tag, key) => (
+                          <div
+                            className={styles.linkCard_tagsInnerContainer}
+                            key={key}
+                          >
+                            <div className={styles.linkCard_tagsName}>
+                              {tag.name}
+                            </div>
+                            <div className={styles.linkCard_tagsCount}>
+                              {tag.count}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className={styles.linkCard_description}>
+                      An effective event communication and relationship
+                      management dashboard that keeps your team on the same page
+                      and makes coordination both internally and with events
+                      team easy and manageable.
+                    </div>
+                  )}
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

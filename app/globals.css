@@ -123,16 +123,15 @@ button {
   --subtitle-color: #8056b2;
   --title-color: #323339;
   --background-color: #0c0f1e;
-  --background-secondary-color: #222533;
+  --background-secondary-color: #FAFAFA;
   --background-secondary-color-hover: #3f424f;
   --background-secondary-color-active: #545769;
   --background-color-faded: rgba(12, 15, 30, 0.1);
   --card-background-color: #1d1f36;
-  --heading-background-color: #f7f7f9;
+
   --border-color: #dcdfe4;
   --card-border-color: #dcdfe4;
-  --buttons-background-color: #1f1f1f;
-
+  --heading-background-color: #f7f7f9;
   /* --link-color: #053c34;
   --link-hover-color: #066d5b;
   --link-visited-color: #042f29;
@@ -163,24 +162,40 @@ button {
   --neutral-color: #7d7d7d;
   --neutral-color-hover: #a0a0a0;
   --neutral-light-color: #ebebeb;
-  --tabs-background-color: #FBF8FF;
-}
-
-body[data-theme="dark"] {
-  --primary-foreground: #171717;
-  --primary-text-color: #ffffff;
-  --border-color: #2c2c2c;
-  --primary-light-color: #1a1a1a;
-  --card-border-color: #e3eaf32e;
-  --heading-background-color: #212121;
-  --tabs-background-color: #1a1a1a;
+  --tabs-background-color: #fbf8ff;
+  --background-color-hover: #f2f2f2;
+  --input-border-color: #C9C9C9;
+  --bold-border-color: #A8A8A8;
+  --danger-background-color: #FFF0F0;
 }
 
 .card {
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-small);
   padding: 24px;
-  border: 1px solid var(--card-border-color);
+  border: 1px solid var(--border-color);
+}
+
+body[data-theme="dark"] {
+  --primary-foreground: #131313;
+  --primary-text-color: #EDEDED;
+  --border-color: #2E2E2E;
+  --primary-light-color: #1a1a1a;
+  --heading-background-color: #212121;
+  --heading-background-color: #212121;
+  --tabs-background-color: #1a1a1a;
+  --secondary-text-color: #A1A1A1;
+  --background-color-hover: #1A1A1A;
+  --input-border-color: #454545;
+  --bold-border-color: #878787;
+  --background-secondary-color: #171717;
+  --danger-background-color: #2A1314;
+}
+.card {
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-small);
+  padding: 24px;
+  border: 1px solid var(--border-color);
 }
 
 /* :root {

@@ -1,6 +1,6 @@
 .card{
-    width: 453px;
-    height: 530px;
+    width: 450px;
+    height: 480px;
     border-radius: 25px;
     background-color: white;
     display: flex;
@@ -10,13 +10,13 @@
 }
 .banner{
     width: 95%;
-    height: 250px;
+    height: 220px;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
     filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
 }
 .date_location_nameContainer{
-    padding: 10px 14px 0px 14px;
+    padding: 10px 14pax 0px 14px;
     width: 100%;
     display: flex;
     align-items: center;

@@ -23,6 +23,7 @@ import {
   Popover,
 } from "react-aria-components";
 import Loading from '@/app/components/UI/Loading';
+import { GAEvent } from '@/utils/GAEvent';
 // import Table from '@/app/components/Table'
 const Page = () => {
   const [active, setActive] = useState("Active Events")
@@ -176,12 +177,12 @@ const Page = () => {
     console.log(count);
     return count;
   };
-  const saveTracker=async()=>{
-    const selectedEventCat=["671b1a45-d40f-4559-959f-cd7a9b1617de","4612db12-9084-4d61-901d-ab7bd3120ade"]
+  const saveTracker = async () => {
+    const selectedEventCat = ["671b1a45-d40f-4559-959f-cd7a9b1617de", "4612db12-9084-4d61-901d-ab7bd3120ade"]
     const formData = {
       name: "one",
-      filterValue:{
-          eventCategory:selectedEventCat.join(',')
+      filterValue: {
+        eventCategory: selectedEventCat.join(',')
       }
     }
     const { data, error } = await myFetch(`${baseUrl}/tracker`, {
@@ -238,44 +239,67 @@ const Page = () => {
       <div className={styles.topRight}></div>
     </div> */}
 
-      
+
       <div className={styles.innerRight}>
         <div className={styles.eventStatus}>
           <div className={styles.eventStatusLeft}>
-            <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => setActive("Active Events")}>
+            <button className={`${styles.eventStatusBtn} ${active === "Active Events" ? styles.active : ""}`} onClick={() => {
+              GAEvent(
+                "trackers",
+                "Tracker Detail",
+                "View",
+                "Active Events"
+              )
+              setActive("Active Events")
+            }}>
               Active Events
               {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active)}</div>}
 
             </button>
-            <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => setActive("New Events")}>
+            <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => {
+              GAEvent(
+                "trackers",
+                "Tracker Detail",
+                "View",
+                "New Events"
+              )
+              setActive("New Events")
+            }}>
               New Events
               {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new)}</div>}
             </button>
-            <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => setActive("Expired Events")}>Expired Events
+            <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => {
+              GAEvent(
+                "trackers",
+                "Tracker Detail",
+                "View",
+                 "Expired Events"
+              )
+              setActive("Expired Events")}}>Expired Events
               {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div>}
             </button>
           </div>
           {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
-          {id==="1"?
-          <div onClick={()=>saveTracker()} className={styles.eventStatusRight}>Save</div>:
-          <DialogTrigger>
-          <Button className={styles.exportButton}>
+          {id === "1" ?
+            <div onClick={() => saveTracker()} className={styles.eventStatusRight}>Save</div> :
+            <DialogTrigger>
+              <Button className={styles.exportButton}>
 
-            <div className={styles.eventStatusRight}>{"Export Data"}</div>
-          </Button>
-          <ModalOverlay isDismissable className={styles.modalOverlay}>
-            <Modal>
-              <Dialog>
-                {({ close }) => (
-                  <ExportModal onClose={close} type={type} />
-                )}
-              </Dialog>
-            </Modal>
-          </ModalOverlay>
-        </DialogTrigger>
+                <div className={styles.eventStatusRight}>{"Export Data"}</div>
+              </Button>
+              <ModalOverlay isDismissable className={styles.modalOverlay}>
+                <Modal>
+                  <Dialog>
+                    {({ close }) => (
+                      <ExportModal onClose={close} type={type} />
+                    )}
+                  </Dialog>
+                </Modal>
+              </ModalOverlay>
+            </DialogTrigger>
           }
-          
-         
+
+
         </div>
         <Table showInsights={showInsights} eventType={active} setActiveValue={setActiveValue} />
         {/* {exp && <ModalOverlay isDismissable className={styles.modalOverlay}>

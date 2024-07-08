@@ -410,6 +410,12 @@ const Table = ({
 
     if (data) {
       console.log(data);
+      GAEvent(
+        "trackers",
+        "Tracker",
+        "View",
+        `Saved Event | ${currPage}`
+      )
       // if (data?.events?.length > 0) {
       setEventPerPage(data.result);
       if (currPage === 1) {
@@ -539,6 +545,12 @@ const Table = ({
       console.log(data);
       if (data?.events?.length > 0) {
         setActiveValue(data.totalEvents);
+        GAEvent(
+          "trackers",
+          "Tracker",
+          "View",
+          `${eventType} | ${currPage}`
+        );
         setEventPerPage(data.events);
       }
       // setCatgeoryData(data);
@@ -550,14 +562,14 @@ const Table = ({
   // }
   const [isSaving, setIsSaving] = useState(false);
 
-  const saveEvent = async (groupId: string) => {
+  const saveEvent = async (Id: string) => {
     if (isSaving) return;
 
     setIsSaving(true);
 
     const secondLast = path[path.length - 2];
     const dataToSend = {
-      eventGroupId: groupId,
+      eventId: Id,
       trackerId: secondLast,
     };
 
@@ -598,7 +610,7 @@ const Table = ({
     if (path[path.length - 1] === "savedEvents") {
       const secondLast = path[path.length - 2];
       dataToSend = {
-        eventGroupIds: [groupId],
+        eventIds: [groupId],
         trackerId: secondLast,
       };
     } else {
@@ -999,7 +1011,7 @@ const Table = ({
                   path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
                       <button
-                        onClick={() => saveEvent(event?.eventGroupId)}
+                        onClick={() => saveEvent(event?.id)}
                         className={`${styles.table_saveBtn} ${
                           theme === "light" ? styles.table_saveBtn_light : ""
                         }`}
@@ -1008,7 +1020,7 @@ const Table = ({
                       </button>
                     ) : (
                       <button
-                        onClick={() => deleteEvent(event?.eventGroupId)}
+                        onClick={() => deleteEvent(event?.id)}
                         className={`${styles.table_saveBtn} ${
                           theme === "light" ? styles.table_saveBtn_light : ""
                         }`}

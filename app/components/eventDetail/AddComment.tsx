@@ -126,9 +126,9 @@ export const AddComment = ({
     const { data, error } = await myFetch(url);
     console.log(data);
     
-    if (data && data.length>0) {
-      setApiUserData(data.user);
-      const usernames = data?.map((item: any) => "@" + item.firstname + item.lastname);
+    if (data && data?.users?.length>0) {
+      setApiUserData(data?.users);
+      const usernames = data?.users?.map((item: any) => "@" + item.firstname + item.lastname);
       setUsers(usernames);
     }
   };

@@ -5,8 +5,8 @@
   width: 100%;
   height: 100%;
   /* background: linear-gradient(180deg, #1A1A1A -29.71%, rgba(26, 26, 26, 0) 75.89%); */
-  border: 1px solid var(--card-border-color);
-  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
   overflow-y: scroll;
 }
 .cont::-webkit-scrollbar {
@@ -19,12 +19,12 @@
 }
 
 .container h2 {
-  font-size: 1.3rem;
+  font-size: var(--font-size-h4);
 }
 
 .upvoteBtn {
-  gap: 0.5rem;
-  font-weight: 500;
+  gap: var(--spacing-xs);
+  font-weight: var(--form-weight-medium);
   color: #8c8ea4;
   display: flex;
   flex-direction: row;
@@ -33,7 +33,7 @@
 }
 
 .comment_name {
-  gap: 0.6rem;
+  gap: var(--spacing-xs);
   font-family: var(--font-inter);
   display: flex;
   flex-direction: column;
@@ -48,16 +48,16 @@
   position: relative;
   /* padding: 0 0.5rem; */
   margin: 0.5rem 3.6rem;
-  gap: 1.5rem;
+  gap: var(--spacing-md);
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 .options p {
-  font-size: 0.9rem;
+  font-size: var(--font-size-large);
   color: #8c8ea4;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .comment_name span span {
@@ -70,7 +70,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  row-gap: 20px;
+  row-gap: var(--spacing-lg);
   width: 100%;
   /* height: 50%; */
   height: fit-content;
@@ -93,7 +93,7 @@
 .text {
   display: flex;
   flex-direction: column;
-  gap:5px;
+  gap:var(--spacing-xxs);
   margin: 1rem 3.6rem 0;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .commentText {
-  font-size: 12px;
+  font-size: var(--font-size-small);
   display: flex;
   align-items: center;
   text-align: justify;
@@ -156,7 +156,7 @@
   top: -1rem;
   left: 21.5%;
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
   margin: 2.5rem 0 0;
   position: absolute;
   background: #fff;
@@ -164,7 +164,7 @@
   flex-direction: column;
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  border-radius: 0.4rem;
+  border-radius: var(--border-radius-md);
 }
 
 .dropdown button {
@@ -177,7 +177,7 @@
   color: #005ef6;
   cursor: pointer;
   padding: 5px 10px;
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
   margin-left: 40px;
 }
 
@@ -186,7 +186,7 @@
 }
 
 .replyBtn {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   background-color: transparent;
   color: #8c8ea4;
   cursor: pointer;
@@ -218,7 +218,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  row-gap: 10px;
+  row-gap: var(--spacing-xs);
 }
 
 .comment__user header {
@@ -226,7 +226,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  column-gap: 10px;
+  column-gap: var(--spacing-xs);
   height: fit-content;
 }
 
@@ -237,7 +237,7 @@
 .userImage {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-rounded);
   background-color: #fff;
   content: "";
   display: flex;
@@ -266,8 +266,8 @@
 }
 
 .designationText {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: var(--font-size-large);
+  font-weight: var(--font-weight-medium);
   color: #8c8ea4;
 }
 
@@ -284,7 +284,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  row-gap: 20px;
+  row-gap: var(--spacing-lg);
   height: fit-content;
 }
 
@@ -296,7 +296,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  row-gap: 20px;
+  row-gap: var(--spacing-lg);
   /* width: 100%; */
   height: fit-content;
 }
@@ -324,7 +324,7 @@
 .cancelBtn {
   display: none;
   margin: 1rem 4rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   background-color: transparent;
   color: #8c8ea4;
   cursor: pointer;
@@ -336,7 +336,7 @@
 
 .commentText {
   /* margin: 1rem 0 0; */
-  gap:5px;
+  gap:var(--spacing-xxs);
   display: block;
 }
 
@@ -350,23 +350,23 @@
 
 .sortByButton {
   margin: 2.5rem 0;
-  gap: 0.8rem;
+  gap: var(--spacing-sm);
   display: flex;
   flex-direction: row;
   align-items: center;
   background: transparent;
   padding: 0.5rem 1rem;
-  border-radius: 0.8rem;
+  border-radius: var(--border-radius-lg);
   border: solid 1px #e0e1e4;
 }
 
 .pinButton {
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
   color: #696b83;
   display: flex;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   flex-direction: row;
-  font-size: 0.9rem;
+  font-size: var(--font-size-large);
   background: transparent;
   border: none;
 }
@@ -391,9 +391,9 @@
 .notesAdd {
   padding: 10px;
   width: 100%;
-  border-top: 1px solid var(--card-border-color);
-  border-radius: 0px 0px 12px 12px;
-  background: #1A1A1A;
+  border-top: 1px solid var(--border-color);
+  border-radius: 0px 0px var(--border-radius-lg) var(--border-radius-lg);
+  background: var(--heading-background-color);
 }
 
 .notesAdd_light {
@@ -410,21 +410,21 @@
 
 .commentDiv::-webkit-scrollbar-thumb {
   background: grey;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
 }
 
 .text1 {
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: var(--font-size-small);
   color: grey;
-  gap: 5px;
+  gap: var(--spacing-xxs);
   padding-bottom: 40px;
 }
 
 .pdf {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-xs);
   align-items: center;
   padding: 5px;
   color: white;
@@ -442,7 +442,7 @@
 
 .images {
   display: grid;
-  gap: 10px;
+  gap: var(--spacing-xs);
   /* flex-direction: column; */
   grid-template-columns: repeat(2, 0fr);
 }
@@ -467,7 +467,7 @@
 }
 .span{
   color:white;
-  font-weight: 800;
+  font-weight: var(--font-weight-bold);
 }
 .span_light{
   color: black;
@@ -482,7 +482,7 @@
   text-align: left;
   display: flex;
   cursor: pointer;
-  gap: 10px;
+  gap: var(--spacing-xs);
   width: 100%;
   justify-content: space-between;
   flex-direction: column;
@@ -494,7 +494,7 @@
   text-align: left;
   display: flex;
   cursor: pointer;
-  gap: 10px;
+  gap: var(--spacing-xs);
   width: 100%;
   justify-content: space-between;
   flex-direction: column;
@@ -545,7 +545,7 @@
 .likeSection{
   display: flex;
   cursor: pointer;
-  gap:5px;
+  gap:var(--spacing-xxs);
   background-color: #1A1A1A;
   padding: 5px 10px;
   border-radius: 20px;
@@ -553,7 +553,7 @@
 .likeSectionLight{
   display: flex;
   cursor: pointer;
-  gap:5px;
+  gap:var(--spacing-xxs);
   background-color: var(--secondary-bg-light);
   padding: 5px 10px;
   border-radius: 20px;

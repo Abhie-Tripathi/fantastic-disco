@@ -292,9 +292,9 @@ const Pages = () => {
 
     GAEvent(
       "trackers",
-      "Trackers",
-      "Saved Tracker | New Tracker Created",
-      "Create"
+      "Tracker",
+      "Create Tracker",
+      "Save"
     );
     if (isCreating) return;
     setIsCreating(true);

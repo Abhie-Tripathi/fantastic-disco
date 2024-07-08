@@ -6,7 +6,7 @@
     flex-direction: column;
     gap:20px;
     border-radius: 12px;
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
 }
 .conatinerFirst{
     display: flex;
@@ -27,7 +27,7 @@
     /* cursor: pointer; */
 }
 .bar{
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
 }
 .profiles{
     display: flex;
@@ -73,7 +73,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
     align-items: center;
