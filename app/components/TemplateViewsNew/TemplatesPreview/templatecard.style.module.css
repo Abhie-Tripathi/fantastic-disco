@@ -6,6 +6,9 @@
     padding: 12px 12px 24px 12px;
     cursor: pointer;
 }
+.activeBody{
+    border: 2px solid #6750A4;
+}
 .imageContainer{
     height: 165px;
     background-color: #F9F9FF;
@@ -46,3 +49,14 @@
 .darkSubheading{
     color: #9d9db3;
 }
+@media screen and (max-width: 1406px) {
+    .subHeading{
+        font-size: 10px;
+    }
+    .header{
+        font-size: 14px;
+    }
+    .tag{
+        font-size: 10px;
+    }
+  }

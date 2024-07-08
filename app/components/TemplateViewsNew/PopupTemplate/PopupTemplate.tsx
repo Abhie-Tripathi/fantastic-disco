@@ -6,9 +6,10 @@ import PopupViewImage2 from '/public/widgetimages/popupimages/popupviewlandscape
 
 interface Props {
     setSelectedTemplate: (value: string) => void
+    selectedTemplate: string;
 }
 
-const PopupTemplate = ({ setSelectedTemplate }: Props) => {
+const PopupTemplate = ({ setSelectedTemplate, selectedTemplate }: Props) => {
     const PopupTemplates =
         [{ key: "PUVP", name: "Pop-up Portrait", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Single Event", image: PopupViewImage1 },
         { key: "PUVL", name: "Pop-up Landscape", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Single Event", image: PopupViewImage2 },
@@ -17,7 +18,7 @@ const PopupTemplate = ({ setSelectedTemplate }: Props) => {
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {PopupTemplates.map((card, key) => (
-                    <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
+                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
                 ))}
             </div>
         </div>

@@ -2,7 +2,13 @@
     height: 100vh;
     width: 100%;
 }
+.inputBannerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
 .inputContainer{
+    width: 50%;
     display: flex;
     flex-direction: column;
     gap: 10px;

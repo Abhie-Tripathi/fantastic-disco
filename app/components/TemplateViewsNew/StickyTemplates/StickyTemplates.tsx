@@ -6,9 +6,10 @@ import StickyBottomImage from '/public/widgetimages/stickyimages/stickybottom.pn
 
 interface Props{
     setSelectedTemplate : (value : string) => void
+    selectedTemplate : string;
 }
 
-const StickyTemplates = ({setSelectedTemplate} : Props) => {
+const StickyTemplates = ({setSelectedTemplate, selectedTemplate} : Props) => {
 
     const StickyTemplates =
         [{ key: "ST", name: "Sticky Top", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image: StickyTopImage },
@@ -18,7 +19,7 @@ const StickyTemplates = ({setSelectedTemplate} : Props) => {
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {StickyTemplates.map((card, key) => (
-                    <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
+                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
                 ))}
             </div>
         </div>

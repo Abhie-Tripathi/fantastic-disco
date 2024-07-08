@@ -11,9 +11,10 @@ import { useTheme } from "@/context";
 
 interface Props{
     setSelectedTemplate : (value : string) => void
+    selectedTemplate : string;
 }
 
-const PageTemplates = ({setSelectedTemplate} : Props) => {
+const PageTemplates = ({setSelectedTemplate,selectedTemplate} : Props) => {
     const { theme } = useTheme();
     const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted")
     const NonHighlightedTemplates =
@@ -36,10 +37,10 @@ const PageTemplates = ({setSelectedTemplate} : Props) => {
             <div className={styles.templates}>
                 {activeBtn === "NonHighlighted" ? (
                     NonHighlightedTemplates.map((card, key) => (
-                        <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
+                        <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />
                     ))) : (
                     HighlightedTemplates.map((card, key) => (
-                        <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image}/>
+                        <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image}/>
                     ))
                 )
                 }

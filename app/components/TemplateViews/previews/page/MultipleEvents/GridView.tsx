@@ -37,10 +37,10 @@ const GridView = ({ cardRadius,
     let EventCard: ElementType;
 
     switch (selectedCard) {
-        case 'card1':
+        case 'style1':
             EventCard = EventCard1;
             break;
-        case 'card2':
+        case 'style2':
             EventCard = EventCard2;
             break;
         default:
