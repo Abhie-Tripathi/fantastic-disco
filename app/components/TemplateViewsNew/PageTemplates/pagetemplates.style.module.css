@@ -37,3 +37,10 @@
     padding: 10px 14px;
     row-gap: 16px;
 }
+/* @media screen and (max-width: 1400px) {
+    .templates{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0px;
+    }
+  } */

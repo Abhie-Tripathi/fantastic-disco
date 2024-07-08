@@ -46,3 +46,14 @@
 .darkSubheading{
     color: #9d9db3;
 }
+@media screen and (max-width: 1406px) {
+    .subHeading{
+        font-size: 10px;
+    }
+    .header{
+        font-size: 14px;
+    }
+    .tag{
+        font-size: 10px;
+    }
+  }
