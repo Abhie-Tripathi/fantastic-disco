@@ -20,15 +20,17 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
-  height: 55px;
-  width: 55px;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   border-radius: 50px;
   filter: drop-shadow(1px 1px 3px rgb(83, 83, 83));
   font-size: 20px;
   color: black;
 }
-
 .navButton:disabled {
   background-color: #ccc;
   cursor: not-allowed;
