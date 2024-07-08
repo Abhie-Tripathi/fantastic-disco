@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './templatepreview.style.module.css'
 import PageTemplates from '../PageTemplates/PageTemplates'
 import SectionTemplates from '../SectionTemplates/SectionTemplates';
@@ -25,7 +25,7 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
     const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-    const [selectedCard, setSelectedCard] = useState<string>("card1");
+    const [selectedCard, setSelectedCard] = useState<string>("style1");
 
     return (
         <div className={`${styles.body}`}>
@@ -42,9 +42,9 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>Preview</div>
                     {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card1")}>Style 1</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card2")}>Style 2</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card3")}>Style 3</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style1")}>Style 1</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style2")}>Style 2</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style3")}>Style 3</button>
                     </div>}
                     <div className={styles.btnContainer}>
                         <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>

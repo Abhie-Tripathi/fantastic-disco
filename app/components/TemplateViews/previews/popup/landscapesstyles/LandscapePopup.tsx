@@ -11,10 +11,10 @@ const LandscapePopup = ({selectedCard} : Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
-        case 'card1':
+        case 'style1':
             EventCard = Popup1;
             break;
-        case 'card2':
+        case 'style2':
             EventCard = Popup2;
             break;
         default:

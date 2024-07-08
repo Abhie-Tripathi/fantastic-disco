@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
-import { Notes } from "@/app/components/eventDetail/Notes";
 import usePosterGenerator from '@/hooks/usePosterGenerator';
 import Image from 'next/image';
 
@@ -11,18 +10,14 @@ const Page = () => {
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
     const [desc, setDesc] = useState("");
-    const [height, setHeight] = useState<number>(180);
-    const [width, setWidth] = useState<number>(320);
+    const [height, setHeight] = useState<number>(256);
+    const [width, setWidth] = useState<number>(256);
     const [image, setImage] = useState<string>("")
 
     const handlePoster = () => {
         generatePrompt(location, desc, name, height, width)
     }
-    
-    useEffect(() => {
-        // Update the height to maintain 16:9 aspect ratio when width changes
-        setHeight(Math.round(width * 9 / 16));
-      }, [width]);
+
     useEffect(() => {
         // Update the image state when generatedImage change
         if (imageUrl) {
@@ -32,19 +27,19 @@ const Page = () => {
 
     return (
         <div className={styles.body}>
-            <div className={styles.inputContainer}>
-                <input type="text" placeholder='Event Name' onChange={(e)=>setName(e.target.value)}/>
-                <input type="text" placeholder='Location' onChange={(e)=>setLocation(e.target.value)}/>
-                <input type="text" placeholder='Description' onChange={(e)=>setDesc(e.target.value)}/>
-            </div>
-            <div>
+            <div className={styles.inputBannerContainer}>
+                <div className={styles.inputContainer}>
+                    <input type="text" placeholder='Event Name' onChange={(e) => setName(e.target.value)} />
+                    <input type="text" placeholder='Location' onChange={(e) => setLocation(e.target.value)} />
+                    <input type="text" placeholder='Description' onChange={(e) => setDesc(e.target.value)} />
+                    <div>
                 <label>
                     Height: {height}px
                     <input
                         type="range"
-                        min="200"
-                        max="700"
-                        step="50"
+                        min="256"
+                        max="1024"
+                        step="256"
                         value={height}
                         onChange={(e) => setHeight(Number(e.target.value))}
                     />
@@ -55,18 +50,26 @@ const Page = () => {
                     Width: {width}px
                     <input
                         type="range"
-                        min="180"
+                        min="256"
                         max="1024"
-                        step="50"
+                        step="256"
                         value={width}
                         onChange={(e) => setWidth(Number(e.target.value))}
                     />
                 </label>
             </div>
-            <div className={styles.bannerContainer} style={{height :height, width : width}}>
-                <Image src={image} alt='image' width={width} height={height}/>
+                </div>
+                <div className={styles.bannerContainer} style={{ height: height, width: width }}>
+                    <Image src={image} alt='image' width={width} height={height} />
+                </div>
             </div>
-            <button className={styles.btn} onClick={handlePoster}>Generate</button>
+        
+            <div className={styles.btnBannerContainer}>
+                <button className={styles.btn} onClick={handlePoster}>Generate</button>
+
+            </div>
+
+
         </div>
     )
 }
