@@ -27,15 +27,27 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
     const [selectedCard, setSelectedCard] = useState<string>("style1");
 
+    useEffect(() => {
+        if (widgetSelected === "Page") {
+            setSelectedTemplate("LS");
+        } else if (widgetSelected === "Section") {
+            setSelectedTemplate("HB");
+        } else if (widgetSelected === "Sticky") {
+            setSelectedTemplate("ST");
+        } else {
+            setSelectedTemplate("PUVP");
+        }
+    }, [widgetSelected]);
+
     return (
         <div className={`${styles.body}`}>
             {!isFullScreen && <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
-                    {widgetSelected === "Page" ? <PageTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                        widgetSelected === "Section" ? <SectionTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                            widgetSelected === "Sticky" ? <StickyTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                                widgetSelected === "Popup" ? <PopupTemplate setSelectedTemplate={setSelectedTemplate} /> : <></>}
+                    {widgetSelected === "Page" ? <PageTemplates selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} /> :
+                        widgetSelected === "Section" ? <SectionTemplates selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> :
+                            widgetSelected === "Sticky" ? <StickyTemplates selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> :
+                                widgetSelected === "Popup" ? <PopupTemplate selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> : <></>}
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>

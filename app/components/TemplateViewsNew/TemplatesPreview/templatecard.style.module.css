@@ -6,6 +6,9 @@
     padding: 12px 12px 24px 12px;
     cursor: pointer;
 }
+.activeBody{
+    border: 2px solid #6750A4;
+}
 .imageContainer{
     height: 165px;
     background-color: #F9F9FF;

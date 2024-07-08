@@ -9,9 +9,10 @@ import HeroBannerImage from '/public/widgetimages/pageimages/herobanner.png'
 
 interface Props{
     setSelectedTemplate : (value : string) => void
+    selectedTemplate : string;
 }
 
-const SectionTemplates = ({setSelectedTemplate} : Props) => {
+const SectionTemplates = ({setSelectedTemplate, selectedTemplate} : Props) => {
     const SectionTemplates =
         [{ key: "HB", name: "Hero Banner", desc: "Hero Banner to captivate your audience with a stunning, prominent display", tag: "Single Event", image : HeroBannerImage },
         { key: "CV", name: "Carousel Section", desc: "Feature the Top Section of your page in a Carousel View for a dynamic display.", tag: "Multiple Events", image: CarouselViewImage },
@@ -23,7 +24,7 @@ const SectionTemplates = ({setSelectedTemplate} : Props) => {
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {SectionTemplates.map((card, key) => (
-                    <TemplateCard widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />))}
+                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />))}
             </div>
         </div>
     )
