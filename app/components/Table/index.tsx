@@ -410,6 +410,13 @@ const Table = ({
 
     if (data) {
       console.log(data);
+      setIsLoaded(true);
+      GAEvent(
+        "trackers",
+        "Tracker",
+        "View",
+        `Saved Event | ${currPage}`
+      )
       // if (data?.events?.length > 0) {
       setEventPerPage(data.result);
       if (currPage === 1) {
@@ -435,6 +442,7 @@ const Table = ({
 
     if (data) {
       // console.log(data);
+      setIsLoaded(true);
 
       setEventPerPage(data.result);
 
@@ -456,15 +464,15 @@ const Table = ({
       const secondLast = path[path.length - 2];
 
       fetchData(secondLast);
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else if (path[path.length - 1] === "trackers") {
       fetchAllSavedEvent();
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else if (path[path.length - 1] === "savedEvents") {
       console.log(1);
 
       fetchSavedData();
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else {
       if (queryString) {
         try {
@@ -510,7 +518,10 @@ const Table = ({
   };
   useEffect(() => {
     const secondLast = path[path.length - 2];
-    if (path[path.length - 1] === "trackedEvents") fetchData(secondLast);
+    if (path[path.length - 1] === "trackedEvents"){
+       fetchData(secondLast);
+       setIsLoaded(false);
+      }
   }, [eventType]);
   const fetchData = async (secondLast: string) => {
     var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
@@ -537,8 +548,15 @@ const Table = ({
     }
     if (data) {
       console.log(data);
+      setIsLoaded(true);
       if (data?.events?.length > 0) {
         setActiveValue(data.totalEvents);
+        GAEvent(
+          "trackers",
+          "Tracker",
+          "View",
+          `${eventType} | ${currPage}`
+        );
         setEventPerPage(data.events);
       }
       // setCatgeoryData(data);
@@ -550,14 +568,14 @@ const Table = ({
   // }
   const [isSaving, setIsSaving] = useState(false);
 
-  const saveEvent = async (groupId: string) => {
+  const saveEvent = async (Id: string) => {
     if (isSaving) return;
 
     setIsSaving(true);
 
     const secondLast = path[path.length - 2];
     const dataToSend = {
-      eventGroupId: groupId,
+      eventId: Id,
       trackerId: secondLast,
     };
 
@@ -598,7 +616,7 @@ const Table = ({
     if (path[path.length - 1] === "savedEvents") {
       const secondLast = path[path.length - 2];
       dataToSend = {
-        eventGroupIds: [groupId],
+        eventIds: [groupId],
         trackerId: secondLast,
       };
     } else {
@@ -707,7 +725,7 @@ const Table = ({
                       : event.name}
                   </Link>
                   <div className={styles.event_organizer}>
-                    {event.organizer.name}
+                    {event?.organizer?.name}
                   </div>
                 </td>
                 <td>
@@ -999,7 +1017,7 @@ const Table = ({
                   path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
                       <button
-                        onClick={() => saveEvent(event?.eventGroupId)}
+                        onClick={() => saveEvent(event?.id)}
                         className={`${styles.table_saveBtn} ${
                           theme === "light" ? styles.table_saveBtn_light : ""
                         }`}
@@ -1008,7 +1026,7 @@ const Table = ({
                       </button>
                     ) : (
                       <button
-                        onClick={() => deleteEvent(event?.eventGroupId)}
+                        onClick={() => deleteEvent(event?.id)}
                         className={`${styles.table_saveBtn} ${
                           theme === "light" ? styles.table_saveBtn_light : ""
                         }`}

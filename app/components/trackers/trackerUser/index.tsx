@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './trackerUser.style.module.css';
 import Image from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
 import Router from "next/router";
+
 type User = {
   id: string;
   name: string;
@@ -21,6 +22,23 @@ type TrackerUserProps = {
 const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) => {
   const path = usePathname().split('/');
   const [accessId, setAccessId] = useState<string | null>(null);
+  const [drop, setDrop] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setDrop(false);
+      setAccessId(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const userHandle = (name: string): string => {
     const last = name.substring(1).split(' ').map(item => item.toLowerCase()).join('');
@@ -58,7 +76,13 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
   };
 
   const toggleDropdown = (id: string) => {
-    setAccessId(accessId === id ? null : id);
+    if (accessId === id) {
+      setAccessId(null);
+      setDrop(false);
+    } else {
+      setAccessId(id);
+      setDrop(true);
+    }
   };
 
   const deleteEntry = async (id: string, accessEntry: string) => {
@@ -80,6 +104,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
         console.error('Error fetching data:', error);
       } else {
         console.log('Data fetched:', data);
+        window.location.reload();
       }
     } catch (err) {
       console.error('Fetch failed:', err);
@@ -107,14 +132,17 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
             </div>
             <div
               className={styles.add}
+              ref={dropdownRef}
               style={{ textDecoration: "none", position: "relative", cursor: "pointer" }}
               onClick={() => toggleDropdown(item.id)}
             >
               {item.accessLevel.charAt(0).toUpperCase()}{item.accessLevel.substring(1).toLowerCase()}
-              {item.id === accessId && (
-                <div className={styles.dropdown}>
-                  <div onClick={() => changeAccess(item.accessId, "EDIT")}>Edit</div>
-                  <div onClick={() => changeAccess(item.accessId, "READ")}>Read</div>
+              {drop && item.id === accessId && (
+                <div className={styles.dropdownContainer}>
+                  <div className={styles.dropdown}>
+                    <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT")}>Edit</div>
+                    <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ")}>Read</div>
+                  </div>
                   {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
                 </div>
               )}
@@ -127,3 +155,4 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
 };
 
 export default TrackerUser;
+

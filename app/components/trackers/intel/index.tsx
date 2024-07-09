@@ -47,7 +47,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore}:any) 
                 </div>
             </div>
             <div className={styles.formatFreq}>
-            <div className={styles.brandeOne} >
+            <div className={styles.brandeOuter} >
                 <div className={styles.rate}>
                     <div className={styles.formatHead}>
                         User Ratings
@@ -85,7 +85,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore}:any) 
                         ))}
                     </div>
                 </div>
-                <div className={styles.brandeOne} >
+                <div className={styles.brandeOuter} >
                 <div className={styles.rate}>
                     <div className={styles.formatHead}>
                     Estimated Exhibitor Score

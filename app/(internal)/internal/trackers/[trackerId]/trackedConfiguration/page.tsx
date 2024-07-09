@@ -50,6 +50,7 @@ const Page = () => {
   const last = pathName[pathName.length - 2];
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
+  const [loading,setLoading]=useState(false);
   useEffect(() => {
     const fetchData = async () => {
       const url = `${baseUrl}/tracker/${last}`;
@@ -115,6 +116,12 @@ const Page = () => {
     });
     if(data){
       showToast("success","Tracker deleted successfully")
+      GAEvent(
+        "trackers",
+        "Tracker Detail",
+        "Delete",
+        "Delete"
+      );
       router.replace(`/internal/trackers`);
     }
   } 
@@ -156,9 +163,9 @@ useEffect(() => {
               onClick={() =>
                 GAEvent(
                   "trackers",
-                  "Trackers",
-                  "Saved Tracker | Tracker Edited",
-                  "Edit tracker"
+                  "Tracker Detail",
+                  "Edit",
+                  "Edit"
                 )
               }
             >
@@ -173,7 +180,7 @@ useEffect(() => {
       <div className={styles.innerContainer}>
         <div
           className={styles.innerContainerLeft}
-          style={{ border: "1px solid #EBEBEB" }}
+          style={{ border:"1px solid var(--border-color)" }}
         >
           {data && (
             <BasicFilter

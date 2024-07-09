@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './manageAccess.style.module.css';
 import TrackerOwner from '@/app/components/trackers/trackerOwner';
 import TrackerUser from '@/app/components/trackers/trackerUser';
@@ -11,6 +11,7 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
+import { GAEvent } from '@/utils/GAEvent';
 
 const Page = () => {
     const router = useRouter();
@@ -21,12 +22,18 @@ const Page = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [sendInvite,setSendInvite]=useState(false);
+    
     useEffect(() => {
       setDrop(true);
+      console.log(data)
       if(data?.length>0)
        { const result = data?.filter((item: any) =>
-            item?.name?.toLowerCase()?.includes(filter?.toLowerCase())
+       
+            item?.aliasName
+            ?.toLowerCase()?.includes(filter?.toLowerCase())
         );
+        console.log(result);
+        
         setFilteredData(result);}
     }, [filter, data]);
 
@@ -136,6 +143,7 @@ const Page = () => {
             redirectUrl: `${currentUrl}`
         };
         const url = `${baseUrl}/access`;
+        if(id){
         try {
             const { data, error } = await myFetch(url, {
                 method: 'POST',
@@ -148,6 +156,12 @@ const Page = () => {
                 console.error('Error fetching data:', error);
             } else {
                 console.log('Data fetched:', data);
+                GAEvent(
+                    "trackers",
+                    "Tracker Detail",
+                    "Share",
+                    "Invite"
+                  );
                 window.location.reload();
                 if(share) setShare(false);
                 if(sendInvite) setSendInvite(false);
@@ -156,14 +170,17 @@ const Page = () => {
         } catch (err) {
             console.error('Fetch failed:', err);
         }
+        }
     }
     const shareNewInvite=async()=>{
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const formData = 
         {
           firstname:filter.substring(0,filter.lastIndexOf('@')),
         lastname:"",
             email: filter
       };
+    if(emailRegex.test(filter)){
     const url = `${baseUrl}/tracker/invite`;
     try {
         const { data, error } = await myFetch(url, {
@@ -182,6 +199,7 @@ const Page = () => {
         }
     } catch (err) {
         console.error('Fetch failed:', err);
+    }
     }
     // setId("");
     }
@@ -221,6 +239,7 @@ const Page = () => {
         }
     }, [id]);
     console.log(id);
+    console.log(drop);
     
     return (
         <div className={styles.container}>
@@ -258,7 +277,9 @@ const Page = () => {
                             <div className={styles.copy} onClick={copyURL}>Copy link</div>
                         </div>
                         <div className={styles.inviteAccess}>
+                        <div className={styles.accountImg}>
                             <Image src={Account} alt="account" />
+                        </div>
                             <div className={styles.inputArea}>
                                 <input type="text" 
                                 value={filter}
@@ -279,23 +300,25 @@ const Page = () => {
               <div className={styles.innerModal}>
                   <div className={styles.shareHead}>Invite People</div>
                   <div className={styles.inviteAccess}>
+                  <div className={styles.accountImg}>
                       <Image src={Account} alt="account" />
+                      </div>
                       <div className={styles.inputArea}>
                           <input type="text" 
                           value={filter}
                           placeholder='Invite others by name' onChange={handleFilterChange} />
                       </div>
-                      <div className={styles.buttons} style={{width:"150px"}}>
+                      <div className={styles.buttons}>
                       <button className={styles.send} onClick={shareInvite}>Send Invite</button>
                   </div>
                   </div>
                  
-                         {filter.length > 0 && filteredData?.length > 0 && drop &&
+                         {filter?.length > 0 && filteredData?.length > 0 && drop &&
                       <div className={styles.dropdown}>
                           <div className={styles.dropdownContent}>
                               {filteredData.map((item: any) => (
-                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.name)}>
-                                      {item?.name}
+                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName)}>
+                                      {item?.aliasName}
                                   </div>
                               ))}
                           </div>

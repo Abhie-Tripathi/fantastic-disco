@@ -27,7 +27,7 @@
 }
 
 .commentInput {
-  font-size: 0.9rem;
+  font-size: var(--font-size-large);
   /* color: #21293c; */
   background: transparent;
   width: 100%;
@@ -41,8 +41,8 @@
   padding: 0.8rem 1.1rem;
   border: none;
   border-radius: 0.31rem;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-large);
   background: transparent;
   border: 1px solid #d9e1ec;
   cursor: pointer;
@@ -62,9 +62,9 @@
   display: flex;
   justify-content: space-between;
   position: relative;
-  gap: 20px;
+  gap: var(--spacing-lg);
   border-radius: 30px;
-  box-shadow: 0 0 0 0.9px inset #acacac, 0 0 0 0.47px inset #666666;
+  border: 1px solid var(--border-color);
   outline: 0.9px solid transparent;
   padding: 10px;
   width: 100%;
@@ -72,7 +72,7 @@
 .allUser {
   position: absolute;
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-xs);
   flex-direction: column;
   bottom: 100%;
   /* padding: 10px; */
@@ -141,7 +141,7 @@
   color: #fff;
   padding: 5px 10px;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: var(--font-size-default);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
@@ -152,7 +152,7 @@
 
 .recommendBtn {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-xs);
   padding-bottom: 20px;
 }
 .recommendBtn button {
@@ -217,7 +217,7 @@
 }
 .filePreview {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-xs);
 }
 .fileDiv {
   position: relative;
@@ -265,7 +265,7 @@
   display: flex;
     background: rgb(103 80 164);
     position: relative;
-    gap: 10px;
+    gap: var(--spacing-xs);
     align-items: center;
     padding: 5px;
     /* border-radius: 10px; */
@@ -286,7 +286,7 @@
 .btn1 {
   padding: 12px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-default);
   width: 200px;
   text-align: center;
   border-radius: 30px;

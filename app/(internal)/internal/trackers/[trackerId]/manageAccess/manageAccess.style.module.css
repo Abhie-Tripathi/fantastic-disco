@@ -1,7 +1,7 @@
 .container{
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--spacing-lg);
     width: 100%;
 }
 .containerTop{
@@ -9,39 +9,38 @@
     width:100%;
     align-items: center;
     justify-content: space-between;
-    background-color: #F7F7F9;
+    background: var(--heading-background-color);
     padding:12px;
 }
 .containerTopLeft{
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 .trackerType{
     display: flex;
     flex-direction: column;
 }
 .heading{
-    color:#6750A4;
-    font-weight: 700;
-    font-size: 18px;
+    color:var(--primary-color);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h6);
 }
 .content{
     color:#777777;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
 }
 .containerTopRight button{
-    font-size: 16px;
-    font-weight: 500;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
     padding: 8px 24px;
-    background-color: #6750A4;
+    background-color: var(--primary-color);
     color: white;
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg);
 }
 .containerBottom{
     display: flex;
-    gap:10px;
+    gap:var(--spacing-xs);
 }
 .containerBottomLeft{
     display: flex;
@@ -66,67 +65,74 @@
     display: flex;
     flex-direction: column;
     width: 500px;
-    gap: 10px;
+    gap: var(--spacing-xs);
     /* align-items: center; */
-    box-shadow: 2.07px 2.07px 20.72px 0px #0000001A;
+    box-shadow: var(--elevation-medium);
     justify-content: center;
-    background-color: #FFFFFF;
+    background-color: var(--primary-foreground);
     padding: 20px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 .shareHead{
-    color:#6750A4;
-    font-weight: 500;
-    font-size: 16px;
+    color:var(--primary-color);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-large);
 }
 .bar{
-    border: 0.5px solid #E7E7E8;
+    border: 1px solid var(--border-color);
     width:100%;
 }
 .linkCopy{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 500;
-    color:#6750A4;
+    font-weight: var(--font-weight-medium);
+    color:var(--primary-color);
 }
 .link{
-    font-size: 14px;
+    font-size: var(--font-size-default);
     width: 80%;
     }
 .copy{
-        font-size: 12px;
+        font-size: var(--font-size-small);
         cursor: pointer;
     }
 .inviteAccess{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: var(--spacing-xxs);
+    align-items: stretch;
 }
 .inviteAccess input{
     width: 100%;
     border: none;
+    color: var(--primary-text-color);
     outline: none;
+    background: inherit;
     padding: 10px;
 }
+.accountImg{
+    display: flex;
+    align-items: center;
+}
 .inputArea{
-    border: 1px solid #D5D4DF;
-    border: 1px solid #D5D4DF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
     width: 94%;
 }
 .buttons{
     display: flex;
     flex-direction: row-reverse;
-    gap:10px;
+    gap:var(--spacing-xs);
 }
 .send{
-    background: #6750A4;
+    background: var(--primary-color);
+    text-wrap: nowrap;
     padding: 4px 12px;
     color: white;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 .cancel{
-    color: #6750A4;
+    color: var(--primary-color);
 }
 /* manageAccess.style.module.css */
 .dropdown {
@@ -137,19 +143,19 @@
 
 .dropdownContent {
     display: block;
+    display: block;
     position: absolute;
-    background-color: white;
+    background-color: var(--background-secondary-color);
+    border: 1px solid var(--input-border-color);
     min-width: 100%;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    
 }
 
 .dropdownItem {
-    color: black;
     padding: 10px;
     text-decoration: none;
     display: block;
@@ -157,5 +163,5 @@
 }
 
 .dropdownItem:hover {
-    background-color: #f1f1f1;
+    background-color: var(--background-color-hover);
 }

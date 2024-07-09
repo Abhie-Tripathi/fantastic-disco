@@ -113,7 +113,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
       console.log(data);
       // setNotes(data.comments.reverse());
-      if (data.comments?.length > 0)
+      if (data?.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     // else setNotes(CommentsData );
   }
@@ -227,7 +227,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       if(path[path.length-1]==="notesDiscussion"){
         const dataToSend = {
           "stage": "INTERNAL",
-          "type": type,
+          "type": "MESSAGE",
           "content": note,
           "source": "GTM",
           "entityType": "TRACKER",
@@ -568,11 +568,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
 
-    if (data && data.length>0) {
+    if (data && data?.users?.length>0) {
       console.log(data);
 
       // Collect new items to add to the array
-      const newItems = data?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+      const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
 
 
       // Use functional form to update state
@@ -664,8 +664,8 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         </div>
       )}
       <div
-        className={`${styles.notesAdd} ${theme === "light" ? styles.notesAdd_light : ""
-          }`}
+        className={`${styles.notesAdd}
+          `}
       >
         <AddComment
           setSuggest={setSuggest}

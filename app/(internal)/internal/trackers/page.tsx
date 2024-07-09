@@ -110,6 +110,7 @@ const Trackers = () => {
   const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(true);
   const allTrackerRef = useRef(null);
+  const createTrackerRef = useState(null);
   const customTrackerRef = useRef(null);
   const savedEventRef = useRef(null);
 
@@ -265,12 +266,11 @@ const Trackers = () => {
 
   const updateSteps = useCallback(() => {
     const newSteps: Step[] = [];
-
     if (allTrackerRef.current) {
       newSteps.push({
         target: allTrackerRef.current,
-        title: "Search Intel",
-        content: "Search for relevant events happening in any location",
+        // title: "Search Intel",
+        content: "Discover insights on business trends filtered by geography and category, all in one glance.",
         disableBeacon: true,
       });
     }
@@ -285,8 +285,8 @@ const Trackers = () => {
     if (savedEventRef.current) {
       newSteps.push({
         target: savedEventRef.current,
-        title: "Search Intel",
-        content: "Search for relevant events happening in any location",
+        // title: "Search Intel",
+        content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
         disableBeacon: true,
       });
     }
@@ -364,11 +364,12 @@ const Trackers = () => {
                 onClick={() =>
                   GAEvent(
                     "trackers",
-                    "Trackers",
+                    "Tracker",
                     "Saved Tracker | New Tracker Created",
                     "Create New Tracker"
                   )
                 }
+                ref={allTrackerRef}
                 className={styles.trackers_header_newtracker_button}
               >
                 Create Tracker
@@ -394,7 +395,23 @@ const Trackers = () => {
                 className={styles.hide}
                 onClick={() => setHideTemplate(!hideTemplate)}
               >
-                {!hideTemplate ? "Hide Templates" : "Show Templates"}
+                {!hideTemplate ?
+                  <div
+                    onClick={() => GAEvent(
+                      "trackers",
+                      "Tracker",
+                      "Hide Templates",
+                      "Hide Templates"
+                    )}
+                  >Hide Templates</div> :
+                  <div
+                    onClick={() => GAEvent(
+                      "trackers",
+                      "Tracker",
+                      "Show Templates",
+                      "Show Templates"
+                    )}
+                  >Show Templates</div>}
               </div>
             )}
           </div>
@@ -404,7 +421,9 @@ const Trackers = () => {
       {!hideTemplate && (
         <div className={styles.container}>
           {!showTracker && (
-            <div className={styles.innerContainerOne}>
+            <div className={styles.innerContainerOne}
+
+            >
               <Image src={Add} alt="add" />
               <Link
                 href="/internal/trackers/create"
@@ -413,6 +432,7 @@ const Trackers = () => {
                 <button
                   // onClick={() => modalOpen()}
                   className={styles.createBtn}
+
                 >
                   Create Tracker
                 </button>
@@ -423,9 +443,8 @@ const Trackers = () => {
             <Link href={`/internal/trackers/1/trackedEvents`} key={ind}>
               <div className={styles.innerContainerTwo}>
                 <div
-                  className={`${styles.topView} ${
-                    theme === "dark" ? "darkMode" : "lightMode_secondary"
-                  }`}
+                  className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                    }`}
                 >
                   <div className={styles.account}>
                     <Image src={item.img} alt="people" />
@@ -451,9 +470,8 @@ const Trackers = () => {
                       </div>
                     </div>
                     <div
-                      className={`${styles.domain} ${
-                        theme === "dark" ? "darkMode" : "lightMode_secondary"
-                      }`}
+                      className={`${styles.domain} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                        }`}
                     >
                       Human Resources
                     </div>
@@ -473,16 +491,13 @@ const Trackers = () => {
         <>
           {/* {loading ? <Loading/>:<> */}
           <div
-            className={`${styles.trackers} ${
-              theme === "dark" ? "darkMode" : "lightMode_secondary"
-            }`}
+            className={`${styles.trackers}`}
           >
             <div
-              className={`${styles.trackersHead} ${
-                type === "All Trackers" ? styles.active : ""
-              }`}
+              className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
+                }`}
               onClick={() => setType("All Trackers")}
-              ref={allTrackerRef}
+
             >
               <AllTrackers
                 fillColor={type === "All Trackers" ? "#6750A4" : "#696B83"}
@@ -490,11 +505,17 @@ const Trackers = () => {
               All Trackers
             </div>
             <div
-              className={`${styles.trackersHead} ${
-                type === "Custom Trackers" ? styles.active : ""
-              }`}
-              onClick={() => setType("Custom Trackers")}
-              ref={customTrackerRef}
+              className={`${styles.trackersHead} ${type === "Custom Trackers" ? styles.active : ""
+                }`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker",
+                  "View",
+                  "Custom Trackers"
+                )
+                setType("Custom Trackers")
+              }}
             >
               <CustomeTracker
                 fillColor={type === "Custom Trackers" ? "#6750A4" : "#696B83"}
@@ -513,10 +534,17 @@ const Trackers = () => {
               Premium Trackers
             </div> */}
             <div
-              className={`${styles.trackersHead} ${
-                type === "Saved Events" ? styles.active : ""
-              }`}
-              onClick={() => setType("Saved Events")}
+              className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""
+                }`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker",
+                  "View",
+                  "Saved Events"
+                )
+                setType("Saved Events")
+              }}
               ref={savedEventRef}
             >
               <Bookmark
@@ -535,7 +563,7 @@ const Trackers = () => {
           )}
           {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (
-            <div style={{ margin: "-25px 0px" }}>
+            <div>
               <Table showInsights={showInsights} />
             </div>
           )}

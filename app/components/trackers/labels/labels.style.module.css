@@ -5,27 +5,27 @@
     height: inherit;
     /* height: calc(100% - 40% + 40px); */
     border: 1px solid #EBEBEB;
-    border-radius: 5px;
-    gap: 5px;
+    border-radius: var(--border-radius-sm);
+    gap:var(--spacing-sm);
 }
 .heading{
-    color:#6750A4;
+    color:var(--primary-color);
 }
 .labels{
     /* display: grid;
     grid-template-columns: repeat(6, 1fr); */
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--spacing-sm);
 }
 .label{
     padding:7px;
     text-wrap: nowrap;
     background-color: #F7F7F9;
     color: black;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-small);
 }
