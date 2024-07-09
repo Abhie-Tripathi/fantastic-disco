@@ -15,6 +15,7 @@ import logo from "/public/Logo_Light mode.png";
 interface VerificationProps {
   params: {
     email: string;
+    path: string;
   };
 }
 
@@ -25,7 +26,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp } = useAuthContext();
+  const { verifyOtp, verifyLoginOTP } = useAuthContext();
 
   const confirmHandler = () => {
     otpVerificationHandler();
@@ -43,7 +44,14 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
     };
 
     setIsLoading(true);
-    const response = await verifyOtp(dataToSend);
+    let response;
+    setIsLoading(true);
+    if (params.path === "signin") {
+      response = await verifyLoginOTP(dataToSend);
+    } else if (params.path === "signup") {
+      response = await verifyOtp(dataToSend);
+    }
+
     console.log("Res", response);
     setIsLoading(false);
 
@@ -56,10 +64,17 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   };
 
   const generateOtp = async () => {
+    const dataToSend = {
+      email: params.email,
+    };
     const url = `${baseUrl}/auth/customer/verify/generate`;
     setResendLoading(true);
     const { data, error } = await myFetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
     });
 
     setResendLoading(false);
