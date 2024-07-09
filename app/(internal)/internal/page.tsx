@@ -435,7 +435,7 @@ const Dashboard = () => {
                   className={`${styles.savedEventsData} card`}
                   style={{ padding: "unset" }}
                 >
-                  {savedEventsList.length > 0 ? (
+                  {savedEventsList?.length > 0 ? (
                     savedEventsList?.map((event: any) => (
                       <div
                         className={`${styles.savedEvent} ${

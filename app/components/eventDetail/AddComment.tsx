@@ -126,9 +126,9 @@ export const AddComment = ({
     const { data, error } = await myFetch(url);
     console.log(data);
     
-    if (data && data.length>0) {
-      setApiUserData(data.user);
-      const usernames = data?.map((item: any) => "@" + item.firstname + item.lastname);
+    if (data && data?.users?.length>0) {
+      setApiUserData(data?.users);
+      const usernames = data?.users?.map((item: any) => "@" + item.firstname + item.lastname);
       setUsers(usernames);
     }
   };
@@ -212,6 +212,7 @@ export const AddComment = ({
     }
     if (key === "Enter" && !e.shiftKey && (showUser || types)) {
       e.preventDefault();
+      
       let newNote="";
       if(showUser){
         const lastAtIndex = note.lastIndexOf("@");
@@ -419,6 +420,7 @@ export const AddComment = ({
   const formRef1 = useRef(null);
 
   useEffect(() => {
+    if(last!=="notesDiscussion"){
     if (note?.includes("#speak")) {
       handleSelectSpeak();
     }
@@ -428,6 +430,7 @@ export const AddComment = ({
     if (note?.includes("#recommend")) {
       handleRecommend(event);
     }
+  }
     // if (note?.charAt(note.length - 1) === "@") {
     //   handleRecommend(event);
     // }

@@ -1,7 +1,7 @@
 .body{
     width: 300px;
     border-radius:8px;
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
     padding: 12px;
     cursor: pointer;
     position: relative;

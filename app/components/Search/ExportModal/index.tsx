@@ -14,6 +14,7 @@ import backIcon from "/public/internal/back_arrow.svg";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
+import { GAEvent } from "@/utils/GAEvent";
 interface exportModalProps {
   onClose: () => void;
   filterValue?: any;
@@ -125,6 +126,12 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
       // console.log(data);
       if (data) {
         console.log("Export Post Api", data);
+        GAEvent(
+          "trackers",
+          "Tracker Detail",
+          "View",
+          `${type.charAt(0)}${type.substring(1).toLowerCase()}`
+        )
         showToast('success', "Export request raised", {closeButton: false});
         setShowExportedFiles(true);
       }

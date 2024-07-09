@@ -118,7 +118,7 @@ const CommonTrackerCard = () => {
   return (
     <>
       {item?.tracker ? (
-        <div className={styles.container} style={{ width: "100%", height: "fit-content" }}>
+        <div className='card' style={{ width: "100%", height: "fit-content" }}>
 
           <div className={styles.cardOne}>
             <div className={styles.heading}>{item?.tracker?.name}</div>
@@ -137,7 +137,7 @@ const CommonTrackerCard = () => {
           <div className={styles.cardThree} style={{ height: "auto" }}>
             <div className={styles.cardThreeLeft} style={{ flexDirection: "column" }}>
               <div style={{ display: "flex", gap: "20px" }}>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore6} alt="newVector" />
                 New
@@ -146,11 +146,11 @@ const CommonTrackerCard = () => {
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
-                    <Image src={Vectore6} alt="newVector" />
+                    <Image src={Vectore6} alt="newVector" width={12} height={12}/>
                     <div >New</div>
                   </div>
                 </div>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
@@ -159,22 +159,22 @@ const CommonTrackerCard = () => {
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
-                    <Image src={Vectore7} alt="lucide_timer" />
+                    <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                     Active</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: "20px" }}>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
-                    <Image src={Vectore8} alt="expired" />
+                    <Image src={Vectore8} alt="expired" width={12} height={12} />
                     Expired</div>
                 </div>
-                <div className={styles.cardType} style={{ width: "50%" }}>
+                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired}
+                    0
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />

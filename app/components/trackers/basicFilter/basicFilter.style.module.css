@@ -2,7 +2,7 @@
     /* border: 1px solid #EBEBEB; */
     padding: 20px;
     display: flex;
-    gap: 10px;
+    gap: var(--spacing-xs);
     flex-direction: column;
     border-radius: 5px;
     /* height:100px; */
@@ -12,7 +12,7 @@
     cursor: pointer;
     height: 21px;
     width: 21px;
-    font-size: 22px;
+    font-size: var(--font-size-h4);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -40,7 +40,7 @@
     width: 21px;
     border: 1px solid grey;
     transition: border-color 0.15s linear;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     border-radius: 2px;
   }
   .checkmark input[type="checkbox" ]{
@@ -85,7 +85,7 @@
   .allCat{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: var(--spacing-xs);
     flex-direction: column;
   }
   .allCat1{
@@ -94,12 +94,12 @@
     /* gap: 20px; */
   }
   .heading{
-    color:#6750A4;
-    font-size: 16px;
-    font-weight: 600;
+    color:var(--primary-color);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
   }
   .item{
     color:#2D3748;
     padding-left: 5px;
-    font-size: 12px;
+    font-size: var(--font-size-small);
   }
