@@ -135,7 +135,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   }, []);
 
   return (
-    <div className={styles.card} onClick={handleModalOpen}>
+    <div className={`${styles.card} card`} onClick={handleModalOpen}>
       <div className={styles.topContainer} style={{ display: "flex" }}>
         <div className={styles.leftContainer}>
           <div className="tablet_view mobile_view">
@@ -147,7 +147,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               handleShortlistModal={handleShortlistModal}
             />
           </div>
-          <div>
+          <div style={{display: 'flex'}}>
             <Image
               src={eventImage}
               alt="eventImage"
@@ -289,7 +289,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       <div className={styles.bottomContainer}>
         <div className="tablet_view mobile_view">
           <div
-            style={{ display: "flex", gap: "6px", paddingTop: "15px" }}
+            style={{ display: "flex", gap: "6px", paddingTop: "20px" }}
             onClick={handleClickEvent}
           >
             <UpVoteTag

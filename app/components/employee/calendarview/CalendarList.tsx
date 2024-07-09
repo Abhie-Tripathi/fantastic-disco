@@ -29,7 +29,7 @@ const EventListCard = (event: any) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
-    <div className={styles.eventListCard}>
+    <div className={'card'}>
       <div className={styles.eventListCard_title}>{event.event.name}</div>
       <div className={styles.eventListCard_location}>
         {event.event?.location?.cityName}
@@ -98,7 +98,7 @@ const CalendarList = ({ filters, startDate, endDate }: Props) => {
             EVENTS LIST
           </button> */}
           <div
-            className={`${styles.eventList} ${showList ? styles.active : ""} ${theme === 'light' && styles.eventList_light}`}
+            className={`${styles.eventList} ${showList ? styles.active : ""}`}
           >
             <div className={styles.eventList_header}>
               <span>Results</span>

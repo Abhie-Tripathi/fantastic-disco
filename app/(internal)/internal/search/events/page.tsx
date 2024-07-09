@@ -507,23 +507,29 @@ const Search = () => {
     setUrlQueryString(finalQueryString);
   };
 
-  const [popoverState, setPopoverState] = useState<boolean>(false);
+  const [popoverState, setPopoverState] = useState<boolean | null>(null);
   const setMenuOpen = () => {
-    setPopoverState(!popoverState);
+    if(popoverState === null) {
+      setPopoverState(false);
+    }else
+      setPopoverState(!popoverState);
   };
 
   useEffect(() => {
+    if(popoverState === null) {
+      document.body.removeAttribute("popover-status");return;
+    }
     const modalStatus = document.body.getAttribute("popover-status");
 
-    if (modalStatus && modalStatus == "close") {
+    if (modalStatus && modalStatus == "open") {
+      document.body.setAttribute("popover-status", "close");
+    } else {
       document.body.setAttribute("popover-status", "open");
       document.documentElement.style.overflow = "";
       document.documentElement.style.paddingRight = "";
-    } else {
-      document.body.setAttribute("popover-status", "close");
     }
     return () => {
-      document.body.removeAttribute("your-attribute");
+      document.body.removeAttribute("popover-status");
     };
   }, [popoverState]);
 
@@ -900,7 +906,7 @@ const Search = () => {
               >
                 {item.name}
                 <span className={styles.resultData_subHeading}>
-                  {item.organizer.name}
+                  {item.organizer?.name}
                 </span>
               </div>
             ))}
@@ -1120,7 +1126,7 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container}>
-              <Button10x variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
+              <Button10x style={{color: 'white'}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
             </div>
           </div>
           <div className={styles.filtersRow} >
@@ -1225,7 +1231,10 @@ const Search = () => {
                   Advanced Filters
                 </span>
               </button>
-              <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x>
+              {/* <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x> */}
+              <button onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
+                <span className={styles.clearfilter_button}>Save as Tracker</span>
+              </button>
             </div>
           </div>
 
@@ -1264,9 +1273,7 @@ const Search = () => {
         {showAdvanceFilter && (
           <div style={{paddingBottom: "24px"}}>
             <div
-              className={`${styles.viewContainer} ${
-                theme === "dark" ? "darkMode" : "lightMode_secondary"
-              }`}
+              className={`${styles.viewContainer}`}
               style={{marginTop: "0"}}
             >
               <div className={styles.viewTypeButtons_container}>
@@ -1875,21 +1882,17 @@ const Search = () => {
         </div>
 
         <div
-          className={`${styles.viewContainer} ${
-            theme === "dark" ? "darkMode" : "lightMode_secondary"
-          }`}
+          className={`${styles.viewContainer}`}
         >
           <div
-            className={`${styles.viewTypeButtons_container} ${
-              theme === "light" ? styles.viewTypeButtons_light : ""
-            }`}
+            className={`${styles.viewTypeButtons_container}`}
           >
             <div className={styles.viewTypeButtons}>
               <button
                 onClick={() => setSelectedView("list")}
                 className={`${styles.listBtn} ${
                   selectedView === "list" ? styles.active : ""
-                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
+                }`}
               >
                 List
               </button>

@@ -71,7 +71,6 @@ const RankInput = ({
   return (
     <div
       className={`${styles.container} ${className}`}
-      style={{ background: theme === "light" ? "white" : "" }}
     >
       <div className={styles.header}>
         <div className={styles.header_button} onClick={() => onClose()}>
