@@ -8,18 +8,19 @@ interface TemplateProps{
     widgetStyle : string;
     tag : string;
     desc : string;
-    image: StaticImageData; 
+    image1: StaticImageData; 
+    image2: StaticImageData; 
     setSelectedTemplate : (value : string) => void
     templateKey : string;
     selectedTemplate : string;
 }
 
-const TemplateCard = ({widgetStyle, tag, desc, image,setSelectedTemplate, templateKey, selectedTemplate } : TemplateProps) => {
+const TemplateCard = ({widgetStyle, tag, desc, image1, image2,setSelectedTemplate, templateKey, selectedTemplate } : TemplateProps) => {
     const { theme } = useTheme();
     return (
         <div className={`${styles.body} ${selectedTemplate === templateKey ? styles.activeBody : ""}`} onClick={()=>setSelectedTemplate(templateKey)}>
-            <div className={styles.imageContainer}>
-                <Image src={image} alt='banner' className={styles.image}></Image>
+            <div className={`${styles.imageContainer} ${theme === "dark" ? styles.darkImageContainer:""}`}>
+                <Image src={theme === "dark" ? image2 : image1} alt='banner' className={styles.image}></Image>
             </div>
             <div className={styles.headerContainer}>
                 <div className={styles.header}>{widgetStyle}</div>

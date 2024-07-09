@@ -6,10 +6,10 @@ import EventCard3 from '../../cardstyles/EventCard3';
 
 interface Props {
     selectedCard?: string;
-    isFullScreen : boolean;
+    isFullScreen: boolean;
 }
 
-const CarouselView = ({ selectedCard,isFullScreen }: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [bannersPerPage, setBannersPerPage] = useState(1);
     const carouselRef = useRef<HTMLDivElement>(null);
@@ -72,7 +72,7 @@ const CarouselView = ({ selectedCard,isFullScreen }: Props) => {
     return (
         <div className={styles.carousel} ref={carouselRef}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
-                &lt;
+            <LeftArrowIcon/>   
             </button>
             <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
                 {banners.map((banner, index) => (
@@ -86,10 +86,22 @@ const CarouselView = ({ selectedCard,isFullScreen }: Props) => {
                 onClick={handleNext}
                 disabled={currentIndex === maxIndex}
             >
-                &gt;
+                <RightArrowIcon/>
             </button>
         </div>
     );
 };
+
+function LeftArrowIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="black"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
+    )
+}
+
+function RightArrowIcon(){
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="black"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>
+    )
+}
 
 export default CarouselView;

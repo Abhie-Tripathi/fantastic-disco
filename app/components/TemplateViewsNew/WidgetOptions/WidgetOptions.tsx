@@ -16,7 +16,7 @@ const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow,
     const [headingSize, setHeadingSize] = useState<string>("40px")
     const [subHeadingSize, setSubHeadingSize] = useState<string>("16px")
     const [subHeadingMargin, setSubHeadingMargin] = useState<string>("24px")
-    const [widgetCardMargin, setWidgetCardMargin] = useState<string>("66px")
+    const [widgetCardMargin, setWidgetCardMargin] = useState<string>("20px")
 
     useEffect(() => {
         if (widgetOptionsWindow && exploreWindow) {

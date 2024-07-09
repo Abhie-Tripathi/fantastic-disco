@@ -9,6 +9,7 @@ import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 import { generateEmailContent } from '@/hooks/useEmailBody'
 import MoreEvents from '@/app/components/DetailPage/MoreEvents'
 import Script from 'next/script'
+import RegisterForm from '@/app/components/DetailPage/RegisterForm'
 
 interface PageProps {
     hashtags: string[];
@@ -18,19 +19,18 @@ interface PageProps {
     media: string;
     emailSubject : string;
     emailBody : string;
-
 }
 
 const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject, emailBody }: PageProps) => {
     return (
         <div className={styles.body}>
             <Script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'/>
-            <popup-widget/>
+            <popup-widget id="siuidugsuyd"/>
+            
             <div className={styles.eventDetailContainer}>
                 <div className={styles.leftContainer}>
                     <div className={styles.headerContainer}>
                         <Image src={media} alt='poster' width={450} height={250} className={styles.poster} />
-
                     </div>
                     <div className={styles.tags}>{hashtags.map((tag, key) => (
                         <div key={key} className={styles.tag}>{tag}</div>
@@ -64,12 +64,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                             </div>
                         </div>
                     </div>
-                    <form className={styles.registerContainer} >
-                        <div className={styles.registerHeading}>One Click Register</div>
-                        <input type='text' placeholder='Enter your Name' className={styles.registerInput} />
-                        <input type='text' placeholder='Enter your Email' className={styles.registerInput} />
-                        <button type='button' className={styles.registerBtn}>Register</button>
-                    </form>
+                    <RegisterForm/>
                     <div className={styles.shareContainer}>
                         <div className={styles.shareHeading}>Share</div>
                         <ShareButtons shareUrl={shareUrl} title={eventName} hashtags = {hashtags} emailSubject={emailSubject} emailBody={emailBody}/>

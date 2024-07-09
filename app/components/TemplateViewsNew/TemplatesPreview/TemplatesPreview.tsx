@@ -65,8 +65,8 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
                     </div>
 
                 </div>
-                <div className={`${styles.preview_btnContainer} ${theme === "dark" ? styles.darkpreview_btnContainer : ""}`}>
-                    <div className={styles.preview}>
+                <div className={styles.preview_btnContainer}>
+                    <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
                         {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                             selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                                 selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} /> :
