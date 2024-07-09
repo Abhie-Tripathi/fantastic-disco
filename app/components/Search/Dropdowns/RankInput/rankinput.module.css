@@ -1,9 +1,9 @@
 .container {
-  background-color: #131313;
+  background-color: var(--primary-foreground);
   min-width: 600px;
   color: inherit;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
-  border-radius: 12px;
+  border-radius: var(--border-radius-sm);
 }
 
 .sub_container {
@@ -17,8 +17,8 @@
   gap: 20px;
   align-items: center;
   padding: 15px 0px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .checkbox_label {
@@ -44,7 +44,7 @@
   background-color: #ccc;
   -webkit-transition: 0.4s;
   transition: 0.4s;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
 }
 
 .checkbox:before {
@@ -75,8 +75,8 @@
 }
 
 .checkbox_title {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   line-height: 1.3333333333;
   letter-spacing: 0.05em;
@@ -85,12 +85,12 @@
 
 .header {
   padding: 24px 20px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   line-height: 1.8181818182;
   letter-spacing: 0.1em;
-  color: #4d1bf3;
+  color: var(--primary-color);
 }
 
 .header_button {
@@ -139,7 +139,7 @@
 
 .track {
   position: relative;
-  background: #6750a4;
+  background: var(--primary-color);
   height: 4px;
 }
 
@@ -153,12 +153,13 @@
 .rank_input {
   padding: 0 10px;
   line-height: 34px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--border-radius-sm);
   text-align: center;
-  /* color: #222; */
-  font-weight: 600;
+  color: var(--primary-text-color);
+  font-weight: var(--font-weight-semibold);
   outline: none;
+  background-color: var(--primary-foreground);
 }
 
 .input_gap {

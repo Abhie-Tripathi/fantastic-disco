@@ -1126,7 +1126,7 @@ const Search = () => {
             </div>
 
             <div className={styles.buttons_container}>
-              <Button10x variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
+              <Button10x style={{color: 'white'}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
             </div>
           </div>
           <div className={styles.filtersRow} >
@@ -1892,7 +1892,7 @@ const Search = () => {
                 onClick={() => setSelectedView("list")}
                 className={`${styles.listBtn} ${
                   selectedView === "list" ? styles.active : ""
-                } ${theme === 'dark' ? 'darkMode_secondary' : 'lightMode'}`}
+                }`}
               >
                 List
               </button>

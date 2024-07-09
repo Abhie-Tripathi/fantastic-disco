@@ -130,7 +130,8 @@
   /* color: white; */
   border: none;
   cursor: pointer;
-  color: var(--primary-foreground);
+  color: var(--primary-text-color);
+  background-color: var(--primary-foreground);
 }
 
 .viewTypeButtons_light button {
@@ -141,7 +142,7 @@
 .viewTypeButtons button.active {
   background-color: var(--primary-color);
   border-radius: var(--border-radius-sm);
-  /* color: white; */
+  color: white;
 }
 
 .advanceFilterBtns {

@@ -10,11 +10,6 @@
   padding: 62px;
 }
 
-.container_light {
-  background-color: var(--primary-bg-light);
-  color: var(--primary-color-light);
-}
-
 .container1 {
   display: flex;
 
@@ -65,14 +60,14 @@
   padding: 20px;
   /* padding-top: 20px; */
   z-index: 1;
-  background-color: #131313;
-  color: #ffffff;
+  background-color: var(--primary-foreground);
+  color: var(--primary-text-color);
 }
 
-.modal_light {
+/* .modal_light {
   background-color: var(--primary-bg-light);
   color: var(--primary-color-light);
-}
+} */
 
 @media screen and (max-width: 1437px) {
   .modal {

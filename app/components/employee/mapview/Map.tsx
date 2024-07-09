@@ -131,7 +131,7 @@ const Map = (props: MapProps) => {
           const countryEventCountsObj: any = {};
           countryEventCountsObj['totalEventCount'] = totalCount;
           apiData.data.forEach((country: any) => {
-            countryEventCountsObj[country.countryId] = country.eventCount;
+            countryEventCountsObj[country.countryCode] = country.eventCount;
           });
           setCountryEventCounts(countryEventCountsObj);
         }
@@ -251,8 +251,8 @@ const Map = (props: MapProps) => {
           <div key={event.id}>
             <Marker
               key={event.id}
-              latitude={event.location.geoCordinates.latitude}
-              longitude={event.location.geoCordinates.longitude}
+              latitude={parseFloat(event.location.geoCordinates.latitude)}
+              longitude={parseFloat(event.location.geoCordinates.longitude)}
             >
               <button
                 className={styles.map_event_button}
@@ -267,13 +267,14 @@ const Map = (props: MapProps) => {
             {selectedPlace == event.id ? (
               <Popup
                 className={styles.popup}
-                latitude={event.location.geoCordinates.latitude}
-                longitude={event.location.geoCordinates.longitude}
+                latitude={parseFloat(event.location.geoCordinates.latitude)}
+                longitude={parseFloat(event.location.geoCordinates.longitude)}
                 onClose={() => {
                   setSelectedPlace(null);
                 }}
               >
-                <div className={styles.event_details_popup}>
+              <div className={styles.event_details_popup}>
+                <div>
                   <Link
                     href={event.url}
                     className={styles.event_details_popup_link}
@@ -296,6 +297,7 @@ const Map = (props: MapProps) => {
                     Textile Industry
                   </div>
                 </div>
+              </div>
               </Popup>
             ) : null}
           </div>
@@ -332,8 +334,8 @@ const Map = (props: MapProps) => {
               <div key={event.countryId} >
                 <Marker
                   key={event.countryId}
-                  latitude={(event.geoCordinates.latitude) ? event.geoCordinates.latitude :0}
-                  longitude={(event.geoCordinates.longitude) ? event.geoCordinates.longitude :0}
+                  latitude={(event.geoCordinates.latitude) ? parseFloat(event.geoCordinates.latitude) :0}
+                  longitude={(event.geoCordinates.longitude) ? parseFloat(event.geoCordinates.longitude) :0}
                 >
                   <span className={styles.eventCountTag}>{event.name+' - '+event.eventCount + ' Events'}</span>
                 </Marker>

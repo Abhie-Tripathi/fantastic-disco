@@ -148,9 +148,7 @@ const Sidebar = () => {
   };
   return (
     <div
-      className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""} ${
-        theme === "dark" ? "darkMode" : ""
-      }`}
+      className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
