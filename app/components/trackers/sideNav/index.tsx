@@ -61,93 +61,93 @@ const Index = () => {
           } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />
           </Link>
-          {/* <div className={styles.tooltipContainer} style={{cursor: data?.tracker?.name?.length>20?"pointer":"default"}}>
-          {data?.tracker?.name?.length>20?data?.tracker?.name?.substring(0,20)+'...':data?.tracker?.name}
-        {data?.tracker?.name?.length>20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}  
-  
-</div> */}
+          <div className={styles.tooltipContainer} style={{ cursor: data?.tracker?.name?.length > 20 ? "pointer" : "default" }}>
+            {data?.tracker?.name?.length > 20 ? data?.tracker?.name?.substring(0, 20) + '...' : data?.tracker?.name}
+            {data?.tracker?.name?.length > 20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}
+
+          </div>
         </div>
-       
-          <>
-            <div className={styles.leftContainer}>
-              <Link href={`/internal/trackers/${secondLast}/trackedEvents`}
-              onClick={()=>{
-                GAEvent(
-                  "trackers",
-                  "Tracker Detail",
-                  "View",
-                   "Tracked Events"
-                )
-              }}
-              >
-                <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
-                  Tracked Events
-                </div>
-              </Link>
 
-              <Link href={`/internal/trackers/${secondLast}/notesDiscussion`} 
-              onClick={()=>{
+        <>
+          <div className={styles.leftContainer}>
+            <Link href={`/internal/trackers/${secondLast}/trackedEvents`}
+              onClick={() => {
                 GAEvent(
                   "trackers",
                   "Tracker Detail",
                   "View",
-                   "Notes and Discussion"
+                  "Tracked Events"
                 )
               }}
-              >
-                <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
-                  Notes & Discussions
-                </div>
-              </Link>
-              <Link href={`/internal/trackers/${secondLast}/savedEvents`}
-              onClick={()=>{
-                GAEvent(
-                  "trackers",
-                  "Tracker Detail",
-                  "View",
-                   "Saved Events"
-                )
-              }}
-              >
-                <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
-                  Saved Events
-                </div>
-              </Link>
+            >
+              <div className={`${styles.heading} ${trackerSection === "Tracked Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracked Events")}>
+                Tracked Events
+              </div>
+            </Link>
 
-            </div>
-            <div className={styles.configAccess}>
-              <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}
-              onClick={()=>{
+            <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}
+              onClick={() => {
                 GAEvent(
                   "trackers",
                   "Tracker Detail",
                   "View",
-                   "Configuration"
+                  "Notes and Discussion"
+                )
+              }}
+            >
+              <div className={`${styles.heading} ${trackerSection === "Notes & Discussions" ? styles.active : ""}`} onClick={() => setTrackerSection("Notes & Discussions")}>
+                Notes & Discussions
+              </div>
+            </Link>
+            <Link href={`/internal/trackers/${secondLast}/savedEvents`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                  "Saved Events"
+                )
+              }}
+            >
+              <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
+                Saved Events
+              </div>
+            </Link>
+
+          </div>
+          <div className={styles.configAccess}>
+            <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                  "Configuration"
                 )
               }}>
-                <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`}onClick={() => setTrackerSection("Tracker Configurations")}>
-                  <Image src={Settings} alt="setting" /> 
-                  <span className={styles.tooltipText}>Configurations</span>
-                </div>
-              </Link>
-              <Link href={`/internal/trackers/${secondLast}/manageAccess`} 
-              onClick={()=>{
+              <div style={{ padding: "10px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+                <Image src={Settings} alt="setting" />
+                <span className={styles.tooltipText}>Configurations</span>
+              </div>
+            </Link>
+            <Link href={`/internal/trackers/${secondLast}/manageAccess`}
+              onClick={() => {
                 GAEvent(
                   "trackers",
                   "Tracker Detail",
                   "View",
-                   "User Access"
+                  "User Access"
                 )
               }}
-              >
-                <div style={{padding:"10px", display:"flex"}} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-                  <Image src={Manage} alt="setting" /> 
-                  <span className={styles.tooltipText}>Manage Access</span>
-                </div>
-              </Link>
-            </div>
-          </>
-        
+            >
+              <div style={{ padding: "10px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+                <Image src={Manage} alt="setting" />
+                <span className={styles.tooltipText}>Manage Access</span>
+              </div>
+            </Link>
+          </div>
+        </>
+
 
       </div>
     </>

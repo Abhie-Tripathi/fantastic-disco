@@ -113,7 +113,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
       console.log(data);
       // setNotes(data.comments.reverse());
-      if (data.comments?.length > 0)
+      if (data?.comments?.length > 0)
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
     // else setNotes(CommentsData );
   }

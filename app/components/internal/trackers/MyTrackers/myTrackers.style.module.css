@@ -1,6 +1,5 @@
 .container{
     display:flex;
-    gap:10px;
 }
 .containerLeft{
     /* border-left: 2px solid #ECECF9; */

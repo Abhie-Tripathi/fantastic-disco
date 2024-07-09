@@ -410,6 +410,7 @@ const Table = ({
 
     if (data) {
       console.log(data);
+      setIsLoaded(true);
       GAEvent(
         "trackers",
         "Tracker",
@@ -441,6 +442,7 @@ const Table = ({
 
     if (data) {
       // console.log(data);
+      setIsLoaded(true);
 
       setEventPerPage(data.result);
 
@@ -462,15 +464,15 @@ const Table = ({
       const secondLast = path[path.length - 2];
 
       fetchData(secondLast);
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else if (path[path.length - 1] === "trackers") {
       fetchAllSavedEvent();
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else if (path[path.length - 1] === "savedEvents") {
       console.log(1);
 
       fetchSavedData();
-      setIsLoaded(true);
+      setIsLoaded(false);
     } else {
       if (queryString) {
         try {
@@ -516,7 +518,10 @@ const Table = ({
   };
   useEffect(() => {
     const secondLast = path[path.length - 2];
-    if (path[path.length - 1] === "trackedEvents") fetchData(secondLast);
+    if (path[path.length - 1] === "trackedEvents"){
+       fetchData(secondLast);
+       setIsLoaded(false);
+      }
   }, [eventType]);
   const fetchData = async (secondLast: string) => {
     var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
@@ -543,6 +548,7 @@ const Table = ({
     }
     if (data) {
       console.log(data);
+      setIsLoaded(true);
       if (data?.events?.length > 0) {
         setActiveValue(data.totalEvents);
         GAEvent(

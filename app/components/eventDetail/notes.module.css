@@ -24,7 +24,7 @@
 
 .upvoteBtn {
   gap: var(--spacing-xs);
-  font-weight: var(--form-weight-medium);
+  font-weight: var(--font-weight-medium);
   color: #8c8ea4;
   display: flex;
   flex-direction: row;

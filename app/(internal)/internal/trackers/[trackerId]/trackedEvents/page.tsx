@@ -30,6 +30,7 @@ const Page = () => {
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const pathName = usePathname().split('/');
+  const [loading,setLoading]=useState(false);
   const searchParams = useSearchParams()
   const router = useRouter();
   const token = searchParams.get('token')
@@ -67,6 +68,7 @@ const Page = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(false);
       const url = `${baseUrl}/tracker/${id}`;
       try {
         const { data, error } = await myFetch(url, {
@@ -76,7 +78,7 @@ const Page = () => {
           console.error('Error fetching data:', error);
         } else {
           setData(data);
-
+          setLoading(true);
         }
       } catch (err) {
         console.error('Fetch failed:', err);
@@ -239,7 +241,7 @@ const Page = () => {
       <div className={styles.topRight}></div>
     </div> */}
 
-
+<Suspense fallback={<p>Loading feed...</p>}>
       <div className={styles.innerRight}>
         <div className={styles.eventStatus}>
           <div className={styles.eventStatusLeft}>
@@ -253,7 +255,7 @@ const Page = () => {
               setActive("Active Events")
             }}>
               Active Events
-              {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active)}</div>}
+              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active):<div className={styles.loader}></div>}</div>}
 
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => {
@@ -266,7 +268,7 @@ const Page = () => {
               setActive("New Events")
             }}>
               New Events
-              {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new)}</div>}
+              {<div className={styles.circle}>{loading ?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new):<div className={styles.loader}></div>}</div>}
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => {
               GAEvent(
@@ -276,7 +278,7 @@ const Page = () => {
                  "Expired Events"
               )
               setActive("Expired Events")}}>Expired Events
-              {<div className={styles.circle}>{formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired)}</div>}
+              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired):<div className={styles.loader}></div>}</div>}
             </button>
           </div>
           {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
@@ -301,7 +303,9 @@ const Page = () => {
 
 
         </div>
+       
         <Table showInsights={showInsights} eventType={active} setActiveValue={setActiveValue} />
+        
         {/* {exp && <ModalOverlay isDismissable className={styles.modalOverlay}>
               <Modal>
                 <Dialog>
@@ -313,6 +317,7 @@ const Page = () => {
             </ModalOverlay>} */}
 
       </div>
+      </Suspense>
     </div>
 
   )

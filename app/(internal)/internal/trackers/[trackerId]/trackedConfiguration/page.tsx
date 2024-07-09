@@ -50,6 +50,7 @@ const Page = () => {
   const last = pathName[pathName.length - 2];
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
+  const [loading,setLoading]=useState(false);
   useEffect(() => {
     const fetchData = async () => {
       const url = `${baseUrl}/tracker/${last}`;
