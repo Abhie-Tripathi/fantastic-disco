@@ -1,0 +1,30 @@
+.registerContainer{
+    border-radius: 8px;
+    border: 1px solid #2E2E2E;
+}
+.heading{
+    margin: 4px;
+    padding: 11px 24px;
+    color: #A1A1A1;
+    font-weight: 700;
+    background-color: #1a1a1a;
+    border: 1px solid #2E2E2E;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.container{
+    padding: 18px 24px 24px 24px;
+}
+.approvalContainer{
+    display: flex;
+    gap: 12px;
+}
+.iconContainer{
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1F1F1F;
+}

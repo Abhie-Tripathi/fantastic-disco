@@ -6,6 +6,12 @@ import HorizontalScrollImage from '/public/widgetimages/sectionimages/horizontal
 import LeftScrollImage from '/public/widgetimages/sectionimages/leftscroll.png'
 import RightScrollImage from '/public/widgetimages/sectionimages/rightscroll.png'
 import HeroBannerImage from '/public/widgetimages/pageimages/herobanner.png'
+import CarouselViewImageDark from '/public/widgetimages/sectionimages/carouselviewdark.png'
+import HorizontalScrollImageDark from '/public/widgetimages/sectionimages/horizontalscrolldark.png'
+import LeftScrollImageDark from '/public/widgetimages/sectionimages/leftscrolldark.png'
+import RightScrollImageDark from '/public/widgetimages/sectionimages/rightscrolldark.png'
+import HeroBannerImageDark from '/public/widgetimages/pageimages/herobannerdark.png'
+
 
 interface Props{
     setSelectedTemplate : (value : string) => void
@@ -14,17 +20,17 @@ interface Props{
 
 const SectionTemplates = ({setSelectedTemplate, selectedTemplate} : Props) => {
     const SectionTemplates =
-        [{ key: "HB", name: "Hero Banner", desc: "Hero Banner to captivate your audience with a stunning, prominent display", tag: "Single Event", image : HeroBannerImage },
-        { key: "CV", name: "Carousel Section", desc: "Feature the Top Section of your page in a Carousel View for a dynamic display.", tag: "Multiple Events", image: CarouselViewImage },
-        { key: "HS", name: "Scroll section", desc: "Display a Section of your page with a Horizontal Scroll for easy, interactive navigation.", tag: "Multiple Events", image: HorizontalScrollImage },
-        { key: "LScroll", name: "Left Section", desc: "Present the Left Section of your page with a Vertical Scroll for smooth, intuitive browsing.", tag: "Multiple Events", image: LeftScrollImage },
-        { key: "RScroll", name: "Right Section", desc: "Present the Right Section of your page with a Vertical Scroll for smooth, intuitive browsing.", tag: "Multiple Events", image: RightScrollImage }
+        [{ key: "HB", name: "Hero Banner", desc: "Hero Banner to captivate your audience with a stunning, prominent display", tag: "Single Event", image1 : HeroBannerImage, image2 : HeroBannerImageDark },
+        { key: "CV", name: "Carousel Section", desc: "Feature the Top Section of your page in a Carousel View for a dynamic display.", tag: "Multiple Events", image1: CarouselViewImage, image2 : CarouselViewImageDark },
+        { key: "HS", name: "Scroll section", desc: "Display a Section of your page with a Horizontal Scroll for easy, interactive navigation.", tag: "Multiple Events", image1: HorizontalScrollImage, image2 : HorizontalScrollImageDark },
+        { key: "LScroll", name: "Left Section", desc: "Present the Left Section of your page with a Vertical Scroll for smooth, intuitive browsing.", tag: "Multiple Events", image1: LeftScrollImage, image2 : LeftScrollImageDark },
+        { key: "RScroll", name: "Right Section", desc: "Present the Right Section of your page with a Vertical Scroll for smooth, intuitive browsing.", tag: "Multiple Events", image1: RightScrollImage, image2 : RightScrollImageDark }
         ]
     return (
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {SectionTemplates.map((card, key) => (
-                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image={card.image} />))}
+                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} />))}
             </div>
         </div>
     )
