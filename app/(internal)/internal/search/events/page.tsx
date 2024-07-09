@@ -528,9 +528,6 @@ const Search = () => {
       document.documentElement.style.overflow = "";
       document.documentElement.style.paddingRight = "";
     }
-    return () => {
-      document.body.removeAttribute("popover-status");
-    };
   }, [popoverState]);
 
   console.log(selectedDateRange);
