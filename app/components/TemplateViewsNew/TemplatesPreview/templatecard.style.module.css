@@ -1,10 +1,13 @@
 .body{
     height: 300px;
     width: 95%;
-    border: 1px solid var(--card-border-color);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 12px 12px 24px 12px;
     cursor: pointer;
+}
+.activeBody{
+    border: 2px solid #6750A4;
 }
 .imageContainer{
     height: 165px;
@@ -13,6 +16,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.darkImageContainer{
+    background-color: #1a1a1a;
 }
 .image{
     height: 100%;
@@ -46,3 +52,14 @@
 .darkSubheading{
     color: #9d9db3;
 }
+@media screen and (max-width: 1406px) {
+    .subHeading{
+        font-size: 10px;
+    }
+    .header{
+        font-size: 14px;
+    }
+    .tag{
+        font-size: 10px;
+    }
+  }

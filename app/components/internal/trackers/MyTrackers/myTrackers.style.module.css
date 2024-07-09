@@ -1,6 +1,5 @@
 .container{
     display:flex;
-    gap:10px;
 }
 .containerLeft{
     /* border-left: 2px solid #ECECF9; */
@@ -9,8 +8,8 @@
 .containerRight{
     /* width: 80%; */
     display: grid;
+    gap:var(--spacing-lg);
     grid-template-columns: repeat(auto-fill, minmax(470px, 1fr));
-    gap: 20px;
 }
 .leftContainer{
     display: flex;

@@ -143,7 +143,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
           )}
         <div className={styles.containerRight}>
           
-          {error && <div>{error}</div>}
+          {/* {error && <div>{error}</div>} */}
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&

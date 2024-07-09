@@ -5,7 +5,7 @@
     justify-content: space-between;
 }
 .leftNav{
-  color: #6750A4;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   font-size: 18px;
@@ -20,7 +20,7 @@
 .containerBottom{
     display:flex;
     flex-direction: column;
-    gap:20px;
+    gap:var(--spacing-lg);
     /* padding: 20px; */
   }
   .containerLeft{
@@ -43,19 +43,17 @@
     color: #696B83;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm);
     padding: 10px 20px;
     border-left: 2px solid #ECECF9;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
     cursor: pointer;
     transition: color 1s ease-in-out, border-left 1s ease-in-out;
   }
   .active{
-    color:#6750A4;
-    border-left: 2px solid #6750A4;
-    
-   
+    color:var(--primary-color);
+    border-left: 2px solid var(--primary-color);
   }
   
   .rightNavInner {

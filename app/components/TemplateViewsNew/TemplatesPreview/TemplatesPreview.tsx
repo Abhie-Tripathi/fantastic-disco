@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './templatepreview.style.module.css'
 import PageTemplates from '../PageTemplates/PageTemplates'
 import SectionTemplates from '../SectionTemplates/SectionTemplates';
@@ -25,37 +25,48 @@ const TemplatesPreview = ({ widgetSelected }: Props) => {
     const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-    const [selectedCard, setSelectedCard] = useState<string>("card1");
+    const [selectedCard, setSelectedCard] = useState<string>("style1");
+
+    useEffect(() => {
+        if (widgetSelected === "Page") {
+            setSelectedTemplate("LS");
+        } else if (widgetSelected === "Section") {
+            setSelectedTemplate("HB");
+        } else if (widgetSelected === "Sticky") {
+            setSelectedTemplate("ST");
+        } else {
+            setSelectedTemplate("PUVP");
+        }
+    }, [widgetSelected]);
 
     return (
         <div className={`${styles.body}`}>
             {!isFullScreen && <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
-                    {widgetSelected === "Page" ? <PageTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                        widgetSelected === "Section" ? <SectionTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                            widgetSelected === "Sticky" ? <StickyTemplates setSelectedTemplate={setSelectedTemplate} /> :
-                                widgetSelected === "Popup" ? <PopupTemplate setSelectedTemplate={setSelectedTemplate} /> : <></>}
+                    {widgetSelected === "Page" ? <PageTemplates selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} /> :
+                        widgetSelected === "Section" ? <SectionTemplates selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> :
+                            widgetSelected === "Sticky" ? <StickyTemplates selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> :
+                                widgetSelected === "Popup" ? <PopupTemplate selectedTemplate={selectedTemplate}  setSelectedTemplate={setSelectedTemplate} /> : <></>}
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
                 <div className={styles.heading_btnContainer}>
                     <div className={styles.heading}>Preview</div>
                     {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card1")}>Style 1</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card2")}>Style 2</button>
-                        <button className={`${styles.styleBtn} ${selectedCard === "card3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("card3")}>Style 3</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style1")}>Style 1</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style2")}>Style 2</button>
+                        <button className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style3")}>Style 3</button>
                     </div>}
                     <div className={styles.btnContainer}>
-                        <MobileIcon color = {theme === "dark" ? "white" :"black"}/>
-                        <DesktopIcon color = {theme === "dark" ? "white" :"black"}/>
-                        <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color = {theme === "dark" ? "white" :"black"}/></div>
-                        
+                        <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
+                        <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>
+                        <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color={theme === "dark" ? "white" : "black"} /></div>
                     </div>
 
                 </div>
                 <div className={styles.preview_btnContainer}>
-                    <div className={styles.preview}>
+                    <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
                         {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                             selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                                 selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} /> :

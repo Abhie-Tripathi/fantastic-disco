@@ -12,10 +12,10 @@ const HeroBanner = ({selectedCard}: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
-        case 'card1':
+        case 'style1':
             EventCard = HeroBanner1;
             break;
-        case 'card2':
+        case 'style2':
             EventCard = HeroBanner2;
             break;
         default:

@@ -29,7 +29,7 @@ const Page = () => {
         <div className={`${styles.body}`}>
             <div className={styles.navRightBtns}>
                 <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
-                    {exploreWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
+                    {!widgetOptionsWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.myWidgetBtnContainer} onClick={()=>setYourWidgetModal(true)}>
@@ -51,7 +51,7 @@ const Page = () => {
                     {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
                 </div>
             </div>}
-            {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ paddingTop:(widgetOptionsWindow && exploreWindow) ? "43px" : "70px" }}>
+            {widgetOptionsWindow && <div className={styles.widgetOptions}>
                 <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
             </div>}
             {!exploreWindow && <div className={styles.exploreBtnContainer}>

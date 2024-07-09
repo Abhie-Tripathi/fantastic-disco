@@ -253,7 +253,7 @@ const Page = () => {
     </div>
     } */}
     <div className={styles.outerContainer} >
-      <div className={styles.innerLeft}><Trackers /></div>
+      {/* <div className={styles.innerLeft}><Trackers /></div>  */}
       <div className={styles.innerRight}>
    <Table showInsights={showInsights}/>
    </div>

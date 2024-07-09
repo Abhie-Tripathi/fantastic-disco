@@ -26,7 +26,7 @@ const routeMap = {
   "/internal": "Dashboard",
   "/internal/coordinate": "Coordinate",
   "/internal/search/events": "Research",
-  "/internal/trackers": "Trackers",
+  // "/internal/trackers/": "Trackers",
   "/internal/outreach": "Outreach",
   "/internal/trends": "Event Trends",
 };
@@ -94,6 +94,9 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    if (currPath.startsWith("/internal/trackers")) {
+      setTitle("Trackers");
+    }
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }

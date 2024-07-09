@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./trackerOwner.style.module.css";
+import styles from "../trackerUser/trackerUser.style.module.css";
 import Person1 from "/public/person1.svg";
 import Image from "next/image";
 type AdminData = {

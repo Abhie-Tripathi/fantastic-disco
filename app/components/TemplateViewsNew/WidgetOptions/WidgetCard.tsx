@@ -4,50 +4,58 @@ import PageWidgetImage from '/public/widgetimages/pageimages/PageWidgetImage.svg
 import SectionWidgetImage from '/public/widgetimages/sectionimages/SectionWidgetImage.svg'
 import StickyWidgetImage from '/public/widgetimages/stickyimages/StickyWidgetImage.svg'
 import PopupWidgetImage from '/public/widgetimages/popupimages/PopupWidgetImage.svg'
+import PageWidgetImageDark from '/public/widgetimages/pageimages/PageWidgetImageDark.svg'
+import SectionWidgetImageDark from '/public/widgetimages/sectionimages/SectionWidgetImageDark.svg'
+import StickyWidgetImageDark from '/public/widgetimages/stickyimages/StickyWidgetImageDark.svg'
+import PopupWidgetImageDark from '/public/widgetimages/popupimages/PopupWidgetImageDark.svg'
 import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
+import { useTheme } from '@/context'
 
 interface WidgetCardProps {
     widgetType: 'Page' | 'Section' | 'Sticky' | 'Popup';
-    setWidgetSelected : (value : string) => void;
+    setWidgetSelected: (value: string) => void;
     widgetSelected: string;
-    smallCard : boolean;
+    smallCard: boolean;
 }
 
 interface WidgetConfig {
     name: string;
     length: number;
     desc: string;
-    color : string;
+    color: string;
 }
 
 const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
+
     Page: {
         name: "Page Widget",
         length: 9,
         desc: "An intuitive, interactive widget that lets users effortlessly select options from a comprehensive list",
-        color : "#FFEFEF"
+        color: "#FFEFEF"
     },
     Section: {
         name: "Section Widget",
         length: 6,
         desc: "Widget allows users to seamlessly navigate and select options within a specific section of your website",
-        color : "#FFF7E3"
+        color: "#FFF7E3"
     },
     Sticky: {
         name: "Sticky Widget",
         length: 2,
         desc: "A user-friendly widget type that promotes events by enhancing navigation & accessibility on your website",
-        color : "#E5FAEA"
+        color: "#E5FAEA"
     },
     Popup: {
         name: "Pop-up Widget",
         length: 1,
         desc: "Interactive widget designed to capture attention and deliver important messages related to events on your website",
-        color : "#E0ECFF"
+        color: "#E0ECFF"
     },
 };
-const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}: WidgetCardProps) => {
+const WidgetCard = ({ widgetType, setWidgetSelected, widgetSelected, smallCard }: WidgetCardProps) => {
+
+    const { theme } = useTheme();
     const [widgetName, setWidgetName] = useState("");
     const [templateLength, setTemplateLength] = useState(0);
     const [widgetDesc, setWidgetDesc] = useState("");
@@ -57,14 +65,14 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
     const [imageHeight, setImageHeight] = useState(140)
     const [imageWidth, setImageWidth] = useState(178)
 
-    useEffect(()=>{
-        if(smallCard){
+    useEffect(() => {
+        if (smallCard) {
             // setCardHeight("293px")
             setImageHolderHeight("108px")
             setImageHeight(108)
             setImageWidth(112)
         }
-    },[smallCard])
+    }, [smallCard])
 
     useEffect(() => {
         const config = widgetConfig[widgetType];
@@ -76,12 +84,24 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
         }
     }, [widgetType]);
     return (
-        <div className={styles.body} style={{height : ""}} onClick={()=>setWidgetSelected(widgetType)}>
-            <div className={styles.banner} style={{height : imageHolderHeight}}>
-                <Image src={widgetType === "Page" ? PageWidgetImage :
-                    widgetType === "Section" ? SectionWidgetImage :
-                        widgetType === "Sticky" ? StickyWidgetImage :
-                            widgetType === "Popup" ? PopupWidgetImage : ""} alt='page' width={imageWidth} height={imageHeight} />
+        <div className={styles.body} style={{ height: "" }} onClick={() => setWidgetSelected(widgetType)}>
+            <div className={`${styles.banner} ${theme === "dark" ? styles.darkBanner : ""}`} style={{ height: imageHolderHeight }}>
+                <Image
+                    src={
+                        theme === "dark"
+                            ? (widgetType === "Page" ? PageWidgetImageDark :
+                                widgetType === "Section" ? SectionWidgetImageDark :
+                                    widgetType === "Sticky" ? StickyWidgetImageDark :
+                                        widgetType === "Popup" ? PopupWidgetImageDark : "")
+                            : (widgetType === "Page" ? PageWidgetImage :
+                                widgetType === "Section" ? SectionWidgetImage :
+                                    widgetType === "Sticky" ? StickyWidgetImage :
+                                        widgetType === "Popup" ? PopupWidgetImage : "")
+                    }
+                    alt='page'
+                    width={imageWidth}
+                    height={imageHeight}
+                />
             </div>
             <div className={styles.content}>
                 <div className={styles.headerContainer}>
@@ -89,12 +109,12 @@ const WidgetCard = ({ widgetType, setWidgetSelected , widgetSelected, smallCard}
                         <WidgetIcon fillColor='#585871' />
                         <div>Widget Type</div>
                     </div>
-                    <div className={styles.widgetLengthContainer} style={{backgroundColor : bgColor}}>+{templateLength} styles</div>
+                    <div className={styles.widgetLengthContainer} style={{ backgroundColor: bgColor }}>+{templateLength} styles</div>
                 </div>
                 <div className={styles.widgetName}>{widgetName}</div>
-                <div className={styles.widgetDesc}>{widgetDesc}</div>
+                <div className={`${styles.widgetDesc} ${theme === "dark" ? styles.darkDesc : ""}`}>{widgetDesc}</div>
             </div>
-            {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon}/>}
+            {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon} />}
         </div>
     )
 }
