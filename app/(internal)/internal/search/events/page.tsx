@@ -1355,8 +1355,9 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1381,7 +1382,7 @@ const Search = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover className={styles.filterPopover}>
+                  <Popover className={styles.filterPopover} isOpen={false} >
                     {/* <Dialog> */}
                     <EventAdvFilter
                       state={selectedEntry}
@@ -1503,8 +1504,9 @@ const Search = () => {
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
                 <div className={styles.inputdropdowns_container}>
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={`${styles.disabledBtn}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1529,6 +1531,7 @@ const Search = () => {
                                   setSelectedBrandedEvent((prev) => !prev);
                                 }}
                                 checked={selectedBrandedEvent}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1539,8 +1542,9 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1567,7 +1571,7 @@ const Search = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover className={styles.filterPopover}>
+                  <Popover className={styles.filterPopover} isOpen={false}>
                     <RangeSlider
                       state={selectedTrustScore}
                       setState={setSelectedTrustScore}
@@ -1575,8 +1579,9 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={`${styles.disabledBtn}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>Event Series</div>
@@ -1590,6 +1595,7 @@ const Search = () => {
                                   setSelectedEventSeries((prev) => !prev);
                                 }}
                                 checked={selectedEventSeries}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
