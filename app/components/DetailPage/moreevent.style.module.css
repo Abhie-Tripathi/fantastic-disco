@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative;
 }
 .heading {
     font-size: 24px;
@@ -10,16 +11,15 @@
 }
 
 .carousel {
-    padding: 10px;
     width: 100%; /* Adjust this as needed */
     overflow: hidden; /* Ensure overflow is hidden */
-    position: relative;
 }
 
 .carouselTrack {
     display: flex;
     transition: transform 0.5s ease;
     gap: 20px;
+    width: 90%;
     /* Remove overflow hidden from here */
 }
 
@@ -31,7 +31,7 @@
 
 .navButton {
     position: absolute;
-    top: 50%;
+    top: 54%;
     transform: translateY(-50%);
     z-index: 1;
     height: 50px;
@@ -41,25 +41,16 @@
     justify-content: center;
     background-color: #1a1a1a;
     border-radius: 50px;
-    filter: drop-shadow(1px 1px 3px rgb(83, 83, 83));
+    filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
   }
   .navButton:disabled {
-    background-color: #363636;
-    cursor: not-allowed;
+    display: none;
   }
   
   .navButton:first-of-type {
-    left: 0;
+    left: -25px;
   }
   
   .navButton:last-of-type {
-    right: 0;
+    right: -25px;
   }
-
-.carouselButton:first-of-type {
-    left: 0;
-}
-
-.carouselButton:last-of-type {
-    right: 0;
-}
