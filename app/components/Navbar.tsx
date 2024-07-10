@@ -204,21 +204,21 @@ const Navbar = () => {
               </div>
 
               {dotMenuCtas.isOpen && (
-                <div className={`${styles.userDropdown} card`}>
-                  <Link href="#">
-                    <div className={`${styles.btns} ${styles.dotMenu_icons}`}>
-                      Promote
+                <div className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `} style={{width:'fit-content'}}>
+                  <Link href="#" className="">
+                    <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
                       <Image
                         src={promoteIcon}
                         alt="promote"
-                        width={15}
-                        height={15}
-                      />
+                        width={28}
+                        height={28}
+                        />
+                        Promote
                     </div>
                   </Link>
-                  <div className={`${styles.btns} ${styles.dotMenu_icons}`}>
+                  <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
+                   <Image src={prospectIcon} alt="prospect" width={28} height={28} />
                     Prospect
-                   <Image src={prospectIcon} alt="prospect" width={15} height={15} />
                   </div>
                 </div>
               )}
@@ -227,7 +227,7 @@ const Navbar = () => {
         )}
 
         {/* Settings */}
-        {pathName === "internal" && (
+        {/* {pathName === "internal" && (
           <Link
             className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
@@ -236,7 +236,7 @@ const Navbar = () => {
           >
             <Image src={settingsIcon} alt="settings" className={iconClass} />
           </Link>
-        )}
+        )} */}
 
         {pathName !== "internal" && (
           <>
