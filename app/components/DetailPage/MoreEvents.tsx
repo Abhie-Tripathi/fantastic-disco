@@ -6,12 +6,12 @@ import EventCard from '../TemplateViews/previews/cardstyles/EventCard2'
 const MoreEvents = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const items = [
-        <EventCard key="1" cardBgColor='none'/>,
-        <EventCard key="2" cardBgColor='none'/>,
-        <EventCard key="3" cardBgColor='none'/>,
-        <EventCard key="4" cardBgColor='none'/>,
-        <EventCard key="5" cardBgColor='none'/>,
-        <EventCard key="6" cardBgColor='none'/>,
+        <EventCard key="1" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+        <EventCard key="2" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+        <EventCard key="3" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+        <EventCard key="4" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+        <EventCard key="5" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+        <EventCard key="6" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
     ];
 
     const itemsToShow = 2;
