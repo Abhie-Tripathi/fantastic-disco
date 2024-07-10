@@ -24,14 +24,16 @@ const Mapview = ({ latitude, longitude, zoom }: MapProps) => {
             <div className={styles.heading}>Location</div>
             <div className={styles.line}></div>
             <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
-            <div className={styles.map} style={{ width: 670, height: 200, marginTop:24, borderRadius : 8 }}>
+            <div className={styles.map} style={{ width: 670, height: 200, marginTop:24}}>
                 <ReactMapGl
                     {...viewport}
                     mapboxApiAccessToken='pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg'
                     width="100%"
                     height="100%"
                     mapStyle='mapbox://styles/mapbox/light-v11'
-                    onViewportChange={(viewport)=>setViewport(viewport)}
+                    onViewportChange={(viewport)=>setViewport(viewport)
+                        
+                    }
                 >
                     <Marker latitude={latitude} longitude={longitude}>
                         <Image src={MapPointer} alt='pointer'/>
