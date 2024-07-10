@@ -1679,7 +1679,6 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
                 <div
                   className={styles.inputdropdowns_container_AI}
-                  ref={intelRef}
                 >
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
