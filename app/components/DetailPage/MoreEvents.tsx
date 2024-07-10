@@ -1,20 +1,20 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './moreevent.style.module.css'
-import EventCard from '../TemplateViews/previews/cardstyles/EventCard1'
+import EventCard from '../TemplateViews/previews/cardstyles/EventCard2'
 
 const MoreEvents = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const items = [
-        <EventCard key="1" />,
-        <EventCard key="2" />,
-        <EventCard key="3" />,
-        <EventCard key="4" />,
-        <EventCard key="5" />,
-        <EventCard key="6" />,
+        <EventCard key="1" cardBgColor='none'/>,
+        <EventCard key="2" cardBgColor='none'/>,
+        <EventCard key="3" cardBgColor='none'/>,
+        <EventCard key="4" cardBgColor='none'/>,
+        <EventCard key="5" cardBgColor='none'/>,
+        <EventCard key="6" cardBgColor='none'/>,
     ];
 
-    const itemsToShow = 3;
+    const itemsToShow = 2;
     const totalItems = items.length;
 
     const handleNext = () => {
@@ -27,27 +27,34 @@ const MoreEvents = () => {
 
     return (
         <div className={styles.body}>
-            <div className={styles.header}>
-            <button className={styles.carouselButton} onClick={handlePrev} disabled={currentIndex === 0}>
-                    Prev
-                </button>
-                <div className={styles.heading}>More Events</div>
-                          <button className={styles.carouselButton} onClick={handleNext} disabled={currentIndex >= totalItems - itemsToShow}>
-                    Next
-                </button>
-                </div>
+            <div className={styles.heading}>More Events</div>
             <div className={styles.carousel}>
- 
-                <div className={styles.carouselTrack} style={{ transform: `translateX(-${(currentIndex / totalItems) * 100}%)` }}>
+                <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
+                    <LeftArrowIcon />
+                </button>
+                <div className={styles.carouselTrack} style={{ transform: `translateX(-${(currentIndex / totalItems) * 300}%)` }}>
                     {items.map((item) => (
                         <div className={styles.carouselItem} key={item.key}>
                             {item}
                         </div>
                     ))}
                 </div>
-      
+                <button className={styles.navButton} onClick={handleNext} disabled={currentIndex >= totalItems - itemsToShow}>
+                    <RightArrowIcon />
+                </button>
             </div>
         </div>
+    )
+}
+function LeftArrowIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="white"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
+    )
+}
+
+function RightArrowIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="white"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
     )
 }
 
