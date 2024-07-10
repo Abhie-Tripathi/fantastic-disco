@@ -170,6 +170,7 @@ button {
   --warning-background-color: #FFF6E6;
   --success-background-color: #EFFBEF;
   --disabled-background-color: #C9C9C9;
+  --disabled-btn-color: #c9c9c966;
 }
 
 .card {
@@ -195,6 +196,7 @@ body[data-theme="dark"] {
   --warning-background-color: #291800;
   --success-background-color: #0B2212;
   --disabled-background-color: #454545;
+  --disabled-btn-color: #454545;
 }
 
 /* :root {

@@ -6,6 +6,7 @@ import eventData from '@/public/data/demoEvent.json'
 import { eventDataType } from "../../../types/coordinateEventType";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
+import Loading from '../UI/Loading'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -20,6 +21,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
     const [noData, setNoData] = useState<boolean>(false);
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
     const handleScrollEnd = () => {
         setTimeout(() => {
@@ -30,6 +32,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const fetchData = async () => {
         console.log('fetching data... page=', page);
         if(page > 0) {
+            setIsLoaded(false);
+            try {
             const apiUrl = baseUrl + "/userInterest?status=PENDING&limit=10&offset=" + (page-1)*10;
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
@@ -42,6 +46,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
                 }else if(page>1){
                     setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
                 }
+            }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsLoaded(true);
             }
         }
     };
@@ -85,13 +94,15 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardUpdated]);
 
-if(noData){
-    return (
-        <div className={styles.noData}>
-          An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
-        </div>
-    );
-}
+    if (!isLoaded) {
+        return <div style={{padding: "50px"}}><Loading /></div>;
+    } else if (isLoaded && noData) {
+        return (
+            <div className={styles.noData}>
+                An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
+            </div>
+        );
+    }
 
   return (
     <div className={styles.scrollContainer} ref={divRef} >

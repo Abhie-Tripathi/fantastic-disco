@@ -373,3 +373,10 @@
   .listBtn{
     background-color: var(--primary-foreground);
   }
+
+  .disabledBtn {
+    opacity: 0.6;
+    cursor: unset;
+    background-color: var(--disabled-btn-color);
+    border-radius: var(--border-radius-sm);
+  }
