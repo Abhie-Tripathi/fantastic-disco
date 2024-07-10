@@ -7,13 +7,15 @@ import { useAuthContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { SignInFormSchema } from "@/types";
+import { SignInFormSchema, SignInWithOTPSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
 import logo from "/public/Logo_Light mode.png";
 import Verification from "../verification/page";
 import { showToast } from "@/utils/showToast";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -38,7 +40,7 @@ const SignIn = () => {
   const { signin } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
 
-  const signinHandler = async (event: FormEvent<HTMLFormElement>) => {
+  const signinHandler = async (event: any) => {
     event?.preventDefault();
     try {
       SignInFormSchema.parse({ email, password });
@@ -78,9 +80,48 @@ const SignIn = () => {
       }
     }
   };
-  console.log(id);
   const obj = {
     email: email,
+    path:'signin',
+  };
+
+  const handleOTPLogin = async (event: any) => {
+    event?.preventDefault();
+    const dto = { email };
+    try {
+      SignInWithOTPSchema.parse({ email });
+      setErrors({});
+      const { data, error } = await myFetch(
+        `${baseUrl}/auth/customer/verify/generate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dto),
+        }
+      );
+      if (error) {
+        showToast("error", error.message);
+        return;
+      }
+
+      if (data) {
+        setShowVerification(true);
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            validationErrors[err.path.join(".")] = err.message;
+          }
+        });
+        setErrors(validationErrors);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   return (
@@ -91,7 +132,7 @@ const SignIn = () => {
           <div className={styles.sub_containerLeft}>
             <Carousel />
           </div>
-          <form className={styles.loginForm} onSubmit={signinHandler}>
+          <form className={styles.loginForm}>
             <div className={styles.form_container}>
               <div className={styles.form_heading}>
                 <Image src={logo} alt="logo" />
@@ -146,21 +187,17 @@ const SignIn = () => {
               </div>
 
               <div className={styles.actions_container}>
-                <button className={styles.button} type="submit">
+                <button
+                  className={styles.button}
+                  type="submit"
+                  onClick={signinHandler}
+                >
                   {isLoading ? "Logging..." : "Login"}
                 </button>
 
-                {/* <button
-                  className={styles.button}
-                  onClick={() =>
-                    showToast(
-                      "info",
-                      "This feature will be available shortly."
-                    )
-                  }
-                >
+                <button className={styles.button} onClick={handleOTPLogin}>
                   Login with OTP
-                </button> */}
+                </button>
                 <div className={styles.new_account}>
                   Do not have an account?
                   <Link href={"/signup"} className={styles.createNew_link}>

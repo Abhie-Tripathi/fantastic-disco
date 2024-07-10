@@ -25,22 +25,22 @@ const ShareButtons = ({ shareUrl, title,hashtags, emailSubject, emailBody }: Pro
     return (
         <div className={styles.shareIconContainer}>
             <FacebookShareButton url={shareUrl} title={title} hashtag={hashtags[0]}>
-                <FacebookIcon size={32} round={true} />
+                <FacebookIcon size={24} round={true} />
             </FacebookShareButton>
             <TwitterShareButton url={shareUrl} title={title} hashtags={hashtags}>
-                <TwitterIcon size={32} round={true} />
+                <TwitterIcon size={24} round={true} />
             </TwitterShareButton>
             <LinkedinShareButton url={shareUrl} title={title} source='Eventgeni'>
-                <LinkedinIcon size={32} round={true} />
+                <LinkedinIcon size={24} round={true} />
             </LinkedinShareButton>
             <EmailShareButton url={shareUrl} title={title} body={emailBody} subject={emailSubject}>
-                <EmailIcon size={32} round={true} />
+                <EmailIcon size={24} round={true} />
             </EmailShareButton>
             {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
                 <Image src={CopyIcon} alt='copy' className={styles.copyIcon} />
             </div>}
             {copyClick && <div className={styles.copyContainer} data-name="Copied">
-                <Image src={TickIcon} alt='copied' className={styles.copyIcon} width={30} height={30} />
+                <Image src={TickIcon} alt='copied' className={styles.copyIcon} width={20} height={20} />
             </div>}
         </div>
     )

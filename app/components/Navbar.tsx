@@ -48,10 +48,8 @@ const Navbar = () => {
     user ? user : null
   );
 
-
   useEffect(() => {
-    if(user)
-    setUserDetail(user);
+    if (user) setUserDetail(user);
   }, [user]);
 
   const toggleDropdown = () => {
@@ -63,7 +61,7 @@ const Navbar = () => {
   const themeSwitchHandler = () => {
     toggleTheme();
   };
-console.log(user);
+  console.log(user);
 
   const handelSideShow = () => {
     setShowSidebar(true);
@@ -248,7 +246,10 @@ console.log(user);
               ref={profilectas.dropdownRef}
               onClick={toggleDropdown}
             >
-              <div className={`${styles.circle} ${styles.userCircle}`} data-name="Username">
+              <div
+                className={`${styles.circle} ${styles.userCircle}`}
+                data-name="Username"
+              >
                 {userDetail?.firstname?.charAt(0)}
                 {userDetail?.lastname?.charAt(0)}
               </div>
@@ -262,9 +263,9 @@ console.log(user);
                 <div
                   className={`${styles.userDropdown} card`}
                 >
-                  <div className={styles.btns}>
-                    <Link href="/profile">Profile</Link>
-                  </div>
+                  <Link href="/profile">
+                    <div className={styles.btns}>Profile</div>
+                  </Link>
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>
