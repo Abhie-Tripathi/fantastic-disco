@@ -7,6 +7,7 @@ import { Sora } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GeistSans } from 'geist/font/sans';
 
 const sora = Sora({
   subsets: ["latin"],
@@ -26,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.className} ${inter.variable}`}>
+    <html lang="en" className={`${sora.className} ${inter.variable} ${GeistSans.className}`}>
       <body>
       <ToastContainer />
         <AuthContextProvider>

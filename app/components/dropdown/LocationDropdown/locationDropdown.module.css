@@ -7,12 +7,13 @@
   border-top: none;
   border-radius: var(--border-radius-sm);;
   color: inherit;
-  max-height: 350px;
-  overflow-y: auto;
+  padding: 10px 0;
+  /* max-height: 350px;
+  overflow-y: auto; */
 }
 .header {
   display: flex;
-  padding: 24px 20px;
+  padding: 15px 20px;
   align-items: center;
 }
 
@@ -65,7 +66,7 @@
 }
 
 .location_search_input {
-  padding: 0px 20px 20px 20px;
+  padding: 0 20px;
 }
 
 .closeIcon {
@@ -73,10 +74,14 @@
 }
 
 .resultData_list{
-  padding: 15px;
-  background-color: var(--heading-background-color);
-  margin-bottom: 6px;
+  padding: 10px;
+  /* background-color: var(--heading-background-color);
+  margin-bottom: 6px; */
   cursor: pointer;
+}
+
+.resultData_list:hover {
+  background-color: var(--heading-background-color);
 }
 
 /* .resultData_list_light {
@@ -91,10 +96,11 @@
  }
  
  .keyword_chip {
-  padding: 4px 7px 4px 7px;
+  padding: 4px 12px;
+  font-size: var(--font-size-default);
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--spacing-sm);
   border: 1px solid var(--border-color);
   border-radius: 30px;
   color: var(--primary-color);
@@ -103,5 +109,11 @@
  
  .closeChip {
   cursor: pointer;
+ }
+
+ .suggestion_container {
+  max-height: 35vh;
+  overflow-y: auto;
+  padding: 10px;
  }
  

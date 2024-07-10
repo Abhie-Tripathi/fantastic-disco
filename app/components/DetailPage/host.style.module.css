@@ -1,0 +1,42 @@
+.hostDetailsContainer{
+    display: flex;
+    gap: 12px;
+}
+
+.hostname{
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+}
+.hostlocation{
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.hostlocation span{
+    color: #A1A1A1;
+    font-weight: 400;
+}
+.upcoming{
+    margin-top: 20px;
+    font-size: 14px;
+    color: #A1A1A1;
+}
+.upcoming span{
+    background-color: #331B00;
+    color: #FF990A;
+    padding: 2px 5px;
+    border-radius: 9px;
+}
+.hosted{
+    margin-top: 16px;
+    font-size: 14px;
+    color: #A1A1A1;
+}
+.hosted span{
+    background-color: #331B00;
+    color: #FF990A;
+    padding: 2px 5px;
+    border-radius: 9px;
+}

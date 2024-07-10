@@ -22,11 +22,11 @@ const CategoryDropdown = ({
   setState,
   categorySlug,
   setCategorySlug,
-  // categoryData,
+  categoryData,
 }: CategoryDropdownProps) => {
   const { theme } = useTheme()
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>(categorySlug);
-  const categoryData = categoryJson;
+  // const categoryData = categoryJson;
   const getPath=usePathname().split('/');
   const last=getPath[getPath.length-1];
   const onClickHandler = (id: string, slug: string) => {
@@ -95,7 +95,7 @@ const CategoryDropdown = ({
             />
             <label htmlFor="selectAllAttended">Select All</label>
           </li>
-          {categoryData?.map((attendedCategory: any) => {
+          {categoryData?.slice(0, 29).map((attendedCategory: any) => {
             return (
               <li key={attendedCategory.id}>
                 <CheckboxInput
