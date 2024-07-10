@@ -18,7 +18,7 @@
 
 .carousel {
     padding: 10px;
-    width: 80%; /* Adjust this as needed */
+    width: 100%; /* Adjust this as needed */
     overflow: hidden; /* Ensure overflow is hidden */
 }
 

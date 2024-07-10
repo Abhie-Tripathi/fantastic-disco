@@ -17,6 +17,7 @@
 }
 .approvalContainer{
     display: flex;
+    align-items: center;
     gap: 12px;
 }
 .iconContainer{
@@ -27,4 +28,52 @@
     align-items: center;
     justify-content: center;
     background-color: #1F1F1F;
+}
+.approvalDetails{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.approvalDetailsHeading{
+    color: #EDEDED;
+    font-weight: 600;
+}
+.approvalDetailsDesc{
+    color: #A1A1A1;
+    font-weight: 400;
+    font-size: 14px;
+}
+.line{
+    margin-top: 24px;
+    margin-bottom: 24px;
+    border-top: 1px solid #454545;
+}
+.formHeading{
+    color: #EDEDED;
+    line-height: 24px;
+}
+.inputContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 18px;
+}
+.inputContainer input{
+    border: 1px solid #2E2E2E;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: transparent;
+    font-size: 14px;
+    font-weight: 400;
+}
+.submitBtn{
+    margin-top: 18px;
+    background-color: white;
+    font-size: 14px;
+    color: #171717;
+    border-radius: 4px;
+    font-weight: 600;
+    width: 100%;
+    padding: 8px;
+    line-height: 20px;
 }

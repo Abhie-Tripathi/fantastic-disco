@@ -28,16 +28,16 @@ const MoreEvents = () => {
     return (
         <div className={styles.body}>
             <div className={styles.header}>
-            <button className={styles.carouselButton} onClick={handlePrev} disabled={currentIndex === 0}>
+                <button className={styles.carouselButton} onClick={handlePrev} disabled={currentIndex === 0}>
                     Prev
                 </button>
                 <div className={styles.heading}>More Events</div>
-                          <button className={styles.carouselButton} onClick={handleNext} disabled={currentIndex >= totalItems - itemsToShow}>
+                <button className={styles.carouselButton} onClick={handleNext} disabled={currentIndex >= totalItems - itemsToShow}>
                     Next
                 </button>
-                </div>
+            </div>
             <div className={styles.carousel}>
- 
+
                 <div className={styles.carouselTrack} style={{ transform: `translateX(-${(currentIndex / totalItems) * 100}%)` }}>
                     {items.map((item) => (
                         <div className={styles.carouselItem} key={item.key}>
@@ -45,7 +45,7 @@ const MoreEvents = () => {
                         </div>
                     ))}
                 </div>
-      
+
             </div>
         </div>
     )

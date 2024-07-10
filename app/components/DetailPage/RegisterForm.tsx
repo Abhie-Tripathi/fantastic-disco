@@ -8,12 +8,20 @@ const RegisterForm = () => {
             <div className={styles.heading}>Registraion</div>
             <div className={styles.container}>
                 <div className={styles.approvalContainer}>
-                    <div className={styles.iconContainer}><PersonIcon/></div>
+                    <div className={styles.iconContainer}><PersonIcon /></div>
                     <div className={styles.approvalDetails}>
-                        <div>Approval Required</div>
-                        <div>Your registration is subject to approval by the host.</div>
+                        <div className={styles.approvalDetailsHeading}>Approval Required</div>
+                        <div className={styles.approvalDetailsDesc}>Your registration is subject to approval by the host.</div>
                     </div>
                 </div>
+                <div className={styles.line}></div>
+                <div className={styles.formHeading}>Welcome! To join the event, please register below.
+                </div>
+                <div className={styles.inputContainer}>
+                    <input type="text" placeholder='Name'/>
+                    <input type="text" placeholder='Email'/>
+                </div>
+                <button className={styles.submitBtn}>Register</button>
             </div>
         </form>
     )
