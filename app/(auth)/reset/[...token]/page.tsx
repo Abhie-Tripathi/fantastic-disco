@@ -110,7 +110,9 @@ const PasswordReset = ({ params }: { params: { token: string[] } }) => {
   }
 
   if (isValidToken === false) {
-    return <div className={styles.expired_token}>Token is expired</div>;
+    router.push("/signin");
+    return;
+    // return <div className={styles.expired_token}>Token is expired</div>;
   }
 
   return (

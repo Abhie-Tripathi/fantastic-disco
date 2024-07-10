@@ -184,9 +184,7 @@ const Page: React.FC = () => {
           <div className={styles.mobileTab}>
             <div
               onClick={() => handleVisibleTab("shortlist")}
-              className={`${styles.heading} ${
-                theme === "light" ? styles.heading_light : ""
-              } ${tabsVisible == "shortlist" ? styles.tabActive : ""}`}
+              className={`${styles.heading} ${tabsVisible == "shortlist" ? styles.tabActive : ""}`}
             >
               Shortlisted{" "}
               <span className={styles.eventSize}>
@@ -196,9 +194,7 @@ const Page: React.FC = () => {
             <span className={styles.seprator}></span>
             <div
               onClick={() => handleVisibleTab("outreach")}
-              className={`${styles.heading} ${
-                theme === "light" ? styles.heading_light : ""
-              } ${tabsVisible == "outreach" ? styles.tabActive : ""}`}
+              className={`${styles.heading} ${tabsVisible == "outreach" ? styles.tabActive : ""}`}
             >
               Out Reach{" "}
               <span className={styles.eventSize}>{outreachTasks.length}</span>
@@ -206,9 +202,7 @@ const Page: React.FC = () => {
             <span className={styles.seprator}></span>
             <div
               onClick={() => handleVisibleTab("preFinal")}
-              className={`${styles.heading} ${
-                theme === "light" ? styles.heading_light : ""
-              } ${tabsVisible == "preFinal" ? styles.tabActive : ""}`}
+              className={`${styles.heading} ${tabsVisible == "preFinal" ? styles.tabActive : ""}`}
             >
               Pre Finalised{" "}
               <span className={styles.eventSize}>
@@ -222,9 +216,7 @@ const Page: React.FC = () => {
             <div className={`${styles.outerCard}`}>
               <div className="desktop_view tablet_view">
                 <div
-                  className={`${styles.heading} ${
-                    theme === "light" ? styles.heading_light : ""
-                  }`}
+                  className={`${styles.heading}`}
                 >
                   Shortlisted{" "}
                   <span className={styles.eventSize}>
@@ -235,7 +227,7 @@ const Page: React.FC = () => {
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                } ${theme === "dark" ? 'darkMode' : "lightMode_secondary"}`}
+                }`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "shortlisted")
@@ -261,14 +253,14 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
-                <div
+                {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
                   }`}
                   onClick={openAddModalHandler}
                 >
                   Add Event
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -276,9 +268,7 @@ const Page: React.FC = () => {
             <div className={`${styles.outerCard} `}>
               <div className="desktop_view tablet_view">
                 <div
-                  className={`${styles.heading} ${
-                    theme === "light" ? styles.heading_light : ""
-                  }`}
+                  className={`${styles.heading}`}
                 >
                   Out Reach{" "}
                   <span className={styles.eventSize}>
@@ -289,7 +279,7 @@ const Page: React.FC = () => {
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                } ${theme === "dark" ? 'darkMode' : "lightMode_secondary"}`}
+                }`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "outreach")
@@ -315,14 +305,14 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
-                <div
+                {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
                   }`}
                   onClick={openAddModalHandler}
                 >
                   Add Event
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -330,9 +320,7 @@ const Page: React.FC = () => {
             <div className={`${styles.outerCard}`}>
               <div className="desktop_view tablet_view">
                 <div
-                  className={`${styles.heading} ${
-                    theme === "light" ? styles.heading_light : ""
-                  }`}
+                  className={`${styles.heading}`}
                 >
                   Pre Finalised{" "}
                   <span className={styles.eventSize}>
@@ -343,7 +331,7 @@ const Page: React.FC = () => {
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                } ${theme === "dark" ? 'darkMode' : "lightMode_secondary"}`}
+                }`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "prefinalised")
@@ -369,14 +357,14 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
-                <div
+                {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
                   }`}
                   onClick={openAddModalHandler}
                 >
                   Add Event
-                </div>
+                </div> */}
               </div>
             </div>
           )}

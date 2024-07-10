@@ -99,7 +99,7 @@ const CategoryDropdown = ({
             return (
               <li key={attendedCategory.id}>
                 <CheckboxInput
-                  id={attendedCategory.id}
+                  id={attendedCategory.slug}
                   onChange={() =>
                     onClickHandler(attendedCategory.id, attendedCategory.slug)
                   }

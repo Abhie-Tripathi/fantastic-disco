@@ -52,25 +52,24 @@ const Page = () => {
 
     },[])
     useEffect(() => {
-        const fetchData = async () => {
-            const url = `${baseUrl}/auth/users?limit=100`;
-            try {
-                const { data, error } = await myFetch(url, {
-                    method: 'GET'
-                });
-                if (error) {
-                    console.error('Error fetching data:', error);
-                } else {
-                    console.log('Data fetched:', data);
-                    setData(data?.users);
-                }
-            } catch (err) {
-                console.error('Fetch failed:', err);
-            }
-        };
-
-        fetchData();
+       fetchData();
     }, []);
+    const fetchData = async () => {
+        const url = `${baseUrl}/auth/users?limit=100`;
+        try {
+            const { data, error } = await myFetch(url, {
+                method: 'GET'
+            });
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                console.log('Data fetched:', data);
+                setData(data?.users);
+            }
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        }
+    };
     console.log(data);
     
     const [share, setShare] = useState(false);
@@ -154,7 +153,8 @@ const Page = () => {
             });
             if (error) {
                 console.error('Error fetching data:', error);
-            } else {
+            } 
+            if(data) {
                 console.log('Data fetched:', data);
                 GAEvent(
                     "trackers",
@@ -162,7 +162,12 @@ const Page = () => {
                     "Share",
                     "Invite"
                   );
-                window.location.reload();
+                  showToast("success","Tracker shared successfully!")
+                  fetchData();
+                setTimeout(()=>{
+                    window.location.reload();
+                },2000)
+                
                 if(share) setShare(false);
                 if(sendInvite) setSendInvite(false);
                 setAccessData(data);

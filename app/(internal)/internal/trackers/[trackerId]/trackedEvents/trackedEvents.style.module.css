@@ -32,11 +32,10 @@
 }
 .eventStatusBtn{
     color:#424242;
-    width: 210px;
-    border-radius: 12px;
-    padding: 12px 24px;
+    border-radius: var(--border-radius-sm);
+    padding: 6px 12px;
     display: flex;
-    gap: 5px;
+    gap: var(--spacing-xxs);
     align-items: center;
     justify-content: center;
     background-color: var(--primary-foreground);
@@ -48,7 +47,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: var(--border-radius-rounded);
     color: white;
     font-size: 10px;
     font-weight: 500;
@@ -125,7 +124,7 @@
   
   .eventStatus {
     display: flex;
-    padding: 10px;
+    padding: 10px 20px;
     justify-content: space-between;
     /* Your other styles */
   }
@@ -148,12 +147,14 @@
     width: 100%;
     align-items: center;
   }
-  /* HTML: <div class="loader"></div> */
+.active .loader{
+    border: 3px solid var(--primary-color);
+}
 .loader {
     width: 20px;
     padding: 8px;
     aspect-ratio: 1;
-    border-radius: 50%;
+    border-radius: var(--border-radius-rounded);
     border:3px solid white;
     --_m: 
       conic-gradient(#0000 10%,#000),

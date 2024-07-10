@@ -100,9 +100,16 @@ const SignUp = () => {
   };
 
   const generateOtp = async () => {
+    const dataToSend = {
+      email: email,
+    };
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const { data, error } = await myFetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
     });
     if (data) console.log(data);
     if (error) {
@@ -110,9 +117,10 @@ const SignUp = () => {
       return;
     }
   };
-  console.log(errors);
+
   const obj = {
     email: email,
+    path: "signup",
   };
   return (
     <div className={styles.container}>

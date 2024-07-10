@@ -41,7 +41,7 @@
   
   .table_head_row > th {
     padding: 20px 20px;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     text-align: start;
   }
   
@@ -69,7 +69,7 @@
   }
   
   .event_title {
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: white;
   }
   .eventTitle_light {
@@ -78,12 +78,12 @@
   
   .event_organizer {
     color: #696b83;
-    font-size: 14px;
+    font-size: var(--font-size-default);
     margin-top: 5px;
   }
   
   .event_date {
-    font-size: 14px;
+    font-size: var(--font-size-default);
     white-space: nowrap;
   }
   
@@ -200,7 +200,7 @@
   }
   
   .products-list {
-    font-size: 14px;
+    font-size: var(--font-size-default);
     color: #8f68ce;
   }
   
@@ -227,8 +227,8 @@
     padding: 8px 24px;
     border-radius: 12px;
     color: #3cbda8;
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
   }
   
   .badge_primary {
@@ -236,8 +236,8 @@
     padding: 8px 24px;
     border-radius: 12px;
     color: #6750a4;
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
   }
   
   .badge_danger {
@@ -245,8 +245,8 @@
     padding: 8px 24px;
     border-radius: 12px;
     color: #df606e;
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
   }
   
   .rank_tag {
@@ -254,8 +254,8 @@
     padding: 6px 16px;
     border-radius: 12px;
     color: #d5a55e;
-    font-weight: 500;
-    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
     text-transform: capitalize;
     display: inline-block;
   }
@@ -272,7 +272,7 @@
     padding: 0.8rem 1rem;
     align-items: center;
     justify-content: space-between;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
   
   .modal_header-title {
@@ -313,14 +313,14 @@
   .submitBtn {
     padding: 0.5rem 1rem;
     border-radius: 0.31rem;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-large);
     /* background: transparent; */
     border: 1px solid #d9e1ec;
     cursor: pointer;
     color: #fff;
     margin-right: 0.5rem;
-    background: #6750a4;
+    background: var(--primary-color);
     border: none;
   }
   .saveBtn{
@@ -336,9 +336,9 @@
     padding: 20px 10px;
   }
   .saved{
-    font-size: 18px;
-    font-weight: 700;
-    color:#6750A4;
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-bold);
+    color:var(--primary-color);
   }
   .deleteBtn{
    color:#C4C4C4;

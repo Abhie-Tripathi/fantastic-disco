@@ -27,7 +27,7 @@ const EventAttendance = ({
   }
 
   return (
-    <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
+    <div className={`${styles.container} ${className}`}>
       <div className={styles.header_container}>
         <div className={styles.header_title}>Event Attendance</div>
         <div className={styles.header_button} onClick={handleSave}>

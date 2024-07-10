@@ -254,7 +254,7 @@ const ExportModal = ({ onClose, filterValue, type }: exportModalProps) => {
             className={styles.exportType_modal_button2}
             onClick={()=>setShowExportedFiles(true)}
           >
-            See previous export files
+            See previous exported files
           </div>
         </div>
       )}

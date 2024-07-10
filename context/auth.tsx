@@ -6,12 +6,12 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
-  useState
+  useState,
 } from "react";
 import { useRouter } from "next/navigation";
 import { authEndpoints, baseUrl, headers } from "@/constants";
 import { UserResponse } from "../types/user";
-import { SignUpResponse, SignInResponse } from "../types";
+import { SignUpResponse, SignInResponse, TSignInWithOTPSchema } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -22,24 +22,25 @@ type authContextType = {
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
   verifyOtp: (user: any) => Promise<any>;
+  verifyLoginOTP: (user: any) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
 };
 interface newUserResponse {
-  user:{
+  user: {
     id: string;
     firstname: string;
     lastname: string;
     email: string;
     token?: string;
-  }
-  
+  };
 }
 const authContextDefaultValues: authContextType = {
   user: null,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
-  signOut: () => { },
+  signOut: () => {},
   verifyOtp: () => Promise.resolve(null),
+  verifyLoginOTP: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
 };
 
@@ -58,9 +59,9 @@ export const AuthContextProvider = ({ children }: any) => {
     data?: SignUpResponse;
     error?: any;
   }
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
-  const token = searchParams.get('token')
+  const token = searchParams.get("token");
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto);
     const url = baseUrl + authEndpoints.signup;
@@ -90,57 +91,60 @@ export const AuthContextProvider = ({ children }: any) => {
     data?: SignInResponse;
     error?: any;
   }
-  const [isVerifiedToken,setIsVerifiedToken]=useState(false);
+  const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   useEffect(() => {
     if (token && token.length > 0) {
       const verifyToken = async () => {
         const formData = {
           token: token,
           invite: true,
-        }
-        const url = `${baseUrl}/auth/customer/reset-password/page`
+        };
+        const url = `${baseUrl}/auth/customer/reset-password/page`;
         try {
           const { data, error } = await myFetch(url, {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify(formData),
             headers: {
               "Content-Type": "application/json",
             },
           });
           if (error) {
-            console.error('Error fetching data:', error);
+            console.error("Error fetching data:", error);
             router.push("/signin");
           } else {
-            console.log('Data fetched:', data);
-            const { id, firstname, lastname, email, role }=data.info;
-            const user={
-              user:{
-                  id:id,
-                  firstname:firstname,
-                  lastname:lastname,
-                  email:email,
-                  role:role
-              }
-            }
+            console.log("Data fetched:", data);
+            const { id, firstname, lastname, email, role } = data.info;
+            const user = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+              },
+            };
             // const user = { id, firstname, lastname, email, role };
-            const userObject = { user: {
-              id:id,
-              firstname:firstname,
-              lastname:lastname,
-              email:email,
-              role:role
-            } };
+            const userObject = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+              },
+            };
             setUser(data.info);
             setLocalStorage(userObject);
           }
         } catch (err) {
-          console.error('Fetch failed:', err);
+          console.error("Fetch failed:", err);
           router.push("/signin");
         }
-      }
+      };
       verifyToken();
     }
-  }, [])
+  }, []);
+
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
     const url = baseUrl + authEndpoints.signin;
@@ -193,6 +197,39 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const verifyOtp = async (dataToSend: VerifyOTP) => {
     const url = baseUrl + "/auth/customer/verify";
+
+    const { data, error } = await myFetch(url, {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log(data, error);
+
+    if (data) {
+      console.log(data);
+      if (!data.user.isVerified) {
+        return;
+      }
+      if (data.user.isVerified) {
+        setUser(data);
+        setLocalStorage(data);
+      }
+    }
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    return data.user;
+  };
+
+  const verifyLoginOTP = async (dataToSend: VerifyOTP) => {
+    const url = baseUrl + "/auth/customer/verify-otp";
+
     const { data, error } = await myFetch(url, {
       method: "POST",
       body: JSON.stringify(dataToSend),
@@ -227,16 +264,14 @@ export const AuthContextProvider = ({ children }: any) => {
     console.log(user);
 
     if (user) {
-      // if(!user?.user){
-      //   // console.log(1);
-      //   setUser(JSON.parse(user));
-      // }else 
       setUser(JSON.parse(user).user);
     } else {
       const publicPaths = ["/signup", "/forgot-password"];
 
       const isPublicPath =
-        publicPaths.includes(pathName) || pathName.startsWith("/reset") || (token && token.length>0);
+        publicPaths.includes(pathName) ||
+        pathName.startsWith("/reset") ||
+        (token && token.length > 0);
 
       if (!isPublicPath) {
         router.push("/signin");
@@ -244,12 +279,22 @@ export const AuthContextProvider = ({ children }: any) => {
     }
   }, [pathName, router, isProfileUpdated]);
 
+  useLayoutEffect(() => {
+    if (user) {
+      const restrictedPaths = ["/signin", "/signup"];
+      if (restrictedPaths.includes(pathName)) {
+        router.replace("/internal");
+      }
+    }
+  }, [user, pathName, router]);
+
   const value = {
     user,
     signup,
     signin,
     signOut,
     verifyOtp,
+    verifyLoginOTP,
     isProfileUpdated,
     setIsProfileUpdated,
   };
