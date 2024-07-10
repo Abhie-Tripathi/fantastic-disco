@@ -15,7 +15,9 @@ import Spinner from "/public/Icon.svg";
 import menuIcon from "/public/internal/hamburger.svg";
 import MobileSidebar from "@/app/components/sidebar/MobileSidebar";
 import BellIcon from "/public/bell.svg";
-
+import dotMenuIcon from "/public/internal/dotMenus.svg";
+import promoteIcon from "/public/internal/promote.svg";
+import prospectIcon from "/public/internal/prospect.svg";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -44,9 +46,12 @@ const Navbar = () => {
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   const profilectas = DropDown();
+  const dotMenuCtas = DropDown();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
   );
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (user) setUserDetail(user);
@@ -54,6 +59,10 @@ const Navbar = () => {
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
+  };
+
+  const dotMenuToggle = () => {
+    dotMenuCtas.setIsOpen(!dotMenuCtas.isOpen);
   };
   const pathName = usePathname().split("/")[1];
   const currPath = usePathname() as RouteMapKey;
@@ -163,7 +172,7 @@ const Navbar = () => {
         )}
 
         {/* Home */}
-        {pathName === "internal" && (
+        {/* {pathName === "internal" && (
           <div className="desktop_view tablet_view">
             <Link
               href="/"
@@ -173,6 +182,47 @@ const Navbar = () => {
             >
               <Image src={Home} alt="home" className={iconClass} />
             </Link>
+          </div>
+        )} */}
+
+        {/* DotMenus */}
+        {pathName === "internal" && (
+          <div className="desktop_view tablet_view">
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                cursor: "pointer",
+                position: "relative",
+                marginRight: "10px",
+              }}
+              ref={dotMenuCtas.dropdownRef}
+              onClick={dotMenuToggle}
+            >
+              <div className={`${styles.circle}`} data-name="Menu">
+                <Image src={dotMenuIcon} alt="dotMenu" width={20} height={20} className={iconClass} />
+              </div>
+
+              {dotMenuCtas.isOpen && (
+                <div className={`${styles.userDropdown} card`}>
+                  <Link href="#">
+                    <div className={`${styles.btns} ${styles.dotMenu_icons}`}>
+                      Promote
+                      <Image
+                        src={promoteIcon}
+                        alt="promote"
+                        width={15}
+                        height={15}
+                      />
+                    </div>
+                  </Link>
+                  <div className={`${styles.btns} ${styles.dotMenu_icons}`}>
+                    Prospect
+                   <Image src={prospectIcon} alt="prospect" width={15} height={15} />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -260,9 +310,7 @@ const Navbar = () => {
                 <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
               </div> */}
               {profilectas.isOpen && (
-                <div
-                  className={`${styles.userDropdown} card`}
-                >
+                <div className={`${styles.userDropdown} card`}>
                   <Link href="/profile">
                     <div className={styles.btns}>Profile</div>
                   </Link>

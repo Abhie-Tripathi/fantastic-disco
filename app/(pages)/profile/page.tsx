@@ -189,7 +189,17 @@ const Profile = () => {
   };
 
   const handleRemove = async () => {
+    if (profilePicture === null) {
+      showToast("error", "No Profile Pic Found");
+      return;
+    }
+    const splitName = name.split(" ");
     const formData = new FormData();
+    formData.append("firstname", splitName[0]);
+    formData.append("lastname", splitName[1]);
+    formData.append("phoneNumber", mobileNo);
+    formData.append("designation", role);
+    formData.append("department", dept);
     formData.append("removePicture", "true");
     const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
       method: "PATCH",
@@ -198,7 +208,7 @@ const Profile = () => {
 
     if (data) {
       console.log(data);
-      setProfileData(data);
+      setProfileData(data.user);
       setProfilePicture(null);
     }
 
