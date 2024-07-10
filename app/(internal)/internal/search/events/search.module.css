@@ -403,7 +403,7 @@ input:checked + .slider:before {
 }
 
 .resultData_list:hover {
-  background-color: #F9F7FC;
+  background-color: var(--heading-background-color);
 }
 
 .resultContainer {
