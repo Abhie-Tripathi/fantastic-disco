@@ -9,6 +9,7 @@ import Preloader from "@/public/preloader.svg";
 import CalendarContainer from "../../components/employee/calendarcontainer/CalendarContainer";
 import AddEventModal from "../../components/AddEventModal";
 import { useTheme } from "@/context";
+import Script from "next/script";
 
 const Map = React.lazy(() => import("../../components/employee/mapview/Map"));
 

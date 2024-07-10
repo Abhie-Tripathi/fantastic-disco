@@ -2,7 +2,7 @@
   width: var(--trigger-width);
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   height: fit-content;
-  background-color: #131313;
+  background-color: var(--primary-foreground);
   color: inherit;
   padding: 15px;
   overflow: scroll;
@@ -21,7 +21,7 @@
 
 .list li {
   list-style: none;
-  font-size: 14px;
+  font-size: var(--font-size-default);
   display: flex;
   align-items: center;
   gap: 15px;

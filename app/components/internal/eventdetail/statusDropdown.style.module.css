@@ -34,10 +34,11 @@
 .dropdown_menu {
     position: absolute;
     background-color: #1D1D1D;
+    border-radius: var(--border-radius-sm);
     z-index: 10;
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    padding: 8px;
+    font-size: var(--font-size-default);
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     min-height: fit-content;
     max-height: 300px;
@@ -102,8 +103,8 @@
     min-width: 40vw;
     height: auto;
     /* background-color: #fff; */
-    background-color: #1D1D1D;
-    color: #fff;
+    background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
     padding: 1rem 0;
     border-radius: 10px;
     /* background-color: rgba(255, 255, 255, 0.35);
@@ -128,10 +129,10 @@
     border-radius: 10px;
   }
 
-.modalContainer .modal_light {
+/* .modalContainer .modal_light {
     background-color: var(--secondary-bg-light);
     color: var(--primary-color-light);
-}
+} */
 
 .modalContainer .modal_header {
     position: relative;

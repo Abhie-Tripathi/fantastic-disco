@@ -17,6 +17,9 @@
     justify-content: center;
     align-items: center;
 }
+.darkImageContainer{
+    background-color: #1a1a1a;
+}
 .image{
     height: 100%;
 }

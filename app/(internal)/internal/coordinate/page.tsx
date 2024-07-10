@@ -78,9 +78,7 @@ const Page = () => {
       )}
       {modalOpen && (
         <div
-          className={`${styles.modal} ${
-            theme === "light" ? styles.modal_light : ""
-          }`}
+          className={`${styles.modal}`}
         >
           <EventDetail
             openEventDetails={true}
@@ -96,7 +94,7 @@ const Page = () => {
       )}
 
       {shortlistModalOpen && (
-        <div className={`${theme === "light" ? styles.modal_light : ""}`}>
+        <div>
           <ShortlistModal
             handleShortlistModal={handleShortlistModal}
             shortlistModalData={shortlistModalData}

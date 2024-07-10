@@ -51,7 +51,7 @@ const Page = () => {
                     {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
                 </div>
             </div>}
-            {widgetOptionsWindow && <div className={styles.widgetOptions} style={{ paddingTop:(widgetOptionsWindow && exploreWindow) ? "43px" : "40px" }}>
+            {widgetOptionsWindow && <div className={styles.widgetOptions}>
                 <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
             </div>}
             {!exploreWindow && <div className={styles.exploreBtnContainer}>

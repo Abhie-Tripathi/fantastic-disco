@@ -12,7 +12,7 @@
 }
 
 .searchContainer {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--input-border-color);
   border-radius: 12px;
 }
 
@@ -39,14 +39,6 @@
 }
 .searchbar input::placeholder {
   color: #a1a2a2;
-}
-
-.recentSearches_button {
-  background-color: #f7f7f9;
-  color: #6750a4;
-  cursor: pointer;
-  border-radius: 6px;
-  padding: 8px 16px;
 }
 
 .searchbar button {
@@ -138,6 +130,8 @@
   /* color: white; */
   border: none;
   cursor: pointer;
+  color: var(--primary-text-color);
+  background-color: var(--primary-foreground);
 }
 
 .viewTypeButtons_light button {
@@ -146,8 +140,8 @@
 }
 
 .viewTypeButtons button.active {
-  background-color: #6750a4;
-  border-radius: 4px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-sm);
   color: white;
 }
 
@@ -173,8 +167,8 @@
 }
 
 .advanceFilterBtns button.active {
-  border: 1px solid #6750a4;
-  border-radius: 4px;
+  border: 1px solid var(--primary-color);;
+  border-radius: var(--border-radius-sm);
   /* color: white; */
 }
 
@@ -190,9 +184,10 @@
 
 .input_container {
   width: 100%;
-  border: 1px solid #efefef;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--border-radius-sm);
   white-space: nowrap;
-  padding: 10px 15px;
+  padding: 8px 16px;
   color: inherit;
   background-color: inherit;
 }
@@ -205,17 +200,17 @@
   cursor: pointer;
   white-space: nowrap;
   padding: 8px 20px;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 6px;
 }
 
 .clearfilter_button {
-  color: #6750a4;
+  color: var(--primary-color);
   text-align: center;
   width: fit-content;
   padding-bottom: 1px;
-  border-color: #6750a4;
+  border-color: var(--primary-color);
   border-bottom-style: solid;
   border-bottom-width: 2px;
   text-wrap: nowrap;
@@ -230,10 +225,10 @@
 
 .input_selected_no {
   margin-left: 4px;
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   height: 20px;
   width: 20px;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
   color: white;
   font-weight: 500;
   display: inline-flex;
@@ -246,7 +241,8 @@
 .input_selected_title {
   padding-left: 4px;
   font-size: 10px;
-  color: #4d1bf3;
+  /* color: #4d1bf3; */
+  color: var(--primary-color);
   font-weight: 500;
   vertical-align: middle;
 }
@@ -254,6 +250,7 @@
 .viewContainer {
   /* background-color: #fbf8ff;
   background-color: #f6edff; */
+  background-color: var(--tabs-background-color);
   padding: 10px 0px;
   border-radius: 12px;
   margin: 25px 0px;
@@ -277,7 +274,7 @@
   width: 22px;
   height: 22px;
   font-size: 11px;
-  background-color: #4d1bf3;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -288,7 +285,7 @@
 .exportedno_title {
   text-transform: uppercase;
   font-size: 14px;
-  color: #6750a4;
+  color: var(--primary-color);
   font-weight: 500;
 }
 
@@ -299,10 +296,6 @@
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.exportButtonTitle {
-  color: #4d1bf3;
 }
 
 .modalOverlay {
@@ -375,11 +368,11 @@
 }
 
 input:checked + .slider {
-  background-color: #6750a4;
+  background-color: var(--primary-color);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #6750a4;
+  box-shadow: 0 0 1px var(--primary-color);
 }
 
 input:checked + .slider:before {
@@ -477,7 +470,7 @@ input:checked + .slider:before {
 }
 
 .eventName_container::-webkit-scrollbar-thumb {
-  background: #6750A4;
+  background: var(--primary-color);
   border-radius: 24px;
 }
  
@@ -535,7 +528,7 @@ input:checked + .slider:before {
   padding: 4px 8px;
   font-size: 14px;
   font-weight: 500;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
   color: #fff;
   margin-top: 6px;
 }
