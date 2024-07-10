@@ -88,7 +88,7 @@ const Dashboard = () => {
     const getListOfTrackers = async () => {
       try {
         const { data, error } = await myFetch(`${baseUrl}/tracker`);
-
+        console.log("TrackerList", data);
         setTrackerList(data.trackerData);
       } catch (error) {
         console.error("Error while fetching trackers:", error);
