@@ -3,9 +3,9 @@
 }
 
 .header {
-  font-size: 20px;
+  font-size: var(--font-size-h5);
   padding: 15px 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .account {
@@ -20,7 +20,7 @@
 }
 
 .profile_header {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   margin-bottom: 20px;
 }
 
@@ -38,8 +38,8 @@
 .account_basicInfo_pic {
   width: 76px;
   height: 76px;
-  border: 1px solid #ddd;
-  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-rounded);
   background-size: cover;
   background-position: center;
   display: flex;
@@ -65,9 +65,10 @@
 }
 
 .action_upload {
-  font-size: 13px;
+  font-size: var(--font-size-small);
   padding: 5px;
-  background-color: #f2f2f2;
+  background-color: var(--heading-background-color);
+  /* border: 1px solid var(--border-color); */
   cursor: pointer;
 }
 
@@ -77,7 +78,7 @@
 }
 
 .action_remove {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   font-size: 13px;
   padding: 5px;
   cursor: pointer;
@@ -85,7 +86,7 @@
 
 .profile_hintText {
   font-size: 13px;
-  color: gray;
+  color: var(--secondary-text-color);
 }
 
 .account_details {
@@ -101,7 +102,7 @@
 }
 
 .input_title {
-  color: #424242df;
+  color: var(--secondary-text-color);
   margin-bottom: 2px;
   font-size: 14px;
 }
@@ -110,7 +111,7 @@
   font-size: inherit;
   font-family: inherit;
   outline: none;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 10px 20px;
   width: 100%;
@@ -124,20 +125,20 @@
 .action_button {
   border-radius: 4px;
   padding: 8px;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
+  color: var(--accent-foreground);
   text-align: center;
-  color: #ffffff;
   cursor: pointer;
 }
 
 .action_reset {
-  color: #6750a4;
+  color: var(--primary-color);
   font-size: 14px;
   cursor: pointer;
 }
 
 .searchBar_container {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   display: flex;
   padding: 0 8px;
   gap: 10px;
@@ -157,21 +158,21 @@
 }
 
 .action_invite {
-  background-color: #6750a4;
+  background-color: var(--primary-color);
   padding: 6px;
   font-size: 12px;
   border-radius: 6px;
-  color: #ffffff;
+  color: var(--primary-foreground);
   cursor: pointer;
 }
 
 .error {
   position: absolute;
   font-size: 12px;
-  color: #f15050;
+  color: var(--danger-text-color);
   padding-top: 1px;
 }
 
 .error_boundary {
-  border-color: #f15050 !important;
+  border-color: var(--danger-text-color) !important;
 }
