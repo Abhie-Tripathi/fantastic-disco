@@ -89,6 +89,8 @@
     background-color: var(--background-secondary-color);
     border: 1px solid var(--input-border-color);
     /* Ensure it appears above other elements */
+    position: absolute;
+    z-index: 1;
   }
   
    .edit , .read {
