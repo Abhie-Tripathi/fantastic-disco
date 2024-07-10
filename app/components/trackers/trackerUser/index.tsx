@@ -5,6 +5,7 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
 import Router from "next/router";
+import { showToast } from '@/utils/showToast';
 
 type User = {
   id: string;
@@ -49,7 +50,8 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
     return name?.split(' ').map(word => word[0]?.toUpperCase()).join('') || '';
   };
 
-  const changeAccess = async (accessEntry: string, access: string) => {
+  const changeAccess = async (accessEntry: string, access: string, accessLevel:string) => {
+    if(accessLevel!==access){
     const url = `${baseUrl}/access/${accessEntry}`;
     const formData = {
       entityId: accessId,
@@ -68,11 +70,16 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
         console.error('Error fetching data:', error);
       } else {
         console.log('Data fetched:', data);
-        window.location.reload();
+        showToast("success","Access updated successfully")
+        setTimeout(()=>{
+          window.location.reload();
+        },2000)
+        
       }
     } catch (err) {
       console.error('Fetch failed:', err);
     }
+  }
   };
 
   const toggleDropdown = (id: string) => {
@@ -104,7 +111,11 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
         console.error('Error fetching data:', error);
       } else {
         console.log('Data fetched:', data);
-        window.location.reload();
+        showToast("success", "Access removed successfully")
+        setTimeout(()=>{
+          window.location.reload();
+        }, 2000)
+        
       }
     } catch (err) {
       console.error('Fetch failed:', err);
@@ -140,8 +151,8 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
               {drop && item.id === accessId && (
                 <div className={styles.dropdownContainer}>
                   <div className={styles.dropdown}>
-                    <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT")}>Edit</div>
-                    <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ")}>Read</div>
+                    <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT", item.accessLevel )}>Edit</div>
+                    <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ", item.accessLevel)}>Read</div>
                   </div>
                   {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
                 </div>

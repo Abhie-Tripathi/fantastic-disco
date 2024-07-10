@@ -147,45 +147,45 @@ const Page = () => {
     setItemsPerPage(parseInt(event.target.value));
   }
   const [data,setData]=useState<any>();
-  const fetchData = async (secondLast:string) => {
-    const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/events`);
-    if (error) {
-      console.log(error);
-      return;
-    }
+  // const fetchData = async (secondLast:string) => {
+  //   const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/events`);
+  //   if (error) {
+  //     console.log(error);
+  //     return;
+  //   }
 
-    if (data) {
-      console.log(data);
-      if(data?.events?.length>0){
-        setData(data.events);
-      }
-      // setCatgeoryData(data);
-    }
-  };
+  //   if (data) {
+  //     console.log(data);
+  //     if(data?.events?.length>0){
+  //       setData(data.events);
+  //     }
+  //     // setCatgeoryData(data);
+  //   }
+  // };
 
-  const fetchSavedData=async()=>{
-    const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
-    if (error) {
-      console.log(error);
-      return;
-    }
+  // const fetchSavedData=async()=>{
+  //   const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
+  //   if (error) {
+  //     console.log(error);
+  //     return;
+  //   }
 
-    if (data) {
-      console.log(data);
-      if(data?.savedEvents?.length>0){
-        setData(data.savedEvents);
-      }
-      // setCatgeoryData(data);
-    }
-  }
-  useEffect(()=>{
-    if(lastParam==="trackedEvents"){
-      const secondLast=urlPath[urlPath.length-2];
-      fetchData(secondLast);
-    }else {
-      fetchSavedData();
-    }
-  },[])
+  //   if (data) {
+  //     console.log(data);
+  //     if(data?.savedEvents?.length>0){
+  //       setData(data.savedEvents);
+  //     }
+  //     // setCatgeoryData(data);
+  //   }
+  // }
+  // useEffect(()=>{
+  //   if(lastParam==="trackedEvents"){
+  //     const secondLast=urlPath[urlPath.length-2];
+  //     fetchData(secondLast);
+  //   }else {
+  //     fetchSavedData();
+  //   }
+  // },[])
   function formatDate(dateString:Date) {
     const date = new Date(dateString);
     
