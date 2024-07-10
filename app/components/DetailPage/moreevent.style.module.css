@@ -41,7 +41,7 @@
     justify-content: center;
     background-color: #1a1a1a;
     border-radius: 50px;
-    filter: drop-shadow(1px 1px 3px rgb(83, 83, 83));
+    filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
   }
   .navButton:disabled {
     display: none;

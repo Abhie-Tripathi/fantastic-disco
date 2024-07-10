@@ -11,3 +11,7 @@
 .venue{
     font-weight: 600;
 }
+.map{
+    border-radius: 8px;
+    overflow: hidden;
+}
