@@ -8,6 +8,7 @@ import MoreEvents from '@/app/components/DetailPage/MoreEvents'
 import RegisterForm from '@/app/components/DetailPage/RegisterForm'
 import HostDetails from '@/app/components/DetailPage/HostDetails'
 import AttendingPeople from '@/app/components/DetailPage/AttendingPeople'
+import Script from 'next/script'
 
 
 interface PageProps {
@@ -25,7 +26,6 @@ const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject, emailBody }: PageProps) => {
     return (
         <div className={styles.body}>
-            {/* <div className={styles.eventDetailContainer}> */}
                 <div className={styles.leftContainer}>
                     <Image src={media} alt='poster' width={330} height={330} className={styles.poster} />
                     <div className={styles.shareContainer}>
