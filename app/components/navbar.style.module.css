@@ -24,7 +24,7 @@
 .circle {
   border-radius: 50%;
   display: flex;
-  background-color: var(--buttons-background-color);
+  background-color: var(--background-color-hover);
   width: 45px;
   height: 45px;
   align-items: center;
@@ -66,24 +66,25 @@
   top: 56px;
   right: 0;
   z-index: 11;
-  background: var(--primary-light-color);
+  background: var(--primary-foreground);
   color: var(--primary-text-color);
   width: 14vw;
   text-align: center;
-  /* font-size: var(--font-size-h6); */
-  /* padding: 8px; */
+  font-size: var(--font-size-default);
+  padding: 8px;
   border-radius: 6px;
 }
 
 .btns {
-  padding: 10px 5px;
+  padding: 6px 16px;
   cursor: pointer;
   border-radius: 6px;
+  transition: background-color .2s ease;
 }
 
 .btns:hover {
-  background-color: var(--primary-color-hover);
-  color: white;
+  background-color: var(--heading-background-color);
+  /* color: white; */
 }
 
 /* .dark { */

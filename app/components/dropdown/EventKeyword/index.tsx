@@ -81,10 +81,10 @@ const EventKeyword = ({
 
   return (
     <div>
-      <div className={`${styles.container}  ${theme === 'light' ? styles.container_light : ""}`}>
+      <div className={`${styles.container}`}>
         <div className={styles.header}>
-        <div className={`${styles.tabs_container} ${theme === 'light' ? styles.tabs_container_light : ""}`}>
-          <div className={`${styles.keywordBtns} ${theme === 'light' ? styles.keywordBtns_light : ""}`} >
+        <div className={`${styles.tabs_container}`}>
+          <div className={`${styles.keywordBtns}`} >
             <button
               className={`${styles.tab} ${
                 activeTab == "Keywords" ? styles.active : ""
@@ -108,7 +108,7 @@ const EventKeyword = ({
           </div> */}
         </div>
 
-        <div className={`${styles.searchBar_container} ${theme === 'light' ? styles.searchBar_container_light : ""}`}>
+        <div className={`${styles.searchBar_container}`}>
           <input
             type="text"
             placeholder={
@@ -128,7 +128,7 @@ const EventKeyword = ({
           <div className={styles.keywords_container}>
             { (activeTab == "Keywords" && positiveKeyword.length > 0) &&
             positiveKeyword.map((keyword, index) => (
-              <div className={`${styles.keyword_chip} ${theme === 'light' ? styles.keyword_chip_light : ""}`} key={index}>
+              <div className={`${styles.keyword_chip}`} key={index}>
                 <span>{keyword}</span>
                 <Image
                   src={CloseIcon}
@@ -142,7 +142,7 @@ const EventKeyword = ({
             ))}
             { (activeTab == "Keywords excluded" && negativeKeyword.length > 0) &&
             negativeKeyword.map((keyword, index) => (
-              <div className={`${styles.keyword_chip} ${theme === 'light' ? styles.keyword_chip_light : ""}`} key={index}>
+              <div className={`${styles.keyword_chip}`} key={index}>
                 <span>{keyword}</span>
                 <Image
                   src={CloseIcon}

@@ -141,11 +141,11 @@ console.log(user);
         {pathName === "internal" && (
           <div className="mobile_view">
             <div
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle}`}
               style={{ marginRight: "10px" }}
               data-name="Notification"
             >
-              <Image src={BellIcon} alt="notification" />
+              <Image src={BellIcon} alt="notification" className={iconClass} />
             </div>
           </div>
         )}
@@ -154,12 +154,12 @@ console.log(user);
         {pathName === "internal" && (
           <div className="desktop_view tablet_view">
             <div
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle}`}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
             >
-              <Image src={lightModeIcon} alt="theme" />
+              <Image src={lightModeIcon} alt="theme" className={iconClass} />
             </div>
           </div>
         )}
@@ -169,11 +169,11 @@ console.log(user);
           <div className="desktop_view tablet_view">
             <Link
               href="/"
-              className={`${styles.circle} ${iconClass} desktop_view tablet_view`}
+              className={`${styles.circle} desktop_view tablet_view`}
               style={{ marginRight: "10px" }}
               data-name="Home"
             >
-              <Image src={Home} alt="home" />
+              <Image src={Home} alt="home" className={iconClass} />
             </Link>
           </div>
         )}
@@ -181,32 +181,32 @@ console.log(user);
         {/* Settings */}
         {pathName === "internal" && (
           <Link
-            className={`${styles.circle} ${iconClass}`}
+            className={`${styles.circle}`}
             style={{ marginRight: "10px" }}
             href={"/settings"}
             data-name="Settings"
           >
-            <Image src={settingsIcon} alt="settings" />
+            <Image src={settingsIcon} alt="settings" className={iconClass} />
           </Link>
         )}
 
         {pathName !== "internal" && (
           <>
             <div
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle} `}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
             >
-              <Image src={lightModeIcon} alt="theme" />
+              <Image src={lightModeIcon} alt="theme" className={iconClass} />
             </div>
             <Link
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle}`}
               style={{ marginRight: "10px" }}
               href={"/internal"}
               data-name="Internal"
             >
-              <Image src={DoorIcon} alt="internal" />
+              <Image src={DoorIcon} alt="internal" className={iconClass} />
             </Link>
           </>
         )}
@@ -214,21 +214,21 @@ console.log(user);
         {pathName !== "internal" && (
           <>
             <Link
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle}`}
               style={{ marginRight: "10px" }}
               href={"/widget"}
               data-name="Widget"
             >
-              <Image src={Spinner} alt="widget" />
+              <Image src={Spinner} alt="widget" className={iconClass} />
             </Link>
 
             <Link
-              className={`${styles.circle} ${iconClass}`}
+              className={`${styles.circle}`}
               style={{ marginRight: "10px" }}
               href={"/settings"}
               data-name="Settings"
             >
-              <Image src={settingsIcon} alt="settings" />
+              <Image src={settingsIcon} alt="settings" className={iconClass} />
             </Link>
           </>
         )}
@@ -260,9 +260,7 @@ console.log(user);
               </div> */}
               {profilectas.isOpen && (
                 <div
-                  className={`${styles.userDropdown} ${
-                    theme === "light" && styles.light
-                  }`}
+                  className={`${styles.userDropdown} card`}
                 >
                   <div className={styles.btns}>
                     <Link href="/profile">Profile</Link>

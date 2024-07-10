@@ -5,9 +5,9 @@
   justify-content: center;
   height: 70px;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
-  background-color: #131313;
+  background-color: var(--primary-foreground);
   color: inherit;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
 }
 .slider {
   width: 350px;
@@ -49,7 +49,7 @@
   top: 50%;
   transform: translateY(-50%);
   border-radius: 9999px;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
 }
 
 .thumb {
@@ -57,12 +57,12 @@
   width: 20px;
   top: 50%;
   border-radius: 9999px;
-  background-color: #6750a4;
+  background-color: var(--primary-color);
   transition: background-color 0.2s;
 }
 
 .thumb.dragging {
-  background-color: #6750a4;
+  background-color: var(--primary-color);
 }
 
 .thumb:focus-visible {

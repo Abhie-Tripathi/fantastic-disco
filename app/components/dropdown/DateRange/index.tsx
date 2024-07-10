@@ -28,8 +28,8 @@ const rangeButtons = [
   {
     title: "This month",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString(),
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).toISOString(),
     ],
   },
   {
