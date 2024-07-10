@@ -96,6 +96,8 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   }, [time]);
 
   const resend = () => {
+    setCode("");
+    setErrors({});
     if (time === 0) {
       setTime(30);
     }

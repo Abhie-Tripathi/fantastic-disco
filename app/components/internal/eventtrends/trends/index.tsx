@@ -29,6 +29,10 @@ interface Event {
   categoryName: string;
 }
 
+interface SelectedLocation {
+  [id: string]: string;
+}
+
 interface GroupingByDate {
   [date: string]: Event[];
 }
@@ -42,6 +46,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     searchParams.get("categories")?.split(",") || []
   );
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
+  const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const [selectedDateRange, setSelectedDateRange] = useState<string[]>([]);
 
   const [selectedEventRank, setSelectedEventRank] = useState<number[]>([
@@ -95,11 +101,26 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       query += "category=" + selectedCategories.join(",");
       params.set("category", selectedCategories.join(","));
     }
-    // if (selectedLocations.length > 0) {
-    // query += "&city=" + selectedLocations.join(",");
-    query += "&city=London,Chicago";
-    // params.set("city", selectedLocations?.join(","));
-    // }
+    if (
+      Object.entries(selectedCity).length > 0 ||
+      Object.entries(selectedCountry).length > 0
+    ) {
+      let cities = Object.keys(selectedCity).join(",");
+      let countries = Object.keys(selectedCountry).join(",");
+
+      query += "&city=";
+      if (cities && countries) {
+        query += cities + "," + countries;
+        params.set("city", cities + "," + countries);
+      } else if (cities) {
+        query += cities;
+        params.set("city", cities);
+      } else if (countries) {
+        query += countries;
+        params.set("city", countries);
+      }
+    }
+
     if (selectedDateRange.length > 0) {
       query += "&active_gte=" + selectedDateRange[0];
       query += "&active_lte=" + selectedDateRange[1];
@@ -114,6 +135,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     fetchData(query);
     // router.push(`/internal/trends?${params.toString()}`);
   };
+
+  console.log(selectedCity, selectedCountry);
 
   const fetchData = async (query: string) => {
     if (
@@ -164,6 +187,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       },
     };
   };
+
+  console.log(selectedLocations)
 
   return (
     <div className={styles.predictedAttendence_container}>
@@ -233,6 +258,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     state={selectedLocations}
                     setState={setSelectedLocations}
                     onClose={close}
+                    setSelectedCity={setSelectedCity}
+                    setSelectedCountry={setSelectedCountry}
                   />
                 )}
               </Dialog>
