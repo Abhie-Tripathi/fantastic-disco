@@ -258,7 +258,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     state={selectedLocations}
                     setState={setSelectedLocations}
                     onClose={close}
+                    selectedCity={selectedCity}
                     setSelectedCity={setSelectedCity}
+                    selectedCountry={selectedCountry}
                     setSelectedCountry={setSelectedCountry}
                   />
                 )}
