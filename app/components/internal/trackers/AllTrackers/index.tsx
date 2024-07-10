@@ -106,7 +106,7 @@ const AllTrackers = ({ item }: any) => {
       >
         <div className={styles.cardOne}>
           <div className={styles.heading}>{item.name}</div>
-          <Image src={GoTo} alt="goTo" />
+          <Image  src={GoTo} alt="goTo" />
         </div>
         <div className={styles.cardTwo}>
           <Image src={Location} alt="location" />

@@ -19,10 +19,12 @@ const CommonTrackerCard = () => {
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const pathName = usePathname().split('/');
+  const [loading,setLoading]=useState(false);
   const id = pathName[pathName.length - 2];
   const [item, setItem] = useState<any>([]);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const url = `${baseUrl}/tracker/${id}`;
       try {
         const { data, error } = await myFetch(url, {
@@ -32,7 +34,7 @@ const CommonTrackerCard = () => {
           console.error('Error fetching data:', error);
         } else {
           setItem(data);
-
+          setLoading(false);
         }
       } catch (err) {
         console.error('Fetch failed:', err);
@@ -41,6 +43,7 @@ const CommonTrackerCard = () => {
 
     fetchData();
   }, []);
+  
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -117,6 +120,12 @@ const CommonTrackerCard = () => {
   }, [item]);
   return (
     <>
+    {
+      loading && 
+      <div style={{display:"flex", justifyContent:"center", width:"100%"}}>
+      <Loading/>
+      </div>
+    }
       {item?.tracker ? (
         <div className='card' style={{ width: "100%", height: "fit-content" }}>
 
