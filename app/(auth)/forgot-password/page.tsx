@@ -10,6 +10,8 @@ import { baseUrl } from "@/constants";
 import Carousel from "@/app/components/carousel";
 import logo from "/public/Logo_Light mode.png";
 import { showToast } from "@/utils/showToast";
+import { SignInWithOTPSchema } from "@/types";
+import { z } from "zod";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -18,28 +20,41 @@ const ForgetPassword = () => {
 
   const forgetPasswordHandler = async (event: any) => {
     event?.preventDefault();
-    const dataToSend = {
-      email: email,
-    };
-    const { data, error } = await myFetch(
-      `${baseUrl}/auth/customer/forgot-password`,
-      {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      SignInWithOTPSchema.parse({ email });
+      const dataToSend = {
+        email: email,
+      };
+      const { data, error } = await myFetch(
+        `${baseUrl}/auth/customer/forgot-password`,
+        {
+          method: "POST",
+          body: JSON.stringify(dataToSend),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (data) {
+        console.log(data);
+        showToast("success", data.message);
       }
-    );
 
-    if (data) {
-      console.log(data);
-      showToast("success", data.message);
-    }
-
-    if (error) {
-      console.log(error);
-      return;
+      if (error) {
+        setErrors({email: error.message})
+        return;
+      }
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        e.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            newErrors[err.path[0]] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
     }
   };
 

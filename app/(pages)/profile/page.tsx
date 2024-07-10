@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
-import { useAuthContext } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { UserResponse } from "@/types/user";
 
 interface Profile {
@@ -32,7 +32,9 @@ const Profile = () => {
   const [picFile, setPicFile] = useState<any>(null);
   const fileInputRef = useRef<any>();
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSaving, setIsSaving] = useState(false); // New loading state
+  const [isSaving, setIsSaving] = useState(false);
+  const { theme } = useTheme();
+  const iconClass = theme === "dark" ? "icons_light" : "icon";
 
   const handleUploadClick = () => {
     const fileRef = fileInputRef.current as HTMLDivElement;
@@ -63,18 +65,11 @@ const Profile = () => {
   }, []);
 
   const saveDataHandler = async () => {
-    if (
-      name.length === 0 &&
-      mobileNo.length === 0 &&
-      role.length === 0 &&
-      dept.length === 0 &&
-      picFile === null
-    ) {
-      showToast("error", "Please fill the data to change");
-      return;
+    const newErrors: Record<string, string> = {};
+    if (name.length === 0) {
+      newErrors.name = "Name cannot be empty";
     }
 
-    const newErrors: Record<string, string> = {};
     const splitName = name.split(" ");
 
     if (name.length !== 0 && !splitName[1]) {
@@ -98,7 +93,17 @@ const Profile = () => {
       return;
     }
 
-    console.log(name,role,dept,mobileNo)
+    if (
+      mobileNo.length === 0 &&
+      role.length === 0 &&
+      dept.length === 0 &&
+      picFile === null
+    ) {
+      showToast("error", "Please fill the data to change");
+      return;
+    }
+
+    console.log(name, role, dept, mobileNo);
 
     setErrors({});
     const formData = new FormData();
@@ -218,6 +223,7 @@ const Profile = () => {
                       alt="ProfilPic"
                       width={76}
                       height={76}
+                      className={iconClass}
                     />
                   )}
                 </div>
