@@ -40,7 +40,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
         </div>
-        <div className={`${styles.card} ${theme === 'light' && styles.card_light}`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)}>
+        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>{eventCompany}</div>
             <div className={styles.date}>

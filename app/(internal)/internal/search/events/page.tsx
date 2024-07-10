@@ -549,24 +549,27 @@ const Search = () => {
     setUrlQueryString(finalQueryString);
   };
 
-  const [popoverState, setPopoverState] = useState<boolean>(false);
+  const [popoverState, setPopoverState] = useState<boolean | null>(null);
   const setMenuOpen = () => {
-    setPopoverState(!popoverState);
+    if(popoverState === null) {
+      setPopoverState(false);
+    }else
+      setPopoverState(!popoverState);
   };
 
   useEffect(() => {
+    if(popoverState === null) {
+      document.body.removeAttribute("popover-status");return;
+    }
     const modalStatus = document.body.getAttribute("popover-status");
 
-    if (modalStatus && modalStatus == "close") {
+    if (modalStatus && modalStatus == "open") {
+      document.body.setAttribute("popover-status", "close");
+    } else {
       document.body.setAttribute("popover-status", "open");
       document.documentElement.style.overflow = "";
       document.documentElement.style.paddingRight = "";
-    } else {
-      document.body.setAttribute("popover-status", "close");
     }
-    return () => {
-      document.body.removeAttribute("your-attribute");
-    };
   }, [popoverState]);
 
   console.log(selectedDateRange);
@@ -911,7 +914,7 @@ const Search = () => {
               >
                 {item.name}
                 <span className={styles.resultData_subHeading}>
-                  {item.organizer.name}
+                  {item.organizer?.name}
                 </span>
               </div>
             ))}

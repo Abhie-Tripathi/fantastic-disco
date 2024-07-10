@@ -311,7 +311,7 @@ console.log(selectedCountry);
 
         {/* {activeTab == "City, State, Country, etc." && ( */}
         <div className={styles.location_search_input}>
-          <div className={styles.input_container} style={{background: theme==="light"?"#F7F7F9":""}} >
+          <div className={styles.input_container} >
             <Image src={SearchIcon} alt="searchicon" />
             <input
               placeholder="Search For a Location"
@@ -334,7 +334,7 @@ console.log(selectedCountry);
           </div>
         ))}
 
-        {stateData.map((data: any) => (
+        {/* {stateData.map((data: any) => (
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => locationSelectHandler(data.state, data.country)}
@@ -342,7 +342,7 @@ console.log(selectedCountry);
           >
             {data?.state}, {data?.countryName}
           </div>
-        ))}
+        ))} */}
 
         {countryData.map((data: any) => (
           <div

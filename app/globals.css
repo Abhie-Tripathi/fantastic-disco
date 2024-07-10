@@ -167,6 +167,9 @@ button {
   --input-border-color: #C9C9C9;
   --bold-border-color: #A8A8A8;
   --danger-background-color: #FFF0F0;
+  --warning-background-color: #FFF6E6;
+  --success-background-color: #EFFBEF;
+  --disabled-background-color: #C9C9C9;
 }
 
 .card {
@@ -182,7 +185,6 @@ body[data-theme="dark"] {
   --border-color: #2E2E2E;
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
-  --heading-background-color: #212121;
   --tabs-background-color: #1a1a1a;
   --secondary-text-color: #A1A1A1;
   --background-color-hover: #1A1A1A;
@@ -190,12 +192,9 @@ body[data-theme="dark"] {
   --bold-border-color: #878787;
   --background-secondary-color: #171717;
   --danger-background-color: #2A1314;
-}
-.card {
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-small);
-  padding: 24px;
-  border: 1px solid var(--border-color);
+  --warning-background-color: #291800;
+  --success-background-color: #0B2212;
+  --disabled-background-color: #454545;
 }
 
 /* :root {

@@ -15,8 +15,8 @@ export interface EventTableType {
         venueName: string;
         venueAddress: string;
         geoCordinates: {
-            longitude: number,
-            latitude: number
+            longitude: string,
+            latitude: string
         }
     };
     categories: [{ name: string }];

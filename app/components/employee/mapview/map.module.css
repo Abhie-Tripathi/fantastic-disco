@@ -30,7 +30,7 @@
 .popup button {
     right: 10px;
     top: 5px;
-    font-size: 20px;
+    font-size: var(--font-size-h5);
     opacity: .66;
     color: gray;
 }
@@ -42,51 +42,50 @@
 .event_details_popup_link {
     text-decoration: none;
     font-family: IBM Plex Sans, Arial, Helvetica, sans-serif;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: #292929;
 
 }
 
 .event_country {
-    font-size: 12px;
-    line-height: 18px;
+    font-size: var(-font-size-small);
+    line-height: var(--line-height-small);
 }
 
 .event_datetime {
     color: #9ba5af;
     font-style: italic;
-    font-size: 12px;
-    line-height: 18px;
+    font-size:  var(--font-weight-semibold);
+    line-height: var(--line-height-small);
 }
 
 .event_details_action {
     margin-top: 16px;
     padding: 18px 0px;
-    border-top: 1px solid #f0f1f2;
-    border-bottom: 1px solid #f0f1f2;
-    ;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
 
 }
 
 .event_view_details {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     padding: 9px 18px;
-    border: 2px solid #6750A4;
+    border: 1px solid var(--primary-color);
     color: #6750A4;
     font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
     white-space: nowrap;
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: var(--font-size-small);
     cursor: pointer;
 }
 
 .event_details_category {
     text-transform: uppercase;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: #222;
-    font-size: 14px;
+    font-size: var(--font-size-default);
     padding: 9px 18px;
 }
 
@@ -100,11 +99,11 @@
     position: absolute;
     left: -130px;
     top: 25px;
-    background-color: #6750A4;
+    background-color: var(--primary-color);
     border-radius: 12px 0px 0px 12px;
     color: white;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     padding: 12px 24px;
 }
 

@@ -17,7 +17,7 @@
   }
   
   .picker_container table tbody{
-    border: 1px solid rgb(213, 212, 223, 0.5);
+    border: 1px solid var(--bold-border-color);
   }
   
   .picker_header {
@@ -27,9 +27,9 @@
   }
   
   .picker_header h2{
-      color: #6750A4;
-      font-weight: 700;
-      font-size: 18px;
+      color: var(--primary-color);
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-h6);
   }
   
   .picker_header_buttons {
@@ -45,26 +45,26 @@
   .calendarGrid th{
     width: 60px;
     height: 60px;
-    color: #3e3d3d;
+    color: var(--secondary-text-color);
   }
   
   .calendarCell{
     width: 60px;
     height: 60px;
-    border: 1px solid rgb(213, 212, 223, 0.5);
+    border: 1px solid var(--bold-border-color);
     display: flex;
     align-items: center;
     justify-content: center;
   }
   
   .calendarCell[data-selected] {
-    background-color: #45539D;
+    background-color: var(--primary-color);
     border: 1px solid #D5D4DF;
     color: white;
   }
   
   .calendarCell[data-hovered]{
-    background-color: #45539D;
+    background-color: var(--primary-color-hover);
     border: 1px solid #D5D4DF;
     color: white;
   }
@@ -84,8 +84,8 @@
 
   
   .range_buttons_container button{
-    border: 1px solid #EFEFEF;
-    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
     padding: 10px 35px;
     color: inherit;
   }
