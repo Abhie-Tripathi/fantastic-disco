@@ -311,9 +311,9 @@ const Navbar = () => {
               </div> */}
               {profilectas.isOpen && (
                 <div className={`${styles.userDropdown} card`}>
-                  <Link href="/profile">
+                  {/* <Link href="/profile">
                     <div className={styles.btns}>Profile</div>
-                  </Link>
+                  </Link> */}
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>
