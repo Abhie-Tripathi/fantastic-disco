@@ -1339,8 +1339,9 @@ console.log(selectedEventRank);
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1365,7 +1366,7 @@ console.log(selectedEventRank);
                       </div>
                     </div>
                   </Button>
-                  <Popover>
+                  <Popover isOpen={false}>
                     <Dialog className={styles.noBorder}>
                       <EventAdvFilter
                         state={selectedEntry}
@@ -1488,8 +1489,9 @@ console.log(selectedEventRank);
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
               <div className={styles.inputdropdowns_container}>
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1515,6 +1517,7 @@ console.log(selectedEventRank);
                                   setSelectedBrandedEvent((prev) => !prev);
                                 }}
                                 checked={selectedBrandedEvent}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1525,8 +1528,9 @@ console.log(selectedEventRank);
                   </div>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1553,7 +1557,7 @@ console.log(selectedEventRank);
                       </div>
                     </div>
                   </Button>
-                  <Popover>
+                  <Popover isOpen={false}>
                     <Dialog className={styles.noBorder}>
                       {({ close }) => (
                         <RangeSlider
@@ -1565,8 +1569,9 @@ console.log(selectedEventRank);
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>Event Series</div>
@@ -1580,6 +1585,7 @@ console.log(selectedEventRank);
                                   setSelectedEventSeries((prev) => !prev);
                                 }}
                                 checked={selectedEventSeries}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
