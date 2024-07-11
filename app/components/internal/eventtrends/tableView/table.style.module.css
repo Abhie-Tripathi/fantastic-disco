@@ -38,7 +38,8 @@
 .table_column_heading {
   cursor: pointer;
   display: flex;
-  width: 80px;
+  /* width: 80px; */
+  width: 100%;
   align-items: center;
   justify-content: center;
 }

@@ -103,6 +103,8 @@ const SignIn = () => {
           body: JSON.stringify(dto),
         }
       );
+      console.log(data, error);
+
       if (error) {
         showToast("error", error.message);
         return;
@@ -110,6 +112,11 @@ const SignIn = () => {
 
       if (data) {
         setShowVerification(true);
+      }
+
+      if (data === null || error === null) {
+        setErrors({ email: "No user found with this email" });
+        return;
       }
     } catch (error) {
       if (error instanceof ZodError) {

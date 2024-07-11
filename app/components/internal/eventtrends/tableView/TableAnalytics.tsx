@@ -62,12 +62,12 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
         const parsedDateB = new Date(dateB).getTime();
         return parsedDateA - parsedDateB;
       });
-      
+
       const sortedGroupingByDate: typeof groupingByDate = {};
       sortedKeys.forEach((key) => {
         sortedGroupingByDate[key] = groupingByDate[key];
       });
-      console.log("Unsorted",eventData)
+      console.log("Unsorted", eventData);
       console.log("Sorted", sortedGroupingByDate);
       setEventData(sortedGroupingByDate);
     } else {
@@ -100,6 +100,8 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
     );
   };
 
+  console.log("Event Trends se Live", objectValues);
+
   return (
     <>
       <div className={styles.analytics_header}>
@@ -117,7 +119,7 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
         <table className={styles.table}>
           <thead className={styles.table_head}>
             <tr className={styles.table_head_row}>
-              <th>
+              <th style={{ width: "200px" }}>
                 <div
                   style={{ width: "150px" }}
                   className={styles.table_column_heading}
