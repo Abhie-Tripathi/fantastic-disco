@@ -26,9 +26,15 @@ const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber }: WidgetP
                 </div>
                 {widgetType === "Sticky" ?
                     <div className={styles.widgetNumberContainerOne}>
-                        <InfoIcon />
-                        <div className={styles.heading}>Can add maximum of 2 sticky widgets</div>
-
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <InfoIcon />
+                            <div className={styles.heading}>Can add maximum of 2 sticky widgets</div>
+                        </div>
+                        <div className={`${styles.widgetNumber} ${widgetNumber === 2 ? styles.filledTwo : ''}`}>
+                            <div>
+                                {widgetNumber}/2
+                            </div>
+                        </div>
                     </div> :
                     <div className={styles.widgetNumberContainerTwo}>
                         <TickIcon />
