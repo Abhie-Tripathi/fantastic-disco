@@ -201,7 +201,7 @@
 .eventListCard_footer_info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-xxs);
 }
 
 .eventListCard_category {
@@ -233,6 +233,7 @@
     border-radius: 12px;
     border: none;
     outline: none;
+    text-wrap: nowrap;
 }
 
 
@@ -278,4 +279,17 @@
 .noData {
     padding: 20px;
     text-align: center;
+}
+
+.truncateText_1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: var(--line-height-large);
+}
+
+.catCount{
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
 }

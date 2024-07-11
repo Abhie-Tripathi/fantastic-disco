@@ -107,7 +107,7 @@
 .eventListCard_footer_info {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-xxs);
 }
 
 .eventListCard_category {
@@ -154,4 +154,17 @@
 .eventList_list::-webkit-scrollbar-thumb {
     background: #6750a4;
     border-radius: var(--border-radius-md);
+}
+
+.truncateText_1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: var(--line-height-large);
+}
+
+.catCount{
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
 }
