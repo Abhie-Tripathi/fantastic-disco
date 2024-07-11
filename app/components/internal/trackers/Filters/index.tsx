@@ -3,6 +3,10 @@ import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import Url from '/public/url.svg'
+import Add from '/public/add_Icon.svg'
+import Company from '/public/company_Icon.svg'
+import Name from '/public/userName_Icon.svg'
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 import userOne from "/public/userOne.svg";
@@ -107,17 +111,17 @@ interface EditData {
   tracker: Tracker;
 }
 const Pages = () => {
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   interface SelectedLocation {
     [id: string]: string;
   }
   const {theme}=useTheme();
+  const type  = searchParams.get('type');
   const iconClass = theme !== "light" ? "icons_light" :"icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
@@ -180,9 +184,10 @@ const Pages = () => {
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
   );
+  const [customData,setCustomData]=useState<any>([]);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
-
+const [add,setAdd]=useState(false);
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -285,11 +290,21 @@ const Pages = () => {
       else setIntScore("International");
     }
   }, [selectedINScore]);
+  const [websites,setWebsites]=useState("");
+ 
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
+  useEffect(()=>{
+    if(type==="competitor"){
+      setWebsites(customData.map(item => item.companyUrl).join(','));
+    }
+  },[type, customData])
+  console.log(websites);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-
+   
+   
+    
     GAEvent(
       "trackers",
       "Tracker",
@@ -309,9 +324,17 @@ const Pages = () => {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
           }),
+          ...(websites.length>0 &&{
+            orgWebsite:websites,
+        }),
           ...(selectedEventEdition > 0 && {
             editionRange: selectedEventEdition.toString(),
           }),
+          // ...(
+          //   type === "competitor" && customData.length > 0
+          //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
+          //     : {}
+          // )
           ...(selectedEventKeywords.length > 0 && {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
@@ -453,6 +476,9 @@ const Pages = () => {
           }),
           ...(Object.entries(selectedCountry).length > 0 && {
             eventCountry: Object.keys(selectedCountry).join(","),
+          }),
+          ...(websites.length>0 &&{
+              orgWebsite:websites,
           }),
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
@@ -824,6 +850,44 @@ const Pages = () => {
     };
   }, [popoverState]);
 console.log(selectedEventRank);
+console.log(type);
+
+const addNewEntry=()=>{
+  
+  if (companyUrl) {
+    setCustomData(prevData => ([
+      ...prevData,
+      { companyUrl: companyUrl }
+    ]));
+      setCompanyUrl('');
+      // setAdd(true);
+  }
+  else if(name && companyName){
+    setCustomData(prevData => ([
+      ...prevData,
+      { name: name,
+        companyName:companyName
+       }
+    ]));
+    setName('');
+    setCompanyName('');
+  }
+  // setAdd(true);
+
+}
+const [companyUrl, setCompanyUrl] = useState('');
+const [name,setName]=useState('');
+const [companyName,setCompanyName]=useState('');
+const handleInputChange = (e) => {
+  
+  setCompanyUrl(e.target.value);
+};
+const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'Enter' && (name && companyName || companyUrl)) {
+    addNewEntry();
+  }
+};
+console.log(customData);
 
   return (
     <>
@@ -1839,6 +1903,75 @@ console.log(selectedEventRank);
           </div>
         </div>
       </Suspense>
+      {type==="competitor"&&
+     ( <div className={`card ${styles.competitor}`}>
+      <div className={styles.competitorHeading}>Upload custom data</div>
+      <div className={styles.bar}></div>
+      <div className={`card ${styles.competitor}`}>
+        <div className={styles.subHeading}>Add competitor's website</div>
+        <div className={styles.allInputArea}>
+          <div className={styles.singleInputArea}>
+            <Image src={Url} alt="url" className="icons" />
+            <input
+              className={styles.textArea}
+              type="text"
+              placeholder="Url"
+              value={companyUrl}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+            />
+          </div>
+          <div onClick={addNewEntry} className={styles.addIcon}>
+            <Image src={Add} alt="add_Icon" />
+          </div>
+        </div>
+        {customData.map((item, index) => (
+          <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
+        ))}
+      </div>
+    </div>)}
+    {(type==="speaking" || type==="peoplefinder")&&
+     ( <div className={`card ${styles.competitor}`}>
+      <div className={styles.competitorHeading}>Upload custom data</div>
+      <div className={styles.bar}></div>
+      <div className={`card ${styles.competitor}`}>
+        <div className={styles.subHeading}>Add speaker's name and company below</div>
+        <div className={styles.allInputArea}>
+          <div className={styles.singleInputArea}>
+            <Image src={Name} alt="userName_Icon" className="icons"/>
+            <input
+              className={styles.textArea}
+              type="text"
+              placeholder="Name"
+              value={name}
+              onKeyPress={handleKeyPress}
+              onChange={(e)=>setName(e.target.value)}
+            />
+          </div>
+          <div className={styles.singleInputArea}>
+            <Image src={Company} alt="company_Icon" className="icons" />
+            <input
+              className={styles.textArea}
+              type="text"
+              placeholder="Company Name"
+              value={companyName}
+              onKeyPress={handleKeyPress}
+              onChange={(e)=>setCompanyName(e.target.value)}
+              required
+            />
+          </div>
+          <div onClick={addNewEntry} className={styles.addIcon}>
+            <Image src={Add} alt="add_Icon" />
+          </div>
+        </div>
+        {customData.map((item, index) => (
+          <div key={index} className={styles.customDataOuterDiv}>
+          <div className={styles.singleInputBox}>{item.name}</div>
+          <div className={styles.singleInputBox}>{item.companyName}</div>
+          </div>
+        ))}
+      </div>
+    </div>)}
     </>
   );
 };

@@ -170,6 +170,7 @@ button {
   --warning-background-color: #FFF6E6;
   --success-background-color: #EFFBEF;
   --disabled-background-color: #C9C9C9;
+  --img-filter:invert(0);
 }
 
 .card {
@@ -195,6 +196,7 @@ body[data-theme="dark"] {
   --warning-background-color: #291800;
   --success-background-color: #0B2212;
   --disabled-background-color: #454545;
+  --img-filter: invert(1);
 }
 
 /* :root {
@@ -408,7 +410,9 @@ input[type="number"] {
 .icons_light {
   filter: invert(1);
 }
-
+.icons{
+  filter: var(--img-filter);
+}
 .body_layout {
   margin-top: 80px;
   margin-left: 80px;
