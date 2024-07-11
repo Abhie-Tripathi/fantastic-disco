@@ -4,6 +4,7 @@
     font-family: var(--font-inter);
     position:relative;
     width: 100vw;
+    min-height: 88vh;
     /* height: 100vh; */
     /* overflow-y: hidden; */
 }
@@ -103,20 +104,21 @@
 }
 .yourWidgetModal {
     filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
-    height: 95%;
-    width: 40%;
+    height: 610px;
+    width: 600px;
     background-color: #FFFFFF;
-    position: absolute;
-    z-index: 1;
-    top: 10px;
+    position:fixed;
+    z-index: 999;
+    top: 80px;
     right: -45%; /* Start off-screen */
-    padding: 20px;
+    padding: 25px 30px;
     transition: right 0.3s ease; /* Smooth transition */
     overflow-y: auto;
+    border-radius: 20px;
 }
 
 .yourWidgetModal.open {
-    right: 3%; /* Move on-screen */
+    right: 0; /* Move on-screen */
 }
 @media screen and (max-width : 1023px) {
     .leftNav{
