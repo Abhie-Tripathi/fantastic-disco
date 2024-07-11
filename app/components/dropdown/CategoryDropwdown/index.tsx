@@ -64,7 +64,7 @@ const CategoryDropdown = ({
 
   const selectAllHandler = (categories: any[]) => {
     const categoryIds = categories.map((category) => category.id);
-    const categorySlugs = categories.map((category) => category.slug);
+    const categorySlugs = categories.map((category) => category.name);
 
     if (containsSubarray(categoryIds)) {
       setState(state.filter((id) => !categoryIds.includes(id)));
@@ -101,7 +101,7 @@ const CategoryDropdown = ({
                 <CheckboxInput
                   id={attendedCategory.slug}
                   onChange={() =>
-                    onClickHandler(attendedCategory.id, attendedCategory.slug)
+                    onClickHandler(attendedCategory.id, attendedCategory.name)
                   }
                   checked={state.includes(attendedCategory.id)}
                 />

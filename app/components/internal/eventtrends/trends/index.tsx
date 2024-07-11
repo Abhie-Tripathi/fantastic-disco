@@ -72,7 +72,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
       if (error) {
         console.log(error);
         return;
