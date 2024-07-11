@@ -13,12 +13,21 @@ interface TemplateProps{
     setSelectedTemplate : (value : string) => void
     templateKey : string;
     selectedTemplate : string;
+    setTempelateName : (value : string) => void
+    setSelectedImage : (value : StaticImageData) => void
 }
 
-const TemplateCard = ({widgetStyle, tag, desc, image1, image2,setSelectedTemplate, templateKey, selectedTemplate } : TemplateProps) => {
+const TemplateCard = ({widgetStyle, tag, desc, image1, image2,setSelectedTemplate, templateKey, selectedTemplate, setTempelateName, setSelectedImage } : TemplateProps) => {
     const { theme } = useTheme();
+
+    const handleClick = ()=>{
+        setTempelateName(widgetStyle)
+        setSelectedTemplate(templateKey)
+        setSelectedImage(image1)
+    }
+
     return (
-        <div className={`${styles.body} ${selectedTemplate === templateKey ? styles.activeBody : ""}`} onClick={()=>setSelectedTemplate(templateKey)}>
+        <div className={`${styles.body} ${selectedTemplate === templateKey ? styles.activeBody : ""}`} onClick={handleClick}>
             <div className={`${styles.imageContainer} ${theme === "dark" ? styles.darkImageContainer:""}`}>
                 <Image src={theme === "dark" ? image2 : image1} alt='banner' className={styles.image}></Image>
             </div>

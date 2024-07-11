@@ -1,17 +1,24 @@
 'use client'
-import React, { useState } from 'react'
+import React, {useState } from 'react'
 import styles from './page.style.module.css'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
 import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview/TemplatesPreview'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
+
+interface DraftWidgetsType{
+    widgetType : string;
+    widgetTemplateName : string;
+    selectedImage : StaticImageData
+}
 
 const Page = () => {
     const [widgetSelected, setWidgetSelected] = useState("");
     const [exploreWindow, setExploreWindow] = useState<boolean>(false);
     const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(true)
     const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
+    const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -33,7 +40,7 @@ const Page = () => {
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.myWidgetBtnContainer} onClick={()=>setYourWidgetModal(true)}>
-                    <div className={styles.myWidgetBtn}>My Widgets</div>
+                    <div className={styles.myWidgetBtn}>My Widgets <span>{draftWidgets.length}</span></div>
                     <Image src={RightArrow} alt='arrow' />
                 </div>
             </div>
@@ -59,11 +66,11 @@ const Page = () => {
             </div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview widgetSelected={widgetSelected} />
+                    <TemplatesPreview draftWidgets={draftWidgets} widgetSelected={widgetSelected} setDraftWidgets={setDraftWidgets} />
                 </div>
             }
             <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-                <DraftWidgets setYourWidgetModal={setYourWidgetModal} />
+                <DraftWidgets draftWidgets={draftWidgets} setYourWidgetModal={setYourWidgetModal} />
             </div>
         </div>
     )

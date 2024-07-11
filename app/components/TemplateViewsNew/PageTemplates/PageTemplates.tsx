@@ -15,13 +15,16 @@ import HeroGridViewImageDark from '/public/widgetimages/pageimages/HeroGridViewD
 import HeroListViewImageDark from '/public/widgetimages/pageimages/HeroListViewDark.png'
 
 import { useTheme } from "@/context";
+import { StaticImageData } from 'next/image'
 
 interface Props{
     setSelectedTemplate : (value : string) => void
     selectedTemplate : string;
+    setTempelateName : (value : string) => void
+    setSelectedImage : (value : StaticImageData) => void
 }
 
-const PageTemplates = ({setSelectedTemplate,selectedTemplate} : Props) => {
+const PageTemplates = ({setSelectedTemplate,selectedTemplate, setTempelateName, setSelectedImage} : Props) => {
     const { theme } = useTheme();
     const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted")
     const NonHighlightedTemplates =
@@ -44,10 +47,10 @@ const PageTemplates = ({setSelectedTemplate,selectedTemplate} : Props) => {
             <div className={styles.templates}>
                 {activeBtn === "NonHighlighted" ? (
                     NonHighlightedTemplates.map((card, key) => (
-                        <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} />
+                        <TemplateCard setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} setTempelateName={setTempelateName}/>
                     ))) : (
                     HighlightedTemplates.map((card, key) => (
-                        <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2}/>
+                        <TemplateCard setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} setTempelateName={setTempelateName}/>
                     ))
                 )
                 }

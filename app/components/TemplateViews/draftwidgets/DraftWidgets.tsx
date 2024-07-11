@@ -1,25 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styles from './draftwidgets.style.module.css'
 import WidgetCard from './WidgetCard'
-import CarouselViewImage from '/public/widgetimages/sectionimages/carouselview.png'
-
+import { StaticImageData } from 'next/image'
 
 interface Props {
   setYourWidgetModal: (value: boolean) => void
+  draftWidgets: DraftWidgetsType[]
+}
+interface DraftWidgetsType {
+  widgetType: string;
+  widgetTemplateName: string;
+  selectedImage : StaticImageData
 }
 
-const DraftWidgets = ({ setYourWidgetModal }: Props) => {
+
+const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
 
   return (
     <div className={styles.body}>
       <div className={styles.header}>
         <div>My Widgets</div>
-        <button onClick={()=>setYourWidgetModal(false)}>Close</button>
+        <button onClick={() => setYourWidgetModal(false)}>Close</button>
       </div>
       <div className={styles.drafts}>
-        <div>Drafts</div><span>4</span></div>
+        <div>Drafts</div><span>{draftWidgets.length}</span></div>
       <div className={styles.line}></div>
-      <WidgetCard image={CarouselViewImage} widgetTemplate='Carousel Section' widgetType='Sticky' widgetNumber={1}/>
+      <div className={styles.widgets}>
+        {draftWidgets && draftWidgets.map((card, key) => (
+          <WidgetCard image={card.selectedImage} widgetTemplate={card.widgetTemplateName} widgetType={card.widgetType}
+          key={key} widgetNumber={1} />
+        ))}
+      </div>
     </div>
   )
 }

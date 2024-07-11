@@ -70,6 +70,20 @@
 .myWidgetBtn {
     color: white;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.myWidgetBtn span{
+    color: #6750A4;
+    background-color: #E6E6F9;
+    height: 16px;
+    width: 15px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
 }
 .exploreBtnContainer {
     display: flex;
@@ -113,12 +127,13 @@
     right: -45%; /* Start off-screen */
     padding: 25px 30px;
     transition: right 0.3s ease; /* Smooth transition */
-    overflow-y: auto;
     border-radius: 20px;
+    /* display: none; */
 }
 
 .yourWidgetModal.open {
     right: 0; /* Move on-screen */
+    
 }
 @media screen and (max-width : 1023px) {
     .leftNav{
