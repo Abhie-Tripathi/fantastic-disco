@@ -125,7 +125,7 @@ const AllTrackers = ({ item }: any) => {
                 New
               </div>
               <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
-                {item.groupedEventsCountByStatus.groupedEventsByStatus.new}
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -135,7 +135,7 @@ const AllTrackers = ({ item }: any) => {
                 Active
               </div>
               <div className={styles.number} style={{ color: "#454459" }}>
-                {item.groupedEventsCountByStatus.groupedEventsByStatus.active}
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -145,7 +145,7 @@ const AllTrackers = ({ item }: any) => {
                 Expired
               </div>
               <div className={styles.number} style={{ color: "#454459" }}>
-                {item.groupedEventsCountByStatus.groupedEventsByStatus.expired}
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
             </div>

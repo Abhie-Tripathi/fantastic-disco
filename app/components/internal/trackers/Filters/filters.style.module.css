@@ -373,6 +373,60 @@
   .listBtn{
     background-color: var(--primary-foreground);
   }
+  .competitorHeading{
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h6);
+    color:var(--primary-color);
+  }
+  .bar{
+    border-bottom: 1px solid var(--border-color);
+  }
+  .subHeading{
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
+  }
+  .competitor{
+    display: flex;
+    flex-direction: column;
+    gap:var(--spacing-lg);
+  }
+  .singleInputArea{
+    padding: 0px 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 20%;
+    align-items: center;
+    gap: 10px;
+  }
+  .textAreaUrl{
+    border: none;
+    outline: none;
+  }
+  .allInputArea{
+    display: flex;
+    align-items: stretch;
+    gap:10px;
+  }
+  .addIcon{
+    display: flex;
+    padding: 0px 12px;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius-sm);
+  }
+  .singleInputBox{
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 20%;
+    align-items: center;
+    gap: 10px;
+  }
+  .customDataOuterDiv{
+    display: flex;
+    gap: 10px;
+  }
 
   .disabledBtn {
     opacity: 0.6;

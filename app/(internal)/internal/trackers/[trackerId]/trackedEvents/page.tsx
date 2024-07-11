@@ -169,9 +169,6 @@ const Page = () => {
   useEffect(() => {
     console.log(activeValue);
   }, [active])
-
-  console.log(data?.tracker?.groupedEventsCountByStatus.groupedEventsByStatus.active
-  )
   const formatCount = (count: number) => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}k`;
@@ -255,7 +252,7 @@ const Page = () => {
               setActive("Active Events")
             }}>
               Active Events
-              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.active):<div className={styles.loader}></div>}</div>}
+              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active):<div className={styles.loader}></div>}</div>}
 
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "New Events" ? styles.active : ""}`} onClick={() => {
@@ -268,7 +265,7 @@ const Page = () => {
               setActive("New Events")
             }}>
               New Events
-              {<div className={styles.circle}>{loading ?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.new):<div className={styles.loader}></div>}</div>}
+              {<div className={styles.circle}>{loading ?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new):<div className={styles.loader}></div>}</div>}
             </button>
             <button className={`${styles.eventStatusBtn} ${active === "Expired Events" ? styles.active : ""}`} onClick={() => {
               GAEvent(
@@ -278,7 +275,7 @@ const Page = () => {
                  "Expired Events"
               )
               setActive("Expired Events")}}>Expired Events
-              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus.expired):<div className={styles.loader}></div>}</div>}
+              {<div className={styles.circle}>{loading?formatCount(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired):<div className={styles.loader}></div>}</div>}
             </button>
           </div>
           {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}

@@ -620,7 +620,7 @@ const Table = ({
       };
     } else {
       dataToSend = {
-        eventGroupIds: [groupId],
+        eventIds: [groupId],
         global: true,
       };
     }
@@ -637,7 +637,7 @@ const Table = ({
     if (data) {
       console.log(data);
       showToast('default',"Saved event deleted");
-      const newData = eventPerPage.filter(event => event?.eventGroupId !== groupId);
+      const newData = eventPerPage.filter(event => event?.id !== groupId);
       setEventPerPage(newData);
     } else {
       console.log(error);
