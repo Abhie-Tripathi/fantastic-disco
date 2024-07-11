@@ -100,7 +100,6 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
     );
   };
 
-  console.log("Event Trends se Live", objectValues);
 
   return (
     <>

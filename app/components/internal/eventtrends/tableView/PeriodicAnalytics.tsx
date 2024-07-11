@@ -31,7 +31,6 @@ function capitalizeEachWord(str: string) {
 
 const PeriodicAnalytics = ({ predictedData }: any) => {
   const total = calculateTotal(predictedData);
-  console.log("Event Trends pe live", predictedData);
   return (
     <>
       <div className="desktop_view tablet_view">
