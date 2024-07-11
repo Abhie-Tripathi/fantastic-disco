@@ -39,16 +39,21 @@ const EventListCard = (event: any) => {
       </div>
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
-          <div className={styles.eventListCard_category}>
+          {/* <div className={styles.eventListCard_category}>
             <Image className={iconClass} src={FestivalIcon} alt="festival" />
-            {/* <span style={{color:"black"}}>{event?.event?.company}</span> */}
-          </div>
-          <span style={{ color: "grey" }}>|</span>
-          <div className={styles.eventListCard_label}>{event.event?.categories[0]?.slug}</div>
+            <span style={{color:"black"}}>{event?.event?.company}</span>
+          </div> */}
+          {/* <span style={{ color: "grey" }}>|</span> */}
+          <div className={`${styles.eventListCard_label} ${styles.truncateText_1}`} >{event.event?.categories[0]?.name}</div>
+          {event.event?.categories.length > 1 &&
+            <small className={styles.catCount}>
+              {`+${event.event?.categories.length -1}`}
+            </small>
+          }
         </div>
-        <Link href={`/detailpage`}>
+        {/* <Link href={`/detailpage`}>
           View Details
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

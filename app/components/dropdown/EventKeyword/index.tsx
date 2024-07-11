@@ -71,10 +71,18 @@ const EventKeyword = ({
 
   const handleSaveData = () => {
     // setState(eventKeyword);
-    const newEventKeyword = [
+    let newEventKeyword = [
       ...positiveKeyword,
       ...negativeKeyword.map((keyword) => `-${keyword}`),
     ];
+
+    let inputKey = inputText;
+    if(inputKey != ''){
+      if(activeTab == "Keywords excluded") {
+        inputKey = `-${inputKey}`;
+      }
+      newEventKeyword = [...newEventKeyword, inputKey]
+    }
     setState(newEventKeyword);
     onClose();
   };

@@ -17,7 +17,7 @@
   }
   
   .picker_container table tbody{
-    border: 1px solid var(--bold-border-color);
+    border: 1px solid rgba(213,212,223,.5);
   }
   
   .picker_header {
@@ -51,7 +51,7 @@
   .calendarCell{
     width: 60px;
     height: 60px;
-    border: 1px solid var(--bold-border-color);
+    border: 1px solid rgba(213,212,223,.5);
     display: flex;
     align-items: center;
     justify-content: center;
