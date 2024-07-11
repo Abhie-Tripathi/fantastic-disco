@@ -148,30 +148,30 @@ function getEventSize(item: eventSizeItemType) {
   return result;
 }
 
-function getEstimatedExhibitors(item: estimatedExhibitorType): string {
+function getEstimatedExhibitors(item: any): string {
   let result: string = "";
 
-  if (item.type === "Tradeshow") {
+  if (item.type.includes('Tradeshow')) {
     if (
-      (item.stats.follows && item.stats.follows > 100) ||
-      (item.stats.estimatedVisitors && item.stats.estimatedVisitors > 100)
+      (item.stats.eventFollower && item.stats.eventFollower > 100) ||
+      (item.stats.estimatedVisitor && item.stats.estimatedVisitor > 100)
     ) {
       result = "500+";
     } else if (
-      (item.stats.follows &&
-        item.stats.follows >= 1 &&
-        item.stats.follows <= 100) ||
-      (item.stats.estimatedVisitors &&
-        item.stats.estimatedVisitors >= 1 &&
-        item.stats.estimatedVisitors <= 100)
+      (item.stats.eventFollower &&
+        item.stats.eventFollower >= 1 &&
+        item.stats.eventFollower <= 100) ||
+      (item.stats.estimatedVisitor &&
+        item.stats.estimatedVisitor >= 1 &&
+        item.stats.estimatedVisitor <= 100)
     ) {
       result = "100-500";
     } else {
       result = "20-100";
     }
-  } else if (item.type === "Conference" || item.type === "Workshop") {
-    if (item.stats.estimatedExhibitors && item.stats.estimatedExhibitors > 0) {
-      result = item.stats.estimatedExhibitors.toString();
+  } else {
+    if (item.stats.estimatedExhibitor && item.stats.estimatedExhibitor > 0) {
+      result = item.stats.estimatedExhibitor.toString();
     } else {
       result = "-";
     }
@@ -691,8 +691,8 @@ const Table = ({
                 (eventPerPage[0]?.series && <th>Event Series</th>)}
               {showInsights.eventRank && <th>Rank</th>}
               {showInsights.growth && <th>Growth</th>}
-              {showInsights.reptSent && <th>Rept. Sentiment</th>}
-              {showInsights.repeatSent && <th>Repeat Sentiment</th>}
+              {showInsights.reptSent && <th>Reputation</th>}
+              {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>Global</th>}
@@ -710,16 +710,11 @@ const Table = ({
             {eventPerPage.map((event: EventTableType) => (
               <tr key={event.id}>
                 <td>
-                  <Link
-                    href={`/detailpage`}
-                    style={{
-                      textDecoration: "none",
-                      color: theme === "light" ? "black" : "white",
-                    }}
+                  <div
                     className={styles.truncateText_1}
                   >
                     {event.name}
-                  </Link>
+                  </div>
                   <div className={styles.event_organizer}>
                     {event?.organizer?.name}
                   </div>
@@ -875,6 +870,8 @@ const Table = ({
                 <td>
                   {/* Finance & Banking */}
                   {event.categories !== undefined &&
+                  event.categories.length == 1 ?
+                    event.categories[0].name :
                   event.categories.length > 0 ? (
                     <span style={{ textTransform: "capitalize" }}>
                       {event.categories[0].name}&nbsp;
@@ -980,10 +977,7 @@ const Table = ({
                 )}
                 {showInsights.estExhibit && (
                   <td>
-                    {/* {getEstimatedExhibitors(event)} */}
-                    {event.stats?.estimatedExhibitor
-                      ? event.stats?.estimatedExhibitor
-                      : "-"}
+                    {getEstimatedExhibitors(event)}
                   </td>
                 )}
                 {showInsights.global && (

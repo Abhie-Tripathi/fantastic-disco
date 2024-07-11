@@ -618,7 +618,7 @@ const [add,setAdd]=useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
       if (error) {
         console.log(error);
         return;
@@ -1592,9 +1592,8 @@ console.log(customData);
                   </div>
                 </MenuTrigger>
 
-                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.disabledBtn}>
+                  <Button>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1621,7 +1620,7 @@ console.log(customData);
                       </div>
                     </div>
                   </Button>
-                  <Popover isOpen={false}>
+                  <Popover>
                     <Dialog className={styles.noBorder}>
                       {({ close }) => (
                         <RangeSlider

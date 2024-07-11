@@ -171,7 +171,7 @@ const Search = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
       if (error) {
         console.log(error);
         return;
@@ -224,10 +224,7 @@ const Search = () => {
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: 
-            (selectedMaturity >= 1 && selectedMaturity <= 25) ? "new" :
-            (selectedMaturity >= 26 && selectedMaturity <= 50) ? "low" :
-            (selectedMaturity >= 51 && selectedMaturity <= 75) ? "medium" : "High" }),
+          ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -243,9 +240,7 @@ const Search = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedINScore > 0 && { internationalScore: (selectedINScore >= 1 && selectedINScore <= 25) ? "local" :
-            (selectedINScore >= 26 && selectedINScore <= 50) ? "National" :
-            (selectedINScore >= 51 && selectedINScore <= 75) ? "Regional" : "International" }),
+          ...(selectedINScore > 0 && { internationalScore: selectedINScore }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
           }),
@@ -464,25 +459,12 @@ const Search = () => {
 
     // Maturity
     if (selectedMaturity > 0) {
-      // queryString.maturity = selectedMaturity;
-      if (selectedMaturity >= 1 && selectedMaturity <= 25)
-        queryString.maturity = "new";
-      else if (selectedMaturity >= 26 && selectedMaturity <= 50)
-        queryString.maturity = "low";
-      else if (selectedMaturity >= 51 && selectedMaturity <= 75)
-        queryString.maturity = "medium";
-      else queryString.maturity = "High";
+      queryString.maturity = selectedMaturity;
     }
 
     // Int. Score
     if (selectedINScore > 0) {
-      if (selectedINScore >= 1 && selectedINScore <= 25)
-        queryString.internationalScore = "local";
-      else if (selectedINScore >= 26 && selectedINScore <= 50)
-        queryString.internationalScore = "National";
-      else if (selectedINScore >= 51 && selectedINScore <= 75)
-        queryString.internationalScore = "Regional";
-      else queryString.internationalScore = "International";
+      queryString.internationalScore = selectedINScore;
     }
 
     // Inbound Score
@@ -1511,15 +1493,6 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Branded Event
-                          {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${
-                                selectedEventAttendanceRange[1] || "Unlimited"
-                              }`}
-                            </span>
-                          ) : (
-                            ""
-                          )}
                         </div>
 
                         <div className={styles.toggle_container}>
@@ -1542,9 +1515,8 @@ const Search = () => {
                   </div>
                 </MenuTrigger>
 
-                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
+                  <Button className={`${styles.dropdown_button}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1571,7 +1543,7 @@ const Search = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover className={styles.filterPopover} isOpen={false}>
+                  <Popover className={styles.filterPopover}>
                     <RangeSlider
                       state={selectedTrustScore}
                       setState={setSelectedTrustScore}
