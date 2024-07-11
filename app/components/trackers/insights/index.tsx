@@ -92,7 +92,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank }: any) => {
         <div className={styles.branded}>
           <div className={styles.formatHead}>
             Maturity
-            {maturity?.length>0  && <span className={styles.newBtn}>{maturity}</span>}
+            {/* {maturity?.length>0  && <span className={styles.newBtn}>{maturity}</span>} */}
           </div>
           <div className={styles.toggle_container}>
             <span>

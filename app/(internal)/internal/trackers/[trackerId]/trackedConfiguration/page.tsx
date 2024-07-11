@@ -288,7 +288,7 @@ useEffect(() => {
           />
         </div>
       </div>
-      <div className={styles.line}></div>
+      {/* <div className={styles.line}></div>
       <div className={styles.innerContainer}>
         <div
           className={styles.innerContainerLeft}
@@ -302,7 +302,7 @@ useEffect(() => {
         <div className={styles.innerContainerRight}>
           
         </div>
-      </div>
+      </div> */}
       {del &&
       (
         <div className={styles.shareModal} >

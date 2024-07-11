@@ -296,7 +296,7 @@ const [add,setAdd]=useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   useEffect(()=>{
     if(type==="competitor"){
-      setWebsites(customData.map(item => item.companyUrl).join(','));
+      setWebsites(customData.map((item:any) => item.companyUrl).join(','));
     }
   },[type, customData])
   console.log(websites);
@@ -378,7 +378,7 @@ const [add,setAdd]=useState(false);
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
+          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString()}),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -400,7 +400,7 @@ const [add,setAdd]=useState(false);
           ...(rankToggles?.isLocalRank===true && {
             localRank:selectedLocalRank.join(',')
           }),
-          ...(selectedINScore > 0 && { internationalScore: selectedINScore }),
+          ...(selectedINScore > 0 && { internationalScore: selectedINScore.toString() }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
           }),
@@ -529,7 +529,7 @@ const [add,setAdd]=useState(false);
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: maturity }),
+          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -545,7 +545,7 @@ const [add,setAdd]=useState(false);
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedINScore > 0 && { internationalScore: selectedINScore }),
+          ...(selectedINScore > 0 && { internationalScore: selectedINScore.toString() }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
           }),
@@ -855,7 +855,7 @@ console.log(type);
 const addNewEntry=()=>{
   
   if (companyUrl) {
-    setCustomData(prevData => ([
+    setCustomData((prevData:any) => ([
       ...prevData,
       { companyUrl: companyUrl }
     ]));
@@ -863,7 +863,7 @@ const addNewEntry=()=>{
       // setAdd(true);
   }
   else if(name && companyName){
-    setCustomData(prevData => ([
+    setCustomData((prevData:any) => ([
       ...prevData,
       { name: name,
         companyName:companyName
@@ -878,7 +878,7 @@ const addNewEntry=()=>{
 const [companyUrl, setCompanyUrl] = useState('');
 const [name,setName]=useState('');
 const [companyName,setCompanyName]=useState('');
-const handleInputChange = (e) => {
+const handleInputChange = (e:any) => {
   
   setCompanyUrl(e.target.value);
 };
@@ -1706,9 +1706,9 @@ console.log(customData);
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          {maturity && maturity?.length > 0 && (
+                          {selectedMaturity> 0 && (
                             <span className={styles.input_selected_title}>
-                              {maturity}
+                              {selectedMaturity}
                             </span>
                           )}
                         </div>
@@ -1748,9 +1748,9 @@ console.log(customData);
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           International Score
-                          {intScore && intScore?.length > 0 && (
+                          {selectedINScore > 0 && (
                             <span className={styles.input_selected_title}>
-                              {intScore}
+                              {selectedINScore}
                             </span>
                           )}
                         </div>
@@ -1914,7 +1914,7 @@ console.log(customData);
       <div className={styles.competitorHeading}>Upload custom data</div>
       <div className={styles.bar}></div>
       <div className={`card ${styles.competitor}`}>
-        <div className={styles.subHeading}>Add competitor's website</div>
+        <div className={styles.subHeading}>Add competitor&apos;s website:</div>
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
             <Image src={Url} alt="url" className="icons" />
@@ -1931,7 +1931,7 @@ console.log(customData);
             <Image src={Add} alt="add_Icon" />
           </div>
         </div>
-        {customData.map((item, index) => (
+        {customData.map((item:any, index:number) => (
           <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
         ))}
       </div>
@@ -1941,7 +1941,7 @@ console.log(customData);
       <div className={styles.competitorHeading}>Upload custom data</div>
       <div className={styles.bar}></div>
       <div className={`card ${styles.competitor}`}>
-        <div className={styles.subHeading}>Add speaker's name and company below</div>
+        <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
             <Image src={Name} alt="userName_Icon" className="icons"/>
@@ -1970,7 +1970,7 @@ console.log(customData);
             <Image src={Add} alt="add_Icon" />
           </div>
         </div>
-        {customData.map((item, index) => (
+        {customData.map((item:any, index:number) => (
           <div key={index} className={styles.customDataOuterDiv}>
           <div className={styles.singleInputBox}>{item.name}</div>
           <div className={styles.singleInputBox}>{item.companyName}</div>
