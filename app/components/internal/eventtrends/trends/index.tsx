@@ -18,6 +18,7 @@ import { convertToCustomFormat } from "@/utils/dateFormat";
 import { convertISOToOriginalFormat } from "@/utils/date";
 import { showToast } from "@/utils/showToast";
 import { useSearchParams, useRouter } from "next/navigation";
+import Loading from "@/app/components/UI/Loading";
 
 interface EventTrendsProps {
   activeChip: string;
@@ -67,6 +68,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const [categoryData, setCatgeoryData] = useState([]);
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,9 +91,14 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     setCategorySlug([]);
     setSelectedLocations([]);
     setSelectedDateRange([]);
-    setSelectedEventRank([]);
-    setSelectedLocalRank([]);
-    setSelectedAviationRank([]);
+    setSelectedEventRank([0, 100]);
+    setSelectedLocalRank([0, 100]);
+    setSelectedAviationRank([0, 100]);
+    setRankToggles({
+      isEventRank: false,
+      isLocalRank: false,
+      isAviationRank: false,
+    });
   };
 
   const searchHandler = () => {
@@ -149,6 +156,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       showToast("error", "Please select all the filters first");
       return;
     }
+    setIsLoading(true);
     const { data, error } = await myFetch(
       `${baseUrl}/trend/${
         activeChip === "Predicted Attendance"
@@ -156,6 +164,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           : "predicted-number-of-events"
       }?${query}`
     );
+    setIsLoading(false);
     if (error) {
       console.log("Something went wrong");
       return;
@@ -187,8 +196,6 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       },
     };
   };
-
-  console.log(selectedLocations)
 
   return (
     <div className={styles.predictedAttendence_container}>
@@ -402,6 +409,19 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           </div>
         </div>
       </div>
+
+      {isLoading && (
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Loading />
+        </div>
+      )}
 
       {unparsedData && (
         <div className={styles.inner_container}>
