@@ -31,7 +31,7 @@ function capitalizeEachWord(str: string) {
 
 const PeriodicAnalytics = ({ predictedData }: any) => {
   const total = calculateTotal(predictedData);
-  console.log("Event Trends pe live",predictedData)
+  console.log("Event Trends pe live", predictedData);
   return (
     <>
       <div className="desktop_view tablet_view">
@@ -44,7 +44,7 @@ const PeriodicAnalytics = ({ predictedData }: any) => {
           <table className={styles.table}>
             <thead className={styles.table_head}>
               <tr className={styles.table_head_row}>
-                <th style={{width:'250px'}}></th>
+                <th style={{ width: "250px" }}></th>
                 <th>Total</th>
                 {Object.entries(predictedData).map(([key, value]) => (
                   <th key={key}>{capitalizeEachWord(key)}</th>
@@ -56,7 +56,7 @@ const PeriodicAnalytics = ({ predictedData }: any) => {
             <tbody className={styles.table_body}>
               <tr>
                 <td>
-                  <div>Predicted No of Events</div>
+                  <div style={{ width: "200px" }}>Predicted No of Events</div>
                 </td>
                 <td>{total}</td>
                 {Object.entries(predictedData).map(

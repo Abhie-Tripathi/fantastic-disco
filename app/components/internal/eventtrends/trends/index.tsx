@@ -91,9 +91,14 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     setCategorySlug([]);
     setSelectedLocations([]);
     setSelectedDateRange([]);
-    setSelectedEventRank([]);
-    setSelectedLocalRank([]);
-    setSelectedAviationRank([]);
+    setSelectedEventRank([0, 100]);
+    setSelectedLocalRank([0, 100]);
+    setSelectedAviationRank([0, 100]);
+    setRankToggles({
+      isEventRank: false,
+      isLocalRank: false,
+      isAviationRank: false,
+    });
   };
 
   const searchHandler = () => {
