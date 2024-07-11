@@ -124,11 +124,10 @@
     position:fixed;
     z-index: 999;
     top: 80px;
-    right: -45%; /* Start off-screen */
+    right: -610px;
     padding: 25px 30px;
-    transition: right 0.3s ease; /* Smooth transition */
+    transition: right 0.3s ease; 
     border-radius: 20px;
-    /* display: none; */
 }
 
 .yourWidgetModal.open {
