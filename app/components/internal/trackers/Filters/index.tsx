@@ -378,7 +378,7 @@ const [add,setAdd]=useState(false);
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: maturity }),
+          ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -400,7 +400,7 @@ const [add,setAdd]=useState(false);
           ...(rankToggles?.isLocalRank===true && {
             localRank:selectedLocalRank.join(',')
           }),
-          ...(selectedINScore > 0 && { internationalScore: intScore }),
+          ...(selectedINScore > 0 && { internationalScore: selectedINScore }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
           }),
@@ -545,7 +545,7 @@ const [add,setAdd]=useState(false);
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedINScore > 0 && { internationalScore: intScore }),
+          ...(selectedINScore > 0 && { internationalScore: selectedINScore }),
           ...(selectedInboundScore > 0 && {
             inboundScore: selectedInboundScore.toString(),
           }),
@@ -1403,8 +1403,9 @@ console.log(customData);
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1429,7 +1430,7 @@ console.log(customData);
                       </div>
                     </div>
                   </Button>
-                  <Popover>
+                  <Popover isOpen={false}>
                     <Dialog className={styles.noBorder}>
                       <EventAdvFilter
                         state={selectedEntry}
@@ -1552,8 +1553,9 @@ console.log(customData);
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
               <div className={styles.inputdropdowns_container}>
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1579,6 +1581,7 @@ console.log(customData);
                                   setSelectedBrandedEvent((prev) => !prev);
                                 }}
                                 checked={selectedBrandedEvent}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1589,8 +1592,9 @@ console.log(customData);
                   </div>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
+                  <Button className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1617,7 +1621,7 @@ console.log(customData);
                       </div>
                     </div>
                   </Button>
-                  <Popover>
+                  <Popover isOpen={false}>
                     <Dialog className={styles.noBorder}>
                       {({ close }) => (
                         <RangeSlider
@@ -1629,8 +1633,9 @@ console.log(customData);
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
+                  <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>Event Series</div>
@@ -1644,6 +1649,7 @@ console.log(customData);
                                   setSelectedEventSeries((prev) => !prev);
                                 }}
                                 checked={selectedEventSeries}
+                                disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1903,7 +1909,7 @@ console.log(customData);
           </div>
         </div>
       </Suspense>
-      {type==="competitor"&&
+      {type==="t_competitor"&&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHeading}>Upload custom data</div>
       <div className={styles.bar}></div>
@@ -1930,7 +1936,7 @@ console.log(customData);
         ))}
       </div>
     </div>)}
-    {(type==="speaking" || type==="peoplefinder")&&
+    {(type==="t_speaking_opportunity" || type==="t_people_finder")&&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHeading}>Upload custom data</div>
       <div className={styles.bar}></div>

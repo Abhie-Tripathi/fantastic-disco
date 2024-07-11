@@ -30,9 +30,10 @@ const Profile = () => {
   const [dept, setDept] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [picFile, setPicFile] = useState<any>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const fileInputRef = useRef<any>();
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSaving, setIsSaving] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // New loading state
   const { theme } = useTheme();
   const iconClass = theme === "dark" ? "icons_light" : "icon";
 
@@ -57,19 +58,28 @@ const Profile = () => {
       setMobileNo(data.user.phoneNumber);
       setDept(data.user.department);
       setRole(data.user.designation);
+      setProfilePicture(data.user.profilePicture);
     }
   };
+
   const loginedUser = user;
   useEffect(() => {
     fetchData();
   }, []);
 
   const saveDataHandler = async () => {
-    const newErrors: Record<string, string> = {};
-    if (name.length === 0) {
-      newErrors.name = "Name cannot be empty";
+    if (
+      name.length === 0 &&
+      mobileNo.length === 0 &&
+      role.length === 0 &&
+      dept.length === 0 &&
+      picFile === null
+    ) {
+      showToast("error", "Please fill the data to change");
+      return;
     }
 
+    const newErrors: Record<string, string> = {};
     const splitName = name.split(" ");
 
     if (name.length !== 0 && !splitName[1]) {
@@ -90,16 +100,6 @@ const Profile = () => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return;
-    }
-
-    if (
-      mobileNo.length === 0 &&
-      role.length === 0 &&
-      dept.length === 0 &&
-      picFile === null
-    ) {
-      showToast("error", "Please fill the data to change");
       return;
     }
 
@@ -148,6 +148,18 @@ const Profile = () => {
     }
   };
 
+  const handleFileChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPicFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleResetPassword = async (event: any) => {
     event?.preventDefault();
     const dataToSend = {
@@ -177,7 +189,17 @@ const Profile = () => {
   };
 
   const handleRemove = async () => {
+    if (profilePicture === null) {
+      showToast("error", "No Profile Pic Found");
+      return;
+    }
+    const splitName = name.split(" ");
     const formData = new FormData();
+    formData.append("firstname", splitName[0]);
+    formData.append("lastname", splitName[1]);
+    formData.append("phoneNumber", mobileNo);
+    formData.append("designation", role);
+    formData.append("department", dept);
     formData.append("removePicture", "true");
     const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
       method: "PATCH",
@@ -186,7 +208,8 @@ const Profile = () => {
 
     if (data) {
       console.log(data);
-      setProfileData(data);
+      setProfileData(data.user);
+      setProfilePicture(null);
     }
 
     if (error) {
@@ -212,18 +235,17 @@ const Profile = () => {
             <div className={styles.account_right}>
               <div className={styles.account_basicInfo}>
                 <div className={styles.account_basicInfo_pic}>
-                  {profileData.profilePicture === null ? (
+                  {profilePicture === null ? (
                     <span className={styles.no_pic}>
                       {profileData.firstname[0]}
                       {profileData.lastname[0]}
                     </span>
                   ) : (
                     <Image
-                      src={profileData.profilePicture}
-                      alt="ProfilPic"
+                      src={profilePicture}
+                      alt="ProfilePic"
                       width={76}
                       height={76}
-                      className={iconClass}
                     />
                   )}
                 </div>
@@ -239,7 +261,7 @@ const Profile = () => {
                       <Image
                         src={uploadIcon}
                         alt="upload"
-                        className={styles.image}
+                        className={`${styles.image} ${iconClass}`}
                       />
                       <span>Upload Image</span>
                     </span>
@@ -260,7 +282,7 @@ const Profile = () => {
                 ref={fileInputRef}
                 style={{ display: "none" }}
                 accept="image/png, image/jpeg, image/gif"
-                onChange={(e: any) => setPicFile(e.target.files[0])}
+                onChange={handleFileChange}
               />
 
               <div className={styles.account_details}>
@@ -298,8 +320,8 @@ const Profile = () => {
                       className={`${styles.input} ${
                         errors.mobileNo && styles.error_boundary
                       }`}
-                      value={mobileNo}
                       onChange={(e) => setMobileNo(e.target.value)}
+                      value={mobileNo}
                     />
                     {errors.mobileNo && (
                       <div className={styles.error}>{errors.mobileNo}</div>
@@ -309,32 +331,32 @@ const Profile = () => {
 
                 <div className={styles.dual_input_container}>
                   <span className={styles.input_container}>
-                    <div className={styles.input_title}>Department</div>
-                    <input
-                      type="text"
-                      className={`${styles.input} ${
-                        errors.dept && styles.error_boundary
-                      }`}
-                      value={dept}
-                      onChange={(e) => setDept(e.target.value)}
-                    />
-                    {errors.dept && (
-                      <div className={styles.error}>{errors.dept}</div>
-                    )}
-                  </span>
-
-                  <span className={styles.input_container}>
                     <div className={styles.input_title}>Role</div>
                     <input
                       type="text"
                       className={`${styles.input} ${
                         errors.role && styles.error_boundary
                       }`}
-                      value={role}
                       onChange={(e) => setRole(e.target.value)}
+                      value={role}
                     />
                     {errors.role && (
                       <div className={styles.error}>{errors.role}</div>
+                    )}
+                  </span>
+
+                  <span className={styles.input_container}>
+                    <div className={styles.input_title}>Department</div>
+                    <input
+                      type="text"
+                      className={`${styles.input} ${
+                        errors.dept && styles.error_boundary
+                      }`}
+                      onChange={(e) => setDept(e.target.value)}
+                      value={dept}
+                    />
+                    {errors.dept && (
+                      <div className={styles.error}>{errors.dept}</div>
                     )}
                   </span>
                 </div>

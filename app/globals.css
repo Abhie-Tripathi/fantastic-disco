@@ -171,6 +171,7 @@ button {
   --success-background-color: #EFFBEF;
   --disabled-background-color: #C9C9C9;
   --img-filter:invert(0);
+  --disabled-btn-color: #c9c9c966;
 }
 
 .card {
@@ -197,6 +198,7 @@ body[data-theme="dark"] {
   --success-background-color: #0B2212;
   --disabled-background-color: #454545;
   --img-filter: invert(1);
+  --disabled-btn-color: #454545;
 }
 
 /* :root {

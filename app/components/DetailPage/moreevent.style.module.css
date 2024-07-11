@@ -1,24 +1,17 @@
 .body {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 20px;
     position: relative;
 }
-.header{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 100px;
-}
 .heading {
-    font-size: 20px;
-    color: #6750a4;
+    font-size: 24px;
+    color: white;
+    font-weight: 600;
 }
 
 .carousel {
-    padding: 10px;
-    width: 80%; /* Adjust this as needed */
+    width: 100%; /* Adjust this as needed */
     overflow: hidden; /* Ensure overflow is hidden */
 }
 
@@ -26,6 +19,7 @@
     display: flex;
     transition: transform 0.5s ease;
     gap: 20px;
+    width: 90%;
     /* Remove overflow hidden from here */
 }
 
@@ -35,25 +29,28 @@
     transition: opacity 0.5s ease-in-out;
 }
 
-.carouselButton {
-    background-color: #007bff;
-    border: none;
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    border-radius: 5px;
-}
-
-.carouselButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.carouselButton:first-of-type {
-    left: 0;
-}
-
-.carouselButton:last-of-type {
-    right: 0;
-}
+.navButton {
+    position: absolute;
+    top: 54%;
+    transform: translateY(-50%);
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    border-radius: 50px;
+    filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
+  }
+  .navButton:disabled {
+    display: none;
+  }
+  
+  .navButton:first-of-type {
+    left: -25px;
+  }
+  
+  .navButton:last-of-type {
+    right: -25px;
+  }

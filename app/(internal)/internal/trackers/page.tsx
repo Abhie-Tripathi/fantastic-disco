@@ -268,38 +268,46 @@ const Trackers = () => {
     console.log(dataPresent);
   }, [dataPresent]);
 
-  const updateSteps = useCallback(() => {
-    const newSteps: Step[] = [];
-    if (allTrackerRef?.current) {
-      newSteps.push({
-        target: allTrackerRef.current,
-        // title: "Search Intel",
-        content: "Discover insights on business trends filtered by geography and category, all in one glance.",
-        disableBeacon: true,
-      });
-    }
-    if (savedEventRef?.current) {
-      newSteps.push({
-        target: savedEventRef.current,
-        // title: "Search Intel",
-        content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
-        disableBeacon: true,
-      });
-    }
+  // const updateSteps = useCallback(() => {
+  //   const newSteps: Step[] = [];
+  //   if (allTrackerRef && allTrackerRef.current) {
+  //     newSteps.push({
+  //       target: allTrackerRef.current,
+  //       title: "Create Tracker",
+  //       content: "Discover insights on business trends filtered by geography and category, all in one glance.",
+  //       disableBeacon: true,
+  //     });
+  //   }
+  //   // if (customTrackerRef.current) {
+  //   //   newSteps.push({
+  //   //     target: customTrackerRef.current,
+  //   //     // title: "Search Intel",
+  //   //     content: "Search for relevant events happening in any location",
+  //   //     disableBeacon: true,
+  //   //   });
+  //   // }
+  //   if (savedEventRef.current) {
+  //     newSteps.push({
+  //       target: savedEventRef.current,
+  //       // title: "Search Intel",
+  //       content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
+  //       disableBeacon: true,
+  //     });
+  //   }
 
-    setSteps(newSteps);
-  }, [allTrackerRef?.current, savedEventRef?.current]);
+  //   setSteps(newSteps);
+  // }, [ customTrackerRef.current, savedEventRef.current]);
 
-  useEffect(() => {
-    const walkthroughCompleted: string[] = JSON.parse(
-      localStorage.getItem("walkthroughCompleted") || "[]"
-    );
+  // useEffect(() => {
+  //   const walkthroughCompleted: string[] = JSON.parse(
+  //     localStorage.getItem("walkthroughCompleted") || "[]"
+  //   );
 
-    if (!walkthroughCompleted.includes("tracker")) {
-      updateSteps();
-      setRun(true);
-    }
-  }, [updateSteps]);
+  //   if (!walkthroughCompleted.includes("tracker")) {
+  //     updateSteps();
+  //     setRun(true);
+  //   }
+  // }, [updateSteps]);
 
   return (
     // <div className={styles.body}>
@@ -365,7 +373,7 @@ const Trackers = () => {
                     "Create New Tracker"
                   )
                 }
-                ref={allTrackerRef}
+                // ref={allTrackerRef}
                 className={styles.trackers_header_newtracker_button}
               >
                 Create Tracker

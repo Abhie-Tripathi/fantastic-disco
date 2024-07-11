@@ -217,7 +217,7 @@
 }
 
 .input {
-  cursor: pointer;
+  /* cursor: pointer; */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -403,7 +403,7 @@ input:checked + .slider:before {
 }
 
 .resultData_list:hover {
-  background-color: #F9F7FC;
+  background-color: var(--heading-background-color);
 }
 
 .resultContainer {
@@ -531,4 +531,11 @@ input:checked + .slider:before {
   background-color: var(--primary-color);
   color: #fff;
   margin-top: 6px;
+}
+
+.disabledBtn {
+  opacity: 0.6;
+  cursor: unset;
+  background-color: var(--disabled-btn-color);
+  border-radius: var(--border-radius-sm);
 }
