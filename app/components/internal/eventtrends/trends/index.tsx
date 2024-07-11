@@ -197,8 +197,6 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     };
   };
 
-  console.log(selectedLocations);
-
   return (
     <div className={styles.predictedAttendence_container}>
       <div className={styles.filters_container}>

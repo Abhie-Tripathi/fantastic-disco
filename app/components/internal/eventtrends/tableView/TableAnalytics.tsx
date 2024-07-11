@@ -1,47 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 import styles from "./table.style.module.css";
 import descSort from "/public/internal/sort_down_arrow.svg";
 import ascSort from "/public/internal/sort_up_arrow.svg";
+import { useTheme } from "@/context";
 
 interface Event {
   slug: string;
   attendance: number;
   categoryName: string;
+  groupingByDate: any;
 }
 
 interface GroupingByDate {
-  [date: string]: Event[];
+  [key: string]: any;
 }
 
-const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
+interface TableAnalyticsProps {
+  groupedData: GroupingByDate;
+}
+
+const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
   const [sortingKey, setSortingKey] = useState("date");
   const [sortingOrder, setSortingOrder] = useState("ASC");
-  const { groupingByDate }: any = groupedData;
-  const [eventData, setEventData] = useState(groupingByDate);
-  console.log(groupingByDate);
+  const [eventData, setEventData] = useState<any>(groupedData.groupingByDate);
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  useEffect(() => {
+    setEventData(groupedData.groupingByDate);
+  }, [groupedData]);
 
   const sortDataDesc = (key: keyof typeof eventData) => {
     setSortingOrder("DESC");
     if (key === "date") {
-      const sortedKeys = Object.keys(groupingByDate).sort((dateA, dateB) => {
-        const parsedDateA = new Date(dateA).getTime();
-        const parsedDateB = new Date(dateB).getTime();
-        return parsedDateB - parsedDateA;
-      });
+      const sortedKeys = Object.keys(groupedData.groupingByDate).sort(
+        (dateA, dateB) => {
+          const parsedDateA = new Date(dateA).getTime();
+          const parsedDateB = new Date(dateB).getTime();
+          return parsedDateB - parsedDateA;
+        }
+      );
 
-      const sortedGroupingByDate: typeof groupingByDate = {};
-      sortedKeys.forEach((date) => {
-        sortedGroupingByDate[date] = groupingByDate[date];
+      const sortedGroupingByDate: any = {};
+      sortedKeys.forEach((date: any) => {
+        sortedGroupingByDate[date] = groupedData.groupingByDate[date];
       });
       setEventData(sortedGroupingByDate);
     } else {
-      const sortedGroupingByDate: typeof groupingByDate = {};
-      for (const date in groupingByDate) {
-        if (groupingByDate.hasOwnProperty(date)) {
-          sortedGroupingByDate[date] = groupingByDate[date].sort(
+      const sortedGroupingByDate: any = {};
+      for (const date in groupedData.groupingByDate) {
+        if (groupedData.groupingByDate.hasOwnProperty(date)) {
+          sortedGroupingByDate[date] = groupedData.groupingByDate[date].sort(
             (a: any, b: any) => {
               return b.slug === key
                 ? b.attendance - a.attendance
@@ -57,24 +69,24 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
   const sortDataAsc = (key: keyof typeof eventData) => {
     setSortingOrder("ASC");
     if (key === "date") {
-      const sortedKeys = Object.keys(groupingByDate).sort((dateA, dateB) => {
-        const parsedDateA = new Date(dateA).getTime();
-        const parsedDateB = new Date(dateB).getTime();
-        return parsedDateA - parsedDateB;
-      });
+      const sortedKeys = Object.keys(groupedData.groupingByDate).sort(
+        (dateA, dateB) => {
+          const parsedDateA = new Date(dateA).getTime();
+          const parsedDateB = new Date(dateB).getTime();
+          return parsedDateA - parsedDateB;
+        }
+      );
 
-      const sortedGroupingByDate: typeof groupingByDate = {};
+      const sortedGroupingByDate: typeof groupedData.groupingByDate = {};
       sortedKeys.forEach((key) => {
-        sortedGroupingByDate[key] = groupingByDate[key];
+        sortedGroupingByDate[key] = groupedData.groupingByDate[key];
       });
-      console.log("Unsorted", eventData);
-      console.log("Sorted", sortedGroupingByDate);
       setEventData(sortedGroupingByDate);
     } else {
-      const sortedGroupingByDate: typeof groupingByDate = {};
-      for (const date in groupingByDate) {
-        if (groupingByDate.hasOwnProperty(date)) {
-          sortedGroupingByDate[date] = groupingByDate[date].sort(
+      const sortedGroupingByDate: typeof groupedData.groupingByDate = {};
+      for (const date in groupedData.groupingByDate) {
+        if (groupedData.groupingByDate.hasOwnProperty(date)) {
+          sortedGroupingByDate[date] = groupedData.groupingByDate[date].sort(
             (a: any, b: any) => {
               return b.slug === key
                 ? a.attendance - b.attendance
@@ -100,17 +112,12 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
     );
   };
 
-
   return (
     <>
       <div className={styles.analytics_header}>
         <div className={styles.analytics_header_left}>
           <span style={{ fontWeight: 500, fontSize: "16px" }}>
-            Daily Events
-          </span>
-          <span>
-            <span className={styles.analytics_value_stats}>7</span>
-            <span style={{ fontSize: "14px", color: "grey" }}>Events</span>
+            DAILY EVENTS
           </span>
         </div>
       </div>
@@ -130,6 +137,7 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                       <Image
                         src={sortingOrder === "ASC" ? ascSort : descSort}
                         alt="Sort"
+                        className={iconClass}
                       />
                     )}
                   </div>
@@ -146,6 +154,7 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                       <Image
                         src={sortingOrder === "ASC" ? ascSort : descSort}
                         alt="Sort"
+                        className={iconClass}
                       />
                     )}
                   </div>
@@ -163,6 +172,7 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
                         <Image
                           src={sortingOrder === "ASC" ? ascSort : descSort}
                           alt="Sort"
+                          className={iconClass}
                         />
                       )}
                     </div>
@@ -192,15 +202,3 @@ const TableAnalytics: React.FC<GroupingByDate> = ({ groupedData }) => {
 };
 
 export default TableAnalytics;
-
-// (
-{
-  /* <tr key={date}>
-  <td>{date}</td>
-  <td>{calculateTotalAttendance(events)}</td>
-  {events.map((event: any, index: any) => (
-    <td key={index}>{event.attendance}</td>
-  ))}
-</tr> */
-}
-// )
