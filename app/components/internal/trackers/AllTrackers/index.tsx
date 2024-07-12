@@ -13,7 +13,7 @@ import { GAEvent } from "@/utils/GAEvent";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item }: any) => {
   // const { theme } = useTheme();
-  console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
+  // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [

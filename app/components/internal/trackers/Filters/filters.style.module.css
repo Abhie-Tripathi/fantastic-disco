@@ -379,6 +379,7 @@
     color:var(--primary-color);
   }
   .bar{
+    display: none;
     border-bottom: 1px solid var(--border-color);
   }
   .subHeading{
@@ -388,7 +389,7 @@
   .competitor{
     display: flex;
     flex-direction: column;
-    gap:var(--spacing-lg);
+    gap:var(--spacing-sm);
   }
   .singleInputArea{
     padding: 0px 10px;
@@ -433,4 +434,38 @@
     cursor: unset;
     background-color: var(--disabled-btn-color);
     border-radius: var(--border-radius-sm);
+  }
+  .toggleDiv{
+    display: flex;
+    width: 100%;
+    gap:10px;
+  }
+  .manualDiv{
+    width: 50%;
+    justify-content: space-between;
+    display: flex;
+  }
+  .manualHeading{
+    font-size: 16px;
+    font-weight: 500;
+    /* color: var(--primary-color); */
+  }
+  .manualSubHeading{
+    font-size: 10px;
+    font-weight: 400;
+    color: #2D3748;
+  }
+  .competitorHead{
+    display: flex;
+    /* padding-left: 10px; */
+    align-items: center;
+    gap:10px;
+  }
+  .badgeSuccess{
+    background-color: #e6feef;
+    padding: 8px 24px;
+    border-radius: var(--border-radius-lg);
+    color: #3cbda8;
+    font-weight: var(--font-weight-medium);
+    font-size: 14px;
   }
