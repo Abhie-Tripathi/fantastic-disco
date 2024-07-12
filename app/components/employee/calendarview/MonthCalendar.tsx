@@ -9,6 +9,7 @@ import Image from "next/image";
 import LeftArrow from "/public/leftArrow.svg";
 import RightArrow from "/public/rightArrow.svg";
 import CalendarList from "./CalendarList";
+import Loading from "../../UI/Loading";
 
 interface Event {
   id: number;
@@ -264,9 +265,11 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
   const [year, setYear] = useState<number>(0);
   const [month, setMonth] = useState<number>(0);
   const [datesWithEvents, setDatesWithEvents] = useState<any>();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const fetchEventsData = async () => {
     if(props.queryString){
+      setIsLoaded(false);
     try {
       let apiMonth = '';
       if (month == 0) return;
@@ -288,6 +291,8 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
     } catch (error) {
       console.error('Error fetching data:', error);
       setMonthEvents({});
+    } finally {
+      setIsLoaded(true);
     }
     }else
       setMonthEvents({});
@@ -373,6 +378,10 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, props.queryString]);
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
   return (
     <>
