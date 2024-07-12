@@ -1,12 +1,12 @@
 .card_container {
-    border: 0.9px solid #262626;
+    border: 0.9px solid var(--border-color);
     padding: 25px;
     border-radius: 16px;
     width: 100%;
 }
 
 .card_title {
-    border-bottom: 0.7px solid #3A3152;
+    /* border-bottom: 0.7px solid var(--border-color); */
     font-size: 12px;
     font-weight: 700;
     padding-bottom: 5px;
@@ -30,7 +30,7 @@
     margin-top: 25px;
     margin-bottom: 25px;
     padding: 0 16px;
-    border: 0.7px solid #262626;
+    border: 0.7px solid var(--border-color);
     display: flex;
     align-items: center;
     gap: 10px;

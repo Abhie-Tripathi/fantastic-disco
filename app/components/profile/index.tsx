@@ -24,8 +24,8 @@ interface Profile {
 
 const Profile = () => {
   const { user, setIsProfileUpdated } = useAuthContext();
-  const [profileData, setProfileData] = useState<Profile>();
-  const [name, setname] = useState("");
+  const [profileData, setProfileData] = useState<Profile | null>(null);
+  const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [dept, setDept] = useState("");
   const [mobileNo, setMobileNo] = useState("");
@@ -54,11 +54,11 @@ const Profile = () => {
     if (data) {
       console.log(data);
       setProfileData(data.user);
-      setname(data.user.firstname + " " + data.user.lastname);
-      setMobileNo(data.user.phoneNumber);
-      setDept(data.user.department);
-      setRole(data.user.designation);
-      setProfilePicture(data.user.profilePicture);
+      setName(data.user.firstname + " " + data.user.lastname);
+      setMobileNo(data.user.phoneNumber || "");
+      setDept(data.user.department || "");
+      setRole(data.user.designation || "");
+      setProfilePicture(data.user.profilePicture || null);
     }
   };
 
@@ -67,22 +67,17 @@ const Profile = () => {
     fetchData();
   }, []);
 
-
   const saveDataHandler = async () => {
-    if (
-      name.length === 0 &&
-      mobileNo.length === 0 &&
-      role.length === 0 &&
-      dept.length === 0 &&
-      picFile === null
-    ) {
-      showToast("error", "Please fill the data to change");
-      return;
-    }
-
     const newErrors: Record<string, string> = {};
+
+    if (name.length === 0) {
+      newErrors.name = "Name cannot be empty";
+    }
     const splitName = name.split(" ");
 
+    if (!name.trim()) {
+      newErrors.name = "Name cannot be empty";
+    }
     if (name.length !== 0 && !splitName[1]) {
       newErrors.name = "Please Enter Full Name";
     }
@@ -103,8 +98,6 @@ const Profile = () => {
       setErrors(newErrors);
       return;
     }
-
-    console.log(name, role, dept, mobileNo);
 
     setErrors({});
     const formData = new FormData();
@@ -190,7 +183,7 @@ const Profile = () => {
   };
 
   const handleRemove = async () => {
-    if (profilePicture === null) {
+    if (!profilePicture) {
       showToast("error", "No Profile Pic Found");
       return;
     }
@@ -294,7 +287,7 @@ const Profile = () => {
                     className={`${styles.input} ${
                       errors.name && styles.error_boundary
                     }`}
-                    onChange={(e) => setname(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     value={name}
                   />
                   {errors.name && (
