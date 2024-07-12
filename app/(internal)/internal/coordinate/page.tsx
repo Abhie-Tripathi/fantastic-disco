@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -40,6 +40,7 @@ const Page = () => {
         method: "GET",
         headers: headers,
       });
+      console.log("FetchUserInterest",apiData)
       if (apiData.data) {
         apiData.data.eventId = eventId;
         apiData.data.enquiryId = enquiryId;
