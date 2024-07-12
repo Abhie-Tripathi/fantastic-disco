@@ -24,8 +24,8 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const [userList, setUserList] = useState([]);
 
   const openDropDownHandler = () => {
-    // setIsOpen((prev) => !prev);
-    setIsOpen(false);
+    setIsOpen((prev) => !prev);
+    // setIsOpen(false);
   };
 
   const fetchData = async () => {

@@ -23,7 +23,7 @@
 
 .containerLeft {
     overflow-x: auto;
-    border-right: 1px solid #3A3152;
+    border-right: 1px solid var(--border-color);
     padding-right: 50px;
     display: flex;
     flex-direction: column;
@@ -35,7 +35,7 @@
 .containerLeftTop {
     display: flex;
     justify-content: space-between;
-    border-bottom: 0.7px solid #3A3152;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 20px;
     color: inherit;
 }
@@ -79,7 +79,7 @@
     opacity: 0.6;
     cursor: unset;
     background-color: var(--disabled-btn-color);
-    border-radius: 20px;
+    border-radius: var(--border-radius-lg);
 }
 
 @media screen and (max-width: 768px) {

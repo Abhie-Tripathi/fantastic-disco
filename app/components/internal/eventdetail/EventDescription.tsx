@@ -38,9 +38,7 @@ const EventDescription = ({
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={`${styles.container} card`}
     >
       <div
         className={styles.header}
@@ -62,7 +60,7 @@ const EventDescription = ({
                 theme === "light" ? styles.dateContainer_light : ""
               }`}
             >
-              <Image src={CalendarIcon} alt="date" className={iconClass} />
+              <Image src={CalendarIcon} alt="date" className={iconClass} height={18} width={18} />
               <div className={styles.date}>{formatDate(eventDetail.startDate)} - {formatDate(eventDetail.endDate)}</div>
             </div>
             {shortlist && (
@@ -74,7 +72,7 @@ const EventDescription = ({
           </div>
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
-              <Image src={LocationIcon} alt="location" className={iconClass} />
+              <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} />
               <div className={styles.location}>
                 {(eventDetail.location?.cityName && eventDetail.location?.countryName) ?
                   (eventDetail.location.cityName +', '+eventDetail.location?.countryName) :

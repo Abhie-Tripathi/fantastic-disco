@@ -17,13 +17,11 @@ const EventRequest = ({ open }: DetailsProps) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={`${styles.container} card`}
     >
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(false)}
+        onClick={() => setAccordianToggle(!accordianToggle)}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventRequest_header}>
