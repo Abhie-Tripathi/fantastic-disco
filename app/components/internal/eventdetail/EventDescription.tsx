@@ -11,11 +11,19 @@ import person2 from "@/public/person2.svg";
 import person1 from "@/public/person1.svg";
 import { useTheme } from "@/context";
 
+
+const formatDate = (dateString: string | null): string => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+};
 interface DetailsProps {
   description: string;
   open: boolean;
   speakers: boolean;
   shortlist: boolean;
+  eventDetail: any;
 }
 
 const EventDescription = ({
@@ -23,6 +31,7 @@ const EventDescription = ({
   open,
   speakers,
   shortlist,
+  eventDetail
 }: DetailsProps) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
@@ -54,7 +63,7 @@ const EventDescription = ({
               }`}
             >
               <Image src={CalendarIcon} alt="date" className={iconClass} />
-              <div className={styles.date}>1st Apr 2024 - 30th Apr 2024</div>
+              <div className={styles.date}>{formatDate(eventDetail.startDate)} - {formatDate(eventDetail.endDate)}</div>
             </div>
             {shortlist && (
               <div className={styles.statusContainer}>
@@ -66,9 +75,14 @@ const EventDescription = ({
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
               <Image src={LocationIcon} alt="location" className={iconClass} />
-              <div className={styles.location}>Bengaluru, Karnataka</div>
+              <div className={styles.location}>
+                {(eventDetail.location?.cityName && eventDetail.location?.countryName) ?
+                  (eventDetail.location.cityName +', '+eventDetail.location?.countryName) :
+                  eventDetail.location.countryName
+                }
+              </div>
             </div>
-            <div className={styles.locationContainer_direction}>
+            {/* <div className={styles.locationContainer_direction}>
               View Location
               <span className={styles.image_container}>
                 <Image
@@ -78,12 +92,14 @@ const EventDescription = ({
                   height={15}
                 />
               </span>
-            </div>
+            </div> */}
           </div>
+          {description &&
           <div className={`${styles.descContainer}`}>
             <div className={styles.descHeading}>Description</div>
             <div className={styles.description}>{description}</div>
           </div>
+          }
           {speakers && (
             <div className={styles.speakersContainer}>
               <div className={styles.speakerHeading}>Speakers</div>
