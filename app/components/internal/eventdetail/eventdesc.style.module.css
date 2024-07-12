@@ -70,6 +70,10 @@
   flex: 1;
 }
 
+.location {
+  font-size: var(--font-size-default);
+}
+
 .locationContainer {
   margin-top: 18px;
   /* background-color: #202020; */
@@ -83,6 +87,7 @@
 .locationContainer_location {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .locationContainer_direction {

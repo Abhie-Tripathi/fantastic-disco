@@ -7,6 +7,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import LeftArrow from "/public/leftArrow.svg";
 import RightArrow from "/public/rightArrow.svg";
+import Loading from "../../UI/Loading";
 
 /*
 const eventsData = [
@@ -355,9 +356,11 @@ const WeekCalendar = (props: WeekCalendarProps) => {
   };
 
   const [apiResult, setApiResult] = useState<any>({});
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const fetchEventsData = async () => {
     try {
+      setIsLoaded(false);
       let start = weekDates[0].isoDate.substring(0, 10);
       let end = weekDates[6].isoDate.substring(0, 10);
       const apiUrl = `${baseUrl}/event/search?groupBy=${start},${end}&${props.queryString}`;
@@ -413,6 +416,8 @@ const WeekCalendar = (props: WeekCalendarProps) => {
     } catch (error) {
       console.error('Error fetching data:', error);
       setApiResult({})
+    } finally {
+      setIsLoaded(true);
     }
   }
 
@@ -441,6 +446,10 @@ const WeekCalendar = (props: WeekCalendarProps) => {
       fillCalendarData();
     }
   }, [apiResult]);
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
   return (
     <>

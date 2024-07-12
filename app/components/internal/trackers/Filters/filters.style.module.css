@@ -373,10 +373,99 @@
   .listBtn{
     background-color: var(--primary-foreground);
   }
+  .competitorHeading{
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h6);
+    color:var(--primary-color);
+  }
+  .bar{
+    display: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .subHeading{
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
+  }
+  .competitor{
+    display: flex;
+    flex-direction: column;
+    gap:var(--spacing-sm);
+  }
+  .singleInputArea{
+    padding: 0px 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 20%;
+    align-items: center;
+    gap: 10px;
+  }
+  .textAreaUrl{
+    border: none;
+    outline: none;
+  }
+  .allInputArea{
+    display: flex;
+    align-items: stretch;
+    gap:10px;
+  }
+  .addIcon{
+    display: flex;
+    padding: 0px 12px;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius-sm);
+  }
+  .singleInputBox{
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 20%;
+    align-items: center;
+    gap: 10px;
+  }
+  .customDataOuterDiv{
+    display: flex;
+    gap: 10px;
+  }
 
   .disabledBtn {
     opacity: 0.6;
     cursor: unset;
     background-color: var(--disabled-btn-color);
     border-radius: var(--border-radius-sm);
+  }
+  .toggleDiv{
+    display: flex;
+    width: 100%;
+    gap:10px;
+  }
+  .manualDiv{
+    width: 50%;
+    justify-content: space-between;
+    display: flex;
+  }
+  .manualHeading{
+    font-size: 16px;
+    font-weight: 500;
+    /* color: var(--primary-color); */
+  }
+  .manualSubHeading{
+    font-size: 10px;
+    font-weight: 400;
+    color: #2D3748;
+  }
+  .competitorHead{
+    display: flex;
+    /* padding-left: 10px; */
+    align-items: center;
+    gap:10px;
+  }
+  .badgeSuccess{
+    background-color: #e6feef;
+    padding: 8px 24px;
+    border-radius: var(--border-radius-lg);
+    color: #3cbda8;
+    font-weight: var(--font-weight-medium);
+    font-size: 14px;
   }

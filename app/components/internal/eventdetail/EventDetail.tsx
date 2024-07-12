@@ -110,21 +110,10 @@ const EventDetail = ({
     }
     const fetchEventData = async () => {
       try {
-        const apiUrl = "https://api.eventgeni.com/event/" + eventId;
-        const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
-        });
-        if (apiData.data) {
-          const eventsData = apiData.data.event;
-          setSingleEventData({
-            id: eventsData.id,
-            eventGroupId: eventsData.eventGroupId,
-            imageUrl:
-              "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
-            name: eventsData.title,
-            description: eventsData.description,
-          });
+        const { data, error } = await myFetch(`${baseUrl}/event/search?eventId=${eventId}`);
+        if (data) {
+          const eventsData = data.events[0];
+          setSingleEventData(eventsData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -173,13 +162,16 @@ const EventDetail = ({
                 <EventDescription
                   description={singleEventData.description}
                   open={openEventDetails}
-                  speakers={true}
+                  speakers={false}
                   shortlist={false}
+                  eventDetail={singleEventData}
                 />
               </>
             )}
-            <EventRequest open={openEventRequest} />
-            <Organiser open={openOrganiserDetails}/>
+            <div className={styles.disabledBtn}>
+              <EventRequest open={openEventRequest} />
+            </div>
+            <Organiser open={openOrganiserDetails} organizerData={singleEventData?.organizer}/>
             <EventPoc open={openPocDetails} eventId={eventId} />
             <Follower eventId={eventId} enquiryId={enquiryId} />
           </div>

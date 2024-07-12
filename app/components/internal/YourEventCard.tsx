@@ -147,7 +147,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               handleShortlistModal={handleShortlistModal}
             />
           </div>
-          <div style={{display: 'flex'}}>
+          {/* <div style={{display: 'flex'}}>
             <Image
               src={eventImage}
               alt="eventImage"
@@ -155,7 +155,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               height={192}
               className={styles.cardImg}
             />
-          </div>
+          </div> */}
         </div>
         <div className={styles.cardDetails}>
           <div className={styles.eventNameComp}>

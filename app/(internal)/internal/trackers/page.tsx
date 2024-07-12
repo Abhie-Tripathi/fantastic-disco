@@ -160,6 +160,7 @@ const Trackers = () => {
       domain: "Human Resource",
       img: People,
       trackerName: "Recruitment",
+      url:"t_recruitment",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
@@ -167,6 +168,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: PeopleFinder,
+      url: "t_people_finder",
       trackerName: "People Finder",
       content:
         "Track experts, influencers and where they might be participating in various events",
@@ -175,6 +177,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Competitor,
+      url:"t_competitor",
       trackerName: "Competitor",
       content:
         "Track your competitor experts, influencers and where they might be participating in events",
@@ -183,6 +186,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Speaking,
+      url:"t_speaking_opportunity",
       trackerName: "Speaking Opportunity",
       content:
         "Input team members and their details to keep track of the events with speaking opportunities.",
@@ -325,7 +329,7 @@ const Trackers = () => {
     //   </div>
     // </div>
     <div className={styles.outerContainer}>
-      {steps.length > 0 && (
+      {steps?.length > 0 && (
         <JoyRideCustom
           steps={steps}
           run={run}
@@ -440,7 +444,7 @@ const Trackers = () => {
             </div>
           )}
           {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
-            <Link href={`/internal/trackers/1/trackedEvents`} key={ind}>
+            <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
               <div className={styles.innerContainerTwo}>
                 <div
                   className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
