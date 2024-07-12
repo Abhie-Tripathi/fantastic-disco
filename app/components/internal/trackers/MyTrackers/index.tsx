@@ -81,6 +81,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
         if (firstFetchResult.error) {
           setError('Create your first tracker!');
           setLoading(false);
+          setLoading(false);
           setLoadOne(false);
           console.log(firstFetchResult.error);
           return;
