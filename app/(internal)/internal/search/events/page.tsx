@@ -1848,7 +1848,7 @@ const Search = () => {
             </div>
           </div>
 
-          <DialogTrigger>
+          {/* <DialogTrigger>
             <Button
               className={styles.exportButton}
               onPress={() =>
@@ -1867,7 +1867,7 @@ const Search = () => {
                 </Dialog>
               </Modal>
             </ModalOverlay>
-          </DialogTrigger>
+          </DialogTrigger> */}
         </div>
         {eventData?.events.length === 0 ? (
           <div className={styles.message}>No Events</div>

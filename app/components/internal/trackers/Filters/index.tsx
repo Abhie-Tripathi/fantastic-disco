@@ -295,7 +295,7 @@ const [add,setAdd]=useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   useEffect(()=>{
-    if(type==="competitor"){
+    if(type==="t_competitor"){
       setWebsites(customData.map((item:any) => item.companyUrl).join(','));
     }
   },[type, customData])
@@ -471,6 +471,9 @@ const [add,setAdd]=useState(false);
       const formData = {
         name: trackerName,
         filterValue: {
+          ...(type && type.length>0 && {
+              type:type
+          }),
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
@@ -1908,11 +1911,54 @@ console.log(customData);
           </div>
         </div>
       </Suspense>
-      {type==="t_competitor"&&
+      {(type==="t_competitor" || type === "t_recruitment") &&
      ( <div className={`card ${styles.competitor}`}>
-      <div className={styles.competitorHeading}>Upload custom data</div>
+      <div className={styles.competitorHead}>
+      <div className={styles.competitorHeading}>Upload custom data </div>
+      <div className={styles.badgeSuccess}>Comming Soon</div>
+      </div>
       <div className={styles.bar}></div>
-      <div className={`card ${styles.competitor}`}>
+      <div className={`${styles.toggleDiv}`}>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Add data manually</div>
+                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Import CSV Data</div>
+                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+      </div>
+      {/* <div className={`card ${styles.competitor}`}>
         <div className={styles.subHeading}>Add competitor&apos;s website:</div>
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
@@ -1933,14 +1979,55 @@ console.log(customData);
         {customData.map((item:any, index:number) => (
           <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
         ))}
-      </div>
+      </div> */}
     </div>)}
     {(type==="t_speaking_opportunity" || type==="t_people_finder")&&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHeading}>Upload custom data</div>
       <div className={styles.bar}></div>
-      <div className={`card ${styles.competitor}`}>
-        <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>
+      <div className={`${styles.toggleDiv}`}>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Add data manually</div>
+                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Import CSV Data</div>
+                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+      </div>
+      {/* <div className={`card ${styles.competitor}`}>
+        {type==="t_speaking_opportunity" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
+        {type==="t_people_finder" && <div className={styles.subHeading}>Add name and company below:</div>}
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
             <Image src={Name} alt="userName_Icon" className="icons"/>
@@ -1975,7 +2062,7 @@ console.log(customData);
           <div className={styles.singleInputBox}>{item.companyName}</div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>)}
     </>
   );

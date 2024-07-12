@@ -160,7 +160,7 @@ const Trackers = () => {
       domain: "Human Resource",
       img: People,
       trackerName: "Recruitment",
-      url:"recruitment",
+      url:"t_recruitment",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
