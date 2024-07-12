@@ -15,19 +15,18 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
   const { groupingByDate }: any = groupedData;
 
   const labels = Object.keys(groupingByDate);
-  console.log(labels);
+
   const data = labels.map((date) =>
-    groupingByDate[date].reduce(
-      (total: any, event: any) => total + event.attendance,
-      0
-    )
+    groupingByDate[date].reduce((total: any, event: any) => {
+      return total + (event.attendance || event.events || 0);
+    }, 0)
   );
 
   const chartData: any = {
     labels: labels,
     datasets: [
       {
-        label: "Total Attendance ",
+        label: "Total Attendance",
         data: data,
         backgroundColor: ["rgb(255 207 215)"],
         borderColor: "rgb(253,29,133)",
@@ -37,6 +36,7 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
       },
     ],
   };
+
   return (
     <div className={styles.chart_container}>
       <Line
