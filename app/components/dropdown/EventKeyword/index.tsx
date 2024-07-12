@@ -52,10 +52,11 @@ const EventKeyword = ({
       event.preventDefault();
       if (inputText.trim() !== "") {
         // setEventKeyword((prev) => [...prev, inputText]);
+        let allKey = inputText.split(',');
         if(activeTab == "Keywords excluded")
-          setNegativeKeyword((prev) => [...prev, inputText]);
+          setNegativeKeyword((prev) => [...prev, ...allKey]);
         else
-          setPositiveKeyword((prev) => [...prev, inputText]);
+          setPositiveKeyword((prev) => [...prev, ...allKey]);
         setInputText("");
       }
     }
@@ -76,16 +77,25 @@ const EventKeyword = ({
       ...negativeKeyword.map((keyword) => `-${keyword}`),
     ];
 
-    let inputKey = inputText;
-    if(inputKey != ''){
+    if(inputText.trim() !== ""){
+      let inputKey = inputText.split(',');
       if(activeTab == "Keywords excluded") {
-        inputKey = `-${inputKey}`;
+        inputKey = inputKey.map((keyword) => `-${keyword}`);
       }
-      newEventKeyword = [...newEventKeyword, inputKey]
+      newEventKeyword = [...newEventKeyword, ...inputKey]
     }
     setState(newEventKeyword);
     onClose();
   };
+
+  const finalKeywordSave = () => {
+    let newEventKeyword = [
+      ...positiveKeyword,
+      ...negativeKeyword.map((keyword) => `-${keyword}`),
+    ];
+    setState(newEventKeyword);
+    onClose();
+  }
 
   return (
     <div>
