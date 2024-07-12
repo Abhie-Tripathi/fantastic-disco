@@ -23,7 +23,7 @@ const EventRequest = ({ open }: DetailsProps) => {
     >
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(!accordianToggle)}
+        onClick={() => setAccordianToggle(false)}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventRequest_header}>

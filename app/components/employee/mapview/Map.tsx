@@ -15,6 +15,13 @@ import { baseUrl, headers } from "@/constants";
 import {EventTableType} from "@/types/ListViewTable";
 import Loading from "@/app/components/UI/Loading";
 
+const formatDate = (dateString: string | null): string => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+};
+
 const EventListCard = (event: any) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -288,10 +295,10 @@ const Map = (props: MapProps) => {
                   </Link>
                   <div className={styles.event_country}>{event.location.countryName}</div>
                   <div className={styles.event_datetime}>
-                    Wed, 6 Mar 2024 (1 day)
+                    {formatDate(event.startDate)} - {formatDate(event.endDate)}
                   </div>
                 </div>
-                <div className={styles.event_details_action}>
+                {/* <div className={styles.event_details_action}>
                   <Link
                     className={styles.event_view_details}
                     href={event.url}
@@ -301,7 +308,7 @@ const Map = (props: MapProps) => {
                   <div className={styles.event_details_category}>
                     Textile Industry
                   </div>
-                </div>
+                </div> */}
               </div>
               </Popup>
             ) : null}
@@ -330,7 +337,7 @@ const Map = (props: MapProps) => {
             ))}
           </>
         } */}
-        { countryPerPage && 
+        { (countryPerPage && countryPerPage.length > 0) && 
           <>
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
