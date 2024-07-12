@@ -205,7 +205,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setYourWidgetModal} />
+        {/* <DraftWidgets setYourWidgetModal={setYourWidgetModal} /> */}
       </div>
     </div>
   );
