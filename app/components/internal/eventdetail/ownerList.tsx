@@ -15,7 +15,8 @@ interface PropType {
 }
 interface UserType {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
   profilePicture: string;
 }
 const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
@@ -32,7 +33,6 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
     const { data, error } = await myFetch(`${baseUrl}/auth/users`);
 
     if (data) {
-      console.log(data.users);
       setUserList(data.users);
     }
 
@@ -137,7 +137,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                     marginRight: "0.5rem",
                   }}
                 >
-                  {user.name}
+                  {user.firstname} {user.lastname}
                 </span>
               </div>
             ))}
