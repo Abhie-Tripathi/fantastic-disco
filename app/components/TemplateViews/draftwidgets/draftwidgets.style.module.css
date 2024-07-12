@@ -52,3 +52,9 @@
     flex-direction: column;
     gap: 16px;
 }
+.emptyCard{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 85%;
+}
