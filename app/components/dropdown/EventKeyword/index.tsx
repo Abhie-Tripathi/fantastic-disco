@@ -88,15 +88,6 @@ const EventKeyword = ({
     onClose();
   };
 
-  const finalKeywordSave = () => {
-    let newEventKeyword = [
-      ...positiveKeyword,
-      ...negativeKeyword.map((keyword) => `-${keyword}`),
-    ];
-    setState(newEventKeyword);
-    onClose();
-  }
-
   return (
     <div>
       <div className={`${styles.container}`}>
