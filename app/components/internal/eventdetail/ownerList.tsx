@@ -7,6 +7,7 @@ import ProfileIcon from "/public/profile_Image.jpg";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
+import { useTheme } from "@/context";
 
 interface PropType {
   label: string;
@@ -21,8 +22,11 @@ interface UserType {
 }
 const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState("User name");
   const [userList, setUserList] = useState([]);
+  const [owner, setOwner] = useState<any>();
+  const {theme} = useTheme();
+
+  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);
@@ -60,17 +64,30 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
       },
     });
 
-    if (data) {
-      console.log(data);
-      fetchData();
-    }
-
     if (error) {
       console.log(error);
       showToast("error", error.message);
       return;
     }
   };
+
+  const getOwnerDetails = async () => {
+    const { data, error } = await myFetch(
+      `${baseUrl}/enquiry/${enquiryId}/owner`
+    );
+    if (data) {
+      console.log(data);
+      setOwner(data.user);
+    }
+    if (error) {
+      showToast("error", error.message);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    getOwnerDetails();
+  }, [enquiryId, handleChangeOwner]);
 
   return (
     <div className={styles.filter_container}>
@@ -99,13 +116,13 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                   marginRight: "0.5rem",
                 }}
               >
-                {value}&nbsp;
+                {owner && owner.name}&nbsp;
               </span>
               <br />
               <span style={{ fontSize: "10px" }}>OWNER&nbsp;</span>
             </div>
           </div>
-          <Image width={14} height={14} src={dropdownIcon} alt="downarrow" />
+          <Image width={14} height={14} src={dropdownIcon} alt="downarrow" className={iconClass} />
         </div>
       </div>
       {isOpen && (
