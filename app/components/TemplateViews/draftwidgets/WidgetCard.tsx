@@ -8,9 +8,10 @@ interface WidgetProps {
     widgetTemplate: string;
     image: StaticImageData;
     widgetNumber?: number;
+    onDelete: () => void;
 }
 
-const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber }: WidgetProps) => {
+const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber,onDelete }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
     return (
         <div className={styles.body}>
@@ -43,7 +44,7 @@ const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber }: WidgetP
                 <div className={styles.status_btnContainer}>
                     <div className={styles.active}>Active</div>
                     <div className={styles.btnContainer}>
-                        <button className={styles.removeBtn}>Remove</button>
+                        <button className={styles.removeBtn} onClick={onDelete}>Remove</button>
                         <button className={styles.editBtn}>Edit</button>
                     </div>
                 </div>

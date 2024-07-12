@@ -6,15 +6,22 @@ import { StaticImageData } from 'next/image'
 interface Props {
   setYourWidgetModal: (value: boolean) => void
   draftWidgets: DraftWidgetsType[]
+  setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
 }
 interface DraftWidgetsType {
   widgetType: string;
   widgetTemplateName: string;
-  selectedImage : StaticImageData
+  selectedImage: StaticImageData
 }
 
 
-const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
+const DraftWidgets = ({ setYourWidgetModal, draftWidgets,setDraftWidgets }: Props) => {
+
+  const handleDelete = (indexToDelete : any) => {
+    setDraftWidgets((prevDraftWidgets) =>
+      prevDraftWidgets.filter((_, index) => index !== indexToDelete)
+    );
+  };
 
   return (
     <div className={styles.body}>
@@ -28,7 +35,7 @@ const DraftWidgets = ({ setYourWidgetModal, draftWidgets }: Props) => {
       <div className={styles.widgets}>
         {draftWidgets && draftWidgets.map((card, key) => (
           <WidgetCard image={card.selectedImage} widgetTemplate={card.widgetTemplateName} widgetType={card.widgetType}
-          key={key} widgetNumber={1} />
+            key={key} widgetNumber={1} onDelete = {()=>handleDelete(key)}/>
         ))}
       </div>
     </div>
