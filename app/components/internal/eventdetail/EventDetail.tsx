@@ -168,9 +168,7 @@ const EventDetail = ({
                 />
               </>
             )}
-            <div className={styles.disabledBtn}>
-              <EventRequest open={openEventRequest} />
-            </div>
+            <EventRequest open={openEventRequest} />
             <Organiser open={openOrganiserDetails} organizerData={singleEventData?.organizer}/>
             <EventPoc open={openPocDetails} eventId={eventId} />
             <Follower eventId={eventId} enquiryId={enquiryId} />

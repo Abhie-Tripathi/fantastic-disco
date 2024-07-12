@@ -73,9 +73,7 @@ const Follower = ({
   return (
     <div>
       <div
-        className={`${styles.container} ${
-          theme === "light" ? styles.container_light : ""
-        }`}
+        className={`${styles.container} card`}
       >
         <div
           className={styles.header}
