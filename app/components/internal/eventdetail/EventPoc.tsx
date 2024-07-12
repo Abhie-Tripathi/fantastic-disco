@@ -50,9 +50,7 @@ const EventPoc = ({ open, eventId }: Props) => {
 
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={`${styles.container} card`}
     >
       <div
         className={styles.header}

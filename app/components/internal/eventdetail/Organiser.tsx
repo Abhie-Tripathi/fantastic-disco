@@ -21,9 +21,7 @@ const Organiser = ({ open, organizerData }: Props) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={`${styles.container} card`}
     >
       <div
         className={styles.header}
@@ -46,7 +44,7 @@ const Organiser = ({ open, organizerData }: Props) => {
               className={styles.orgLogo}
             /> */}
             <div className={styles.organiserNameContainer}>
-              <div style={{ fontSize: 14 }}>{organizerData?.name? organizerData.name :''}</div>
+              <div>{organizerData?.name? organizerData.name :''}</div>
               {/* <div style={{ fontSize: 12, color: "#999999" }}>
                 Supercharge your online meetings
               </div> */}
@@ -56,7 +54,7 @@ const Organiser = ({ open, organizerData }: Props) => {
             <div className={styles.locationContainer_location}>
               {organizerData?.countryName &&
                 <>
-                  <Image src={LocationIcon} alt="location" className={iconClass} />
+                  <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} />
                   <div className={styles.location}>{organizerData.countryName}</div>
                 </>
               }

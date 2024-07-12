@@ -1,7 +1,9 @@
 .container {
-  border-radius: 20px;
+  /* border-radius: 20px;
   border: 1px solid #8d8d8d;
-  padding: 27px 36px;
+  padding: 27px 36px; */
+  border-radius: var(--border-radius-lg);
+  padding: 18px;
 }
 
 .container_light {
@@ -16,12 +18,12 @@
 }
 
 .accordian {
-  border-top: 1px solid #2d2741;
+  border-top: 1px solid var(--border-color);
   margin-top: 20px;
   padding-top: 20px;
 }
 .followerAccordian {
-  border-top: 1px solid #2d2741;
+  border-top: 1px solid var(--border-color);
   margin-top: 20px;
   padding-top: 20px;
 }
@@ -35,10 +37,9 @@
 .dateContainer {
   display: flex;
   align-items: center;
-  font-size: 10px;
-  gap: 9px;
-  padding: 3px 0;
-  border-radius: 8px;
+  font-size: var(--font-size-small);
+  gap: var(--spacing-xs);
+  /* padding: 4px 10px; */
 }
 
 .statusContainer {
@@ -71,13 +72,12 @@
 }
 
 .location {
-  font-size: var(--font-size-default);
+  font-size: var(--font-size-small);
 }
 
 .locationContainer {
-  margin-top: 18px;
   /* background-color: #202020; */
-  padding: 16px 0;
+  margin: 10px 0;
   border-radius: 16px;
   display: flex;
   justify-content: space-between;
@@ -86,7 +86,7 @@
 
 .locationContainer_location {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-xs);
   align-items: center;
 }
 
@@ -116,7 +116,7 @@
 
 .descContainer {
   margin-top: 20px;
-  color: #acacac;
+  /* color: #acacac; */
 }
 
 .descContainer_light {
@@ -124,12 +124,13 @@
 }
 
 .descHeading {
-  font-size: 11px;
+  font-size: var(--font-size-small);
 }
 
 .description {
   margin-top: 18px;
-  font-size: 12px;
+  font-size: var(--font-size-small);
+  color: var(--secondary-text-color);
 }
 
 .speakersContainer {
@@ -414,7 +415,7 @@
   padding-bottom: 6px;
   position: absolute;
   top: 100%;
-  background-color: white;
+  background-color: var(--primary-foreground);
   width: 250px;
   z-index: 10;
   max-height: 250px;
@@ -431,7 +432,7 @@
 }
 
 .dropdown_content:hover {
-  background-color: #edebeb;
+  background-color: var(--background-color-hover);
 }
 
 @media screen and (max-width: 576px) {
