@@ -233,7 +233,7 @@ const Trackers = () => {
     },
   ];
   const [hide, setHide] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
@@ -262,12 +262,27 @@ const Trackers = () => {
     setShowTracker(true);
   };
   const [hideTemplate, setHideTemplate] = useState(true);
-  const [dataPresent, setDataPresent] = useState(true);
+  const [dataPresent, setDataPresent] = useState(false);
+  // useEffect(() => {
+  //   if (dataPresent) setHideTemplate(false);
+  //   console.log(dataPresent);
+  // }, [dataPresent]);
+  const [isData,setIsData]=useState(false);
   useEffect(() => {
-    if (!dataPresent) setHideTemplate(false);
-    console.log(dataPresent);
-  }, [dataPresent]);
+    const fetchData = async () => {
+        const {data,error} = await myFetch(
+          `${baseUrl}/tracker?offset=0&limit=1`
+        );
+        if(data) setIsLoading(false)
+        if (data.trackerData.length>0) {
+         setHideTemplate(false);
+         setIsData(true)
+        } 
 
+      } 
+
+    fetchData();
+  }, []);
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
   //   if (allTrackerRef && allTrackerRef.current) {
@@ -308,6 +323,7 @@ const Trackers = () => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
+console.log(hideTemplate);
 
   return (
     // <div className={styles.body}>
@@ -328,7 +344,9 @@ const Trackers = () => {
     //     )}
     //   </div>
     // </div>
-    <div className={styles.outerContainer}>
+    <>{isLoading?<Loading/>:(
+      <>
+       <div className={styles.outerContainer}>
       {steps?.length > 0 && (
         <JoyRideCustom
           steps={steps}
@@ -362,7 +380,7 @@ const Trackers = () => {
 
         <div className={styles.trackers_header}>
           <div>
-            {hideTemplate ? (
+            {!hideTemplate ? (
               <Link
                 href="/internal/trackers/create"
                 onClick={() =>
@@ -399,7 +417,7 @@ const Trackers = () => {
                 className={styles.hide}
                 onClick={() => setHideTemplate(!hideTemplate)}
               >
-                {!hideTemplate ?
+                {hideTemplate ?
                   <div
                     onClick={() => GAEvent(
                       "trackers",
@@ -422,8 +440,8 @@ const Trackers = () => {
         </div>
       </div>
 
-      {!hideTemplate && (
-        <div className={styles.container}>
+ {hideTemplate && (
+        <div className={`${styles.container}`}>
           {!showTracker && (
             <div className={styles.innerContainerOne}
 
@@ -490,6 +508,8 @@ const Trackers = () => {
           ))}
         </div>
       )}
+     
+     
 
       {!showTracker && (
         <>
@@ -560,10 +580,10 @@ const Trackers = () => {
           {/* </>
     } */}
           {type === "All Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} />
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} />
           )}
           {type === "Custom Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} />
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent}/>
           )}
           {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (
@@ -607,6 +627,9 @@ const Trackers = () => {
         </div>
       )}
     </div>
+      </>
+    )}</>
+   
   );
 };
 

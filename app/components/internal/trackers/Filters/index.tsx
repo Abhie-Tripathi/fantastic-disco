@@ -472,7 +472,7 @@ const [add,setAdd]=useState(false);
         name: trackerName,
         filterValue: {
           ...(type && type.length>0 && {
-              type:type
+              type:type.toUpperCase()
           }),
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
@@ -1958,7 +1958,7 @@ console.log(customData);
               </div>
         </div>
       </div>
-      {/* <div className={`card ${styles.competitor}`}>
+      <div className={`card ${styles.competitor}`}>
         <div className={styles.subHeading}>Add competitor&apos;s website:</div>
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
@@ -1979,7 +1979,7 @@ console.log(customData);
         {customData.map((item:any, index:number) => (
           <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
         ))}
-      </div> */}
+      </div>
     </div>)}
     {(type==="t_speaking_opportunity" || type==="t_people_finder")&&
      ( <div className={`card ${styles.competitor}`}>
@@ -2025,7 +2025,7 @@ console.log(customData);
               </div>
         </div>
       </div>
-      {/* <div className={`card ${styles.competitor}`}>
+      <div className={`card ${styles.competitor}`}>
         {type==="t_speaking_opportunity" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
         {type==="t_people_finder" && <div className={styles.subHeading}>Add name and company below:</div>}
         <div className={styles.allInputArea}>
@@ -2062,7 +2062,7 @@ console.log(customData);
           <div className={styles.singleInputBox}>{item.companyName}</div>
           </div>
         ))}
-      </div> */}
+      </div>
     </div>)}
     </>
   );

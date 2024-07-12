@@ -114,6 +114,8 @@
         /* height: 270px; */
         /* position: relative; */
         /* display: flex; */
+        overflow: hidden; /* Ensure content does not overflow during transition */
+        transition: max-height 0.5s ease, opacity 0.5s ease;
         gap: 10px;
     }
 
@@ -317,3 +319,8 @@
     .createBtn {
         color: white;
     }
+
+    .boxHidden {
+        max-height: 0; /* Collapse the div */
+        opacity: 0; /* Fade out the div */
+      }
