@@ -73,7 +73,7 @@ const Page = () => {
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all`);
+      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
       if (error) {
         console.log(error);
         return;
@@ -288,6 +288,21 @@ useEffect(() => {
           />
         </div>
       </div>
+      {/* <div className={styles.line}></div>
+      <div className={styles.innerContainer}>
+        <div
+          className={styles.innerContainerLeft}
+          style={{ paddingLeft: "20px" }}
+        >
+          <div className={styles.advanceHead}>Custom Data</div>
+          <div className={styles.advanceContent}>
+            
+          </div>
+        </div>
+        <div className={styles.innerContainerRight}>
+          
+        </div>
+      </div> */}
       {del &&
       (
         <div className={styles.shareModal} >

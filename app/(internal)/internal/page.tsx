@@ -88,7 +88,7 @@ const Dashboard = () => {
     const getListOfTrackers = async () => {
       try {
         const { data, error } = await myFetch(`${baseUrl}/tracker`);
-
+        console.log("TrackerList", data);
         setTrackerList(data.trackerData);
       } catch (error) {
         console.error("Error while fetching trackers:", error);
@@ -349,8 +349,8 @@ const Dashboard = () => {
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker.groupedEventsCountByStatus
-                              .groupedEventsByStatus.new || 0}
+                            {tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.new || 0}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events
@@ -365,8 +365,8 @@ const Dashboard = () => {
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker.groupedEventsCountByStatus
-                              .groupedEventsByStatus.active || 0}
+                            {tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.active || 0}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events
@@ -381,8 +381,8 @@ const Dashboard = () => {
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker.groupedEventsCountByStatus
-                              .groupedEventsByStatus.expired || 0}
+                            {tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.expired || 0}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events

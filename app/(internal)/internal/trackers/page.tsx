@@ -160,6 +160,7 @@ const Trackers = () => {
       domain: "Human Resource",
       img: People,
       trackerName: "Recruitment",
+      url:"recruitment",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
@@ -167,6 +168,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: PeopleFinder,
+      url: "t_people_finder",
       trackerName: "People Finder",
       content:
         "Track experts, influencers and where they might be participating in various events",
@@ -175,6 +177,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Competitor,
+      url:"t_competitor",
       trackerName: "Competitor",
       content:
         "Track your competitor experts, influencers and where they might be participating in events",
@@ -183,6 +186,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Speaking,
+      url:"t_speaking_opportunity",
       trackerName: "Speaking Opportunity",
       content:
         "Input team members and their details to keep track of the events with speaking opportunities.",
@@ -264,46 +268,46 @@ const Trackers = () => {
     console.log(dataPresent);
   }, [dataPresent]);
 
-  const updateSteps = useCallback(() => {
-    const newSteps: Step[] = [];
-    if (allTrackerRef.current) {
-      newSteps.push({
-        target: allTrackerRef.current,
-        // title: "Search Intel",
-        content: "Discover insights on business trends filtered by geography and category, all in one glance.",
-        disableBeacon: true,
-      });
-    }
-    if (customTrackerRef.current) {
-      newSteps.push({
-        target: customTrackerRef.current,
-        title: "Search Intel",
-        content: "Search for relevant events happening in any location",
-        disableBeacon: true,
-      });
-    }
-    if (savedEventRef.current) {
-      newSteps.push({
-        target: savedEventRef.current,
-        // title: "Search Intel",
-        content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
-        disableBeacon: true,
-      });
-    }
+  // const updateSteps = useCallback(() => {
+  //   const newSteps: Step[] = [];
+  //   if (allTrackerRef && allTrackerRef.current) {
+  //     newSteps.push({
+  //       target: allTrackerRef.current,
+  //       title: "Create Tracker",
+  //       content: "Discover insights on business trends filtered by geography and category, all in one glance.",
+  //       disableBeacon: true,
+  //     });
+  //   }
+  //   // if (customTrackerRef.current) {
+  //   //   newSteps.push({
+  //   //     target: customTrackerRef.current,
+  //   //     // title: "Search Intel",
+  //   //     content: "Search for relevant events happening in any location",
+  //   //     disableBeacon: true,
+  //   //   });
+  //   // }
+  //   if (savedEventRef.current) {
+  //     newSteps.push({
+  //       target: savedEventRef.current,
+  //       // title: "Search Intel",
+  //       content: "Stay informed about the latest industry events and save them to stay updated on event updates.",
+  //       disableBeacon: true,
+  //     });
+  //   }
 
-    setSteps(newSteps);
-  }, [allTrackerRef.current, customTrackerRef.current, savedEventRef.current]);
+  //   setSteps(newSteps);
+  // }, [ customTrackerRef.current, savedEventRef.current]);
 
-  useEffect(() => {
-    const walkthroughCompleted: string[] = JSON.parse(
-      localStorage.getItem("walkthroughCompleted") || "[]"
-    );
+  // useEffect(() => {
+  //   const walkthroughCompleted: string[] = JSON.parse(
+  //     localStorage.getItem("walkthroughCompleted") || "[]"
+  //   );
 
-    if (!walkthroughCompleted.includes("tracker")) {
-      updateSteps();
-      setRun(true);
-    }
-  }, [updateSteps]);
+  //   if (!walkthroughCompleted.includes("tracker")) {
+  //     updateSteps();
+  //     setRun(true);
+  //   }
+  // }, [updateSteps]);
 
   return (
     // <div className={styles.body}>
@@ -325,7 +329,7 @@ const Trackers = () => {
     //   </div>
     // </div>
     <div className={styles.outerContainer}>
-      {steps.length > 0 && (
+      {steps?.length > 0 && (
         <JoyRideCustom
           steps={steps}
           run={run}
@@ -369,7 +373,7 @@ const Trackers = () => {
                     "Create New Tracker"
                   )
                 }
-                ref={allTrackerRef}
+                // ref={allTrackerRef}
                 className={styles.trackers_header_newtracker_button}
               >
                 Create Tracker
@@ -440,7 +444,7 @@ const Trackers = () => {
             </div>
           )}
           {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
-            <Link href={`/internal/trackers/1/trackedEvents`} key={ind}>
+            <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
               <div className={styles.innerContainerTwo}>
                 <div
                   className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"

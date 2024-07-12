@@ -65,12 +65,12 @@ export const AuthContextProvider = ({ children }: any) => {
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto);
     const url = baseUrl + authEndpoints.signup;
-    console.log(url);
     const { error, data }: SignUp = await myFetch(url, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(userDto),
     });
+    console.log("Data", data);
 
     console.log("Error", error);
     if (data && !error) {
@@ -108,6 +108,9 @@ export const AuthContextProvider = ({ children }: any) => {
               "Content-Type": "application/json",
             },
           });
+
+          console.log("Data from signin", data);
+          console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
             router.push("/signin");
@@ -158,6 +161,7 @@ export const AuthContextProvider = ({ children }: any) => {
       console.log("data", data);
       setUser(data);
       setLocalStorage(data);
+      return {data};
     }
 
     let emailError = null;
@@ -165,15 +169,17 @@ export const AuthContextProvider = ({ children }: any) => {
 
     if (error) {
       console.log(error);
-      if (error.message.includes("email")) {
-        emailError = error.message;
-      }
       if (error.message.includes("password")) {
         passwordError = error.message;
+        return {passwordError};
+      }
+      if (error.message.includes("email") || error.message) {
+        emailError = error.message;
+        return {emailError};
       }
     }
 
-    return [{ data, emailError, passwordError }];
+    return [];
   };
 
   const signOut = () => {

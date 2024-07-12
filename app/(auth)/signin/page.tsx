@@ -50,21 +50,23 @@ const SignIn = () => {
       console.log(response);
       setIsLoading(false);
 
-      if (response[0]?.emailError) {
-        setErrors({ email: response[0]?.emailError });
-        return;
-      } else if (response[0]?.passwordError) {
-        setErrors({ password: response[0].passwordError });
-        return;
-      } else {
-        if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
+      if (response.length !== 0) {
+        if (response?.emailError) {
+          setErrors({ email: response?.emailError });
+          return;
+        } else if (response?.passwordError) {
+          setErrors({ password: response.passwordError });
+          return;
         } else {
-          localStorage.removeItem("rememberedEmail");
+          if (rememberMe) {
+            localStorage.setItem("rememberedEmail", email);
+          } else {
+            localStorage.removeItem("rememberedEmail");
+          }
+          if (id !== null) {
+            router.push(`/internal/trackers/${id}/trackedEvents`);
+          } else router.push("/internal");
         }
-        if (id !== null) {
-          router.push(`/internal/trackers/${id}/trackedEvents`);
-        } else router.push("/internal");
       }
     } catch (error) {
       if (error instanceof ZodError) {
@@ -82,7 +84,7 @@ const SignIn = () => {
   };
   const obj = {
     email: email,
-    path:'signin',
+    path: "signin",
   };
 
   const handleOTPLogin = async (event: any) => {
@@ -101,6 +103,8 @@ const SignIn = () => {
           body: JSON.stringify(dto),
         }
       );
+      console.log(data, error);
+
       if (error) {
         showToast("error", error.message);
         return;
@@ -108,6 +112,11 @@ const SignIn = () => {
 
       if (data) {
         setShowVerification(true);
+      }
+
+      if (data === null || error === null) {
+        setErrors({ email: "No user found with this email" });
+        return;
       }
     } catch (error) {
       if (error instanceof ZodError) {

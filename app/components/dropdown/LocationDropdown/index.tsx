@@ -115,8 +115,12 @@ const LocationDropdown = ({
     // setState(selectedLocation);
   };
 
-  const handleSaveData = () => {
+  useEffect(() => {
     setState(selectedLocation)
+  }, [selectedLocation]);
+
+  const handleSaveData = () => {
+    // setState(selectedLocation)
     onClose();
   };
 
@@ -127,13 +131,16 @@ const LocationDropdown = ({
   const addLocationHandler = (type: string, id: string, name: string) => {
     if (type === 'city' && setSelectedCity) {
       setSelectedCity((prev) => ({...prev, [id]: name }));  
+      setSelectedLocations((prev) => [...prev, name]);
     }
     else if(type === 'country' && setSelectedCountry) {
       setSelectedCountry((prev) => ({...prev, [id]: name }));
+      setSelectedLocations((prev) => [...prev, name]);
     }
     else if(type === 'zone' && setSelectedZone && selectedZone) {
       if (!selectedZone.includes(name)) {
         setSelectedZone((prev: string[]) => [...prev, name]);
+        setSelectedLocations((prev) => [...prev, name]);
       }
     }
   }
@@ -156,7 +163,7 @@ console.log(selectedCountry);
 
   return (
     <div>
-      <div className={`${styles.container} ${className}`} style={{background: theme==="light"?"white":""}}>
+      <div className={`${styles.container} ${className}`} >
         <div className={styles.keywords_container}>
           {/* {selectedLocation.length > 0 &&
             selectedLocation.map((data, index) => (
@@ -321,16 +328,23 @@ console.log(selectedCountry);
           </div>
         </div>
 
+        <div className={styles.suggestion_container}>
         {cityData.map((data: any) => (
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => {
-              locationSelectHandler(data.name, data.state)
-              addLocationHandler('city', data.id, `${data.name}, ${data.state}`)
+              addLocationHandler('city', data.id, data.name)
             }}
             key={data.id}
           >
-            {data?.name}, {data?.state}
+            {/* {data?.name}, {data?.state} */}
+            {data.name}
+            {data.state && 
+              `, ${data.state}`
+            }
+            {data.countryName && 
+              `, ${data.countryName}`
+            }
           </div>
         ))}
 
@@ -348,7 +362,6 @@ console.log(selectedCountry);
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => {
-              locationSelectHandler(data.name)
               addLocationHandler('country', data.id, data.name)
             }}
             key={data.id}
@@ -361,7 +374,6 @@ console.log(selectedCountry);
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => {
-              locationSelectHandler(data)
               addLocationHandler('zone', data, data)
             }}
             key={data}
@@ -369,6 +381,7 @@ console.log(selectedCountry);
             {data}
           </div>
         ))}
+        </div>
 
         {/* {activeTab == "Center Point & Radius" && (
           <div className={styles.point_radius_input_container}>
