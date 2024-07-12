@@ -75,6 +75,13 @@
     width: calc(100vw - 130px);
 }
 
+.disabledBtn {
+    opacity: 0.6;
+    cursor: unset;
+    background-color: var(--disabled-btn-color);
+    border-radius: 20px;
+}
+
 @media screen and (max-width: 768px) {
     .innerContainer {
         flex-direction: column;
