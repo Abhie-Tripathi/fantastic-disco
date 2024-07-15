@@ -170,3 +170,16 @@
 .cancel{
     color:var(--primary-color);
 }
+.allInputBox{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+.singleInputBox{
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 50%;
+    align-items: center;
+    gap: 10px;
+  }

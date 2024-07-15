@@ -177,7 +177,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Competitor,
-      url:"t_competitor",
+      url:"T_COMPETITOR",
       trackerName: "Competitor",
       content:
         "Track your competitor experts, influencers and where they might be participating in events",

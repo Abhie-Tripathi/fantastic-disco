@@ -295,7 +295,7 @@ const [add,setAdd]=useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   useEffect(()=>{
-    if(type==="t_competitor"){
+    if(type==="T_COMPETITOR"){
       setWebsites(customData.map((item:any) => item.companyUrl).join(','));
     }
   },[type, customData])
@@ -320,6 +320,9 @@ const [add,setAdd]=useState(false);
       const secondLast = pathName[pathName.length - 2];
       const formData = {
         name: trackerName,
+        ...(type && type.length>0 && {
+          type:type.toUpperCase()
+      }),
         filterValue: {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -470,10 +473,11 @@ const [add,setAdd]=useState(false);
     } else {
       const formData = {
         name: trackerName,
+        ...(type && type.length>0 && {
+          type:type.toUpperCase()
+      }),
         filterValue: {
-          ...(type && type.length>0 && {
-              type:type.toUpperCase()
-          }),
+         
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
@@ -646,7 +650,19 @@ const [add,setAdd]=useState(false);
       if (editData.tracker.filterValue?.maturity == "low") {
         setSelectedMaturity(25);
       }
-      
+      if(type==="T_COMPETITOR"){
+        const newData=editData?.tracker?.filterValue?.orgWebsite?.
+        split(',');
+        console.log(newData);
+        if (Array.isArray(newData)) {
+          setCustomData((prevData: any) => [
+            ...prevData,
+            ...newData.map((item) => (
+              { companyUrl: item.trim() }
+            ))
+          ]);
+        }
+      }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
         if (editData?.tracker?.filterValue?.localRank?.length > 0) {
@@ -1911,7 +1927,7 @@ console.log(customData);
           </div>
         </div>
       </Suspense>
-      {(type==="t_competitor" || type === "t_recruitment") &&
+      {(type==="T_COMPETITOR" || type === "t_recruitment") &&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHead}>
       <div className={styles.competitorHeading}>Upload custom data </div>
