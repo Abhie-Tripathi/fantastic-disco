@@ -200,24 +200,44 @@ const Navbar = () => {
               onClick={dotMenuToggle}
             >
               <div className={`${styles.circle}`} data-name="Menu">
-                <Image src={dotMenuIcon} alt="dotMenu" width={20} height={20} className={iconClass} />
+                <Image
+                  src={dotMenuIcon}
+                  alt="dotMenu"
+                  width={20}
+                  height={20}
+                  className={iconClass}
+                />
               </div>
 
               {dotMenuCtas.isOpen && (
-                <div className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `} style={{width:'fit-content'}}>
+                <div
+                  className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
+                  style={{ width: "fit-content" }}
+                >
                   <Link href="#" className="">
-                    <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
+                    <div
+                      className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                    >
                       <Image
                         src={promoteIcon}
                         alt="promote"
                         width={28}
                         height={28}
-                        />
-                        Promote
+                        className={iconClass}
+                      />
+                      Promote
                     </div>
                   </Link>
-                  <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
-                   <Image src={prospectIcon} alt="prospect" width={28} height={28} />
+                  <div
+                    className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                  >
+                    <Image
+                      src={prospectIcon}
+                      alt="prospect"
+                      width={28}
+                      height={28}
+                      className={iconClass}
+                    />
                     Prospect
                   </div>
                 </div>
@@ -311,9 +331,15 @@ const Navbar = () => {
               </div> */}
               {profilectas.isOpen && (
                 <div className={`${styles.userDropdown} card`}>
-                  {/* <Link href="/profile">
+                  <Link
+                    href={
+                      pathName === "internal"
+                        ? "/internal/profile"
+                        : "/profile"
+                    }
+                  >
                     <div className={styles.btns}>Profile</div>
-                  </Link> */}
+                  </Link>
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>
