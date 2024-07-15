@@ -24,6 +24,7 @@ type authContextType = {
   verifyOtp: (user: any) => Promise<any>;
   verifyLoginOTP: (user: any) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
+  setProfilePic: Dispatch<SetStateAction<string | null>>;
 };
 interface newUserResponse {
   user: {
@@ -42,6 +43,7 @@ const authContextDefaultValues: authContextType = {
   verifyOtp: () => Promise.resolve(null),
   verifyLoginOTP: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
+  setProfilePic: () => {},
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -53,6 +55,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
+  const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const router = useRouter();
   interface SignUp {
@@ -161,7 +164,7 @@ export const AuthContextProvider = ({ children }: any) => {
       console.log("data", data);
       setUser(data);
       setLocalStorage(data);
-      return {data};
+      return { data };
     }
 
     let emailError = null;
@@ -171,11 +174,11 @@ export const AuthContextProvider = ({ children }: any) => {
       console.log(error);
       if (error.message.includes("password")) {
         passwordError = error.message;
-        return {passwordError};
+        return { passwordError };
       }
       if (error.message.includes("email") || error.message) {
         emailError = error.message;
-        return {emailError};
+        return { emailError };
       }
     }
 
@@ -303,6 +306,7 @@ export const AuthContextProvider = ({ children }: any) => {
     verifyLoginOTP,
     isProfileUpdated,
     setIsProfileUpdated,
+    setProfilePic,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

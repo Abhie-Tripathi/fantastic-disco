@@ -333,9 +333,7 @@ const Navbar = () => {
                 <div className={`${styles.userDropdown} card`}>
                   <Link
                     href={
-                      pathName === "internal"
-                        ? "/internal/profile"
-                        : "/profile"
+                      pathName === "internal" ? "/internal/profile" : "/profile"
                     }
                   >
                     <div className={styles.btns}>Profile</div>

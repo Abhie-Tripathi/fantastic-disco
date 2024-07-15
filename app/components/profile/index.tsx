@@ -23,7 +23,7 @@ interface Profile {
 }
 
 const Profile = () => {
-  const { user, setIsProfileUpdated } = useAuthContext();
+  const { user, setIsProfileUpdated, setProfilePic } = useAuthContext();
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
@@ -59,6 +59,7 @@ const Profile = () => {
       setDept(data.user.department || "");
       setRole(data.user.designation || "");
       setProfilePicture(data.user.profilePicture || null);
+      setProfilePic(data.user.profilePicture || null);
     }
   };
 
@@ -204,6 +205,7 @@ const Profile = () => {
       console.log(data);
       setProfileData(data.user);
       setProfilePicture(null);
+      setProfilePic(null);
     }
 
     if (error) {
