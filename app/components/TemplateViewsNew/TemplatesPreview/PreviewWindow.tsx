@@ -11,7 +11,7 @@ import LandscapePopup from '../../TemplateViews/previews/popup/landscapesstyles/
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 import { useTheme } from '@/context';
-import { StaticImageData } from 'next/image';
+import { StaticImageData } from 'next/image';   
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 
 interface DraftWidgetsType {
@@ -28,9 +28,9 @@ interface PreviewProps{
     isFullScreen : boolean
     draftWidgets?: DraftWidgetsType[]
     setDraftWidgets?: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;    
-    widgetSelected  : string;
-    templateName : string;
-    selectedImage : StaticImageData
+    widgetSelected?  : string;
+    templateName? : string;
+    selectedImage? : StaticImageData
 }
 
 const PreviewWindow = ({selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage} : PreviewProps) => {
@@ -38,14 +38,13 @@ const PreviewWindow = ({selectedTemplate, selectedCard, setIsFullScreen, isFullS
     
     const handleMyWidgets = () => {
         const newWidget: DraftWidgetsType = {
-            widgetType: widgetSelected,
-            widgetTemplateName: templateName,
-            selectedImage : selectedImage
+            widgetType: widgetSelected || "defaultWidgetType",  // default value
+            widgetTemplateName: templateName || "defaultTemplateName",  // default value
+            selectedImage : selectedImage || CarouselGridImage  // default value
         };
-        if(setDraftWidgets && draftWidgets){
-            setDraftWidgets([...draftWidgets, newWidget])
-        }
-        
+        if (setDraftWidgets && draftWidgets) {
+            setDraftWidgets([...draftWidgets, newWidget]);
+        }  
     }
     return (
         <div className={styles.body}>
@@ -80,10 +79,10 @@ const PreviewWindow = ({selectedTemplate, selectedCard, setIsFullScreen, isFullS
                                                                     selectedTemplate === "RScroll" ? <ScrollView selectedCard={selectedCard} type='right' /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} /> : <></>}
                 </div>
-                <div className={styles.previewBtnContainer}>
+                {draftWidgets && <div className={styles.previewBtnContainer}>
                     <button onClick={handleMyWidgets} className={styles.previewBtn}>Save to my widgets</button>
                     <button className={styles.previewBtn}>Continue with this template</button>
-                </div>
+                </div>}
             </div>
         </div>
     )

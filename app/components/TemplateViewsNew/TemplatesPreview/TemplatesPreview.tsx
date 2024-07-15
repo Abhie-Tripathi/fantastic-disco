@@ -4,16 +4,6 @@ import PageTemplates from '../PageTemplates/PageTemplates'
 import SectionTemplates from '../SectionTemplates/SectionTemplates';
 import StickyTemplates from '../StickyTemplates/StickyTemplates';
 import PopupTemplate from '../PopupTemplate/PopupTemplate';
-import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
-import HeroBanner from '../../TemplateViews/previews/section/Herobanner/HeroBanner';
-import GridView from '@/app/components/TemplateViews/previews/page/MultipleEvents/GridView'
-import ListView from '@/app/components/TemplateViews/previews/page/MultipleEvents/ListView'
-import HeroBannerAndViews from '@/app/components/TemplateViews/previews/page/SinglePromotedAndEvents/HeroBannerAndViews'
-import CaraouselAndViews from '@/app/components/TemplateViews/previews/page/MultipleHighlightedEvents/CaraouselAndViews'
-import PortraitPopup from '../../TemplateViews/previews/popup/portraitstyles/PortraitPopup';
-import LandscapePopup from '../../TemplateViews/previews/popup/landscapesstyles/LandscapePopup';
-import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
-import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 import { useTheme } from '@/context';
 import { StaticImageData } from 'next/image';
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'

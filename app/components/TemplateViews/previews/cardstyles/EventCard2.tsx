@@ -27,7 +27,7 @@ interface CardProps {
 const EventCard2 = ({
     cardRadius = 8, // default value
     cardBgColor = '#ffffff', // default value
-    eventNameColor = '#ffffff', // default value
+    eventNameColor = 'black', // default value
     eventNameSize = 24, // default value
     dateFontSize = 14, // default value
     locationFontSize = 14, // default value
@@ -37,7 +37,7 @@ const EventCard2 = ({
     btnBorderColor = '#007BFF', // default value
     btnRadius = 5, // default value
     btnFontSize = 16, // default value
-    locationColor = "#ffffff",
+    locationColor = "#6E6F89",
     dateColor = "ffffff"
 
 }: CardProps) => {
