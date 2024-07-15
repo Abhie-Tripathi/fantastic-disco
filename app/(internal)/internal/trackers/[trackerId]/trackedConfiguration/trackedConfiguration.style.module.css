@@ -173,13 +173,28 @@
 .allInputBox{
     display: flex;
     flex-direction: column;
-    gap:10px;
+    border: 1px solid var(--border-color);
 }
 .singleInputBox{
     padding: 10px;
-    border: 1px solid var(--border-color);
     display: flex;
-    width: 50%;
+    width: 100%;
     align-items: center;
     gap: 10px;
+  }
+  .urlDiv{
+    padding: 10px;
+    display: flex;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+  }
+  .customContent{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
   }

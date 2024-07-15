@@ -297,7 +297,8 @@ const Page = () => {
               style={{ paddingLeft: "20px" }}
             >
               <div className={styles.advanceHead}>Custom Data</div>
-              <div className={styles.advanceContent}>
+              <div className={styles.customContent}>
+                <div className={styles.urlDiv}>URL</div>
                 <div className={styles.allInputBox}>
                 {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item, ind) => (
                   <div key={ind}>
