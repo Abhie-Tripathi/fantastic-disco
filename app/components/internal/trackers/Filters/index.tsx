@@ -92,6 +92,7 @@ interface FilterValue {
   eventCity: any;
   eventCountry: any;
   eventRegion:string;
+  orgWebsite:string;
   eventAttendanceRange: any;
 }
 interface CategoryData {
@@ -445,7 +446,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if (selectedLocations.length === 0 || trackerName.length === 0) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type!=="CUSTOM" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsMandatory(true);
         setIsCreating(false);
@@ -595,7 +596,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(selectedCountry);
 
-      if (selectedLocations.length === 0 || trackerName.length === 0) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type!=="CUSTOM" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -932,7 +933,7 @@ console.log(customData);
                 ? "/internal/trackers"
                 : `/internal/trackers/${
                     pathName[pathName.length - 2]
-                  }/trackedConfiguration`
+                  }/trackedConfiguration?type=${type}`
             }
             style={{ display: "flex" }}
           >
@@ -1977,7 +1978,7 @@ console.log(customData);
       <div className={`card ${styles.competitor}`}>
         <div className={styles.subHeading}>Add competitor&apos;s website:</div>
         <div className={styles.allInputArea}>
-          <div className={styles.singleInputArea}>
+          <div className={styles.singleInputArea} style={{"border" : (isMandatory && customData.length===0) ?"1px solid red":""}}>
             <Image src={Url} alt="url" className="icons" />
             <input
               className={styles.textArea}

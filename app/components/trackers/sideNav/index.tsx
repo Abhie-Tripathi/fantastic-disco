@@ -72,7 +72,7 @@ const Index = () => {
 
         <>
           <div className={styles.leftContainer}>
-            <Link href={`/internal/trackers/${secondLast}/trackedEvents`}
+            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -87,7 +87,7 @@ const Index = () => {
               </div>
             </Link>
 
-            <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}
+            <Link href={`/internal/trackers/${secondLast}/notesDiscussion?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -101,7 +101,7 @@ const Index = () => {
                 Notes & Discussions
               </div>
             </Link>
-            <Link href={`/internal/trackers/${secondLast}/savedEvents`}
+            <Link href={`/internal/trackers/${secondLast}/savedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",

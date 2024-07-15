@@ -181,6 +181,10 @@
     width: 100%;
     align-items: center;
     gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .allInputBox > .singleInputBox:last-child{
+    border-bottom:0px;
   }
   .urlDiv{
     padding: 10px;

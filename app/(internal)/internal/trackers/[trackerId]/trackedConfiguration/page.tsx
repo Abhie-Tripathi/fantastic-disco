@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./trackedConfiguration.style.module.css";
 import BasicFilter from "@/app/components/trackers/basicFilter";
 import LocationFilter from "@/app/components/trackers/locationFilter";
+import Url from '/public/url.svg'
 import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
@@ -298,12 +300,15 @@ const Page = () => {
             >
               <div className={styles.advanceHead}>Custom Data</div>
               <div className={styles.customContent}>
-                <div className={styles.urlDiv}>URL</div>
-                <div className={styles.allInputBox}>
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item, ind) => (
-                  <div key={ind}>
-                    <div className={styles.singleInputBox}>{item}</div>
+                <div className={styles.urlDiv}>
+                  <Image src={Url} alt="url" className="icons" />
+                  URL
                   </div>
+                <div className={styles.allInputBox}>
+                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item:string, ind:number) => (
+                 
+                    <div key={ind} className={styles.singleInputBox}>{item}</div>
+                
 ))}
               </div>
               </div>
