@@ -271,10 +271,10 @@ const Trackers = () => {
   useEffect(() => {
     const fetchData = async () => {
         const {data,error} = await myFetch(
-          `${baseUrl}/tracker?offset=0&limit=1`
+          `${baseUrl}/tracker/exist`
         );
         if(data) setIsLoading(false)
-        if (data.trackerData.length>0) {
+        if (data.trackerExists) {
          setHideTemplate(false);
          setIsData(true)
         } 
@@ -580,10 +580,10 @@ console.log(hideTemplate);
           {/* </>
     } */}
           {type === "All Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} />
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
           )}
           {type === "Custom Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent}/>
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
           )}
           {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (
