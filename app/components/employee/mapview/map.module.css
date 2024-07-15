@@ -125,7 +125,7 @@
 .eventList {
     display: none;
     max-width: 350px;
-    height: 80vh;
+    height: 90vh;
     /* background-color: #1a1a1a; */
     padding: 0px 20px;
     overflow: hidden;
@@ -163,6 +163,7 @@
     height: calc(100% - 110px);
     padding-bottom: 20px;
     overflow-y: scroll;
+    padding-bottom: 60px;
 }
 
 
