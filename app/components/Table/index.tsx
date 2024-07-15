@@ -549,7 +549,7 @@ const Table = ({
       console.log(data);
       setIsLoaded(true);
       if (data?.events?.length > 0) {
-        setActiveValue(data.totalEvents);
+        setActiveValue(data?.totalEvents);
         GAEvent(
           "trackers",
           "Tracker",

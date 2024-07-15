@@ -271,10 +271,10 @@ const Trackers = () => {
   useEffect(() => {
     const fetchData = async () => {
         const {data,error} = await myFetch(
-          `${baseUrl}/tracker?offset=0&limit=1`
+          `${baseUrl}/tracker/exist`
         );
         if(data) setIsLoading(false)
-        if (data.trackerData.length>0) {
+        if (data.trackerExists) {
          setHideTemplate(false);
          setIsData(true)
         } 
