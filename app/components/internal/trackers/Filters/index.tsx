@@ -446,7 +446,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if (selectedLocations.length === 0 || trackerName.length === 0 || (type!=="CUSTOM" && customData.length===0)) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsMandatory(true);
         setIsCreating(false);
@@ -596,7 +596,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(selectedCountry);
 
-      if (selectedLocations.length === 0 || trackerName.length === 0 || (type!=="CUSTOM" && customData.length===0)) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);

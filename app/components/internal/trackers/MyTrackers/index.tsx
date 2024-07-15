@@ -119,6 +119,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
       } finally {
         setLoading(false);
       }}
+     
     };
 
     fetchData();
@@ -171,7 +172,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
       </div>
       <div style={{ width: "100%" }}>
       
-      {allTracker.length === 0 && !loading && (
+      {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
         <div className={styles.containerRight}>
