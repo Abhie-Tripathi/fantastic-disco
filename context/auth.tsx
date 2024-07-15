@@ -24,7 +24,7 @@ type authContextType = {
   verifyOtp: (user: any) => Promise<any>;
   verifyLoginOTP: (user: any) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
-  setProfilePic: Dispatch<SetStateAction<string | null>>;
+  setProfilePic: any;
 };
 interface newUserResponse {
   user: {
@@ -33,6 +33,7 @@ interface newUserResponse {
     lastname: string;
     email: string;
     token?: string;
+    profilePicture: string | null;
   };
 }
 const authContextDefaultValues: authContextType = {
@@ -119,7 +120,8 @@ export const AuthContextProvider = ({ children }: any) => {
             router.push("/signin");
           } else {
             console.log("Data fetched:", data);
-            const { id, firstname, lastname, email, role } = data.info;
+            const { id, firstname, lastname, email, role, profilePicture } =
+              data.info;
             const user = {
               user: {
                 id: id,
@@ -127,9 +129,9 @@ export const AuthContextProvider = ({ children }: any) => {
                 lastname: lastname,
                 email: email,
                 role: role,
+                profilePicture: profilePicture,
               },
             };
-            // const user = { id, firstname, lastname, email, role };
             const userObject = {
               user: {
                 id: id,
@@ -137,6 +139,7 @@ export const AuthContextProvider = ({ children }: any) => {
                 lastname: lastname,
                 email: email,
                 role: role,
+                profilePicture: profilePicture,
               },
             };
             setUser(data.info);
@@ -149,7 +152,7 @@ export const AuthContextProvider = ({ children }: any) => {
       };
       verifyToken();
     }
-  }, []);
+  }, [token]);
 
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
@@ -268,6 +271,14 @@ export const AuthContextProvider = ({ children }: any) => {
     return data.user;
   };
 
+  useEffect(() => {
+    const user = window.localStorage.getItem("user");
+    console.log(user);
+    if (user) {
+      setUser(JSON.parse(user).user);
+    }
+  }, [isProfileUpdated]);
+
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
     console.log(user);
@@ -306,7 +317,18 @@ export const AuthContextProvider = ({ children }: any) => {
     verifyLoginOTP,
     isProfileUpdated,
     setIsProfileUpdated,
-    setProfilePic,
+    setProfilePic: (profilePic: string | null) => {
+      if (user) {
+        const updatedUser = {
+          user: {
+            ...user,
+            profilePicture: profilePic,
+          },
+        };
+        setUser(updatedUser.user);
+        setLocalStorage(updatedUser);
+      }
+    },
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

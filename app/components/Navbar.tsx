@@ -22,6 +22,7 @@ interface UserDetail {
   firstname: string;
   email: string;
   lastname: string;
+  profilePicture: string | null;
 }
 
 const routeMap = {
@@ -56,6 +57,8 @@ const Navbar = () => {
   useEffect(() => {
     if (user) setUserDetail(user);
   }, [user]);
+
+  console.log("Navbar",user,userDetail)
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
@@ -110,6 +113,7 @@ const Navbar = () => {
       setTitle(routeMap[currPath]);
     }
   }, [currPath]);
+  console.log(userDetail)
 
   return (
     <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
@@ -316,19 +320,24 @@ const Navbar = () => {
               ref={profilectas.dropdownRef}
               onClick={toggleDropdown}
             >
-              <div
-                className={`${styles.circle} ${styles.userCircle}`}
-                data-name="Username"
-              >
-                {userDetail?.firstname?.charAt(0)}
-                {userDetail?.lastname?.charAt(0)}
-              </div>
-              {/* <div className={styles.userDetails}>
-                <div>
-                  {userDetail?.firstname} {userDetail?.lastname}
+              {userDetail.profilePicture ? (
+                <Image
+                  src={userDetail.profilePicture}
+                  alt="profile"
+                  width={32}
+                  height={32}
+                  className={`${styles.circle} ${styles.userCircle}`}
+                />
+              ) : (
+                <div
+                  className={`${styles.circle} ${styles.userCircle}`}
+                  data-name="Username"
+                >
+                  {userDetail?.firstname?.charAt(0)}
+                  {userDetail?.lastname?.charAt(0)}
                 </div>
-                <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-              </div> */}
+              )}
+
               {profilectas.isOpen && (
                 <div className={`${styles.userDropdown} card`}>
                   <Link

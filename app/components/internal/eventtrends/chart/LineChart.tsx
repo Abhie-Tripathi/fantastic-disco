@@ -16,18 +16,25 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
 
   const labels = Object.keys(groupingByDate);
 
+  const firstDate = new Date(labels[0]);
+  const previousDate = new Date(firstDate);
+  previousDate.setDate(firstDate.getDate() - 1);
+  const previousDateString = previousDate.toISOString().split("T")[0];
+
   const data = labels.map((date) =>
     groupingByDate[date].reduce((total: any, event: any) => {
       return total + (event.attendance || event.events || 0);
     }, 0)
   );
 
+  labels.unshift(previousDateString);
+  data.unshift(-1);
   const chartData: any = {
     labels: labels,
     datasets: [
       {
         label: "Total Attendance",
-        data: data,
+        data: [, ...data],
         backgroundColor: ["rgb(255 207 215)"],
         borderColor: "rgb(253,29,133)",
         borderWidth: 2,
@@ -70,6 +77,10 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
               },
               ticks: {
                 source: "auto",
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0,
+                padding: 10, // Add padding to ensure the first point is visible
               },
               grid: {
                 display: false, // Hide the vertical grid lines
@@ -78,6 +89,14 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
           },
           maintainAspectRatio: false,
           responsive: true,
+          layout: {
+            padding: {
+              left: 10,
+              right: 10,
+              top: 10,
+              bottom: 10,
+            },
+          },
         }}
       />
     </div>

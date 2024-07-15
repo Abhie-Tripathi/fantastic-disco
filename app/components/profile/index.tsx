@@ -64,10 +64,14 @@ const Profile = () => {
   };
 
   const loginedUser = user;
-  useEffect(() => {
-    fetchData();
-  }, []);
+  console.log(user);
 
+  useEffect(() => {
+    if (!profileData) {
+      fetchData();
+    }
+  }, [profileData]);
+  
   const saveDataHandler = async () => {
     const newErrors: Record<string, string> = {};
 
@@ -122,8 +126,11 @@ const Profile = () => {
     if (data) {
       console.log(data);
       setProfileData(data.user);
+      // setProfilePic(data.user.profilePicture)
       showToast("success", "Data Saved Successfully");
       fetchData();
+
+      console.log(loginedUser);
 
       const newUser = {
         user: {
