@@ -11,50 +11,68 @@ import LandscapePopup from '../../TemplateViews/previews/popup/landscapesstyles/
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
 import { useTheme } from '@/context';
-import { StaticImageData } from 'next/image';   
+import { StaticImageData } from 'next/image';
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 
 interface DraftWidgetsType {
     widgetType: string;
     widgetTemplateName: string;
-    selectedImage : StaticImageData
+    selectedImage: StaticImageData
 }
 
-interface PreviewProps{
-    selectedTemplate : string;
-    selectedCard : string;
-    setSelectedCard : (value : string)=> void
-    setIsFullScreen : (value : boolean)=> void
-    isFullScreen : boolean
+interface PreviewProps {
+    selectedTemplate?: string;
+    selectedCard?: string;
+    setSelectedCard?: (value: string) => void
+    setIsFullScreen: (value: boolean) => void
+    isFullScreen: boolean
     draftWidgets?: DraftWidgetsType[]
-    setDraftWidgets?: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;    
-    widgetSelected?  : string;
-    templateName? : string;
-    selectedImage? : StaticImageData
+    setDraftWidgets?: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
+    widgetSelected?: string;
+    templateName?: string;
+    selectedImage?: StaticImageData
 }
 
-const PreviewWindow = ({selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage} : PreviewProps) => {
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage }: PreviewProps) => {
     const { theme } = useTheme()
-    
+
     const handleMyWidgets = () => {
         const newWidget: DraftWidgetsType = {
             widgetType: widgetSelected || "defaultWidgetType",  // default value
             widgetTemplateName: templateName || "defaultTemplateName",  // default value
-            selectedImage : selectedImage || CarouselGridImage  // default value
+            selectedImage: selectedImage || CarouselGridImage  // default value
         };
         if (setDraftWidgets && draftWidgets) {
             setDraftWidgets([...draftWidgets, newWidget]);
-        }  
+        }
     }
     return (
         <div className={styles.body}>
             <div className={styles.heading_btnContainer}>
                 <div className={styles.heading}>Preview</div>
-                {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
-                    <button className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style1")}>Style 1</button>
-                    <button className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style2")}>Style 2</button>
-                    <button className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`} onClick={() => setSelectedCard("style3")}>Style 3</button>
-                </div>}
+                {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
+                    <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
+                        <button
+                            className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            onClick={() => setSelectedCard("style1")}
+                        >
+                            Style 1
+                        </button>
+                        <button
+                            className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            onClick={() => setSelectedCard("style2")}
+                        >
+                            Style 2
+                        </button>
+                        <button
+                            className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            onClick={() => setSelectedCard("style3")}
+                        >
+                            Style 3
+                        </button>
+                    </div>
+                )}
+
                 <div className={styles.viewBtnContainer}>
                     <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>

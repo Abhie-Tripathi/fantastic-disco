@@ -1,0 +1,12 @@
+.body{
+    display: flex;
+    padding: 30px;
+    min-height: 88vh;
+    gap: 30px;
+}
+.editContainer{
+    width: 50%;
+}
+.previewContainer{
+    width: 50%;
+}
