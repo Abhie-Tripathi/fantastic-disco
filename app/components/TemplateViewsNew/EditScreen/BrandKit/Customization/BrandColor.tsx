@@ -3,6 +3,7 @@ import styles from './brandcolor.style.module.css'
 import ColorPickIcon from '/public/colorPick.png'
 import Image from 'next/image'
 import { SketchPicker } from 'react-color';
+import ColorPicker from './ColorPicker';
 
 const BrandColor = () => {
 
@@ -21,10 +22,6 @@ const BrandColor = () => {
 
     const handleClick = () => {
         setDisplayColorPicker(!displayColorPicker);
-    };
-
-    const handleClose = () => {
-        setDisplayColorPicker(false);
     };
 
     const handleChange = (color: any) => {
@@ -51,23 +48,7 @@ const BrandColor = () => {
                     ))}
                 </div>
                 <div className={styles.pickColorContainer}>
-                    <div className={styles.heading}>Pick Colour</div>
-                    <Image src={ColorPickIcon} alt='color' width={15} height={15} onClick={handleClick} />
-                    {displayColorPicker ? (
-                        <div className={styles.colorPickerModal}>
-                            <div className={styles.cover} onClick={handleClose} />
-                            <SketchPicker
-                                color={color}
-                                onChange={handleChange}
-                                presetColors={extractedColors}
-
-                            />
-                        </div>
-                    ) : null}
-                    <div className={styles.pickedColorCode}>{color}</div>
-                    <div className={styles.pickedColorOuter} style={{ borderColor: color }}>
-                        <div className={styles.pickedColorInner} style={{ backgroundColor: color }}></div>
-                    </div>
+                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} setColor={setColor} handleChange={handleChange}/>
                 </div>
             </div>
         </div>

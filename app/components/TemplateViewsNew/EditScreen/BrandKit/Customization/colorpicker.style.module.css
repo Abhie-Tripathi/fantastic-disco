@@ -1,0 +1,43 @@
+.body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.heading {
+    font-size: .7vw;
+    color: black;
+}
+
+.pickedColorCode {
+    font-size: 10px;
+    color: black;
+    background-color: #F2F2F2;
+    line-height: 14px;
+    padding: 5px 24px;
+    border-radius: 5px;
+}
+.body img {
+    cursor: pointer;
+}
+
+.colorPickerModal {
+    position: absolute;
+    top: 30px;
+    left: 35%;
+}
+
+.pickedColorOuter {
+    width: 30px;
+    height: 30px;
+    border: 2px solid;
+    padding: 3.4px;
+    border-radius: 30px;
+}
+
+.pickedColorInner {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+}
