@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './customization.style.module.css'
 import LogoComponent from './LogoComponent'
+import BrandColor from './BrandColor'
 
 const Customization = () => {
   return (
@@ -15,7 +16,7 @@ const Customization = () => {
         </div>
         <div className={styles.line}></div>
         <div className={styles.brandColorContainer}>
-
+          <BrandColor/>
         </div>
         <div className={styles.line}></div>
         <div className={styles.cardCustomizationContainer}>
