@@ -580,10 +580,10 @@ console.log(hideTemplate);
           {/* </>
     } */}
           {type === "All Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} />
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
           )}
           {type === "Custom Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent}/>
+            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
           )}
           {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
           {type === "Saved Events" && (

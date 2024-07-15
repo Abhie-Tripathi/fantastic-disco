@@ -56,7 +56,7 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 
-const Index = ({setDataPresent, dataPresent}:{setDataPresent:any, dataPresent:any}) => {
+const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPresent:any, isData:boolean}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [allTracker, setAllTracker] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,7 @@ const Index = ({setDataPresent, dataPresent}:{setDataPresent:any, dataPresent:an
   const endOfListRef = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
+     if(isData){
       setLoading(true);
       setError(null);
       setLoadOne(true);
@@ -117,7 +118,7 @@ const Index = ({setDataPresent, dataPresent}:{setDataPresent:any, dataPresent:an
         setError('Error fetching data.');
       } finally {
         setLoading(false);
-      }
+      }}
     };
 
     fetchData();
