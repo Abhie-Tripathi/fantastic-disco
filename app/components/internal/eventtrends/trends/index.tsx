@@ -72,7 +72,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
+      const { data, error } = await myFetch(
+        `${baseUrl}/category/all?take=30&skip=0`
+      );
       if (error) {
         console.log(error);
         return;
@@ -196,6 +198,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       },
     };
   };
+
+  console.log(selectedDateRange[0], selectedDateRange[1]);
 
   return (
     <div className={styles.predictedAttendence_container}>

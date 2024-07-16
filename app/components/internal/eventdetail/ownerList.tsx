@@ -22,7 +22,7 @@ interface UserType {
 }
 const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [userList, setUserList] = useState([]);
+  const [userList, setUserList] = useState<any>([]);
   const [owner, setOwner] = useState<any>();
   const { theme } = useTheme();
 
@@ -68,6 +68,9 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
       console.log(error);
       showToast("error", error.message);
       return;
+    }
+    if (data) {
+      getOwnerDetails();
     }
   };
 
