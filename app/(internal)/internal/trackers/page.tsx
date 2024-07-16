@@ -160,7 +160,7 @@ const Trackers = () => {
       domain: "Human Resource",
       img: People,
       trackerName: "Recruitment",
-      url:"t_recruitment",
+      url: "t_recruitment",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
@@ -168,7 +168,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: PeopleFinder,
-      url: "t_people_finder",
+      url: "T_PEOPLE_FINDER",
       trackerName: "People Finder",
       content:
         "Track experts, influencers and where they might be participating in various events",
@@ -177,7 +177,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Competitor,
-      url:"T_COMPETITOR",
+      url: "T_COMPETITOR",
       trackerName: "Competitor",
       content:
         "Track your competitor experts, influencers and where they might be participating in events",
@@ -186,7 +186,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Speaking,
-      url:"t_speaking_opportunity",
+      url: "T_SPEAKING_OPPORTUINITY",
       trackerName: "Speaking Opportunity",
       content:
         "Input team members and their details to keep track of the events with speaking opportunities.",
@@ -260,6 +260,7 @@ const Trackers = () => {
   const [showTracker, setShowTracker] = useState(false);
   const viewTracker = () => {
     setShowTracker(true);
+    setHideTemplate(!hideTemplate);
   };
   const [hideTemplate, setHideTemplate] = useState(true);
   const [dataPresent, setDataPresent] = useState(false);
@@ -267,19 +268,19 @@ const Trackers = () => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
   // }, [dataPresent]);
-  const [isData,setIsData]=useState(false);
+  const [isData, setIsData] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-        const {data,error} = await myFetch(
-          `${baseUrl}/tracker/exist`
-        );
-        if(data) setIsLoading(false)
-        if (data.trackerExists) {
-         setHideTemplate(false);
-         setIsData(true)
-        } 
+      const { data, error } = await myFetch(
+        `${baseUrl}/tracker/exist`
+      );
+      if (data) setIsLoading(false)
+      if (data.trackerExists) {
+        setHideTemplate(false);
+        setIsData(true)
+      }
 
-      } 
+    }
 
     fetchData();
   }, []);
@@ -323,7 +324,7 @@ const Trackers = () => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
-console.log(hideTemplate);
+  console.log(hideTemplate);
 
   return (
     // <div className={styles.body}>
@@ -344,43 +345,33 @@ console.log(hideTemplate);
     //     )}
     //   </div>
     // </div>
-    <>{isLoading?<Loading/>:(
+    <>{isLoading ? <Loading /> : (
       <>
-       <div className={styles.outerContainer}>
-      {steps?.length > 0 && (
-        <JoyRideCustom
-          steps={steps}
-          run={run}
-          onFinish={() => setRun(false)}
-          pathName="tracker"
-        />
-      )}
-      <div className={styles.header_container}>
-        <div className={styles.tab_container}>
-          {showTracker ? (
-            <div
-              className={styles.backDiv}
-              onClick={() => setShowTracker(false)}
-            >
-              <Image src={Back} alt="back" />
-              <div className={styles.back}>Back</div>
-            </div>
-          ) : (
-            <div className={`${styles.tab}`}>Create Your Event Tracker</div>
+        <div className={styles.outerContainer}>
+          {steps?.length > 0 && (
+            <JoyRideCustom
+              steps={steps}
+              run={run}
+              onFinish={() => setRun(false)}
+              pathName="tracker"
+            />
           )}
+          <div className={styles.header_container}>
+            <div className={styles.tab_container}>
 
-          {/* <Link
+              <div className={`${styles.tab}`}>Create Your Event Tracker</div>
+
+              {/* <Link
             href="/internal/trackers/savedevents"
             className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
               }`}
           >
             Saved Events
           </Link> */}
-        </div>
+            </div>
 
-        <div className={styles.trackers_header}>
-          <div>
-            {!hideTemplate ? (
+            <div className={styles.trackers_header}>
+
               <Link
                 href="/internal/trackers/create"
                 onClick={() =>
@@ -396,18 +387,25 @@ console.log(hideTemplate);
               >
                 Create Tracker
               </Link>
-            ) : (
-              <div
-                className={styles.trackers_header_newtracker_button}
-                onClick={viewTracker}
-              >
-                Template Gallery
-              </div>
-            )}
+              {!hideTemplate ?
+                (<div
+                  className={styles.trackers_header_newtracker_button}
+                  onClick={viewTracker}
+                >
+                  Explore Templates
+                </div>) : (
+                  <div
+                    className={styles.trackers_header_newtracker_button}
+                    onClick={viewTracker}
+                  >
+                    Hide Templates
+                  </div>
+                )
 
-            {/* <Image src={Add} alt="add" /> */}
-          </div>
-          <div
+              }
+              {/* <Image src={Add} alt="add" /> */}
+
+              {/* <div
             onClick={() => setHide(!hide)}
             className={styles.trackers_header_more_button}
           >
@@ -436,117 +434,115 @@ console.log(hideTemplate);
                   >Show Templates</div>}
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
- {hideTemplate && (
-        <div className={`${styles.container}`}>
-          {!showTracker && (
-            <div className={styles.innerContainerOne}
-
-            >
-              <Image src={Add} alt="add" />
-              <Link
-                href="/internal/trackers/create"
-                className={styles.createUrl}
-              >
-                <button
-                  // onClick={() => modalOpen()}
-                  className={styles.createBtn}
-
-                >
-                  Create Tracker
-                </button>
-              </Link>
+          </div> */}
             </div>
-          )}
-          {data.slice(0, showTracker ? 9 : 4).map((item, ind) => (
-            <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
-              <div className={styles.innerContainerTwo}>
-                <div
-                  className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
-                    }`}
-                >
-                  <div className={styles.account}>
-                    <Image src={item.img} alt="people" />
-                  </div>
-                  <div>
-                    <Image src={Template} alt="template" />
-                  </div>
-                </div>
-                <div className={styles.bottomView}>
-                  <div className={styles.bottomViewOne}>
-                    <div className={styles.bottomInnerView}>
-                      <Image
-                        src={Vector1}
-                        alt="vector1"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      />
-                      <div style={{ color: "#585871", fontSize: "12px" }}>
-                        Template
-                      </div>
-                    </div>
+          </div>
+
+          {hideTemplate && (
+            <div className={`${styles.container}`}>
+
+              {data.map((item, ind) => (
+                <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
+                  <div className={styles.innerContainerTwo}>
                     <div
-                      className={`${styles.domain} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                      className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
                         }`}
                     >
+                      <div className={styles.account}>
+                        <Image src={item.img} alt="people" />
+                      </div>
+                      <div>
+                        <Image src={Template} alt="template" />
+                      </div>
+                    </div>
+                    <div className={styles.bottomView}>
+                      <div className={styles.bottomViewOne}>
+                        <div className={styles.bottomInnerView}>
+                          <Image
+                            src={Vector1}
+                            alt="vector1"
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          />
+                          <div style={{ color: "#585871", fontSize: "12px" }}>
+                            Template
+                          </div>
+                        </div>
+                        {/* <div
+                      className={`${styles.domain}`}
+                    >
                       Human Resources
+                    </div> */}
+                      </div>
+                      <div className={styles.bottomViewTwo}>
+                        {item?.trackerName}
+                      </div>
+                      <div className={styles.text}>{item?.content}</div>
                     </div>
                   </div>
-                  <div className={styles.bottomViewTwo}>
-                    {item?.trackerName}
-                  </div>
-                  <div className={styles.text}>{item?.content}</div>
-                </div>
+                </Link>
+              ))}
+              <div className={styles.innerContainerOne}
+
+              >
+                <Image src={Add} alt="add" />
+                <Link
+                  href="/internal/trackers/create"
+                  className={styles.createUrl}
+                >
+                  <button
+                    // onClick={() => modalOpen()}
+                    className={styles.createBtn}
+
+                  >
+                    Create Custom
+                  </button>
+                </Link>
               </div>
-            </Link>
-          ))}
-        </div>
-      )}
-     
-     
-
-      {!showTracker && (
-        <>
-          {/* {loading ? <Loading/>:<> */}
-          <div
-            className={`${styles.trackers}`}
-          >
-            <div
-              className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
-                }`}
-              onClick={() => setType("All Trackers")}
-
-            >
-              <AllTrackers
-                fillColor={type === "All Trackers" ? "#6750A4" : "#696B83"}
-              />
-              All Trackers
             </div>
-            <div
-              className={`${styles.trackersHead} ${type === "Custom Trackers" ? styles.active : ""
-                }`}
-              onClick={() => {
-                GAEvent(
-                  "trackers",
-                  "Tracker",
-                  "View",
-                  "Custom Trackers"
-                )
-                setType("Custom Trackers")
-              }}
-            >
-              <CustomeTracker
-                fillColor={type === "Custom Trackers" ? "#6750A4" : "#696B83"}
-              />
-              Custom Trackers
-            </div>
-            {/* <div
+          )}
+
+
+
+          {(
+            <>
+              {/* {loading ? <Loading/>:<> */}
+              <div
+                className={`${styles.trackers}`}
+              >
+                <div
+                  className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
+                    }`}
+                  onClick={() => setType("All Trackers")}
+
+                >
+                  <AllTrackers
+                    fillColor={type === "All Trackers" ? "#6750A4" : "#696B83"}
+                  />
+                  All Trackers
+                </div>
+                <div
+                  className={`${styles.trackersHead} ${type === "Custom Trackers" ? styles.active : ""
+                    }`}
+                  onClick={() => {
+                    GAEvent(
+                      "trackers",
+                      "Tracker",
+                      "View",
+                      "Custom Trackers"
+                    )
+                    setType("Custom Trackers")
+                  }}
+                >
+                  <CustomeTracker
+                    fillColor={type === "Custom Trackers" ? "#6750A4" : "#696B83"}
+                  />
+                  Custom Trackers
+                </div>
+                {/* <div
               className={`${styles.trackersHead} ${
                 type === "Premium Trackers" ? styles.active : ""
               }`}
@@ -557,79 +553,79 @@ console.log(hideTemplate);
               />
               Premium Trackers
             </div> */}
-            <div
-              className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""
-                }`}
-              onClick={() => {
-                GAEvent(
-                  "trackers",
-                  "Tracker",
-                  "View",
-                  "Saved Events"
-                )
-                setType("Saved Events")
-              }}
-              ref={savedEventRef}
-            >
-              <Bookmark
-                fillColor={type === "Saved Events" ? "#6750A4" : "#696B83"}
-              />
-              Saved Events
-            </div>
-          </div>
-          {/* </>
-    } */}
-          {type === "All Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
-          )}
-          {type === "Custom Trackers" && (
-            <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData}/>
-          )}
-          {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
-          {type === "Saved Events" && (
-            <div>
-              <Table showInsights={showInsights} />
-            </div>
-          )}
-        </>
-      )}
-
-      {showModal && (
-        <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
-          <div className={styles.modalInnerContainer}>
-            <div className={styles.newTrackerHead}>Choose Tracker Type</div>
-            <Link href="/internal/trackers/create">
-              <div className={styles.customTracker}>
-                <div style={{ display: "flex" }}>
-                  <Image src={Vector3} alt="vector3" />
+                <div
+                  className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""
+                    }`}
+                  onClick={() => {
+                    GAEvent(
+                      "trackers",
+                      "Tracker",
+                      "View",
+                      "Saved Events"
+                    )
+                    setType("Saved Events")
+                  }}
+                  ref={savedEventRef}
+                >
+                  <Bookmark
+                    fillColor={type === "Saved Events" ? "#6750A4" : "#696B83"}
+                  />
+                  Saved Events
                 </div>
+              </div>
+              {/* </>
+    } */}
+              {type === "All Trackers" && (
+                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
+              )}
+              {type === "Custom Trackers" && (
+                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
+              )}
+              {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
+              {type === "Saved Events" && (
                 <div>
-                  <div className={styles.head}>Custom Tracker</div>
-                  <div className={styles.content}>
-                    Select from the available data filters to create a tracker
+                  <Table showInsights={showInsights} />
+                </div>
+              )}
+            </>
+          )}
+
+          {showModal && (
+            <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
+              <div className={styles.modalInnerContainer}>
+                <div className={styles.newTrackerHead}>Choose Tracker Type</div>
+                <Link href="/internal/trackers/create">
+                  <div className={styles.customTracker}>
+                    <div style={{ display: "flex" }}>
+                      <Image src={Vector3} alt="vector3" />
+                    </div>
+                    <div>
+                      <div className={styles.head}>Custom Tracker</div>
+                      <div className={styles.content}>
+                        Select from the available data filters to create a tracker
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+                <div className={styles.customTracker}>
+                  <div style={{ display: "flex" }}>
+                    <Image src={Vector4} alt="vector4" />
+                  </div>
+                  <div>
+                    <div className={styles.head}>Premium Tracker</div>
+                    <div className={styles.content}>
+                      Seamlessly integrate your own data to tailor your event
+                      tracking experience.
+                    </div>
                   </div>
                 </div>
               </div>
-            </Link>
-            <div className={styles.customTracker}>
-              <div style={{ display: "flex" }}>
-                <Image src={Vector4} alt="vector4" />
-              </div>
-              <div>
-                <div className={styles.head}>Premium Tracker</div>
-                <div className={styles.content}>
-                  Seamlessly integrate your own data to tailor your event
-                  tracking experience.
-                </div>
-              </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
-    </div>
       </>
     )}</>
-   
+
   );
 };
 

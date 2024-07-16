@@ -60,6 +60,8 @@
     .trackers_header_newtracker_button {
         cursor: pointer;
         background-color: var(--primary-color);
+        width: 184px;
+        justify-content: center;
         /* border: 1px solid #b8b7ea; */
         padding: 8px 24px;
         border-radius: var(--border-radius-md);

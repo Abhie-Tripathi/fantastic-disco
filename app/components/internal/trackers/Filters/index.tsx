@@ -1932,7 +1932,7 @@ console.log(customData);
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHead}>
       <div className={styles.competitorHeading}>Upload custom data </div>
-      <div className={styles.badgeSuccess}>Comming Soon</div>
+      {/* <div className={styles.badgeSuccess}>Comming Soon</div> */}
       </div>
       <div className={styles.bar}></div>
       <div className={`${styles.toggleDiv}`}>
@@ -1998,9 +1998,12 @@ console.log(customData);
         ))}
       </div>
     </div>)}
-    {(type==="t_speaking_opportunity" || type==="t_people_finder")&&
+    {(type==="t_speaking_opportunity" || type==="T_PEOPLE_FINDER")&&
      ( <div className={`card ${styles.competitor}`}>
-      <div className={styles.competitorHeading}>Upload custom data</div>
+      <div className={styles.competitorHead}>
+      <div className={styles.competitorHeading}>Upload custom data </div>
+      <div className={styles.badgeSuccess}>Comming Soon</div>
+      </div>
       <div className={styles.bar}></div>
       <div className={`${styles.toggleDiv}`}>
         <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
@@ -2044,7 +2047,7 @@ console.log(customData);
       </div>
       <div className={`card ${styles.competitor}`}>
         {type==="t_speaking_opportunity" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
-        {type==="t_people_finder" && <div className={styles.subHeading}>Add name and company below:</div>}
+        {type==="T_PEOPLE_FINDER" && <div className={styles.subHeading}>Add name and company below:</div>}
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
             <Image src={Name} alt="userName_Icon" className="icons"/>

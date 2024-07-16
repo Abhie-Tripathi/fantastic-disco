@@ -298,19 +298,19 @@ const Page = () => {
               className={styles.innerContainerLeft}
               style={{ paddingLeft: "20px" }}
             >
-              <div className={styles.advanceHead}>Custom Data</div>
+              <div className={styles.advanceHead}>Competitor's Website</div>
               <div className={styles.customContent}>
-                <div className={styles.urlDiv}>
+                {/* <div className={styles.urlDiv}>
                   <Image src={Url} alt="url" className="icons" />
                   URL
-                  </div>
+                  </div> */}
                 <div className={styles.allInputBox}>
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item:string, ind:number) => (
-                 
+                  {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+
                     <div key={ind} className={styles.singleInputBox}>{item}</div>
-                
-))}
-              </div>
+
+                  ))}
+                </div>
               </div>
             </div>
             <div className={styles.innerContainerRight}>
