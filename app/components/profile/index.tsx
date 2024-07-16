@@ -71,7 +71,7 @@ const Profile = () => {
       fetchData();
     }
   }, [profileData]);
-  
+
   const saveDataHandler = async () => {
     const newErrors: Record<string, string> = {};
 
@@ -153,6 +153,12 @@ const Profile = () => {
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
+      const sizeInMB = file.size / (1024 * 1024);
+      if (sizeInMB > 2) {
+        showToast("error", "Image size should be less than 2mb");
+        return;
+      }
+
       setPicFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -276,7 +282,7 @@ const Profile = () => {
                     </span>
                   </span>
                   <span className={styles.profile_hintText}>
-                    We support PNGs, JPEGs and GIFs under 10MB
+                    We support PNGs, JPEGs and GIFs under 2MB
                   </span>
                 </div>
               </div>
