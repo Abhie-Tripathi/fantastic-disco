@@ -35,15 +35,6 @@
     height: 60px;
     padding: 14px 0px 14px 0px;
 }
-.headingPreview{
-    font-weight: 700;
-}
-.subHeadingPreview{
-    font-weight: 500;
-}
-.bodyPreview{
-    font-weight: 400;
-}
 .btnOptions {
     display: flex;
     align-items: center;
@@ -97,18 +88,18 @@
     margin-bottom: 19px;
     border-top: 1px solid #F5F5F5;
 }
-.styleColorContainer{
+.familyColorContainer{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.fontStyleContainer{
+.fontFamilyContainer{
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.fontStyleContainer .heading{
-    font-size: 12px;
+.fontFamilyContainer .heading{
+    font-size: 11px;
 } 
 .dropDownContainer{
     background-color: #F2F2F2;
@@ -145,14 +136,18 @@
     background-color: #F2F2F2;
     border-radius: 2.5px;
 }
+.fontSizeStyleContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .fontSizeContainer{
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 14px;
+    gap: 10px;   
 }
 .fontSizeContainer .heading{
-    font-size: 12px
+    font-size: 11px;
 } 
 .fontSizeContainer .sizeContainer{
     background-color: #F2F2F2;
@@ -173,3 +168,11 @@
 .arrows div{
     cursor: pointer;
 }
+.fontStyleContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.fontStyleContainer .heading{
+    font-size: 11px;
+} 

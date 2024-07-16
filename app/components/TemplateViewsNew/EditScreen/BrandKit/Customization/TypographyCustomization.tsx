@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
 import styles from './typography.style.module.css'
 import ColorPicker from './ColorPicker'
+import { fontWeight } from '@mui/system'
 
 const TypographyCustomization = () => {
 
     const [extractedColors, setExtractedColors] = useState(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const [selectedType, setSelectedType] = useState("heading")
-    const [heading, setHeading] = useState({ fontColor: "#000000", fontSize: 24, fontStyle: "Arial" })
-    const [subHeading, setSubHeading] = useState({ fontColor: "#000000", fontSize: 16, fontStyle: "Verdana" })
-    const [body, setBody] = useState({ fontColor: "#000000", fontSize: 14, fontStyle: "Tahoma" })
+    const [heading, setHeading] = useState({ fontColor: "#000000", fontSize: 24, fontFamily: "Arial",fontWeight
+     : "bolder" })
+    const [subHeading, setSubHeading] = useState({ fontColor: "#000000", fontSize: 16, fontFamily: "Verdana", fontWeight : "normal" })
+    const [body, setBody] = useState({ fontColor: "#000000", fontSize: 14, fontFamily: "Tahoma",fontWeight : "nroaml" })
 
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const fontStyleList = ["normal","bold", "bolder", "lighter"]
+
+    const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
+    const [styleDropdownOpen, setStyleDropdownOpen] = useState(false);
 
     const handleCheckboxChange = (value: string) => {
         setSelectedType(value);
@@ -20,10 +25,18 @@ const TypographyCustomization = () => {
 
     const handleFontChange = (font: string) => {
         if (selectedType === "heading") {
-            setHeading((prev) => ({ ...prev, fontStyle: font }));
+            setHeading((prev) => ({ ...prev, fontFamily: font }));
         } else if (selectedType === "subheading") {
-            setSubHeading((prev) => ({ ...prev, fontStyle: font }));
-        } else setBody((prev) => ({ ...prev, fontStyle: font }));
+            setSubHeading((prev) => ({ ...prev, fontFamily: font }));
+        } else setBody((prev) => ({ ...prev, fontFamily: font }));
+    }
+
+    const handleFontStyleChange = (style : string)=>{
+        if (selectedType === "heading") {
+            setHeading((prev) => ({ ...prev, fontWeight: style }));
+        } else if (selectedType === "subheading") {
+            setSubHeading((prev) => ({ ...prev, fontWeight: style }));
+        } else setBody((prev) => ({ ...prev, fontWeight: style }));
     }
 
     const handleFontColorChange = (color: any) => {
@@ -38,10 +51,10 @@ const TypographyCustomization = () => {
         if (selectedType === "heading") {
             let size = heading.fontSize + 1;
             setHeading((prev) => ({ ...prev, fontSize: size }));
-        } else if(selectedType === "subheading"){
+        } else if (selectedType === "subheading") {
             let size = subHeading.fontSize + 1;
             setSubHeading((prev) => ({ ...prev, borderRadius: size }));
-        }else{
+        } else {
             let size = body.fontSize + 1;
             setBody((prev) => ({ ...prev, borderRadius: size }));
         }
@@ -49,17 +62,20 @@ const TypographyCustomization = () => {
     const handleDecreaseFontsize = () => {
         if (selectedType === "heading") {
             let size = heading.fontSize;
-            if(size != 0){
-                setHeading((prev) => ({ ...prev, fontSize: size-1 }));}
+            if (size != 0) {
+                setHeading((prev) => ({ ...prev, fontSize: size - 1 }));
+            }
 
-        } else if(selectedType === "subheading"){
+        } else if (selectedType === "subheading") {
             let size = subHeading.fontSize;
-            if(size != 0){
-            setSubHeading((prev) => ({ ...prev, borderRadius: size-1 }));}
-        }else{
-            let size = body.fontSize ;
-            if(size != 0){
-            setBody((prev) => ({ ...prev, borderRadius: size-1 }));}
+            if (size != 0) {
+                setSubHeading((prev) => ({ ...prev, borderRadius: size - 1 }));
+            }
+        } else {
+            let size = body.fontSize;
+            if (size != 0) {
+                setBody((prev) => ({ ...prev, borderRadius: size - 1 }));
+            }
         }
     }
 
@@ -71,7 +87,9 @@ const TypographyCustomization = () => {
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.textPreviewContainer}>
-                    {selectedType === "heading" ? <div className={styles.headingPreview} style={{ color: heading.fontColor, fontSize: heading.fontSize, fontFamily: heading.fontStyle }}>HEADING</div> : selectedType === "subheading" ? <div className={styles.subHeadingPreview} style={{ color: subHeading.fontColor, fontSize: subHeading.fontSize, fontFamily: subHeading.fontStyle }}>Sub Heading</div> : <div className={styles.bodyPreview} style={{ color: body.fontColor, fontSize: body.fontSize, fontFamily: body.fontStyle }}>Body</div>}
+                    {selectedType === "heading" ? <div className={styles.headingPreview} style={{ color: heading.fontColor, fontSize: heading.fontSize, fontFamily: heading.fontFamily, fontWeight : heading.fontWeight }}>HEADING</div> 
+                    : selectedType === "subheading" ? <div className={styles.subHeadingPreview} style={{ color: subHeading.fontColor, fontSize: subHeading.fontSize, fontFamily: subHeading.fontFamily,fontWeight : subHeading.fontWeight }}>Sub Heading</div> 
+                    : <div className={styles.bodyPreview} style={{ color: body.fontColor, fontSize: body.fontSize, fontFamily: body.fontFamily ,fontWeight : body.fontWeight}}>Body</div>}
                 </div>
                 <div className={styles.btnOptions}>
                     <label className={styles.checkboxContainer}>
@@ -106,14 +124,14 @@ const TypographyCustomization = () => {
                     </label>
                 </div>
                 <div className={styles.line}></div>
-                <div className={styles.styleColorContainer}>
-                    <div className={styles.fontStyleContainer}>
-                        <div className={styles.heading}>Font Style</div>
-                        <FontStyleIcon />
-                        <div className={styles.dropDownContainer} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                            <div className={styles.display}>{selectedType === "heading" ? heading.fontStyle : selectedType === "subheading" ? subHeading.fontStyle : body.fontStyle}</div>
+                <div className={styles.familyColorContainer}>
+                    <div className={styles.fontFamilyContainer}>
+                        <div className={styles.heading}>Font Family</div>
+                        <FontFamilyIcon />
+                        <div className={styles.dropDownContainer} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
+                            <div className={styles.display}>{selectedType === "heading" ? heading.fontFamily : selectedType === "subheading" ? subHeading.fontFamily : body.fontFamily}</div>
                             <DownIcon />
-                            {dropdownOpen && <div className={styles.dropDown}>
+                            {familyDropdownOpen && <div className={styles.dropDown}>
                                 {fontsList.map((font, key) => (
                                     <div className={styles.dropdownFont} onClick={() => handleFontChange(font)}>{font}</div>
                                 ))}
@@ -134,15 +152,30 @@ const TypographyCustomization = () => {
                         handleChange={handleFontColorChange}
                     />
                 </div>
-                <div className={styles.fontSizeContainer}>
-                    <div className={styles.heading}>Font Size</div>
-                    <FontSizeIcon />
-                    <div className={styles.sizeContainer}>
-                        <div className={styles.display}>{selectedType === "heading" ? `${heading.fontSize}px` : selectedType === "subheading" ? `${subHeading.fontSize}px` : `${body.fontSize}px`}</div>
+                <div className={styles.fontSizeStyleContainer}>
+                    <div className={styles.fontSizeContainer}>
+                        <div className={styles.heading}>Font Size</div>
+                        <FontSizeIcon />
+                        <div className={styles.sizeContainer}>
+                            <div className={styles.display}>{selectedType === "heading" ? `${heading.fontSize}px` : selectedType === "subheading" ? `${subHeading.fontSize}px` : `${body.fontSize}px`}</div>
+                        </div>
+                        <div className={styles.arrows}>
+                            <div onClick={handleIncreaseFontsize}><UpIcon /></div>
+                            <div onClick={handleDecreaseFontsize}><DownIcon /></div>
+                        </div>
                     </div>
-                    <div className={styles.arrows}>
-                        <div onClick={handleIncreaseFontsize}><UpIcon /></div>
-                        <div onClick={handleDecreaseFontsize}><DownIcon /></div>
+                    <div className={styles.fontStyleContainer}>
+                        <div className={styles.heading}>Font Weight</div>
+                        <FontStyleIcon />
+                        <div className={styles.dropDownContainer} onClick={() => setStyleDropdownOpen(!styleDropdownOpen)}>
+                            <div className={styles.display}>{selectedType === "heading" ? heading.fontWeight : selectedType === "subheading" ? subHeading.fontWeight : body.fontWeight}</div>
+                            <DownIcon />
+                            {styleDropdownOpen && <div className={styles.dropDown}>
+                                {fontStyleList.map((style, key) => (
+                                    <div key={key} className={styles.dropdownFont} onClick={() => handleFontStyleChange(style)}>{style}</div>
+                                ))}
+                            </div>}
+                        </div>
                     </div>
                 </div>
 
@@ -152,6 +185,14 @@ const TypographyCustomization = () => {
 }
 
 function FontStyleIcon() {
+    return (
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.0417 3.66667H12.1667V12.1667H12.875V12.875H10.0417V12.1667H10.75V10.0417H7.91667L6.85417 12.1667H7.91667V12.875H5.08333V12.1667H5.79167L10.0417 3.66667ZM10.75 4.375L8.27083 9.33333H10.75V4.375ZM1.54167 0.125H5.08333C5.86958 0.125 6.5 0.755417 6.5 1.54167V9.33333H4.375V5.79167H2.25V9.33333H0.125V1.54167C0.125 0.755417 0.755417 0.125 1.54167 0.125ZM2.25 1.54167V4.375H4.375V1.54167H2.25Z" fill="black" />
+        </svg>
+
+    )
+}
+function FontFamilyIcon() {
     return (
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 6H6V8H4V14H2V8H0V6ZM14 2H10.0664V14H7.93359V2H4V0H14V2Z" fill="black" />
