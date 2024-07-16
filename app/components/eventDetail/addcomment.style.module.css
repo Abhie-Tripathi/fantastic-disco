@@ -72,6 +72,9 @@
 .allUser {
   position: absolute;
   display: flex;
+  height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
   gap: var(--spacing-xs);
   flex-direction: column;
   bottom: 100%;

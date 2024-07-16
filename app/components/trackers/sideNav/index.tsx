@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Back from '/public/back.svg';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
@@ -15,6 +15,8 @@ import { GAEvent } from '@/utils/GAEvent';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
+  const searchParams = useSearchParams();
+  const type  = searchParams.get('type');
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()
@@ -70,7 +72,7 @@ const Index = () => {
 
         <>
           <div className={styles.leftContainer}>
-            <Link href={`/internal/trackers/${secondLast}/trackedEvents`}
+            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -85,7 +87,7 @@ const Index = () => {
               </div>
             </Link>
 
-            <Link href={`/internal/trackers/${secondLast}/notesDiscussion`}
+            <Link href={`/internal/trackers/${secondLast}/notesDiscussion?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -99,7 +101,7 @@ const Index = () => {
                 Notes & Discussions
               </div>
             </Link>
-            <Link href={`/internal/trackers/${secondLast}/savedEvents`}
+            <Link href={`/internal/trackers/${secondLast}/savedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -116,7 +118,7 @@ const Index = () => {
 
           </div>
           <div className={styles.configAccess}>
-            <Link href={`/internal/trackers/${secondLast}/trackedConfiguration`}
+            <Link href={`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
