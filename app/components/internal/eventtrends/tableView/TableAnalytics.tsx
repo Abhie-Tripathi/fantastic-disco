@@ -52,13 +52,11 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
       setEventData(sortedGroupingByDate);
     } else {
       const sortedGroupingByDate: any = {};
-      
+
       for (const date in groupedData.groupingByDate) {
         if (groupedData.groupingByDate.hasOwnProperty(date)) {
-          console.log(date)
           sortedGroupingByDate[date] = groupedData.groupingByDate[date].sort(
             (a: any, b: any) => {
-              // console.log(b.slug,key)
               return b.slug === key
                 ? b.attendance - a.attendance || b.events - a.events
                 : a.attendance - b.attendance || a.events - b.events;
@@ -90,7 +88,6 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
       const sortedGroupingByDate: typeof groupedData.groupingByDate = {};
       for (const date in groupedData.groupingByDate) {
         if (groupedData.groupingByDate.hasOwnProperty(date)) {
-          // console.log(date)
           sortedGroupingByDate[date] = groupedData.groupingByDate[date].sort(
             (a: any, b: any) => {
               return b.slug === key
@@ -113,7 +110,9 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
   const calculateTotalCount = (events: any) => {
     return events.reduce(
       (total: any, event: any) =>
-        total + (event.attendance || 0) + (event.events || 0),
+        total +
+        (event.attendance !== undefined ? event.attendance : 0) +
+        (event.events !== undefined ? event.events : 0),
       0
     );
   };
@@ -150,10 +149,7 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
                 </div>
               </th>
               <th>
-                <div
-                  className={styles.table_column_heading}
-                  // onClick={() => sortHandler("total")}
-                >
+                <div className={styles.table_column_heading}>
                   <div>Total</div>
                   <div className={styles.sortImg}>
                     {sortingKey === "total" && (
@@ -168,10 +164,7 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
               </th>
               {objectValues.map((item: any, index: number) => (
                 <th key={index}>
-                  <div
-                    className={styles.table_column_heading}
-                    // onClick={() => sortHandler(item.slug)}
-                  >
+                  <div className={styles.table_column_heading}>
                     <div>{item.categoryName}</div>
                     <div className={styles.sortImg}>
                       {sortingKey === item.slug && (
@@ -195,7 +188,11 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
                   <td>{key}</td>
                   <td>{calculateTotalCount(items)}</td>
                   {items.map((item: any, index: number) => (
-                    <td key={index}>{item.attendance || item.events}</td>
+                    <td key={index}>
+                      {item.attendance !== undefined
+                        ? item.attendance
+                        : item.events}
+                    </td>
                   ))}
                 </tr>
               )
