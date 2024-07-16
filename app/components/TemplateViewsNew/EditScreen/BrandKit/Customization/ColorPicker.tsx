@@ -17,7 +17,6 @@ const ColorPicker = ({ color,extractedColors, setColor,heading , handleChange}: 
     const handleClick = () => {
         setDisplayColorPicker(!displayColorPicker);
     };
-
     return (
         <div className={styles.body}>
             <div className={styles.heading}>{heading}</div>

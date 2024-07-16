@@ -3,6 +3,7 @@ import styles from './customization.style.module.css'
 import LogoComponent from './LogoComponent'
 import BrandColor from './BrandColor'
 import CardCustomization from './CardCustomization'
+import ButtonCustomization from './ButtonCustomization'
 
 const Customization = () => {
   return (
@@ -25,7 +26,7 @@ const Customization = () => {
         </div>
         <div className={styles.line}></div>
         <div className={styles.buttonCustomizationContainer}>
-
+          <ButtonCustomization/>
         </div>
         <div className={styles.line}></div>
         <div className={styles.fontCustomizationContainer}>

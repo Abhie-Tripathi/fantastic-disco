@@ -2,13 +2,14 @@
     display: flex;
     align-content: center;
     position: relative;
+    gap: 30px;
 }
 
 .headingContainer {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    width: 35%;
+    width: 30%;
 }
 .heading {
     font-size: 14px;
@@ -37,7 +38,7 @@
     gap: 10px;
 }
 .radiusContainer .heading{
-    font-size: .7vw;
+    font-size: 11px;
     color: black;
 }
 .radiusContainer .radiusValue{
@@ -54,5 +55,4 @@
 }
 .arrows div{
     cursor: pointer;
-    padding: 0px;
 }

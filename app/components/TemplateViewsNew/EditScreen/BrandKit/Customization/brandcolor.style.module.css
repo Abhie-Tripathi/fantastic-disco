@@ -3,13 +3,14 @@
     align-content: center;
     /* align-items: center; */
     position: relative;
+    gap: 30px;
 }
 
 .headingContainer {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    width: 35%;
+    width: 30%;
 }
 
 .heading {
