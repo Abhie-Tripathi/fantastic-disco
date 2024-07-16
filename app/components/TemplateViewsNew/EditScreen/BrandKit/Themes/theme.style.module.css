@@ -1,0 +1,44 @@
+.body{
+    border: 1px solid #E0E1E4;
+    border-radius: 10px;
+}
+.line{
+    border-top: 1px solid #F5F5F5;
+}
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 30px 14px 23px;
+}
+.headerContainer .heading{
+    color: black;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+.headerContainer .heading .count{
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: #E6E6F9;
+    font-size: 10px;
+    color: #59478C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.headerContainer button{
+    color: white;
+    background-color: #6750a4;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    padding: 5px 8px;
+}
+.yourKits{
+    padding: 14px 30px 14px 23px;
+}

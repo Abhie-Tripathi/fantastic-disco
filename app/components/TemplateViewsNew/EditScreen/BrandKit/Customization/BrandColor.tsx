@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import styles from './brandcolor.style.module.css'
-import ColorPickIcon from '/public/colorPick.png'
-import Image from 'next/image'
-import { SketchPicker } from 'react-color';
 import ColorPicker from './ColorPicker';
 
-const BrandColor = () => {
 
-    const [extractedColors, setExtractedColors] = useState(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
-    const [displayColorPicker, setDisplayColorPicker] = useState(false);
+interface Props {
+    extractedColors: string[]
+    setExtractedColors : (value : string[])=>void
+}
+
+const BrandColor = ({ extractedColors,setExtractedColors }: Props) => {
+
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
 
@@ -20,9 +21,6 @@ const BrandColor = () => {
         setColor(extractedColors[selectedColorIndex]);
     }, [selectedColorIndex])
 
-    const handleClick = () => {
-        setDisplayColorPicker(!displayColorPicker);
-    };
 
     const handleChange = (color: any) => {
         setColor(color.hex);
@@ -48,7 +46,7 @@ const BrandColor = () => {
                     ))}
                 </div>
                 <div className={styles.pickColorContainer}>
-                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} setColor={setColor} handleChange={handleChange}/>
+                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} setColor={setColor} handleChange={handleChange} />
                 </div>
             </div>
         </div>

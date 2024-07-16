@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import styles from './buttoncustom.style.module.css'
 import ColorPicker from './ColorPicker';
 
-const ButtonCustomization = () => {
-    const [extractedColors, setExtractedColors] = useState(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+interface Props{
+    extractedColors : string[]
+  }
+  
+  const ButtonCustomization = ({extractedColors} : Props) => {
     const [selectedBtn, setSelectedBtn] = useState("primary");
     const [btnOne, setBtnOne] = useState({ btnColor: "#0072F5", borderColor: "#0072F5", borderRadius: 4, fontColor: "#000000" })
     const [btnTwo, setBtnTwo] = useState({ btnColor: "#6750a4", borderColor: "#6750a4", borderRadius: 4, fontColor: "#000000" })

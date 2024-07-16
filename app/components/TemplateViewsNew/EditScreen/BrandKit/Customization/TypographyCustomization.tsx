@@ -1,20 +1,23 @@
 import React, { useState } from 'react'
 import styles from './typography.style.module.css'
 import ColorPicker from './ColorPicker'
-import { fontWeight } from '@mui/system'
 
-const TypographyCustomization = () => {
+interface Props {
+    extractedColors: string[]
+}
 
-    const [extractedColors, setExtractedColors] = useState(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+const TypographyCustomization = ({ extractedColors }: Props) => {
     const [selectedType, setSelectedType] = useState("heading")
-    const [heading, setHeading] = useState({ fontColor: "#000000", fontSize: 24, fontFamily: "Arial",fontWeight
-     : "bolder" })
-    const [subHeading, setSubHeading] = useState({ fontColor: "#000000", fontSize: 16, fontFamily: "Verdana", fontWeight : "normal" })
-    const [body, setBody] = useState({ fontColor: "#000000", fontSize: 14, fontFamily: "Tahoma",fontWeight : "nroaml" })
+    const [heading, setHeading] = useState({
+        fontColor: "#000000", fontSize: 24, fontFamily: "Arial", fontWeight
+            : "bolder"
+    })
+    const [subHeading, setSubHeading] = useState({ fontColor: "#000000", fontSize: 16, fontFamily: "Verdana", fontWeight: "normal" })
+    const [body, setBody] = useState({ fontColor: "#000000", fontSize: 14, fontFamily: "Tahoma", fontWeight: "nroaml" })
 
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
-    const fontStyleList = ["normal","bold", "bolder", "lighter"]
+    const fontStyleList = ["normal", "bold", "bolder", "lighter"]
 
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [styleDropdownOpen, setStyleDropdownOpen] = useState(false);
@@ -31,7 +34,7 @@ const TypographyCustomization = () => {
         } else setBody((prev) => ({ ...prev, fontFamily: font }));
     }
 
-    const handleFontStyleChange = (style : string)=>{
+    const handleFontStyleChange = (style: string) => {
         if (selectedType === "heading") {
             setHeading((prev) => ({ ...prev, fontWeight: style }));
         } else if (selectedType === "subheading") {
@@ -87,9 +90,9 @@ const TypographyCustomization = () => {
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.textPreviewContainer}>
-                    {selectedType === "heading" ? <div className={styles.headingPreview} style={{ color: heading.fontColor, fontSize: heading.fontSize, fontFamily: heading.fontFamily, fontWeight : heading.fontWeight }}>HEADING</div> 
-                    : selectedType === "subheading" ? <div className={styles.subHeadingPreview} style={{ color: subHeading.fontColor, fontSize: subHeading.fontSize, fontFamily: subHeading.fontFamily,fontWeight : subHeading.fontWeight }}>Sub Heading</div> 
-                    : <div className={styles.bodyPreview} style={{ color: body.fontColor, fontSize: body.fontSize, fontFamily: body.fontFamily ,fontWeight : body.fontWeight}}>Body</div>}
+                    {selectedType === "heading" ? <div className={styles.headingPreview} style={{ color: heading.fontColor, fontSize: heading.fontSize, fontFamily: heading.fontFamily, fontWeight: heading.fontWeight }}>HEADING</div>
+                        : selectedType === "subheading" ? <div className={styles.subHeadingPreview} style={{ color: subHeading.fontColor, fontSize: subHeading.fontSize, fontFamily: subHeading.fontFamily, fontWeight: subHeading.fontWeight }}>Sub Heading</div>
+                            : <div className={styles.bodyPreview} style={{ color: body.fontColor, fontSize: body.fontSize, fontFamily: body.fontFamily, fontWeight: body.fontWeight }}>Body</div>}
                 </div>
                 <div className={styles.btnOptions}>
                     <label className={styles.checkboxContainer}>

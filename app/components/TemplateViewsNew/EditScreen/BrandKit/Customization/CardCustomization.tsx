@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import styles from './cardcustom.style.module.css'
 import ColorPicker from './ColorPicker';
 
-const CardCustomization = () => {
-    const [extractedColors, setExtractedColors] = useState(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+interface Props{
+    extractedColors : string[]
+  }
+  
+  const CardCustomization = ({extractedColors} : Props) => {
     const [color, setColor] = useState('#2c68f6');
     const [radiusValue, setRadiusValue] = useState<number>(2)
 

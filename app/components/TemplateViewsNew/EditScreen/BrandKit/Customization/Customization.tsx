@@ -6,7 +6,12 @@ import CardCustomization from './CardCustomization'
 import ButtonCustomization from './ButtonCustomization'
 import TypographyCustomization from './TypographyCustomization'
 
-const Customization = () => {
+interface Props{
+  extractedColors : string[]
+  setExtractedColors : (value : string[])=>void
+}
+
+const Customization = ({extractedColors, setExtractedColors} : Props) => {
   return (
     <div className={styles.body}>
         <div className={styles.headerContainer}>
@@ -19,19 +24,19 @@ const Customization = () => {
         </div>
         <div className={styles.line}></div>
         <div className={styles.brandColorContainer}>
-          <BrandColor/>
+          <BrandColor setExtractedColors={setExtractedColors} extractedColors={extractedColors}/>
         </div>
         <div className={styles.line}></div>
         <div className={styles.cardCustomizationContainer}>
-          <CardCustomization/>
+          <CardCustomization extractedColors={extractedColors}/>
         </div>
         <div className={styles.line}></div>
         <div className={styles.buttonCustomizationContainer}>
-          <ButtonCustomization/>
+          <ButtonCustomization extractedColors={extractedColors}/>
         </div>
         <div className={styles.line}></div>
         <div className={styles.fontCustomizationContainer}>
-          <TypographyCustomization/>
+          <TypographyCustomization extractedColors={extractedColors}/>
         </div>
     </div>
   )
