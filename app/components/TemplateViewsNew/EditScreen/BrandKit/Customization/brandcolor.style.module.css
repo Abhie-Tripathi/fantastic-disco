@@ -53,5 +53,5 @@
     align-items: center;
     gap: 12px;
     position: relative;
-    z-index: 999;
+    z-index: 10;
 }

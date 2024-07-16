@@ -4,6 +4,7 @@ import LogoComponent from './LogoComponent'
 import BrandColor from './BrandColor'
 import CardCustomization from './CardCustomization'
 import ButtonCustomization from './ButtonCustomization'
+import TypographyCustomization from './TypographyCustomization'
 
 const Customization = () => {
   return (
@@ -30,7 +31,7 @@ const Customization = () => {
         </div>
         <div className={styles.line}></div>
         <div className={styles.fontCustomizationContainer}>
-
+          <TypographyCustomization/>
         </div>
     </div>
   )

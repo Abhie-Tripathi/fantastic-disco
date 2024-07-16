@@ -34,22 +34,27 @@ const ButtonCustomization = () => {
         }
     };
 
-    const handleIncreaseRadius = ()=>{
-        if(selectedBtn === "primary"){
+    const handleIncreaseRadius = () => {
+        if (selectedBtn === "primary") {
             let radius = btnOne.borderRadius + 1;
             setBtnOne((prev) => ({ ...prev, borderRadius: radius }));
-        }else{
+        } else {
             let radius = btnTwo.borderRadius + 1;
             setBtnTwo((prev) => ({ ...prev, borderRadius: radius }));
         }
     }
-    const handleDecreaseRadius = ()=>{
-        if(selectedBtn === "primary"){
-            let radius = btnOne.borderRadius - 1;
-            setBtnOne((prev) => ({ ...prev, borderRadius: radius }));
-        }else{
-            let radius = btnTwo.borderRadius - 1;
-            setBtnTwo((prev) => ({ ...prev, borderRadius: radius }));
+    const handleDecreaseRadius = () => {
+        if (selectedBtn === "primary") {
+            let radius = btnOne.borderRadius;
+            if (radius != 0) {
+                setBtnOne((prev) => ({ ...prev, borderRadius: radius - 1 }));
+            }
+
+        } else {
+            let radius = btnTwo.borderRadius
+            if (radius != 0) {
+                setBtnTwo((prev) => ({ ...prev, borderRadius: radius - 1 }));
+            }
         }
     }
 
