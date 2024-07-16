@@ -91,10 +91,7 @@ const AllTrackers = ({ item }: any) => {
   return (
     <div className="card">
       <Link
-        href={{
-          pathname: `/internal/trackers/${item.id}/trackedEvents`,
-          // query: { data: JSON.stringify(item) }
-        }}
+        href={`/internal/trackers/${item.id}/trackedEvents?type=${item?.type}`}
         onClick={() =>
           GAEvent(
             "trackers",

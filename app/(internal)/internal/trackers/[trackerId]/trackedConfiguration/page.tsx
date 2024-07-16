@@ -1,13 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./trackedConfiguration.style.module.css";
 import BasicFilter from "@/app/components/trackers/basicFilter";
 import LocationFilter from "@/app/components/trackers/locationFilter";
+import Url from '/public/url.svg'
 import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
 import Labels from "@/app/components/trackers/labels";
-import { usePathname, useRouter  } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
 import Link from "next/link";
@@ -108,13 +110,13 @@ const Page = () => {
   // useEffect(() => {
   //   console.log(arr);
   // }, [arr]);
-  const deleteTracker=async()=>{
-      const url=`${baseUrl}/tracker/${pathName[pathName.length-2]}`
+  const deleteTracker = async () => {
+    const url = `${baseUrl}/tracker/${pathName[pathName.length - 2]}`
     const { data, error } = await myFetch(url, {
       method: 'DELETE'
     });
-    if(data){
-      showToast("success","Tracker deleted successfully")
+    if (data) {
+      showToast("success", "Tracker deleted successfully")
       GAEvent(
         "trackers",
         "Tracker Detail",
@@ -123,21 +125,21 @@ const Page = () => {
       );
       router.replace(`/internal/trackers`);
     }
-  } 
+  }
   const [locations, setLocations] = useState<any>();
   const closeShareModal = () => {
     setDel(false);
     document.body.style.height = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
-};
-useEffect(() => {
-  const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj:any) => Object.values(countryObj)[0])||[];
-  const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj:any) => Object.values(cityObj)[0])||[];
-  const eventZone=data?.tracker?.filterValue?.eventRegion?.split(",")||[];
-  setLocations([...eventCountry, ...eventCity, ...eventZone]);
-}, [data]);
-  
+  };
+  useEffect(() => {
+    const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
+    const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
+    const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
+    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+  }, [data]);
+
   return (
     <div className={styles.container}>
       <div className={styles.containerTop}>
@@ -153,33 +155,33 @@ useEffect(() => {
           </div>
         </div>
         <div className={styles.outerRight}>
-        <div className={styles.containerTopRightTwo} >
-          <button onClick={()=>setDel(true)}>Delete</button>
+          <div className={styles.containerTopRightTwo} >
+            <button onClick={() => setDel(true)}>Delete</button>
           </div>
-        <div className={styles.containerTopRight}>
-          <Link href={`/internal/trackers/${last}/editTracker`}>
-            <button
-              onClick={() =>
-                GAEvent(
-                  "trackers",
-                  "Tracker Detail",
-                  "Edit",
-                  "Edit"
-                )
-              }
-            >
-              Edit
-            </button>
-          </Link>
-        </div>
-        
+          <div className={styles.containerTopRight}>
+            <Link href={`/internal/trackers/${last}/editTracker?type=${data?.tracker?.type}`}>
+              <button
+                onClick={() =>
+                  GAEvent(
+                    "trackers",
+                    "Tracker Detail",
+                    "Edit",
+                    "Edit"
+                  )
+                }
+              >
+                Edit
+              </button>
+            </Link>
+          </div>
+
         </div>
       </div>
       <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
       <div className={styles.innerContainer}>
         <div
           className={styles.innerContainerLeft}
-          style={{ border:"1px solid var(--border-color)" }}
+          style={{ border: "1px solid var(--border-color)" }}
         >
           {data && (
             <BasicFilter
@@ -229,11 +231,11 @@ useEffect(() => {
           </div>
         </div>
         <div className={styles.innerContainerRight}>
-          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []} 
-          localRank={
-            data?.tracker?.filterValue?.localRank?.length>0 ? data?.tracker?.filterValue?.localRank.split(',') : []
-          }
-          eventRank={data?.tracker?.filterValue?.eventRank?.length>0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []}
+            localRank={
+              data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+            }
+            eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           />
         </div>
       </div>
@@ -288,47 +290,61 @@ useEffect(() => {
           />
         </div>
       </div>
-      {/* <div className={styles.line}></div>
-      <div className={styles.innerContainer}>
-        <div
-          className={styles.innerContainerLeft}
-          style={{ paddingLeft: "20px" }}
-        >
-          <div className={styles.advanceHead}>Custom Data</div>
-          <div className={styles.advanceContent}>
-            
-          </div>
-        </div>
-        <div className={styles.innerContainerRight}>
-          
-        </div>
-      </div> */}
-      {del &&
-      (
-        <div className={styles.shareModal} >
-                    <div className={styles.innerModal}>
-                        <div className={styles.shareHead}>Delete Tracker</div>
-                        {/* <div className={styles.bar}></div> */}
-                        <div className={styles.linkCopy}>
-                        
-                        <div className={styles.inviteAccess}>
-                            
-                        All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+      {data.tracker && data.tracker.type === "T_COMPETITOR" &&
+        <>
+          <div className={styles.line}></div>
+          <div className={styles.innerContainer}>
+            <div
+              className={styles.innerContainerLeft}
+              style={{ paddingLeft: "20px" }}
+            >
+              <div className={styles.advanceHead}>Competitor's Website</div>
+              <div className={styles.customContent}>
+                {/* <div className={styles.urlDiv}>
+                  <Image src={Url} alt="url" className="icons" />
+                  URL
+                  </div> */}
+                <div className={styles.allInputBox}>
+                  {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
 
-                            </div>
-                        </div>
-                        
-                        <div className={styles.buttons}>
-                            
-                                    <button className={styles.send} onClick={deleteTracker}>Delete</button>
-                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
-                        </div>
-                        </div>
-                    </div>
-               
-           
-      )}
-    
+                    <div key={ind} className={styles.singleInputBox}>{item}</div>
+
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className={styles.innerContainerRight}>
+
+            </div>
+          </div>
+        </>
+      }
+      {del &&
+        (
+          <div className={styles.shareModal} >
+            <div className={styles.innerModal}>
+              <div className={styles.shareHead}>Delete Tracker</div>
+              {/* <div className={styles.bar}></div> */}
+              <div className={styles.linkCopy}>
+
+                <div className={styles.inviteAccess}>
+
+                  All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+                </div>
+              </div>
+
+              <div className={styles.buttons}>
+
+                <button className={styles.send} onClick={deleteTracker}>Delete</button>
+                <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+              </div>
+            </div>
+          </div>
+
+
+        )}
+
     </div>
   );
 };
