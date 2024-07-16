@@ -904,11 +904,24 @@ const handleInputChange = (e:any) => {
 };
 const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === 'Enter' && (name && companyName || companyUrl)) {
+    // if(isValidURL(e.target.value))
     addNewEntry();
   }
 };
 console.log(customData);
-
+// const isValidURL = (string) => {
+//   try {
+//     new URL(string);
+//     return true;
+//   } catch (_) {
+//     try {
+//       new URL("http://" + string);
+//       return true;
+//     } catch (_) {
+//       return false;
+//     }
+//   }
+// };
   return (
     <>
       <div
@@ -1998,7 +2011,7 @@ console.log(customData);
         ))}
       </div>
     </div>)}
-    {(type==="t_speaking_opportunity" || type==="T_PEOPLE_FINDER")&&
+    {(type==="T_SPEAKING_OPPORTUINITY" || type==="T_PEOPLE_FINDER")&&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHead}>
       <div className={styles.competitorHeading}>Upload custom data </div>
@@ -2046,7 +2059,7 @@ console.log(customData);
         </div>
       </div>
       <div className={`card ${styles.competitor}`}>
-        {type==="t_speaking_opportunity" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
+        {type==="T_SPEAKING_OPPORTUINITY" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
         {type==="T_PEOPLE_FINDER" && <div className={styles.subHeading}>Add name and company below:</div>}
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
