@@ -1,0 +1,171 @@
+.infoCard {
+    margin: 10px 0;
+}
+
+.line {
+    margin: 32px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.rankCards {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: 24px;
+}
+
+.rankCards .cardItem {
+    border-radius: var(--border-radius-sm);
+    padding: 0;
+    text-align: center;
+}
+
+.infoCard {
+    display: flex;
+    gap: 12px;
+    background: var(--accent-color);
+}
+
+.infoCardLeft {
+    width: 50%;
+}
+.infoCardRight {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--background-secondary-color);
+}
+
+.tagsContainer {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.badge_success {
+    background-color: var(--success-background-color);
+    padding: 6px 24px;
+    border-radius: var(--border-radius-sm);
+    color: var(--success-text-color);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small);
+}
+
+.badge_danger {
+    background-color: var(--danger-background-color);
+    padding: 6px 24px;
+    border-radius: var(--border-radius-sm);
+    color: var(--danger-text-color);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small);
+}
+
+.subHeading {
+    margin-top: 24px;
+    color: var(--secondary-text-color);
+    font-size: var(--font-size-default);
+}
+
+.categoryContainer {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: 10px 0;
+}
+
+.catItem {
+    border: 1px solid var(--border-color);
+    font-size: var(--font-size-small);
+    padding: 6px 12px;
+    border-radius: 40px;
+    background-color: var(--neutral-light-color);
+    font-weight: var(--font-weight-medium);
+}
+
+.rankCards .rank {
+    padding: 6px 24px;
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-h3);
+
+}
+
+.rankType {
+    border-top: 1px solid var(--border-color);
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    background: var(--neutral-light-color);
+    padding: 6px 24px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.venueName {
+    font-size: var(--font-size-large);
+}
+
+.venueLocation {
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+}
+
+.mainHeading {
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-semibold);
+}
+
+.headingText {
+    font-size: var(--font-size-large);
+    margin: 24px 0;
+}
+
+.scoreCard {
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var( --spacing-lg);
+    background: var(--accent-color);
+}
+
+.cardHeading {
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+}
+
+.scoreCard .score {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+}
+
+.audienceCard {
+    width: 50%;
+    border-radius: var(--border-radius-sm);
+}
+
+.audienceSubCard {
+    margin: 20px 0;
+    background: var(--accent-color);
+    border-radius: var(--border-radius-sm);
+}
+
+.scoreChange {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+}
+
+.pill_info{
+    background-color: var(--success-background-color);
+    padding: 4px 12px;
+    border-radius: 40px;
+    color: var(--success-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-small);
+}
+
+.otherProfiles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
