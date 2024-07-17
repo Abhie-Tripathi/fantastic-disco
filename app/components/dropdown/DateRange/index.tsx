@@ -12,52 +12,90 @@ import {
 
 const currentDate = new Date();
 
+function formatDateToYYYYMMDD(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 const rangeButtons = [
   { title: "Any", range: [null, null] },
   {
     title: "Today",
-    range: [currentDate.toISOString(), currentDate.toISOString()],
+    range: [
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+    ],
   },
   {
     title: "This week",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000)
+        )
+      ),
     ],
   },
   {
     title: "This month",
     range: [
-      new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString(),
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).toISOString(),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+        )
+      ),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+        )
+      ),
     ],
   },
   {
     title: "3 months",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getTime() + 90 * 24 * 60 * 60 * 1000)
+        )
+      ),
     ],
   },
   {
     title: "6 months",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getTime() + 180 * 24 * 60 * 60 * 1000)
+        )
+      ),
     ],
   },
   {
     title: "9 months",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 270 * 24 * 60 * 60 * 1000).toISOString(),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getTime() + 270 * 24 * 60 * 60 * 1000)
+        )
+      ),
     ],
   },
   {
     title: "12 months",
     range: [
-      currentDate.toISOString(),
-      new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      convertToISOFormat(formatDateToYYYYMMDD(currentDate)),
+      convertToISOFormat(
+        formatDateToYYYYMMDD(
+          new Date(currentDate.getTime() + 365 * 24 * 60 * 60 * 1000)
+        )
+      ),
     ],
   },
 ];
@@ -68,6 +106,7 @@ interface DateRangeProps {
 }
 
 function convertToISOFormat(dateString: string) {
+  console.log(dateString);
   const isoString = dateString + "T00:00:00.000Z";
   return isoString;
 }

@@ -23,7 +23,7 @@ interface Profile {
 }
 
 const Profile = () => {
-  const { user, setIsProfileUpdated } = useAuthContext();
+  const { user, setIsProfileUpdated, setProfilePic } = useAuthContext();
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
@@ -59,13 +59,18 @@ const Profile = () => {
       setDept(data.user.department || "");
       setRole(data.user.designation || "");
       setProfilePicture(data.user.profilePicture || null);
+      setProfilePic(data.user.profilePicture || null);
     }
   };
 
   const loginedUser = user;
+  console.log(user);
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!profileData) {
+      fetchData();
+    }
+  }, [profileData]);
 
   const saveDataHandler = async () => {
     const newErrors: Record<string, string> = {};
@@ -121,8 +126,11 @@ const Profile = () => {
     if (data) {
       console.log(data);
       setProfileData(data.user);
+      // setProfilePic(data.user.profilePicture)
       showToast("success", "Data Saved Successfully");
       fetchData();
+
+      console.log(loginedUser);
 
       const newUser = {
         user: {
@@ -145,6 +153,12 @@ const Profile = () => {
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
+      const sizeInMB = file.size / (1024 * 1024);
+      if (sizeInMB > 2) {
+        showToast("error", "Image size should be less than 2mb");
+        return;
+      }
+
       setPicFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -204,6 +218,7 @@ const Profile = () => {
       console.log(data);
       setProfileData(data.user);
       setProfilePicture(null);
+      setProfilePic(null);
     }
 
     if (error) {
@@ -267,7 +282,7 @@ const Profile = () => {
                     </span>
                   </span>
                   <span className={styles.profile_hintText}>
-                    We support PNGs, JPEGs and GIFs under 10MB
+                    We support PNGs, JPEGs and GIFs under 2MB
                   </span>
                 </div>
               </div>
