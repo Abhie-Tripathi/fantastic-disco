@@ -487,7 +487,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
         >
           EVENTS LIST
         </button>
-        <CalendarList filters={''} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
+        <CalendarList filters={props.queryString} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
       </div>
     </>
   );
