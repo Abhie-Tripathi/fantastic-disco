@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styles from './edit.style.module.css'
 import BrandKit from './BrandKit/BrandKit'
+import FilterEvents from './FilterEvents/FilterEvents'
 
 const EditScreen = () => {
     const [selectedBtn, setSelectedBtn] = useState<string>("brandkit")
@@ -12,7 +13,7 @@ const EditScreen = () => {
                 <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedBtn === "brandkit" ? <BrandKit /> : <></>}
+                {selectedBtn === "brandkit" ? <BrandKit /> : selectedBtn === "events" ? <FilterEvents/> : <></>}
             </div>
         </div>
     )
