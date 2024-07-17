@@ -27,7 +27,9 @@ const EventListCard = (event: any) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={'card'}>
-      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_title}>
+        <Link href={`/internal/event/${event.event.id}`} target="_blank" >{event.event.name}</Link>
+      </div>
       <div className={styles.eventListCard_location}>
         {event.event?.location?.cityName}
       </div>
@@ -284,12 +286,14 @@ const Map = (props: MapProps) => {
                 onClose={() => {
                   setSelectedPlace(null);
                 }}
+                closeOnClick={false}
               >
               <div className={styles.event_details_popup}>
                 <div>
                   <Link
-                    href={event.url}
+                    href={`/internal/event/${event.id}`}
                     className={styles.event_details_popup_link}
+                    target="_blank"
                   >
                     {event.name}
                   </Link>
@@ -298,17 +302,18 @@ const Map = (props: MapProps) => {
                     {formatDate(event.startDate)} - {formatDate(event.endDate)}
                   </div>
                 </div>
-                {/* <div className={styles.event_details_action}>
+                <div className={styles.event_details_action}>
                   <Link
                     className={styles.event_view_details}
-                    href={event.url}
+                    href={`/internal/event/${event.id}`}
+                    target="_blank"
                   >
-                    View Full Details
+                    View Details
                   </Link>
-                  <div className={styles.event_details_category}>
+                  {/* <div className={styles.event_details_category}>
                     Textile Industry
-                  </div>
-                </div> */}
+                  </div> */}
+                </div>
               </div>
               </Popup>
             ) : null}
