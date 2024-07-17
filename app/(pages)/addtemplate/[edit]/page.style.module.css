@@ -1,7 +1,7 @@
 .body{
     display: flex;
     padding: 30px 30px 100px 30px;
-    min-height: 88vh;
+    height: 88vh;
     gap: 30px;
 }
 .editContainer{
@@ -9,4 +9,5 @@
 }
 .previewContainer{
     width: 50%;
+    
 }

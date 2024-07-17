@@ -41,4 +41,6 @@
 }
 .yourKits{
     padding: 14px 30px 14px 23px;
+    display: flex;
+    gap: 10px;
 }
