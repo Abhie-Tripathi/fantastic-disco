@@ -1065,7 +1065,10 @@ const Pages = () => {
     }
   }
   console.log(valid);
-
+  const truncate=(val:string)=>{
+    if(val.length>24) return val.substring(0,25)+"...";
+    else return val;
+  }
   return (
     <>
       <div
@@ -2165,15 +2168,23 @@ const Pages = () => {
           </div>
         ))}
       ))} */}
-            {customData.map((item: any, index: number) => (
-              <div key={index} className={styles.customDataOuterDiv}>
-                {Object.entries(item).map(([entryKey, value]) => (
-                  <div key={entryKey} className={styles.singleInputBox}>
-                    {value as string}
-                  </div>
-                ))}
-              </div>
-            ))}
+           {customData.map((item: Record<string, any>, index: number) => (
+  <div key={index} className={styles.customDataOuterDiv}>
+    {Object.entries(item).map(([entryKey, value]: [string, any]) => (
+      <div key={entryKey} className={styles.singleInputBox}>
+        {typeof value === 'string' && value.length > 30 ? (
+          <div className={styles.tooltipContainer} style={{ cursor: "pointer" }}>
+            <span className={styles.tooltipText}>{value}</span>
+            {truncate(value)}
+          </div>
+        ) : (
+          <div>{String(value)}</div>
+        )}
+      </div>
+    ))}
+  </div>
+))}
+
           </div>
           }
         </div>
