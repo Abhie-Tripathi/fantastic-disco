@@ -428,6 +428,7 @@
   .customDataOuterDiv{
     display: flex;
     gap: 10px;
+    width: 50%;
   }
 
   .disabledBtn {
@@ -449,6 +450,9 @@
   .manualHeading{
     font-size: 16px;
     font-weight: 500;
+    display: flex;
+    gap:10px;
+    align-items: center;
     /* color: var(--primary-color); */
   }
   .manualSubHeading{
@@ -464,9 +468,9 @@
   }
   .badgeSuccess{
     background-color: #e6feef;
-    padding: 8px 24px;
+    padding: 5px 10px;
     border-radius: var(--border-radius-lg);
     color: #3cbda8;
     font-weight: var(--font-weight-medium);
-    font-size: 14px;
+    font-size: 10px;
   }
