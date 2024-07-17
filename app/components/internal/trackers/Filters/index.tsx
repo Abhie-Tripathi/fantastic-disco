@@ -219,16 +219,16 @@ const templates = [
     //   }
     // ]
   },
-  {
-    name:"T_PRODUCT_KEYWORDS",
-    description:"List all the events which belongs to given industry or associated with keywords :",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Keywords",
-    //   }
-    // ]
-  }
+  // {
+  //   name:"T_PRODUCT_KEYWORDS",
+  //   description:"List all the events which belongs to given industry or associated with keywords :",
+  //   inputAreas: [
+  //     {
+  //       type: "text",
+  //       placeholder: "Keywords",
+  //     }
+  //   ]
+  // }
 ]
 const Pages = () => {
   const searchParams = useSearchParams();

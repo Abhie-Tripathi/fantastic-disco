@@ -326,3 +326,7 @@
         max-height: 0; /* Collapse the div */
         opacity: 0; /* Fade out the div */
       }
+
+      .allOptions{
+        display: flex;
+      }

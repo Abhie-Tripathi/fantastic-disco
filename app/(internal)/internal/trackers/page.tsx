@@ -1,5 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import TrackerDropdown from "@/app/components/internal/trackers/TrackerDropdown/TrackerDropdown";
 import styles from "./page.style.module.css";
 import Link from "next/link";
 import { Suspense, lazy } from "react";
@@ -269,6 +270,7 @@ const Trackers = () => {
   };
   const [hideTemplate, setHideTemplate] = useState(true);
   const [dataPresent, setDataPresent] = useState(false);
+  const [value,setValue]=useState(false);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
@@ -518,6 +520,7 @@ const Trackers = () => {
               <div
                 className={`${styles.trackers}`}
               >
+                <div className={styles.allOptions}>
                 <div
                   className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
                     }`}
@@ -577,6 +580,13 @@ const Trackers = () => {
                   />
                   Saved Events
                 </div>
+              <div onClick={()=>setValue(!value)}>One</div>
+                {value && 
+                <div style={{position:"absolute"}}>
+                <TrackerDropdown/>
+                </div>
+                }
+              </div>
               </div>
               {/* </>
     } */}
