@@ -1,5 +1,5 @@
 .infoCard {
-    margin: 10px 0;
+    margin: 32px 0;
 }
 
 .line {
@@ -32,8 +32,10 @@
     width: 50%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    /* gap: 20px; */
     background: var(--background-secondary-color);
+    max-height: 30vh;
+    overflow-y: auto;
 }
 
 .tagsContainer {
@@ -42,7 +44,7 @@
 }
 
 .badge_success {
-    background-color: var(--success-background-color);
+    background-color: var(--neutral-light-color);
     padding: 6px 24px;
     border-radius: var(--border-radius-sm);
     color: var(--success-text-color);
@@ -51,7 +53,7 @@
 }
 
 .badge_danger {
-    background-color: var(--danger-background-color);
+    background-color: var(--neutral-light-color);
     padding: 6px 24px;
     border-radius: var(--border-radius-sm);
     color: var(--danger-text-color);
@@ -69,6 +71,7 @@
     display: flex;
     gap: var(--spacing-sm);
     margin: 10px 0;
+    flex-wrap: wrap;
 }
 
 .catItem {
@@ -78,6 +81,7 @@
     border-radius: 40px;
     background-color: var(--neutral-light-color);
     font-weight: var(--font-weight-medium);
+    text-wrap: nowrap;
 }
 
 .rankCards .rank {
@@ -114,7 +118,7 @@
 
 .headingText {
     font-size: var(--font-size-large);
-    margin: 24px 0;
+    margin: 16px 0;
 }
 
 .scoreCard {
@@ -123,6 +127,7 @@
     flex-direction: column;
     gap: var( --spacing-lg);
     background: var(--accent-color);
+    width: 33.33%;
 }
 
 .cardHeading {
@@ -132,8 +137,9 @@
 
 .scoreCard .score {
     font-size: var(--font-size-h4);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     text-align: center;
+    /* text-wrap: nowrap; */
 }
 
 .audienceCard {
@@ -168,4 +174,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
+}
+
+.blurContent {
+    filter: blur(3px);
 }

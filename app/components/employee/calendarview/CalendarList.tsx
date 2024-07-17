@@ -30,7 +30,9 @@ const EventListCard = (event: any) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={'card'}>
-      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_title}>
+        <Link href={`/internal/event/${event.event.id}`} target="_blank" >{event.event.name}</Link>
+      </div>
       <div className={styles.eventListCard_location}>
         {event.event?.location?.cityName}
       </div>

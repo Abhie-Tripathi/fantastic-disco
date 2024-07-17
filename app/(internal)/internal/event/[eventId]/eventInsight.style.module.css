@@ -48,11 +48,12 @@
 .iconMonth{
     font-size: var(--font-size-label);
     color: var(--primary-text-color);
-    background-color: var(--primary-light-color);
+    background-color: var(--accent-color);
     border-top-left-radius: var(--border-radius-md);
     border-top-right-radius: var(--border-radius-md);
     padding: 4px 14px;
     border-bottom: 1px solid var(--border-color);
+    width: 100%;
 }
 .iconDate{
     padding: 6px 14px;
@@ -112,6 +113,7 @@
     gap: var(--spacing-md);
     display: flex;
     flex-direction: column;
+    margin-top: 28px;
 }
 
 .tabsContainer {
