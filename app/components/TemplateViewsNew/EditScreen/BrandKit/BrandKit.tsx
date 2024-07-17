@@ -3,7 +3,40 @@ import styles from './brandkit.style.module.css'
 import Customization from './Customization/Customization'
 import Themes from './Themes/Themes'
 
-const BrandKit = () => {
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
+
+interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+}
+interface ButtonSettings{
+    buttonColor : string;
+    fontColor : string;
+    borderRadius : number;
+    borderColor : string;
+    buttonText : string;
+}
+interface ButtonSettingsState{
+    primary : ButtonSettings;
+    secondary : ButtonSettings;
+}
+interface EditScreenProps {
+    setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
+    setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;
+    setFontSettings: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+    setButtonSettings : React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
+    buttonSettings : ButtonSettingsState
+    cardBgColor : string
+    cardBorderRadius : number;
+}
+
+const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings} : EditScreenProps) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("customization")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -15,7 +48,7 @@ const BrandKit = () => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "customization" ? <Customization setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
+                {selectedBtn === "customization" ? <Customization buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
             </div>
         </div>
     )

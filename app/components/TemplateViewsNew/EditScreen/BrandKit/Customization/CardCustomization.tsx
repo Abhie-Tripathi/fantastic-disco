@@ -4,15 +4,18 @@ import ColorPicker from './ColorPicker';
 
 interface Props{
     extractedColors : string[]
+    setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
+    setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;
+    cardBgColor : string
+    cardBorderRadius : number;
   }
   
-  const CardCustomization = ({extractedColors} : Props) => {
-    const [color, setColor] = useState('#2c68f6');
-    const [radiusValue, setRadiusValue] = useState<number>(2)
+  const CardCustomization = ({extractedColors, setCardBgColor, setCardBorderRadius, cardBgColor, cardBorderRadius} : Props) => {
+    // const [color, setColor] = useState('#2c68f6');
+    // const [radiusValue, setRadiusValue] = useState<number>(2)
 
     const handleChange = (color: any) => {
-        setColor(color.hex);
-
+        setCardBgColor(color.hex);
     };
     return (
         <div className={styles.body}>
@@ -22,15 +25,15 @@ interface Props{
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.backgroundContainer}>
-                    <ColorPicker heading='Background' extractedColors={extractedColors} color={color} setColor={setColor} handleChange={handleChange} />
+                    <ColorPicker heading='Background' extractedColors={extractedColors} color={cardBgColor} handleChange={handleChange} />
                 </div>
                 <div className={styles.radiusContainer}>
                     <div className={styles.heading}>Border Radius</div>
                     <RadiusIcon />
-                    <div className={styles.radiusValue}>{radiusValue}px</div>
+                    <div className={styles.radiusValue}>{cardBorderRadius}px</div>
                     <div className={styles.arrows}>
-                        <div onClick={()=>setRadiusValue(radiusValue+1)}><UpIcon/></div>
-                        <div onClick={()=>setRadiusValue(radiusValue-1)}><DownIcon/></div>
+                        <div onClick={()=>setCardBorderRadius(cardBorderRadius+1)}><UpIcon/></div>
+                        <div onClick={()=>setCardBorderRadius(cardBorderRadius-1)}><DownIcon/></div>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,40 @@ import styles from './edit.style.module.css'
 import BrandKit from './BrandKit/BrandKit'
 import FilterEvents from './FilterEvents/FilterEvents'
 
-const EditScreen = () => {
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
+
+interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+}
+interface ButtonSettings{
+    buttonColor : string;
+    fontColor : string;
+    borderRadius : number;
+    borderColor : string;
+    buttonText : string;
+}
+interface ButtonSettingsState{
+    primary : ButtonSettings;
+    secondary : ButtonSettings;
+}
+interface EditScreenProps {
+    setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
+    setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;
+    setFontSettings: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+    setButtonSettings : React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
+    buttonSettings : ButtonSettingsState
+    cardBgColor : string
+    cardBorderRadius : number;
+}
+
+const EditScreen = ({setCardBgColor,setCardBorderRadius,setFontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings} : EditScreenProps) => {
     const [selectedBtn, setSelectedBtn] = useState<string>("brandkit")
     return (
         <div className={styles.body}>
@@ -13,7 +46,7 @@ const EditScreen = () => {
                 <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedBtn === "brandkit" ? <BrandKit /> : selectedBtn === "events" ? <FilterEvents/> : <></>}
+                {selectedBtn === "brandkit" ? <BrandKit buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius}/> : selectedBtn === "events" ? <FilterEvents /> : <></>}
             </div>
         </div>
     )

@@ -7,12 +7,12 @@ import { SketchPicker } from 'react-color';
 interface ColorProps {
     color: string;
     extractedColors : string[]
-    setColor : (value : string)=>void
+    // setColor : (value : string)=>void
     heading : string;
     handleChange : (value : any)=>void
 }
 
-const ColorPicker = ({ color,extractedColors, setColor,heading , handleChange}: ColorProps) => {
+const ColorPicker = ({ color,extractedColors,heading , handleChange}: ColorProps) => {
     const [displayColorPicker, setDisplayColorPicker] = useState(false);
     const handleClick = () => {
         setDisplayColorPicker(!displayColorPicker);

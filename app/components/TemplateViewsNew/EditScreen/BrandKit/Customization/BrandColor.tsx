@@ -46,7 +46,7 @@ const BrandColor = ({ extractedColors,setExtractedColors }: Props) => {
                     ))}
                 </div>
                 <div className={styles.pickColorContainer}>
-                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} setColor={setColor} handleChange={handleChange} />
+                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} handleChange={handleChange} />
                 </div>
             </div>
         </div>

@@ -4,9 +4,22 @@ import ColorPicker from './ColorPicker'
 
 interface Props {
     extractedColors: string[]
+    setFontSettings: React.Dispatch<React.SetStateAction<FontSettingsState>>;
 }
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+  }
+  
+  interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+  }
 
-const TypographyCustomization = ({ extractedColors }: Props) => {
+const TypographyCustomization = ({ extractedColors, setFontSettings }: Props) => {
     const [selectedType, setSelectedType] = useState("heading")
     const [heading, setHeading] = useState({
         fontColor: "#000000", fontSize: 24, fontFamily: "Arial", fontWeight
@@ -143,15 +156,15 @@ const TypographyCustomization = ({ extractedColors }: Props) => {
                     </div>
                     <ColorPicker heading='Font Colour' color={selectedType === "heading" ? heading.fontColor : selectedType === "subheaing" ? subHeading.fontColor : body.fontColor}
                         extractedColors={extractedColors}
-                        setColor={(color) => {
-                            if (selectedType === "heading") {
-                                setHeading((prev) => ({ ...prev, fontColor: color }));
-                            } else if (selectedType === "subheading") {
-                                setSubHeading((prev) => ({ ...prev, fontColor: color }));
-                            } else {
-                                setBody((prev) => ({ ...prev, fontColor: color }));
-                            }
-                        }}
+                        // setColor={(color) => {
+                        //     if (selectedType === "heading") {
+                        //         setHeading((prev) => ({ ...prev, fontColor: color }));
+                        //     } else if (selectedType === "subheading") {
+                        //         setSubHeading((prev) => ({ ...prev, fontColor: color }));
+                        //     } else {
+                        //         setBody((prev) => ({ ...prev, fontColor: color }));
+                        //     }
+                        // }}
                         handleChange={handleFontColorChange}
                     />
                 </div>

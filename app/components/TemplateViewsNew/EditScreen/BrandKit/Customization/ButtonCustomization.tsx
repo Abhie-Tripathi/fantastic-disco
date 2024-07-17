@@ -2,64 +2,79 @@ import React, { useState } from 'react'
 import styles from './buttoncustom.style.module.css'
 import ColorPicker from './ColorPicker';
 
-interface Props{
-    extractedColors : string[]
-  }
-  
-  const ButtonCustomization = ({extractedColors} : Props) => {
-    const [selectedBtn, setSelectedBtn] = useState("primary");
+interface Props {
+    extractedColors: string[]
+    setButtonSettings: React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
+    buttonSettings: ButtonSettingsState
+}
+
+interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+}
+interface ButtonSettingsState {
+    primary: ButtonSettings;
+    secondary: ButtonSettings;
+}
+const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSettings }: Props) => {
+    const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
     const [btnOne, setBtnOne] = useState({ btnColor: "#0072F5", borderColor: "#0072F5", borderRadius: 4, fontColor: "#000000" })
     const [btnTwo, setBtnTwo] = useState({ btnColor: "#6750a4", borderColor: "#6750a4", borderRadius: 4, fontColor: "#000000" })
 
-    const handleCheckboxChange = (value: string) => {
-        setSelectedBtn(value);
+    const handleCheckboxChange = () => {
+        setSelectedBtn(selectedBtn === "primary" ? "secondary" : "primary");
     };
     const handleBtnColorChange = (color: any) => {
-        if (selectedBtn === "primary") {
-            setBtnOne((prev) => ({ ...prev, btnColor: color.hex }));
-        } else {
-            setBtnTwo((prev) => ({ ...prev, btnColor: color.hex }));
-        }
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                buttonColor: color.hex,
+            },
+        }));
     };
 
     const handleFontColorChange = (color: any) => {
-        if (selectedBtn === "primary") {
-            setBtnOne((prev) => ({ ...prev, fontColor: color.hex }));
-        } else {
-            setBtnTwo((prev) => ({ ...prev, fontColor: color.hex }));
-        }
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                fontColor: color.hex,
+            },
+        }));
     };
     const handleBorderColorChange = (color: any) => {
-        if (selectedBtn === "primary") {
-            setBtnOne((prev) => ({ ...prev, borderColor: color.hex }));
-        } else {
-            setBtnTwo((prev) => ({ ...prev, borderColor: color.hex }));
-        }
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                borderColor: color.hex,
+            },
+        }));
     };
 
     const handleIncreaseRadius = () => {
-        if (selectedBtn === "primary") {
-            let radius = btnOne.borderRadius + 1;
-            setBtnOne((prev) => ({ ...prev, borderRadius: radius }));
-        } else {
-            let radius = btnTwo.borderRadius + 1;
-            setBtnTwo((prev) => ({ ...prev, borderRadius: radius }));
-        }
-    }
+        setButtonSettings((prevSettings) => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                borderRadius: prevSettings[selectedBtn].borderRadius + 1,
+            }
+        }));
+    };
     const handleDecreaseRadius = () => {
-        if (selectedBtn === "primary") {
-            let radius = btnOne.borderRadius;
-            if (radius != 0) {
-                setBtnOne((prev) => ({ ...prev, borderRadius: radius - 1 }));
+        setButtonSettings((prevSettings) => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                borderRadius: prevSettings[selectedBtn].borderRadius > 0 ? prevSettings[selectedBtn].borderRadius - 1 : 0,
             }
+        }));
+    };
 
-        } else {
-            let radius = btnTwo.borderRadius
-            if (radius != 0) {
-                setBtnTwo((prev) => ({ ...prev, borderRadius: radius - 1 }));
-            }
-        }
-    }
 
     return (
         <div className={styles.body}>
@@ -69,8 +84,8 @@ interface Props{
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.btnPreviewContainer}>
-                    {selectedBtn === "primary" ? <button style={{ color: btnOne.fontColor, backgroundColor: btnOne.btnColor, borderRadius: btnOne.borderRadius, borderColor: btnOne.borderColor }} className={styles.primaryPreview}>Button</button>
-                        : <button style={{ color: btnTwo.fontColor, backgroundColor: btnTwo.btnColor, borderRadius: btnTwo.borderRadius, borderColor: btnTwo.borderColor }} className={styles.secondaryPreview}>Button</button>}
+                    {selectedBtn === "primary" ? <button style={{ color: buttonSettings.primary.fontColor, backgroundColor: buttonSettings.primary.buttonColor, borderRadius: buttonSettings.primary.borderRadius, borderColor: buttonSettings.primary.borderColor }} className={styles.primaryPreview}>Meet Us</button>
+                        : <button style={{ color: buttonSettings.secondary.fontColor, backgroundColor: buttonSettings.secondary.buttonColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>Meet Us</button>}
                 </div>
                 <div className={styles.btnOptions}>
                     <label className={styles.checkboxContainer}>
@@ -78,7 +93,7 @@ interface Props{
                             type="checkbox"
                             className={styles.checkbox}
                             checked={selectedBtn === "primary"}
-                            onChange={() => handleCheckboxChange("primary")}
+                            onChange={handleCheckboxChange}
                         />
                         <span className={styles.customCheckbox}></span>
                         <span className={styles.checkboxLabel}>Primary</span>
@@ -88,7 +103,7 @@ interface Props{
                             type="checkbox"
                             className={styles.checkbox}
                             checked={selectedBtn === "secondary"}
-                            onChange={() => handleCheckboxChange("secondary")}
+                            onChange={handleCheckboxChange}
                         />
                         <span className={styles.customCheckbox}></span>
                         <span className={styles.checkboxLabel}>Secondary</span>
@@ -97,50 +112,29 @@ interface Props{
                 <div className={styles.line}></div>
                 <div className={styles.btnFontColorContainer}>
                     <ColorPicker
-                        color={selectedBtn === "primary" ? btnOne.btnColor : btnTwo.btnColor}
+                        color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
                         extractedColors={extractedColors}
-                        setColor={(color) => {
-                            if (selectedBtn === "primary") {
-                                setBtnOne((prev) => ({ ...prev, btnColor: color }));
-                            } else {
-                                setBtnTwo((prev) => ({ ...prev, btnColor: color }));
-                            }
-                        }}
                         heading="Button Colour"
                         handleChange={handleBtnColorChange}
                     />
                     <ColorPicker
-                        color={selectedBtn === "primary" ? btnOne.fontColor : btnTwo.fontColor}
+                        color={selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor}
                         extractedColors={extractedColors}
-                        setColor={(color) => {
-                            if (selectedBtn === "primary") {
-                                setBtnOne((prev) => ({ ...prev, fontColor: color }));
-                            } else {
-                                setBtnTwo((prev) => ({ ...prev, fontColor: color }));
-                            }
-                        }}
                         heading="Font Colour"
                         handleChange={handleFontColorChange}
                     />
                 </div>
                 <div className={styles.colorRadiusContainer}>
                     <ColorPicker
-                        color={selectedBtn === "primary" ? btnOne.borderColor : btnTwo.borderColor}
+                        color={selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor}
                         extractedColors={extractedColors}
-                        setColor={(color) => {
-                            if (selectedBtn === "primary") {
-                                setBtnOne((prev) => ({ ...prev, borderColor: color }));
-                            } else {
-                                setBtnTwo((prev) => ({ ...prev, borderColor: color }));
-                            }
-                        }}
                         heading="Border Colour"
                         handleChange={handleBorderColorChange}
                     />
                     <div className={styles.radiusContainer}>
                         <div className={styles.heading}>Border Radius</div>
                         <RadiusIcon />
-                        <div className={styles.radiusValue}>{selectedBtn === "primary" ? btnOne.borderRadius : btnTwo.borderRadius}px</div>
+                        <div className={styles.radiusValue}>{selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius}px</div>
                         <div className={styles.arrows}>
                             <div onClick={handleIncreaseRadius}><UpIcon /></div>
                             <div onClick={handleDecreaseRadius}><DownIcon /></div>
