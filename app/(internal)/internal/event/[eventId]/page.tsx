@@ -10,7 +10,7 @@ import Overview from "@/app/components/internal/insightPage/Overview";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Link from "next/link";
-// import Loading from "@/app/components/UI/Loading";
+import Loading from "@/app/components/UI/Loading";
 
 function extractDay(startDate: Date): string {
   const weekdays = [
@@ -85,6 +85,8 @@ const InsightsPage = () => {
     // { name: "More", status: "open", active: false },
   ]);
 
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
   const setActiveTab = (tabId: number) => {
     setTabs(
       tabs.map((tab: any, index: number) => ({
@@ -96,20 +98,31 @@ const InsightsPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(
-        `${baseUrl}/event/search?eventId=${eventId}&eventRank=0,1000`
-      );
-      if (error) {
-        console.log(error);
-        return;
-      }
-      if (data) {
-        setEventDetail(data?.events[0]);
-        setEventStart(new Date(data?.events[0].startDate));
+      try{
+        setIsLoaded(false);
+        const { data, error } = await myFetch(
+          `${baseUrl}/event/search?eventId=${eventId}&eventRank=0,1000`
+        );
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if (data) {
+          setEventDetail(data?.events[0]);
+          setEventStart(new Date(data?.events[0].startDate));
+        }
+      } catch (error) {
+        console.error("Error saving data:", error);
+      } finally {
+        setIsLoaded(true);
       }
     };
     fetchData();
   }, [eventId]);
+
+  if (!isLoaded) {
+    return (<div style={{padding: '40px'}}><Loading /></div>);
+  }
 
   return (
     <>
@@ -201,6 +214,7 @@ const InsightsPage = () => {
           <div className={styles.tabsContainer}>
             {tabs.map((tab: any, index: number) => (
               <div
+                key={index}
                 className={`${styles.tabItem} ${
                   tab.active ? styles.tabActive : ""
                 }`}

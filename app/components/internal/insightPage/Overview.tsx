@@ -29,8 +29,8 @@ const Overview = ({ eventDetail }: OverviewProps) => {
           <div className={styles.subHeading}>Category</div>
           <div className={styles.categoryContainer}>
             {eventDetail?.categories &&
-              eventDetail.categories.map((cat: any) => (
-                <div className={styles.catItem}>{cat.name}</div>
+              eventDetail.categories.map((cat: any, index: number) => (
+                <div key={index} className={styles.catItem}>{cat.name}</div>
               ))}
           </div>
 
