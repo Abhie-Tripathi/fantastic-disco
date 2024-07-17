@@ -63,7 +63,7 @@
     display: grid;
     /* grid-template-columns: repeat(4, minmax(0px, 245px)); */
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-md) var(--spacing-lg);
+    gap: var(--spacing-lg);
   }
   .inputdropdowns_container button, .inputdropdowns_container_AI button{
     color: inherit;
@@ -389,6 +389,7 @@
   .competitor{
     display: flex;
     flex-direction: column;
+    padding: 12px;
     gap:var(--spacing-sm);
   }
   .singleInputArea{

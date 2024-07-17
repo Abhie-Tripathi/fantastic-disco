@@ -142,7 +142,7 @@ const templates = [
     inputAreas: [
       {
         type: "text",
-        placeholder: "Url",
+        placeholder: "Add Competitor Website",
       }
     ]
   },
@@ -1024,18 +1024,19 @@ const Pages = () => {
     }));
   };
   let valid = true;
+  let error="";
   const addNew = () => {
     if (!template) {
       console.error('Template is not found');
       return;
     }
 
-    const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    const regex = /^(https?:\/\/[\w.-]+)/;
     let isValid = true;
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
-        if (inputArea.placeholder === 'Url') {
+        if (inputArea.placeholder === 'Add Competitor Website') {
           if (regex.test(value)) {
             acc[inputArea.placeholder] = value;
           } else {
@@ -1057,6 +1058,7 @@ const Pages = () => {
           newEntry
         ]);
       } else {
+        error="Enter valid inputs"
         console.error('Invalid input or URL');
       }
       setInputValues({});
@@ -2080,7 +2082,7 @@ const Pages = () => {
       </Suspense>
       {template &&
         <div className={`card ${styles.competitor}`}>
-          <div className={styles.competitorHead}>
+          <div className={styles.competitorHead} >
             <div className={styles.competitorHeading}>Upload custom data </div>
           </div>
           <div className={styles.bar}></div>
