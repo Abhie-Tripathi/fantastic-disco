@@ -5,12 +5,13 @@ import Image from 'next/image'
 
 interface Props {
     extractedColors?: string[];
+    backgroundColor : string;
 }
 
-const KitCard = ({ extractedColors }: Props) => {
+const KitCard = ({ extractedColors,backgroundColor }: Props) => {
     return (
         <div className={styles.card}>
-            <div className={styles.imageContainer}>
+            <div className={styles.imageContainer} style={{backgroundColor : backgroundColor}}>
                 <Image src={KitImage} alt='img' />
                 {extractedColors && (
                     <div className={styles.colorsContainer}>

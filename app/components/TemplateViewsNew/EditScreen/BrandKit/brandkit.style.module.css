@@ -1,5 +1,6 @@
 .body{
     width: 100%;
+    height: 100%;
     padding: 0px 10px 0px 10px;
 }
 .navbar{
@@ -27,5 +28,5 @@
 .container{
     margin-top: 20px;
     overflow-y: auto;
-    height: 430px;
+    height: 89%;
 }
