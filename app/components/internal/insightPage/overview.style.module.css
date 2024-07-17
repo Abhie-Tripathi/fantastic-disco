@@ -1,9 +1,9 @@
 .infoCard {
-    margin: 32px 0;
+    margin: 24px 0;
 }
 
 .line {
-    margin: 32px 0;
+    margin: 24px 0;
     border-top: 1px solid var(--border-color);
 }
 
@@ -114,6 +114,7 @@
 .mainHeading {
     font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
+    line-height: 20px;
 }
 
 .headingText {

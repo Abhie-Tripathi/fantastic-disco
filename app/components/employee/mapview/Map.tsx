@@ -308,7 +308,7 @@ const Map = (props: MapProps) => {
                     href={`/internal/event/${event.id}`}
                     target="_blank"
                   >
-                    View Full Details
+                    View Details
                   </Link>
                   {/* <div className={styles.event_details_category}>
                     Textile Industry

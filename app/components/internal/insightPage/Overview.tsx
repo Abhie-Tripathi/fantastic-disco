@@ -100,7 +100,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
           <div className={styles.cardHeading}>Event Trust Score</div>
           <div className={styles.score}>
             {eventDetail?.repeatSentiment && eventDetail?.repeatSentiment > 0
-              ? eventDetail?.repeatSentiment
+              ? eventDetail?.repeatSentiment + "%"
               : "-"}
           </div>
           {/* <div className={styles.scoreChange}>

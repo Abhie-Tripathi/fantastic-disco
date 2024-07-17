@@ -184,16 +184,20 @@ const InsightsPage = () => {
                 <Buildings color={theme === "dark" ? "white" : ""} />
               </div>
               <div className={styles.dateDetails}>
-                <div className={styles.organiser}>
+                <div className={styles.date}>
                   {eventDetail?.organizer?.name &&
-                    eventDetail?.organizer?.name + ", "}
-                  {eventDetail?.organizer?.cityName &&
-                  eventDetail?.organizer?.countryName
-                    ? eventDetail.organizer.cityName +
-                      ", " +
-                      eventDetail.organizer?.countryName
-                    : eventDetail?.organizer?.countryName}
+                    eventDetail?.organizer?.name }
+                  
                   {/* San Antonio Space Center, Texas, Florida */}
+                </div>
+                <div className={styles.time}>
+                  {eventDetail?.organizer?.cityName &&
+                    eventDetail?.organizer?.countryName
+                      ? eventDetail.organizer.cityName +
+                        ", " +
+                        eventDetail.organizer?.countryName
+                      : eventDetail?.organizer?.countryName
+                  }
                 </div>
               </div>
             </div>
