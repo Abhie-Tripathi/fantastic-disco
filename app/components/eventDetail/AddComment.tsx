@@ -772,7 +772,7 @@ export const AddComment = ({
             </div>
           )}
           {types && (
-            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "" }}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "", height:"auto" }}>
 
               {type.map((ele, ind) => (
                 <div

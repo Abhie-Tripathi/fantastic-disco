@@ -560,7 +560,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     console.log(selectedPdfs);
   }, 5000);
   useEffect(() => {
-    const url = `${baseUrl}/auth/users`
+    const url = `${baseUrl}/auth/users?limit=100`
     getAllUser(url);
   }, [])
   const [userArr, setUserArr] = useState<string[]>([]);

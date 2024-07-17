@@ -56,7 +56,7 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 
-const Index = ({setDataPresent}:{setDataPresent:any}) => {
+const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPresent:any, isData:boolean}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [allTracker, setAllTracker] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
   const endOfListRef = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
+     if(isData){
       setLoading(true);
       setError(null);
       setLoadOne(true);
@@ -117,7 +118,8 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
         setError('Error fetching data.');
       } finally {
         setLoading(false);
-      }
+      }}
+     
     };
 
     fetchData();
@@ -136,6 +138,13 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
       setAllTracker([]);
     }
   };
+  useEffect(()=>{
+    if(totalPage>0){
+    setDataPresent(true);
+    // setIsLoading(false);
+  }
+  },[totalPage])
+  
   return (
     <div className={styles.container} ref={endOfListRef}>
       <div className={styles.containerLeft}>
@@ -163,7 +172,7 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
       </div>
       <div style={{ width: "100%" }}>
       
-      {allTracker.length === 0 && !loading && (
+      {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
         <div className={styles.containerRight}>

@@ -92,6 +92,7 @@ interface FilterValue {
   eventCity: any;
   eventCountry: any;
   eventRegion:string;
+  orgWebsite:string;
   eventAttendanceRange: any;
 }
 interface CategoryData {
@@ -295,7 +296,7 @@ const [add,setAdd]=useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   useEffect(()=>{
-    if(type==="t_competitor"){
+    if(type==="T_COMPETITOR"){
       setWebsites(customData.map((item:any) => item.companyUrl).join(','));
     }
   },[type, customData])
@@ -320,6 +321,9 @@ const [add,setAdd]=useState(false);
       const secondLast = pathName[pathName.length - 2];
       const formData = {
         name: trackerName,
+        ...(type && type.length>0 && {
+          type:type.toUpperCase()
+      }),
         filterValue: {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -442,7 +446,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if (selectedLocations.length === 0 || trackerName.length === 0) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsMandatory(true);
         setIsCreating(false);
@@ -470,10 +474,11 @@ const [add,setAdd]=useState(false);
     } else {
       const formData = {
         name: trackerName,
+        ...(type && type.length>0 && {
+          type:type.toUpperCase()
+      }),
         filterValue: {
-          ...(type && type.length>0 && {
-              type:type
-          }),
+         
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
@@ -591,7 +596,7 @@ const [add,setAdd]=useState(false);
       };
       console.log(selectedCountry);
 
-      if (selectedLocations.length === 0 || trackerName.length === 0) {
+      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -646,7 +651,19 @@ const [add,setAdd]=useState(false);
       if (editData.tracker.filterValue?.maturity == "low") {
         setSelectedMaturity(25);
       }
-      
+      if(type==="T_COMPETITOR"){
+        const newData=editData?.tracker?.filterValue?.orgWebsite?.
+        split(',');
+        console.log(newData);
+        if (Array.isArray(newData)) {
+          setCustomData((prevData: any) => [
+            ...prevData,
+            ...newData.map((item) => (
+              { companyUrl: item.trim() }
+            ))
+          ]);
+        }
+      }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
         if (editData?.tracker?.filterValue?.localRank?.length > 0) {
@@ -887,11 +904,24 @@ const handleInputChange = (e:any) => {
 };
 const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === 'Enter' && (name && companyName || companyUrl)) {
+    // if(isValidURL(e.target.value))
     addNewEntry();
   }
 };
 console.log(customData);
-
+// const isValidURL = (string) => {
+//   try {
+//     new URL(string);
+//     return true;
+//   } catch (_) {
+//     try {
+//       new URL("http://" + string);
+//       return true;
+//     } catch (_) {
+//       return false;
+//     }
+//   }
+// };
   return (
     <>
       <div
@@ -916,7 +946,7 @@ console.log(customData);
                 ? "/internal/trackers"
                 : `/internal/trackers/${
                     pathName[pathName.length - 2]
-                  }/trackedConfiguration`
+                  }/trackedConfiguration?type=${type}`
             }
             style={{ display: "flex" }}
           >
@@ -1911,7 +1941,77 @@ console.log(customData);
           </div>
         </div>
       </Suspense>
-      {(type==="t_competitor" || type === "t_recruitment") &&
+      {(type==="T_COMPETITOR" || type === "t_recruitment") &&
+     ( <div className={`card ${styles.competitor}`}>
+      <div className={styles.competitorHead}>
+      <div className={styles.competitorHeading}>Upload custom data </div>
+      {/* <div className={styles.badgeSuccess}>Comming Soon</div> */}
+      </div>
+      <div className={styles.bar}></div>
+      <div className={`${styles.toggleDiv}`}>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Add data manually</div>
+                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+              <div>
+                <div className={styles.manualHeading}>Import CSV Data</div>
+                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+              </div>
+              <div>
+              
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                checked={selectedExhibitScore.length !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        
+              </div>
+        </div>
+      </div>
+      <div className={`card ${styles.competitor}`}>
+        <div className={styles.subHeading}>Add competitor&apos;s website:</div>
+        <div className={styles.allInputArea}>
+          <div className={styles.singleInputArea} style={{"border" : (isMandatory && customData.length===0) ?"1px solid red":""}}>
+            <Image src={Url} alt="url" className="icons" />
+            <input
+              className={styles.textArea}
+              type="text"
+              placeholder="Url"
+              value={companyUrl}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+            />
+          </div>
+          <div onClick={addNewEntry} className={styles.addIcon}>
+            <Image src={Add} alt="add_Icon" />
+          </div>
+        </div>
+        {customData.map((item:any, index:number) => (
+          <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
+        ))}
+      </div>
+    </div>)}
+    {(type==="T_SPEAKING_OPPORTUINITY" || type==="T_PEOPLE_FINDER")&&
      ( <div className={`card ${styles.competitor}`}>
       <div className={styles.competitorHead}>
       <div className={styles.competitorHeading}>Upload custom data </div>
@@ -1958,76 +2058,9 @@ console.log(customData);
               </div>
         </div>
       </div>
-      {/* <div className={`card ${styles.competitor}`}>
-        <div className={styles.subHeading}>Add competitor&apos;s website:</div>
-        <div className={styles.allInputArea}>
-          <div className={styles.singleInputArea}>
-            <Image src={Url} alt="url" className="icons" />
-            <input
-              className={styles.textArea}
-              type="text"
-              placeholder="Url"
-              value={companyUrl}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-            />
-          </div>
-          <div onClick={addNewEntry} className={styles.addIcon}>
-            <Image src={Add} alt="add_Icon" />
-          </div>
-        </div>
-        {customData.map((item:any, index:number) => (
-          <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
-        ))}
-      </div> */}
-    </div>)}
-    {(type==="t_speaking_opportunity" || type==="t_people_finder")&&
-     ( <div className={`card ${styles.competitor}`}>
-      <div className={styles.competitorHeading}>Upload custom data</div>
-      <div className={styles.bar}></div>
-      <div className={`${styles.toggleDiv}`}>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually</div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
-              
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
-              </div>
-        </div>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data</div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-              
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
-              </div>
-        </div>
-      </div>
-      {/* <div className={`card ${styles.competitor}`}>
-        {type==="t_speaking_opportunity" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
-        {type==="t_people_finder" && <div className={styles.subHeading}>Add name and company below:</div>}
+      <div className={`card ${styles.competitor}`}>
+        {type==="T_SPEAKING_OPPORTUINITY" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
+        {type==="T_PEOPLE_FINDER" && <div className={styles.subHeading}>Add name and company below:</div>}
         <div className={styles.allInputArea}>
           <div className={styles.singleInputArea}>
             <Image src={Name} alt="userName_Icon" className="icons"/>
@@ -2062,7 +2095,7 @@ console.log(customData);
           <div className={styles.singleInputBox}>{item.companyName}</div>
           </div>
         ))}
-      </div> */}
+      </div>
     </div>)}
     </>
   );

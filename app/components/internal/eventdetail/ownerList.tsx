@@ -22,11 +22,11 @@ interface UserType {
 }
 const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [userList, setUserList] = useState([]);
+  const [userList, setUserList] = useState<any>([]);
   const [owner, setOwner] = useState<any>();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+  const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);
@@ -69,6 +69,9 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
       showToast("error", error.message);
       return;
     }
+    if (data) {
+      getOwnerDetails();
+    }
   };
 
   const getOwnerDetails = async () => {
@@ -87,7 +90,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
 
   useEffect(() => {
     getOwnerDetails();
-  }, [enquiryId, handleChangeOwner]);
+  }, [enquiryId]);
 
   return (
     <div className={styles.filter_container}>
@@ -116,13 +119,20 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                   marginRight: "0.5rem",
                 }}
               >
-                {owner && owner.name}&nbsp;
+                {owner && (owner.id === null ? "Assign Owner" : owner.name)}
+                &nbsp;
               </span>
               <br />
               <span style={{ fontSize: "10px" }}>OWNER&nbsp;</span>
             </div>
           </div>
-          <Image width={14} height={14} src={dropdownIcon} alt="downarrow" className={iconClass} />
+          <Image
+            width={14}
+            height={14}
+            src={dropdownIcon}
+            alt="downarrow"
+            className={iconClass}
+          />
         </div>
       </div>
       {isOpen && (

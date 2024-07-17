@@ -462,7 +462,7 @@ const Table = ({
     if (path[path.length - 1] === "trackedEvents") {
       const secondLast = path[path.length - 2];
 
-      fetchData(secondLast);
+      // fetchData(secondLast);
       setIsLoaded(false);
     } else if (path[path.length - 1] === "trackers") {
       fetchAllSavedEvent();
@@ -549,7 +549,7 @@ const Table = ({
       console.log(data);
       setIsLoaded(true);
       if (data?.events?.length > 0) {
-        setActiveValue(data.totalEvents);
+        setActiveValue(data?.totalEvents);
         GAEvent(
           "trackers",
           "Tracker",
