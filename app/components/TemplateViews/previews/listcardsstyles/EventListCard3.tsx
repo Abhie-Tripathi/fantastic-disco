@@ -4,53 +4,48 @@ import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 
-interface CardProps {
-  cardRadius?: number;
-  cardBgColor?: string;
-  eventNameColor?: string;
-  eventNameSize?: number;
-  dateFontSize?: number;
-  locationFontSize?: number;
-  btnBgColor?: string;
-  btnFontColor?: string;
-  btnBorderWidth?: number;
-  btnBorderColor?: string;
-  btnRadius?: number;
-  btnFontSize?: number;
+interface FontSettings {
+  fontFamily: string;
+  fontSize: number;
+  fontColor: string;
+  fontWeight: string;
 }
-
+interface CardProps {
+  cardBgColor? : string;
+  cardBorderRadius? : number;
+  fontSettings?: {
+      heading: FontSettings;
+      subheading: FontSettings;
+      body: FontSettings;
+  };
+}
 const EventListCard3 = ({
-  cardRadius = 10,
-  cardBgColor = '#6750a4',
-  eventNameColor = '#000',
-  eventNameSize = 16,
-  dateFontSize = 12,
-  locationFontSize = 12,
-  btnBgColor = '#007bff',
-  btnFontColor = '#fff',
-  btnBorderWidth = 1,
-  btnBorderColor = '#007bff',
-  btnRadius = 5,
-  btnFontSize = 14 }: CardProps) => {
+  cardBgColor = "#ffffff",
+  cardBorderRadius = 20,
+  fontSettings = {
+    heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
+    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+    body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+  },}: CardProps) => {
   return (
-    <div className={styles.card}>
+    <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
       <div className={styles.bannerContainer}>
         <Image src={placeholder2} alt='placeholder' className={styles.banner} />
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>
-        <div className={styles.eventName}>East Midlands Young Planners</div>
+        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>East Midlands Young Planners</div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <Image src={locationIcon} alt='location' />
-            <div className={styles.location}>Corpus Christi, USA</div>
+            <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>Corpus Christi, USA</div>
           </div>
           <div className={styles.dateContainer}>
             <DateIcon />
-            <div className={styles.date}>1st Apr 2024 - 20th Apr 2024</div>
+            <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>1st Apr 2024 - 20th Apr 2024</div>
           </div>
         </div>
-        <div className={styles.description}>Amidst this gathering, immerse yourself in an atmosphere of collaboration and creative energy, as manufacturers, retailers, and distributors unite.....</div>
+        <div className={styles.description} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}}>Amidst this gathering, immerse yourself in an atmosphere of collaboration and creative energy, as manufacturers, retailers, and distributors unite.....</div>
       </div>
     </div>
   );

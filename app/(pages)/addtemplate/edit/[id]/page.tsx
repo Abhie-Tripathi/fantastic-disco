@@ -46,7 +46,7 @@ const Page = () => {
       </div>
       <div className={styles.previewContainer}>
         <PreviewWindow
-          selectedTemplate='GS'
+          selectedTemplate='LS'
           selectedCard={cardStyle}
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}

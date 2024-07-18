@@ -4,16 +4,14 @@
     display: flex;
     gap: 25px;
     align-items: center;
-    padding: 0px 12px 12px 10px;
-    background-color: white;
-    border-radius: 10px;
+    padding: 1.3px 12px 12px 15px;
 }
 .banner{
     width: 282px;
     height: 200px;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
-    filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+    filter: drop-shadow(0px 3px 2px rgb(116, 116, 116));
 }
 .detailsContainer{
     display: flex;
@@ -60,23 +58,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-}
-.location{
-    font-size: 12px;
-    color: #6E6F89;
-    font-weight: 500;
-}
-.eventName{
-    font-weight: 700;
-    font-size: 18px;
-    /* width: 90%; */
-    color: black;
-}
-.description{
-    font-size: 10px;
-    color: #6E6F89;
-    font-weight: 500;
-    line-height: 14px;
 }
 .dateRange_typeContainer{
     margin-top: 20px;
