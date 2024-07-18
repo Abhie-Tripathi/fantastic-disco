@@ -29,14 +29,14 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets }: Pro
     const [templateName, setTemplateName] = useState<string>("") // THIS IS TEMPLATE NAME
     const [selectedImage, setSelectedImage] = useState<StaticImageData>(CarouselGridImage); // THIS IS FOR DRAFT WIDGETS TO SHOW THE TEMPLATE POSTER
 
-    const handleMyWidgets = () => {
-        const newWidget: DraftWidgetsType = {
-            widgetType: widgetSelected,
-            widgetTemplateName: templateName,
-            selectedImage : selectedImage
-        };
-        setDraftWidgets([...draftWidgets, newWidget])
-    }
+    // const handleMyWidgets = () => {
+    //     const newWidget: DraftWidgetsType = {
+    //         widgetType: widgetSelected,
+    //         widgetTemplateName: templateName,
+    //         selectedImage : selectedImage
+    //     };
+    //     setDraftWidgets([...draftWidgets, newWidget])
+    // }
 
     useEffect(() => {
         if (widgetSelected === "Page") {

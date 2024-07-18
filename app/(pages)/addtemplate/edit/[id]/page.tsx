@@ -12,38 +12,49 @@ const Page = () => {
 
   // These states will be filled up with the fetched data, and if no data will be there, these will have default values
   const [cardBgColor, setCardBgColor] = useState<string>("#ffffff");
-  const [cardBorderRadius, setCardBorderRadius] = useState<number>(2);
+  const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
   });
   const [buttonSettings, setButtonSettings] = useState({
-    primary : {buttonColor : "#0072F5", fontColor : "#000000", borderRadius : 4, borderColor : "#0072F5", buttonText : "Meet Us"},
-    secondary : {buttonColor : "#6750a4", fontColor : "#000000", borderRadius : 4, borderColor : "#6750a4", buttonText : "Meet Us"}
+    primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
+    secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
   })
 
-  const [cardStyle, setCardStyle] = useState<string>("style2")
+  const [cardStyle, setCardStyle] = useState<string>("style1")
+
+  // Selected Template will be fetched through Database, Right now we can pass as static
 
   return (
 
     <div className={styles.body}>
       <div className={styles.editContainer}>
         <EditScreen
-          cardStyle = {cardStyle}
-          setCardStyle = {setCardStyle}
+          cardStyle={cardStyle}
+          setCardStyle={setCardStyle}
           setCardBgColor={setCardBgColor}
           setCardBorderRadius={setCardBorderRadius}
           setFontSettings={setFontSettings}
-          fontSettings = {fontSettings}
-          setButtonSettings = {setButtonSettings}
-          buttonSettings = {buttonSettings}
-          cardBgColor ={cardBgColor}
-          cardBorderRadius = {cardBorderRadius}
+          fontSettings={fontSettings}
+          setButtonSettings={setButtonSettings}
+          buttonSettings={buttonSettings}
+          cardBgColor={cardBgColor}
+          cardBorderRadius={cardBorderRadius}
         />
       </div>
       <div className={styles.previewContainer}>
-        <PreviewWindow isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} />
+        <PreviewWindow
+          selectedTemplate='GS'
+          selectedCard={cardStyle}
+          isFullScreen={isFullScreen}
+          setIsFullScreen={setIsFullScreen}
+          cardBgColor={cardBgColor}
+          cardBorderRadius={cardBorderRadius}
+          fontSettings={fontSettings}
+          buttonSettings={buttonSettings}
+        />
       </div>
     </div>
   )

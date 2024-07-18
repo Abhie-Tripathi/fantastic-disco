@@ -17,7 +17,7 @@ const AllEvents = ({ allEvents }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>All Events</div>
+                <div>All Events <span>{allEvents.length}</span></div>
                 <button>Add Event</button>
             </div>
             <div className={styles.line}></div>
@@ -25,7 +25,6 @@ const AllEvents = ({ allEvents }: Props) => {
                 {/* <div className={styles.inputContainer}>
                     <input type="checkbox" />
                 </div> */}
-                <div className={styles.heading}>Event Details</div>
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>

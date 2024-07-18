@@ -7,53 +7,45 @@ import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
 import { Icon } from 'next/dist/lib/metadata/types/metadata-types'
 
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
+
 interface CardProps {
-    cardRadius?: number;
-    cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    dateFontSize?: number;
-    locationFontSize?: number;
-    locationColor? : string;
-    dateColor? : string;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
+    cardBgColor? : string;
+    cardBorderRadius? : number
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
 }
 
 const EventCard2 = ({
-    cardRadius = 8, // default value
-    cardBgColor = '#ffffff', // default value
-    eventNameColor = 'black', // default value
-    eventNameSize = 24, // default value
-    dateFontSize = 14, // default value
-    locationFontSize = 14, // default value
-    btnBgColor = '#007BFF', // default value
-    btnFontColor = '#ffffff', // default value
-    btnBorderWidth = 1, // default value
-    btnBorderColor = '#007BFF', // default value
-    btnRadius = 5, // default value
-    btnFontSize = 16, // default value
-    locationColor = "#6E6F89",
-    dateColor = "ffffff"
-
+    cardBgColor = "#ffffff",
+    cardBorderRadius = 20,
+    fontSettings = {
+      heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
+      subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+      body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+    },
 }: CardProps) => {
 
     return (
-        <div className={styles.card} style={{backgroundColor : cardBgColor}}>
-            <div className={styles.eventName} style={{color : eventNameColor}}>Hampton Jazz Festival 2024</div>
+        <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
+            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>Hampton Jazz Festival 2024</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <Image src={locationIcon} alt='location' />
-                    <div className={styles.location} style={{color : locationColor}}>Corpus Christi, USA</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>Corpus Christi, USA</div>
                 </div>
                 <div className={styles.dateContainer}>
-                    <DateIcon color={dateColor} />
-                    <div className={styles.date} style={{color : dateColor}}>1st Apr 2024 - 20th Apr 2024</div>
-                </div>
+                    <DateIcon color={"black"} />
+                    <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>1st Apr 2024 - 20th Apr 2024</div>
+                </div> 
             </div>
             <Image src={placeholder2} alt='placeholder' className={styles.banner} />
             <div className={styles.dividerLine}></div>

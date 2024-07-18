@@ -18,7 +18,6 @@ const CodeWindow = () => {
                     <input placeholder='Your Company' />
                     <span>.com</span>
                 </div>
-                <button className={styles.addBtn}>+ Add Domain</button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.codeHeader}>

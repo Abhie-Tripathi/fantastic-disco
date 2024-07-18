@@ -60,11 +60,6 @@
 .inputContainer input:focus{
     outline: none;
 }
-.addBtn{
-    margin-top: 20px;
-    color: #6750A4;
-    font-size: 14px;
-}
 .codeHeader{
     padding: 18px 25px 18px 23px;
     display: flex;

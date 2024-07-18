@@ -19,7 +19,20 @@ interface DraftWidgetsType {
     widgetTemplateName: string;
     selectedImage: StaticImageData
 }
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
 
+interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+}
 interface PreviewProps {
     selectedTemplate?: string;
     selectedCard?: string;
@@ -31,9 +44,20 @@ interface PreviewProps {
     widgetSelected?: string;
     templateName?: string;
     selectedImage?: StaticImageData
+    cardBgColor?: string;
+    cardBorderRadius?: number;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+    buttonSettings?: {
+        primary: ButtonSettings;
+        secondary: ButtonSettings;
+    };
 }
 
-const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage }: PreviewProps) => {
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage, cardBgColor, cardBorderRadius, fontSettings, buttonSettings }: PreviewProps) => {
     const { theme } = useTheme()
 
     const handleMyWidgets = () => {
@@ -85,7 +109,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                             selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} /> :
-                                selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} /> :
+                                selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
                                     selectedTemplate === "LS" ? <ListView selectedCard={selectedCard} /> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} /> :

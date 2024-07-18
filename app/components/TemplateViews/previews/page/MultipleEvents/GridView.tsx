@@ -4,35 +4,25 @@ import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 
-interface EditProps {
-    cardRadius?: number;
-    cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    dateFontSize?: number;
-    locationFontSize?: number;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
-    selectedCard?: string;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const GridView = ({ cardRadius,
-    cardBgColor,
-    eventNameColor,
-    eventNameSize,
-    dateFontSize,
-    locationFontSize,
-    btnBgColor,
-    btnFontColor,
-    btnBorderWidth,
-    btnBorderColor,
-    btnRadius,
-    btnFontSize,
-    selectedCard }: EditProps) => {
+interface EditProps {
+    cardBorderRadius? : number;
+    cardBgColor? : string;
+    selectedCard?: string;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+}
+
+const GridView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: EditProps) => {
 
     let EventCard: ElementType;
 
@@ -48,13 +38,10 @@ const GridView = ({ cardRadius,
     }
     return (
         <div className={styles.gridView}>
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
-            <EventCard cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} />
+            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
         </div>
     )
 }

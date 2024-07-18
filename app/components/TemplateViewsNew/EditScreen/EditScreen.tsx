@@ -46,7 +46,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
         <div className={styles.body}>
             <div className={styles.navbar}>
                 <button onClick={() => setSelectedBtn("events")} className={selectedBtn === "events" ? styles.activeBtn : ""}><FilterIcon color={selectedBtn === "events" ? "#6750a4" : "#424242"} /><span>Select Events</span></button>
-                <button onClick={() => setSelectedBtn("customize")} className={selectedBtn === "brandkit" ? styles.activeBtn : ""}><CustomizeIcon color={selectedBtn === "customize" ? "#6750a4" : "#424242"} /><span>Customize</span></button>
+                <button onClick={() => setSelectedBtn("customize")} className={selectedBtn === "customize" ? styles.activeBtn : ""}><CustomizeIcon color={selectedBtn === "customize" ? "#6750a4" : "#424242"} /><span>Customize</span></button>
                 <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
