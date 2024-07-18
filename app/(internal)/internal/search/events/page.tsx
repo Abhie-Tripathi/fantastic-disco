@@ -79,6 +79,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { Step } from "react-joyride";
 import { Cross } from "geist-icons";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import EventType from "@/app/components/Search/Dropdowns/EventType";
 import People from "/public/ionPeople.svg";
 import PeopleFinder from "/public/peopleFinder.svg";
 import Competitor from "/public/competitor.svg";
@@ -170,6 +171,8 @@ const Search = () => {
   const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
     searchParams.get("status")?.split(",") || []
   );
+  const [selectedEventType, setSelectedEventType] = useState<string[]>([]);
+  const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedEventAttendanceRange, setSelectedEventAttendanceRange] =
     useState<string[]>([]);
   const [selectedEventFrequency, setSelectedEventFrequency] = useState<
@@ -304,6 +307,9 @@ const Search = () => {
           ...(selectedZone?.length>0 && {
             eventRegion:selectedZone.join(',')
          }),
+         ...(selectedEventType?.length>0 && {
+            eventType: selectedEventType.join(',')
+         }),
         },
       };
 
@@ -426,6 +432,11 @@ const Search = () => {
     // Rank
     if (rankToggles.isEventRank) {
       queryString.eventRank = selectedEventRank;
+    }
+
+    // Event Type
+    if (selectedEventType.length > 0) {
+      queryString.eventType = selectedEventType;
     }
 
     // Local Rank
@@ -1035,20 +1046,14 @@ const Search = () => {
                   <div className={styles.input_container}>
                     <div className={styles.input}>
                       <div className={styles.input_title}>
-                        Rank
-                        {rankToggles.isEventRank && (
-                          <span className={styles.input_selected_title}>
-                            [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                        Event Type
+                        {selectedEventType?.length > 1 ? (
+                          <span className={styles.input_selected_no}>
+                            {selectedEventType.length}
                           </span>
-                        )}
-                        {rankToggles.isLocalRank && (
+                        ) : (
                           <span className={styles.input_selected_title}>
-                            [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
-                          </span>
-                        )}
-                        {rankToggles.isAviationRank && (
-                          <span className={styles.input_selected_title}>
-                            [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                            {selectedEventTypeName}
                           </span>
                         )}
                       </div>
@@ -1063,21 +1068,12 @@ const Search = () => {
                   </div>
                 </Button>
                 <Popover className={styles.filterPopover}>
-                  <Dialog className={styles.dialogBorder}>
-                    {({ close }) => (
-                      <RankInput
-                        selectedEventRank={selectedEventRank}
-                        setSelectedEventRank={setSelectedEventRank}
-                        selectedLocalRank={selectedLocalRank}
-                        setSelectedLocalRank={setSelectedLocalRank}
-                        selectedAviationRank={selectedAviationRank}
-                        setSelectedAviationRank={setSelectedAviationRank}
-                        rankToggles={rankToggles}
-                        setRankToggles={setRankToggles}
-                        onClose={close}
-                      />
-                    )}
-                  </Dialog>
+                  <EventType
+                    state={selectedEventType}
+                    setState={setSelectedEventType}
+                    selectedEventTypeName={selectedEventTypeName}
+                    setSelectedEventTypeName={setSelectedEventTypeName}
+                  />
                 </Popover>
               </MenuTrigger>
 
@@ -1505,6 +1501,58 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`} >
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Rank
+                          {rankToggles.isEventRank && (
+                            <span className={styles.input_selected_title}>
+                              [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                            </span>
+                          )}
+                          {rankToggles.isLocalRank && (
+                            <span className={styles.input_selected_title}>
+                              [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                            </span>
+                          )}
+                          {rankToggles.isAviationRank && (
+                            <span className={styles.input_selected_title}>
+                              [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                            </span>
+                          )}
+                        </div>
+                        <Image
+                          src={DropIcon}
+                          alt="dropicon"
+                          width={20}
+                          height={20}
+                          className={iconClass}
+                        />
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover className={styles.filterPopover}>
+                    <Dialog className={styles.dialogBorder}>
+                      {({ close }) => (
+                        <RankInput
+                          selectedEventRank={selectedEventRank}
+                          setSelectedEventRank={setSelectedEventRank}
+                          selectedLocalRank={selectedLocalRank}
+                          setSelectedLocalRank={setSelectedLocalRank}
+                          selectedAviationRank={selectedAviationRank}
+                          setSelectedAviationRank={setSelectedAviationRank}
+                          rankToggles={rankToggles}
+                          setRankToggles={setRankToggles}
+                          onClose={close}
+                        />
+                      )}
+                    </Dialog>
+                  </Popover> */}
+                </MenuTrigger>
+
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={styles.input_container}>
@@ -1673,8 +1721,9 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
 
+                {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
@@ -1700,14 +1749,12 @@ const Search = () => {
                       </div>
                     </div>
                   </Button>
-                  <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
+                  {/* <Popover className={styles.filterPopover}>
                     <MaturitySlider
                       state={selectedMaturity}
                       setState={setSelectedMaturity}
                     />
-                    {/* </Dialog> */}
-                  </Popover>
+                  </Popover> */}
                 </MenuTrigger>
               </div>
             )}

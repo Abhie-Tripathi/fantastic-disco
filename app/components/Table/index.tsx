@@ -695,7 +695,7 @@ const Table = ({
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Global</th>}
+              {showInsights.global && <th>Internatinal</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header
@@ -758,12 +758,12 @@ const Table = ({
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
-                          title={`${event.location.venueName} & Online`}
+                          title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
                         </span>
                       ) : (
-                        event.location.venueName + " & Online"
+                        event.location.venueName
                       )
                     ) : (
                       <span data-toggle="tooltip" title="To be announced">
@@ -1184,9 +1184,9 @@ const Table = ({
               id=""
               className={styles.pagination_noOfPage}
             >
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
+              <option value="10" selected={itemsPerPage==10?true:false}>10</option>
+              <option value="15" selected={itemsPerPage==15?true:false}>15</option>
+              <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
           </div>
           <div>results/Page</div>
