@@ -1,0 +1,43 @@
+import React from 'react'
+import styles from './codewindow.style.module.css'
+import CopyIcon from '/public/page.svg'
+import Image from 'next/image'
+
+const CodeWindow = () => {
+    return (
+        <div className={styles.body}>
+            <div className={styles.domainHeader}>Whitelist your Domain</div>
+            <div className={styles.line}></div>
+            <div className={styles.domainContainer}>
+                <div className={styles.domainHeadingContainer}>
+                    <div className={styles.iBtn}>i</div>
+                    <div className={styles.heading}>Please enter your website host domain to whitelist it on our platform</div>
+                </div>
+                <div className={styles.inputContainer}>
+                    <span>https://</span>
+                    <input placeholder='Your Company' />
+                    <span>.com</span>
+                </div>
+                <button className={styles.addBtn}>+ Add Domain</button>
+            </div>
+            <div className={styles.line}></div>
+            <div className={styles.codeHeader}>
+                <div className={styles.heading}>Widget Code</div>
+                <button className={styles.copyBtn}>
+                    <Image src={CopyIcon} alt='copy' width={16} height={18} />
+                    <div>Copy Code</div>
+                </button>
+            </div>
+            <div className={styles.line}></div>
+            <div className={styles.codeContainer}>
+                <div className={styles.codewindow}>
+                    {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
+                    {`<section-widget id="23"></section-widget>`}
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+export default CodeWindow

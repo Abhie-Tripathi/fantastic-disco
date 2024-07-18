@@ -1,0 +1,100 @@
+.body{
+    margin-top: 20px;
+    border: 1px solid #E0E1E4;
+    border-radius: 10px;
+}
+.domainHeader{
+    padding: 18px 25px 18px 23px;
+    font-weight: 600;
+    font-size: 14px;
+    color: black;
+}
+.line{
+    border-top: 1px solid #F5F5F5;
+}
+.domainContainer{
+    padding: 16px 25px 18px 23px;
+}
+.domainHeadingContainer{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.domainHeadingContainer .iBtn{
+    color: white;
+    font-weight: 600;
+    font-size: 8px;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background-color: #52A8FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.domainHeadingContainer .heading{
+    color:#52A8FF;
+    font-size: 12px;
+}
+.inputContainer{
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #EBEBEB;
+    border-radius: 4px;
+}
+.inputContainer span{
+    padding: 8px 12px;
+    color: #8F8F8F;
+    background-color: #F2F2F2;
+    font-size: 14px;
+}
+.inputContainer input{
+    padding: 8px 12px;
+    font-size: 14px;
+    color: black;
+    border: none;
+    width: 82%;
+}
+.inputContainer input:focus{
+    outline: none;
+}
+.addBtn{
+    margin-top: 20px;
+    color: #6750A4;
+    font-size: 14px;
+}
+.codeHeader{
+    padding: 18px 25px 18px 23px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.codeHeader .heading{
+    font-weight: 600;
+    font-size: 14px;
+    color: black;
+}
+.codeHeader .copyBtn{
+    background-color: #6750A4;
+    color: white;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 4px;
+    padding: 5px 8px;
+}
+.codeContainer{
+    padding: 25px;
+}
+.codewindow{
+    width: 100%;
+    background-color: #FAFAFA;
+    border-radius: 12px;
+    padding: 20px;
+    font-weight: 600;
+    color: black;
+}

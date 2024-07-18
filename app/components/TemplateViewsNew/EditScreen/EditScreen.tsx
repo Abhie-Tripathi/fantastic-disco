@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './edit.style.module.css'
 import BrandKit from './BrandKit/BrandKit'
 import FilterEvents from './FilterEvents/FilterEvents'
+import CodeWindow from './Code/CodeWindow';
 
 interface FontSettings {
     fontFamily: string;
@@ -49,7 +50,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                 <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedBtn === "customize" ? <BrandKit cardStyle = {cardStyle} setCardStyle = {setCardStyle} buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} fontSettings={fontSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} /> : selectedBtn === "events" ? <FilterEvents /> : <></>}
+                {selectedBtn === "customize" ? <BrandKit cardStyle = {cardStyle} setCardStyle = {setCardStyle} buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} fontSettings={fontSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} /> : selectedBtn === "events" ? <FilterEvents /> : <CodeWindow/>}
             </div>
         </div>
     )
