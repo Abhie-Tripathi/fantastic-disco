@@ -237,7 +237,9 @@ const Table = ({
     const { name, value } = e.target;
     setFormData({ ...formData, markedInterest: value });
   };
-
+  useEffect(() => {
+    setCurrPage(1)
+  }, [eventType]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
@@ -334,15 +336,20 @@ const Table = ({
       }
     }
   };
-
+const [val,setVal]=useState(1);
   useEffect(() => {
-    fetchEventsData();
+    // setCurrPage(val);
     const startInd = (currPage - 1) * itemsPerPage;
     const endInd = startInd + itemsPerPage;
-    // setEventPerPage(eventData.slice(startInd, endInd));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage, itemsPerPage, queryString]);
-
+    const secondLast = path[path.length - 2];
+    fetchEventsData();
+ 
+  }, [eventType,currPage, itemsPerPage, queryString]);
+// useEffect(()=>{
+//   const secondLast = path[path.length - 2];
+//   if(currPage!==1)
+//   fetchData(secondLast);
+// },[currPage])
   useEffect(() => {
     const fetchBookmarkData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
@@ -462,7 +469,7 @@ const Table = ({
     if (path[path.length - 1] === "trackedEvents") {
       const secondLast = path[path.length - 2];
 
-      // fetchData(secondLast);
+      fetchData(secondLast);
       setIsLoaded(false);
     } else if (path[path.length - 1] === "trackers") {
       fetchAllSavedEvent();
@@ -515,24 +522,18 @@ const Table = ({
       }
     }
   };
-  useEffect(() => {
-    const secondLast = path[path.length - 2];
-    if (path[path.length - 1] === "trackedEvents"){
-       fetchData(secondLast);
-       setIsLoaded(false);
-      }
-  }, [eventType]);
+  
   const fetchData = async (secondLast: string) => {
     var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-      (currPage - 1) * 10
+      (currPage - 1) * itemsPerPage
     }&type=active`;
     if (eventType === "New Events")
       url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+        (currPage - 1) * itemsPerPage
       }`;
     else if (eventType === "Expired Events")
       url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+        (currPage - 1) * itemsPerPage
       }&type=expired`;
     const { data, error } = await myFetch(url);
     if (error) {
@@ -1184,9 +1185,9 @@ const Table = ({
               id=""
               className={styles.pagination_noOfPage}
             >
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
+              <option value="10" selected={itemsPerPage==10?true:false}>10</option>
+              <option value="15" selected={itemsPerPage==15?true:false}>15</option>
+              <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
           </div>
           <div>results/Page</div>

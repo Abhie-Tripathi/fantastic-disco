@@ -142,7 +142,7 @@ const templates = [
     inputAreas: [
       {
         type: "text",
-        placeholder: "Add Competitor Website",
+        placeholder: "Url",
       }
     ]
   },
@@ -1024,19 +1024,18 @@ const Pages = () => {
     }));
   };
   let valid = true;
-  let error="";
   const addNew = () => {
     if (!template) {
       console.error('Template is not found');
       return;
     }
 
-    const regex = /^(https?:\/\/[\w.-]+)/;
+    const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     let isValid = true;
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
-        if (inputArea.placeholder === 'Add Competitor Website') {
+        if (inputArea.placeholder === 'Url') {
           if (regex.test(value)) {
             acc[inputArea.placeholder] = value;
           } else {
@@ -1058,7 +1057,6 @@ const Pages = () => {
           newEntry
         ]);
       } else {
-        error="Enter valid inputs"
         console.error('Invalid input or URL');
       }
       setInputValues({});
@@ -1069,6 +1067,17 @@ const Pages = () => {
     if(val.length>24) return val.substring(0,25)+"...";
     else return val;
   }
+  const deleteEntry = (entryKey: string, itemIndex: number) => {
+    setCustomData((prevData) => 
+      prevData.map((item, index) => {
+        if (index === itemIndex) {
+          const { [entryKey]: _, ...rest } = item;
+          return rest;
+        }
+        return item;
+      }).filter(item => Object.keys(item).length > 0)
+    );
+  };
   return (
     <>
       <div
@@ -1079,9 +1088,9 @@ const Pages = () => {
             <Image src={userOne} alt="userOne" />
           </div>
           <div>
-            <div className={styles.createHead}>Create Custom Tracker</div>
+            <div className={styles.createHead}>Create Tracker</div>
             <div className={styles.createContent}>
-              Select from the available data filters to create a custom tracker
+              Select from the available data filters to create a tracker
             </div>
           </div>
         </div>
@@ -1118,6 +1127,106 @@ const Pages = () => {
           onChange={(event) => setTrackerName(event.target.value)}
         />
       </div>
+      {template?.name==="T_COMPETITOR" &&
+        <div className={`${styles.competitor}`} style={{"border": "1px solid var(--border-color)"}}>
+          <div className={styles.competitorHead}>
+            <div className={styles.competitorHeading}>Upload custom data </div>
+          </div>
+          <div className={styles.bar}></div>
+          <div className={`${styles.toggleDiv}`}>
+            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
+              <div>
+                <div className={styles.manualHeading}>Add data manually
+                {template?.inputAreas?.length===undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+                </div>
+                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+              </div>
+              <div>
+
+                <span>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={template?.inputAreas?.length !== undefined}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </span>
+
+              </div>
+            </div>
+            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
+              <div>
+                <div className={styles.manualHeading}>Import CSV Data
+                  <div className={styles.badgeSuccess}>Comming Soon</div>
+                </div>
+                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+              </div>
+              <div>
+              
+                <span>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={selectedExhibitScore.length !== 0}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </span>
+
+              </div>
+            </div>
+          </div>
+          {template?.inputAreas &&
+          <div className={`card ${styles.competitor}`}>
+            <div className={styles.subHeading}>{template.description}</div>
+            {!valid && (
+              <div style={{ color: "red" }}>Invalid input&apos;s</div>
+            )}
+            <div className={styles.allInputArea}>
+              {template?.inputAreas?.map((inputArea:any, index:number) => (
+                <div key={index} className={styles.singleInputArea}>
+                  <Image src={Url} alt="url_Icon" className="icons" />
+                  <input
+                    className={styles.textArea}
+                    type="text"
+                    placeholder={inputArea.placeholder}
+                    value={inputValues[index] || ''}
+                    onChange={(e) => handleInput(index, e.target.value)}
+                    onKeyPress={handleKeyDown}
+                  />
+                </div>
+              ))}
+              <div onClick={addNew} className={styles.addIcon}>
+                <Image src={Add} alt="add_Icon" />
+              </div>
+            </div>
+            {/* {customData.map((item:any, index:number) => (
+        // <div key={index} className={styles.customDataOuterDiv}>
+        // <div className={styles.singleInputBox}>{item.name}</div>
+        // <div className={styles.singleInputBox}>{item.companyName}</div>
+        // </div>
+        {Object.entries(item).map(([key, value]) => (
+          <div key={key} className="data-field">
+            <strong>{key}:</strong> {value}
+          </div>
+        ))}
+      ))} */}
+            {customData.map((item: any, index: number) => (
+              <div key={index} className={styles.customDataOuterDiv}>
+                {Object.entries(item).map(([entryKey, value]) => (
+                  <div key={entryKey} className={styles.singleInputBox}>
+                  
+                  <div className={styles.square} onClick={() => deleteEntry(entryKey, index)}>-</div>
+                  {value as string}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          }
+        </div>
+      }
       <Suspense fallback={<Loading />}>
         <div className={styles.container}>
           <div className={styles.sub_container}>
@@ -2083,9 +2192,9 @@ const Pages = () => {
           </div>
         </div>
       </Suspense>
-      {template &&
+      {template && template.name!=="T_COMPETITOR"&&
         <div className={`card ${styles.competitor}`}>
-          <div className={styles.competitorHead} >
+          <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
           </div>
           <div className={styles.bar}></div>
@@ -2142,7 +2251,7 @@ const Pages = () => {
             <div className={styles.allInputArea}>
               {template?.inputAreas?.map((inputArea:any, index:number) => (
                 <div key={index} className={styles.singleInputArea}>
-                  <Image src={Name} alt="userName_Icon" className="icons" />
+                  <Image src={Url} alt="url_Icon" className="icons" />
                   <input
                     className={styles.textArea}
                     type="text"
@@ -2168,23 +2277,17 @@ const Pages = () => {
           </div>
         ))}
       ))} */}
-           {customData.map((item: Record<string, any>, index: number) => (
-  <div key={index} className={styles.customDataOuterDiv}>
-    {Object.entries(item).map(([entryKey, value]: [string, any]) => (
-      <div key={entryKey} className={styles.singleInputBox}>
-        {typeof value === 'string' && value.length > 30 ? (
-          <div className={styles.tooltipContainer} style={{ cursor: "pointer" }}>
-            <span className={styles.tooltipText}>{value}</span>
-            {truncate(value)}
-          </div>
-        ) : (
-          <div>{String(value)}</div>
-        )}
-      </div>
-    ))}
-  </div>
-))}
-
+            {customData.map((item: any, index: number) => (
+              <div key={index} className={styles.customDataOuterDiv}>
+                {Object.entries(item).map(([entryKey, value]) => (
+                  <div key={entryKey} className={styles.singleInputBox}>
+                  
+                  <div className={styles.square} onClick={() => deleteEntry(entryKey, index)}>-</div>
+                  {value as string}
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
           }
         </div>

@@ -419,10 +419,10 @@
     border-radius: var(--border-radius-sm);
   }
   .singleInputBox{
-    padding: 10px;
-    border: 1px solid var(--border-color);
+    padding: 0px 10px;
+    /* border: 1px solid var(--border-color); */
     display: flex;
-    width: 50%;
+    /* width: 50%; */
     align-items: center;
     gap: 10px;
   }
@@ -475,43 +475,13 @@
     font-weight: var(--font-weight-medium);
     font-size: 10px;
   }
-  .tooltipContainer {
-    position: relative;
-    display: inline-block;
-    
-  }
-  
-  .tooltipContainer .tooltipText {
-    visibility: hidden;
-    /* width: 120px; */
-    background-color: #333;
-    text-wrap: nowrap;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px;
-    position: absolute;
-    /* z-index: 1; */
-    bottom: 125%; 
-    left: 10%;
-    z-index: 1111;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .tooltipContainer .tooltipText::after {
-    content: "";
-    position: absolute;
-    top: 100%; /* At the bottom of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #333 transparent transparent transparent;
-  }
-  
-  .tooltipContainer:hover .tooltipText {
-    visibility: visible;
-    opacity: 1;
-  }
+  .square{
+    width: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+}
