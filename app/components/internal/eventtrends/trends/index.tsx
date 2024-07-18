@@ -202,10 +202,6 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     };
   };
 
-  setTimeout(()=>{
-    console.log(categorySlug)
-  },5000)
-
   return (
     <div className={styles.predictedAttendence_container}>
       <div className={styles.filters_container}>
@@ -278,7 +274,6 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     setSelectedCity={setSelectedCity}
                     selectedCountry={selectedCountry}
                     setSelectedCountry={setSelectedCountry}
-                    onClear={clearHandler}
                   />
                 )}
               </Dialog>

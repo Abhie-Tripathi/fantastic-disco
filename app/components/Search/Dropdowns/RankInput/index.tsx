@@ -110,7 +110,6 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
-                disabled
               />
               <span className={styles.input_gap}></span>
               <input
@@ -122,7 +121,6 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
-                disabled
               />
             </div>
           </>
@@ -160,7 +158,6 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
-                disabled
               />
               <span className={styles.input_gap}></span>
               <input
@@ -172,7 +169,6 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
-                disabled
               />
             </div>
           </>
