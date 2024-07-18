@@ -183,3 +183,10 @@
     border: 1px solid #6750a466;
   }
 }
+
+.disabledBtn {
+  opacity: 0.6;
+  cursor: unset;
+  background-color: var(--disabled-btn-color);
+  border-radius: var(--border-radius-sm);
+}

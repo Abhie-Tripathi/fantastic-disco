@@ -319,7 +319,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
           <MenuTrigger>
             <Button
-              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+              className={`${styles.input_container_btns} ${styles1.dropdown_button} ${styles.disabledBtn}`}
             >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
@@ -345,7 +345,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                 </div>
               </div>
             </Button>
-            <Popover>
+            {/* <Popover>
               <Dialog>
                 {({ close }) => (
                   <RankInput
@@ -361,7 +361,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                   />
                 )}
               </Dialog>
-            </Popover>
+            </Popover> */}
           </MenuTrigger>
         </div>
         <div>
