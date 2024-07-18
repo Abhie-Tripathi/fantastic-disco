@@ -5,6 +5,7 @@ import BrandColor from './BrandColor'
 import CardCustomization from './CardCustomization'
 import ButtonCustomization from './ButtonCustomization'
 import TypographyCustomization from './TypographyCustomization'
+import CardStyles from './CardStyles'
 
 interface EditScreenProps {
   extractedColors: string[]
@@ -17,6 +18,8 @@ interface EditScreenProps {
   cardBgColor : string
   fontSettings : FontSettingsState
   cardBorderRadius : number;
+  cardStyle : string;
+  setCardStyle : React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface FontSettings {
@@ -43,7 +46,7 @@ interface ButtonSettingsState{
   secondary : ButtonSettings;
 }
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius,fontSettings, setFontSettings,setButtonSettings, cardBorderRadius,cardBgColor, buttonSettings  }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius,fontSettings, setFontSettings,setButtonSettings, cardBorderRadius,cardBgColor, buttonSettings, cardStyle, setCardStyle  }: EditScreenProps) => {
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -51,6 +54,9 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <button>Apply</button>
       </div>
       <div className={styles.line}></div>
+      <div className={styles.cardStylesContainer}>
+        <CardStyles cardStyle={cardStyle} setCardStyle = {setCardStyle} />
+      </div>
       {/* <div className={styles.logoContainer}>
         <LogoComponent />
       </div> */}

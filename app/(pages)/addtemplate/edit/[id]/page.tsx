@@ -10,6 +10,7 @@ const Page = () => {
   // This page will have an Id, through which we will be fetching out all the Events, Customizations etc.
   // When the user will come here for the first time, all the feilds will be empty because there is nothing posted yet
 
+  // These states will be filled up with the fetched data, and if no data will be there, these will have default values
   const [cardBgColor, setCardBgColor] = useState<string>("#ffffff");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(2);
   const [fontSettings, setFontSettings] = useState({
@@ -22,11 +23,15 @@ const Page = () => {
     secondary : {buttonColor : "#6750a4", fontColor : "#000000", borderRadius : 4, borderColor : "#6750a4", buttonText : "Meet Us"}
   })
 
+  const [cardStyle, setCardStyle] = useState<string>("style2")
+
   return (
 
     <div className={styles.body}>
       <div className={styles.editContainer}>
         <EditScreen
+          cardStyle = {cardStyle}
+          setCardStyle = {setCardStyle}
           setCardBgColor={setCardBgColor}
           setCardBorderRadius={setCardBorderRadius}
           setFontSettings={setFontSettings}

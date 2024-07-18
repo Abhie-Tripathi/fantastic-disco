@@ -35,9 +35,11 @@ interface EditScreenProps {
     cardBgColor : string
     cardBorderRadius : number;
     fontSettings : FontSettingsState
+    cardStyle : string;
+    setCardStyle : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings,fontSettings} : EditScreenProps) => {
+const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings,fontSettings,cardStyle, setCardStyle} : EditScreenProps) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("customization")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -49,7 +51,7 @@ const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButt
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "customization" ? <Customization fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
+                {selectedBtn === "customization" ? <Customization cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
             </div>
         </div>
     )

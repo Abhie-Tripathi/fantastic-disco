@@ -35,9 +35,11 @@ interface EditScreenProps {
     fontSettings: FontSettingsState
     cardBgColor: string
     cardBorderRadius: number;
+    cardStyle : string;
+    setCardStyle : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings }: EditScreenProps) => {
+const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle }: EditScreenProps) => {
     const [selectedBtn, setSelectedBtn] = useState<string>("events")
     return (
         <div className={styles.body}>
@@ -47,7 +49,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                 <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedBtn === "customize" ? <BrandKit buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} fontSettings={fontSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} /> : selectedBtn === "events" ? <FilterEvents /> : <></>}
+                {selectedBtn === "customize" ? <BrandKit cardStyle = {cardStyle} setCardStyle = {setCardStyle} buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} fontSettings={fontSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} /> : selectedBtn === "events" ? <FilterEvents /> : <></>}
             </div>
         </div>
     )
