@@ -695,7 +695,7 @@ const Table = ({
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Global</th>}
+              {showInsights.global && <th>Internatinal</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header

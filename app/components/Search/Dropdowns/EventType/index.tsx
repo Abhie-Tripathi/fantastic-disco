@@ -1,0 +1,45 @@
+import React from "react";
+import styles from "./eventtype.module.css";
+import CheckboxInput from "@/app/components/UI/CheckBoxInput";
+import { useTheme } from "@/context";
+import EventStatusData from "@/public/data/eventType.json";
+
+interface EventStatusProps {
+  state: string[];
+  setState: ([]) => void;
+  selectedEventTypeName?: string;
+  setSelectedEventTypeName: (name: string) => void;
+}
+
+// const EventStatusData = ["Active", "Cancelled", "Postponed", "Predicted"];
+
+const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusProps) => {
+  const {theme} = useTheme();
+  const onClickHandler = (value: any) => {
+    console.log('value=' ,value, state);
+    state.includes(value.id)
+      ? setState(state.filter((data) => data !== value.id))
+      : setState([...state, value.id]);
+
+      setSelectedEventTypeName(value.name);
+  };
+
+  return (
+    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
+      <div className={styles.sub_container}>
+        {EventStatusData.map((item) => (
+          <div key={item.id} className={styles.checkbox_container}>
+            <CheckboxInput
+              id={item.id}
+              onChange={() => onClickHandler(item)}
+              checked={state.includes(item.id)}
+            />
+            <label htmlFor={item.name}>{item.name}</label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default EventType;
