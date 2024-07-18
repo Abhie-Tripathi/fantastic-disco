@@ -1,11 +1,11 @@
 import React from 'react'
 import styles from './customization.style.module.css'
-import LogoComponent from './LogoComponent'
-import BrandColor from './BrandColor'
-import CardCustomization from './CardCustomization'
-import ButtonCustomization from './ButtonCustomization'
-import TypographyCustomization from './TypographyCustomization'
-import CardStyles from './CardStyles'
+import LogoComponent from './CustomizeComponents/LogoComponent'
+import BrandColor from './CustomizeComponents/BrandColor'
+import CardCustomization from './CustomizeComponents/CardCustomization'
+import ButtonCustomization from './CustomizeComponents/ButtonCustomization'
+import TypographyCustomization from './CustomizeComponents/TypographyCustomization'
+import CardStyles from './CustomizeComponents/CardStyles'
 
 interface EditScreenProps {
   extractedColors: string[]

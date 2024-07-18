@@ -108,7 +108,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                 <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
-                            selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} /> :
+                            selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings = {buttonSettings}/> :
                                 selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
                                     selectedTemplate === "LS" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} /> :

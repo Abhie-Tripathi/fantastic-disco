@@ -4,47 +4,56 @@ import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 
-
-interface EditProps {
-    cardRadius?: number;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+  }
+  
+  interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+  }
+  interface Props {
     cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    dateFontSize?: number;
-    locationFontSize?: number;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
+    cardBorderRadius?: number;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+    buttonSettings?: {
+        primary: ButtonSettings;
+        secondary: ButtonSettings;
+    };
 }
 
-const HeroBanner1: React.FC<EditProps> = ({
-    cardRadius,
-    cardBgColor,
-    eventNameColor,
-    eventNameSize,
-    dateFontSize,
-    locationFontSize,
-    btnBgColor,
-    btnFontColor,
-    btnBorderWidth,
-    btnBorderColor,
-    btnRadius,
-    btnFontSize,
-}) => {
+const HeroBanner1: React.FC<Props> = ({ cardBgColor = "#ffffff",
+    cardBorderRadius = 2,
+    fontSettings = {
+      heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
+      subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+      body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+    },
+    buttonSettings = {
+      primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
+      secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+    } }: Props) => {
 
     return (
-        <div className={styles.card}>
+        <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <Image src={placeholder2} alt='banner' className={styles.banner} />
             <div className={styles.detailsContainer}>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
                         <Image src={locationIcon} alt='location' />
-                        <div className={styles.location}>Corpus Christi, USA</div>
+                        <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>Corpus Christi, USA</div>
                     </div>
-                    <div className={styles.eventName}>Join Gifts World Expo 2024</div>
+                    <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>Join Gifts World Expo 2024</div>
                 </div>
                 <div className={styles.date_type_btnContainer}>
                     <div className={styles.dateTypeContainer}>
@@ -54,7 +63,7 @@ const HeroBanner1: React.FC<EditProps> = ({
                             <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
                         </div>
                     </div>
-                    <button className={styles.registerBtn}>Register</button>
+                    <button className={styles.registerBtn} style={{color : buttonSettings.primary.fontColor, backgroundColor : buttonSettings.primary.buttonColor, borderRadius :buttonSettings.primary.borderRadius , borderColor : buttonSettings.primary.borderColor}}>{buttonSettings.primary.buttonText}</button>
                 </div>
 
             </div>
