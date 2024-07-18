@@ -158,11 +158,29 @@ const Trackers = () => {
     {
       type: "template",
       domain: "Human Resource",
-      img: People,
-      trackerName: "Recruitment",
-      url: "T_RECRUITMENT",
+      img: Competitor,
+      url: "T_COMPETITOR",
+      trackerName: "Competitor",
       content:
-        "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
+        "Track your competitor experts, influencers and where they might be participating in events",
+    },
+    {
+      type: "template",
+      domain: "Sales",
+      img: Keywords,
+      url:"T_PRODUCT_KEYWORDS",
+      trackerName: "Product Keywords",
+      content:
+        "List all the events which belongs to given industry or associated with keywords.",
+    },
+    {
+      type: "template",
+      domain: "Human Resource",
+      img: Speaking,
+      url: "T_SPEAKING_OPPORTUINITY",
+      trackerName: "Speaking Opportunity",
+      content:
+        "Input team members and their details to keep track of the events with speaking opportunities.",
     },
     {
       type: "template",
@@ -176,20 +194,11 @@ const Trackers = () => {
     {
       type: "template",
       domain: "Human Resource",
-      img: Competitor,
-      url: "T_COMPETITOR",
-      trackerName: "Competitor",
+      img: People,
+      trackerName: "Recruitment",
+      url: "T_RECRUITMENT",
       content:
-        "Track your competitor experts, influencers and where they might be participating in events",
-    },
-    {
-      type: "template",
-      domain: "Human Resource",
-      img: Speaking,
-      url: "T_SPEAKING_OPPORTUINITY",
-      trackerName: "Speaking Opportunity",
-      content:
-        "Input team members and their details to keep track of the events with speaking opportunities.",
+        "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
     {
       type: "template",
@@ -208,15 +217,6 @@ const Trackers = () => {
       trackerName: "Customer ICP",
       content:
         "Input ideal customer profile details like company, location or websites to track their interests",
-    },
-    {
-      type: "template",
-      domain: "Sales",
-      img: Keywords,
-      url:"T_PRODUCT_KEYWORDS",
-      trackerName: "Product Keywords",
-      content:
-        "List all the events which belongs to given industry or associated with keywords.",
     },
     {
       type: "template",

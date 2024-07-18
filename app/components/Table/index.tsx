@@ -524,15 +524,15 @@ const [val,setVal]=useState(1);
   };
   
   const fetchData = async (secondLast: string) => {
-    var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+    var url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
       (currPage - 1) * itemsPerPage
     }&type=active`;
     if (eventType === "New Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
         (currPage - 1) * itemsPerPage
       }`;
     else if (eventType === "Expired Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
         (currPage - 1) * itemsPerPage
       }&type=expired`;
     const { data, error } = await myFetch(url);

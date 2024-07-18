@@ -102,6 +102,8 @@ interface InputArea {
 
 interface Template {
   name: string;
+  type?: string;
+  templateName?: string;
   description?: string | undefined;
   inputAreas?: InputArea[] | undefined; 
 }
@@ -124,111 +126,140 @@ interface EditData {
 const templates = [
   {
     name: "T_RECRUITMENT",
-    // description: "Input designations and upload job descriptions to identify relevant events effortlessly : ",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Designation",
-    //   },
-    //   {
-    //     type:"text",
-    //     placeholder:"Job Description"
-    //   }
-    // ]
-  },
-  {
-    name: "T_COMPETITOR",
-    description: "Track your competitor experts, influencers and where they might be participating in events :",
+    templateName:"Recruitment",
+    type:"disabled",
+    description: "Input designations and upload job descriptions to identify relevant events effortlessly : ",
     inputAreas: [
       {
         type: "text",
-        placeholder: "Url",
+        placeholder: "Designation",
+      },
+      {
+        type:"text",
+        placeholder:"Job Description"
       }
     ]
   },
   {
-    name: "T_AUDIENCE_DEPT_PROFILE"
+    name: "T_COMPETITOR",
+    templateName: "Competitor",
+    type:"enabled",
+    description: "Track your competitor experts, influencers and where they might be participating in events :",
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Add Competitor Website",
+      }
+    ]
+  },
+  {
+    name: "T_AUDIENCE_DEPT_PROFILE",
+    type:"disabled",
+    templateName:"Audience Dept. & Profiles",
+    description: "Track events for the specific organizational departments or audience profiles :",
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Department",
+      },
+      {
+        type: "text",
+        placeholder: "Profile",
+      }
+    ]
+
   },
   {
     name: "T_CUSTOMER_ICP",
+    templateName:"Customer ICP",
+    type:"disabled",
     description: "Input ideal customer profile details like company, location or websites to track their interests :",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Company Name",
-    //   },
-    //   {
-    //     type: "text",
-    //     placeholder: "Url",
-    //   },
-    //   {
-    //     type: "text",
-    //     placeholder: "Location",
-    //   }
-    // ]
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Company Name",
+      },
+      {
+        type: "text",
+        placeholder: "Url",
+      },
+      {
+        type: "text",
+        placeholder: "Location",
+      }
+    ]
   },
   {
     name: "T_BRAND_BUILDING",
+    templateName:"Brand Building",
+    type:"disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles :",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Designation",
-    //   },
-    //   {
-    //     type: "text",
-    //     placeholder: "Job Description",
-    //   }
-    // ]
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Designation",
+      },
+      {
+        type: "text",
+        placeholder: "Job Description",
+      }
+    ]
   },
   {
     name: "T_PEOPLE_FINDER",
+    templateName:"People Finder",
+    type:"disabled",
     description: "Track experts, influencers and where they might be participating in various events : ",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Name",
-    //   },
-    //   {
-    //     type: "text",
-    //     placeholder: "Company Name",
-    //   }
-    // ]
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Name",
+      },
+      {
+        type: "text",
+        placeholder: "Company Name",
+      }
+    ]
   },
   {
     name: "T_SPEAKING_OPPORTUINITY",
+    templateName:"Speaking Opportuinity",
+    type:"disabled",
     description: "Track your competitor experts, influencers and where they might be participating in events :",
-    // inputAreas: [
-    //   {
-    //     type: "text",
-    //     placeholder: "Speaker's Name",
-    //   },
-    //   {
-    //     type: "text",
-    //     placeholder: "Company Name",
-    //   }
-    // ]
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Speaker's Name",
+      },
+      {
+        type: "text",
+        placeholder: "Company Name",
+      }
+    ]
   },
   {
     name: "T_SOCIAL_CAUSE",
+    templateName:"Social Cause",
+    type:"disabled",
     description: "Track social cause events that interests audience to be socially active and enhance their reach :",
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Type of event",
+      }
+    ]
+  },
+  {
+    name:"T_PRODUCT_KEYWORDS",
+    templateName:"Product Keywords",
+    description:"List all the events which belongs to given industry or associated with keywords :",
     // inputAreas: [
     //   {
     //     type: "text",
-    //     placeholder: "Type of event",
+    //     placeholder: "Keywords",
     //   }
     // ]
-  },
-  // {
-  //   name:"T_PRODUCT_KEYWORDS",
-  //   description:"List all the events which belongs to given industry or associated with keywords :",
-  //   inputAreas: [
-  //     {
-  //       type: "text",
-  //       placeholder: "Keywords",
-  //     }
-  //   ]
-  // }
+  }
 ]
 const Pages = () => {
   const searchParams = useSearchParams();
@@ -1035,7 +1066,7 @@ const Pages = () => {
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
-        if (inputArea.placeholder === 'Url') {
+        if (inputArea.placeholder === 'Add Competitor Website') {
           if (regex.test(value)) {
             acc[inputArea.placeholder] = value;
           } else {
@@ -1088,7 +1119,7 @@ const Pages = () => {
             <Image src={userOne} alt="userOne" />
           </div>
           <div>
-            <div className={styles.createHead}>Create Tracker</div>
+            <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
             <div className={styles.createContent}>
               Select from the available data filters to create a tracker
             </div>
@@ -1127,14 +1158,15 @@ const Pages = () => {
           onChange={(event) => setTrackerName(event.target.value)}
         />
       </div>
-      {template?.name==="T_COMPETITOR" &&
+      {template && template.inputAreas &&
         <div className={`${styles.competitor}`} style={{"border": "1px solid var(--border-color)"}}>
           <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
+            {template?.type!=="enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div>
           <div className={styles.bar}></div>
           <div className={`${styles.toggleDiv}`}>
-            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
+            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Add data manually
                 {template?.inputAreas?.length===undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
@@ -1147,7 +1179,7 @@ const Pages = () => {
                   <label className={styles.switch}>
                     <input
                       type="checkbox"
-                      checked={template?.inputAreas?.length !== undefined}
+                      checked={template.type === "enabled"}
                     />
                     <span className={styles.slider}></span>
                   </label>
@@ -1155,10 +1187,10 @@ const Pages = () => {
 
               </div>
             </div>
-            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
+            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Import CSV Data
-                  <div className={styles.badgeSuccess}>Comming Soon</div>
+                  {template.type==="enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
                 </div>
                 <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
               </div>
@@ -1178,7 +1210,7 @@ const Pages = () => {
             </div>
           </div>
           {template?.inputAreas &&
-          <div className={`card ${styles.competitor}`}>
+          <div className={`${styles.competitor}`} style={{padding:"5px", borderRadius:"var(--border-radius-sm)"}}>
             <div className={styles.subHeading}>{template.description}</div>
             {!valid && (
               <div style={{ color: "red" }}>Invalid input&apos;s</div>
@@ -1197,7 +1229,9 @@ const Pages = () => {
                   />
                 </div>
               ))}
-              <div onClick={addNew} className={styles.addIcon}>
+              <div onClick={() => template.type === "enabled" && addNew()}  className={styles.addIcon}
+              style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+              >
                 <Image src={Add} alt="add_Icon" />
               </div>
             </div>
@@ -1429,7 +1463,7 @@ const Pages = () => {
             </MenuTrigger> */}
 
               <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.dropdown_button}>
+                <Button className={styles.disabledBtn}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
                       <div className={styles.input_title}>
@@ -1460,7 +1494,7 @@ const Pages = () => {
                     </div>
                   </div>
                 </Button>
-                <Popover className={styles.filterPopover}>
+                {/* <Popover className={styles.filterPopover}>
                   <Dialog className={styles.dialogBorder}>
                     {({ close }) => (
                       <RankInput
@@ -1476,7 +1510,7 @@ const Pages = () => {
                       />
                     )}
                   </Dialog>
-                </Popover>
+                </Popover> */}
               </MenuTrigger>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
@@ -2192,106 +2226,6 @@ const Pages = () => {
           </div>
         </div>
       </Suspense>
-      {template && template.name!=="T_COMPETITOR"&&
-        <div className={`card ${styles.competitor}`}>
-          <div className={styles.competitorHead}>
-            <div className={styles.competitorHeading}>Upload custom data </div>
-          </div>
-          <div className={styles.bar}></div>
-          <div className={`${styles.toggleDiv}`}>
-            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                {template?.inputAreas?.length===undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={template?.inputAreas?.length !== undefined}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  <div className={styles.badgeSuccess}>Comming Soon</div>
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-              
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-          </div>
-          {template?.inputAreas &&
-          <div className={`card ${styles.competitor}`}>
-            <div className={styles.subHeading}>{template.description}</div>
-            {!valid && (
-              <div style={{ color: "red" }}>Invalid input&apos;s</div>
-            )}
-            <div className={styles.allInputArea}>
-              {template?.inputAreas?.map((inputArea:any, index:number) => (
-                <div key={index} className={styles.singleInputArea}>
-                  <Image src={Url} alt="url_Icon" className="icons" />
-                  <input
-                    className={styles.textArea}
-                    type="text"
-                    placeholder={inputArea.placeholder}
-                    value={inputValues[index] || ''}
-                    onChange={(e) => handleInput(index, e.target.value)}
-                    onKeyPress={handleKeyDown}
-                  />
-                </div>
-              ))}
-              <div onClick={addNew} className={styles.addIcon}>
-                <Image src={Add} alt="add_Icon" />
-              </div>
-            </div>
-            {/* {customData.map((item:any, index:number) => (
-        // <div key={index} className={styles.customDataOuterDiv}>
-        // <div className={styles.singleInputBox}>{item.name}</div>
-        // <div className={styles.singleInputBox}>{item.companyName}</div>
-        // </div>
-        {Object.entries(item).map(([key, value]) => (
-          <div key={key} className="data-field">
-            <strong>{key}:</strong> {value}
-          </div>
-        ))}
-      ))} */}
-            {customData.map((item: any, index: number) => (
-              <div key={index} className={styles.customDataOuterDiv}>
-                {Object.entries(item).map(([entryKey, value]) => (
-                  <div key={entryKey} className={styles.singleInputBox}>
-                  
-                  <div className={styles.square} onClick={() => deleteEntry(entryKey, index)}>-</div>
-                  {value as string}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          }
-        </div>
-      }
     </>
   );
 };

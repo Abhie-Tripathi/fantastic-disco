@@ -389,7 +389,8 @@
   .competitor{
     display: flex;
     flex-direction: column;
-    padding: 12px;
+    padding: 20px;
+    /* border: 1px solid var(--border-color); */
     gap:var(--spacing-sm);
   }
   .singleInputArea{
@@ -445,6 +446,7 @@
   }
   .manualDiv{
     width: 50%;
+    border: 1px solid var(--border-color);
     justify-content: space-between;
     display: flex;
   }

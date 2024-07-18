@@ -755,12 +755,12 @@ export const AddComment = ({
 
           {showUser && (
             // <div className={styles.allUser}  tabIndex={1} onKeyDown={handleKeyDown1}>
-            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "" }}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px` }}>
               {alluser.map((ele, ind) => (
                 <div
                   ref={ind === focusedIndex ? resultContainer : null}
                   style={{
-                    backgroundColor: ind === focusedIndex ? "rgb(103 80 164)" : "",
+                    backgroundColor: ind === focusedIndex ? "var(--background-color-hover)" : "",
                   }}
                   className={styles.option}
                   key={ind}
@@ -772,7 +772,7 @@ export const AddComment = ({
             </div>
           )}
           {types && (
-            <div className={styles.allUser} style={{ left: `${boxSpace}px`, background: theme === "light" ? "var(--secondary-bg-light)" : "", height:"auto" }}>
+            <div className={styles.allUser} style={{ left: `${boxSpace}px`, height:"auto" }}>
 
               {type.map((ele, ind) => (
                 <div
@@ -780,7 +780,7 @@ export const AddComment = ({
                   className={styles.option}
                   ref={ind === focusedIndex ? resultContainer : null}
                   style={{
-                    backgroundColor: ind === focusedIndex ? "rgb(103 80 164)" : "",
+                    backgroundColor: ind === focusedIndex ? "var(--background-color-hover)" : "",
                   }}
                   onMouseDown={(e) => handleSelectType(e, ele)}
                 >
