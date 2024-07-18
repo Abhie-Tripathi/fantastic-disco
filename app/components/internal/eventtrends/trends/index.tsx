@@ -69,6 +69,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [clear, setClear] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +93,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     setSelectedCategories([]);
     setCategorySlug([]);
     setSelectedLocations([]);
+    setSelectedCity({});
+    setSelectedCountry({});
     setSelectedDateRange([]);
     setSelectedEventRank([0, 100]);
     setSelectedLocalRank([0, 100]);
@@ -199,7 +202,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     };
   };
 
-  console.log(selectedDateRange[0], selectedDateRange[1]);
+  setTimeout(()=>{
+    console.log(categorySlug)
+  },5000)
 
   return (
     <div className={styles.predictedAttendence_container}>
@@ -273,6 +278,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     setSelectedCity={setSelectedCity}
                     selectedCountry={selectedCountry}
                     setSelectedCountry={setSelectedCountry}
+                    onClear={clearHandler}
                   />
                 )}
               </Dialog>

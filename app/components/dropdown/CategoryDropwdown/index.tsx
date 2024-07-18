@@ -63,20 +63,22 @@ const CategoryDropdown = ({
   // );
 
   const selectAllHandler = (categories: any[]) => {
-    const categoryIds = categories.map((category) => category.id);
-    const categorySlugs = categories.map((category) => category.name);
-
-    if (containsSubarray(categoryIds)) {
-      setState(state.filter((id) => !categoryIds.includes(id)));
-      setSelectedSlugs(
-        selectedSlugs.filter((slug) => !categorySlugs.includes(slug))
-      );
+    const categoryIds = new Set(categories.map((category) => category.id));
+    const categorySlugs = new Set(categories.map((category) => category.name));
+  
+    if (containsSubarray(Array.from(categoryIds))) {
+      setState(state.filter((id) => !categoryIds.has(id)));
+      setSelectedSlugs(selectedSlugs.filter((slug) => !categorySlugs.has(slug)));
     } else {
-      setState([...state, ...categoryIds]);
-      setSelectedSlugs([...selectedSlugs, ...categorySlugs]);
+      categoryIds.forEach(id => state.push(id));
+      categorySlugs.forEach(slug => selectedSlugs.push(slug));
+      
+      setState(Array.from(new Set(state)));
+      setSelectedSlugs(Array.from(new Set(selectedSlugs)));
     }
   };
-
+  
+  
   useEffect(() => {
     setCategorySlug && setCategorySlug(selectedSlugs);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -28,7 +28,7 @@ const searchResults = [
 ];
 
 interface SelectedLocation {
-  [id: string]: string,
+  [id: string]: string;
 }
 
 interface LocationDropdown {
@@ -37,12 +37,13 @@ interface LocationDropdown {
   state: string[];
   setState: ([]: string[]) => void;
   onClose: () => void;
-  selectedCity?: {[id: string]: string};
+  selectedCity?: { [id: string]: string };
   setSelectedCity?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
-  selectedCountry?: {[id: string]: string};
+  selectedCountry?: { [id: string]: string };
   setSelectedCountry?: React.Dispatch<React.SetStateAction<SelectedLocation>>;
   selectedZone?: string[];
   setSelectedZone?: React.Dispatch<React.SetStateAction<string[]>>;
+  onClear?: any;
 }
 
 const LocationDropdown = ({
@@ -58,7 +59,7 @@ const LocationDropdown = ({
   setSelectedZone,
 }: LocationDropdown) => {
   const menuNode = useRef(null);
-  const {theme} = useTheme()
+  const { theme } = useTheme();
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   // const [addLocationModal, setAddLocationModal] = useState(false);
   // const [locationType, setLocationType] = useState("");
@@ -69,20 +70,22 @@ const LocationDropdown = ({
   const [zoneData, setZoneData] = useState([]);
 
   const [inputText, setInputText] = useState("");
-  const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
+  const [selectedLocation, setSelectedLocations] = useState<string[]>([]);
 
-  const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputChangeHandler = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newValue = event.target.value;
-    if(newValue.trim() != '') setInputText(newValue.trim());
+    if (newValue.trim() != "") setInputText(newValue.trim());
   };
 
-  const fetchSuggestions = async(text: string) => {
+  const fetchSuggestions = async (text: string) => {
     try {
       const [suggestionResponse, countryResponse] = await Promise.all([
         myFetch(`${baseUrl}/location/suggestion?q=${text}`),
         myFetch(`${baseUrl}/location/country?name=${text}`),
       ]);
-  
+
       setCityData(suggestionResponse.data.city);
       setStateData(suggestionResponse.data.state);
       setCountryData(countryResponse.data);
@@ -90,10 +93,10 @@ const LocationDropdown = ({
     } catch (error) {
       console.error("Error fetching location data:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    if(inputText != ''){
+    if (inputText != "") {
       const debounceTimeout = setTimeout(() => {
         fetchSuggestions(inputText);
       }, 500);
@@ -116,7 +119,7 @@ const LocationDropdown = ({
   };
 
   useEffect(() => {
-    setState(selectedLocation)
+    setState(selectedLocation);
   }, [selectedLocation]);
 
   const handleSaveData = () => {
@@ -129,41 +132,39 @@ const LocationDropdown = ({
   };
 
   const addLocationHandler = (type: string, id: string, name: string) => {
-    if (type === 'city' && setSelectedCity) {
-      setSelectedCity((prev) => ({...prev, [id]: name }));  
+    if (type === "city" && setSelectedCity) {
+      setSelectedCity((prev) => ({ ...prev, [id]: name }));
       setSelectedLocations((prev) => [...prev, name]);
-    }
-    else if(type === 'country' && setSelectedCountry) {
-      setSelectedCountry((prev) => ({...prev, [id]: name }));
+    } else if (type === "country" && setSelectedCountry) {
+      setSelectedCountry((prev) => ({ ...prev, [id]: name }));
       setSelectedLocations((prev) => [...prev, name]);
-    }
-    else if(type === 'zone' && setSelectedZone && selectedZone) {
+    } else if (type === "zone" && setSelectedZone && selectedZone) {
       if (!selectedZone.includes(name)) {
         setSelectedZone((prev: string[]) => [...prev, name]);
         setSelectedLocations((prev) => [...prev, name]);
       }
     }
-  }
+  };
 
   const removeLocationHandler = (type: string, id: string) => {
-    if(type === 'city' && setSelectedCity && selectedCity){
-      const entries = Object.entries(selectedCity).filter(([key]) => key!== id);
+    if (type === "city" && setSelectedCity && selectedCity) {
+      const entries = Object.entries(selectedCity).filter(
+        ([key]) => key !== id
+      );
       setSelectedCity(Object.fromEntries(entries));
-    }
-    else if(type === 'country' && setSelectedCountry && selectedCountry){
-      const entries = Object.entries(selectedCountry).filter(([key]) => key!== id);
+    } else if (type === "country" && setSelectedCountry && selectedCountry) {
+      const entries = Object.entries(selectedCountry).filter(
+        ([key]) => key !== id
+      );
       setSelectedCountry(Object.fromEntries(entries));
-    }
-    else if(type === 'zone' && setSelectedZone && selectedZone) {
+    } else if (type === "zone" && setSelectedZone && selectedZone) {
       setSelectedZone((prev) => prev.filter((item) => item !== id));
     }
   };
-console.log(selectedCity);
-console.log(selectedCountry);
 
   return (
     <div>
-      <div className={`${styles.container} ${className}`} >
+      <div className={`${styles.container} ${className}`}>
         <div className={styles.keywords_container}>
           {/* {selectedLocation.length > 0 &&
             selectedLocation.map((data, index) => (
@@ -179,60 +180,60 @@ console.log(selectedCountry);
                 />
               </div>
             ))} */}
-            { (selectedCountry && Object.entries(selectedCountry).length > 0) &&
-              Object.entries(selectedCountry).map(([id, name]) => (
-                <div className={styles.keyword_chip} key={id}>
-                  <span>{name}</span>
-                  <Image
-                    src={CloseIcon}
-                    width={20}
-                    height={20}
-                    alt="close"
-                    className={styles.closeChip}
-                    onClick={() => {
-                      removeLocationHandler('country', id)
-                      removeSelectionHandler(name)
-                    }}
-                  />
-                </div>
-              ))
-            }
-            { (selectedCity && Object.entries(selectedCity).length > 0) &&
-              Object.entries(selectedCity).map(([id, name]) => (
-                <div className={styles.keyword_chip} key={id}>
-                  <span>{name}</span>
-                  <Image
-                    src={CloseIcon}
-                    width={20}
-                    height={20}
-                    alt="close"
-                    className={styles.closeChip}
-                    onClick={() => {
-                      removeLocationHandler('city', id)
-                      removeSelectionHandler(name)
-                    }}
-                  />
-                </div>
-              ))
-            }
-            {selectedZone && selectedZone.length > 0 &&
-              selectedZone.map((data, index) => (
-                <div className={styles.keyword_chip} key={index}>
-                  <span>{data}</span>
-                  <Image
-                    src={CloseIcon}
-                    width={20}
-                    height={20}
-                    alt="close"
-                    className={styles.closeChip}
-                    onClick={() => {
-                      removeLocationHandler('zone', data)
-                      removeSelectionHandler(data)
-                    }}
-                  />
-                </div>
-              ))
-            }
+          {selectedCountry &&
+            Object.entries(selectedCountry).length > 0 &&
+            Object.entries(selectedCountry).map(([id, name]) => (
+              <div className={styles.keyword_chip} key={id}>
+                <span>{name}</span>
+                <Image
+                  src={CloseIcon}
+                  width={20}
+                  height={20}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => {
+                    removeLocationHandler("country", id);
+                    removeSelectionHandler(name);
+                  }}
+                />
+              </div>
+            ))}
+          {selectedCity &&
+            Object.entries(selectedCity).length > 0 &&
+            Object.entries(selectedCity).map(([id, name]) => (
+              <div className={styles.keyword_chip} key={id}>
+                <span>{name}</span>
+                <Image
+                  src={CloseIcon}
+                  width={20}
+                  height={20}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => {
+                    removeLocationHandler("city", id);
+                    removeSelectionHandler(name);
+                  }}
+                />
+              </div>
+            ))}
+          {selectedZone &&
+            selectedZone.length > 0 &&
+            selectedZone.map((data, index) => (
+              <div className={styles.keyword_chip} key={index}>
+                <span>{data}</span>
+                <Image
+                  src={CloseIcon}
+                  width={20}
+                  height={20}
+                  alt="close"
+                  className={styles.closeChip}
+                  onClick={() => {
+                    removeLocationHandler("zone", data);
+                    removeSelectionHandler(data);
+                  }}
+                />
+              </div>
+            ))}
         </div>
         <div className={styles.header}>
           <div className={styles.header_title}>LOCATIONS</div>
@@ -318,7 +319,7 @@ console.log(selectedCountry);
 
         {/* {activeTab == "City, State, Country, etc." && ( */}
         <div className={styles.location_search_input}>
-          <div className={styles.input_container} >
+          <div className={styles.input_container}>
             <Image src={SearchIcon} alt="searchicon" />
             <input
               placeholder="Search For a Location"
@@ -329,26 +330,24 @@ console.log(selectedCountry);
         </div>
 
         <div className={styles.suggestion_container}>
-        {cityData.map((data: any) => (
-          <div
-            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
-            onClick={() => {
-              addLocationHandler('city', data.id, data.name)
-            }}
-            key={data.id}
-          >
-            {/* {data?.name}, {data?.state} */}
-            {data.name}
-            {data.state && 
-              `, ${data.state}`
-            }
-            {data.countryName && 
-              `, ${data.countryName}`
-            }
-          </div>
-        ))}
+          {cityData.map((data: any) => (
+            <div
+              className={`${styles.resultData_list} ${
+                theme === "light" ? styles.resultData_list_light : ""
+              }`}
+              onClick={() => {
+                addLocationHandler("city", data.id, data.name);
+              }}
+              key={data.id}
+            >
+              {/* {data?.name}, {data?.state} */}
+              {data.name}
+              {data.state && `, ${data.state}`}
+              {data.countryName && `, ${data.countryName}`}
+            </div>
+          ))}
 
-        {/* {stateData.map((data: any) => (
+          {/* {stateData.map((data: any) => (
           <div
             className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
             onClick={() => locationSelectHandler(data.state, data.country)}
@@ -358,29 +357,33 @@ console.log(selectedCountry);
           </div>
         ))} */}
 
-        {countryData.map((data: any) => (
-          <div
-            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
-            onClick={() => {
-              addLocationHandler('country', data.id, data.name)
-            }}
-            key={data.id}
-          >
-            {data?.name}
-          </div>
-        ))}
+          {countryData.map((data: any) => (
+            <div
+              className={`${styles.resultData_list} ${
+                theme === "light" ? styles.resultData_list_light : ""
+              }`}
+              onClick={() => {
+                addLocationHandler("country", data.id, data.name);
+              }}
+              key={data.id}
+            >
+              {data?.name}
+            </div>
+          ))}
 
-        {zoneData.map((data: any) => (
-          <div
-            className={`${styles.resultData_list} ${theme === 'light' ? styles.resultData_list_light : ""}`}
-            onClick={() => {
-              addLocationHandler('zone', data, data)
-            }}
-            key={data}
-          >
-            {data}
-          </div>
-        ))}
+          {zoneData.map((data: any) => (
+            <div
+              className={`${styles.resultData_list} ${
+                theme === "light" ? styles.resultData_list_light : ""
+              }`}
+              onClick={() => {
+                addLocationHandler("zone", data, data);
+              }}
+              key={data}
+            >
+              {data}
+            </div>
+          ))}
         </div>
 
         {/* {activeTab == "Center Point & Radius" && (
