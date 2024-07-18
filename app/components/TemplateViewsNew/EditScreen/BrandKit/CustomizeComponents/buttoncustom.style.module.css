@@ -1,7 +1,6 @@
 .body {
     display: flex;
     align-content: center;
-    /* align-items: center; */
     position: relative;
     gap: 30px;
 }
@@ -22,19 +21,29 @@
     font-size: 10px;
     color: #A8A8A8;
 }
+
 .editContainer {
     width: 70%;
 }
-.textPreviewContainer{
+
+.btnPreviewContainer {
     background-color: #F2F2F2;
     border-radius: 5px;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60px;
     padding: 14px 0px 14px 0px;
 }
+
+.btnPreviewContainer button {
+    border: 1px solid;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    padding: 7px 12px;
+}
+
 .btnOptions {
     display: flex;
     align-items: center;
@@ -88,78 +97,35 @@
     margin-bottom: 19px;
     border-top: 1px solid #F5F5F5;
 }
-.familyColorContainer{
+.btnFontColorContainer{
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    z-index: 8;
+    position: relative;
 }
-.fontFamilyContainer{
+.colorRadiusContainer{
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    position: relative;
+    z-index: 7;
+}
+.radiusContainer{
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.fontFamilyContainer .heading{
+.radiusContainer .heading{
     font-size: 11px;
-} 
-.dropDownContainer{
+    color: black;
+}
+.radiusContainer .radiusValue{
     background-color: #F2F2F2;
-    width: 110px;
     border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 10px;
-    position: relative;
-    cursor: pointer;
-}
-.dropDownContainer .display{
     font-size: 10px;
-}
-.dropDownContainer .dropDown{
-    position: absolute;
-    background-color: white;
-    border-radius: 3px;
-    height: 104px;
-    overflow-y: auto;
-    width: 100%;
-    top: 24px;
-    padding: 5px;
-    left: 0;
-    filter: drop-shadow(1px 1px 2px rgb(197, 197, 197));
-}
-.dropDownContainer .dropDown .dropdownFont{
-    padding: 3px 10px;
-    font-size: 10px;
-    line-height: 17px;
-}
-.dropDownContainer .dropDown .dropdownFont:hover{
-    background-color: #F2F2F2;
-    border-radius: 2.5px;
-}
-.fontSizeStyleContainer{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.fontSizeContainer{
-    display: flex;
-    align-items: center;
-    gap: 10px;   
-}
-.fontSizeContainer .heading{
-    font-size: 11px;
-} 
-.fontSizeContainer .sizeContainer{
-    background-color: #F2F2F2;
-    width: 110px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 10px;  
-}
-.sizeContainer .display{
-    font-size: 10px;
+    line-height: 14px;
+    padding: 5px 24px;
+    width: 80px;
 }
 .arrows{
     display: flex;
@@ -168,11 +134,22 @@
 .arrows div{
     cursor: pointer;
 }
-.fontStyleContainer{
+.btnTextContainer{
     display: flex;
+    width: 100%;
+    gap: 15px;
     align-items: center;
-    gap: 10px;
+    margin-top: 12px;
 }
-.fontStyleContainer .heading{
+.btnTextContainer .heading{
     font-size: 11px;
-} 
+    color: black;
+}
+.btnTextContainer input{
+    border: 1px solid #C9C9C9;
+    border-radius: 5px;
+    font-size: 10px;
+    line-height: 14px;
+    padding: 8px 16px;
+    width: 77%;
+}

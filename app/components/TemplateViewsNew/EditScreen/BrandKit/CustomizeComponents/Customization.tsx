@@ -15,6 +15,7 @@ interface EditScreenProps {
   setButtonSettings : React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
   buttonSettings : ButtonSettingsState
   cardBgColor : string
+  fontSettings : FontSettingsState
   cardBorderRadius : number;
 }
 
@@ -42,33 +43,34 @@ interface ButtonSettingsState{
   secondary : ButtonSettings;
 }
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, setFontSettings,setButtonSettings, cardBorderRadius,cardBgColor, buttonSettings  }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius,fontSettings, setFontSettings,setButtonSettings, cardBorderRadius,cardBgColor, buttonSettings  }: EditScreenProps) => {
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
         <div>Appearance</div>
-        <button>Save Kit</button>
+        <button>Apply</button>
       </div>
       <div className={styles.line}></div>
-      <div className={styles.logoContainer}>
+      {/* <div className={styles.logoContainer}>
         <LogoComponent />
-      </div>
-      <div className={styles.line}></div>
-      <div className={styles.brandColorContainer}>
+      </div> */}
+      {/* <div className={styles.line}></div> */}
+      {/* <div className={styles.brandColorContainer}>
         <BrandColor setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
-      </div>
+      </div> */}
       <div className={styles.line}></div>
       <div className={styles.cardCustomizationContainer}>
         <CardCustomization cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setCardBgColor={setCardBgColor} setCardBorderRadius={setCardBorderRadius} extractedColors={extractedColors} />
       </div>
       <div className={styles.line}></div>
+      <div className={styles.fontCustomizationContainer}>
+        <TypographyCustomization fontSettings={fontSettings} setFontSettings={setFontSettings} extractedColors={extractedColors} />
+      </div>
+      <div className={styles.line}></div>
       <div className={styles.buttonCustomizationContainer}>
         <ButtonCustomization buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} extractedColors={extractedColors} />
       </div>
-      <div className={styles.line}></div>
-      <div className={styles.fontCustomizationContainer}>
-        <TypographyCustomization setFontSettings={setFontSettings} extractedColors={extractedColors} />
-      </div>
+
     </div>
   )
 }

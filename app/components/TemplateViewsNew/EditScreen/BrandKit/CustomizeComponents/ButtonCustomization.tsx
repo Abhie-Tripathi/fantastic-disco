@@ -21,8 +21,6 @@ interface ButtonSettingsState {
 }
 const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSettings }: Props) => {
     const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
-    const [btnOne, setBtnOne] = useState({ btnColor: "#0072F5", borderColor: "#0072F5", borderRadius: 4, fontColor: "#000000" })
-    const [btnTwo, setBtnTwo] = useState({ btnColor: "#6750a4", borderColor: "#6750a4", borderRadius: 4, fontColor: "#000000" })
 
     const handleCheckboxChange = () => {
         setSelectedBtn(selectedBtn === "primary" ? "secondary" : "primary");
@@ -74,7 +72,16 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
             }
         }));
     };
-
+    const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newText = event.target.value;
+        setButtonSettings((prevSettings) => ({
+          ...prevSettings,
+          [selectedBtn]: {
+            ...prevSettings[selectedBtn],
+            buttonText: newText,
+          },
+        }));
+      };
 
     return (
         <div className={styles.body}>
@@ -84,8 +91,8 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.btnPreviewContainer}>
-                    {selectedBtn === "primary" ? <button style={{ color: buttonSettings.primary.fontColor, backgroundColor: buttonSettings.primary.buttonColor, borderRadius: buttonSettings.primary.borderRadius, borderColor: buttonSettings.primary.borderColor }} className={styles.primaryPreview}>Meet Us</button>
-                        : <button style={{ color: buttonSettings.secondary.fontColor, backgroundColor: buttonSettings.secondary.buttonColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>Meet Us</button>}
+                    {selectedBtn === "primary" ? <button style={{ color: buttonSettings.primary.fontColor, backgroundColor: buttonSettings.primary.buttonColor, borderRadius: buttonSettings.primary.borderRadius, borderColor: buttonSettings.primary.borderColor }} className={styles.primaryPreview}>{buttonSettings.primary.buttonText}</button>
+                        : <button style={{ color: buttonSettings.secondary.fontColor, backgroundColor: buttonSettings.secondary.buttonColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>{buttonSettings.secondary.buttonText}</button>}
                 </div>
                 <div className={styles.btnOptions}>
                     <label className={styles.checkboxContainer}>
@@ -141,6 +148,11 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                         </div>
                     </div>
                 </div>
+                <div className={styles.btnTextContainer}>
+                    <div className={styles.heading}>Button Text</div>
+                    <TextIcon/>
+                    <input type="text" value={selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText} onChange={handleTextChange}/>
+                </div>
             </div>
         </div>
     )
@@ -168,6 +180,15 @@ function DownIcon() {
     return (
         <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.35341 3.85361C4.25965 3.94734 4.13249 4 3.99991 4C3.86733 4 3.74017 3.94734 3.64641 3.85361L0.817909 1.02511C0.72683 0.930806 0.676433 0.804505 0.677572 0.673406C0.678711 0.542308 0.731296 0.416902 0.824 0.324198C0.916704 0.231493 1.04211 0.178909 1.17321 0.17777C1.30431 0.176631 1.43061 0.227028 1.52491 0.318107L3.99991 2.79311L6.47491 0.318107C6.56921 0.227028 6.69551 0.176631 6.82661 0.17777C6.95771 0.178909 7.08312 0.231493 7.17582 0.324198C7.26852 0.416902 7.32111 0.542308 7.32225 0.673406C7.32339 0.804505 7.27299 0.930806 7.18191 1.02511L4.35341 3.85361Z" fill="black" />
+        </svg>
+    )
+}
+
+function TextIcon() {
+    return (
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.1875 0.875H1.8125C1.29473 0.875 0.875 1.29473 0.875 1.8125V11.1875C0.875 11.7053 1.29473 12.125 1.8125 12.125H11.1875C11.7053 12.125 12.125 11.7053 12.125 11.1875V1.8125C12.125 1.29473 11.7053 0.875 11.1875 0.875Z" stroke="black" stroke-width="1.25" stroke-linejoin="round" />
+            <path d="M3.99951 4.9375V4H8.99951V4.9375M5.87451 9.625H7.12451M6.49951 4.625V9.625" stroke="black" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     )
 }

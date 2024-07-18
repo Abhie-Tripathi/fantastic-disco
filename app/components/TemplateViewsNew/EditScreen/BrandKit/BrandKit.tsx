@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './brandkit.style.module.css'
-import Customization from './Customization/Customization'
+import Customization from './CustomizeComponents/Customization'
 import Themes from './Themes/Themes'
 
 interface FontSettings {
@@ -34,9 +34,10 @@ interface EditScreenProps {
     buttonSettings : ButtonSettingsState
     cardBgColor : string
     cardBorderRadius : number;
+    fontSettings : FontSettingsState
 }
 
-const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings} : EditScreenProps) => {
+const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings,fontSettings} : EditScreenProps) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("customization")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -48,7 +49,7 @@ const BrandKit = ({setFontSettings, setCardBorderRadius, setCardBgColor, setButt
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "customization" ? <Customization buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
+                {selectedBtn === "customization" ? <Customization fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : <Themes extractedColors={extractedColors}/>}
             </div>
         </div>
     )
