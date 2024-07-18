@@ -11,9 +11,8 @@
 }
 
 .tracker_container {
-  /* width: 100%; */
   display: grid;
-  grid-template-columns: repeat(4, 280px);
+  grid-template-columns: repeat(4, 255px);
   overflow: hidden;
   transition: max-height 0.5s ease, opacity 0.5s ease;
   gap: 10px;
@@ -30,19 +29,15 @@
 .view_tracker_text {
   text-align: center;
   font-size: 16px;
-  color: white;
-  background-color: var(--primary-color);
-  border-radius: 8px;
-  padding: 8px;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   gap: 10px;
+  border-color: var(--primary-color);
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  padding-bottom: 1px;
 }
-
-.view_tracker_text:hover {
-  background-color: var(--primary-color-hover);
-}
-
 
 .inputfields_container {
   position: relative;
