@@ -111,15 +111,15 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             selectedTemplate === "HB" ? <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings = {buttonSettings}/> :
                                 selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
                                     selectedTemplate === "LS" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
-                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} /> :
-                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} /> :
-                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} /> :
-                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} /> :
-                                                        selectedTemplate === "CV" ? <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} /> :
-                                                            selectedTemplate === "HS" ? <ScrollView type='top' selectedCard={selectedCard} /> :
-                                                                selectedTemplate === "LScroll" ? <ScrollView selectedCard={selectedCard} type='left' /> :
-                                                                    selectedTemplate === "RScroll" ? <ScrollView selectedCard={selectedCard} type='right' /> :
-                                                                        selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} /> : <></>}
+                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                        selectedTemplate === "CV" ? <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                            selectedTemplate === "HS" ? <ScrollView type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                                selectedTemplate === "LScroll" ? <ScrollView selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                                    selectedTemplate === "RScroll" ? <ScrollView selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+                                                                        selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings = {buttonSettings} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings = {buttonSettings} /> : <></>}
                 </div>
                 {draftWidgets && <div className={styles.previewBtnContainer}>
                     <button onClick={handleMyWidgets} className={styles.previewBtn}>Save to my widgets</button>

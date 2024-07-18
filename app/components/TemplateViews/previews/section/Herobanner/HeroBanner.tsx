@@ -32,10 +32,7 @@ interface Props {
     };
 }
 
-const HeroBanner = ({ selectedCard, cardBgColor,
-    cardBorderRadius,
-    fontSettings,
-    buttonSettings,}: Props) => {
+const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings}: Props) => {
 
     let EventCard: ElementType;
 
