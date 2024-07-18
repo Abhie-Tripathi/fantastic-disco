@@ -83,17 +83,27 @@ interface FilterValue {
   startDate: string;
   endDate: string;
   eventRating: string;
-  eventRank:any;
-  localRank:any;
+  eventRank: any;
+  localRank: any;
   eventKeywords: any;
   eventCategory: any;
   editionRange: number;
   eventSize: any;
   eventCity: any;
   eventCountry: any;
-  eventRegion:string;
-  orgWebsite:string;
+  eventRegion: string;
+  orgWebsite: string;
   eventAttendanceRange: any;
+}
+interface InputArea {
+  type: string;
+  placeholder: string;
+}
+
+interface Template {
+  name: string;
+  description?: string | undefined;
+  inputAreas?: InputArea[] | undefined; 
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -111,14 +121,123 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
+const templates = [
+  {
+    name: "T_RECRUITMENT",
+    // description: "Input designations and upload job descriptions to identify relevant events effortlessly : ",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Designation",
+    //   },
+    //   {
+    //     type:"text",
+    //     placeholder:"Job Description"
+    //   }
+    // ]
+  },
+  {
+    name: "T_COMPETITOR",
+    description: "Track your competitor experts, influencers and where they might be participating in events :",
+    inputAreas: [
+      {
+        type: "text",
+        placeholder: "Add Competitor Website",
+      }
+    ]
+  },
+  {
+    name: "T_AUDIENCE_DEPT_PROFILE"
+  },
+  {
+    name: "T_CUSTOMER_ICP",
+    description: "Input ideal customer profile details like company, location or websites to track their interests :",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Company Name",
+    //   },
+    //   {
+    //     type: "text",
+    //     placeholder: "Url",
+    //   },
+    //   {
+    //     type: "text",
+    //     placeholder: "Location",
+    //   }
+    // ]
+  },
+  {
+    name: "T_BRAND_BUILDING",
+    description: "Input designations and upload job descriptions to identify relevant events effortles :",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Designation",
+    //   },
+    //   {
+    //     type: "text",
+    //     placeholder: "Job Description",
+    //   }
+    // ]
+  },
+  {
+    name: "T_PEOPLE_FINDER",
+    description: "Track experts, influencers and where they might be participating in various events : ",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Name",
+    //   },
+    //   {
+    //     type: "text",
+    //     placeholder: "Company Name",
+    //   }
+    // ]
+  },
+  {
+    name: "T_SPEAKING_OPPORTUINITY",
+    description: "Track your competitor experts, influencers and where they might be participating in events :",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Speaker's Name",
+    //   },
+    //   {
+    //     type: "text",
+    //     placeholder: "Company Name",
+    //   }
+    // ]
+  },
+  {
+    name: "T_SOCIAL_CAUSE",
+    description: "Track social cause events that interests audience to be socially active and enhance their reach :",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Type of event",
+    //   }
+    // ]
+  },
+  {
+    name:"T_PRODUCT_KEYWORDS",
+    description:"List all the events which belongs to given industry or associated with keywords :",
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Keywords",
+    //   }
+    // ]
+  }
+]
 const Pages = () => {
   const searchParams = useSearchParams();
   interface SelectedLocation {
     [id: string]: string;
   }
-  const {theme}=useTheme();
-  const type  = searchParams.get('type');
-  const iconClass = theme !== "light" ? "icons_light" :"icon";
+  const { theme } = useTheme();
+  const type = searchParams.get('type');
+  const iconClass = theme !== "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const pathName = usePathname().split("/");
@@ -185,10 +304,10 @@ const Pages = () => {
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
   );
-  const [customData,setCustomData]=useState<any>([]);
+  const [customData, setCustomData] = useState<any[]>([]);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
-const [add,setAdd]=useState(false);
+  const [add, setAdd] = useState(false);
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -291,21 +410,23 @@ const [add,setAdd]=useState(false);
       else setIntScore("International");
     }
   }, [selectedINScore]);
-  const [websites,setWebsites]=useState("");
- 
+  const [websites, setWebsites] = useState("");
+
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
-  useEffect(()=>{
-    if(type==="T_COMPETITOR"){
-      setWebsites(customData.map((item:any) => item.companyUrl).join(','));
+  useEffect(() => {
+    if (type === "T_COMPETITOR") {
+      const urls = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      setWebsites(urls);
+
     }
-  },[type, customData])
+  }, [type, customData])
   console.log(websites);
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-   
-   
-    
+
+
+
     GAEvent(
       "trackers",
       "Tracker",
@@ -321,16 +442,16 @@ const [add,setAdd]=useState(false);
       const secondLast = pathName[pathName.length - 2];
       const formData = {
         name: trackerName,
-        ...(type && type.length>0 && {
-          type:type.toUpperCase()
-      }),
+        ...(type && type.length > 0 && {
+          type: type.toUpperCase()
+        }),
         filterValue: {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
           }),
-          ...(websites.length>0 &&{
-            orgWebsite:websites,
-        }),
+          ...(websites.length > 0 && {
+            orgWebsite: websites,
+          }),
           ...(selectedEventEdition > 0 && {
             editionRange: selectedEventEdition.toString(),
           }),
@@ -348,9 +469,9 @@ const [add,setAdd]=useState(false);
           ...(selectedExhibitScore?.length > 0 && {
             eventSize: selectedExhibitScore.join(","),
           }),
-         ...(selectedZone?.length>0 && {
-            eventRegion:selectedZone.join(',')
-         }),
+          ...(selectedZone?.length > 0 && {
+            eventRegion: selectedZone.join(',')
+          }),
           brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
@@ -382,7 +503,7 @@ const [add,setAdd]=useState(false);
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString()}),
+          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -398,11 +519,11 @@ const [add,setAdd]=useState(false);
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(rankToggles?.isEventRank===true && {
+          ...(rankToggles?.isEventRank === true && {
             eventRank: selectedEventRank.join(",")
           }),
-          ...(rankToggles?.isLocalRank===true && {
-            localRank:selectedLocalRank.join(',')
+          ...(rankToggles?.isLocalRank === true && {
+            localRank: selectedLocalRank.join(',')
           }),
           ...(selectedINScore > 0 && { internationalScore: selectedINScore.toString() }),
           ...(selectedInboundScore > 0 && {
@@ -446,10 +567,15 @@ const [add,setAdd]=useState(false);
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
-        console.log("Please, Fill all the details");
-        setIsMandatory(true);
+      if (type !== "CUSTOM" && (trackerName.length === 0 || customData.length === 0)) {
         setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
+        console.log("Please, Fill all the details");
+        setIsCreating(false);
+        setIsMandatory(true);
         return;
       }
       const { data, error } = await myFetch(
@@ -474,28 +600,28 @@ const [add,setAdd]=useState(false);
     } else {
       const formData = {
         name: trackerName,
-        ...(type && type.length>0 && {
-          type:type.toUpperCase()
-      }),
+        ...(type && type.length > 0 && {
+          type: type.toUpperCase()
+        }),
         filterValue: {
-         
+
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
           ...(Object.entries(selectedCountry).length > 0 && {
             eventCountry: Object.keys(selectedCountry).join(","),
           }),
-          ...(websites.length>0 &&{
-              orgWebsite:websites,
+          ...(websites.length > 0 && {
+            orgWebsite: websites,
           }),
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
           }),
-          ...(rankToggles?.isEventRank===true && {
+          ...(rankToggles?.isEventRank === true && {
             eventRank: selectedEventRank.join(",")
           }),
-          ...(rankToggles?.isLocalRank===true && {
-            localRank:selectedLocalRank.join(',')
+          ...(rankToggles?.isLocalRank === true && {
+            localRank: selectedLocalRank.join(',')
           }),
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -518,9 +644,9 @@ const [add,setAdd]=useState(false);
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
-          ...(selectedZone?.length>0 && {
-            eventRegion:selectedZone.join(',')
-         }),
+          ...(selectedZone?.length > 0 && {
+            eventRegion: selectedZone.join(',')
+          }),
           eventSeries: selectedEventSeries.toString(),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
@@ -594,9 +720,13 @@ const [add,setAdd]=useState(false);
           // }
         },
       };
-      console.log(selectedCountry);
-
-      if (selectedLocations.length === 0 || trackerName.length === 0 || (type==="T_COMPETITOR" && customData.length===0)) {
+      console.log(customData.length);
+      if (type !== "CUSTOM" && (trackerName.length === 0 || customData.length === 0)) {
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -651,9 +781,9 @@ const [add,setAdd]=useState(false);
       if (editData.tracker.filterValue?.maturity == "low") {
         setSelectedMaturity(25);
       }
-      if(type==="T_COMPETITOR"){
-        const newData=editData?.tracker?.filterValue?.orgWebsite?.
-        split(',');
+      if (type === "T_COMPETITOR") {
+        const newData = editData?.tracker?.filterValue?.orgWebsite?.
+          split(',');
         console.log(newData);
         if (Array.isArray(newData)) {
           setCustomData((prevData: any) => [
@@ -692,8 +822,8 @@ const [add,setAdd]=useState(false);
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
           ? editData?.tracker?.filterValue?.eventCategory?.map(
-              (cat: Cat) => cat.id
-            )
+            (cat: Cat) => cat.id
+          )
           : []
       );
       setSelectedEventFormat(
@@ -715,16 +845,16 @@ const [add,setAdd]=useState(false);
       setSelectedDateRange(
         editData?.tracker?.filterValue?.startDate?.length > 0
           ? [
-              editData?.tracker?.filterValue?.startDate?.split(",")[0],
-              editData?.tracker?.filterValue?.startDate?.split(",")[1],
-            ]
+            editData?.tracker?.filterValue?.startDate?.split(",")[0],
+            editData?.tracker?.filterValue?.startDate?.split(",")[1],
+          ]
           : []
       );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
           ? editData?.tracker?.filterValue?.eventCategory?.map(
-              (cat: Cat) => cat.name
-            )
+            (cat: Cat) => cat.name
+          )
           : []
       );
       const eventCountry =
@@ -760,22 +890,22 @@ const [add,setAdd]=useState(false);
       setSelectedCountry(
         editData.tracker.filterValue?.eventCountry?.length > 0
           ? editData.tracker.filterValue.eventCountry.reduce(
-              (acc: any, current: any) => {
-                return { ...acc, ...current };
-              },
-              {}
-            )
+            (acc: any, current: any) => {
+              return { ...acc, ...current };
+            },
+            {}
+          )
           : {}
       );
-      setSelectedZone(editData.tracker.filterValue?.eventRegion?.length > 0?  editData.tracker.filterValue?.eventRegion?.split(','):[]);
+      setSelectedZone(editData.tracker.filterValue?.eventRegion?.length > 0 ? editData.tracker.filterValue?.eventRegion?.split(',') : []);
       setSelectedCity(
         editData.tracker.filterValue?.eventCity?.length > 0
           ? editData.tracker.filterValue.eventCity.reduce(
-              (acc: any, current: any) => {
-                return { ...acc, ...current };
-              },
-              {}
-            )
+            (acc: any, current: any) => {
+              return { ...acc, ...current };
+            },
+            {}
+          )
           : {}
       );
       setSelectedTrustScore(
@@ -791,12 +921,12 @@ const [add,setAdd]=useState(false);
           ? editData.tracker.filterValue?.maturity
           : ""
       );
-      setSelectedEventRank(editData.tracker.filterValue?.eventRank?.length>0
+      setSelectedEventRank(editData.tracker.filterValue?.eventRank?.length > 0
         ? editData.tracker.filterValue?.eventRank?.split(',')
-        : [0,100]);
-        setSelectedLocalRank( editData.tracker.filterValue?.localRank?.length>0
-          ? editData.tracker.filterValue?.localRank?.split(',')
-          : [0,100])
+        : [0, 100]);
+      setSelectedLocalRank(editData.tracker.filterValue?.localRank?.length > 0
+        ? editData.tracker.filterValue?.localRank?.split(',')
+        : [0, 100])
       setSelectedReptScore(
         editData.tracker.filterValue?.reputationScore > 0
           ? editData.tracker.filterValue?.reputationScore
@@ -869,59 +999,73 @@ const [add,setAdd]=useState(false);
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
-console.log(selectedEventRank);
-console.log(type);
+  console.log(selectedEventRank);
+  console.log(type);
+  const [companyUrl, setCompanyUrl] = useState('');
+  const [name, setName] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      addNew();
+    }
+  }
+  console.log(customData);
+  const [template, setTemplate] = useState<Template | null | undefined>(null);
+  const [inputValues, setInputValues] = useState<{ [key: number]: string }>({});
+  useEffect(() => {
+    const foundTemplate = templates.find(t => t.name === type);
+    setTemplate(foundTemplate);
+  }, [type])
+  const handleInput = (index: number, value: string) => {
+    console.log(value);
+    setInputValues(prevValues => ({
+      ...prevValues,
+      [index]: value
+    }));
+  };
+  let valid = true;
+  let error="";
+  const addNew = () => {
+    if (!template) {
+      console.error('Template is not found');
+      return;
+    }
 
-const addNewEntry=()=>{
-  
-  if (companyUrl) {
-    setCustomData((prevData:any) => ([
-      ...prevData,
-      { companyUrl: companyUrl }
-    ]));
-      setCompanyUrl('');
-      // setAdd(true);
-  }
-  else if(name && companyName){
-    setCustomData((prevData:any) => ([
-      ...prevData,
-      { name: name,
-        companyName:companyName
-       }
-    ]));
-    setName('');
-    setCompanyName('');
-  }
-  // setAdd(true);
+    const regex = /^(https?:\/\/[\w.-]+)/;
+    let isValid = true;
+    if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
+      const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
+        const value = inputValues[index];
+        if (inputArea.placeholder === 'Add Competitor Website') {
+          if (regex.test(value)) {
+            acc[inputArea.placeholder] = value;
+          } else {
+            isValid = false;
+          }
+        } else {
+          if (value !== null && value !== '') {
+            acc[inputArea.placeholder] = value;
+          } else {
+            isValid = false;
+          }
+        }
+        return acc;
+      }, {});
 
-}
-const [companyUrl, setCompanyUrl] = useState('');
-const [name,setName]=useState('');
-const [companyName,setCompanyName]=useState('');
-const handleInputChange = (e:any) => {
-  
-  setCompanyUrl(e.target.value);
-};
-const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (e.key === 'Enter' && (name && companyName || companyUrl)) {
-    // if(isValidURL(e.target.value))
-    addNewEntry();
+      if (isValid) {
+        setCustomData((prevData: any) => [
+          ...prevData,
+          newEntry
+        ]);
+      } else {
+        error="Enter valid inputs"
+        console.error('Invalid input or URL');
+      }
+      setInputValues({});
+    }
   }
-};
-console.log(customData);
-// const isValidURL = (string) => {
-//   try {
-//     new URL(string);
-//     return true;
-//   } catch (_) {
-//     try {
-//       new URL("http://" + string);
-//       return true;
-//     } catch (_) {
-//       return false;
-//     }
-//   }
-// };
+  console.log(valid);
+
   return (
     <>
       <div
@@ -944,9 +1088,8 @@ console.log(customData);
             href={
               last === "create"
                 ? "/internal/trackers"
-                : `/internal/trackers/${
-                    pathName[pathName.length - 2]
-                  }/trackedConfiguration?type=${type}`
+                : `/internal/trackers/${pathName[pathName.length - 2]
+                }/trackedConfiguration?type=${type}`
             }
             style={{ display: "flex" }}
           >
@@ -1018,10 +1161,10 @@ console.log(customData);
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}
-                  style={{
-                    border:
-                      isMandatory && selectedLocations.length === 0 ? "2px solid red" : "",
-                  }}
+                    style={{
+                      border:
+                        isMandatory && type==="CUSTOM" && selectedLocations.length === 0 ? "2px solid red" : "",
+                    }}
                   >
                     <div className={styles.input}>
                       <div className={styles.input_title}>
@@ -1072,7 +1215,7 @@ console.log(customData);
                       <div className={styles.input_title}>
                         Dates
                         {selectedDateRange.length > 0 &&
-                        selectedDateRange[0] !== null ? (
+                          selectedDateRange[0] !== null ? (
                           <span className={styles.input_selected_title}>
                             {`${convertISOToOriginalFormat(
                               selectedDateRange[0]
@@ -1173,7 +1316,7 @@ console.log(customData);
               </Popover>
             </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
+              <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -1261,41 +1404,41 @@ console.log(customData);
               </MenuTrigger>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Format
-                          {selectedEventFormat?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventFormat.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventFormat && selectedEventFormat[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
+                <Button>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Event Format
+                        {selectedEventFormat?.length > 1 ? (
+                          <span className={styles.input_selected_no}>
+                            {selectedEventFormat.length}
+                          </span>
+                        ) : (
+                          <span className={styles.input_selected_title}>
+                            {selectedEventFormat && selectedEventFormat[0]}
+                          </span>
+                        )}
                       </div>
-                    </div>
-                  </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      <EventAdvFilter
-                        state={selectedEventFormat}
-                        setState={setSelectedEventFormat}
-                        data={eventFormatData}
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
                       />
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                    </div>
+                  </div>
+                </Button>
+                <Popover>
+                  <Dialog className={styles.noBorder}>
+                    <EventAdvFilter
+                      state={selectedEventFormat}
+                      setState={setSelectedEventFormat}
+                      data={eventFormatData}
+                    />
+                  </Dialog>
+                </Popover>
+              </MenuTrigger>
 
             </div>
 
@@ -1330,25 +1473,22 @@ console.log(customData);
                 <div className={styles.advanceFilterBtns}>
                   <button
                     onClick={() => setSelectedAdvFilter("AP")}
-                    className={`${styles.listBtn} ${
-                      selectedAdvFilter === "AP" ? styles.active : ""
-                    }`}
+                    className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
+                      }`}
                   >
                     Advanced Details
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("IS")}
-                    className={`${styles.listBtn} ${
-                      selectedAdvFilter === "IS" ? styles.active : ""
-                    }`}
+                    className={`${styles.listBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
+                      }`}
                   >
                     Insights and Score
                   </button>
                   <button
                     onClick={() => setSelectedAdvFilter("AI")}
-                    className={`${styles.listBtn} ${
-                      selectedAdvFilter === "AI" ? styles.active : ""
-                    }`}
+                    className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
+                      }`}
                   >
                     Audience Intel
                   </button>
@@ -1359,45 +1499,44 @@ console.log(customData);
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
               <div className={styles.inputdropdowns_container}>
-                
+
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Event Attendance
-                        {selectedEventAttendanceRange[0] !== undefined ? (
-                          <span className={styles.input_selected_title}>
-                            {`${selectedEventAttendanceRange[0]} - ${
-                              selectedEventAttendanceRange[1] || "Unlimited"
-                            }`}
-                          </span>
-                        ) : (
-                          ""
-                        )}
+                  <Button>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Event Attendance
+                          {selectedEventAttendanceRange[0] !== undefined ? (
+                            <span className={styles.input_selected_title}>
+                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
+                                }`}
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        <Image
+                          src={DropIcon}
+                          alt="dropicon"
+                          width={20}
+                          height={20}
+                          className={iconClass}
+                        />
                       </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={iconClass}
-                      />
                     </div>
-                  </div>
-                </Button>
-                <Popover>
-                  <Dialog>
-                    {({ close }) => (
-                      <EventAttendance
-                        state={selectedEventAttendanceRange}
-                        setState={setSelectedEventAttendanceRange}
-                        onClose={close}
-                      />
-                    )}
-                  </Dialog>
-                </Popover>
-              </MenuTrigger>
+                  </Button>
+                  <Popover>
+                    <Dialog>
+                      {({ close }) => (
+                        <EventAttendance
+                          state={selectedEventAttendanceRange}
+                          setState={setSelectedEventAttendanceRange}
+                          onClose={close}
+                        />
+                      )}
+                    </Dialog>
+                  </Popover>
+                </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button>
@@ -1643,7 +1782,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={selectedTrustScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1710,7 +1849,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={selectedReptScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1738,7 +1877,7 @@ console.log(customData);
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Maturity
-                          {selectedMaturity> 0 && (
+                          {selectedMaturity > 0 && (
                             <span className={styles.input_selected_title}>
                               {selectedMaturity}
                             </span>
@@ -1749,7 +1888,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={(maturity ?? [])?.length > 0}
                               />
                               <span className={styles.slider}></span>
@@ -1791,7 +1930,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={(intScore ?? [])?.length > 0}
                               />
                               <span className={styles.slider}></span>
@@ -1827,7 +1966,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={selectedInboundScore !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1871,7 +2010,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 checked={selectedUserRatings.length !== 0}
                               />
                               <span className={styles.slider}></span>
@@ -1915,7 +2054,7 @@ console.log(customData);
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
+                                checked={template?.inputAreas?.length==0}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1941,162 +2080,104 @@ console.log(customData);
           </div>
         </div>
       </Suspense>
-      {(type==="T_COMPETITOR" || type === "t_recruitment") &&
-     ( <div className={`card ${styles.competitor}`}>
-      <div className={styles.competitorHead}>
-      <div className={styles.competitorHeading}>Upload custom data </div>
-      {/* <div className={styles.badgeSuccess}>Comming Soon</div> */}
-      </div>
-      <div className={styles.bar}></div>
-      <div className={`${styles.toggleDiv}`}>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+      {template &&
+        <div className={`card ${styles.competitor}`}>
+          <div className={styles.competitorHead} >
+            <div className={styles.competitorHeading}>Upload custom data </div>
+          </div>
+          <div className={styles.bar}></div>
+          <div className={`${styles.toggleDiv}`}>
+            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
-                <div className={styles.manualHeading}>Add data manually</div>
+                <div className={styles.manualHeading}>Add data manually
+                {template?.inputAreas?.length===undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+                </div>
                 <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
               </div>
               <div>
-              
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
+
+                <span>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={template?.inputAreas?.length !== undefined}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </span>
+
               </div>
-        </div>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
+            </div>
+            <div className={`card ${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
-                <div className={styles.manualHeading}>Import CSV Data</div>
+                <div className={styles.manualHeading}>Import CSV Data
+                  <div className={styles.badgeSuccess}>Comming Soon</div>
+                </div>
                 <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
               </div>
               <div>
               
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
+                <span>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={selectedExhibitScore.length !== 0}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </span>
+
               </div>
-        </div>
-      </div>
-      <div className={`card ${styles.competitor}`}>
-        <div className={styles.subHeading}>Add competitor&apos;s website:</div>
-        <div className={styles.allInputArea}>
-          <div className={styles.singleInputArea} style={{"border" : (isMandatory && customData.length===0) ?"1px solid red":""}}>
-            <Image src={Url} alt="url" className="icons" />
-            <input
-              className={styles.textArea}
-              type="text"
-              placeholder="Url"
-              value={companyUrl}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-            />
+            </div>
           </div>
-          <div onClick={addNewEntry} className={styles.addIcon}>
-            <Image src={Add} alt="add_Icon" />
-          </div>
-        </div>
-        {customData.map((item:any, index:number) => (
-          <div key={index} className={styles.singleInputBox}>{item.companyUrl}</div>
-        ))}
-      </div>
-    </div>)}
-    {(type==="T_SPEAKING_OPPORTUINITY" || type==="T_PEOPLE_FINDER")&&
-     ( <div className={`card ${styles.competitor}`}>
-      <div className={styles.competitorHead}>
-      <div className={styles.competitorHeading}>Upload custom data </div>
-      <div className={styles.badgeSuccess}>Comming Soon</div>
-      </div>
-      <div className={styles.bar}></div>
-      <div className={`${styles.toggleDiv}`}>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually</div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+          {template?.inputAreas &&
+          <div className={`card ${styles.competitor}`}>
+            <div className={styles.subHeading}>{template.description}</div>
+            {!valid && (
+              <div style={{ color: "red" }}>Invalid input&apos;s</div>
+            )}
+            <div className={styles.allInputArea}>
+              {template?.inputAreas?.map((inputArea:any, index:number) => (
+                <div key={index} className={styles.singleInputArea}>
+                  <Image src={Name} alt="userName_Icon" className="icons" />
+                  <input
+                    className={styles.textArea}
+                    type="text"
+                    placeholder={inputArea.placeholder}
+                    value={inputValues[index] || ''}
+                    onChange={(e) => handleInput(index, e.target.value)}
+                    onKeyPress={handleKeyDown}
+                  />
+                </div>
+              ))}
+              <div onClick={addNew} className={styles.addIcon}>
+                <Image src={Add} alt="add_Icon" />
               </div>
-              <div>
-              
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
-              </div>
-        </div>
-        <div className={`card ${styles.manualDiv}`} style={{padding:"10px"}}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data</div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-              
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        
-              </div>
-        </div>
-      </div>
-      <div className={`card ${styles.competitor}`}>
-        {type==="T_SPEAKING_OPPORTUINITY" && <div className={styles.subHeading}>Add speaker&apos;s name and company below:</div>}
-        {type==="T_PEOPLE_FINDER" && <div className={styles.subHeading}>Add name and company below:</div>}
-        <div className={styles.allInputArea}>
-          <div className={styles.singleInputArea}>
-            <Image src={Name} alt="userName_Icon" className="icons"/>
-            <input
-              className={styles.textArea}
-              type="text"
-              placeholder="Name"
-              value={name}
-              onKeyPress={handleKeyPress}
-              onChange={(e)=>setName(e.target.value)}
-            />
-          </div>
-          <div className={styles.singleInputArea}>
-            <Image src={Company} alt="company_Icon" className="icons" />
-            <input
-              className={styles.textArea}
-              type="text"
-              placeholder="Company Name"
-              value={companyName}
-              onKeyPress={handleKeyPress}
-              onChange={(e)=>setCompanyName(e.target.value)}
-              required
-            />
-          </div>
-          <div onClick={addNewEntry} className={styles.addIcon}>
-            <Image src={Add} alt="add_Icon" />
-          </div>
-        </div>
-        {customData.map((item:any, index:number) => (
-          <div key={index} className={styles.customDataOuterDiv}>
-          <div className={styles.singleInputBox}>{item.name}</div>
-          <div className={styles.singleInputBox}>{item.companyName}</div>
+            </div>
+            {/* {customData.map((item:any, index:number) => (
+        // <div key={index} className={styles.customDataOuterDiv}>
+        // <div className={styles.singleInputBox}>{item.name}</div>
+        // <div className={styles.singleInputBox}>{item.companyName}</div>
+        // </div>
+        {Object.entries(item).map(([key, value]) => (
+          <div key={key} className="data-field">
+            <strong>{key}:</strong> {value}
           </div>
         ))}
-      </div>
-    </div>)}
+      ))} */}
+            {customData.map((item: any, index: number) => (
+              <div key={index} className={styles.customDataOuterDiv}>
+                {Object.entries(item).map(([entryKey, value]) => (
+                  <div key={entryKey} className={styles.singleInputBox}>
+                    {value as string}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          }
+        </div>
+      }
     </>
   );
 };

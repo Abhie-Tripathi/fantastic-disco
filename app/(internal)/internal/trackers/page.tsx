@@ -160,7 +160,7 @@ const Trackers = () => {
       domain: "Human Resource",
       img: People,
       trackerName: "Recruitment",
-      url: "t_recruitment",
+      url: "T_RECRUITMENT",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
     },
@@ -195,6 +195,7 @@ const Trackers = () => {
       type: "template",
       domain: "Sales",
       img: Audience,
+      url:"T_AUDIENCE_DEPT_PROFILE",
       trackerName: "Audience Dept. & Profiles",
       content:
         "Track events for the specific organizational departments or audience profiles",
@@ -203,6 +204,7 @@ const Trackers = () => {
       type: "template",
       domain: "Sales",
       img: Customer,
+      url:"T_CUSTOMER_ICP",
       trackerName: "Customer ICP",
       content:
         "Input ideal customer profile details like company, location or websites to track their interests",
@@ -211,6 +213,7 @@ const Trackers = () => {
       type: "template",
       domain: "Sales",
       img: Keywords,
+      url:"T_PRODUCT_KEYWORDS",
       trackerName: "Product Keywords",
       content:
         "List all the events which belongs to given industry or associated with keywords.",
@@ -220,6 +223,7 @@ const Trackers = () => {
       domain: "Sales",
       img: SocialCause,
       trackerName: "Social Cause",
+      url:"T_SOCIAL_CAUSE",
       content:
         "Track social cause events that interests audience to be socially active and enhance their reach",
     },
@@ -228,6 +232,7 @@ const Trackers = () => {
       img: Brand,
       domain: "Sales",
       trackerName: "Brand Building",
+      url:"T_BRAND_BUILDING",
       content:
         "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
     },
@@ -373,7 +378,7 @@ const Trackers = () => {
             <div className={styles.trackers_header}>
 
               <Link
-                href="/internal/trackers/create"
+                href="/internal/trackers/create?type=CUSTOM"
                 onClick={() =>
                   GAEvent(
                     "trackers",
@@ -490,7 +495,7 @@ const Trackers = () => {
               >
                 <Image src={Add} alt="add" />
                 <Link
-                  href="/internal/trackers/create"
+                  href="/internal/trackers/create?type=CUSTOM"
                   className={styles.createUrl}
                 >
                   <button

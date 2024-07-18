@@ -298,7 +298,7 @@ const Page = () => {
               className={styles.innerContainerLeft}
               style={{ paddingLeft: "20px" }}
             >
-              <div className={styles.advanceHead}>Competitor`&apos;`s Website</div>
+              <div className={styles.advanceHead}>Competitor&apos;s Website</div>
               <div className={styles.customContent}>
                 {/* <div className={styles.urlDiv}>
                   <Image src={Url} alt="url" className="icons" />
