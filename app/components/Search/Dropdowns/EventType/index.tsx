@@ -11,17 +11,15 @@ interface EventStatusProps {
   setSelectedEventTypeName: (name: string) => void;
 }
 
-// const EventStatusData = ["Active", "Cancelled", "Postponed", "Predicted"];
-
 const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusProps) => {
   const {theme} = useTheme();
   const onClickHandler = (value: any) => {
-    console.log('value=' ,value, state);
-    state.includes(value.id)
-      ? setState(state.filter((data) => data !== value.id))
-      : setState([...state, value.id]);
-
+    if(state.includes(value.id)) {
+      setState(state.filter((data) => data !== value.id))
+    }else{
+      setState([...state, value.id]);
       setSelectedEventTypeName(value.name);
+    }
   };
 
   return (

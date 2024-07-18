@@ -31,7 +31,7 @@ const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
               <div className={styles.track} />
               <div
                 className={styles.fill}
-                style={{ width: state.getThumbPercent(0) * 100 + "%" }}
+                style={{ width: 100 - state.getThumbPercent(0) * 100 + "%" }}
               />
               <SliderThumb className={styles.thumb} />
 
