@@ -1184,9 +1184,9 @@ const Table = ({
               id=""
               className={styles.pagination_noOfPage}
             >
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
+              <option value="10" selected={itemsPerPage==10?true:false}>10</option>
+              <option value="15" selected={itemsPerPage==15?true:false}>15</option>
+              <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
           </div>
           <div>results/Page</div>

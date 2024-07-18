@@ -1,0 +1,12 @@
+[
+    { "id": "3ff83ef6-0b8e-4fd1-aab0-128f9613adc6", "name": "Tradeshow" },
+    { "id": "caea6a8f-8306-4a87-996b-f53df52a5830", "name":	"Conference"},
+    { "id": "a813b051-1cb1-4f62-b342-3a002a8cebb3", "name":	"Workshop"},
+    { "id": "2a218ff0-ea7c-47fd-bb2b-64e247677349", "name":	"Meetx"},
+    { "id": "f05afae9-44b1-4258-8770-071d65b9cd60", "name":	"Festival"},
+    { "id": "95aabc1d-8dae-4216-95e3-0b50adf72df7", "name":	"Concert"},
+    { "id": "886cd83b-aa56-4dda-a67c-1d174935df2d", "name":	"Sport"},
+    { "id": "60802943-026c-4e3c-adcf-d568c872f325", "name":	"Business Floor"},
+    { "id": "49c6ea44-9102-484f-92cd-405ff7575761", "name":	"Performing Arts"},
+    { "id": "fad2749a-54a4-44c2-8b3b-083dbd290930", "name":	"Community"}
+]
