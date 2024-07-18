@@ -1962,7 +1962,7 @@ const Search = () => {
               </div>
               <div className={styles.view_tracker}>
                 <Link href="/internal/trackers" className={styles.view_tracker_text}>View All
-                <ArrowRight color="#ffffff"  />
+                {/* <ArrowRight color="#6750a4"  /> */}
                 </Link>
               </div>
              </div>
