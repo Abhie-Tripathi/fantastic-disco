@@ -758,12 +758,12 @@ const Table = ({
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
-                          title={`${event.location.venueName} & Online`}
+                          title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
                         </span>
                       ) : (
-                        event.location.venueName + " & Online"
+                        event.location.venueName
                       )
                     ) : (
                       <span data-toggle="tooltip" title="To be announced">
