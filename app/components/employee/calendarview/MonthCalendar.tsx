@@ -526,6 +526,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
                         l
                         name={event.name}
                         singleDayEvent={true}
+                        eventId={event.id}
                       />
                     );
                   }
@@ -540,6 +541,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
                           background={event.background}
                           l
                           name={event.name}
+                          eventId={event.id}
                         />
                       );
                     } else {
@@ -556,6 +558,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
                           top={event.top}
                           background={event.background}
                           name={event.name}
+                          eventId={event.id}
                         />
                       );
                     }
@@ -574,6 +577,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
                         top={event.top}
                         background={event.background}
                         name={event.name}
+                        eventId={event.id}
                       />
                     );
                   }

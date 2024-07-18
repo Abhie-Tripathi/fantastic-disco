@@ -105,15 +105,22 @@ const AllTrackers = ({ item }: any) => {
           <div className={styles.heading}>{item.name}</div>
           <Image  src={GoTo} alt="goTo" />
         </div>
+        
         <div className={styles.cardTwo}>
-          <Image src={Location} alt="location" />
-          <div className={styles.location}>
-            {locations?.length > 0 && locations[0]}
-            {locations?.length > 1 && (
-              <span className={styles.moreBtn}>+{locations.length - 1}</span>
-            )}
-          </div>
+        {locations?.length>0 && 
+        <>
+        <Image src={Location} alt="location" />
+        <div className={styles.location}>
+          {locations?.length > 0 && locations[0]}
+          {locations?.length > 1 && (
+            <span className={styles.moreBtn}>+{locations.length - 1}</span>
+          )}
         </div>
+        </>
+}
+      </div>
+        
+        
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={`${styles.cardType} card`}>
