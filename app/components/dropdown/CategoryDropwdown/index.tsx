@@ -16,7 +16,6 @@ interface CategoryDropdownProps {
   categoryData?: any;
 }
 
-
 const CategoryDropdown = ({
   state,
   setState,
@@ -24,11 +23,11 @@ const CategoryDropdown = ({
   setCategorySlug,
   categoryData,
 }: CategoryDropdownProps) => {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>(categorySlug);
   // const categoryData = categoryJson;
-  const getPath=usePathname().split('/');
-  const last=getPath[getPath.length-1];
+  const getPath = usePathname().split("/");
+  const last = getPath[getPath.length - 1];
   const onClickHandler = (id: string, slug: string) => {
     if (state.includes(id)) {
       setState(state.filter((data) => data !== id));
@@ -51,9 +50,7 @@ const CategoryDropdown = ({
     });
   }
 
-  const attended = categoryData?.map(
-    (category: any) => category.slug
-  );
+  const attended = categoryData?.map((category: any) => category.slug);
   // const nonAttended = categoryData?.nonAttendedCategories!.map(
   //   (category: any) => category.slug
   // );
@@ -63,17 +60,25 @@ const CategoryDropdown = ({
   // );
 
   const selectAllHandler = (categories: any[]) => {
-    const categoryIds = categories.map((category) => category.id);
-    const categorySlugs = categories.map((category) => category.name);
+    if (selectedSlugs.length === categories.length) {
+      setState([]);
+      setSelectedSlugs([]);
+      return;
+    }
+    const categoryIds = new Set(categories.map((category) => category.id));
+    const categorySlugs = new Set(categories.map((category) => category.name));
 
-    if (containsSubarray(categoryIds)) {
-      setState(state.filter((id) => !categoryIds.includes(id)));
+    if (containsSubarray(Array.from(categoryIds))) {
+      setState(state.filter((id) => !categoryIds.has(id)));
       setSelectedSlugs(
-        selectedSlugs.filter((slug) => !categorySlugs.includes(slug))
+        selectedSlugs.filter((slug) => !categorySlugs.has(slug))
       );
     } else {
-      setState([...state, ...categoryIds]);
-      setSelectedSlugs([...selectedSlugs, ...categorySlugs]);
+      categoryIds.forEach((id) => state.push(id));
+      categorySlugs.forEach((slug) => selectedSlugs.push(slug));
+
+      setState(Array.from(new Set(state)));
+      setSelectedSlugs(Array.from(new Set(selectedSlugs)));
     }
   };
 
@@ -83,7 +88,10 @@ const CategoryDropdown = ({
   }, [selectedSlugs]);
 
   return (
-    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
+    <div
+      className={styles.container}
+      style={{ background: theme === "light" ? "white" : "" }}
+    >
       <div>
         {/* <div className={styles.heading}>Attended</div> */}
         <div className={styles.list}>
@@ -91,7 +99,7 @@ const CategoryDropdown = ({
             <CheckboxInput
               id="selectAllAttended"
               onChange={() => selectAllHandler(categoryData)}
-              checked={containsSubarray(attended)}
+              checked={selectedSlugs.length === categoryData.length}
             />
             <label htmlFor="selectAllAttended">Select All</label>
           </li>
