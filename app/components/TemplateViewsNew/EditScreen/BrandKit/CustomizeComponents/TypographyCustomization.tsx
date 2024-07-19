@@ -147,7 +147,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                                 <DownArrow />
                                 {familyDropdownOpen && <div className={styles.dropDown}>
                                     {fontsList.map((font, key) => (
-                                        <div className={styles.dropdownFont} onClick={() => handleFontChange(font)}>{font}</div>
+                                        <div key={key} className={styles.dropdownFont} onClick={() => handleFontChange(font)}>{font}</div>
                                     ))}
                                 </div>}
                             </div>
