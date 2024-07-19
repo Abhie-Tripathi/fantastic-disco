@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import styles from './logo.style.module.css'
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 import PlaceHolder from '/public/placeholder.png'
 
 const LogoComponent = () => {
+    const [imageSrc, setImageSrc] = useState<string | StaticImageData>(PlaceHolder);
+
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                if (e.target?.result) {
+                    setImageSrc(e.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     return (
         <div className={styles.body}>
             <div className={styles.headingContainer}>
@@ -12,9 +27,9 @@ const LogoComponent = () => {
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.logoContainer}>
-                    <Image src={PlaceHolder} alt='logo' />
+                    <Image src={imageSrc} alt='logo' width={48} height={48}/>
                 </div>
-                <input type="file" id="fileInput" className={styles.fileInput} />
+                <input type="file" id="fileInput" className={styles.fileInput} onChange={handleFileChange}/>
                 <label htmlFor="fileInput" className={styles.customFileButton}>
                     Upload
                 </label>

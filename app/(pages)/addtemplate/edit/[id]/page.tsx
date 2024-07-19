@@ -50,7 +50,7 @@ const Page = () => {
       <div className={styles.previewContainer}>
         <PreviewWindow
           selectedBtn={selectedBtn}
-          selectedTemplate='PUVP'
+          selectedTemplate='PUVL'
           selectedCard={cardStyle}
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}
