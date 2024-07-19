@@ -109,6 +109,9 @@ const Navbar = () => {
     if (currPath.startsWith("/internal/trackers")) {
       setTitle("Trackers");
     }
+    if (currPath.startsWith("/internal/event")) {
+      setTitle("Event Detail");
+    }
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }

@@ -64,6 +64,7 @@ button {
   --font-size-h4: 24px;
   --font-size-h5: 20px;
   --font-size-h6: 18px;
+  --font-size-label: 11px;
   --line-height-h1: 56px;
   --line-height-h2: 46px;
   --line-height-h3: 38px;
@@ -119,7 +120,8 @@ button {
   --tertiary-text-color: #7d7d7d;
   /* --heading-color: #ffffff; */
   /* --paragraph-color: #b7b7bb; */
-  --danger-text-color: #ff2c52;
+  --danger-text-color: #E5484D;
+  --success-text-color: #45A557;
   --subtitle-color: #8056b2;
   --title-color: #323339;
   --background-color: #0c0f1e;
@@ -199,6 +201,8 @@ body[data-theme="dark"] {
   --disabled-background-color: #454545;
   --img-filter: invert(1);
   --disabled-btn-color: #454545;
+  --neutral-light-color: #1F1F1F;
+  --accent-color: #1a1a1a;
 }
 
 /* :root {

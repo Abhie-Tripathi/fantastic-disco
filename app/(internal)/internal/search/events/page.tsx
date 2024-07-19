@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, Suspense, lazy, useCallback } from 
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import styles from "./search.module.css";
+import styles1 from "../../trackers/page.style.module.css"
 import { EventDataType } from "@/app/components/types/allevents";
 
 import SearchIcon from "/public/search.svg";
@@ -78,6 +79,56 @@ import { GAEvent } from "@/utils/GAEvent";
 import { Step } from "react-joyride";
 import { Cross } from "geist-icons";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
+import People from "/public/ionPeople.svg";
+import PeopleFinder from "/public/peopleFinder.svg";
+import Competitor from "/public/competitor.svg";
+import Speaking from "/public/speaking.svg";
+import Template from "/public/template.svg";
+import Vector1 from "/public/vectorTemplate.svg";
+import Link from "next/link";
+import Keywords from "/public/keywords.svg";
+import {ArrowRight} from "geist-icons";
+
+const data =[
+  {
+    type: "template",
+    domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Competitor",
+    content:
+      "Track your competitor experts, influencers and where they might be participating in events",
+  },
+  {
+    type: "template",
+    domain: "Sales",
+    img: Keywords,
+    url:"T_PRODUCT_KEYWORDS",
+    trackerName: "Product Keywords",
+    content:
+      "List all the events which belongs to given industry or associated with keywords.",
+  },
+
+  {
+    type: "template",
+    domain: "Human Resource",
+    img: PeopleFinder,
+    url: "T_PEOPLE_FINDER",
+    trackerName: "People Finder",
+    content:
+      "Track experts, influencers and where they might be participating in various events",
+  },
+  
+  {
+    type: "template",
+    domain: "Human Resource",
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUINITY",
+    trackerName: "Speaking Opportunity",
+    content:
+      "Input team members and their details to keep track of the events with speaking opportunities.",
+  },
+]
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -1254,6 +1305,14 @@ const Search = () => {
                   >
                     Audience Intel
                   </button>
+                   <button
+                    onClick={() => setSelectedAdvFilter("TA")}
+                    className={`${styles.calendarBtn} ${
+                      selectedAdvFilter === "TA" ? styles.active : ""
+                    }`}
+                  >
+                    Tracker
+                  </button>
                 </div>
               </div>
             </div>
@@ -1809,6 +1868,57 @@ const Search = () => {
                   </Popover>
                 </MenuTrigger>
               </div>
+            )}
+
+            {showAdvanceFilter && selectedAdvFilter === "TA" && (
+             <div className={styles.tracker_outer_container}>
+               <div className={styles.tracker_container}>
+                {data.map((item, ind) => (
+                <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
+                  <div className={styles1.innerContainerTwo}>
+                    <div
+                      className={`${styles1.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                        }`}
+                    >
+                      <div className={styles1.account}>
+                        <Image src={item.img} alt="people" />
+                      </div>
+                      <div>
+                        <Image src={Template} alt="template" />
+                      </div>
+                    </div>
+                    <div className={styles1.bottomView}>
+                      <div className={styles1.bottomViewOne}>
+                        <div className={styles1.bottomInnerView}>
+                          <Image
+                            src={Vector1}
+                            alt="vector1"
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          />
+                          <div style={{ color: "#585871", fontSize: "12px" }}>
+                            Template
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles1.bottomViewTwo}>
+                        {item?.trackerName}
+                      </div>
+                      <div className={styles1.text}>{item?.content}</div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              </div>
+              <div className={styles.view_tracker}>
+                <Link href="/internal/trackers" className={styles.view_tracker_text}>View All
+                {/* <ArrowRight color="#6750a4"  /> */}
+                </Link>
+              </div>
+             </div>
             )}
           </div>
         )}
