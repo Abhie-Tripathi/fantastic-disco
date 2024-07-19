@@ -109,6 +109,10 @@
     width: 50%;
     gap: 10px;
 }
+.btnColorContainer{
+    position: relative;
+    z-index: 1;
+}
 .fontColorBorderRadiusContainer{
     display: flex;
     flex-direction: column;

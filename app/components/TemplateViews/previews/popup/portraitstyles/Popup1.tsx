@@ -47,8 +47,8 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <Image src={placeholder2} alt='placeholder' className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
-                <div className={styles.dateContainer}><span className={styles.date}>29</span>
-                    <span className={styles.month}>Jan</span></div>
+                <div className={styles.dateContainer}><span className={styles.date} style={{fontSize : fontSettings.heading.fontSize}}>29</span>
+                    <span className={styles.month} style={{fontSize : fontSettings.heading.fontSize}}>Jan</span></div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
@@ -60,9 +60,9 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
-                <div className={`${styles.pill} ${styles.dateRange}`}>29 Jan - 5 Feb</div>
-                <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
-                <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
+                <div className={`${styles.pill} ${styles.dateRange}`} style={{fontSize : fontSettings.body.fontSize}}>29 Jan - 5 Feb</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
             </div>
             <div className={styles.desc} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}}>Amidst this gathering, immerse yourself in an atmosphere of collaboration and creative energy, as manufacturers, retailers, and distributors unite.....</div>
             <div className={styles.btnContainer}>

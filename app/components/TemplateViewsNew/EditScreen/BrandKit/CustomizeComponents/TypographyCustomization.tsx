@@ -32,7 +32,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
 
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
-    const fontStyleList = ["normal", "bold", "bolder", "lighter"]
+    const fontStyleList = ["normal", "bold"]
 
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [styleDropdownOpen, setStyleDropdownOpen] = useState(false);
@@ -165,10 +165,12 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                         </div>
                     </div>
                     <div className={styles.fontColorWeightContainer}>
-                        <ColorPicker heading='Font Colour' color={selectedType === "heading" ? fontSettings.heading.fontColor : selectedType === "subheading" ? fontSettings.subheading.fontColor : fontSettings.body.fontColor}
-                            extractedColors={extractedColors}
-                            handleChange={handleFontColorChange}
-                        />
+                        <div className={styles.fontColorContainer}>
+                            <ColorPicker heading='Font Colour' color={selectedType === "heading" ? fontSettings.heading.fontColor : selectedType === "subheading" ? fontSettings.subheading.fontColor : fontSettings.body.fontColor}
+                                extractedColors={extractedColors}
+                                handleChange={handleFontColorChange}
+                            />
+                        </div>
                         <div className={styles.fontStyleContainer}>
                             <div className={styles.heading}>Font Weight</div>
                             <FontStyleIcon />

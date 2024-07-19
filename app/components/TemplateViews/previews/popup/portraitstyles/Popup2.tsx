@@ -62,8 +62,8 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>
-          <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
-          <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
+          <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
+          <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
         </div>
         <div className={styles.circles}>
           <div className={styles.circle} data-name="John Doe">

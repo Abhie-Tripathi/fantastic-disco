@@ -114,10 +114,26 @@
     width: 50%;
     gap: 10px;
 }
+.fontColorContainer{
+    position: relative;
+    z-index: 5;
+}
+.fontStyleContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+}
+
+.fontStyleContainer .heading {
+    font-size: 11px;
+    position: relative;
+}
 .fontFamilyContainer {
     display: flex;
     align-items: center;
     gap: 10px;
+    z-index: 1;
 }
 
 .fontFamilyContainer .heading {
@@ -144,7 +160,7 @@
     position: absolute;
     background-color: white;
     border-radius: 3px;
-    height: 104px;
+    max-height: 104px;
     overflow-y: auto;
     width: 100%;
     top: 24px;
@@ -197,14 +213,3 @@
     cursor: pointer;
 }
 
-.fontStyleContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 1;
-}
-
-.fontStyleContainer .heading {
-    font-size: 11px;
-    position: relative;
-}

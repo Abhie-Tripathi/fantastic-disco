@@ -34,8 +34,8 @@ const EventCard1 = ({
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <Image src={placeholder2} alt='placeholder' className={styles.banner}/>
             <div className={styles.date_location_nameContainer}>
-                <div className={styles.dateContainer}><span className={styles.date}>29</span>
-                <span className={styles.month}>Jan</span></div>
+                <div className={styles.dateContainer}><span className={styles.date} style={{fontSize : fontSettings.heading.fontSize}}>29</span>
+                <span className={styles.month} style={{fontSize : fontSettings.heading.fontSize}}>Jan</span></div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
@@ -47,9 +47,9 @@ const EventCard1 = ({
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
-                <div className={`${styles.pill} ${styles.dateRange}`}>29 Jan - 5 Feb</div>
-                <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
-                <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
+                <div className={`${styles.pill} ${styles.dateRange}`} style={{fontSize : fontSettings.body.fontSize}}>29 Jan - 5 Feb</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
             </div>
         </div>
     )

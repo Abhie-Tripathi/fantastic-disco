@@ -15,8 +15,8 @@ const Page = () => {
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
-    body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
+    body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
   const [buttonSettings, setButtonSettings] = useState({
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
@@ -46,7 +46,7 @@ const Page = () => {
       </div>
       <div className={styles.previewContainer}>
         <PreviewWindow
-          selectedTemplate='PUVL'
+          selectedTemplate='LS'
           selectedCard={cardStyle}
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}

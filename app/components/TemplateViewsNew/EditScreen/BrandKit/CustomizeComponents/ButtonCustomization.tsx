@@ -119,18 +119,22 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                 <div className={styles.line}></div>
                 <div className={styles.colorsContainer}>
                     <div className={styles.btnAndBorderColorContainer}>
-                        <ColorPicker
-                            color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
-                            extractedColors={extractedColors}
-                            heading="Button Colour"
-                            handleChange={handleBtnColorChange}
-                        />
-                        <ColorPicker
-                            color={selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor}
-                            extractedColors={extractedColors}
-                            heading="Border Colour"
-                            handleChange={handleBorderColorChange}
-                        />
+                        <div className={styles.btnColorContainer}>
+                            <ColorPicker
+                                color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
+                                extractedColors={extractedColors}
+                                heading="Button Colour"
+                                handleChange={handleBtnColorChange}
+                            />
+                        </div>
+                        <div>
+                            <ColorPicker
+                                color={selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor}
+                                extractedColors={extractedColors}
+                                heading="Border Colour"
+                                handleChange={handleBorderColorChange}
+                            />
+                        </div>
                     </div>
                     <div className={styles.fontColorBorderRadiusContainer}>
                         <ColorPicker

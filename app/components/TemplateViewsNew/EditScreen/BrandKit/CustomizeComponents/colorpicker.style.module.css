@@ -27,7 +27,7 @@
 .colorPickerModal {
     position: absolute;
     top: 30px;
-    left: 35%;
+    right: -10px;
 }
 
 .pickedColorOuter {

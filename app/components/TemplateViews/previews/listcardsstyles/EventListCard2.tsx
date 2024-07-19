@@ -47,8 +47,8 @@ const EventListCard2 = ({
         <div className={styles.description} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}}>Amidst this gathering, immerse yourself in an atmosphere of collaboration and creative energy, as manufacturers, retailers, and distributors unite.....</div>
         <div className={styles.type_peopleContainer}>
           <div className={styles.typeContainer}>
-            <div className={`${styles.pill} ${styles.type1}`}>Tradeshow</div>
-            <div className={`${styles.pill} ${styles.type2}`}>Attending</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
+            <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
           </div>
           <div className={styles.circles}>
             <div className={styles.circle} data-name="John Doe">
