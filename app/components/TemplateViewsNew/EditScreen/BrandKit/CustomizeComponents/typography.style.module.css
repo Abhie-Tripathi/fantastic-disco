@@ -22,10 +22,12 @@
     font-size: 10px;
     color: #A8A8A8;
 }
+
 .editContainer {
     width: 70%;
 }
-.textPreviewContainer{
+
+.textPreviewContainer {
     background-color: #F2F2F2;
     border-radius: 5px;
     width: 100%;
@@ -35,6 +37,7 @@
     height: 60px;
     padding: 14px 0px 14px 0px;
 }
+
 .btnOptions {
     display: flex;
     align-items: center;
@@ -62,11 +65,13 @@
     align-items: center;
     justify-content: center;
 }
-.checkboxContainer .checkboxLabel{
+
+.checkboxContainer .checkboxLabel {
     margin-left: 8px;
     font-size: 14px;
     cursor: pointer;
 }
+
 .customCheckbox::before {
     content: "";
     width: 12px;
@@ -81,29 +86,45 @@
 }
 
 .checkbox:checked+.customCheckbox::before {
-    background-color:#6750a4;
+    background-color: #6750a4;
 }
-.line{
+
+.line {
     margin-top: 12px;
     margin-bottom: 19px;
     border-top: 1px solid #F5F5F5;
 }
-.familyColorContainer{
+
+.customizeContainer{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: relative;
-    z-index: 10;
 }
-.fontFamilyContainer{
+.fontFamilySizeContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 10px;
+}
+.fontColorWeightContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 10px;
+}
+.fontFamilyContainer {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.fontFamilyContainer .heading{
+
+.fontFamilyContainer .heading {
     font-size: 11px;
-} 
-.dropDownContainer{
+}
+
+.dropDownContainer {
     background-color: #F2F2F2;
     width: 110px;
     border-radius: 5px;
@@ -114,10 +135,12 @@
     position: relative;
     cursor: pointer;
 }
-.dropDownContainer .display{
+
+.dropDownContainer .display {
     font-size: 10px;
 }
-.dropDownContainer .dropDown{
+
+.dropDownContainer .dropDown {
     position: absolute;
     background-color: white;
     border-radius: 3px;
@@ -129,55 +152,59 @@
     left: 0;
     filter: drop-shadow(1px 1px 2px rgb(197, 197, 197));
 }
-.dropDownContainer .dropDown .dropdownFont{
+
+.dropDownContainer .dropDown .dropdownFont {
     padding: 3px 10px;
     font-size: 10px;
     line-height: 17px;
 }
-.dropDownContainer .dropDown .dropdownFont:hover{
+
+.dropDownContainer .dropDown .dropdownFont:hover {
     background-color: #F2F2F2;
     border-radius: 2.5px;
 }
-.fontSizeStyleContainer{
+
+.fontSizeContainer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
 }
-.fontSizeContainer{
-    display: flex;
-    align-items: center;
-    gap: 10px;   
-}
-.fontSizeContainer .heading{
+
+.fontSizeContainer .heading {
     font-size: 11px;
-} 
-.fontSizeContainer .sizeContainer{
+}
+
+.fontSizeContainer .sizeContainer {
     background-color: #F2F2F2;
     width: 110px;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 10px;  
+    padding: 5px 10px;
 }
-.sizeContainer .display{
+
+.sizeContainer .display {
     font-size: 10px;
 }
-.arrows{
+
+.arrows {
     display: flex;
     flex-direction: column;
 }
-.arrows div{
+
+.arrows div {
     cursor: pointer;
 }
-.fontStyleContainer{
+
+.fontStyleContainer {
     display: flex;
     align-items: center;
     gap: 10px;
     z-index: 1;
-
 }
-.fontStyleContainer .heading{
+
+.fontStyleContainer .heading {
     font-size: 11px;
     position: relative;
-} 
+}

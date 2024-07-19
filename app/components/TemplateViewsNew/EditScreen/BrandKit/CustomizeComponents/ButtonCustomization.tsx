@@ -75,13 +75,13 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newText = event.target.value;
         setButtonSettings((prevSettings) => ({
-          ...prevSettings,
-          [selectedBtn]: {
-            ...prevSettings[selectedBtn],
-            buttonText: newText,
-          },
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                buttonText: newText,
+            },
         }));
-      };
+    };
 
     return (
         <div className={styles.body}>
@@ -117,41 +117,43 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                     </label>
                 </div>
                 <div className={styles.line}></div>
-                <div className={styles.btnFontColorContainer}>
-                    <ColorPicker
-                        color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
-                        extractedColors={extractedColors}
-                        heading="Button Colour"
-                        handleChange={handleBtnColorChange}
-                    />
-                    <ColorPicker
-                        color={selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor}
-                        extractedColors={extractedColors}
-                        heading="Font Colour"
-                        handleChange={handleFontColorChange}
-                    />
-                </div>
-                <div className={styles.colorRadiusContainer}>
-                    <ColorPicker
-                        color={selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor}
-                        extractedColors={extractedColors}
-                        heading="Border Colour"
-                        handleChange={handleBorderColorChange}
-                    />
-                    <div className={styles.radiusContainer}>
-                        <div className={styles.heading}>Border Radius</div>
-                        <RadiusIcon />
-                        <div className={styles.radiusValue}>{selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius}px</div>
-                        <div className={styles.arrows}>
-                            <div onClick={handleIncreaseRadius}><UpIcon /></div>
-                            <div onClick={handleDecreaseRadius}><DownIcon /></div>
+                <div className={styles.colorsContainer}>
+                    <div className={styles.btnAndBorderColorContainer}>
+                        <ColorPicker
+                            color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
+                            extractedColors={extractedColors}
+                            heading="Button Colour"
+                            handleChange={handleBtnColorChange}
+                        />
+                        <ColorPicker
+                            color={selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor}
+                            extractedColors={extractedColors}
+                            heading="Border Colour"
+                            handleChange={handleBorderColorChange}
+                        />
+                    </div>
+                    <div className={styles.fontColorBorderRadiusContainer}>
+                        <ColorPicker
+                            color={selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor}
+                            extractedColors={extractedColors}
+                            heading="Font Colour"
+                            handleChange={handleFontColorChange}
+                        />
+                        <div className={styles.radiusContainer}>
+                            <div className={styles.heading}>Border Radius</div>
+                            <RadiusIcon />
+                            <div className={styles.radiusValue}>{selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius}px</div>
+                            <div className={styles.arrows}>
+                                <div onClick={handleIncreaseRadius}><UpIcon /></div>
+                                <div onClick={handleDecreaseRadius}><DownIcon /></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className={styles.btnTextContainer}>
                     <div className={styles.heading}>Button Text</div>
-                    <TextIcon/>
-                    <input type="text" value={selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText} onChange={handleTextChange}/>
+                    <TextIcon />
+                    <input type="text" value={selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText} onChange={handleTextChange} />
                 </div>
             </div>
         </div>

@@ -97,18 +97,24 @@
     margin-bottom: 19px;
     border-top: 1px solid #F5F5F5;
 }
-.btnFontColorContainer{
+.colorsContainer{
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    z-index: 8;
-    position: relative;
 }
-.colorRadiusContainer{
+.btnAndBorderColorContainer{
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
     gap: 10px;
-    margin-top: 10px;
-    position: relative;
-    z-index: 7;
+}
+.fontColorBorderRadiusContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 10px;
 }
 .radiusContainer{
     display: flex;
