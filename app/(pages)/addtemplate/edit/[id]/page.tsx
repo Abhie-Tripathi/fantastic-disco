@@ -11,7 +11,7 @@ const Page = () => {
   // When the user will come here for the first time, all the feilds will be empty because there is nothing posted yet
 
   // These states will be filled up with the fetched data, and if no data will be there, these will have default values
-  const [cardBgColor, setCardBgColor] = useState<string>("#ffffff");
+  const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },

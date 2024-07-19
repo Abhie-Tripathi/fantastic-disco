@@ -20,7 +20,7 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange}: ColorProps
     return (
         <div className={styles.body}>
             <div className={styles.heading}>{heading}</div>
-            <Image src={ColorPickIcon} alt='color' width={15} height={15} onClick={handleClick} />
+            {/* <Image src={ColorPickIcon} alt='color' width={15} height={15} onClick={handleClick} /> */}
             {displayColorPicker ? (
                 <div className={styles.colorPickerModal}>
                     <div className={styles.cover} />
@@ -32,7 +32,7 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange}: ColorProps
                 </div>
             ) : null}
             <div className={styles.pickedColorCode}>{color}</div>
-            <div className={styles.pickedColorOuter} style={{ borderColor: color }}>
+            <div className={styles.pickedColorOuter} style={{ borderColor: color }} onClick={handleClick}>
                 <div className={styles.pickedColorInner} style={{ backgroundColor: color }}></div>
             </div>
         </div>

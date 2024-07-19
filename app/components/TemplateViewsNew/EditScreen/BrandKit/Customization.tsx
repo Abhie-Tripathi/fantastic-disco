@@ -6,6 +6,7 @@ import CardCustomization from './CustomizeComponents/CardCustomization'
 import ButtonCustomization from './CustomizeComponents/ButtonCustomization'
 import TypographyCustomization from './CustomizeComponents/TypographyCustomization'
 import CardStyles from './CustomizeComponents/CardStyles'
+import BrandKit from './CustomizeComponents/BrandKit'
 
 interface EditScreenProps {
   extractedColors: string[]
@@ -53,17 +54,12 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <div>Appearance</div>
         <button>Apply</button>
       </div>
-      <div className={styles.line}></div>
+      <div className={styles.brandKit}>
+        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors}/>
+      </div>
       <div className={styles.cardStylesContainer}>
         <CardStyles cardStyle={cardStyle} setCardStyle = {setCardStyle} />
       </div>
-      {/* <div className={styles.logoContainer}>
-        <LogoComponent />
-      </div> */}
-      {/* <div className={styles.line}></div> */}
-      {/* <div className={styles.brandColorContainer}>
-        <BrandColor setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
-      </div> */}
       <div className={styles.line}></div>
       <div className={styles.cardCustomizationContainer}>
         <CardCustomization cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setCardBgColor={setCardBgColor} setCardBorderRadius={setCardBorderRadius} extractedColors={extractedColors} />
