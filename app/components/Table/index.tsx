@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
 import Image from "next/image";
@@ -237,8 +237,14 @@ const Table = ({
     const { name, value } = e.target;
     setFormData({ ...formData, markedInterest: value });
   };
+  const isInitialRender = useRef(true);
   useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    }else{
+    if(currPage===1) fetchEventsData();
     setCurrPage(1)
+    }
   }, [eventType]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -342,9 +348,14 @@ const [val,setVal]=useState(1);
     const startInd = (currPage - 1) * itemsPerPage;
     const endInd = startInd + itemsPerPage;
     const secondLast = path[path.length - 2];
+    // if(currPage===1 && prev){ 
+    //   fetchEventsData();
+    //   setPrev(false);
+    // }
+    // if(currPage!==1)
     fetchEventsData();
  
-  }, [eventType,currPage, itemsPerPage, queryString]);
+  }, [ currPage, itemsPerPage, queryString]);
 // useEffect(()=>{
 //   const secondLast = path[path.length - 2];
 //   if(currPage!==1)
@@ -562,10 +573,6 @@ const [val,setVal]=useState(1);
       // setCatgeoryData(data);
     }
   };
-
-  // if (eventPerPage.length === 0) {
-  //   return <Loading />;
-  // }
   const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {

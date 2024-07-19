@@ -1190,7 +1190,7 @@ const Pages = () => {
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Import CSV Data
-                  {template.type==="enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
+                  {template.type==="enabled" && <div className={styles.badgeSuccess}>Coming Soon</div>}
                 </div>
                 <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
               </div>
