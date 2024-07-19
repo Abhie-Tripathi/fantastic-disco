@@ -1320,6 +1320,46 @@ const Search = () => {
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
                 <div className={styles.inputdropdowns_container}>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={styles.dropdown_button}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Event Keywords
+                          {selectedEventKeywords?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedEventKeywords.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedEventKeywords[0]}
+                            </span>
+                          )}
+                        </div>
+                        <Image
+                          src={DropIcon}
+                          alt="dropicon"
+                          width={20}
+                          height={20}
+                          className={iconClass}
+                        />
+                      </div>
+                    </div>
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <Dialog className={styles.dialogBorder}>
+                      {({ close }) => (
+                        <EventKeyword
+                          state={selectedEventKeywords}
+                          setState={setSelectedEventKeywords}
+                          onClose={close}
+                        />
+                      )}
+                    </Dialog>
+                  </Popover>
+                </MenuTrigger>
+                
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                       <div className={styles.input_container}>
@@ -1425,45 +1465,6 @@ const Search = () => {
                       setState={setSelectedEventEdition}
                     />
                     {/* </Dialog> */}
-                  </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Keywords
-                          {selectedEventKeywords?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventKeywords.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventKeywords[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <EventKeyword
-                          state={selectedEventKeywords}
-                          setState={setSelectedEventKeywords}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
                   </Popover>
                 </MenuTrigger>
 
