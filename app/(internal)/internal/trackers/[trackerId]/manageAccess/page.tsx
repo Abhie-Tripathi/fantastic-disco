@@ -18,6 +18,7 @@ const Page = () => {
     const [currentUrl, setCurrentUrl] = useState('');
     const [accessdata, setAccessData] = useState([]);
     const [data, setData] = useState([]);
+    const [allUsers,setAllUsers]=useState([]);
     const [id, setId] = useState<string>("");
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
@@ -38,6 +39,7 @@ const Page = () => {
     }, [filter, data]);
 
     const handleFilterChange = (e: any) => {
+        setId("");
         setFilter(e.target.value);
     };
 
@@ -208,7 +210,7 @@ const Page = () => {
     }
     // setId("");
     }
-    const saveShareInvite = (id: string, name: string) => {
+    const saveShareInvite = (id: string, name: string, email:string) => {
         setId(id);
         setFilter(name);
         setFilteredData([]);
@@ -237,14 +239,24 @@ const Page = () => {
       }
       fetchAccess();
     },[])
-    console.log(userAccessData?.access?.admin);
-    useEffect(() => {
-        if (id && share) {
+    const shareInvites=()=>{
+        
+        if(id.length>0){
             shareInvite();
+            setId("");
+        }else{
+            shareNewInvite();
         }
-    }, [id]);
+    }
+    console.log(userAccessData?.access?.admin);
+    // useEffect(() => {
+    //     if (id && share) {
+    //         shareInvite();
+    //     }
+    // }, [id]);
     console.log(id);
     console.log(drop);
+    console.log(filteredData);
     
     return (
         <div className={styles.container}>
@@ -291,10 +303,19 @@ const Page = () => {
                                 placeholder='Invite others by email' onChange={handleFilterChange} />
                             </div>
                         </div>
-                       
+                        {filter?.length > 0 && filteredData?.length > 0 && drop &&
+                      <div className={styles.dropdown}>
+                          <div className={styles.dropdownContent}>
+                              {filteredData.map((item: any) => (
+                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName, item?.email)}>
+                                      {item?.aliasName}
+                                  </div>
+                              ))}
+                          </div>
+                      </div>}
                             
                         <div className={styles.buttons} >
-                            <button className={styles.send} onClick={shareNewInvite}>Send Invite</button>
+                            <button className={styles.send} onClick={shareInvites}>Send Invite</button>
                             <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
                         </div>
                     </div>

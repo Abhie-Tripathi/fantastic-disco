@@ -802,16 +802,16 @@ const [val,setVal]=useState(1);
                   ) : null}
                 </td>
                 <td>{event.location.cityName}</td>
-                <td>{event.location.countryName}</td>
+                <td>{event?.location?.countryName}</td>
                 {showInsights.eventKeywords && (
                   <td>
-                    {event.eventKeywords.length == 0 ? (
+                    {event?.eventKeywords?.length == 0 ? (
                       <>-</>
-                    ) : event.eventKeywords.length == 1 ? (
+                    ) : event?.eventKeywords?.length == 1 ? (
                       event.eventKeywords[0]
                     ) : (
                       <>
-                        {event.eventKeywords[0]}&nbsp;
+                        {event?.eventKeywords[0]}&nbsp;
                         {/* <a
                           className={styles["products-list"]}
                           href="javascript:void(0)"
