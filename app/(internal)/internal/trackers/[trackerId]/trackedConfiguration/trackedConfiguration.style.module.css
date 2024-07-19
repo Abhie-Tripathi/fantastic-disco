@@ -175,15 +175,21 @@
     flex-direction: column;
     border: 1px solid var(--border-color);
 }
-.singleInputBox{
+.singleUrl{
+    display: flex;
+    gap:5px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
     padding: 10px;
+}
+.singleInputBox{
     display: flex;
     width: 100%;
     align-items: center;
     gap: 10px;
-    border-bottom: 1px solid var(--border-color);
+    /* border-bottom: 1px solid var(--border-color); */
   }
-  .allInputBox > .singleInputBox:last-child{
+  .allInputBox > .singleUrl:last-child{
     border-bottom:0px;
   }
   .urlDiv{

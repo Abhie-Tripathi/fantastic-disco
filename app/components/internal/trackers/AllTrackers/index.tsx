@@ -138,7 +138,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                 Active
               </div>
-              <div className={styles.number} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
@@ -148,7 +148,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore8} alt="expired" width={12} height={12}/>
                 Expired
               </div>
-              <div className={styles.number} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
