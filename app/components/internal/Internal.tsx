@@ -20,12 +20,12 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
-    const [noData, setNoData] = useState<boolean>(false);
+    const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
     const handleScrollEnd = () => {
         setTimeout(() => {
-            setPage(prevPage => prevPage + 1);
+            if(!noMoreData) setPage(prevPage => prevPage + 1);
         }, 1000);
     };
 
@@ -42,10 +42,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             if(apiData.data) {
                 if(page==1){
                     setEventData1(apiData.data.enquiry);
-                    if(apiData.data.enquiry.length == 0) setNoData(true);
                 }else if(page>1){
                     setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
                 }
+                if(apiData.data.enquiry.length < 10){
+                    setNoMoreData(true);}
             }
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -86,7 +87,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     }, [page]);
 
     useEffect(() => {
-        console.log('cardUpdated',cardUpdated, page);
         if(page == 1)
             fetchData();
         else 
@@ -94,9 +94,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardUpdated]);
 
-    if (!isLoaded) {
+    if (!isLoaded && page <= 1) {
         return <div style={{padding: "50px"}}><Loading /></div>;
-    } else if (isLoaded && noData) {
+    } else if (isLoaded && eventData1.length == 0 && page <= 1) {
         return (
             <div className={styles.noData}>
                 An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
@@ -136,6 +136,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         );
     })}
 </div>
+    {noMoreData ? 
+        <></> : <Loading />
+    }
 </div>
 </div>
   )

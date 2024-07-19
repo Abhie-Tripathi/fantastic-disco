@@ -11,10 +11,9 @@ interface RangeSliderProps {
 const IntScoreSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
   const {theme} = useTheme()
   const breakpoints = [
-    { 0: "Local" },
-    { 33: "National" },
-    { 66: "Regional" },
-    { 100: "International" },
+    { 0: "Low" },
+    { 50: "Medium" },
+    { 100: "High" },
   ];
 
   return (

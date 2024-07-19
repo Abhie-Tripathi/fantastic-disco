@@ -671,7 +671,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
           })}
         </div>
       </div>
-      <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate} />
+      <CalendarList filters={props.queryString} startDate={eventListDate} endDate={eventListDate} />
     </>
   );
 };
