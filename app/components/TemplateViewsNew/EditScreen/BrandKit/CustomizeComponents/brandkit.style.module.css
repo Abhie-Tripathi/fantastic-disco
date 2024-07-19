@@ -19,13 +19,7 @@
     cursor: pointer;
 }
 .accordian{
-    height: 0;
-    overflow: hidden;
-    transition: height .3s ease-out;
-}
-.activeAccordian{
     margin-top: 24px;
-    height: 210px;
 }
 .brandColorContainer{
     margin-top: 38px;
@@ -36,11 +30,19 @@
     display: flex;
     justify-content: flex-end;
 }
-.saveKitBtn{
-    background-color: #6750A4;
-    color: white;
+.kitBtn{
     font-size: 12px;
     line-height: 18px;
     padding: 5px 8px;
     border-radius: 4px;
+}
+.deactiveBtn{
+    background-color: #8F8F8F1F;
+    color: black;
+    cursor:not-allowed;
+}
+.activeBtn{
+    cursor:not-allowed;
+    color: white;
+    background-color: #6750a4;
 }

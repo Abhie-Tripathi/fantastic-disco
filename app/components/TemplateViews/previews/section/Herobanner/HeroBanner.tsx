@@ -30,9 +30,10 @@ interface Props {
         primary: ButtonSettings;
         secondary: ButtonSettings;
     };
+    selectedBtn? : "primary" | "secondary"
 }
 
-const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings}: Props) => {
+const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn}: Props) => {
 
     let EventCard: ElementType;
 

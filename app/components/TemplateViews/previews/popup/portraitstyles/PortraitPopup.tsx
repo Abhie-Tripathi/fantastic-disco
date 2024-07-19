@@ -30,9 +30,10 @@ interface Props {
         primary: ButtonSettings;
         secondary: ButtonSettings;
     };
+    selectedBtn? : "primary"|"secondary"
 }
 
-const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings }: Props) => {
+const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -46,7 +47,7 @@ const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettin
             EventCard = Popup3; // Or some default component or message
     }
     return (
-        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} />
+        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
     )
 }
 

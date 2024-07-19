@@ -44,6 +44,7 @@
 .radiusContainer .radiusValue{
     background-color: #F2F2F2;
     border-radius: 5px;
+    width: 70px;
     font-size: 10px;
     line-height: 14px;
     padding: 5px 24px;

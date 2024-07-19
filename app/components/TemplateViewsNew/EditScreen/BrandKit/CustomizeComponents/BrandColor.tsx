@@ -6,9 +6,10 @@ import ColorPicker from './ColorPicker';
 interface Props {
     extractedColors: string[]
     setExtractedColors : (value : string[])=>void
+    setValueUpdated : (value : boolean)=>void
 }
 
-const BrandColor = ({ extractedColors,setExtractedColors }: Props) => {
+const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated }: Props) => {
 
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
@@ -23,6 +24,7 @@ const BrandColor = ({ extractedColors,setExtractedColors }: Props) => {
 
 
     const handleChange = (color: any) => {
+        setValueUpdated(true)
         setColor(color.hex);
         const updatedColors = [...extractedColors];
         if (selectedColorIndex !== null) {

@@ -6,6 +6,8 @@ interface Props {
     extractedColors: string[]
     setButtonSettings: React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
     buttonSettings: ButtonSettingsState
+    setSelectedBtn: (value: "primary" | "secondary") => void
+    selectedBtn: "primary" | "secondary"
 }
 
 interface ButtonSettings {
@@ -19,8 +21,8 @@ interface ButtonSettingsState {
     primary: ButtonSettings;
     secondary: ButtonSettings;
 }
-const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSettings }: Props) => {
-    const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
+const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSettings, setSelectedBtn,selectedBtn }: Props) => {
+    // const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
 
     const handleCheckboxChange = () => {
         setSelectedBtn(selectedBtn === "primary" ? "secondary" : "primary");

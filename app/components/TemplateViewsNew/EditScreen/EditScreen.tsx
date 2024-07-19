@@ -39,20 +39,22 @@ interface EditScreenProps {
     cardBorderRadius: number;
     cardStyle : string;
     setCardStyle : React.Dispatch<React.SetStateAction<string>>;
+    setSelectedBtn : (value : "primary" | "secondary") =>void
+    selectedBtn : "primary" | "secondary"
 }
 
-const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle }: EditScreenProps) => {
-    const [selectedBtn, setSelectedBtn] = useState<string>("events")
+const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle , setSelectedBtn,selectedBtn}: EditScreenProps) => {
+    const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     return (
         <div className={styles.body}>
             <div className={styles.navbar}>
-                <button onClick={() => setSelectedBtn("events")} className={selectedBtn === "events" ? styles.activeBtn : ""}><FilterIcon color={selectedBtn === "events" ? "#6750a4" : "#424242"} /><span>Select Events</span></button>
-                <button onClick={() => setSelectedBtn("customize")} className={selectedBtn === "customize" ? styles.activeBtn : ""}><CustomizeIcon color={selectedBtn === "customize" ? "#6750a4" : "#424242"} /><span>Customize</span></button>
-                <button onClick={() => setSelectedBtn("code")} className={selectedBtn === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedBtn === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
+                <button onClick={() => setSelectedNavItem("events")} className={selectedNavItem === "events" ? styles.activeBtn : ""}><FilterIcon color={selectedNavItem === "events" ? "#6750a4" : "#424242"} /><span>Select Events</span></button>
+                <button onClick={() => setSelectedNavItem("customize")} className={selectedNavItem === "customize" ? styles.activeBtn : ""}><CustomizeIcon color={selectedNavItem === "customize" ? "#6750a4" : "#424242"} /><span>Customize</span></button>
+                <button onClick={() => setSelectedNavItem("code")} className={selectedNavItem === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedNavItem === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedBtn === "customize" ? <Customization cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedBtn === "events" ? <FilterEvents /> : <CodeWindow/>}
+                {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn ={setSelectedBtn} cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedNavItem === "events" ? <FilterEvents /> : <CodeWindow/>}
             </div>
         </div>
     )

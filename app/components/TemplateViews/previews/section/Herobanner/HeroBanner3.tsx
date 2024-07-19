@@ -30,6 +30,7 @@ interface Props {
         primary: ButtonSettings;
         secondary: ButtonSettings;
     };
+    selectedBtn? : "primary" | "secondary"
 }
 
 const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -42,27 +43,37 @@ const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
         secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-    } }: Props) => {
+    }, selectedBtn ="primary" }: Props) => {
     return (
-        <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
+        <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
                 <Image src={placeholder2} alt='placeholder' className={styles.banner} />
                 <div className={styles.type}>Workshop</div>
             </div>
             <div className={styles.eventDetails}>
-                <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>East Midlands Young Planners</div>
+                <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>East Midlands Young Planners</div>
                 <div className={styles.location_date_btnContainer}>
                     <div className={styles.location_dateContainer}>
                         <div className={styles.locationContainer}>
                             <Image src={locationIcon} alt='location' />
-                            <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>Corpus Christi, USA</div>
+                            <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>Corpus Christi, USA</div>
                         </div>
                         <div className={styles.dateContainer}>
                             <DateIcon />
-                            <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>1st Apr 2024 - 20th Apr 2024</div>
+                            <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>1st Apr 2024 - 20th Apr 2024</div>
                         </div>
                     </div>
-                    <button className={styles.registerBtn} style={{color : buttonSettings.primary.fontColor, backgroundColor : buttonSettings.primary.buttonColor, borderRadius :buttonSettings.primary.borderRadius , borderColor : buttonSettings.primary.borderColor}}>{buttonSettings.primary.buttonText}</button>
+                    <button
+                        className={styles.btn}
+                        style={{
+                            color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
+                            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor,
+                            borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
+                            borderColor: selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor
+                        }}
+                    >
+                        {selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText}
+                    </button>
                 </div>
             </div>
         </div>

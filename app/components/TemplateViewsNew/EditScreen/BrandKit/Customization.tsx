@@ -14,13 +14,15 @@ interface EditScreenProps {
   setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
   setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;
   setFontSettings: React.Dispatch<React.SetStateAction<FontSettingsState>>;
-  setButtonSettings : React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
-  buttonSettings : ButtonSettingsState
-  cardBgColor : string
-  fontSettings : FontSettingsState
-  cardBorderRadius : number;
-  cardStyle : string;
-  setCardStyle : React.Dispatch<React.SetStateAction<string>>;
+  setButtonSettings: React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
+  buttonSettings: ButtonSettingsState
+  cardBgColor: string
+  fontSettings: FontSettingsState
+  cardBorderRadius: number;
+  cardStyle: string;
+  setCardStyle: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedBtn: (value: "primary" | "secondary") => void
+  selectedBtn: "primary" | "secondary"
 }
 
 interface FontSettings {
@@ -35,19 +37,19 @@ interface FontSettingsState {
   subheading: FontSettings;
   body: FontSettings;
 }
-interface ButtonSettings{
-  buttonColor : string;
-  fontColor : string;
-  borderRadius : number;
-  borderColor : string;
-  buttonText : string;
+interface ButtonSettings {
+  buttonColor: string;
+  fontColor: string;
+  borderRadius: number;
+  borderColor: string;
+  buttonText: string;
 }
-interface ButtonSettingsState{
-  primary : ButtonSettings;
-  secondary : ButtonSettings;
+interface ButtonSettingsState {
+  primary: ButtonSettings;
+  secondary: ButtonSettings;
 }
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius,fontSettings, setFontSettings,setButtonSettings, cardBorderRadius,cardBgColor, buttonSettings, cardStyle, setCardStyle  }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn,selectedBtn }: EditScreenProps) => {
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -55,10 +57,10 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <button>Apply</button>
       </div>
       <div className={styles.brandKit}>
-        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors}/>
+        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} />
       </div>
       <div className={styles.cardStylesContainer}>
-        <CardStyles cardStyle={cardStyle} setCardStyle = {setCardStyle} />
+        <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />
       </div>
       <div className={styles.line}></div>
       <div className={styles.cardCustomizationContainer}>
@@ -70,7 +72,7 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
       </div>
       <div className={styles.line}></div>
       <div className={styles.buttonCustomizationContainer}>
-        <ButtonCustomization buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} extractedColors={extractedColors} />
+        <ButtonCustomization selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} extractedColors={extractedColors} />
       </div>
 
     </div>

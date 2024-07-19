@@ -12,6 +12,8 @@ const BrandKit = ({ extractedColors, setExtractedColors }: Props) => {
 
     const [accordian, setAccordian] = useState<boolean>(false)
 
+    const [valueUpdate, setValueUpdated] = useState<boolean>(false) // To activate the save kit button
+
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -22,17 +24,17 @@ const BrandKit = ({ extractedColors, setExtractedColors }: Props) => {
                 {accordian ?
                     <div className={styles.btn} onClick={() => setAccordian(false)}><UpArrow /></div> : <div className={styles.btn} onClick={() => setAccordian(true)}><DownArrow /></div>}
             </div>
-            <div className={`${styles.accordian} ${accordian === true ?styles.activeAccordian : ""}`}>
+            {accordian && <div className={styles.accordian}>
                 <div className={styles.logoContainer}>
                     <LogoComponent />
                 </div>
                 <div className={styles.brandColorContainer}>
-                    <BrandColor setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
+                    <BrandColor setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
                 </div>
                 <div className={styles.btnContainer}>
-                    <button className={styles.saveKitBtn}>Save Kit</button>
+                    <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>
                 </div>
-            </div>
+            </div>}
         </div>
     )
 }

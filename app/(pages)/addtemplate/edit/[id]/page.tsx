@@ -24,6 +24,7 @@ const Page = () => {
   })
 
   const [cardStyle, setCardStyle] = useState<string>("style1")
+  const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
 
   // Selected Template will be fetched through Database, Right now we can pass as static
 
@@ -32,6 +33,8 @@ const Page = () => {
     <div className={styles.body}>
       <div className={styles.editContainer}>
         <EditScreen
+          selectedBtn = {selectedBtn}
+          setSelectedBtn={setSelectedBtn}
           cardStyle={cardStyle}
           setCardStyle={setCardStyle}
           setCardBgColor={setCardBgColor}
@@ -46,7 +49,8 @@ const Page = () => {
       </div>
       <div className={styles.previewContainer}>
         <PreviewWindow
-          selectedTemplate='LS'
+          selectedBtn={selectedBtn}
+          selectedTemplate='PUVP'
           selectedCard={cardStyle}
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}
