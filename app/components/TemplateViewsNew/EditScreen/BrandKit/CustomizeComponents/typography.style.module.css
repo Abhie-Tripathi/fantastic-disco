@@ -97,7 +97,7 @@
 
 .customizeContainer{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 }
 .fontFamilySizeContainer{
@@ -105,7 +105,7 @@
     flex-direction: column;
     align-items: flex-start;
     width: 50%;
-    gap: 10px;
+    gap: 5px;
 }
 .fontColorWeightContainer{
     display: flex;

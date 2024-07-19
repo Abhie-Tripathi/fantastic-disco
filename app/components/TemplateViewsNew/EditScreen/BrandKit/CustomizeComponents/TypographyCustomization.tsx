@@ -22,14 +22,6 @@ interface FontSettingsState {
 
 const TypographyCustomization = ({ extractedColors, setFontSettings, fontSettings }: Props) => {
     const [selectedType, setSelectedType] = useState<"heading" | "subheading" | "body">("heading");
-
-    const [heading, setHeading] = useState({
-        fontColor: "#000000", fontSize: 24, fontFamily: "Arial", fontWeight
-            : "bolder"
-    })
-    const [subHeading, setSubHeading] = useState({ fontColor: "#000000", fontSize: 16, fontFamily: "Verdana", fontWeight: "normal" })
-    const [body, setBody] = useState({ fontColor: "#000000", fontSize: 14, fontFamily: "Tahoma", fontWeight: "nroaml" })
-
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
     const fontStyleList = ["normal", "bold"]
@@ -72,13 +64,24 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
     };
 
     const handleIncreaseFontSize = () => {
-        setFontSettings((prevSettings) => ({
-            ...prevSettings,
-            [selectedType]: {
-                ...prevSettings[selectedType],
-                fontSize: prevSettings[selectedType].fontSize + 1,
+        setFontSettings((prevSettings) => {
+            const newFontSize = prevSettings[selectedType].fontSize + 1;
+            let maxFontSize;
+            if (selectedType === "heading") {
+                maxFontSize = 24;
+            } else if (selectedType === "subheading") {
+                maxFontSize = 16;
+            } else {
+                maxFontSize = 12;
             }
-        }));
+            return {
+                ...prevSettings,
+                [selectedType]: {
+                    ...prevSettings[selectedType],
+                    fontSize: newFontSize > maxFontSize ? maxFontSize : newFontSize,
+                }
+            };
+        });
     };
 
     const handleDecreaseFontSize = () => {
@@ -90,7 +93,6 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
             }
         }));
     };
-
 
     return (
         <div className={styles.body}>

@@ -118,7 +118,7 @@
     flex-direction: column;
     align-items: flex-start;
     width: 50%;
-    gap: 10px;
+    gap: 5px;
 }
 .radiusContainer{
     display: flex;
