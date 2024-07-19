@@ -1629,6 +1629,7 @@ const Search = () => {
                     <RangeSlider
                       state={selectedReptScore}
                       setState={setSelectedReptScore}
+                      sliderType={'reverse'}
                     />
                   </Popover>
                 </MenuTrigger>
@@ -1665,6 +1666,7 @@ const Search = () => {
                     <RangeSlider
                       state={selectedTrustScore}
                       setState={setSelectedTrustScore}
+                      sliderType={'reverse'}
                     />
                   </Popover>
                 </MenuTrigger>
@@ -1768,76 +1770,6 @@ const Search = () => {
                 <div
                   className={styles.inputdropdowns_container_AI}
                 >
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          International Score
-                          {selectedINScore !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedINScore} %
-                            </span>
-                          )}
-                        </div>
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => {}}
-                                checked={selectedINScore !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <IntScoreSlider
-                      state={selectedINScore}
-                      setState={setSelectedINScore}
-                    />
-                  </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Inbound Score
-                          {selectedInboundScore !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedInboundScore} %
-                            </span>
-                          )}
-                        </div>
-
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => {}}
-                                checked={selectedInboundScore !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <RangeSlider
-                      state={selectedInboundScore}
-                      setState={setSelectedInboundScore}
-                    />
-                  </Popover>
-                </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1917,6 +1849,79 @@ const Search = () => {
                       data={eventExhibitScoreData}
                     />
                   </Popover>
+                </MenuTrigger>
+
+                {/* Disabled */}
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          International Score
+                          {selectedINScore !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedINScore} %
+                            </span>
+                          )}
+                        </div>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {}}
+                                checked={selectedINScore !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover className={styles.filterPopover}>
+                    <IntScoreSlider
+                      state={selectedINScore}
+                      setState={setSelectedINScore}
+                    />
+                  </Popover> */}
+                </MenuTrigger>
+
+                {/* Disabled */}
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={`${styles.dropdown_button} ${styles.disabledBtn}`}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Inbound Score
+                          {selectedInboundScore !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedInboundScore} %
+                            </span>
+                          )}
+                        </div>
+
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {}}
+                                checked={selectedInboundScore !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover className={styles.filterPopover}>
+                    <RangeSlider
+                      state={selectedInboundScore}
+                      setState={setSelectedInboundScore}
+                    />
+                  </Popover> */}
                 </MenuTrigger>
               </div>
             )}

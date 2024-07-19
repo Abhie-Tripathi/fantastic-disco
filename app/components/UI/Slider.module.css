@@ -50,6 +50,9 @@
   transform: translateY(-50%);
   border-radius: 9999px;
   background-color: var(--primary-color);
+}
+
+.fillReverse {
   right: 0;
 }
 
