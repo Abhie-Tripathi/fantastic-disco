@@ -12,9 +12,10 @@ import { useTheme } from "@/context";
 interface RangeSliderProps {
   state: number;
   setState: (value: number) => void;
+  sliderType?: string;
 }
 
-const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
+const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState, sliderType }) => {
   const marks = [0, 50, 100];
   const {theme} = useTheme()
 
@@ -29,10 +30,17 @@ const RangeSlider: React.FC<RangeSliderProps> = ({ state, setState }) => {
           {({ state }) => (
             <>
               <div className={styles.track} />
-              <div
-                className={styles.fill}
-                style={{ width: state.getThumbPercent(0) * 100 + "%" }}
-              />
+              {
+                (sliderType == 'reverse') ?
+                  <div
+                    className={`${styles.fill} ${sliderType == 'reverse' ? styles.fillReverse:''}`}
+                    style={{ width: 100 - state.getThumbPercent(0) * 100 + "%" }}
+                  /> : 
+                  <div
+                    className={styles.fill}
+                    style={{ width: state.getThumbPercent(0) * 100 + "%" }}
+                  />
+              }
               <SliderThumb className={styles.thumb} />
 
               {marks.map((mark, index) => (

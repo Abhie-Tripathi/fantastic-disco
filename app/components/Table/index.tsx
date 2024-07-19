@@ -703,7 +703,7 @@ const [val,setVal]=useState(1);
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Global</th>}
+              {showInsights.global && <th>Internatinal</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header
@@ -766,12 +766,12 @@ const [val,setVal]=useState(1);
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
-                          title={`${event.location.venueName} & Online`}
+                          title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
                         </span>
                       ) : (
-                        event.location.venueName + " & Online"
+                        event.location.venueName
                       )
                     ) : (
                       <span data-toggle="tooltip" title="To be announced">
