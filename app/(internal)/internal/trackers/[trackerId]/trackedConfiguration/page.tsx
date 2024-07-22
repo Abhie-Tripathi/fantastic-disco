@@ -218,6 +218,36 @@ const Page = () => {
           )} */}
         </div>
       </div>
+      {data.tracker && data.tracker.type === "T_COMPETITOR" &&
+        <>
+        <div className={styles.line}></div>
+          <div className={styles.innerContainer}>
+            <div
+              className={styles.innerContainerLeft}
+              style={{ paddingLeft: "20px" }}
+            >
+              <div className={styles.advanceHead}>Competitor&apos;s Website</div>
+              <div className={styles.customContent}>
+                {/* <div className={styles.urlDiv}>
+                  <Image src={Url} alt="url" className="icons" />
+                  URL
+                  </div> */}
+                 Track your competitor experts, influencers and where they might be participating in events
+              </div>
+            </div>
+            <div className={styles.innerContainerRight}>
+            <div className={styles.allInputBox}>
+                  {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                    <div className={styles.singleUrl}>
+                    <Image src={Url} alt="url_icon"/>
+                    <div key={ind} className={styles.singleInputBox}>{item}</div>
+                    </div>
+                  ))}
+                </div>
+            </div>
+          </div>
+        </>
+      }
       <div className={styles.line}></div>
       <div className={styles.innerContainer}>
         <div
@@ -290,36 +320,6 @@ const Page = () => {
           />
         </div>
       </div>
-      {data.tracker && data.tracker.type === "T_COMPETITOR" &&
-        <>
-          <div className={styles.line}></div>
-          <div className={styles.innerContainer}>
-            <div
-              className={styles.innerContainerLeft}
-              style={{ paddingLeft: "20px" }}
-            >
-              <div className={styles.advanceHead}>Competitor&apos;s Website</div>
-              <div className={styles.customContent}>
-                {/* <div className={styles.urlDiv}>
-                  <Image src={Url} alt="url" className="icons" />
-                  URL
-                  </div> */}
-                <div className={styles.allInputBox}>
-                  {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
-                    <div className={styles.singleUrl}>
-                    <Image src={Url} alt="url_icon"/>
-                    <div key={ind} className={styles.singleInputBox}>{item}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className={styles.innerContainerRight}>
-
-            </div>
-          </div>
-        </>
-      }
       {del &&
         (
           <div className={styles.shareModal} >
