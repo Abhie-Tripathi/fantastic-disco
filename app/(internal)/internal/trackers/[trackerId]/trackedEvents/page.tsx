@@ -279,7 +279,7 @@ const Page = () => {
             </button>
           </div>
           {/* <div className={styles.eventStatusRight} onClick={exportData}>Export Data</div> */}
-          {id === "1" ?
+          {/* {id === "1" ?
             <div onClick={() => saveTracker()} className={styles.eventStatusRight}>Save</div> :
             <DialogTrigger>
               <Button className={styles.exportButton}>
@@ -296,7 +296,7 @@ const Page = () => {
                 </Modal>
               </ModalOverlay>
             </DialogTrigger>
-          }
+          } */}
 
 
         </div>

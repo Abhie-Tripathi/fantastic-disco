@@ -18,6 +18,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { number } from "zod";
 import { toast } from "react-toastify";
+import { showToast } from "@/utils/showToast";
 // import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
@@ -60,6 +61,11 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
+  const [participentData, setParticipentData] = useState({
+    attendee: [],
+    speakers: [],
+  });
+
   useEffect(() => {
     if (urlPath === "outreach") setStage("OUTREACH");
     else if (urlPath === "coordinate") setStage("INTERNAL");
@@ -110,21 +116,12 @@ const EventDetail = ({
     }
     const fetchEventData = async () => {
       try {
-        const apiUrl = "https://api.eventgeni.com/event/" + eventId;
-        const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
-        });
-        if (apiData.data) {
-          const eventsData = apiData.data.event;
-          setSingleEventData({
-            id: eventsData.id,
-            eventGroupId: eventsData.eventGroupId,
-            imageUrl:
-              "https://i.pinimg.com/originals/0f/ab/ea/0fabead80613002cfed665309f3dd6cc.jpg",
-            name: eventsData.title,
-            description: eventsData.description,
-          });
+        const { data, error } = await myFetch(
+          `${baseUrl}/event/search?eventId=${eventId}`
+        );
+        if (data) {
+          const eventsData = data.events[0];
+          setSingleEventData(eventsData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -139,6 +136,26 @@ const EventDetail = ({
       handleModal("", "");
     }
   };
+
+  useEffect(() => {
+    const fetchInterestData = async () => {
+      const { data, error } = await myFetch(
+        `${baseUrl}/userInterest/${eventId}`
+      );
+
+      if (data) {
+        setParticipentData({
+          attendee: data.participent.attendee,
+          speakers: data.participent.speakers,
+        });
+      }
+      if (error) {
+        showToast("error", error.message);
+        return;
+      }
+    };
+    fetchInterestData();
+  }, [eventId]);
 
   return (
     <div
@@ -173,13 +190,17 @@ const EventDetail = ({
                 <EventDescription
                   description={singleEventData.description}
                   open={openEventDetails}
-                  speakers={true}
+                  speakers={false}
                   shortlist={false}
+                  eventDetail={singleEventData}
                 />
               </>
             )}
-            <EventRequest open={openEventRequest} />
-            <Organiser open={openOrganiserDetails}/>
+            <EventRequest open={openEventRequest} participentData={participentData} />
+            <Organiser
+              open={openOrganiserDetails}
+              organizerData={singleEventData?.organizer}
+            />
             <EventPoc open={openPocDetails} eventId={eventId} />
             <Follower eventId={eventId} enquiryId={enquiryId} />
           </div>

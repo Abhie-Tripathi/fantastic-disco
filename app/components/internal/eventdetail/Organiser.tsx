@@ -12,17 +12,16 @@ import rightDirectIcon from "/public/right_direction.svg";
 
 interface Props {
   open: boolean;
+  organizerData: any;
 }
 
-const Organiser = ({ open }: Props) => {
+const Organiser = ({ open, organizerData }: Props) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
+      className={`${styles.container} card`}
     >
       <div
         className={styles.header}
@@ -39,24 +38,28 @@ const Organiser = ({ open }: Props) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.organiserContainer}>
-            <Image
+            {/* <Image
               src={Placehodler}
               alt="placeholder"
               className={styles.orgLogo}
-            />
+            /> */}
             <div className={styles.organiserNameContainer}>
-              <div style={{ fontSize: 14 }}>GooCampus</div>
-              <div style={{ fontSize: 12, color: "#999999" }}>
+              <div>{organizerData?.name? organizerData.name :''}</div>
+              {/* <div style={{ fontSize: 12, color: "#999999" }}>
                 Supercharge your online meetings
-              </div>
+              </div> */}
             </div>
           </div>
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
-              <Image src={LocationIcon} alt="location" className={iconClass} />
-              <div className={styles.location}>Bengaluru, Karnataka</div>
+              {organizerData?.countryName &&
+                <>
+                  <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} />
+                  <div className={styles.location}>{organizerData.countryName}</div>
+                </>
+              }
             </div>
-            <div className={styles.locationContainer_direction}>
+            {/* <div className={styles.locationContainer_direction}>
               View Location
               <span className={styles.image_container}>
                 <Image
@@ -66,9 +69,9 @@ const Organiser = ({ open }: Props) => {
                   height={15}
                 />
               </span>
-            </div>
+            </div> */}
           </div>
-          <div className={styles.eventStats}>
+          {/* <div className={styles.eventStats}>
             <div className={styles.upcomingEvent}>
               <Image
                 src={ClockIcon}
@@ -89,7 +92,7 @@ const Organiser = ({ open }: Props) => {
               />
               <div>Events Hosted : 12</div>
             </div>
-          </div>
+          </div> */}
         </div>
       )}
     </div>

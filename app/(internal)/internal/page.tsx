@@ -87,7 +87,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {
-        const { data, error } = await myFetch(`${baseUrl}/tracker`);
+        const { data, error } = await myFetch(`${baseUrl}/tracker?limit=1&offset=0`);
         console.log("TrackerList", data);
         setTrackerList(data.trackerData);
       } catch (error) {

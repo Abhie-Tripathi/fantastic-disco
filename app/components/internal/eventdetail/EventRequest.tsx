@@ -8,19 +8,19 @@ import AttendeeCard from "./AttendeeCard";
 import downArrowIcon from "/public/arrow_down.svg";
 interface DetailsProps {
   open: boolean;
+  participentData: {
+    attendee: string[];
+    speakers: string[];
+  };
 }
 
-const EventRequest = ({ open }: DetailsProps) => {
+const EventRequest = ({ open, participentData }: DetailsProps) => {
   console.log("openene", open);
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
-    <div
-      className={`${styles.container} ${
-        theme === "light" ? styles.container_light : ""
-      }`}
-    >
+    <div className={`${styles.container} card`}>
       <div
         className={styles.header}
         onClick={() => setAccordianToggle(!accordianToggle)}
@@ -36,8 +36,8 @@ const EventRequest = ({ open }: DetailsProps) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.main_section}>
-            <AttendeeCard cardType={"Attendee"} />
-            <AttendeeCard cardType={"Speaker"} />
+            <AttendeeCard cardType={"Attendee"} userList={participentData.attendee} />
+            <AttendeeCard cardType={"Speaker"} userList={participentData.speakers} />
           </div>
         </div>
       )}

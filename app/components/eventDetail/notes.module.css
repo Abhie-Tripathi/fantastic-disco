@@ -419,7 +419,7 @@
   font-size: var(--font-size-small);
   color: grey;
   gap: var(--spacing-xxs);
-  padding-bottom: 40px;
+  padding-bottom: 5px;
 }
 
 .pdf {

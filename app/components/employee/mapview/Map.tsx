@@ -15,12 +15,21 @@ import { baseUrl, headers } from "@/constants";
 import {EventTableType} from "@/types/ListViewTable";
 import Loading from "@/app/components/UI/Loading";
 
+const formatDate = (dateString: string | null): string => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+};
+
 const EventListCard = (event: any) => {
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={'card'}>
-      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_title}>
+        <Link href={`/internal/event/${event.event.id}`} target="_blank" >{event.event.name}</Link>
+      </div>
       <div className={styles.eventListCard_location}>
         {event.event?.location?.cityName}
       </div>
@@ -79,6 +88,7 @@ const Map = (props: MapProps) => {
   const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isListLoaded, setIsListLoaded] = useState<boolean>(true);
 
   const [viewport, setViewport] = useState<any>({
     latitude: 51.50853,
@@ -166,6 +176,7 @@ const Map = (props: MapProps) => {
     try {
       const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=10&offset=${(currPage - 1)*10}&${props.queryString}`;
       setLoadMoreDisabled(true);
+      setIsListLoaded(false);
 
       const apiData = await myFetch(apiUrl, {
         method: "GET",
@@ -178,6 +189,7 @@ const Map = (props: MapProps) => {
       console.error('Error fetching data:', error);
     } finally {
       setLoadMoreDisabled(false);
+      setIsListLoaded(true);
     }
   }
 
@@ -277,30 +289,33 @@ const Map = (props: MapProps) => {
                 onClose={() => {
                   setSelectedPlace(null);
                 }}
+                closeOnClick={false}
               >
               <div className={styles.event_details_popup}>
                 <div>
                   <Link
-                    href={event.url}
+                    href={`/internal/event/${event.id}`}
                     className={styles.event_details_popup_link}
+                    target="_blank"
                   >
                     {event.name}
                   </Link>
                   <div className={styles.event_country}>{event.location.countryName}</div>
                   <div className={styles.event_datetime}>
-                    Wed, 6 Mar 2024 (1 day)
+                    {formatDate(event.startDate)} - {formatDate(event.endDate)}
                   </div>
                 </div>
                 <div className={styles.event_details_action}>
                   <Link
                     className={styles.event_view_details}
-                    href={event.url}
+                    href={`/internal/event/${event.id}`}
+                    target="_blank"
                   >
-                    View Full Details
+                    View Details
                   </Link>
-                  <div className={styles.event_details_category}>
+                  {/* <div className={styles.event_details_category}>
                     Textile Industry
-                  </div>
+                  </div> */}
                 </div>
               </div>
               </Popup>
@@ -330,7 +345,7 @@ const Map = (props: MapProps) => {
             ))}
           </>
         } */}
-        { countryPerPage && 
+        { (countryPerPage && countryPerPage.length > 0) && 
           <>
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
@@ -372,7 +387,9 @@ const Map = (props: MapProps) => {
               {eventPerPage?.map((event, key) => (
                 <EventListCard key={key} event={event} />
               ))}
-              
+              { !isListLoaded &&
+                <div style={{paddingBottom:'10px'}}><Loading /></div>
+              }
             </div>
             <div style={{textAlign:'center', padding:'10px'}}>
                 <button disabled={loadMoreDisabled} className={styles.loadMoreBtn} onClick={() => setCurrPage((page) => page + 1)} >

@@ -7,6 +7,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import LeftArrow from "/public/leftArrow.svg";
 import RightArrow from "/public/rightArrow.svg";
+import Loading from "../../UI/Loading";
 
 interface countObj {
   [date: string]: { totalEvent: number }
@@ -80,6 +81,7 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
   // const [yearData, setYearData] = useState<MonthObject[]>([]);
   const [eventCountArr, setEventCountArr] = useState<countObj>();
   const [monthEventCount, setMonthEventCount] = useState<number[]>(initialMonthCounts);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
 
   function countEventsMonthWise() {
@@ -105,6 +107,7 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
   const fetchEventsData = async () => {
     if(props.queryString){
     try {
+      setIsLoaded(false);
       const apiUrl = `${baseUrl}/event/search?groupBy=${year}-01-01,${year}-12-31&${props.queryString}`;
       const apiData = await myFetch(apiUrl, {
         method: "GET",
@@ -116,6 +119,8 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
     } catch (error) {
       console.error('Error fetching data:', error);
       setEventCountArr({});
+    } finally {
+      setIsLoaded(true);
     }
     }else
       setEventCountArr({});
@@ -146,6 +151,10 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year, props.queryString]);
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -191,7 +200,7 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
           </div>
         ))}
       </div>
-      <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate} />
+      <CalendarList filters={props.queryString} startDate={eventListDate} endDate={eventListDate} />
     </>
   );
 };

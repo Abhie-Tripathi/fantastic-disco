@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./myTrackers.style.module.css";
 import Trackers from ".././AllTrackers";
 import Image from "next/image";
@@ -56,43 +56,70 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 
-const Index = ({setDataPresent}:{setDataPresent:any}) => {
+const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPresent:any, isData:boolean}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
-  const [allTracker, setAllTracker] = useState([]);
+  const [allTracker, setAllTracker] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [page, setPage] = useState(0);
-  const [trackerPerPage, setTrackerPerPage] = useState(4);
+  const [trackerPerPage, setTrackerPerPage] = useState(1);
   const [totalPage, setTotalPage] = useState<number>(0);
-
-  // Replace with your actual base URL
-
+  const [loadOne,setLoadOne]=useState(false);
+  const [loadTwo,setLoadTwo]=useState(false);
+  const endOfListRef = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
+     if(isData){
       setLoading(true);
       setError(null);
+      setLoadOne(true);
+      
+      try {
+        const firstFetchResult = await myFetch(
+          `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
+        );
 
-      const { data, error } = await myFetch(
-        `${baseUrl}/tracker?offset=${
-          page * trackerPerPage
-        }&limit=${trackerPerPage}`
-      );
+        if (firstFetchResult.error) {
+          setError('Create your first tracker!');
+          setLoading(false);
+          setLoading(false);
+          setLoadOne(false);
+          console.log(firstFetchResult.error);
+          return;
+        } else if (firstFetchResult.data) {
+          if (firstFetchResult.data.trackerData.length === 0) {
+            setLoading(false);
+            setLoadOne(false);
+            return;
+          } else {
+            setAllTracker((prevAllTracker:any[])=> [
+              ...prevAllTracker,...firstFetchResult.data.trackerData
+              
+            ]);
+            setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
+          setLoadOne(false);
+          setLoadTwo(true);
+            const secondFetchResult = await myFetch(
+              `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
+            );
 
-      if (error) {
-        setError("Create your first tracker!");
+            if (secondFetchResult.data) {
+              setAllTracker((prevAllTracker:any[]) => [
+                ...prevAllTracker, ...secondFetchResult.data.trackerData
+                
+              ]);
+              setLoadTwo(false);
+            }
+          }
+        }
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Error fetching data.');
+      } finally {
         setLoading(false);
-        console.log(error);
-        <div>error</div>;
-        return;
-      } else if (data) {
-        if(data.trackerData.length===0)  setDataPresent(false);
-        setAllTracker(data.trackerData);
-        setTotalPage(Math.ceil(data.totalCount / trackerPerPage));
-        setLoading(false);
-      } else {
-        // setError('Nothing to show, create a tracker!');
-        setLoading(false);
-      }
+      }}
+     
     };
 
     fetchData();
@@ -100,8 +127,8 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
 
   const handleNextPage = () => {
     if (page < totalPage - 1) {
-      setPage(page + 1);
-      setAllTracker([]);
+      setPage(page + 2);
+      // setAllTracker([]);
     }
   };
 
@@ -111,8 +138,15 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
       setAllTracker([]);
     }
   };
+  useEffect(()=>{
+    if(totalPage>0){
+    setDataPresent(true);
+    // setIsLoading(false);
+  }
+  },[totalPage])
+  
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={endOfListRef}>
       <div className={styles.containerLeft}>
         {/* <div className={styles.leftContainer}>
           <div className={`${styles.heading} ${trackerType === "All Trackers" ? styles.active : ""}`} onClick={() => setTrackerType("All Trackers")}>
@@ -137,8 +171,8 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
            </div> */}
       </div>
       <div style={{ width: "100%" }}>
-      {loading && <Loading/>}
-      {allTracker.length === 0 && !loading && (
+      
+      {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
         <div className={styles.containerRight}>
@@ -148,9 +182,15 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
             allTracker.map((item, id) => <Trackers key={id} item={item} />)}
-          
+          {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
+          <div className={styles.loadingBar}></div>
+        </div>}
+          {loadTwo && <div className={styles.loadingContainer}>
+          <div className={styles.loadingBar}></div>
+        </div>}
           {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
         </div>
+        {/* {loading && <Loading/>} */}
         {totalPage > 1 &&
           (trackerType === "All Trackers" ||
             trackerType === "Custom Trackers") &&
@@ -162,9 +202,9 @@ const Index = ({setDataPresent}:{setDataPresent:any}) => {
                 paddingTop: "20px",
               }}
             >
-              <div className={styles.btn} onClick={handlePrevPage}>
+              {/* <div className={styles.btn} onClick={handlePrevPage}>
                 Prev
-              </div>
+              </div> */}
               <div className={styles.btn} onClick={handleNextPage}>
                 Next
               </div>

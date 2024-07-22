@@ -69,10 +69,13 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [clear, setClear] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
+      const { data, error } = await myFetch(
+        `${baseUrl}/category/all?take=30&skip=0`
+      );
       if (error) {
         console.log(error);
         return;
@@ -90,6 +93,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     setSelectedCategories([]);
     setCategorySlug([]);
     setSelectedLocations([]);
+    setSelectedCity({});
+    setSelectedCountry({});
     setSelectedDateRange([]);
     setSelectedEventRank([0, 100]);
     setSelectedLocalRank([0, 100]);
@@ -314,7 +319,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
           <MenuTrigger>
             <Button
-              className={`${styles.input_container_btns} ${styles1.dropdown_button}`}
+              className={`${styles.input_container_btns} ${styles1.dropdown_button} ${styles.disabledBtn}`}
             >
               <div className={styles1.input_container}>
                 <div className={styles1.input}>
@@ -340,7 +345,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                 </div>
               </div>
             </Button>
-            <Popover>
+            {/* <Popover>
               <Dialog>
                 {({ close }) => (
                   <RankInput
@@ -356,7 +361,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                   />
                 )}
               </Dialog>
-            </Popover>
+            </Popover> */}
           </MenuTrigger>
         </div>
         <div>

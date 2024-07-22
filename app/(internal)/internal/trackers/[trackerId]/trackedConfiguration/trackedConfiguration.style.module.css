@@ -170,3 +170,41 @@
 .cancel{
     color:var(--primary-color);
 }
+.allInputBox{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+.singleUrl{
+    display: flex;
+    gap:5px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+    padding: 10px;
+}
+.singleInputBox{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    /* border-bottom: 1px solid var(--border-color); */
+  }
+  .allInputBox > .singleUrl:last-child{
+    border-bottom:0px;
+  }
+  .urlDiv{
+    padding: 10px;
+    display: flex;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+  }
+  .customContent{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
+  }

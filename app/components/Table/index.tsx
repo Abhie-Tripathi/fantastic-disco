@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
 import Image from "next/image";
@@ -237,7 +237,15 @@ const Table = ({
     const { name, value } = e.target;
     setFormData({ ...formData, markedInterest: value });
   };
-
+  const isInitialRender = useRef(true);
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    }else{
+    if(currPage===1) fetchEventsData();
+    setCurrPage(1)
+    }
+  }, [eventType]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
@@ -334,15 +342,25 @@ const Table = ({
       }
     }
   };
-
+const [val,setVal]=useState(1);
   useEffect(() => {
-    fetchEventsData();
+    // setCurrPage(val);
     const startInd = (currPage - 1) * itemsPerPage;
     const endInd = startInd + itemsPerPage;
-    // setEventPerPage(eventData.slice(startInd, endInd));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage, itemsPerPage, queryString]);
-
+    const secondLast = path[path.length - 2];
+    // if(currPage===1 && prev){ 
+    //   fetchEventsData();
+    //   setPrev(false);
+    // }
+    // if(currPage!==1)
+    fetchEventsData();
+ 
+  }, [ currPage, itemsPerPage, queryString]);
+// useEffect(()=>{
+//   const secondLast = path[path.length - 2];
+//   if(currPage!==1)
+//   fetchData(secondLast);
+// },[currPage])
   useEffect(() => {
     const fetchBookmarkData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
@@ -515,24 +533,18 @@ const Table = ({
       }
     }
   };
-  useEffect(() => {
-    const secondLast = path[path.length - 2];
-    if (path[path.length - 1] === "trackedEvents"){
-       fetchData(secondLast);
-       setIsLoaded(false);
-      }
-  }, [eventType]);
+  
   const fetchData = async (secondLast: string) => {
-    var url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-      (currPage - 1) * 10
+    var url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
+      (currPage - 1) * itemsPerPage
     }&type=active`;
     if (eventType === "New Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
+        (currPage - 1) * itemsPerPage
       }`;
     else if (eventType === "Expired Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
+        (currPage - 1) * itemsPerPage
       }&type=expired`;
     const { data, error } = await myFetch(url);
     if (error) {
@@ -549,7 +561,7 @@ const Table = ({
       console.log(data);
       setIsLoaded(true);
       if (data?.events?.length > 0) {
-        setActiveValue(data.totalEvents);
+        setActiveValue(data?.totalEvents);
         GAEvent(
           "trackers",
           "Tracker",
@@ -561,10 +573,6 @@ const Table = ({
       // setCatgeoryData(data);
     }
   };
-
-  // if (eventPerPage.length === 0) {
-  //   return <Loading />;
-  // }
   const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {
@@ -695,7 +703,7 @@ const Table = ({
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Global</th>}
+              {showInsights.global && <th>Internatinal</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header
@@ -713,7 +721,7 @@ const Table = ({
                   <div
                     className={styles.truncateText_1}
                   >
-                    {event.name}
+                    <Link href={`/internal/event/${event.id}`} target="_blank" >{event.name}</Link>
                   </div>
                   <div className={styles.event_organizer}>
                     {event?.organizer?.name}
@@ -758,12 +766,12 @@ const Table = ({
                       event.location.venueName.length > 15 ? (
                         <span
                           data-toggle="tooltip"
-                          title={`${event.location.venueName} & Online`}
+                          title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
                         </span>
                       ) : (
-                        event.location.venueName + " & Online"
+                        event.location.venueName
                       )
                     ) : (
                       <span data-toggle="tooltip" title="To be announced">
@@ -1184,9 +1192,9 @@ const Table = ({
               id=""
               className={styles.pagination_noOfPage}
             >
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
+              <option value="10" selected={itemsPerPage==10?true:false}>10</option>
+              <option value="15" selected={itemsPerPage==15?true:false}>15</option>
+              <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
           </div>
           <div>results/Page</div>

@@ -7,6 +7,8 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import LeftArrow from "/public/leftArrow.svg";
 import RightArrow from "/public/rightArrow.svg";
+import Loading from "../../UI/Loading";
+import Link from "next/link";
 
 /*
 const eventsData = [
@@ -274,7 +276,10 @@ const WeekCalendar = (props: WeekCalendarProps) => {
             }}
           >
             <div className={styles.event_date}>{event.dateRange}</div>
-            <div className={styles.event_title} data-name={event.eventName} >{event.eventName}</div>
+            <div className={styles.event_title} data-name={event.eventName} >
+              <Link href={`/internal/event/${event.id}`} target="_blank" >{event.eventName}</Link>
+              {/* {event.eventName} */}
+            </div>
           </div>
         );
       } else {
@@ -355,9 +360,11 @@ const WeekCalendar = (props: WeekCalendarProps) => {
   };
 
   const [apiResult, setApiResult] = useState<any>({});
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const fetchEventsData = async () => {
     try {
+      setIsLoaded(false);
       let start = weekDates[0].isoDate.substring(0, 10);
       let end = weekDates[6].isoDate.substring(0, 10);
       const apiUrl = `${baseUrl}/event/search?groupBy=${start},${end}&${props.queryString}`;
@@ -393,6 +400,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
               let card_color = getRandomColor();
 
               tmpData2[event.id] = {
+                id: event.id,
                 eventName: event.name,
                 dateRange: formatDate(event.startDate) + ' - ' + formatDate(event.endDate),
                 startDayNo: e_startDayNo,
@@ -413,6 +421,8 @@ const WeekCalendar = (props: WeekCalendarProps) => {
     } catch (error) {
       console.error('Error fetching data:', error);
       setApiResult({})
+    } finally {
+      setIsLoaded(true);
     }
   }
 
@@ -441,6 +451,10 @@ const WeekCalendar = (props: WeekCalendarProps) => {
       fillCalendarData();
     }
   }, [apiResult]);
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -478,7 +492,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
         >
           EVENTS LIST
         </button>
-        <CalendarList filters={''} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
+        <CalendarList filters={props.queryString} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
       </div>
     </>
   );

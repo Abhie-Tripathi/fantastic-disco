@@ -22,6 +22,7 @@ interface UserDetail {
   firstname: string;
   email: string;
   lastname: string;
+  profilePicture: string | null;
 }
 
 const routeMap = {
@@ -56,6 +57,8 @@ const Navbar = () => {
   useEffect(() => {
     if (user) setUserDetail(user);
   }, [user]);
+
+  console.log("Navbar",user,userDetail)
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
@@ -106,10 +109,14 @@ const Navbar = () => {
     if (currPath.startsWith("/internal/trackers")) {
       setTitle("Trackers");
     }
+    if (currPath.startsWith("/internal/event")) {
+      setTitle("Event Detail");
+    }
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }
   }, [currPath]);
+  console.log(userDetail)
 
   return (
     <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
@@ -200,24 +207,44 @@ const Navbar = () => {
               onClick={dotMenuToggle}
             >
               <div className={`${styles.circle}`} data-name="Menu">
-                <Image src={dotMenuIcon} alt="dotMenu" width={20} height={20} className={iconClass} />
+                <Image
+                  src={dotMenuIcon}
+                  alt="dotMenu"
+                  width={20}
+                  height={20}
+                  className={iconClass}
+                />
               </div>
 
               {dotMenuCtas.isOpen && (
-                <div className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `} style={{width:'fit-content'}}>
+                <div
+                  className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
+                  style={{ width: "fit-content" }}
+                >
                   <Link href="#" className="">
-                    <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
+                    <div
+                      className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                    >
                       <Image
                         src={promoteIcon}
                         alt="promote"
                         width={28}
                         height={28}
-                        />
-                        Promote
+                        className={iconClass}
+                      />
+                      Promote
                     </div>
                   </Link>
-                  <div className={`${styles.btns_menu} ${styles.dotMenu_icons}`}>
-                   <Image src={prospectIcon} alt="prospect" width={28} height={28} />
+                  <div
+                    className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                  >
+                    <Image
+                      src={prospectIcon}
+                      alt="prospect"
+                      width={28}
+                      height={28}
+                      className={iconClass}
+                    />
                     Prospect
                   </div>
                 </div>
@@ -296,24 +323,33 @@ const Navbar = () => {
               ref={profilectas.dropdownRef}
               onClick={toggleDropdown}
             >
-              <div
-                className={`${styles.circle} ${styles.userCircle}`}
-                data-name="Username"
-              >
-                {userDetail?.firstname?.charAt(0)}
-                {userDetail?.lastname?.charAt(0)}
-              </div>
-              {/* <div className={styles.userDetails}>
-                <div>
-                  {userDetail?.firstname} {userDetail?.lastname}
+              {userDetail.profilePicture ? (
+                <Image
+                  src={userDetail.profilePicture}
+                  alt="profile"
+                  width={32}
+                  height={32}
+                  className={`${styles.circle} ${styles.userCircle}`}
+                />
+              ) : (
+                <div
+                  className={`${styles.circle} ${styles.userCircle}`}
+                  data-name="Username"
+                >
+                  {userDetail?.firstname?.charAt(0)}
+                  {userDetail?.lastname?.charAt(0)}
                 </div>
-                <div style={{ fontSize: "12px" }}>{userDetail?.email}</div>
-              </div> */}
+              )}
+
               {profilectas.isOpen && (
                 <div className={`${styles.userDropdown} card`}>
-                  {/* <Link href="/profile">
+                  <Link
+                    href={
+                      pathName === "internal" ? "/internal/profile" : "/profile"
+                    }
+                  >
                     <div className={styles.btns}>Profile</div>
-                  </Link> */}
+                  </Link>
                   <div className={styles.btns} onClick={signOut}>
                     Log Out
                   </div>

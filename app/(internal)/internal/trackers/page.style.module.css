@@ -60,6 +60,8 @@
     .trackers_header_newtracker_button {
         cursor: pointer;
         background-color: var(--primary-color);
+        width: 184px;
+        justify-content: center;
         /* border: 1px solid #b8b7ea; */
         padding: 8px 24px;
         border-radius: var(--border-radius-md);
@@ -114,6 +116,8 @@
         /* height: 270px; */
         /* position: relative; */
         /* display: flex; */
+        overflow: hidden; /* Ensure content does not overflow during transition */
+        transition: max-height 0.5s ease, opacity 0.5s ease;
         gap: 10px;
     }
 
@@ -317,3 +321,12 @@
     .createBtn {
         color: white;
     }
+
+    .boxHidden {
+        max-height: 0; /* Collapse the div */
+        opacity: 0; /* Fade out the div */
+      }
+
+      .allOptions{
+        display: flex;
+      }

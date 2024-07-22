@@ -1,0 +1,181 @@
+.container {
+    padding: 20px;
+  }
+  
+  .header {
+    font-size: var(--font-size-h5);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .account {
+    display: flex;
+    gap: 50px;
+    /* padding: 20px 0; */
+    /* border-bottom: 1px solid #ddd; */
+  }
+  
+  .account_left {
+    flex: 1;
+  }
+  
+  .profile_header {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 20px;
+  }
+  
+  .account_right {
+    flex: 1;
+  }
+  
+  .account_basicInfo {
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .account_basicInfo_pic {
+    width: 76px;
+    height: 76px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-rounded);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .no_pic {
+    /* position: absolute; */
+    font-size: var(--font-size-h3);
+    /* transform: translate(20px, 20px); */
+  }
+  
+  .account_basicInfo_picInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .action_container > span {
+    margin-right: 10px;
+  }
+  
+  .action_upload {
+    font-size: var(--font-size-small);
+    padding: 5px;
+    background-color: var(--heading-background-color);
+    /* border: 1px solid var(--border-color); */
+    cursor: pointer;
+  }
+  
+  .image {
+    margin-top: 5px;
+    margin-right: 10px;
+  }
+  
+  .action_remove {
+    border: 1px solid var(--border-color);
+    font-size: var(--font-size-small);
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .profile_hintText {
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+  }
+  
+  .account_details {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .input_container {
+    /* position: relative; */
+    flex: 1;
+  }
+  
+  .input_title {
+    color: var(--secondary-text-color);
+    margin-bottom: 2px;
+    font-size: var(--font-size-default);
+  }
+  
+  .input {
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 10px 20px;
+    width: 100%;
+    color: var(--primary-text-color);
+    background-color: var(--primary-foreground);
+  }
+  
+  .dual_input_container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .action_button {
+    border-radius: 4px;
+    padding: 8px;
+    background-color: var(--primary-color);
+    color: var(--accent-foreground);
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .action_reset {
+    color: var(--primary-color);
+    font-size: var(--font-size-default);
+    cursor: pointer;
+  }
+  
+  .searchBar_container {
+    border: 1px solid var(--border-color);
+    display: flex;
+    padding: 0 8px;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .input1 {
+    padding: 10px;
+    flex: 1;
+    font-size: var(--font-size-large);
+    outline: none;
+    border: none;
+  }
+  
+  .search {
+    margin-top: 5px;
+  }
+  
+  .action_invite {
+    background-color: var(--primary-color);
+    padding: 6px;
+    font-size: var(--font-size-small);
+    border-radius: var(--border-radius-md);
+    color: var(--primary-foreground);
+    cursor: pointer;
+  }
+  
+  .error {
+    position: absolute;
+    font-size: var(--font-size-small);
+    color: var(--danger-text-color);
+    padding-top: 1px;
+  }
+  
+  .error_boundary {
+    border-color: var(--danger-text-color) !important;
+  }
+  

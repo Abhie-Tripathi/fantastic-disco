@@ -12,6 +12,7 @@ import { formatDateRange } from "@/utils/dateFormat";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { useTheme } from "@/context";
+import Loading from "../../UI/Loading";
 
 interface eventDataType {
   name: string;
@@ -30,7 +31,9 @@ const EventListCard = (event: any) => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   return (
     <div className={'card'}>
-      <div className={styles.eventListCard_title}>{event.event.name}</div>
+      <div className={styles.eventListCard_title}>
+        <Link href={`/internal/event/${event.event.id}`} target="_blank" >{event.event.name}</Link>
+      </div>
       <div className={styles.eventListCard_location}>
         {event.event?.location?.cityName}
       </div>
@@ -63,14 +66,39 @@ const CalendarList = ({ filters, startDate, endDate }: Props) => {
   const [showList, setShowList] = useState(false);
   const [fullView, setFullView] = useState(true);
 
-  const [eventData, setEventData] = useState<eventDataType[]>();
+  const [eventData, setEventData] = useState<eventDataType[]>([]);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const [currPage, setCurrPage] = useState(1);
+  const [isListLoaded, setIsListLoaded] = useState<boolean>(true);
+  const [loadMoreDisabled, setLoadMoreDisabled] = useState<boolean>(false);
+
+  const handleLoadMoreEvents = async() => {
+    try {
+      const apiUrl = `${baseUrl}/event/search?startDate=2013-01-01,${startDate}&endDate=${startDate},2090-01-01&offset=${(currPage - 1)*10}&max=10&${filters}`;
+      setLoadMoreDisabled(true);
+      setIsListLoaded(false);
+
+      const apiData = await myFetch(apiUrl, {
+        method: "GET",
+        headers: headers,
+      });
+      if(apiData.data) {
+        setEventData((prev)=>[...prev, ...apiData.data.events]);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadMoreDisabled(false);
+      setIsListLoaded(true);
+    }
+  }
 
   const fetchEventsData = async () => {
     try {
       // const apiUrl = `${baseUrl}/event/search?groupBy=2024-03-01,2024-03-30`;
-      const apiUrl = `https://api.eventgeni.com/event/search?startDate=2013-01-01,${startDate}&endDate=${startDate},2090-01-01`;
+      const apiUrl = `${baseUrl}/event/search?startDate=2013-01-01,${startDate}&endDate=${startDate},2090-01-01&${filters}`;
       const apiData = await myFetch(apiUrl, {
         method: "GET",
         headers: headers,
@@ -88,9 +116,15 @@ const CalendarList = ({ filters, startDate, endDate }: Props) => {
       if (startDate !== '0')
         fetchEventsData();
       setShowList(true);
+      setCurrPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate]);
+
+  useEffect(() => {
+    if(currPage>1)
+      handleLoadMoreEvents();
+  }, [currPage]);
 
   return (
     <>
@@ -117,6 +151,14 @@ const CalendarList = ({ filters, startDate, endDate }: Props) => {
                 <EventListCard key={key} event={event} />
               ))}
               {eventData && eventData.length == 0 && 'No events'}
+              { !isListLoaded &&
+                <div style={{paddingBottom:'10px'}}><Loading /></div>
+              }
+            </div>
+            <div style={{textAlign:'center', padding:'10px'}}>
+              <button disabled={loadMoreDisabled} className={styles.loadMoreBtn} onClick={() => setCurrPage((page) => page + 1)} >
+                Load More
+              </button>
             </div>
           </div>
         </div>

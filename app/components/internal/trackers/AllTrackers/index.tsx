@@ -13,7 +13,7 @@ import { GAEvent } from "@/utils/GAEvent";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item }: any) => {
   // const { theme } = useTheme();
-  console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
+  // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -91,10 +91,7 @@ const AllTrackers = ({ item }: any) => {
   return (
     <div className="card">
       <Link
-        href={{
-          pathname: `/internal/trackers/${item.id}/trackedEvents`,
-          // query: { data: JSON.stringify(item) }
-        }}
+        href={`/internal/trackers/${item.id}/trackedEvents?type=${item?.type}`}
         onClick={() =>
           GAEvent(
             "trackers",
@@ -108,15 +105,22 @@ const AllTrackers = ({ item }: any) => {
           <div className={styles.heading}>{item.name}</div>
           <Image  src={GoTo} alt="goTo" />
         </div>
+        
         <div className={styles.cardTwo}>
-          <Image src={Location} alt="location" />
-          <div className={styles.location}>
-            {locations?.length > 0 && locations[0]}
-            {locations?.length > 1 && (
-              <span className={styles.moreBtn}>+{locations.length - 1}</span>
-            )}
-          </div>
+        {locations?.length>0 && 
+        <>
+        <Image src={Location} alt="location" />
+        <div className={styles.location}>
+          {locations?.length > 0 && locations[0]}
+          {locations?.length > 1 && (
+            <span className={styles.moreBtn}>+{locations.length - 1}</span>
+          )}
         </div>
+        </>
+}
+      </div>
+        
+        
         <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={`${styles.cardType} card`}>
@@ -134,7 +138,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                 Active
               </div>
-              <div className={styles.number} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>
@@ -144,7 +148,7 @@ const AllTrackers = ({ item }: any) => {
                 <Image src={Vectore8} alt="expired" width={12} height={12}/>
                 Expired
               </div>
-              <div className={styles.number} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
               </div>
               <div className={styles.events}>Events</div>

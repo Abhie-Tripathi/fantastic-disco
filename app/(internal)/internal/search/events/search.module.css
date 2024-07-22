@@ -5,6 +5,40 @@
   min-height: calc(100vh - 80px);
 }
 
+.tracker_outer_container {
+  display: flex;
+  align-items: center;
+}
+
+.tracker_container {
+  display: grid;
+  grid-template-columns: repeat(4, 255px);
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+  gap: 10px;
+}
+
+.view_tracker {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.view_tracker_text {
+  text-align: center;
+  font-size: 16px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-color: var(--primary-color);
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  padding-bottom: 1px;
+}
+
 .inputfields_container {
   position: relative;
   background-color: #eeeeee;
@@ -167,7 +201,7 @@
 }
 
 .advanceFilterBtns button.active {
-  border: 1px solid var(--primary-color);;
+  border: 1px solid var(--primary-color);
   border-radius: var(--border-radius-sm);
   /* color: white; */
 }
@@ -382,10 +416,10 @@ input:checked + .slider:before {
 }
 
 .filterPopover {
-  z-index: 1!important;
+  z-index: 1 !important;
 }
 
-.resultData_list{
+.resultData_list {
   padding: 5px 25px;
   /* background-color: #F7F7F9; */
   /* margin-bottom: 6px; */
@@ -399,7 +433,7 @@ input:checked + .slider:before {
 .resultData_subHeading {
   font-size: 12px;
   margin-left: 10px;
-  color: #A1A2A2;
+  color: #a1a2a2;
 }
 
 .resultData_list:hover {
@@ -416,11 +450,11 @@ input:checked + .slider:before {
   z-index: 1;
   padding: 10px 0;
   border-radius: 14px;
-  box-shadow: 2px 2px 12px 6px #0000000D;
+  box-shadow: 2px 2px 12px 6px #0000000d;
 }
 
 .resultContainer_light {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .resultData_heading {
@@ -473,7 +507,7 @@ input:checked + .slider:before {
   background: var(--primary-color);
   border-radius: 24px;
 }
- 
+
 .eventName_chip {
   display: flex;
   align-items: center;
@@ -489,7 +523,7 @@ input:checked + .slider:before {
   font-weight: 400;
   letter-spacing: 0.5px;
   text-align: left;
-  background: #F7F7F9;
+  background: #f7f7f9;
 }
 
 .eventName_chip_text {
@@ -502,7 +536,7 @@ input:checked + .slider:before {
 }
 
 .moreEventsCount {
-  color: #A1A2A2;
+  color: #a1a2a2;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -512,7 +546,7 @@ input:checked + .slider:before {
   white-space: nowrap;
   cursor: pointer;
 }
- 
+
 .closeChip {
   cursor: pointer;
 }
@@ -522,7 +556,7 @@ input:checked + .slider:before {
   outline: none;
 }
 
-.seeTracker-btn{
+.seeTracker-btn {
   cursor: pointer;
   border-radius: 6px;
   padding: 4px 8px;

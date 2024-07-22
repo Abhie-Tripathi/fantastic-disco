@@ -135,6 +135,8 @@ const CommonTrackerCard = () => {
             {/* <Image src={GoTo} alt="goTo" /> */}
           </div>
           <div className={styles.cardTwo}>
+          {locations?.length>0 && 
+            <>
             <Image src={Location} alt="location" />
             <div className={styles.location}>
               {locations?.length > 0 && locations[0]}
@@ -142,6 +144,8 @@ const CommonTrackerCard = () => {
                 <span className={styles.moreBtn}>+{locations.length - 1}</span>
               )}
             </div>
+            </>
+          }
           </div>
           <div className={styles.cardThree} style={{ height: "auto" }}>
             <div className={styles.cardThreeLeft} style={{ flexDirection: "column" }}>

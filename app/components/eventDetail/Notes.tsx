@@ -105,7 +105,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       }
     }else{
     const url =
-      `${baseUrl}/comment?eventId=${eventId}&eventGroupId=${eventGroupId}&stage=${stage}&offset=${page}&limit=10`;
+      `${baseUrl}/comment?eventId=${eventId}&stage=${stage}&offset=${page}&limit=10`;
 
     const { data, error } = await myFetch(url);
     
@@ -241,7 +241,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       {
         const dataToSend = {
         "eventId": eventId,
-        "eventGroupId": eventGroupId,
+        // "eventGroupId": eventGroupId,
         "stage": stage,
         "type": type,
         "content": note,
@@ -560,7 +560,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     console.log(selectedPdfs);
   }, 5000);
   useEffect(() => {
-    const url = `${baseUrl}/auth/users`
+    const url = `${baseUrl}/auth/users?limit=100`
     getAllUser(url);
   }, [])
   const [userArr, setUserArr] = useState<string[]>([]);
