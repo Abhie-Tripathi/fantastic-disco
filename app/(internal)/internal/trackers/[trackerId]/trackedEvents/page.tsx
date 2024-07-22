@@ -416,16 +416,22 @@ const Page = ({ params }: { params: any }) => {
             </div>
             <div className={styles.eventStatusRight}>
               <ListUnordered
+                height="16px"
+                width="16px"
                 color={
                   view === "list" ? "#6750a4" : "var(--primary-text-color)"
                 }
                 onClick={() => setView("list")}
               />
               <Globe
+              height="16px"
+              width="16px"
                 color={view === "map" ? "#6750a4" : "var(--primary-text-color)"}
                 onClick={() => setView("map")}
               />
               <Calendar
+              height="16px"
+              width="16px"
                 color={
                   view === "calendar" ? "#6750a4" : "var(--primary-text-color)"
                 }
