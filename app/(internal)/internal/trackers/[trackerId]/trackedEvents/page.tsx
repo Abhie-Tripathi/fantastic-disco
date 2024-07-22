@@ -259,6 +259,10 @@ const Page = ({ params }: { params: any }) => {
       );
     }
 
+    if(filters?.eventRegion){
+      queries.eventRegion = filters.eventRegion;
+    }
+
     if (filters?.startDate) {
       queries.startDate = filters.startDate;
     }
@@ -281,6 +285,10 @@ const Page = ({ params }: { params: any }) => {
 
     if (filters?.editionRange) {
       queries.editionRange = filters.editionRange;
+    }
+
+    if(filters?.eventKeywords){
+      queries.eventKeywords = filters.eventKeywords;
     }
 
     if (filters?.eventRank) {
