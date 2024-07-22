@@ -40,6 +40,24 @@
     justify-content: center;
     background-color: var(--primary-foreground);
 }
+
+.eventStatusRight{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  
+}
+
+.eventStatusRight_icon{
+  color: var(--primary-text-color);
+}
+
+.eventStatusRight_selected{
+  color: #6750A4;
+}
+
+
 .circle{
     /* padding: 0.5em; */
     height: 30px;
