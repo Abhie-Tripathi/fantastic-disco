@@ -74,11 +74,13 @@
   display: flex;
   height: 250px;
   overflow-y: auto;
+  border-radius: var(--border-radius-sm);
   overflow-x: hidden;
   gap: var(--spacing-xs);
   flex-direction: column;
   bottom: 100%;
-  background-color: white;
+  background-color: var(--primary-foreground);
+  border: 1px solid var(--border-color);
   box-shadow: var(--shadow-large);
   /* padding: 10px; */
 }

@@ -67,6 +67,64 @@ function pad(number: number): string {
   return (number < 10 ? "0" : "") + number;
 }
 
+function formatEventDates(startDate: string, endDate: string) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start.getFullYear() === end.getFullYear()) {
+      if (start.getMonth() === end.getMonth()) {
+          if (start.getDate() === end.getDate()) {
+              return new Date(startDate).toLocaleDateString("en-GB", {
+                weekday: 'long',
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              });
+          } else {
+              return (
+                new Date(startDate).toLocaleDateString("en-GB", {
+                  weekday: 'long',
+                  month: "short",
+                  day: "2-digit",
+                }) + ' - ' +
+                new Date(endDate).toLocaleDateString("en-GB", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                })
+              );
+          }
+      } else {
+          return (
+            new Date(startDate).toLocaleDateString("en-GB", {
+              weekday: 'long',
+              month: "short",
+              day: "2-digit",
+            }) + ' - ' +
+            new Date(endDate).toLocaleDateString("en-GB", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            })
+          );
+      }
+  } else {
+      return (
+        new Date(startDate).toLocaleDateString("en-GB", {
+          weekday: 'long',
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }) + ' - ' +
+        new Date(endDate).toLocaleDateString("en-GB", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        })
+      );
+  }
+}
+
 const InsightsPage = () => {
   const [eventDetail, setEventDetail] = useState<any>();
   const pathName = usePathname();
@@ -150,15 +208,11 @@ const InsightsPage = () => {
                   {extractDayOfMonth(eventStart)}
                 </div>
               </div>
-              <div className={styles.dateDetails}>
+              <div className={styles.dateDetails} style={{alignSelf:'unset'}}>
                 <div className={styles.date}>
-                  {extractDay(eventStart) +
-                    ", " +
-                    extractMonth(eventStart) +
-                    " " +
-                    extractDayOfMonth(eventStart)}
+                  {formatEventDates(eventDetail.startDate, eventDetail.endDate)}
                 </div>
-                <div className={styles.time}>{parseTime(eventStart)}</div>
+                {/* <div className={styles.time}>{parseTime(eventStart)}</div> */}
               </div>
             </div>
             <div className={styles.locationContainer}>

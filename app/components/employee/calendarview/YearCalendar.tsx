@@ -200,7 +200,7 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
           </div>
         ))}
       </div>
-      <CalendarList filters={''} startDate={eventListDate} endDate={eventListDate} />
+      <CalendarList filters={props.queryString} startDate={eventListDate} endDate={eventListDate} />
     </>
   );
 };

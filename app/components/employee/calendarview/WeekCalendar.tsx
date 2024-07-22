@@ -8,6 +8,7 @@ import { baseUrl, headers } from "@/constants";
 import LeftArrow from "/public/leftArrow.svg";
 import RightArrow from "/public/rightArrow.svg";
 import Loading from "../../UI/Loading";
+import Link from "next/link";
 
 /*
 const eventsData = [
@@ -275,7 +276,10 @@ const WeekCalendar = (props: WeekCalendarProps) => {
             }}
           >
             <div className={styles.event_date}>{event.dateRange}</div>
-            <div className={styles.event_title} data-name={event.eventName} >{event.eventName}</div>
+            <div className={styles.event_title} data-name={event.eventName} >
+              <Link href={`/internal/event/${event.id}`} target="_blank" >{event.eventName}</Link>
+              {/* {event.eventName} */}
+            </div>
           </div>
         );
       } else {
@@ -396,6 +400,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
               let card_color = getRandomColor();
 
               tmpData2[event.id] = {
+                id: event.id,
                 eventName: event.name,
                 dateRange: formatDate(event.startDate) + ' - ' + formatDate(event.endDate),
                 startDayNo: e_startDayNo,
@@ -487,7 +492,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
         >
           EVENTS LIST
         </button>
-        <CalendarList filters={''} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
+        <CalendarList filters={props.queryString} startDate={eventListDate} endDate={weekDates[6].isoDate.substring(0, 10)} />
       </div>
     </>
   );

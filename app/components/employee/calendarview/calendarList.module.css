@@ -64,8 +64,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
-    height: 100%;
-    padding-bottom: 80px;
+    height: calc(100% - 100px);
+    padding-bottom: 60px;
     overflow-y: scroll;
 }
 
@@ -167,4 +167,17 @@
 .catCount{
     color: var(--primary-color);
     font-weight: var(--font-weight-medium);
+}
+
+.loadMoreBtn {
+    cursor: pointer;
+    color: white;
+    font-size: var(--font-size-small);
+    font-family: inherit;
+    background-color: var(--primary-color);
+    padding: 8px 15px;
+    border-radius: var(--border-radius-sm);
+    border: none;
+    outline: none;
+    font-weight: 500;
 }
