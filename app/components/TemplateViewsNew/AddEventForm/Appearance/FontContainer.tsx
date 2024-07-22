@@ -1,0 +1,41 @@
+import React from 'react'
+import styles from './fonts.style.module.css'
+
+const FontContainer = () => {
+    const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
+
+    return (
+        <div className={styles.body}>
+            <div className={styles.header}>
+                <FontIcon />
+                <span>FONT</span>
+            </div>
+            <div className={styles.editContainer}>
+                <div className={styles.bgContainer}><FontIcon2 /> <span>Font Family</span></div>
+                <div className={styles.fontContainer}>
+                    {fontsList.map((font,key)=>(
+                        <div key={key} className={styles.font}>{font}</div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default FontContainer
+
+function FontIcon() {
+    return (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.5 3H9V9H9.5V9.5H7.5V9H8V7.5H6L5.25 9H6V9.5H4V9H4.5L7.5 3ZM8 3.5L6.25 7H8V3.5ZM1.5 0.5H4C4.555 0.5 5 0.945 5 1.5V7H3.5V4.5H2V7H0.5V1.5C0.5 0.945 0.945 0.5 1.5 0.5ZM2 1.5V3.5H3.5V1.5H2Z" fill="black" />
+        </svg>
+    )
+}
+
+function FontIcon2() {
+    return (
+        <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.5 5.25H5V6.75H3.5V11.25H2V6.75H0.5V5.25ZM11 2.25H8.0498V11.25H6.4502V2.25H3.5V0.75H11V2.25Z" fill="#7D7D7D" />
+        </svg>
+    )
+}

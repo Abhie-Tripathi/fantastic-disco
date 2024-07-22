@@ -4,8 +4,11 @@
 .header{
     display: flex;
     align-items: center;
-    font-size: 10px;
     gap: 5px;
+
+}
+.header span{
+    font-size: 10px;
     color: black;
 }
 .editContainer{

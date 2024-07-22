@@ -3,6 +3,7 @@ import styles from './apperance.style.module.css'
 import Image from 'next/image'
 import ApperanceImage from '/public/appearance.png'
 import ColorContainer from './ColorContainer'
+import FontContainer from './FontContainer'
 
 const Appearance = () => {
     return (
@@ -15,6 +16,11 @@ const Appearance = () => {
             <div className={styles.colorContainer}>
                 <ColorContainer/>
             </div>
+            <div className={styles.line}></div>
+            <div className={styles.fontContainer}>
+                <FontContainer/>
+            </div>
+            <div className={styles.line}></div>
         </div>
     )
 }
