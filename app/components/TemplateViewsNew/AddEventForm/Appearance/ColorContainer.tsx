@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
 import styles from './colors.style.module.css'
+import { SketchPicker } from 'react-color';
 
 const ColorContainer = () => {
 
     const [color, setColor] = useState<string>("#000000")
+    const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
+    const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
 
+    const handleChange = (color: any) => {
+        setColor(color.hex)
+    }
 
     return (
         <div className={styles.body}>
@@ -15,7 +21,22 @@ const ColorContainer = () => {
             <div className={styles.editContainer}>
                 <div className={styles.bgContainer}><PaintIcon /> <span>Background Fill</span></div>
                 <div className={styles.colorPickerContainer}>
-                    
+                    <span>{color}</span>
+                    <div className={styles.colorPickerOuter} style={{ borderColor: color }} onClick={()=>setDisplayColorPicker(!displayColorPicker)}>
+                        <div className={styles.colorPickerInner} style={{ backgroundColor: color }}>
+                            {displayColorPicker && <div className={styles.sketchPicker}>
+                                <SketchPicker
+                                color={color}
+                                onChange={handleChange}
+                                presetColors={extractedColors}
+                            /></div>}
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.extractedColors}>
+                    {extractedColors.map((color,key)=>(
+                        <div className={styles.extractedColor} style={{backgroundColor : color}} key={key}></div>
+                    ))}
                 </div>
             </div>
         </div>
