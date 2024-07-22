@@ -74,12 +74,15 @@
   display: flex;
   height: 250px;
   overflow-y: auto;
+  border-radius: var(--border-radius-sm);
   overflow-x: hidden;
   gap: var(--spacing-xs);
   flex-direction: column;
   bottom: 100%;
+  background-color: var(--primary-foreground);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-large);
   /* padding: 10px; */
-  background-color: #1a1a1a;
 }
 /* .textArea::-webkit-inner-spin-button,
 .textArea::-webkit-outer-spin-button {
@@ -107,7 +110,7 @@
 }
 
 .employee:hover {
-  background-color: #303030;
+  background-color: var(--background-color-hover);
 }
 
 .addNotes input {
@@ -193,7 +196,7 @@
   /* color: white; */
 }
 .option:hover {
-  background-color: rgb(103 80 164);
+  background-color: var(--background-color-hover);
 
 }
 .overlay {

@@ -52,6 +52,10 @@
   background-color: var(--primary-color);
 }
 
+.fillReverse {
+  right: 0;
+}
+
 .thumb {
   height: 20px;
   width: 20px;
