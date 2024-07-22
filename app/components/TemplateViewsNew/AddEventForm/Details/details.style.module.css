@@ -1,0 +1,31 @@
+.body{
+    background-color: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: flex-end;
+}
+.btnContainer button{
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+.btnContainer .closeBtn{
+    background-color: #8F8F8F1F;
+    color: black;
+}
+.btnContainer .addBtn{
+    color: white;
+    background-color: #6750a4;
+}

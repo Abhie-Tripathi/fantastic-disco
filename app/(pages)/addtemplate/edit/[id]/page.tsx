@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import PreviewWindow from '@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow'
 import EditScreen from '@/app/components/TemplateViewsNew/EditScreen/EditScreen'
+import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -26,14 +27,16 @@ const Page = () => {
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
 
+  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
+
   // Selected Template will be fetched through Database, Right now we can pass as static
 
   return (
 
-    <div className={styles.body}>
+    <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
       <div className={styles.editContainer}>
         <EditScreen
-          selectedBtn = {selectedBtn}
+          selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}
           cardStyle={cardStyle}
           setCardStyle={setCardStyle}
@@ -45,6 +48,7 @@ const Page = () => {
           buttonSettings={buttonSettings}
           cardBgColor={cardBgColor}
           cardBorderRadius={cardBorderRadius}
+          setIsAddEventModalOpen={setIsAddEventModalOpen}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -60,6 +64,10 @@ const Page = () => {
           buttonSettings={buttonSettings}
         />
       </div>
+      {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
+      {isAddEventModalOpen && <div className={styles.addEventModal}>
+        <AddEvent setIsAddEventModalOpen={setIsAddEventModalOpen}/>
+      </div>}
     </div>
   )
 }

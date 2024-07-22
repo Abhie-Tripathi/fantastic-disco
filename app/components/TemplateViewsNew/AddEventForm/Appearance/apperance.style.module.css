@@ -1,0 +1,18 @@
+.body{
+    background-color: #FAFAFA;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+.appearanceHeader{
+    display: flex;
+    gap: 11px;
+    align-items: center;
+    padding: 19px 14px;
+}
+.colorContainer{
+    padding: 14px;
+}

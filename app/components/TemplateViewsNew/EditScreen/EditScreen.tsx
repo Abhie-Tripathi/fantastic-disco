@@ -41,9 +41,10 @@ interface EditScreenProps {
     setCardStyle : React.Dispatch<React.SetStateAction<string>>;
     setSelectedBtn : (value : "primary" | "secondary") =>void
     selectedBtn : "primary" | "secondary"
+    setIsAddEventModalOpen : (value : boolean)=>void
 }
 
-const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle , setSelectedBtn,selectedBtn}: EditScreenProps) => {
+const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle , setSelectedBtn,selectedBtn,setIsAddEventModalOpen}: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     return (
@@ -54,7 +55,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                 <button onClick={() => setSelectedNavItem("code")} className={selectedNavItem === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedNavItem === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn ={setSelectedBtn} cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedNavItem === "events" ? <FilterEvents /> : <CodeWindow/>}
+                {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn ={setSelectedBtn} cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedNavItem === "events" ? <FilterEvents setIsAddEventModalOpen={setIsAddEventModalOpen}/> : <CodeWindow/>}
             </div>
         </div>
     )

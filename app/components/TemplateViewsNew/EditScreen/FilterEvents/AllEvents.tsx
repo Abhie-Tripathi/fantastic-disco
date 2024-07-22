@@ -10,15 +10,16 @@ interface AllEventsType {
 
 interface Props {
     allEvents: AllEventsType[]
+    setIsAddEventModalOpen : (value : boolean)=>void
 }
 
-const AllEvents = ({ allEvents }: Props) => {
+const AllEvents = ({ allEvents,setIsAddEventModalOpen }: Props) => {
 
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>All Events <span>{allEvents.length}</span></div>
-                <button>Add Event</button>
+                <button onClick={()=>setIsAddEventModalOpen(true)}>Add Event</button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsHeading}>

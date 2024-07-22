@@ -9,7 +9,11 @@ interface AllEventsType {
     endDate: string;
 }
 
-const FilterEvents = () => {
+interface Props{
+    setIsAddEventModalOpen : (value : boolean)=>void
+}
+
+const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
 
     // We will be having the events data here and will be sending them as props to all events
 
@@ -28,7 +32,7 @@ const FilterEvents = () => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents allEvents={allEvents} /> : <></>}
+                {selectedBtn === "allevents" ? <AllEvents setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents} /> : <></>}
             </div>
         </div>
     )
