@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import { Calendar, Globe, ListOrdered, ListUnordered } from "geist-icons";
+import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 const CalendarContainer = lazy(
@@ -114,9 +114,9 @@ const Page = ({ params }: { params: any }) => {
     fetchTrackerDetail();
   }, [trackerId]);
 
-  useEffect(()=>{
+  useEffect(() => {
     createQueryString();
-  },[trackerDetail])
+  }, [trackerDetail]);
 
   const lineOptions = {
     plugins: {
@@ -416,15 +416,19 @@ const Page = ({ params }: { params: any }) => {
             </div>
             <div className={styles.eventStatusRight}>
               <ListUnordered
-                color={view === "list" ? "#6750a4" : "#000000"}
+                color={
+                  view === "list" ? "#6750a4" : "var(--primary-text-color)"
+                }
                 onClick={() => setView("list")}
               />
               <Globe
-                color={view === "map" ? "#6750a4" : "#000000"}
+                color={view === "map" ? "#6750a4" : "var(--primary-text-color)"}
                 onClick={() => setView("map")}
               />
               <Calendar
-                color={view === "calendar" ? "#6750a4" : "#000000"}
+                color={
+                  view === "calendar" ? "#6750a4" : "var(--primary-text-color)"
+                }
                 onClick={() => setView("calendar")}
               />
             </div>
