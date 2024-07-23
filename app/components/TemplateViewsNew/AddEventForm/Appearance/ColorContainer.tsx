@@ -18,6 +18,10 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
         const rgbaColor = hexToRgba(color.hex, 0.1);
         setPageBgColor(rgbaColor);
     }
+    const handleColorClick = (color : any)=>{
+        const rgbaColor = hexToRgba(color, 0.1);
+        setPageBgColor(rgbaColor);
+    }
 
     const hexToRgba = (hex: string, opacity: number) => {
         let r = 0, g = 0, b = 0;
@@ -60,7 +64,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                 </div>
                 <div className={styles.extractedColors}>
                     {extractedColors.map((color, key) => (
-                        <div className={styles.extractedColor} style={{ backgroundColor: color }} key={key}></div>
+                        <div className={styles.extractedColor} onClick={()=>handleColorClick(color)} style={{ backgroundColor: color }} key={key}></div>
                     ))}
                 </div>
             </div>
