@@ -68,7 +68,7 @@
 }
 .configAccess{
   display: flex;
-  gap:var(--spacing-xs);
+  /* gap:var(--spacing-xs); */
   width: 25%;
   justify-content: flex-end;
 }
