@@ -1,0 +1,215 @@
+.body {
+    display: flex;
+    align-content: center;
+    /* align-items: center; */
+    position: relative;
+    gap: 30px;
+}
+
+.headingContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 30%;
+}
+
+.heading {
+    font-size: 14px;
+    color: #171717;
+}
+
+.subheading {
+    font-size: 10px;
+    color: #A8A8A8;
+}
+
+.editContainer {
+    width: 70%;
+}
+
+.textPreviewContainer {
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    padding: 14px 0px 14px 0px;
+}
+
+.btnOptions {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-top: 21px;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox {
+    display: none;
+}
+
+.customCheckbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #EFEFEF;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkboxContainer .checkboxLabel {
+    margin-left: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.customCheckbox::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+
+.checkbox:checked+.customCheckbox {
+    border-color: #6750a4;
+}
+
+.checkbox:checked+.customCheckbox::before {
+    background-color: #6750a4;
+}
+
+.line {
+    margin-top: 12px;
+    margin-bottom: 19px;
+    border-top: 1px solid #F5F5F5;
+}
+
+.customizeContainer{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.fontFamilySizeContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 5px;
+}
+.fontColorWeightContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 10px;
+}
+.fontColorContainer{
+    position: relative;
+    z-index: 5;
+}
+.fontStyleContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+}
+
+.fontStyleContainer .heading {
+    font-size: 11px;
+    position: relative;
+}
+.fontFamilyContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+}
+
+.fontFamilyContainer .heading {
+    font-size: 11px;
+}
+
+.dropDownContainer {
+    background-color: #F2F2F2;
+    width: 110px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.dropDownContainer .display {
+    font-size: 10px;
+}
+
+.dropDownContainer .dropDown {
+    position: absolute;
+    background-color: white;
+    border-radius: 3px;
+    max-height: 104px;
+    overflow-y: auto;
+    width: 100%;
+    top: 24px;
+    padding: 5px;
+    left: 0;
+    filter: drop-shadow(1px 1px 2px rgb(197, 197, 197));
+}
+
+.dropDownContainer .dropDown .dropdownFont {
+    padding: 3px 10px;
+    font-size: 10px;
+    line-height: 17px;
+}
+
+.dropDownContainer .dropDown .dropdownFont:hover {
+    background-color: #F2F2F2;
+    border-radius: 2.5px;
+}
+
+.fontSizeContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fontSizeContainer .heading {
+    font-size: 11px;
+}
+
+.fontSizeContainer .sizeContainer {
+    background-color: #F2F2F2;
+    width: 110px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+}
+
+.sizeContainer .display {
+    font-size: 10px;
+}
+
+.arrows {
+    display: flex;
+    flex-direction: column;
+}
+
+.arrows div {
+    cursor: pointer;
+}
+

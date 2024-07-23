@@ -1,0 +1,48 @@
+.body{
+    background-color: #F9F9FF;
+    padding: 12px 36px 17px 23px;
+}
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.heading{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.heading span{
+    font-size: 14px;
+}
+.btn{
+    cursor: pointer;
+}
+.accordian{
+    margin-top: 24px;
+}
+.brandColorContainer{
+    margin-top: 38px;
+    margin-bottom: 9px;
+}
+.btnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.kitBtn{
+    font-size: 12px;
+    line-height: 18px;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+.deactiveBtn{
+    background-color: #8F8F8F1F;
+    color: black;
+    cursor:not-allowed;
+}
+.activeBtn{
+    cursor:not-allowed;
+    color: white;
+    background-color: #6750a4;
+}

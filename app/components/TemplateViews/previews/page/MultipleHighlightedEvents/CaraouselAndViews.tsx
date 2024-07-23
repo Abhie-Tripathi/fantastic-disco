@@ -5,18 +5,32 @@ import styles from './style.module.css'
 import GridView from '../MultipleEvents/GridView';
 import ListAndGridView from '../MultipleEvents/ListAndGridView';
 
-interface Props {
-  type: string;
-  selectedCard?: string;
-  isFullScreen : boolean;
+interface FontSettings {
+  fontFamily: string;
+  fontSize: number;
+  fontColor: string;
+  fontWeight: string;
 }
 
-const CaraouselAndViews = ({ type, selectedCard, isFullScreen }: Props) => {
+interface Props {
+  type: string;
+  isFullScreen : boolean;
+  cardBorderRadius?: number;
+  cardBgColor?: string;
+  selectedCard?: string;
+  fontSettings?: {
+      heading: FontSettings;
+      subheading: FontSettings;
+      body: FontSettings;
+  };
+}
+
+const CaraouselAndViews = ({ type, selectedCard, isFullScreen,cardBgColor, cardBorderRadius, fontSettings }: Props) => {
   return (
     <div className={styles.body}>
-      <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen}/>
-      {type === "list" ? <ListView selectedCard={selectedCard} /> :
-        type === "grid" ? <GridView selectedCard={selectedCard}/> : <ListAndGridView />}
+    <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> 
+      {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> :
+        type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/> : <ListAndGridView />}
     </div>
   )
 }

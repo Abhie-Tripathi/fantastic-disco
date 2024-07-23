@@ -4,8 +4,6 @@
     display: flex;
     gap: 16px;
     padding: 12px;
-    background-color: white;
-    border-radius: 8px;
 }
 .details{
     display: flex;
@@ -17,11 +15,6 @@
     height: 100%;
     border-radius: 15px;
     filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
-}
-.eventName {
-    font-size: 30px;
-    font-weight: 700;
-    color: black;
 }
 .location_dateContainer {
     margin-top: 8px;
@@ -35,29 +28,11 @@
     gap: 8px;
 }
 
-.location {
-    color: #6E6F89;
-    /* font-size: 12px; */
-    font-weight: 500;
-}
-
 .dateContainer {
     margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.date {
-    /* font-size: 10px; */
-    color: #6E6F89;
-    font-weight: 400;
-}
-.description{
-    /* font-size: 10px; */
-    color: #6E6F89;
-    font-weight: 500;
-    line-height: 20px;
 }
 .type_peopleContainer {
     display: flex;
@@ -139,8 +114,5 @@
 }
 .btn{
     margin-top: 20px;
-    background-color: #6750A4;
-    border-radius: 3px;
-    color: white;
     padding: 10px 20px;
 }

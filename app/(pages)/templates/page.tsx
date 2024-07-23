@@ -152,7 +152,7 @@ const Page = () => {
           </div>
         </div>
         <div className={`${styles.draftsModal} ${draftModal ? styles.open : ''}`}>
-          <DraftWidgets setYourWidgetModal={setDraftModal} />
+          {/* <DraftWidgets setYourWidgetModal={setDraftModal} /> */}
         </div>
       </div>
       {infoModal && <div className={styles.infoModal}>

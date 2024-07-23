@@ -1,0 +1,94 @@
+.body{
+    border-bottom-right-radius: 10px;
+    height: 100%;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+.detailsContainer{
+    padding: 70px 120px 30px 70px;
+    /* border: 1px solid red; */
+    display: flex;
+    gap: 30px;
+    overflow-y: auto;
+    height: 89%;
+}
+.rightSection{
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.btnContainer{
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    background-color:white;
+    justify-content: flex-end;
+}
+.btnContainer button{
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+.btnContainer .closeBtn{
+    background-color: #8F8F8F1F;
+    color: black;
+}
+.btnContainer .addBtn{
+    color: white;
+    background-color: #6750a4;
+}
+
+.posterContainer{
+    position: relative;
+}
+.posterContainer .posterIcons{
+    position: absolute;
+    right: 19px;
+    bottom: 12px;
+    display: flex;
+    gap: 5px;
+    align-items: center; 
+}
+.posterContainer .posterIcons div{
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.shareContainer{
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 18px 11px;
+}
+.shareContainer .heading{
+    margin-bottom: 11px;
+    color: #A1A1A1;
+    font-size: 14px;
+    font-weight: 500;
+}
+.eventName{
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    height: 100px;
+    /* resize: none; */
+    color: #1a1a1a;
+    font-weight: bolder;
+}
+.eventName:focus{
+    outline: none;
+}

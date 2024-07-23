@@ -93,15 +93,9 @@ const Page = () => {
 
   return (
     <div className={styles.layout}>
-      <div className={styles.navbar}>
+      {/* <div className={styles.navbar}>
         <div className={styles.navLeft}>
           <div className={styles.heading}>Edit Widget : </div>
-          {/* <div
-            className={`${styles.navItem} ${activeNavItem === "Designs" ? styles.active : (activeNavItem !== "Designs" ? styles.completed : "")}`}
-            onClick={() => handleNavItemClick("Designs")}
-          >
-            Designs
-          </div> */}
           <div
             className={`${styles.navItem} ${activeNavItem === "BrandKit" ? styles.active : ""}`}
             onClick={() => handleNavItemClick("BrandKit")}
@@ -205,8 +199,7 @@ const Page = () => {
         <button className={styles.submitBtn} onClick={handleStep} type="button">Save</button>
       </div>
       <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setYourWidgetModal} />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,0 +1,40 @@
+.body{
+    border: 1px solid #E0E1E4;
+    border-radius: 10px;
+}
+.line{
+    border-top: 1px solid #F5F5F5;
+}
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 30px 14px 23px;
+}
+.headerContainer div{
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+}
+
+.headerContainer button{
+    color: white;
+    background-color: #6750a4;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    padding: 5px 8px;
+}
+.cardStylesContainer{
+    padding: 15px 21px 20px 23px;
+}
+.cardCustomizationContainer{
+    padding: 20px 21px 20px 23px;
+}
+.buttonCustomizationContainer{
+    padding: 20px 21px 20px 23px;
+}
+.fontCustomizationContainer{
+    padding: 20px 21px 20px 23px;
+}

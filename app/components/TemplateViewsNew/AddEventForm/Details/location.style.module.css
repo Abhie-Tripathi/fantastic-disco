@@ -1,0 +1,27 @@
+.body{
+    padding: 9px 19px;
+    width: 100%;
+    background-color: #ffffff55;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.locationContainer{
+    display: flex;
+    gap: 6px;
+}
+.eventLocation{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.eventLocation .eventLocationOne{
+    font-weight: 500;
+    color: #7D7D7D;
+    font-size: 12px;
+}
+.eventLocation .eventLocationTwo{
+    color: #7D7D7D;
+    font-size: 10px;
+    line-height: 20px;
+}
