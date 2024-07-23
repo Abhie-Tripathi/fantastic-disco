@@ -17,10 +17,11 @@ type User = {
 
 type TrackerUserProps = {
   setSendInvite: (value: boolean) => void;
+  fetchAccess: ()=>void;
   userData: User[];
 };
 
-const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) => {
+const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess }) => {
   const path = usePathname().split('/');
   const [accessId, setAccessId] = useState<string | null>(null);
   const [drop, setDrop] = useState(false);
@@ -51,6 +52,8 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
   };
 
   const changeAccess = async (accessEntry: string, access: string, accessLevel:string) => {
+    console.log(accessEntry);
+    
     if(accessLevel!==access){
     const url = `${baseUrl}/access/${accessEntry}`;
     const formData = {
@@ -71,9 +74,10 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
       } else {
         console.log('Data fetched:', data);
         showToast("success","Access updated successfully")
-        setTimeout(()=>{
-          window.location.reload();
-        },2000)
+        fetchAccess();
+        // setTimeout(()=>{
+        //   window.location.reload();
+        // },2000)
         
       }
     } catch (err) {
@@ -112,10 +116,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
       } else {
         console.log('Data fetched:', data);
         showToast("success", "Access removed successfully")
-        setTimeout(()=>{
-          window.location.reload();
-        }, 2000)
-        
+        fetchAccess();
       }
     } catch (err) {
       console.error('Fetch failed:', err);
@@ -126,7 +127,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
     <div className={styles.container}>
       <div className={styles.containerFirst}>
         <div className={styles.owner}>Tracker Users</div>
-        <div className={styles.add} onClick={() => setSendInvite(true)}>Add Users</div>
+        {/* <div className={styles.add} onClick={() => setSendInvite(true)}>Add Users</div> */}
       </div>
       <div className={styles.bar}></div>
       <div className={styles.profiles}>
@@ -143,7 +144,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData }) =>
             </div>
             <div
               className={styles.add}
-              ref={dropdownRef}
+              // ref={dropdownRef}
               style={{ textDecoration: "none", position: "relative", cursor: "pointer" }}
               onClick={() => toggleDropdown(item.id)}
             >

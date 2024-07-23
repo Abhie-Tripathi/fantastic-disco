@@ -8,6 +8,24 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: an
     const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
     return (
         <div className={styles.container}>
+             <div className={styles.formatFreq1}>
+                <div className={styles.format}>
+                    <div className={styles.formatHead}>Keywords</div>
+                    <div className={styles.allCat1}>
+                        {keywords?.map((item: string, id: number) => (
+                            item?.charAt(0) !== '-' ? (
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
+                                <span className={styles.tooltipText}>Include Keyword</span>
+                                </div>
+                            ) : (
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.substring(1)}
+                                <span className={styles.tooltipText}>Exclude Keyword</span>
+                                </div>
+                            )
+                        ))}
+                    </div>
+                </div>
+            </div>
             <div className={styles.formatFreq}>
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Format</div>
@@ -83,24 +101,7 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: an
                     </div>
                 </div>
             </div>
-            <div className={styles.formatFreq1}>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Keywords</div>
-                    <div className={styles.allCat1}>
-                        {keywords?.map((item: string, id: number) => (
-                            item?.charAt(0) !== '-' ? (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
-                                <span className={styles.tooltipText}>Include Keyword</span>
-                                </div>
-                            ) : (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.substring(1)}
-                                <span className={styles.tooltipText}>Exclude Keyword</span>
-                                </div>
-                            )
-                        ))}
-                    </div>
-                </div>
-            </div>
+           
         </div>
     )
 }
