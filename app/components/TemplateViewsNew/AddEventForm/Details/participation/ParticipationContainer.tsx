@@ -6,14 +6,14 @@ import ParticipationIcon from '/public/ParticipationIcon.svg'
 import ParticipationDropdown from './ParticipationDropdown'
 
 const ParticipationContainer = () => {
-  const [dropdown, setDropdown] = useState<boolean>(true)
+  const [dropdown, setDropdown] = useState<boolean>(false)
   return (
     <div className={styles.body}>
       <div className={styles.participationContainer}>
         <Image src={ParticipationIcon} alt='svg' />
         <span>Mode of Participation</span>
       </div>
-      <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} />
+      <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn}/>
       {dropdown && <div className={styles.dropdown}>
         <ParticipationDropdown />
       </div>}

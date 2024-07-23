@@ -4,6 +4,7 @@ import styles from './dropdown.style.module.css'
 const ParticipationDropdown = () => {
 
     const [selectedType, setSelectedType] = useState<string>("Attendee")
+    const [inuputMessage, setInputMessage] = useState<string>("We're excited to announce that we will be attending this event as an Attendee")
 
     return (
         <div className={styles.body}>
@@ -48,6 +49,10 @@ const ParticipationDropdown = () => {
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Organiser</span>
                 </label>
+            </div>
+            <div className={styles.messageContainer}>
+                <div className={styles.heading}>Customize your message</div>
+                <textarea className={styles.textarea}>{inuputMessage}</textarea>
             </div>
         </div>
     )

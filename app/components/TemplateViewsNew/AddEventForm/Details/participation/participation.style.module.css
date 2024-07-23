@@ -15,9 +15,13 @@
     color: #7D7D7D;
     font-weight: 500;
 }
+.editBtn{
+    cursor: pointer;
+}
 .dropdown{
     position: absolute;
     width: 100%;
     left: 0;
     top: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(207, 207, 207));
 }
