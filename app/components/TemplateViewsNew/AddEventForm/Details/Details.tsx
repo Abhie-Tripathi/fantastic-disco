@@ -5,11 +5,11 @@ import Placeholder from '/public/placeholder.png'
 import AiIcon from '/public/AiIcon.svg'
 import UploadIcon from '/public/UploadImageIcon.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
-import DateTimeContainer from './DateTimeContainer'
-import LocationContainer from './LocationContainer'
-import ParticipationContainer from './ParticipationContainer'
+import DateTimeContainer from './dateandtime/DateTimeContainer'
+import LocationContainer from './location/LocationContainer'
+import ParticipationContainer from './participation/ParticipationContainer'
 import RegistrationForm from './RegistrationForm'
-import DescriptionContainer from './DescriptionContainer'
+import DescriptionContainer from './description/DescriptionContainer'
 
 interface Props {
   setIsAddEventModalOpen: (value: boolean) => void

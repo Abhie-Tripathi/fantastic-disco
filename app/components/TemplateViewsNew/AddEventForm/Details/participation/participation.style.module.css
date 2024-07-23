@@ -5,6 +5,7 @@
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
+    position: relative;
 }
 .participationContainer{
     display: flex;
@@ -13,4 +14,10 @@
     font-size: 12px;
     color: #7D7D7D;
     font-weight: 500;
+}
+.dropdown{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 100%;
 }
