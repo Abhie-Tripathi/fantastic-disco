@@ -127,7 +127,7 @@ const Index = () => {
                   "Configuration"
                 )
               }}>
-              <div style={{ padding: "10px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
+              <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
                 <Image src={Settings} alt="setting" />
                 <span className={styles.tooltipText}>Configurations</span>
               </div>
@@ -142,7 +142,7 @@ const Index = () => {
                 )
               }}
             >
-              <div style={{ padding: "10px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
+              <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
                 <Image src={Manage} alt="setting" />
                 <span className={styles.tooltipText}>Manage Access</span>
               </div>

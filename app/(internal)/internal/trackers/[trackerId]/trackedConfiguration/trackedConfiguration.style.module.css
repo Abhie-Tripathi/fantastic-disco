@@ -171,14 +171,18 @@
     color:var(--primary-color);
 }
 .allInputBox{
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
-    border: 1px solid var(--border-color);
+    gap: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* border: 1px solid var(--border-color); */
 }
 .singleUrl{
     display: flex;
     gap:5px;
-    border-bottom: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
     align-items: center;
     padding: 10px;
 }
@@ -189,9 +193,9 @@
     gap: 10px;
     /* border-bottom: 1px solid var(--border-color); */
   }
-  .allInputBox > .singleUrl:last-child{
+  /* .allInputBox > .singleUrl:last-child{
     border-bottom:0px;
-  }
+  } */
   .urlDiv{
     padding: 10px;
     display: flex;
@@ -203,6 +207,7 @@
   .customContent{
     padding-top: 10px;
     display: flex;
+    color: #777777;
     flex-direction: column;
     gap: 10px;
     font-weight: var(--font-weight-regular);

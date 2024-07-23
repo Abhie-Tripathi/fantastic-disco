@@ -11,6 +11,7 @@ interface CalendarContainerProps {
 
 const CalendarContainer = (props: CalendarContainerProps) => {
     const {theme} = useTheme()
+    console.log(props.queryString)
     const [selectedCalendar, setSelectedCalendar] = useState("month")
     const handleCalendar = (value:string) => {
         setSelectedCalendar(value)
