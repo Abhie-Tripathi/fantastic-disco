@@ -19,7 +19,7 @@ const FontContainer = ({ eventFont, setEventFont }: Props) => {
                 <div className={styles.bgContainer}><FontIcon2 /> <span>Font Family</span></div>
                 <div className={styles.fontContainer}>
                     {fontsList.map((font, key) => (
-                        <div key={key} onClick={() => setEventFont(font)} className={`${styles.font} ${font === eventFont ? styles.activeFont : ""}`}>{font}</div>
+                        <div key={key} onClick={() => setEventFont(font)} className={`${styles.font} ${font === eventFont ? styles.activeFont : ""}`}>{font === eventFont && <TickIcon/>}{font}</div>
                     ))}
                 </div>
             </div>
@@ -47,6 +47,6 @@ function FontIcon2() {
 
 function TickIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
     )
 }
