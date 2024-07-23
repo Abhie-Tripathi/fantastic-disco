@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './details.style.module.css'
 import Image from 'next/image'
-import Placeholder from '/public/placeholder3.png'
+import Placeholder from '/public/placeholder.png'
 import AiIcon from '/public/AiIcon.svg'
 import UploadIcon from '/public/UploadImageIcon.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
@@ -13,8 +13,22 @@ import DescriptionContainer from './DescriptionContainer'
 
 interface Props {
   setIsAddEventModalOpen: (value: boolean) => void
+  pageBgColor : string;
+  eventFont : string;
 }
-const Details = ({ setIsAddEventModalOpen }: Props) => {
+const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
+
+  const isColorLight = (color:any) => {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    // Calculate luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.5;
+  };
+
+
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -22,10 +36,10 @@ const Details = ({ setIsAddEventModalOpen }: Props) => {
         <button className={styles.addBtn}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>
-      <div className={styles.detailsContainer}>
+      <div className={styles.detailsContainer} style={{backgroundColor : pageBgColor}}>
         <div className={styles.leftSection}>
           <div className={styles.posterContainer}>
-            <Image src={Placeholder} alt='Poster' width={296} height={290} />
+            <Image src={Placeholder} alt='Poster' width={296} height={290} style={{borderRadius :20}}/>
             <div className={styles.posterIcons}>
               <div>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
@@ -41,7 +55,7 @@ const Details = ({ setIsAddEventModalOpen }: Props) => {
           </div>
         </div>
         <div className={styles.rightSection}>
-          <textarea className={styles.eventName} placeholder='Event Name'></textarea>
+          <textarea className={styles.eventName} placeholder='Event Name' style={{fontFamily : eventFont}}></textarea>
           <div className={styles.dateTimeContainer}><DateTimeContainer/></div>
           <div className={styles.locationContainer}><LocationContainer/></div>
           <div className={styles.participationContainer}><ParticipationContainer/></div>

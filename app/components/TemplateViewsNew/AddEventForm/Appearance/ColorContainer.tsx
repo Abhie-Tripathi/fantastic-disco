@@ -2,40 +2,65 @@ import React, { useState } from 'react'
 import styles from './colors.style.module.css'
 import { SketchPicker } from 'react-color';
 
-const ColorContainer = () => {
+interface Props {
+    pageBgColor: string;
+    setPageBgColor: (value: string) => void
+}
 
-    const [color, setColor] = useState<string>("#000000")
+const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
+
+    // const [color, setColor] = useState<string>("#000000")
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
 
     const handleChange = (color: any) => {
-        setColor(color.hex)
+        // Convert hex to rgba with 10% opacity
+        const rgbaColor = hexToRgba(color.hex, 0.1);
+        setPageBgColor(rgbaColor);
     }
 
+    const hexToRgba = (hex: string, opacity: number) => {
+        let r = 0, g = 0, b = 0;
+
+        // 3 digits
+        if (hex.length === 4) {
+            r = parseInt(hex[1] + hex[1], 16);
+            g = parseInt(hex[2] + hex[2], 16);
+            b = parseInt(hex[3] + hex[3], 16);
+
+            // 6 digits
+        } else if (hex.length === 7) {
+            r = parseInt(hex[1] + hex[2], 16);
+            g = parseInt(hex[3] + hex[4], 16);
+            b = parseInt(hex[5] + hex[6], 16);
+        }
+
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
     return (
         <div className={styles.body}>
             <div className={styles.header}>
                 <ColorIcon />
                 <span>COLOURS</span>
             </div>
-            <div className={styles.editContainer}>
+            <div className={styles.editContainer} >
                 <div className={styles.bgContainer}><PaintIcon /> <span>Background Fill</span></div>
                 <div className={styles.colorPickerContainer}>
-                    <span>{color}</span>
-                    <div className={styles.colorPickerOuter} style={{ borderColor: color }} onClick={()=>setDisplayColorPicker(!displayColorPicker)}>
-                        <div className={styles.colorPickerInner} style={{ backgroundColor: color }}>
-                            {displayColorPicker && <div className={styles.sketchPicker}>
-                                <SketchPicker
-                                color={color}
-                                onChange={handleChange}
-                                presetColors={extractedColors}
-                            /></div>}
+                    <span>{pageBgColor}</span>
+                    <div className={styles.colorPickerOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                        <div className={styles.colorPickerInner} style={{ backgroundColor: pageBgColor }}>
                         </div>
                     </div>
+                    {displayColorPicker && <div className={styles.sketchPicker}>
+                        <SketchPicker
+                            color={pageBgColor}
+                            onChange={handleChange}
+                            presetColors={extractedColors}
+                        /></div>}
                 </div>
                 <div className={styles.extractedColors}>
-                    {extractedColors.map((color,key)=>(
-                        <div className={styles.extractedColor} style={{backgroundColor : color}} key={key}></div>
+                    {extractedColors.map((color, key) => (
+                        <div className={styles.extractedColor} style={{ backgroundColor: color }} key={key}></div>
                     ))}
                 </div>
             </div>

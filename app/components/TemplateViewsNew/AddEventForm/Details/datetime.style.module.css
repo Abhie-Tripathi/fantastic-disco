@@ -5,7 +5,7 @@
 
 .dateAndTimeContainer {
   padding: 11px 10px 11px 35px;
-  background-color: #F9F9F9;
+  background-color: #ffffff53;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -74,7 +74,7 @@
 
 .dateBoxes div {
   padding: 2px 15px;
-  background-color: white;
+  background-color: #ffffff55;
   border-radius: 4px;
 }
 
@@ -86,12 +86,12 @@
 
 .timeBoxes div {
   padding: 2px 15px;
-  background-color: white;
+  background-color: #ffffff55;
   border-radius: 4px;
 }
 
 .timeZonesContainer {
-  background-color: #F9F9F9;
+  background-color: #f9f9f94b;
   border-radius: 10px;
   padding: 10px;
   width: 25%;

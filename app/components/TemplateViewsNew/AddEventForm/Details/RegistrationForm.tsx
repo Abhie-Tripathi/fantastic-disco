@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './regsitration.style.module.css'
+import styles from './registration.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 

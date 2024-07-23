@@ -1,7 +1,12 @@
 import React from 'react'
 import styles from './fonts.style.module.css'
 
-const FontContainer = () => {
+interface Props {
+    eventFont: string;
+    setEventFont: (value: string) => void
+}
+
+const FontContainer = ({ eventFont, setEventFont }: Props) => {
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
     return (
@@ -13,8 +18,8 @@ const FontContainer = () => {
             <div className={styles.editContainer}>
                 <div className={styles.bgContainer}><FontIcon2 /> <span>Font Family</span></div>
                 <div className={styles.fontContainer}>
-                    {fontsList.map((font,key)=>(
-                        <div key={key} className={styles.font}>{font}</div>
+                    {fontsList.map((font, key) => (
+                        <div key={key} onClick={() => setEventFont(font)} className={`${styles.font} ${font === eventFont ? styles.activeFont : ""}`}>{font}</div>
                     ))}
                 </div>
             </div>
@@ -37,5 +42,11 @@ function FontIcon2() {
         <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.5 5.25H5V6.75H3.5V11.25H2V6.75H0.5V5.25ZM11 2.25H8.0498V11.25H6.4502V2.25H3.5V0.75H11V2.25Z" fill="#7D7D7D" />
         </svg>
+    )
+}
+
+function TickIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
     )
 }

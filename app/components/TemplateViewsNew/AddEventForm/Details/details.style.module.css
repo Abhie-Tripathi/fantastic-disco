@@ -1,6 +1,4 @@
 .body{
-    background-color: white;
-    border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     height: 100%;
 }
@@ -24,10 +22,12 @@
     gap: 16px;
 }
 .btnContainer{
+    border-top-right-radius: 10px;
     display: flex;
     align-items: center;
     gap: 9px;
     padding: 17px 14px;
+    background-color:white;
     justify-content: flex-end;
 }
 .btnContainer button{
@@ -48,7 +48,6 @@
 
 .posterContainer{
     position: relative;
-    border-radius: 20px;
 }
 .posterContainer .posterIcons{
     position: absolute;
@@ -70,7 +69,7 @@
 }
 .shareContainer{
     margin-top: 16px;
-    background-color: #F9F9F9;
+    background-color: #ffffff53;
     border-radius: 10px;
     padding: 4px 11px 18px 11px;
 }
@@ -81,14 +80,14 @@
     font-weight: 500;
 }
 .eventName{
-    background-color: none;
+    background: none;
     border: none;
     font-size: 40px;
-    color: #666666;
     width: 100%;
     height: 100px;
-    resize: none;
-    font-family: var(--font-inter);
+    /* resize: none; */
+    color: #1a1a1a;
+    font-weight: bolder;
 }
 .eventName:focus{
     outline: none;

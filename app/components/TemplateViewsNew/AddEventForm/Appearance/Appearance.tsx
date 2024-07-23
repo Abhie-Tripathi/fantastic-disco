@@ -5,7 +5,14 @@ import ApperanceImage from '/public/appearance.png'
 import ColorContainer from './ColorContainer'
 import FontContainer from './FontContainer'
 
-const Appearance = () => {
+interface Props{
+    pageBgColor : string;
+    setPageBgColor : (value : string)=>void
+    eventFont : string;
+    setEventFont : (value : string)=>void
+}
+
+const Appearance = ({setPageBgColor, pageBgColor,eventFont, setEventFont}: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.appearanceHeader}>
@@ -14,11 +21,11 @@ const Appearance = () => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.colorContainer}>
-                <ColorContainer/>
+                <ColorContainer setPageBgColor={setPageBgColor} pageBgColor={pageBgColor}/>
             </div>
             <div className={styles.line}></div>
             <div className={styles.fontContainer}>
-                <FontContainer/>
+                <FontContainer setEventFont={setEventFont} eventFont = {eventFont}/>
             </div>
             <div className={styles.line}></div>
         </div>
