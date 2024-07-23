@@ -84,8 +84,9 @@
     border: none;
     font-size: 40px;
     width: 100%;
-    height: 100px;
-    /* resize: none; */
+    /* height: 100px; */
+    resize: none;
+    overflow: hidden; 
     color: #1a1a1a;
     font-weight: bolder;
 }

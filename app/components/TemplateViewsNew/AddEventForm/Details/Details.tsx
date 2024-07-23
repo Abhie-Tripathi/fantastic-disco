@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styles from './details.style.module.css'
 import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
@@ -18,17 +18,30 @@ interface Props {
 }
 const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
 
-  const isColorLight = (color:any) => {
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    // Calculate luminance
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.5;
-  };
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+    useEffect(() => {
+        const adjustHeight = () => {
+            const textArea = textAreaRef.current;
+            if (textArea) {
+                textArea.style.height = 'auto'; // Reset the height
+                textArea.style.height = `${textArea.scrollHeight}px`; // Set the height to the scroll height
+            }
+        };
 
+        const textArea = textAreaRef.current;
+        if (textArea) {
+            textArea.addEventListener('input', adjustHeight);
+            adjustHeight(); // Initial adjustment
+        }
+
+        return () => {
+            if (textArea) {
+                textArea.removeEventListener('input', adjustHeight);
+            }
+        };
+    }, []);
+  
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -55,7 +68,7 @@ const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
           </div>
         </div>
         <div className={styles.rightSection}>
-          <textarea className={styles.eventName} placeholder='Event Name' style={{fontFamily : eventFont}}></textarea>
+          <textarea  ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{fontFamily : eventFont}}></textarea>
           <div className={styles.dateTimeContainer}><DateTimeContainer/></div>
           <div className={styles.locationContainer}><LocationContainer/></div>
           <div className={styles.participationContainer}><ParticipationContainer/></div>
