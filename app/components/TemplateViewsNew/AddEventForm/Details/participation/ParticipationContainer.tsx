@@ -5,6 +5,7 @@ import Image from 'next/image'
 import ParticipationIcon from '/public/ParticipationIcon.svg'
 import ParticipationDropdown from './ParticipationDropdown'
 
+
 const ParticipationContainer = () => {
   const [dropdown, setDropdown] = useState<boolean>(false)
   return (

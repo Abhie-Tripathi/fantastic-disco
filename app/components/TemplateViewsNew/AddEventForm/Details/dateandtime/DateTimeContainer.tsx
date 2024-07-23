@@ -1,7 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './datetime.style.module.css'
+import TimeZoneData from '@/public/data/timezones.json'
 
 const DateTimeContainer = () => {
+
+    const [dropdown, setDropdown] = useState<boolean>(false)
+    const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
+    const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
+
+    const handleTimeSelect = (label: string, value: string, key: number) => {
+        setTimeZoneKey(key)
+        const timeZoneString = `${value} ${label}`;
+        setTimeZone(truncateString(timeZoneString, 20));
+    };
+    const truncateString = (str: string, num: number) => {
+        if (str.length <= num) {
+            return str;
+        }
+        return str.slice(0, num) + '...';
+    };
+
     return (
         <div className={styles.body}>
             <div className={styles.dateAndTimeContainer}>
@@ -22,13 +40,19 @@ const DateTimeContainer = () => {
             </div>
             <div className={styles.timeZonesContainer}>
                 <div className={styles.header}>
-                    <TimeZoneIcon/>
-                    <DownIcon/>
+                    <TimeZoneIcon />
+                    <div className={styles.dropdownIcon} onClick={() => setDropdown(!dropdown)}><DownIcon /></div>
                 </div>
                 <div className={styles.timeZone}>
-                GMT+05:30
-                Calcutta
+                    {timeZone}
                 </div>
+                {dropdown && <div className={styles.dropdown}>
+                    {TimeZoneData.map((time, key) => (
+                        <div onClick={() => handleTimeSelect(time.label, time.value, key)} className={`${styles.timezone} ${key === timeZoneKey ? styles.activeTimeZone : ""}`} key={key}>
+                            <span>{key === timeZoneKey && <TickIcon />}{time.label}</span><span>{time.value}</span>
+                        </div>
+                    ))}
+                </div>}
             </div>
         </div>
     )
@@ -50,5 +74,11 @@ function DownIcon() {
         <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.35341 3.85361C4.25965 3.94734 4.13249 4 3.99991 4C3.86733 4 3.74017 3.94734 3.64641 3.85361L0.817909 1.02511C0.72683 0.930806 0.676433 0.804505 0.677572 0.673406C0.678711 0.542308 0.731296 0.416902 0.824 0.324198C0.916704 0.231493 1.04211 0.178909 1.17321 0.17777C1.30431 0.176631 1.43061 0.227028 1.52491 0.318107L3.99991 2.79311L6.47491 0.318107C6.56921 0.227028 6.69551 0.176631 6.82661 0.17777C6.95771 0.178909 7.08312 0.231493 7.17582 0.324198C7.26852 0.416902 7.32111 0.542308 7.32225 0.673406C7.32339 0.804505 7.27299 0.930806 7.18191 1.02511L4.35341 3.85361Z" fill="black" />
         </svg>
+    )
+}
+
+function TickIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
     )
 }
