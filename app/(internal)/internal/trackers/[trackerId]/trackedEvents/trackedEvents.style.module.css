@@ -54,7 +54,7 @@
 }
 
 .eventStatusRight_selected{
-  color: #6750A4;
+  color: var(--primary-color);
 }
 
 
