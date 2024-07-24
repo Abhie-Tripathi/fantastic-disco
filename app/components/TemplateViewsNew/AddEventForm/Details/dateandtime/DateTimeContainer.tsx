@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styles from './datetime.style.module.css'
 import TimeZoneData from '@/public/data/timezones.json'
+import TimezoneDropdown from './TimezoneDropdown'
 
 const DateTimeContainer = () => {
 
@@ -47,11 +48,7 @@ const DateTimeContainer = () => {
                     {timeZone}
                 </div>
                 {dropdown && <div className={styles.dropdown}>
-                    {TimeZoneData.map((time, key) => (
-                        <div onClick={() => handleTimeSelect(time.label, time.value, key)} className={`${styles.timezone} ${key === timeZoneKey ? styles.activeTimeZone : ""}`} key={key}>
-                            <span>{key === timeZoneKey && <TickIcon />}{time.label}</span><span>{time.value}</span>
-                        </div>
-                    ))}
+                    <TimezoneDropdown timeZoneKey={timeZoneKey} handleTimeSelect={handleTimeSelect}/>
                 </div>}
             </div>
         </div>
@@ -77,8 +74,3 @@ function DownIcon() {
     )
 }
 
-function TickIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
-    )
-}
