@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './details.style.module.css'
 import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
@@ -13,35 +13,44 @@ import DescriptionContainer from './description/DescriptionContainer'
 
 interface Props {
   setIsAddEventModalOpen: (value: boolean) => void
-  pageBgColor : string;
-  eventFont : string;
+  pageBgColor: string;
+  eventFont: string;
 }
-const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
+  const [description, setDescription] = useState<string>("")
+  const [textValue, setTextValue] = useState<string>("")
 
-    useEffect(() => {
-        const adjustHeight = () => {
-            const textArea = textAreaRef.current;
-            if (textArea) {
-                textArea.style.height = 'auto'; // Reset the height
-                textArea.style.height = `${textArea.scrollHeight}px`; // Set the height to the scroll height
-            }
-        };
 
-        const textArea = textAreaRef.current;
-        if (textArea) {
-            textArea.addEventListener('input', adjustHeight);
-            adjustHeight(); // Initial adjustment
-        }
+  useEffect(() => {
+    const adjustHeight = () => {
+      const textArea = textAreaRef.current;
+      if (textArea) {
+        textArea.style.height = 'auto'; // Reset the height
+        textArea.style.height = `${textArea.scrollHeight}px`; // Set the height to the scroll height
+      }
+    };
 
-        return () => {
-            if (textArea) {
-                textArea.removeEventListener('input', adjustHeight);
-            }
-        };
-    }, []);
-  
+    const textArea = textAreaRef.current;
+    if (textArea) {
+      textArea.addEventListener('input', adjustHeight);
+      adjustHeight(); // Initial adjustment
+    }
+
+    return () => {
+      if (textArea) {
+        textArea.removeEventListener('input', adjustHeight);
+      }
+    };
+  }, []);
+
+  const handleDescClick = ()=>{
+    setDescription(textValue)
+    setDescriptionModal(false)
+  }
+
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -49,10 +58,10 @@ const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
         <button className={styles.addBtn}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>
-      <div className={styles.detailsContainer} style={{backgroundColor : pageBgColor}}>
+      <div className={`${styles.detailsContainer} ${descriptionModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
         <div className={styles.leftSection}>
           <div className={styles.posterContainer}>
-            <Image src={Placeholder} alt='Poster' width={296} height={290} style={{borderRadius :20}}/>
+            <Image src={Placeholder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />
             <div className={styles.posterIcons}>
               <div>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
@@ -64,18 +73,23 @@ const Details = ({ setIsAddEventModalOpen ,pageBgColor,eventFont}: Props) => {
           </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
-            <ShareButtons shareUrl='www.10times.com'/>
+            <ShareButtons shareUrl='www.10times.com' />
           </div>
         </div>
         <div className={styles.rightSection}>
-          <textarea  ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{fontFamily : eventFont}}></textarea>
-          <div className={styles.dateTimeContainer}><DateTimeContainer/></div>
-          <div className={styles.locationContainer}><LocationContainer/></div>
-          <div className={styles.participationContainer}><ParticipationContainer/></div>
-          <div className={styles.resgitrationContainer}><RegistrationForm/></div>
-          <div className={styles.descriptionContainer}><DescriptionContainer/></div>
+          <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }}></textarea>
+          <div className={styles.dateTimeContainer}><DateTimeContainer /></div>
+          <div className={styles.locationContainer}><LocationContainer /></div>
+          <div className={styles.participationContainer}><ParticipationContainer /></div>
+          <div className={styles.resgitrationContainer}><RegistrationForm /></div>
+          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>
       </div>
+      {descriptionModal && <div className={styles.descriptionModal}>
+        <div><span>Add your description</span><span className={styles.close} onClick={()=>setDescriptionModal(false)}>x</span></div>
+        <textarea onChange={(e)=>setTextValue(e.target.value)} value={textValue}/>
+        <button onClick={handleDescClick}>Save</button>
+      </div>}
     </div>
   )
 }

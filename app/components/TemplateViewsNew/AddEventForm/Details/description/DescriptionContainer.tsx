@@ -3,10 +3,12 @@ import styles from './description.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 
-const DescriptionContainer = () => {
+interface Props{
+    setDescriptionModal : (vallue : boolean)=>void
+    description : string;
+}
 
-    const [dropdown, setDropdown] = useState<boolean>(false)
-    const [description, setDescription] = useState<string>("");
+const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
 
     return (
         <div className={styles.body}>
@@ -15,12 +17,9 @@ const DescriptionContainer = () => {
                     <DescIcon />
                     <div className={styles.descriptionHeading}>Add Event Description</div>
                 </div>
-                <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
+                <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>
             <div className={styles.description}>{description}</div>
-            {dropdown && <div className={styles.dropdown}>
-                <textarea onChange={(e)=>setDescription(e.target.value)}/>
-            </div>}
         </div>
     )
 }

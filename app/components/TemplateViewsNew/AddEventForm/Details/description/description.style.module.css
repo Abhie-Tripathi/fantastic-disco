@@ -32,23 +32,3 @@
     line-height: 14px;
 }
 
-.dropdown {
-    position: absolute;
-    top: 100%;
-    background-color: white;
-    border-radius: 2px;
-    padding: 12px;
-    width: 100%;
-    left: 0;
-    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
-}
-.dropdown textarea{
-    resize: none;
-    border: 1px solid #EBEBEB;
-    width: 100%;
-    padding: 8px;
-    height: 95px;
-}
-.dropdown textarea:focus{
-    outline: none;
-}
