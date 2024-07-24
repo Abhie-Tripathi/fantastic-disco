@@ -264,7 +264,8 @@ const Map = (props: MapProps) => {
             ? "mapbox://styles/mapbox/streets-v12"
             : "mapbox://styles/mapbox/dark-v11"
         }
-        mapboxAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
+        // mapboxAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         initialViewState={{
           longitude: -0.076132,
           latitude: 51.50853,
