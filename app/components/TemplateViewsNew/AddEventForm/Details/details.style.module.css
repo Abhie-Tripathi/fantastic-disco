@@ -1,13 +1,15 @@
-.body{
+.body {
     border-bottom-right-radius: 10px;
     height: 100%;
     position: relative;
 }
-.line{
+
+.line {
     width: 100%;
     border-top: 1px solid #E6E6E6;
 }
-.detailsContainer{
+
+.detailsContainer {
     padding: 70px 120px 30px 70px;
     /* border: 1px solid red; */
     display: flex;
@@ -15,54 +17,62 @@
     overflow-y: auto;
     height: 89%;
 }
-.modalOpen{
+
+.modalOpen {
     filter: blur(1px);
     overflow-y: hidden;
 }
-.rightSection{
+
+.rightSection {
     height: fit-content;
-    width: 100%;
+    width: 65%;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
-.btnContainer{
+
+.btnContainer {
     border-top-right-radius: 10px;
     display: flex;
     align-items: center;
     gap: 9px;
     padding: 17px 14px;
-    background-color:white;
+    background-color: white;
     justify-content: flex-end;
 }
-.btnContainer button{
+
+.btnContainer button {
     font-size: 12px;
     line-height: 18px;
     font-weight: 600;
     border-radius: 4px;
     padding: 7px 12px;
 }
-.btnContainer .closeBtn{
+
+.btnContainer .closeBtn {
     background-color: #8F8F8F1F;
     color: black;
 }
-.btnContainer .addBtn{
+
+.btnContainer .addBtn {
     color: white;
     background-color: #6750a4;
 }
 
-.posterContainer{
+.posterContainer {
     position: relative;
 }
-.posterContainer .posterIcons{
+
+.posterContainer .posterIcons {
     position: absolute;
     right: 19px;
     bottom: 12px;
     display: flex;
     gap: 5px;
-    align-items: center; 
+    align-items: center;
 }
-.posterContainer .posterIcons div{
+
+.posterContainer .posterIcons div {
     border: 2px solid white;
     background-color: #BCBCBCD9;
     height: 37px;
@@ -72,37 +82,42 @@
     justify-content: center;
     border-radius: 50%;
 }
-.shareContainer{
+
+.shareContainer {
     margin-top: 16px;
     background-color: #ffffff53;
     border-radius: 10px;
     padding: 4px 11px 18px 11px;
 }
-.shareContainer .heading{
+
+.shareContainer .heading {
     margin-bottom: 11px;
     color: #A1A1A1;
     font-size: 14px;
     font-weight: 500;
 }
-.eventName{
+
+.eventName {
     background: none;
     border: none;
     font-size: 40px;
     width: 100%;
     /* height: 100px; */
     resize: none;
-    overflow: hidden; 
+    overflow: hidden;
     color: #1a1a1a;
     font-weight: bolder;
 }
-.eventName:focus{
+
+.eventName:focus {
     outline: none;
 }
-.descriptionModal{
+
+.descriptionModal {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     background-color: white;
     border-radius: 2px;
     padding: 12px;
@@ -112,17 +127,20 @@
     flex-direction: column;
     gap: 6px;
 }
-.descriptionModal textarea{
+
+.descriptionModal textarea {
     resize: none;
     border: 1px solid #EBEBEB;
     width: 100%;
     padding: 8px;
     height: 130px;
 }
-.descriptionModal textarea:focus{
+
+.descriptionModal textarea:focus {
     outline: none;
 }
-.descriptionModal div{
+
+.descriptionModal div {
     font-size: 12px;
     color: #7D7D7D;
     font-weight: 500;
@@ -131,13 +149,26 @@
     align-items: center;
     justify-content: space-between;
 }
-.descriptionModal div .close{
+
+.descriptionModal div .close {
     cursor: pointer;
 }
-.descriptionModal button{
+
+.descriptionModal button {
     font-size: 12px;
     border-radius: 5px;
     background-color: #6750a4;
     padding: 5px 8px;
     color: white;
+}
+.speakerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+.speakerProfileContainer{
+    width: 100%;
 }

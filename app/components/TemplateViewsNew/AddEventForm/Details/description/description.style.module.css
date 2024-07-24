@@ -1,5 +1,4 @@
 .body {
-    padding: 9px 19px;
     width: 100%;
     background-color: #ffffff55;
     border-radius: 10px;
@@ -7,6 +6,7 @@
 }
 
 .descHeader {
+    padding: 9px 19px;
     display: flex;
     justify-content: space-between;
 }

@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import styles from './dropdown.style.module.css'
 
-const ParticipationDropdown = () => {
+interface Props {
+    setInputMessage: (value: string) => void
+    inuputMessage: string;
+    setParticipationType: (value: string) => void
+    participationType: string;
+}
 
-    const [selectedType, setSelectedType] = useState<string>("Attendee")
-    const [inuputMessage, setInputMessage] = useState<string>("We're excited to announce that we will be attending this event as an Attendee")
+const ParticipationDropdown = ({ setInputMessage, inuputMessage, setParticipationType, participationType }: Props) => {
 
     return (
         <div className={styles.body}>
@@ -13,8 +17,8 @@ const ParticipationDropdown = () => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Attendee"}
-                        onChange={() => setSelectedType("Attendee")}
+                        checked={participationType === "Attendee"}
+                        onChange={() => setParticipationType("Attendee")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Attendee</span>
@@ -23,8 +27,8 @@ const ParticipationDropdown = () => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Speaker"}
-                        onChange={() => setSelectedType("Speaker")}
+                        checked={participationType === "Speaker"}
+                        onChange={() => setParticipationType("Speaker")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Speaker</span>
@@ -33,8 +37,8 @@ const ParticipationDropdown = () => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Exhibitor"}
-                        onChange={() => setSelectedType("Exhibitor")}
+                        checked={participationType === "Exhibitor"}
+                        onChange={() => setParticipationType("Exhibitor")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Exhibitor</span>
@@ -43,8 +47,8 @@ const ParticipationDropdown = () => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Organiser"}
-                        onChange={() => setSelectedType("Organiser")}
+                        checked={participationType === "Organiser"}
+                        onChange={() => setParticipationType("Organiser")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Organiser</span>
@@ -52,7 +56,7 @@ const ParticipationDropdown = () => {
             </div>
             <div className={styles.messageContainer}>
                 <div className={styles.heading}>Customize your message</div>
-                <textarea className={styles.textarea}>{inuputMessage}</textarea>
+                <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inuputMessage}</textarea>
             </div>
         </div>
     )

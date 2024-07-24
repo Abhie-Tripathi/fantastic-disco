@@ -1,0 +1,58 @@
+.body{
+    background-color: #ffffff55;
+    border-radius: 10px;
+    padding: 14px 19px;
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.header span{
+    color: #7D7D7D;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+}
+.body img{
+    cursor: pointer;
+}
+.speakerProfiles{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+.speaker{
+    border: 1px solid #c5c5c5;
+    border-radius: 3px;
+    padding: 13px;
+    display: flex;
+    min-width: 250px;
+    gap: 13px;
+}
+.detailsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 70%;
+}
+.detailsContainer .nameLinkedinContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nameLinkedinContainer div{
+    color: black;
+    font-size: var(--font-size-small);
+}
+.designation{
+    font-size: var(--font-size-small);
+    color: #666666;
+}

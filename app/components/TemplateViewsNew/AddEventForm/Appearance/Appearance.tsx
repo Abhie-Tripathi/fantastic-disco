@@ -17,7 +17,7 @@ const Appearance = ({setPageBgColor, pageBgColor,eventFont, setEventFont}: Props
         <div className={styles.body}>
             <div className={styles.appearanceHeader}>
                 <Image src={ApperanceImage} alt='appearance' />
-                <span>Appearance</span>
+                <span>Set up your detail page</span>
             </div>
             <div className={styles.line}></div>
             <div className={styles.colorContainer}>
