@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './location.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
+import LocationDropdown from './LocationDropdown'
 
 const LocationContainer = () => {
+    const [dropdown, setDropdown] = useState<boolean>(true)
+
     return (
         <div className={styles.body}>
             <div className={styles.locationContainer}>
@@ -14,6 +17,7 @@ const LocationContainer = () => {
                 </div>
             </div>
             <Image src={EditIcon} alt='edit'/>
+            {dropdown && <div className={styles.dropdown}><LocationDropdown/></div>}
         </div>
     )
 }

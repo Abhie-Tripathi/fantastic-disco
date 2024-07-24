@@ -5,6 +5,7 @@
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
+    position: relative;
 }
 .locationContainer{
     display: flex;
@@ -24,4 +25,14 @@
     color: #7D7D7D;
     font-size: 10px;
     line-height: 20px;
+}
+.dropdown{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(194, 194, 194));
+    background-color: white;
+    border-radius: 3px;
+    z-index: 1;
 }
