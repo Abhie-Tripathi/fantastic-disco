@@ -1,13 +1,23 @@
 import React, { useState } from 'react'
 import styles from './datetime.style.module.css'
-import TimeZoneData from '@/public/data/timezones.json'
 import TimezoneDropdown from './TimezoneDropdown'
+import CalendarDropdown from './CalendarDropdown'
+import TimeDropdown from './TimeDropdown'
 
 const DateTimeContainer = () => {
 
-    const [dropdown, setDropdown] = useState<boolean>(false)
+    const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
+    const [startCalendarDropdown, setStartCalendarDropdown] = useState<boolean>(false)
+    const [endCalendarDropdown, setEndCalendarDropdown] = useState<boolean>(false)
+    const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
+    const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
     const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
     const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
+    const [startDate, setStartDate] = useState<string>("")
+    const [endDate, setEndDate] = useState<string>("")
+    const [startTime, setStartTime] = useState<string>("12:00 A.M")
+    const [endTime, setEndTime] = useState<string>("12:00 A.M")
+
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
         setTimeZoneKey(key)
@@ -21,6 +31,25 @@ const DateTimeContainer = () => {
         return str.slice(0, num) + '...';
     };
 
+    const handleCalendardropdown = (value: string) => {
+        if (value === "start") {
+            setStartCalendarDropdown(!startCalendarDropdown)
+            setEndCalendarDropdown(false)
+        } else {
+            setEndCalendarDropdown(!endCalendarDropdown)
+            setStartCalendarDropdown(false)
+        }
+    }
+    const handleTimedropdown = (value: string) => {
+        if (value === "start") {
+            setStartTimeDropdown(!startTimeDropdown)
+            setEndTimeDropdown(false)
+        } else {
+            setEndTimeDropdown(!endTimeDropdown)
+            setStartTimeDropdown(false)
+        }
+    }
+
     return (
         <div className={styles.body}>
             <div className={styles.dateAndTimeContainer}>
@@ -30,25 +59,43 @@ const DateTimeContainer = () => {
                 </div>
                 <div className={styles.dateTimeBoxes}>
                     <div className={styles.dateBoxes}>
-                        <div className={styles.dateBox}>Thu 18 Jul</div>
-                        <div className={styles.dateBox}>Thu 18 Jul</div>
+                        <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
+                            Thu 18 Jul
+                            {startCalendarDropdown && <div className={styles.calendarDropdown}>
+                                <CalendarDropdown />
+                            </div>}
+                        </div>
+                        <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>Thu 18 Jul
+                            {endCalendarDropdown && <div className={styles.calendarDropdown}>
+                                <CalendarDropdown />
+                            </div>}
+                        </div>
                     </div>
                     <div className={styles.timeBoxes}>
-                        <div className={styles.timeBox}>12:00 PM</div>
-                        <div className={styles.timeBox}>5:00 PM</div>
+                        <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{startTime}
+                            {startTimeDropdown && <div className={styles.timeDropdown}>
+                                <TimeDropdown setTime={setStartTime} time = {startTime}/>
+                            </div>}
+                        </div>
+                        <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
+                            {endTimeDropdown && <div className={styles.timeDropdown}>
+                                <TimeDropdown setTime={setEndTime} time = {endTime}/>
+                            </div>}
+                        </div>
                     </div>
                 </div>
+
             </div>
             <div className={styles.timeZonesContainer}>
                 <div className={styles.header}>
                     <TimeZoneIcon />
-                    <div className={styles.dropdownIcon} onClick={() => setDropdown(!dropdown)}><DownIcon /></div>
+                    <div className={styles.dropdownIcon} onClick={() => setTimezoneDropdown(!timezoneDropdown)}><DownIcon /></div>
                 </div>
                 <div className={styles.timeZone}>
                     {timeZone}
                 </div>
-                {dropdown && <div className={styles.dropdown}>
-                    <TimezoneDropdown timeZoneKey={timeZoneKey} handleTimeSelect={handleTimeSelect}/>
+                {timezoneDropdown && <div className={styles.timezoneDropdown}>
+                    <TimezoneDropdown timeZoneKey={timeZoneKey} handleTimeSelect={handleTimeSelect} />
                 </div>}
             </div>
         </div>

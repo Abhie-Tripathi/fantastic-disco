@@ -5,7 +5,7 @@ import Image from 'next/image'
 import LocationDropdown from './LocationDropdown'
 
 const LocationContainer = () => {
-    const [dropdown, setDropdown] = useState<boolean>(true)
+    const [dropdown, setDropdown] = useState<boolean>(false)
 
     return (
         <div className={styles.body}>
@@ -16,7 +16,7 @@ const LocationContainer = () => {
                     <div className={styles.eventLocationTwo}>Offline location or Virtual Link</div>
                 </div>
             </div>
-            <Image src={EditIcon} alt='edit'/>
+            <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
             {dropdown && <div className={styles.dropdown}><LocationDropdown/></div>}
         </div>
     )

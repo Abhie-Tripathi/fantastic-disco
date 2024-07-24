@@ -72,10 +72,12 @@
   gap: 4px;
 }
 
-.dateBoxes div {
+.dateBoxes .dateBox {
   padding: 2px 15px;
-  background-color: #ffffff55;
+  background-color: #ffffffa8;
   border-radius: 4px;
+  position: relative;
+  cursor: pointer;
 }
 
 .timeBoxes {
@@ -84,10 +86,13 @@
   gap: 4px;
 }
 
-.timeBoxes div {
+.timeBoxes .timeBox {
   padding: 2px 15px;
-  background-color: #ffffff55;
+  background-color: #ffffffa8;
   border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  width: 90px;
 }
 
 .timeZonesContainer {
@@ -113,7 +118,7 @@
 .dropdownIcon{
   cursor: pointer;
 }
-.dropdown{
+.timezoneDropdown{
   position: absolute;
   top: 100%;
   width: 250px;
@@ -124,4 +129,22 @@
   background-color: white;
   right: 0;
   z-index: 1;
+}
+.calendarDropdown{
+  position: absolute;
+  left: -50%;
+  top: 100%;
+  z-index: 1;
+}
+.timeDropdown{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  background-color: white;
+  border-radius: 2px;
+  filter: drop-shadow(1px 1px 2px rgb(201, 201, 201));
+  padding: 15px 10px;
+  height: 167px;
+  overflow-y: auto;
 }
