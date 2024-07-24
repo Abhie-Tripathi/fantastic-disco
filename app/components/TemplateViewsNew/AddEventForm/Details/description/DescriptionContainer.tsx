@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './description.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 
 const DescriptionContainer = () => {
+
+    const [dropdown, setDropdown] = useState<boolean>(false)
+    const [description, setDescription] = useState<string>("");
+
     return (
         <div className={styles.body}>
-            <div className={styles.descContainer}>
-                <DescIcon/>
-                <div className={styles.description}>Add Event Description</div>
+            <div className={styles.descHeader}>
+                <div className={styles.descContainer}>
+                    <DescIcon />
+                    <div className={styles.descriptionHeading}>Add Event Description</div>
+                </div>
+                <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
             </div>
-            <Image src={EditIcon} alt='edit'/>
+            <div className={styles.description}>{description}</div>
+            {dropdown && <div className={styles.dropdown}>
+                <textarea onChange={(e)=>setDescription(e.target.value)}/>
+            </div>}
         </div>
     )
 }
