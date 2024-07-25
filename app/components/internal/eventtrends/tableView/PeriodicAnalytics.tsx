@@ -29,8 +29,11 @@ function capitalizeEachWord(str: string) {
   return capitalizedWords.join(" ");
 }
 
-const PeriodicAnalytics = ({ predictedData }: any) => {
+const PeriodicAnalytics = ({ predictedData, activeChip }: any) => {
   const total = calculateTotal(predictedData);
+  const filteredData = Object.entries(predictedData).filter(
+    ([key, value]) => value !== null
+  );
   return (
     <>
       <div className="desktop_view tablet_view">
@@ -45,7 +48,7 @@ const PeriodicAnalytics = ({ predictedData }: any) => {
               <tr className={styles.table_head_row}>
                 <th style={{ width: "250px" }}></th>
                 <th>Total</th>
-                {Object.entries(predictedData).map(([key, value]) => (
+                {filteredData.map(([key]) => (
                   <th key={key}>{capitalizeEachWord(key)}</th>
                 ))}
                 <th></th>
@@ -55,14 +58,16 @@ const PeriodicAnalytics = ({ predictedData }: any) => {
             <tbody className={styles.table_body}>
               <tr>
                 <td>
-                  <div style={{ width: "200px" }}>Predicted No of Events</div>
+                  <div style={{ width: "200px" }}>
+                    {activeChip === "Predicted Attendance"
+                      ? "Predicted No. of Attendace"
+                      : "Predicted No. of Events"}
+                  </div>
                 </td>
                 <td>{total}</td>
-                {Object.entries(predictedData).map(
-                  ([key, value]: [string, any]) => (
-                    <td key={key}>{value}</td>
-                  )
-                )}
+                {filteredData.map(([key, value]: [string, any]) => (
+                  <td key={key}>{value}</td>
+                ))}
                 <td></td>
               </tr>
             </tbody>

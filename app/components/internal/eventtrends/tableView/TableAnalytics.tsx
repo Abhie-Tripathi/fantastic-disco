@@ -21,9 +21,13 @@ interface GroupingByDate {
 
 interface TableAnalyticsProps {
   groupedData: GroupingByDate;
+  activeChip: string;
 }
 
-const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
+const TableAnalytics: React.FC<TableAnalyticsProps> = ({
+  groupedData,
+  activeChip,
+}) => {
   const [sortingKey, setSortingKey] = useState("date");
   const [sortingOrder, setSortingOrder] = useState("ASC");
   const [eventData, setEventData] = useState<any>(groupedData.groupingByDate);
@@ -122,7 +126,9 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({ groupedData }) => {
       <div className={styles.analytics_header}>
         <div className={styles.analytics_header_left}>
           <span style={{ fontWeight: 500, fontSize: "16px" }}>
-            DAILY EVENTS
+            {activeChip === "Predicted Attendance"
+              ? "Daily Attendance"
+              : "Daily Events"}
           </span>
         </div>
       </div>
