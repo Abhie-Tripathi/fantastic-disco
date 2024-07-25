@@ -14,7 +14,6 @@
 
 .heading {
     font-size: 14px;
-    color: #171717;
 }
 
 .subheading {
@@ -127,7 +126,6 @@
 }
 .radiusContainer .heading{
     font-size: 11px;
-    color: black;
 }
 .radiusContainer .radiusValue{
     background-color: #F2F2F2;
@@ -153,7 +151,6 @@
 }
 .btnTextContainer .heading{
     font-size: 11px;
-    color: black;
 }
 .btnTextContainer input{
     border: 1px solid #C9C9C9;

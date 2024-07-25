@@ -19,7 +19,7 @@ const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>
-            <div className={styles.description}>{description}</div>
+            {description && <div className={styles.description}>{description}</div>}
         </div>
     )
 }

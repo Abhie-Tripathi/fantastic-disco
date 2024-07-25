@@ -13,7 +13,7 @@
 }
 .heading {
     font-size: 14px;
-    color: #171717;
+    /* color: #171717; */
 }
 .subheading {
     font-size: 10px;
@@ -39,7 +39,7 @@
 }
 .radiusContainer .heading{
     font-size: 11px;
-    color: black;
+    /* color: black; */
 }
 .radiusContainer .radiusValue{
     background-color: #F2F2F2;

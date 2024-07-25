@@ -24,7 +24,7 @@ const ExhibitorContainer = () => {
             </div>
             {dropdown && 
             <div className={styles.dropdown}>
-                <input placeholder='Stall/booth number' onChange={(e)=>setBoothNumber(e.target.value)} maxLength={40}/>
+                <input placeholder='Stall/booth number' value={boothNumber} onChange={(e)=>setBoothNumber(e.target.value)} maxLength={40}/>
             </div>}
         </div>
     )
