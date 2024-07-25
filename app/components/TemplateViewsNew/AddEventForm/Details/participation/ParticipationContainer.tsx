@@ -12,13 +12,14 @@ interface Props{
 
 const ParticipationContainer = ({setParticipationType, participationType} : Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false)
-  const [inuputMessage, setInputMessage] = useState<string>("We're excited to announce that we will be attending this event as an Attendee")
+  const [inuputMessage, setInputMessage] = useState<string>("")
   return (
     <div className={styles.body}>
-      <div className={styles.participationContainer}>
+      {!inuputMessage ? <div className={styles.participationContainer}>
         <Image src={ParticipationIcon} alt='svg' />
-        <span>{inuputMessage}</span>
-      </div>
+        <span>Mode of Participation</span>
+      </div> :  
+      <span className={styles.inputMessage}>{inuputMessage}</span>}
       <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn}/>
       {dropdown && <div className={styles.dropdown}>
         <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setInputMessage} inuputMessage={inuputMessage}/>
