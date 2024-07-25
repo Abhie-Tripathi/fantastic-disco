@@ -423,7 +423,7 @@ const Page = ({ params }: { params: any }) => {
               </button>
             </div>
             <div className={styles.eventStatusRight}>
-              <ListUnordered
+              {/* <ListUnordered
                 height="16px"
                 width="16px"
                 color={
@@ -444,7 +444,7 @@ const Page = ({ params }: { params: any }) => {
                   view === "calendar" ? "#6750a4" : "var(--primary-text-color)"
                 }
                 onClick={() => setView("calendar")}
-              />
+              /> */}
             </div>
           </div>
 

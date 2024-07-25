@@ -65,6 +65,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     isLocalRank: false,
     isAviationRank: false,
   });
+  const [showDate, setShowDate] = useState<any>();
   const [categoryData, setCatgeoryData] = useState([]);
   const [resultData, setResultData] = useState<any>();
   const [unparsedData, setUnparsedData] = useState<any>();
@@ -108,7 +109,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
 
   const searchHandler = () => {
     let query = "";
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams as any);
     if (selectedCategories.length > 0) {
       query += "category=" + selectedCategories.join(",");
       params.set("category", selectedCategories.join(","));
@@ -148,12 +149,21 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     // router.push(`/internal/trends?${params.toString()}`);
   };
 
-  console.log(selectedCity, selectedCountry);
+  useEffect(() => {
+    if (
+      selectedCategories.length > 0 &&
+      selectedDateRange.length > 0 &&
+      selectedLocations.length > 0
+    ) {
+      searchHandler();
+    }
+  }, [activeChip]);
 
   const fetchData = async (query: string) => {
     if (
       selectedCategories.length === 0 ||
       selectedDateRange.length === 0 ||
+      selectedLocations.length === 0 ||
       selectedEventRank.length === 0 ||
       selectedLocalRank.length === 0 ||
       selectedAviationRank.length === 0
@@ -200,6 +210,23 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
         groupingByDate: updatedGroupingByDate,
       },
     };
+  };
+
+  const dateShowFormatter = (selectedDateRange: string[]) => {
+    const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+      selectedDateRange[0]
+    ).split(" ");
+    const [edDay, edMonth, edYear] = convertToCustomFormat(
+      selectedDateRange[1]
+    ).split(" ");
+
+    if (sdMonth === edMonth && sdYear === edYear) {
+      return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+    }
+    if (sdYear === edYear) {
+      return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+    }
+    return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
   };
 
   return (
@@ -291,11 +318,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     {selectedDateRange.length > 0 &&
                     selectedDateRange[0] !== null ? (
                       <span className={styles.input_selected_title}>
-                        {`${convertISOToOriginalFormat(
-                          selectedDateRange[0]
-                        )} - ${convertISOToOriginalFormat(
-                          selectedDateRange[1]
-                        )}`}
+                        {dateShowFormatter(selectedDateRange)}
                       </span>
                     ) : (
                       ""
@@ -448,12 +471,16 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
             <div className={styles.predictedAttendence_container}>
               <PeriodicAnalytics
                 predictedData={resultData.predictedAttendance.total}
+                activeChip={activeChip}
               />
             </div>
           </div>
           <div className={styles.inner_container}>
             <div className={styles.predictedAttendence_container}>
-              <TableAnalytics groupedData={resultData.predictedAttendance} />
+              <TableAnalytics
+                groupedData={resultData.predictedAttendance}
+                activeChip={activeChip}
+              />
             </div>
           </div>
         </>
