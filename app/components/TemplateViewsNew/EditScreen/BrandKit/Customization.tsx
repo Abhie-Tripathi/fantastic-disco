@@ -55,7 +55,7 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <button>Apply</button>
       </div>
       <div className={styles.brandKit}>
-        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} />
+        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex/>
       </div>
       <div className={styles.cardStylesContainer}>
         <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />

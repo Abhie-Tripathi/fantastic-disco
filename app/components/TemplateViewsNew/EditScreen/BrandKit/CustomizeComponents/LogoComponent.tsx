@@ -3,7 +3,10 @@ import styles from './logo.style.module.css'
 import Image, { StaticImageData } from 'next/image'
 import PlaceHolder from '/public/placeholder.png'
 
-const LogoComponent = () => {
+interface Props{
+    flex : boolean;
+}
+const LogoComponent = ({flex}: Props) => {
     const [imageSrc, setImageSrc] = useState<string | StaticImageData>(PlaceHolder);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -20,12 +23,12 @@ const LogoComponent = () => {
     };
 
     return (
-        <div className={styles.body}>
-            <div className={styles.headingContainer}>
+        <div className={`${styles.body} ${!flex ?styles.columnbody:""}`}>
+            <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer:""}`}>
                 <div className={styles.heading}>Company Logo</div>
                 <div className={styles.subheading}>Update your company logo</div>
             </div>
-            <div className={styles.editContainer}>
+            <div className={styles.editContainer} >
                 <div className={styles.logoContainer}>
                     <Image src={imageSrc} alt='logo' width={48} height={48}/>
                 </div>

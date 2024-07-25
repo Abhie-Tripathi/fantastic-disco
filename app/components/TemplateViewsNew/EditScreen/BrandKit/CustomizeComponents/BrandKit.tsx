@@ -7,17 +7,18 @@ import BrandkitTypography from './BrandkitTypography';
 interface Props {
     extractedColors: string[];
     setExtractedColors: (value: string[]) => void
+    flex : boolean
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors }: Props) => {
+const BrandKit = ({ extractedColors, setExtractedColors,flex }: Props) => {
 
     const [accordian, setAccordian] = useState<boolean>(false)
 
     const [valueUpdate, setValueUpdated] = useState<boolean>(false) // To activate the save kit button
 
     return (
-        <div className={styles.body}>
-            <div className={styles.header}>
+        <div className={styles.body} style={{padding : flex ?"12px 36px 17px 23px":0}}>
+            <div className={styles.header} style={{padding : flex ?0:"12px 19px"}}> 
                 <div className={styles.heading}>
                     <StarIcon />
                     <span>Brand Kit</span>
@@ -25,17 +26,19 @@ const BrandKit = ({ extractedColors, setExtractedColors }: Props) => {
                 {accordian ?
                     <div className={styles.btn} onClick={() => setAccordian(false)}><UpArrow /></div> : <div className={styles.btn} onClick={() => setAccordian(true)}><DownArrow /></div>}
             </div>
-            {accordian && <div className={styles.accordian}>
-                <div className={styles.logoContainer}>
-                    <LogoComponent />
+            {accordian && <div className={styles.accordian} style={{marginTop : flex ? 24 : 0}}>
+                <div className={styles.logoContainer} style={{padding : flex ?0:"12px 19px"}}>
+                    <LogoComponent flex={flex}/>
                 </div>
-                <div className={styles.brandColorContainer}>
-                    <BrandColor setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
+                {!flex && <div className={styles.line}></div>}
+                <div className={styles.brandColorContainer} style={{padding : flex ?0:"12px 19px", marginTop : flex ? 36 : 0}}>
+                    <BrandColor flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
                 </div>
-                <div className={styles.fontContainer}>
-                    <BrandkitTypography/>
+                {!flex && <div className={styles.line}></div>}
+                <div className={styles.fontContainer} style={{padding : flex ?0:"12px 19px",marginTop : flex ? 36 : 0}}>
+                    <BrandkitTypography flex={flex}/>
                 </div>
-                <div className={styles.btnContainer}>
+                <div className={styles.btnContainer} style={{padding : flex ?0:"12px 19px"}}>
                     <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>
                 </div>
             </div>}

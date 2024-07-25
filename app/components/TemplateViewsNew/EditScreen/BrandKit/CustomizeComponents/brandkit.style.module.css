@@ -1,6 +1,5 @@
 .body{
     background-color: #F9F9FF;
-    padding: 12px 36px 17px 23px;
 }
 .header{
     display: flex;
@@ -18,11 +17,7 @@
 .btn{
     cursor: pointer;
 }
-.accordian{
-    margin-top: 24px;
-}
 .brandColorContainer{
-    margin-top: 38px;
     margin-bottom: 9px;
 }
 .btnContainer{
@@ -46,6 +41,7 @@
     color: white;
     background-color: #6750a4;
 }
-.fontContainer{
-    margin-top: 36px;
+.line{
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
 }

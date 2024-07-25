@@ -7,9 +7,10 @@ interface Props {
     extractedColors: string[]
     setExtractedColors : (value : string[])=>void
     setValueUpdated : (value : boolean)=>void
+    flex : boolean;
 }
 
-const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated }: Props) => {
+const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated,flex }: Props) => {
 
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
@@ -34,8 +35,8 @@ const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated }: Prop
     };
 
     return (
-        <div className={styles.body}>
-            <div className={styles.headingContainer}>
+        <div className={`${styles.body} ${!flex ?styles.columnbody:""}`}>
+            <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer:""}`}>
                 <div className={styles.heading}>Brand Colour</div>
                 <div className={styles.subheading}>Select or customise your brand colour</div>
             </div>

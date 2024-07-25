@@ -3,15 +3,19 @@ import styles from './brandkittypo.style.module.css'
 import Image from 'next/image'
 import WarningIcon from '/public/warningicon.svg'
 
-const BrandkitTypography = () => {
+interface Props{
+    flex : boolean;
+}
+
+const BrandkitTypography = ({flex}: Props) => {
 
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState<string>("Arial")
 
     return (
-        <div className={styles.body}>
-            <div className={styles.headingContainer}>
+        <div className={`${styles.body} ${!flex ?styles.columnbody:""}`}>
+            <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer:""}`}>
                 <div className={styles.heading}>Typography</div>
                 <div className={styles.subheading}>Select or customise your text styles</div>
             </div>
