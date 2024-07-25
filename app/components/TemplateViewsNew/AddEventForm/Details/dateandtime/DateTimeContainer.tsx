@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './datetime.style.module.css'
 import TimezoneDropdown from './TimezoneDropdown'
 import CalendarDropdown from './CalendarDropdown'
 import TimeDropdown from './TimeDropdown'
+
+const formatDate = (date: string) => {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+    return new Date(date).toLocaleDateString('en-US', options);
+};
 
 const DateTimeContainer = () => {
 
@@ -18,6 +23,11 @@ const DateTimeContainer = () => {
     const [startTime, setStartTime] = useState<string>("12:00 A.M")
     const [endTime, setEndTime] = useState<string>("12:00 A.M")
 
+    useEffect(() => {
+        const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"
+        setStartDate(currentDate);
+        setEndDate(currentDate);
+    }, []);
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
         setTimeZoneKey(key)
@@ -60,14 +70,15 @@ const DateTimeContainer = () => {
                 <div className={styles.dateTimeBoxes}>
                     <div className={styles.dateBoxes}>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
-                            Thu 18 Jul
+                        {formatDate(startDate)}
                             {startCalendarDropdown && <div className={styles.calendarDropdown}>
-                                <CalendarDropdown />
+                                <CalendarDropdown setDate={setStartDate} dateValue={startDate}/>
                             </div>}
                         </div>
-                        <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>Thu 18 Jul
+                        <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
+                        {formatDate(endDate)}
                             {endCalendarDropdown && <div className={styles.calendarDropdown}>
-                                <CalendarDropdown />
+                                <CalendarDropdown setDate={setEndDate} dateValue={endDate}/>
                             </div>}
                         </div>
                     </div>
