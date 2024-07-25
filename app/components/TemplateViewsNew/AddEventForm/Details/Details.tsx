@@ -12,6 +12,7 @@ import RegistrationForm from './RegistrationForm'
 import DescriptionContainer from './description/DescriptionContainer'
 import SpeakerProfile from './participation/speaker/SpeakerProfile'
 import SpeakerModal from './participation/speaker/SpeakerModal'
+import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 
 interface SpeakerProfileType {
     id: string;
@@ -115,9 +116,13 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
         <div className={styles.rightSection}>
           <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }}></textarea>
           <div className={styles.dateTimeContainer}><DateTimeContainer /></div>
+
           <div className={styles.locationContainer}><LocationContainer /></div>
+
           <div className={styles.resgitrationContainer}><RegistrationForm /></div>
-          {participationType === "Speaker" && <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div>}
+
+          {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer/></div>:<></>}
+          
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>
       </div>
