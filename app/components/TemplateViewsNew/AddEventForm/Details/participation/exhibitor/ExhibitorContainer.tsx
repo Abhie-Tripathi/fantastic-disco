@@ -7,7 +7,7 @@ import ExhibitorIcon from '/public/exhibitoricon.svg'
 const ExhibitorContainer = () => {
 
     const [boothNumber, setBoothNumber] = useState<string>("")
-    const [dropdown, setDropdown] = useState<boolean>(true)
+    const [dropdown, setDropdown] = useState<boolean>(false)
 
     return (
         <div className={styles.body}>

@@ -8,11 +8,12 @@ import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import DateTimeContainer from './dateandtime/DateTimeContainer'
 import LocationContainer from './location/LocationContainer'
 import ParticipationContainer from './participation/ParticipationContainer'
-import RegistrationForm from './RegistrationForm'
+import RegistrationForm from './resgistration/RegistrationForm'
 import DescriptionContainer from './description/DescriptionContainer'
 import SpeakerProfile from './participation/speaker/SpeakerProfile'
 import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
+import RegistrationModal from './resgistration/RegistrationModal'
 
 interface SpeakerProfileType {
     id: string;
@@ -32,6 +33,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
+  const [registerModal, setRegisterModal] = useState<boolean>(false)
   const [description, setDescription] = useState<string>("")
   const [textValue, setTextValue] = useState<string>("")
   const [participationType, setParticipationType] = useState<string>("Attendee")
@@ -39,6 +41,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
 
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
+  
+  const [registerMessage, setRegisterMessage] = useState<string>("Welcome! To join the event, please register below.")
+  const [registerBtnText, setRegisterBtnText] = useState<string>("Register")
+  const [registerBtnColor, setRegisterBtnColor] = useState<string>("#1a1a1a")
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -94,7 +100,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
         <button className={styles.addBtn}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>
-      <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
+      <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
         <div className={styles.leftSection}>
           <div className={styles.posterContainer}>
             <Image src={Placeholder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />
@@ -119,7 +125,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
 
           <div className={styles.locationContainer}><LocationContainer /></div>
 
-          <div className={styles.resgitrationContainer}><RegistrationForm /></div>
+          <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal}/></div>
 
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer/></div>:<></>}
           
@@ -133,6 +139,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
       </div>}
       {speakerModal && <div className={styles.speakerModal}>
         <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile}  deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker}/>
+      </div>}
+      {registerModal && <div className={styles.registerModal}>
+        <RegistrationModal registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} setRegisterBtnColor={setRegisterBtnColor} setRegisterBtnText={setRegisterBtnText} setRegisterMessage={setRegisterMessage}/>
       </div>}
     </div>
   )
