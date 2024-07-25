@@ -9,6 +9,7 @@ import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
 import Labels from "@/app/components/trackers/labels";
+import EventStatusData from "@/public/data/eventType.json";
 import { usePathname, useRouter } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
@@ -265,6 +266,9 @@ const Page = () => {
             localRank={
               data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
             }
+            eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
+              ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
+              .map(item => item.name):[]}
             eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           />
         </div>
