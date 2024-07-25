@@ -50,6 +50,7 @@ const Page = ({ params }: { params: any }) => {
     estExhibit: true,
     growth: true,
     repeatSent: true,
+    trackerKeywords: true,
   };
   const lineData = {
     labels: [

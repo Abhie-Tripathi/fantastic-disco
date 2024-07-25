@@ -1333,7 +1333,7 @@ const Search = () => {
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEventKeywords[0]}
+                              {selectedEventKeywords[0].replaceAll("_"," ")}
                             </span>
                           )}
                         </div>
