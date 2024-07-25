@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import styles from './speakermodal.style.module.css'
 import ProfileIcon from '/public/profile_Image.jpg'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface SpeakerProfileType {
+    id: string;
     name: string;
     linkedin: string;
     designation: string;
@@ -13,13 +15,16 @@ interface SpeakerProfileType {
 interface Props {
     setSpeakerModal: (value: boolean) => void
     setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
+    prefilledProfile?: SpeakerProfileType | null;
+    deleteSpeaker: (id: string) => void;
+    updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
 }
 
-const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData }: Props) => {
-    const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
-    const [name, setName] = useState<string>("");
-    const [linkedinurl, setLinkedinurl] = useState<string>("")
-    const [designation, setDesignation] = useState<string>("")
+const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
+    const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
+    const [name, setName] = useState<string>(prefilledProfile?.name || "");
+    const [linkedinurl, setLinkedinurl] = useState<string>(prefilledProfile?.linkedin || "");
+    const [designation, setDesignation] = useState<string>(prefilledProfile?.designation || "");
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -30,19 +35,26 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData }: Props) => {
             reader.readAsDataURL(file);
         }
     };
-    const handleAddSpeaker = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newSpeaker: SpeakerProfileType = {
+        const updatedProfile: SpeakerProfileType = {
+            id: prefilledProfile?.id || Date.now().toString(), // Use existing id or create a new one
             name,
             linkedin: linkedinurl,
             designation,
             profileImage: imageSrc,
         };
-        setSpeakerProfilesData((prevData) => [...prevData, newSpeaker]);
-        setSpeakerModal(false);
+
+        if (prefilledProfile) {
+            updateSpeaker(updatedProfile);
+        } else {
+            setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
+            setSpeakerModal(false);
+        }
     };
+
     return (
-        <form className={styles.body} onSubmit={handleAddSpeaker}>
+        <form className={styles.body} onSubmit={handleSubmit}>
             <div className={styles.header}>
                 <div className={styles.uploadContainer}>
                     <div className={styles.profileContainer}>
@@ -57,18 +69,27 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData }: Props) => {
                         <label htmlFor="upload" className={styles.uploadLabel}>Upload</label>
                     </div>
                 </div>
-                <div className={styles.headerBtns}>
-                    <button type='submit' className={styles.addBtn}>Add Speaker</button>
-                    <span onClick={() => setSpeakerModal(false)}>Close</span>
-                </div>
+                {!prefilledProfile ? (
+                    <div className={styles.headerBtns}>
+                        <button type='submit' className={styles.addBtn}>Add Speaker</button>
+                        <span onClick={() => setSpeakerModal(false)}>Close</span>
+                    </div>
+                ) : (
+                    <div className={styles.headerBtns}>
+                        <span className={styles.deleteBtn} onClick={() => {
+                            if (prefilledProfile?.id) deleteSpeaker(prefilledProfile.id);
+                        }}>Delete</span>
+                        <button type='submit' className={styles.addBtn}>Save</button>
+                    </div>
+                )}
             </div>
             <div className={styles.infoContainer}><span className={styles.infoBtn}>i</span><span className={styles.info}>Upload speaker profile photo</span></div>
             <div className={styles.inputContainers}>
-                <input type="text" required onChange={(e) => setName(e.target.value)} placeholder='Enter Speaker Name' />
-                <input type="text" required onChange={(e) => setDesignation(e.target.value)} placeholder='Enter Department and Designation ' />
+                <input type="text" required onChange={(e) => setName(e.target.value)} placeholder='Enter Speaker Name' value={name} />
+                <input type="text" required onChange={(e) => setDesignation(e.target.value)} placeholder='Enter Department and Designation ' value={designation} />
                 <div className={styles.linkedinInput}>
-                    <LinkedinIcon />
-                    <input onChange={(e) => setLinkedinurl(e.target.value)} type="text" />
+                    <Link href={linkedinurl}><LinkedinIcon /></Link>
+                    <input required onChange={(e) => setLinkedinurl(e.target.value)} type="text" value={linkedinurl} />
                 </div>
             </div>
         </form>

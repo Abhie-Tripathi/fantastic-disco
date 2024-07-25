@@ -37,22 +37,22 @@
     min-width: 250px;
     gap: 13px;
 }
-.detailsContainer{
+.speaker .detailsContainer{
     display: flex;
     flex-direction: column;
     gap: 5px;
     width: 70%;
 }
-.detailsContainer .nameLinkedinContainer{
+.speaker .detailsContainer .nameLinkedinContainer{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.nameLinkedinContainer div{
+.speaker .nameLinkedinContainer div{
     color: black;
     font-size: var(--font-size-small);
 }
-.designation{
+.speaker .detailsContainer .designation{
     font-size: var(--font-size-small);
     color: #666666;
 }

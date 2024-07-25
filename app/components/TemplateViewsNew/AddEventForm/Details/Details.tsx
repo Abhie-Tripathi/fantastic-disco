@@ -10,14 +10,15 @@ import LocationContainer from './location/LocationContainer'
 import ParticipationContainer from './participation/ParticipationContainer'
 import RegistrationForm from './RegistrationForm'
 import DescriptionContainer from './description/DescriptionContainer'
-import SpeakerProfile from './participation/SpeakerProfile'
-import SpeakerModal from './participation/SpeakerModal'
+import SpeakerProfile from './participation/speaker/SpeakerProfile'
+import SpeakerModal from './participation/speaker/SpeakerModal'
 
 interface SpeakerProfileType {
-  name: string;
-  linkedin: string;
-  designation: string;
-  profileImage: string | ArrayBuffer | null;
+    id: string;
+    name: string;
+    linkedin: string;
+    designation: string;
+    profileImage: string | ArrayBuffer | null;
 }
 
 interface Props {
@@ -36,6 +37,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
 
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
 
+  const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
+
+  const handlePrefill = (profile: SpeakerProfileType) => {
+    setPrefilledProfile(profile)
+    setSpeakerModal(true)
+  }
 
   useEffect(() => {
     const adjustHeight = () => {
@@ -63,10 +70,21 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
     setDescription(textValue)
     setDescriptionModal(false)
   }
+  const deleteSpeaker = (id: string) => {
+    setSpeakerProfilesData((prevData) =>
+      prevData.filter((p) => p.id !== id)
+    );
+    setSpeakerModal(false);
+    setPrefilledProfile(undefined);
+  };
 
-  useEffect(() => {
-    console.log(speakerProfilesData)
-  }, [speakerProfilesData])
+  const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
+    setSpeakerProfilesData((prevData) =>
+      prevData.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
+    );
+    setSpeakerModal(false);
+    setPrefilledProfile(undefined);
+  };
 
   return (
     <div className={styles.body}>
@@ -99,7 +117,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
           <div className={styles.dateTimeContainer}><DateTimeContainer /></div>
           <div className={styles.locationContainer}><LocationContainer /></div>
           <div className={styles.resgitrationContainer}><RegistrationForm /></div>
-          {participationType === "Speaker" && <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} /></div>}
+          {participationType === "Speaker" && <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div>}
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>
       </div>
@@ -109,7 +127,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
         <button onClick={handleDescClick}>Save</button>
       </div>}
       {speakerModal && <div className={styles.speakerModal}>
-        <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} />
+        <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile}  deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker}/>
       </div>}
     </div>
   )

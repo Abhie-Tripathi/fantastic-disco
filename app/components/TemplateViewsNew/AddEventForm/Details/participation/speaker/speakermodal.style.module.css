@@ -43,6 +43,9 @@
     font-size: var(--font-size-small);
     cursor: pointer;
 }
+.headerBtns .deleteBtn{
+    color: red;
+}
 .addBtn{
     color: white;
     background-color: #6750A4;
@@ -99,4 +102,5 @@
 .linkedinInput input{
     border: none;
     padding: 0;
+    width: 100%;
 }
