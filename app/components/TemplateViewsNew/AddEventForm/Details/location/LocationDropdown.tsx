@@ -1,8 +1,91 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './locationdropdown.style.module.css'
+import { baseUrl } from "@/constants";
 
-const LocationDropdown = () => {
+interface LocationSuggestion {
+    id: string;
+    name: string;
+    state?: string;
+    countryName?: string;
+}
+
+interface Props {
+    setCityName: (value: string) => void
+    setCountryName: (value: string) => void
+}
+
+const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
     const [selectedType, setSelectedType] = useState<string>("In-person")
+    const [query, setQuery] = useState<string>("");
+    const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+    const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
+
+    const handleSuggestionClick = (suggestion: LocationSuggestion) => {
+        setCityName(suggestion.name);
+        if (suggestion.countryName) {
+            setCountryName(suggestion.countryName);
+        } else {
+            setCountryName(suggestion.name);
+        }
+        setIsDropdownVisible(false);
+    };
+
+
+    const fetchSuggestions = async (query: string) => {
+        try {
+            const [locationResponse, countryResponse] = await Promise.all([
+                fetch(`${baseUrl}/location/suggestion?q=${query}`),
+                fetch(`${baseUrl}/location/country?name=${query}`)
+            ]);
+
+            const locationData = await locationResponse.json();
+            const countryData = await countryResponse.json();
+
+            const citySuggestions = locationData.data.city.map((city: any) => ({
+                id: city.id,
+                name: city.name,
+                state: city.state,
+                countryName: city.countryName
+            }));
+            const stateSuggestions = locationData.data.state.map((state: any) => ({
+                id: state.id,
+                name: state.name,
+                countryName: state.countryName
+            }));
+            const countrySuggestions = countryData.data.map((country: any) => ({
+                id: country.id,
+                name: country.name,
+                countryName: country.name
+            }));
+            setSuggestions([...citySuggestions, ...stateSuggestions, ...countrySuggestions]);
+            setIsDropdownVisible(true);
+        } catch (error) {
+            console.error("Error fetching location suggestions:", error);
+        }
+    };
+
+    // Debounce the fetchSuggestions function
+    const debounce = (func: Function, delay: number) => {
+        let timer: NodeJS.Timeout;
+        return (...args: any) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    // Create a debounced version of the fetchSuggestions function
+    const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+
+    useEffect(() => {
+        if (query.length > 0) {
+            debouncedFetchSuggestions(query);
+        } else {
+            setSuggestions([]);
+            setIsDropdownVisible(false);
+        }
+    }, [query, debouncedFetchSuggestions]);
 
     return (
         <div className={styles.body}>
@@ -39,11 +122,27 @@ const LocationDropdown = () => {
                 </label>
             </div>
             {(selectedType === "In-person" || selectedType === "Hybrid") && <div className={styles.locationInputContainer}>
-                <input type="text" placeholder='Enter Location' />
+                <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
                 <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
                     <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>
                 </div>
+                {isDropdownVisible && (
+                    <div className={styles.locationDropdown}>
+                        {suggestions.map(suggestion => (
+                            <div
+                                key={suggestion.id}
+                                className={styles.suggestion}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                                <LocationIcon />
+                                <span>{suggestion.name}</span>
+                                {suggestion.state && <span>, {suggestion.state}</span>}
+                                <span>, {suggestion.countryName}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>}
             {(selectedType === "Virtual" || selectedType === "Hybrid") &&
                 <div className={styles.inputLinkContainer}>

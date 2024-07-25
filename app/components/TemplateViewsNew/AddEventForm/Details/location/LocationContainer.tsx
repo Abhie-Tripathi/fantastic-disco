@@ -6,18 +6,20 @@ import LocationDropdown from './LocationDropdown'
 
 const LocationContainer = () => {
     const [dropdown, setDropdown] = useState<boolean>(false)
+    const [cityName, setCityName] = useState<string>("")
+    const [countryName, setCountryName] = useState<string>("")
 
     return (
         <div className={styles.body}>
             <div className={styles.locationContainer}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
-                    <div className={styles.eventLocationOne}>Add Event Location</div>
-                    <div className={styles.eventLocationTwo}>Offline location or Virtual Link</div>
+                    <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>{cityName ? cityName : "Add Event Location"}</div>
+                    <div className={styles.eventLocationTwo}>{countryName ? countryName : "Offline location or Virtual Link"}</div>
                 </div>
             </div>
             <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            {dropdown && <div className={styles.dropdown}><LocationDropdown/></div>}
+            {dropdown && <div className={styles.dropdown}><LocationDropdown setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
 }

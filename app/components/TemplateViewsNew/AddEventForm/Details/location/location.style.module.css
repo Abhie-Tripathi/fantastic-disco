@@ -22,7 +22,10 @@
 .eventLocation .eventLocationOne{
     font-weight: 500;
     color: #7D7D7D;
-    font-size: 12px;
+    font-size: var(--font-size-medium);
+}
+.eventLocation .activeLocation{
+    color: black;
 }
 .eventLocation .eventLocationTwo{
     color: #7D7D7D;
