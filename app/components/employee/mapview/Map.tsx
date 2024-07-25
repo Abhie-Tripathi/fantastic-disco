@@ -5,7 +5,8 @@ import styles from "./map.module.css";
 import { useState } from "react";
 import eventData from "../../../../public/data/demoEvent.json";
 import MapPointer from "/public/Marker.svg";
-import ReactMapGL, { Marker, Popup, Source, Layer } from "react-map-gl";
+import {Map as Map2, Marker, Popup, Source, Layer } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 import FestivalIcon from "/public/festivalIcon.svg";
@@ -221,47 +222,58 @@ const Map = (props: MapProps) => {
   const colors = ['#D5B1F1', '#F5B8CC', '#FFC96B', '#99CEFF', '#F8B9B9'];
 
   const layers = Object.keys(countryEventCounts).map((country, index) => {
-    const layerStyle = {
-      id: `country-layer-${country}`,
-      type: 'fill',
-      source: 'country-source',
-      'source-layer': 'country_boundaries',
-      filter: ['==', 'iso_3166_1', country],
-      paint: {
-        'fill-color': 'rgba(103, 80, 164, 0.5)',
-        'fill-opacity': getOpacityValue(country),
-        'fill-outline-color': '#6750a4',
-      },
-    };
-    return <Layer {...layerStyle} key={country} />;
+    return (
+      <Layer
+        key={country}
+        id={`country-layer-${country}`}
+        type="fill"
+        source="country-source"
+        source-layer="country_boundaries"
+        filter={['==', 'iso_3166_1', country]}
+        paint={{
+          'fill-color': 'rgba(130, 80, 164, 0.6)',
+          'fill-opacity': getOpacityValue(country),
+          "fill-outline-color": '#6750a4',
+        }}
+      />
+    );
   });
 
   const zoneLevelProps = {zoom:1};
 
-  if (!isLoaded) {
-    return <Loading />;
-  } else if (isLoaded && (eventPerPage.length == 0 && countryPerPage.length == 0)) {
-    return (
-      <div className={styles.noData}>
-        No results containing all your search terms were found.
-      </div>
-    );
-  }
+  // if (!isLoaded) {
+  //   return <Loading />;
+  // } else if (isLoaded && (eventPerPage.length == 0 && countryPerPage.length == 0)) {
+  //   return (
+  //     <div className={styles.noData}>
+  //       No results containing all your search terms were found.
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={styles.map}>
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
-      <ReactMapGL
-        {...viewport}
+      <Map2
+        style={{
+          width: "calc(100vw - 137px)",
+          height: "90vh",
+        }}
         mapStyle={
           theme === "light"
-            ? "mapbox://styles/mapbox/light-v10"
+            ? "mapbox://styles/mapbox/streets-v12"
             : "mapbox://styles/mapbox/dark-v11"
         }
-        mapboxApiAccessToken="pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg"
-        onViewportChange={(viewport) => {
-          setViewport(viewport);
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: -0.076132,
+          latitude: 51.50853,
+          zoom: 2,
         }}
+        projection={{"name": "mercator"}}
+        // onViewportChange={(viewport) => {
+        //   setViewport(viewport);
+        // }}
         // {...zoneLevelProps}
       >
         {eventPerPage && eventPerPage.map((event) => (
@@ -363,7 +375,7 @@ const Map = (props: MapProps) => {
             ))}
           </>
         }
-      </ReactMapGL>
+      </Map2>
 
       {(fullView && eventPerPage.length > 0) && (
         <div className={`${styles.eventList_container} ${theme === 'light' && styles.eventList_container_light}`}>
