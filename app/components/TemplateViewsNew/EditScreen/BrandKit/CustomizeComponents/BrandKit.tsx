@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './brandkit.style.module.css'
 import LogoComponent from './LogoComponent'
 import BrandColor from './BrandColor'
+import BrandkitTypography from './BrandkitTypography';
 
 interface Props {
     extractedColors: string[];
@@ -30,6 +31,9 @@ const BrandKit = ({ extractedColors, setExtractedColors }: Props) => {
                 </div>
                 <div className={styles.brandColorContainer}>
                     <BrandColor setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
+                </div>
+                <div className={styles.fontContainer}>
+                    <BrandkitTypography/>
                 </div>
                 <div className={styles.btnContainer}>
                     <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>

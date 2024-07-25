@@ -1,7 +1,5 @@
 import React from 'react'
 import styles from './customization.style.module.css'
-import LogoComponent from './CustomizeComponents/LogoComponent'
-import BrandColor from './CustomizeComponents/BrandColor'
 import CardCustomization from './CustomizeComponents/CardCustomization'
 import ButtonCustomization from './CustomizeComponents/ButtonCustomization'
 import TypographyCustomization from './CustomizeComponents/TypographyCustomization'
