@@ -34,17 +34,18 @@
     cursor: pointer;
     padding: 4px 6px;
 }
-.headerBtns{
+
+.closeBtn{
+    font-size: var(--font-size-xs);
+    background-color: #8F8F8F1F;
+    border-radius: 4px;
+    padding: 7px 8px;
+}
+.addBtnContainer{
     display: flex;
-    align-items: center;
-    gap: 5px;
-}
-.headerBtns span{
-    font-size: var(--font-size-small);
-    cursor: pointer;
-}
-.headerBtns .deleteBtn{
-    color: red;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 17px;
 }
 .addBtn{
     color: white;
@@ -53,6 +54,26 @@
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-medium);
     padding: 5px 8px;
+    line-height: 18px;
+}
+.deletSaveContainer{
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 29px;
+    padding-right: 10px;
+}
+.deleteBtn{
+    color: #CB2A2F;
+    font-size: var(--font-size-small);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.saveBtn{
+    color: #6750A4;
+    font-size: var(--font-size-small);
     line-height: 18px;
 }
 .infoContainer{
