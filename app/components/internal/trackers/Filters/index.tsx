@@ -234,7 +234,7 @@ const templates = [
   {
     name: "T_SPEAKING_OPPORTUNITY",
     templateName: "Speaking Opportunity",
-    type: "disabled",
+    type: "enabled",
     description: "Track your competitor experts, influencers and where they might be participating in events :",
     inputAreas: [
       {
