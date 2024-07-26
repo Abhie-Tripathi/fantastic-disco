@@ -57,8 +57,8 @@ const Index = () => {
           <Link className={styles.bottom} href={
             last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
               ? (last === "editTracker"
-                ? `/internal/trackers/${secondLast}/trackedConfiguration`
-                : `/internal/trackers/${secondLast}/trackedEvents`)
+                ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
+                : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)
               : '/internal/trackers'
           } >
             <Image style={{ display: "flex" }} src={Back} alt="back" />

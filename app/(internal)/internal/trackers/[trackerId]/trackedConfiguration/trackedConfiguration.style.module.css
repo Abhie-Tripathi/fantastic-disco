@@ -179,10 +179,21 @@
     grid-template-columns: repeat(2, 1fr);
     /* border: 1px solid var(--border-color); */
 }
+.speakerAllInputBox{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    width: 50%;
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr); */
+    /* border: 1px solid var(--border-color); */
+}
 .singleUrl{
     display: flex;
     gap:5px;
     border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
     align-items: center;
     padding: 10px;
 }

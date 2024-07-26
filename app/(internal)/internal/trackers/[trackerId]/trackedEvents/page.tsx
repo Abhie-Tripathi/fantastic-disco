@@ -110,6 +110,9 @@ const Page = ({ params }: { params: any }) => {
       if (error) {
         console.log(error);
         showToast("error", error.message);
+        if (typeof window !== 'undefined') {
+          window.location.href = '/internal/trackers';
+        } 
       }
     };
     fetchTrackerDetail();
