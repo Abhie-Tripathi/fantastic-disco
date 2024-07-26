@@ -28,7 +28,7 @@ const CodeWindow = () => {
                 <div className={styles.inputContainer}>
                     <span>https://</span>
                     <input placeholder='Your Company' />
-                    <span>.com</span>
+                    {/* <span>.com</span> */}
                 </div>
             </div>
             <div className={styles.line}></div>

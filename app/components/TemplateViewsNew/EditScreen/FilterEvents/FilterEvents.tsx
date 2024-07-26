@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
+import EventsAdded from './EventsAdded';
 
 interface AllEventsType {
     name: string;
@@ -32,7 +33,7 @@ const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents} /> : <></>}
+                {selectedBtn === "allevents" ? <AllEvents setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents}/>}
             </div>
         </div>
     )
