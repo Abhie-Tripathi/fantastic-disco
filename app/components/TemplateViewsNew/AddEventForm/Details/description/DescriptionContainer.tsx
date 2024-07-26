@@ -4,7 +4,7 @@ import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 
 interface Props{
-    setDescriptionModal : (vallue : boolean)=>void
+    setDescriptionModal : (value : boolean)=>void
     description : string;
 }
 
@@ -19,7 +19,7 @@ const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>
-            {description && <div className={styles.description}>{description}</div>}
+            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description }}></div>}
         </div>
     )
 }

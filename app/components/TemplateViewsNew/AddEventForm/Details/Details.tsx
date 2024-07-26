@@ -14,6 +14,7 @@ import SpeakerProfile from './participation/speaker/SpeakerProfile'
 import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
+import TiptapEditor from './description/TiptapEditor'
 
 interface SpeakerProfileType {
   id: string;
@@ -36,7 +37,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
   const [registerModal, setRegisterModal] = useState<boolean>(false)
   const [description, setDescription] = useState<string>("")
-  const [textValue, setTextValue] = useState<string>("")
+  const [textValue, setTextValue] = useState<string>(description)
   const [participationType, setParticipationType] = useState<string>("Attendee")
 
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
