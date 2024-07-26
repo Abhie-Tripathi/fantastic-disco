@@ -32,12 +32,10 @@
     border-radius: 4px;
 }
 .deactiveBtn{
-    background-color: #8F8F8F1F;
-    color: black;
-    cursor:not-allowed;
+    display: none;
 }
 .activeBtn{
-    cursor:not-allowed;
+    cursor:pointer;
     color: white;
     background-color: #6750a4;
 }
