@@ -117,8 +117,6 @@ export const AuthContextProvider = ({ children }: any) => {
           console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
-            setUser(null)
-            localStorage.clear();
             router.push("/signin");
           } else {
             console.log("Data fetched:", data);

@@ -83,6 +83,7 @@
 .commonCardOuter{
     display: flex;
     width: 100%;
+    gap:var(--spacing-lg);
     flex-direction: column;
 }
 .shareModal{
@@ -107,7 +108,7 @@
     cursor: pointer;
     background-color: var(--primary-color);
     color: white;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     display: flex;
     justify-content: center;
 }
