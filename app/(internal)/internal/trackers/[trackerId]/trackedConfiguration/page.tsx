@@ -10,7 +10,7 @@ import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
 import Labels from "@/app/components/trackers/labels";
 import EventStatusData from "@/public/data/eventType.json";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
 import Link from "next/link";
@@ -50,6 +50,8 @@ interface EditData {
 const Page = () => {
   const pathName = usePathname().split('/');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const type  = searchParams.get('type');
   const last = pathName[pathName.length - 2];
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
@@ -160,7 +162,7 @@ const Page = () => {
             <button onClick={() => setDel(true)}>Delete</button>
           </div>
           <div className={styles.containerTopRight}>
-            <Link href={`/internal/trackers/${last}/editTracker?type=${data?.tracker?.type}`}>
+            <Link href={`/internal/trackers/${last}/editTracker?type=${type}`}>
               <button
                 onClick={() =>
                   GAEvent(
