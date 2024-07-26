@@ -453,6 +453,12 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
         </div>
       )}
 
+      {!unparsedData && !resultData && (
+        <div className={styles.filler_text}>
+          Explore the global trends of business events among multiple categories.
+        </div>
+      )}
+
       {unparsedData && (
         <div className={styles.inner_container}>
           <div
