@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: any) => {
+const index = ({ format, freq, entry, rank, keywords, eventRank, localRank, eventType }: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -14,11 +14,11 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: an
                     <div className={styles.allCat1}>
                         {keywords?.map((item: string, id: number) => (
                             item?.charAt(0) !== '-' ? (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item.replaceAll("_"," ")}
                                 <span className={styles.tooltipText}>Include Keyword</span>
                                 </div>
                             ) : (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.substring(1)}
+                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
                                 <span className={styles.tooltipText}>Exclude Keyword</span>
                                 </div>
                             )
@@ -101,7 +101,28 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank }: an
                     </div>
                 </div>
             </div>
-           
+            <div className={styles.formatFreq}>
+                <div className={styles.format}>
+                    <div className={styles.formatHead}>Event Type</div>
+                    <div className={styles.allCat}>
+                        {eventType?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+             </div>
         </div>
     )
 }
