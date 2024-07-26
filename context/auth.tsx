@@ -117,6 +117,8 @@ export const AuthContextProvider = ({ children }: any) => {
           console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
+            setUser(null)
+            localStorage.clear();
             router.push("/signin");
           } else {
             console.log("Data fetched:", data);
@@ -152,7 +154,7 @@ export const AuthContextProvider = ({ children }: any) => {
       };
       verifyToken();
     }
-  }, [token]);
+  }, []);
 
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
@@ -298,7 +300,6 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     }
   }, [pathName, router, isProfileUpdated]);
-
   useLayoutEffect(() => {
     if (user) {
       const restrictedPaths = ["/signin", "/signup"];

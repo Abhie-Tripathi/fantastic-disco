@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './manageAccess.style.module.css';
@@ -6,6 +7,7 @@ import TrackerUser from '@/app/components/trackers/trackerUser';
 import Account from '/public/account.svg';
 import Image from 'next/image';
 import Link from 'next/link';
+import ShareModal from '@/app/components/internal/trackers/shareModal'
 import { useRouter } from 'next/navigation'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
@@ -27,14 +29,12 @@ const Page = () => {
     useEffect(() => {
     if(!id)
       setDrop(true);
-      console.log(data)
       if(data?.length>0)
        { const result = data?.filter((item: any) =>
        
             item?.aliasName
             ?.toLowerCase()?.includes(filter?.toLowerCase())
         );
-        console.log(result);
         
         setFilteredData(result);}
     }, [filter, data]);
@@ -73,7 +73,6 @@ const Page = () => {
             console.error('Fetch failed:', err);
         }
     };
-    console.log(data);
     
     const [share, setShare] = useState(false);
     const path = usePathname().split('/');
@@ -145,104 +144,12 @@ const Page = () => {
     const queryParams = {
         id: path[path.length - 2],
     };
-    console.log(path);
 
     const copyURL = () => {
         navigator.clipboard.writeText(currentUrl);
         showToast('success', "Copied");
     }
-
-    const shareInvite = async () => {
-        const formData = {
-            accessEntity: "tracker",
-            accessEntityId: path[path.length - 2],
-            entityType: "employee",
-            entityId: id,
-            accessLevel: "EDIT",
-            expiry:"",
-            redirectUrl: `${currentUrl}`
-        };
-        console.log(formData);
-        const url = `${baseUrl}/access`;
-        if(id){
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-                showToast("error",error.response);
-                fetchAccess();
-                  setFilter('');
-                  setIsClicked(false);
-                  shareFunction();
-            } 
-            if(data) {
-                console.log('Data fetched:', data);
-                GAEvent(
-                    "trackers",
-                    "Tracker Detail",
-                    "Share",
-                    "Invite"
-                  );
-                  showToast("success","Tracker shared successfully!")
-                  fetchAccess();
-                  shareFunction();
-                  setId('');
-                  setIsClicked(false);
-                  setFilter('');
-                // setTimeout(()=>{
-                //     window.location.reload();
-                // },2000)
-                
-                if(share) setShare(false);
-                if(sendInvite) setSendInvite(false);
-                setAccessData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
-        }
-        }
-    }
-    const shareNewInvite=async()=>{
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const formData = 
-        {
-          firstname:filter.substring(0,filter.lastIndexOf('@')),
-        lastname:"",
-            email: filter
-      };
-    if(emailRegex.test(filter)){
-    const url = `${baseUrl}/tracker/invite`;
-    try {
-        const { data, error } = await myFetch(url, {
-            method: 'POST',
-            body: JSON.stringify(formData),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (error) {
-            console.error('Error fetching data:', error);
-        } else {
-            console.log(data.user.id);
-            setId(data.user.id);
-            // setData(data);
-        }
-    } catch (err) {
-        console.error('Fetch failed:', err);
-    }
-    } else {
-        showToast("error", "Enter Valid Name or Email");
-        setIsClicked(false);
-        
-    }
-    // setId("");
-    }
+    
     const saveShareInvite = (id: string, name: string, email:string) => {
         setId(id);
         setFilter(name);
@@ -254,29 +161,11 @@ const Page = () => {
       
       fetchAccess();
     },[])
-    
-    const [isClicked,setIsClicked]=useState(false);
-    const shareInvites=()=>{
-        setIsClicked(true);
-        if(id.length===0){
-            shareNewInvite();
-        }
-    }
-    useEffect(() => {
-        
-        if (id && isClicked) {
-            shareInvite();
-        }
-    }, [id, isClicked]);
-    console.log(userAccessData?.access?.admin);
     // useEffect(() => {
     //     if (id && share) {
     //         shareInvite();
     //     }
     // }, [id]);
-    console.log(id);
-    console.log(drop);
-    console.log(filteredData);
     
     return (
         <div className={styles.container}>
@@ -306,39 +195,11 @@ const Page = () => {
             </div>
             {share && (
                 <div className={styles.shareModal} onClick={closeModal}>
-                    <div className={styles.innerModal}>
-                        <div className={styles.shareHead}>Share Tracker</div>
-                        {/* <div className={styles.bar}></div> */}
-                        {/* <div className={styles.linkCopy}>
-                            <div className={styles.link}>{currentUrl}</div>
-                            <div className={styles.copy} onClick={copyURL}>Copy link</div>
-                        </div> */}
-                        <div className={styles.inviteAccess}>
-                        <div className={styles.accountImg}>
-                            <Image src={Account} alt="account" />
-                        </div>
-                            <div className={styles.inputArea}>
-                                <input type="text" 
-                                value={filter}
-                                placeholder='Invite others by email or name' onChange={handleFilterChange} />
-                            </div>
-                        </div>
-                        {filter?.length > 0 && filteredData?.length > 0 && drop &&
-                      <div className={styles.dropdown}>
-                          <div className={styles.dropdownContent}>
-                              {filteredData.map((item: any) => (
-                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName, item?.email)}>
-                                      {item?.aliasName}
-                                  </div>
-                              ))}
-                          </div>
-                      </div>}
-                            
-                        <div className={styles.buttons} >
-                            <button className={styles.send} onClick={shareInvites}>Send Invite</button>
-                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
-                        </div>
-                    </div>
+                    {share && 
+        <div className={styles.shareModal} onClick={closeModal}>
+          <ShareModal fetchAccess={fetchAccess} data={data} id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+        </div>
+        }
                 </div>
             )}
             {/* {sendInvite && (

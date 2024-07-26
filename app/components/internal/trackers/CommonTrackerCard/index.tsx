@@ -9,6 +9,7 @@ import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
+import ShareModal from '@/app/components/internal/trackers/shareModal'
 import Link from "next/link";
 import { usePathname, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
@@ -20,12 +21,14 @@ const CommonTrackerCard = () => {
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const pathName = usePathname().split('/');
   const [loading,setLoading]=useState(false);
-  const id = pathName[pathName.length - 2];
+  const trackerId = pathName[pathName.length - 2];
+  const [id, setId] = useState<string>("");
+  const [data, setData] = useState<any>([]);
   const [item, setItem] = useState<any>([]);
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const url = `${baseUrl}/tracker/${id}`;
+      const url = `${baseUrl}/tracker/${trackerId}`;
       try {
         const { data, error } = await myFetch(url, {
           method: 'GET'
@@ -109,7 +112,9 @@ const CommonTrackerCard = () => {
   };
   console.log(item);
   const [locations, setLocations] = useState<any>();
-
+  const [share, setShare] = useState(false);
+  const [accessdata, setAccessData] = useState([]);
+  const [sendInvite,setSendInvite]=useState(false);
   useEffect(() => {
     console.log(item?.tracker?.eventCountry);
 
@@ -118,8 +123,70 @@ const CommonTrackerCard = () => {
     const eventZone = item?.tracker?.filterValue?.eventRegion?.split(",") || [];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
+  const fetchData = async () => {
+    const url = `${baseUrl}/auth/users?limit=100`;
+    try {
+        const { data, error } = await myFetch(url, {
+            method: 'GET'
+        });
+        if (error) {
+            console.error('Error fetching data:', error);
+        } else {
+            console.log('Data fetched:', data);
+            setData(data?.users);
+        }
+    } catch (err) {
+        console.error('Fetch failed:', err);
+    }
+};
+useEffect(() => {
+        const handlePopState = (event: any) => {
+            if (event.state && event.state.shareOpen) {
+                closeShareModal();
+            } else if (share) {
+                closeShareModal();
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [share, sendInvite]);
+useEffect(() => {
+  fetchData();
+}, []);
+  const closeShareModal = () => {
+    if(share===true)
+      setShare(false);
+  
+    else if(sendInvite) setSendInvite(false);
+      document.body.style.height = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+  };
+  const closeModal = (e: any) => {
+    const targetElement = e.target;
+    if (targetElement.classList.contains(styles.shareModal)) {
+        closeShareModal();
+    }
+};
+const shareFunction = () => {
+  if (!share) {
+      window.history.pushState({ shareOpen: true }, '');
+      setShare(true);
+      document.body.style.height = '100vh';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+  } else {
+      closeShareModal();
+  }
+};
+console.log(share);
+
   return (
-    <>
+    <div className={styles.commonCardOuter}>
     {
       loading && 
       <div style={{display:"flex", justifyContent:"center", width:"100%"}}>
@@ -127,6 +194,7 @@ const CommonTrackerCard = () => {
       </div>
     }
       {item?.tracker ? (
+        <div className={styles.commonCardOuter} style={{gap:"10px"}}>
         <div className='card' style={{ width: "100%", height: "fit-content" }}>
 
           <div className={styles.cardOne}>
@@ -199,9 +267,17 @@ const CommonTrackerCard = () => {
             <Line data={lineData} options={lineOptions} />
           </div> */}
           </div>
+          
+        </div>
+        <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
+        {share && 
+        <div className={styles.shareModal} onClick={closeModal}>
+          <ShareModal data={data} id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+        </div>
+        }
         </div>
       ): (<div></div>)}
-    </>
+    </div>
   );
 };
 
