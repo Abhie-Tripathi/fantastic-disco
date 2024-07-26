@@ -105,6 +105,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       isLocalRank: false,
       isAviationRank: false,
     });
+    setResultData("");
+    setUnparsedData("");
   };
 
   const searchHandler = () => {
@@ -256,7 +258,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 <CategoryDropdown
                   state={selectedCategories}
                   setState={setSelectedCategories}
@@ -291,7 +293,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 {({ close }) => (
                   <LocationDropdown
                     state={selectedLocations}
@@ -329,7 +331,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 {({ close }) => (
                   <DateRange
                     state={selectedDateRange}
