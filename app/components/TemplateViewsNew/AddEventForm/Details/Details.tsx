@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styles from './details.style.module.css'
 import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
@@ -16,11 +16,11 @@ import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
 
 interface SpeakerProfileType {
-    id: string;
-    name: string;
-    linkedin: string;
-    designation: string;
-    profileImage: string | ArrayBuffer | null;
+  id: string;
+  name: string;
+  linkedin: string;
+  designation: string;
+  profileImage: string | ArrayBuffer | null;
 }
 
 interface Props {
@@ -30,6 +30,7 @@ interface Props {
 }
 const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
 
+  const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
@@ -41,10 +42,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
 
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-  
+
   const [registerMessage, setRegisterMessage] = useState<string>("Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>("Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>("#1a1a1a")
+  const [cityName, setCityName] = useState<string>("")
+  const [countryName, setCountryName] = useState<string>("")
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -123,12 +126,17 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
           <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }}></textarea>
           <div className={styles.dateTimeContainer}><DateTimeContainer /></div>
 
-          <div className={styles.locationContainer}><LocationContainer /></div>
+          <div className={styles.locationContainer}><LocationContainer setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
-          <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal}/></div>
+          <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
-          {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer/></div>:<></>}
-          
+          {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer /></div> : <></>}
+
+          {cityName && <Suspense fallback={<div>Loading...</div>}>
+            <div className={styles.map}><Mapview latitude={37.7749}
+              longitude={-122.4194}
+              zoom={6} /></div>
+          </Suspense>}
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>
       </div>
@@ -138,10 +146,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
         <button onClick={handleDescClick}>Save</button>
       </div>}
       {speakerModal && <div className={styles.speakerModal}>
-        <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile}  deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker}/>
+        <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile} deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker} />
       </div>}
       {registerModal && <div className={styles.registerModal}>
-        <RegistrationModal registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} setRegisterBtnColor={setRegisterBtnColor} setRegisterBtnText={setRegisterBtnText} setRegisterMessage={setRegisterMessage}/>
+        <RegistrationModal registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} setRegisterBtnColor={setRegisterBtnColor} setRegisterBtnText={setRegisterBtnText} setRegisterMessage={setRegisterMessage} />
       </div>}
     </div>
   )

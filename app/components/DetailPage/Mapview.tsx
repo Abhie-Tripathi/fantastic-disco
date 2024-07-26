@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './mapview.style.module.css'
 import MapPointer from "/public/Marker.svg";
 import ReactMapGl, { Marker } from "react-map-gl"
@@ -24,7 +24,7 @@ const Mapview = ({ latitude, longitude, zoom }: MapProps) => {
             <div className={styles.heading}>Location</div>
             <div className={styles.line}></div>
             <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
-            <div className={styles.map} style={{ width: 670, height: 200, marginTop:24}}>
+            <div className={styles.map} style={{ width: 580, height: 200, marginTop:24}}>
                 <ReactMapGl
                     {...viewport}
                     mapboxApiAccessToken='pk.eyJ1IjoiYWJoaWUiLCJhIjoiY2x0ODgycjA0MDV6czJrdDQzaWwwYmh6eCJ9.px6YQmrBFfxRPyhB1FqCkg'

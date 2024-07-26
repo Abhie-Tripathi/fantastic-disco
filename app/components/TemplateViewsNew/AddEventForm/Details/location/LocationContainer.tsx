@@ -4,11 +4,15 @@ import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import LocationDropdown from './LocationDropdown'
 
-const LocationContainer = () => {
-    const [dropdown, setDropdown] = useState<boolean>(false)
-    const [cityName, setCityName] = useState<string>("")
-    const [countryName, setCountryName] = useState<string>("")
+interface Props{
+    setCityName : (value : string)=>void;
+    cityName : string;
+    setCountryName :(value : string)=>void;
+    countryName : string;
+}
 
+const LocationContainer = ({setCityName, cityName, setCountryName, countryName}: Props) => {
+    const [dropdown, setDropdown] = useState<boolean>(false)
     return (
         <div className={styles.body}>
             <div className={styles.locationContainer}>
