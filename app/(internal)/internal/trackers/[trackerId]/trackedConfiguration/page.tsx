@@ -5,6 +5,7 @@ import styles from "./trackedConfiguration.style.module.css";
 import BasicFilter from "@/app/components/trackers/basicFilter";
 import LocationFilter from "@/app/components/trackers/locationFilter";
 import Url from '/public/url.svg'
+import EventStatusData from "@/public/data/eventType.json";
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import Insights from "@/app/components/trackers/insights";
@@ -323,7 +324,9 @@ console.log(type);
             localRank={
               data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
             }
-            eventType={data?.tracker?.filterValue?.eventType ? data?.tracker?.filterValue?.eventType:[]}
+            eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
+              ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
+              .map(item => item.name):[]}
             eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           />
         </div>

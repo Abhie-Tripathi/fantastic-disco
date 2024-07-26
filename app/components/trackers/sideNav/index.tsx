@@ -132,7 +132,7 @@ const Index = () => {
                 <span className={styles.tooltipText}>Configurations</span>
               </div>
             </Link>
-            <Link href={`/internal/trackers/${secondLast}/manageAccess`}
+            <Link href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
