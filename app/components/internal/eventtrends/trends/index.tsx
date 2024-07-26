@@ -430,10 +430,10 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
             </MenuTrigger>
           )} */}
           <div className={styles.btn_container}>
-            <div className={styles.apply_button} onClick={searchHandler}>
+            <div className={`${styles.apply_button} ${isLoading && styles.disabled}`} onClick={searchHandler}>
               Apply
             </div>
-            <div className={styles.clearfilters_button} onClick={clearHandler}>
+            <div className={`${styles.clearfilters_button} ${isLoading && styles.disabled}`} onClick={clearHandler}>
               Clear
             </div>
           </div>

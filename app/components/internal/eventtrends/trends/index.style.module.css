@@ -195,3 +195,9 @@
   background-color: var(--disabled-btn-color);
   border-radius: var(--border-radius-sm);
 }
+
+
+.disabled{
+  pointer-events: none;
+  opacity: 0.6;
+}
