@@ -22,22 +22,13 @@ interface DraftWidgetsType {
 }
 
 const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets }: Props) => {
-    const { theme } = useTheme()
+    // const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>(""); // THIS IS TEMPLATE CODE
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
     const [selectedCard, setSelectedCard] = useState<string>("style1");
     const [templateName, setTemplateName] = useState<string>("") // THIS IS TEMPLATE NAME
     const [selectedImage, setSelectedImage] = useState<StaticImageData>(CarouselGridImage); // THIS IS FOR DRAFT WIDGETS TO SHOW THE TEMPLATE POSTER
-
-    // const handleMyWidgets = () => {
-    //     const newWidget: DraftWidgetsType = {
-    //         widgetType: widgetSelected,
-    //         widgetTemplateName: templateName,
-    //         selectedImage : selectedImage
-    //     };
-    //     setDraftWidgets([...draftWidgets, newWidget])
-    // }
-
+    
     useEffect(() => {
         if (widgetSelected === "Page") {
             setSelectedTemplate("LS");

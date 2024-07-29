@@ -1,5 +1,7 @@
 import React from 'react'
 import styles from './allevents.style.module.css'
+import GlobalSearch from './GlobalSearch';
+
 
 interface AllEventsType {
     name: string;
@@ -14,16 +16,14 @@ interface Props {
 }
 
 const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
-
+    
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>All Events <span>{allEvents.length}</span></div>
                 <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
             </div>
-            <div className={styles.searchContainer}>
-                <input type="text" placeholder='Search events'/>
-            </div>
+            <GlobalSearch/>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
                 {allEvents.map((event, key) => (
