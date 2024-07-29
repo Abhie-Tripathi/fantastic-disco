@@ -105,6 +105,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
       isLocalRank: false,
       isAviationRank: false,
     });
+    setResultData("");
+    setUnparsedData("");
   };
 
   const searchHandler = () => {
@@ -256,7 +258,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 <CategoryDropdown
                   state={selectedCategories}
                   setState={setSelectedCategories}
@@ -291,7 +293,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 {({ close }) => (
                   <LocationDropdown
                     state={selectedLocations}
@@ -329,7 +331,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
               </div>
             </Button>
             <Popover>
-              <Dialog>
+              <Dialog className={styles.dialogBorder}>
                 {({ close }) => (
                   <DateRange
                     state={selectedDateRange}
@@ -428,10 +430,10 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
             </MenuTrigger>
           )} */}
           <div className={styles.btn_container}>
-            <div className={styles.apply_button} onClick={searchHandler}>
+            <div className={`${styles.apply_button} ${isLoading && styles.disabled}`} onClick={searchHandler}>
               Apply
             </div>
-            <div className={styles.clearfilters_button} onClick={clearHandler}>
+            <div className={`${styles.clearfilters_button} ${isLoading && styles.disabled}`} onClick={clearHandler}>
               Clear
             </div>
           </div>
@@ -448,6 +450,12 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
           }}
         >
           <Loading />
+        </div>
+      )}
+
+      {!unparsedData && !resultData && (
+        <div className={styles.filler_text}>
+          Explore the global trends of business events among multiple categories.
         </div>
       )}
 
