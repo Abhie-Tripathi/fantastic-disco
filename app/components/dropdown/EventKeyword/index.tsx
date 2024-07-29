@@ -32,6 +32,7 @@ const EventKeyword = ({
     const negative: string[] = [];
 
     eventKeyword.forEach((item) => {
+      item =item.replaceAll(/ /g, "_")
       if (item.startsWith('-')) {
         negative.push(item.substring(1));
       } else {
@@ -51,6 +52,8 @@ const EventKeyword = ({
     if (event.key == "Enter") {
       event.preventDefault();
       if (inputText.trim() !== "") {
+        console.log(inputText);
+        
         // setEventKeyword((prev) => [...prev, inputText]);
         let allKey = inputText.split(',');
         if(activeTab == "Keywords excluded")
@@ -72,21 +75,26 @@ const EventKeyword = ({
 
   const handleSaveData = () => {
     // setState(eventKeyword);
+    const newPositiveKeyword=positiveKeyword.map((keyword)=>keyword.replaceAll(/ /g, "_"))
+    const newNegativeKeyword=negativeKeyword.map((keyword)=> `-${keyword.replaceAll(/ /g, "_")}`)
+    console.log(newPositiveKeyword);
+    
     let newEventKeyword = [
-      ...positiveKeyword,
-      ...negativeKeyword.map((keyword) => `-${keyword}`),
+      ...newPositiveKeyword,
+      ...newNegativeKeyword,
     ];
 
     if(inputText.trim() !== ""){
       let inputKey = inputText.split(',');
       if(activeTab == "Keywords excluded") {
-        inputKey = inputKey.map((keyword) => `-${keyword}`);
-      }
+        inputKey = inputKey.map((keyword) => `-${keyword.replaceAll(/ /g, "_")}`);
+      }else inputKey = inputKey.map((keyword) => `${keyword.replaceAll(/ /g, "_")}`);
       newEventKeyword = [...newEventKeyword, ...inputKey]
     }
     setState(newEventKeyword);
     onClose();
   };
+console.log(positiveKeyword);
 
   return (
     <div>
@@ -138,7 +146,7 @@ const EventKeyword = ({
             { (activeTab == "Keywords" && positiveKeyword.length > 0) &&
             positiveKeyword.map((keyword, index) => (
               <div className={`${styles.keyword_chip}`} key={index}>
-                <span>{keyword}</span>
+                <span>{keyword.replaceAll("_", " ")}</span>
                 <Image
                   src={CloseIcon}
                   width={14}
@@ -152,7 +160,7 @@ const EventKeyword = ({
             { (activeTab == "Keywords excluded" && negativeKeyword.length > 0) &&
             negativeKeyword.map((keyword, index) => (
               <div className={`${styles.keyword_chip}`} key={index}>
-                <span>{keyword}</span>
+                <span>{keyword.replaceAll("_", " ")}</span>
                 <Image
                   src={CloseIcon}
                   width={14}

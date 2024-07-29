@@ -5,16 +5,20 @@ import styles from "./trackedConfiguration.style.module.css";
 import BasicFilter from "@/app/components/trackers/basicFilter";
 import LocationFilter from "@/app/components/trackers/locationFilter";
 import Url from '/public/url.svg'
+import EventStatusData from "@/public/data/eventType.json";
+import Company from '/public/company_Icon.svg'
+import Name from '/public/userName_Icon.svg'
 import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
 import Labels from "@/app/components/trackers/labels";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/context";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
 import { showToast } from '@/utils/showToast';
+import EventType from "@/app/components/Search/Dropdowns/EventType";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -49,7 +53,10 @@ interface EditData {
 const Page = () => {
   const pathName = usePathname().split('/');
   const router = useRouter();
+  const [type,setType]=useState("Custom");
   const last = pathName[pathName.length - 2];
+  const searchParams = useSearchParams()
+  const typeVal = searchParams.get('type')
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
   useEffect(() => {
@@ -72,6 +79,11 @@ const Page = () => {
 
     fetchData();
   }, []);
+  useEffect(()=>{
+    if(typeVal === "T_COMPETITOR") setType("Competitor");
+    else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
+  },[])
+  
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
   useEffect(() => {
     const fetchData = async () => {
@@ -139,6 +151,7 @@ const Page = () => {
     const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [data]);
+console.log(type);
 
   return (
     <div className={styles.container}>
@@ -148,7 +161,7 @@ const Page = () => {
             <CustomeTracker fillColor="#6750a4" />
           </div>
           <div className={styles.trackerType}>
-            <div className={styles.heading}>Custom Tracker</div>
+            <div className={styles.heading}>{type} Tracker</div>
             <div className={styles.content}>
               Select from the available data filters to create a custom tracker
             </div>
@@ -248,6 +261,52 @@ const Page = () => {
           </div>
         </>
       }
+      {data.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
+        <>
+        <div className={styles.line}></div>
+          <div className={styles.innerContainer}>
+            <div
+              className={styles.innerContainerLeft}
+              style={{ paddingLeft: "20px" }}
+            >
+              <div className={styles.advanceHead}>Speaking Opportunity</div>
+              <div className={styles.customContent}>
+                {/* <div className={styles.urlDiv}>
+                  <Image src={Url} alt="url" className="icons" />
+                  URL
+                  </div> */}
+                 Team members and their details to keep track of the events with speaking opportunities.
+              </div>
+            </div>
+            <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
+            <div className={styles.speakerAllInputBox}>
+            <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                    {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                    <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Speaker&apos;s Name</div>
+            </div>
+                  {data?.tracker?.filterValue?.speakerName?.split(',')?.map((item: string, ind: number) => (
+                    <div className={styles.singleUrl} key={ind}>
+                    <Image src={Name} alt="url_icon" className="icons" width={10}/>
+                    <div key={ind} className={styles.singleInputBox}>{item}</div>
+                    </div>
+                  ))}
+            </div>
+            <div className={styles.speakerAllInputBox}>
+            <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                    {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                    <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
+                    </div>
+                  {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                    <div className={styles.singleUrl} key={ind}>
+                    <Image src={Company} alt="url_icon" className="icons" width={10}/>
+                    <div key={ind} className={styles.singleInputBox}>{item}</div>
+                    </div>
+                  ))}
+            </div>
+            </div>
+          </div>
+        </>
+      }
       <div className={styles.line}></div>
       <div className={styles.innerContainer}>
         <div
@@ -265,6 +324,9 @@ const Page = () => {
             localRank={
               data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
             }
+            eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
+              ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
+              .map(item => item.name):[]}
             eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           />
         </div>

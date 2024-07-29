@@ -54,9 +54,8 @@
     font-size: var(--font-size-small);
   }
   .allCat1{
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    display: flex;
     gap: var(--spacing-sm);
   }
   @media (max-width:1550px) {

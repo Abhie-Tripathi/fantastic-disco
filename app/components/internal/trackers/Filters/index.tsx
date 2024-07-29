@@ -9,6 +9,8 @@ import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
+import EventType from "@/app/components/Search/Dropdowns/EventType";
+import EventStatusData from "@/public/data/eventType.json";
 import userOne from "/public/userOne.svg";
 import SearchIcon from "/public/search.svg";
 import DropIcon from "/public/internal/dropdown_arrow.svg";
@@ -92,6 +94,9 @@ interface FilterValue {
   eventCity: any;
   eventCountry: any;
   eventRegion: string;
+  eventType:string[];
+  speakerOrg:string;
+  speakerName:string;
   orgWebsite: string;
   eventAttendanceRange: any;
 }
@@ -105,7 +110,7 @@ interface Template {
   type?: string;
   templateName?: string;
   description?: string | undefined;
-  inputAreas?: InputArea[] | undefined; 
+  inputAreas?: InputArea[] | undefined;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -126,8 +131,8 @@ interface EditData {
 const templates = [
   {
     name: "T_RECRUITMENT",
-    templateName:"Recruitment",
-    type:"disabled",
+    templateName: "Recruitment",
+    type: "disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortlessly : ",
     inputAreas: [
       {
@@ -135,18 +140,19 @@ const templates = [
         placeholder: "Designation",
       },
       {
-        type:"text",
-        placeholder:"Job Description"
+        type: "text",
+        placeholder: "Department"
       }
     ]
   },
   {
     name: "T_COMPETITOR",
     templateName: "Competitor",
-    type:"enabled",
+    type: "enabled",
     description: "Track your competitor experts, influencers and where they might be participating in events :",
     inputAreas: [
       {
+        img: Url,
         type: "text",
         placeholder: "Add Competitor Website",
       }
@@ -154,32 +160,34 @@ const templates = [
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
-    type:"disabled",
-    templateName:"Audience Dept. & Profiles",
+    type: "disabled",
+    templateName: "Audience Dept. & Profiles",
     description: "Track events for the specific organizational departments or audience profiles :",
     inputAreas: [
       {
         type: "text",
         placeholder: "Department",
       },
-      {
-        type: "text",
-        placeholder: "Profile",
-      }
+      // {
+      //   type: "text",
+      //   placeholder: "Profile",
+      // }
     ]
 
   },
   {
     name: "T_CUSTOMER_ICP",
-    templateName:"Customer ICP",
-    type:"disabled",
+    templateName: "Customer ICP",
+    type: "disabled",
     description: "Input ideal customer profile details like company, location or websites to track their interests :",
     inputAreas: [
       {
+        img: Company,
         type: "text",
         placeholder: "Company Name",
       },
       {
+        img: Url,
         type: "text",
         placeholder: "Url",
       },
@@ -191,47 +199,51 @@ const templates = [
   },
   {
     name: "T_BRAND_BUILDING",
-    templateName:"Brand Building",
-    type:"disabled",
+    templateName: "Brand Building",
+    type: "disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles :",
     inputAreas: [
       {
         type: "text",
         placeholder: "Designation",
       },
-      {
-        type: "text",
-        placeholder: "Job Description",
-      }
+      // {
+      //   type: "text",
+      //   placeholder: "Job Description",
+      // }
     ]
   },
   {
     name: "T_PEOPLE_FINDER",
-    templateName:"People Finder",
-    type:"disabled",
+    templateName: "People Finder",
+    type: "disabled",
     description: "Track experts, influencers and where they might be participating in various events : ",
     inputAreas: [
       {
+        img: Name,
         type: "text",
         placeholder: "Name",
       },
       {
+        img: Company,
         type: "text",
         placeholder: "Company Name",
       }
     ]
   },
   {
-    name: "T_SPEAKING_OPPORTUINITY",
-    templateName:"Speaking Opportuinity",
-    type:"disabled",
+    name: "T_SPEAKING_OPPORTUNITY",
+    templateName: "Speaking Opportunity",
+    type: "disabled",
     description: "Track your competitor experts, influencers and where they might be participating in events :",
     inputAreas: [
       {
+        img: Name,
         type: "text",
         placeholder: "Speaker's Name",
       },
       {
+        img: Company,
         type: "text",
         placeholder: "Company Name",
       }
@@ -239,20 +251,20 @@ const templates = [
   },
   {
     name: "T_SOCIAL_CAUSE",
-    templateName:"Social Cause",
-    type:"disabled",
+    templateName: "Social Cause",
+    type: "disabled",
     description: "Track social cause events that interests audience to be socially active and enhance their reach :",
-    inputAreas: [
-      {
-        type: "text",
-        placeholder: "Type of event",
-      }
-    ]
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Type of event",
+    //   }
+    // ]
   },
   {
-    name:"T_PRODUCT_KEYWORDS",
-    templateName:"Product Keywords",
-    description:"List all the events which belongs to given industry or associated with keywords :",
+    name: "T_PRODUCT_KEYWORDS",
+    templateName: "Product Keywords",
+    description: "List all the events which belongs to given industry or associated with keywords :",
     // inputAreas: [
     //   {
     //     type: "text",
@@ -280,6 +292,8 @@ const Pages = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
+  const [selectedEventType, setSelectedEventType] = useState<string[]>([]);
+  const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
@@ -442,17 +456,32 @@ const Pages = () => {
     }
   }, [selectedINScore]);
   const [websites, setWebsites] = useState("");
-
+  const [speakerName, setSpeakerName] = useState("");
+  const [speakerCompany, setSpeakerCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
+  const [designations,setDesignations]=useState("");
   useEffect(() => {
     if (type === "T_COMPETITOR") {
       const urls = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setWebsites(urls);
 
     }
+    else if (type === "T_SPEAKING_OPPORTUNITY") {
+      const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
+      setSpeakerName(speakerName);
+      setSpeakerCompany(speakerCompany);
+      console.log(speakerName, speakerCompany);
+
+    }else if(type === "T_BRAND_BUILDING"){
+      const designation=customData.map((item: {}) => Object.values(item)[0]).join(',');
+      setDesignations(designation);
+    }
   }, [type, customData])
   console.log(websites);
+  console.log(selectedEventType);
+  
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
 
@@ -480,8 +509,23 @@ const Pages = () => {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
           }),
+          ...(selectedEventType?.length>0 &&{
+            eventType: selectedEventTypeName
+          }),
           ...(websites.length > 0 && {
             orgWebsite: websites,
+          }),
+          ...(designations.length>0 && {
+              userDesignation:designations,
+          }),
+          ...(speakerName.length > 0 && {
+            speakerName: speakerName,
+          }),
+          ...(speakerCompany.length > 0 && {
+            speakerOrg: speakerCompany,
+          }),
+          ...(selectedEventType?.length>0 &&{
+            eventType: selectedEventType.join(",")
           }),
           ...(selectedEventEdition > 0 && {
             editionRange: selectedEventEdition.toString(),
@@ -641,6 +685,18 @@ const Pages = () => {
           }),
           ...(Object.entries(selectedCountry).length > 0 && {
             eventCountry: Object.keys(selectedCountry).join(","),
+          }),
+          ...(speakerName.length > 0 && {
+            speakerName: speakerName,
+          }),
+          ...(speakerCompany.length > 0 && {
+            speakerOrg: speakerCompany,
+          }),
+          ...(designations.length>0 && {
+            userDesignation:designations,
+        }),
+          ...(selectedEventType?.length>0 &&{
+            eventType: selectedEventType.join(",")
           }),
           ...(websites.length > 0 && {
             orgWebsite: websites,
@@ -819,11 +875,28 @@ const Pages = () => {
         if (Array.isArray(newData)) {
           setCustomData((prevData: any) => [
             ...prevData,
-            ...newData.map((item) => (
+            ...newData?.map((item) => (
               { companyUrl: item.trim() }
             ))
           ]);
         }
+      }
+      if (type === "T_SPEAKING_OPPORTUNITY") {
+        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+          split(',');
+        const speakerNames = editData?.tracker?.filterValue?.speakerName?.
+          split(',');
+        const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
+          "Speaker's Name": speakerName.trim(),
+          "Company Name": speakerOrgs[index]?.trim()
+        }));
+        setCustomData(presentCustomData);
+        // setCustomData((prevData: any) => [
+        //   ...prevData,
+        //   ...newData?.map((item) => (
+        //     { companyUrl: item.trim() }
+        //   ))
+        // ]);
       }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
@@ -968,6 +1041,17 @@ const Pages = () => {
           ? editData.tracker.filterValue?.maturity
           : 0
       );
+     if(editData?.tracker?.filterValue?.eventType?.length>0){
+       setSelectedEventType(
+  editData.tracker.filterValue.eventType
+);
+setSelectedEventTypeName(EventStatusData
+  ?.filter(item => editData.tracker.filterValue.eventType.includes(item.id))
+  .map(item => item.name)[0]);
+}
+
+
+    
       setSelectedINScore(
         editData.tracker.filterValue?.internationalScore > 0
           ? editData.tracker.filterValue?.internationalScore
@@ -1073,7 +1157,7 @@ const Pages = () => {
             isValid = false;
           }
         } else {
-          if (value !== null && value !== '') {
+          if (value !== null && value.trim() !== '') {
             acc[inputArea.placeholder] = value;
           } else {
             isValid = false;
@@ -1082,33 +1166,40 @@ const Pages = () => {
         return acc;
       }, {});
 
-      if (isValid) {
+      if (isValid &&  template?.type==="enabled") {
         setCustomData((prevData: any) => [
           ...prevData,
           newEntry
         ]);
+        setInputValues({});
       } else {
         console.error('Invalid input or URL');
       }
-      setInputValues({});
+      
     }
   }
   console.log(valid);
-  const truncate=(val:string)=>{
-    if(val.length>24) return val.substring(0,25)+"...";
+  const truncate = (val: string) => {
+    if (val.length > 24) return val.substring(0, 25) + "...";
     else return val;
   }
   const deleteEntry = (entryKey: string, itemIndex: number) => {
-    setCustomData((prevData) => 
-      prevData.map((item, index) => {
-        if (index === itemIndex) {
-          const { [entryKey]: _, ...rest } = item;
-          return rest;
-        }
-        return item;
-      }).filter(item => Object.keys(item).length > 0)
-    );
+    console.log(itemIndex);
+    const filteredData = customData.filter((item, index) => index !== itemIndex);
+    setCustomData(filteredData);
+    console.log(filteredData);
+
+    // setCustomData((prevData) => 
+    //   prevData.map((item, index) => {
+    //     if (index === itemIndex) {
+    //       const { [entryKey]: _, ...rest } = item;
+    //       return rest;
+    //     }
+    //     return item;
+    //   }).filter(item => Object.keys(item).length > 0)
+    // );
   };
+  
   return (
     <>
       <div
@@ -1159,17 +1250,17 @@ const Pages = () => {
         />
       </div>
       {template && template.inputAreas &&
-        <div className={`${styles.competitor}`} style={{"border": "1px solid var(--border-color)"}}>
+        <div className={`${styles.competitor}`} style={{ "border": "1px solid var(--border-color)" }}>
           <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
-            {template?.type!=="enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
+            {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div>
           <div className={styles.bar}></div>
           <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Add data manually
-                {template?.inputAreas?.length===undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+                  {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
                 </div>
                 <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
               </div>
@@ -1190,12 +1281,12 @@ const Pages = () => {
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Import CSV Data
-                  {template.type==="enabled" && <div className={styles.badgeSuccess}>Coming Soon</div>}
+                  {template.type === "enabled" && <div className={styles.badgeSuccess}>Coming Soon</div>}
                 </div>
                 <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
               </div>
               <div>
-              
+
                 <span>
                   <label className={styles.switch}>
                     <input
@@ -1210,32 +1301,32 @@ const Pages = () => {
             </div>
           </div>
           {template?.inputAreas &&
-          <div className={`${styles.competitor}`} style={{padding:"5px", borderRadius:"var(--border-radius-sm)"}}>
-            <div className={styles.subHeading}>{template.description}</div>
-            {!valid && (
-              <div style={{ color: "red" }}>Invalid input&apos;s</div>
-            )}
-            <div className={styles.allInputArea}>
-              {template?.inputAreas?.map((inputArea:any, index:number) => (
-                <div key={index} className={styles.singleInputArea}>
-                  <Image src={Url} alt="url_Icon" className="icons" />
-                  <input
-                    className={styles.textArea}
-                    type="text"
-                    placeholder={inputArea.placeholder}
-                    value={inputValues[index] || ''}
-                    onChange={(e) => handleInput(index, e.target.value)}
-                    onKeyPress={handleKeyDown}
-                  />
+            <div className={`${styles.competitor}`} style={{ padding: "5px", borderRadius: "var(--border-radius-sm)" }}>
+              <div className={styles.subHeading}>{template.description}</div>
+              {!valid && (
+                <div style={{ color: "red" }}>Invalid input&apos;s</div>
+              )}
+              <div className={styles.allInputArea}>
+                {template?.inputAreas?.map((inputArea: any, index: number) => (
+                  <div key={index} className={styles.singleInputArea}>
+                    {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                    <input
+                      className={styles.textArea}
+                      type="text"
+                      placeholder={inputArea.placeholder}
+                      value={inputValues[index] || ''}
+                      onChange={(e) => handleInput(index, e.target.value)}
+                      onKeyPress={handleKeyDown}
+                    />
+                  </div>
+                ))}
+                <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                  style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                >
+                  <Image src={Add} alt="add_Icon" />
                 </div>
-              ))}
-              <div onClick={() => template.type === "enabled" && addNew()}  className={styles.addIcon}
-              style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-              >
-                <Image src={Add} alt="add_Icon" />
               </div>
-            </div>
-            {/* {customData.map((item:any, index:number) => (
+              {/* {customData.map((item:any, index:number) => (
         // <div key={index} className={styles.customDataOuterDiv}>
         // <div className={styles.singleInputBox}>{item.name}</div>
         // <div className={styles.singleInputBox}>{item.companyName}</div>
@@ -1246,18 +1337,21 @@ const Pages = () => {
           </div>
         ))}
       ))} */}
-            {customData.map((item: any, index: number) => (
-              <div key={index} className={styles.customDataOuterDiv}>
-                {Object.entries(item).map(([entryKey, value]) => (
-                  <div key={entryKey} className={styles.singleInputBox}>
-                  
-                  <div className={styles.square} onClick={() => deleteEntry(entryKey, index)}>-</div>
-                  {value as string}
+              {customData.map((item: any, index: number) => (
+                <div key={index} className={styles.customDataOuterDiv}>
+                  <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                  <div className={styles.allCustomData}>
+                    {Object.entries(item).map(([entryKey, value]) => (
+                      <div key={entryKey} className={styles.singleInputBox}>
+
+
+                        {value as string}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
           }
         </div>
       }
@@ -1309,7 +1403,7 @@ const Pages = () => {
                   <div className={styles.input_container}
                     style={{
                       border:
-                        isMandatory && type==="CUSTOM" && selectedLocations.length === 0 ? "2px solid red" : "",
+                        isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "2px solid red" : "",
                     }}
                   >
                     <div className={styles.input}>
@@ -1351,6 +1445,46 @@ const Pages = () => {
                       />
                     )}
                   </Dialog>
+                </Popover>
+              </MenuTrigger>
+
+              <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Event Type
+                        {
+                          selectedEventType?.length == 1 ? (
+                            <span className={styles.input_selected_title}>
+                              {selectedEventTypeName}
+                            </span>
+                          ) : (
+                            selectedEventType?.length > 1 ? (
+                              <span className={styles.input_selected_no}>
+                                {selectedEventType.length}
+                              </span>
+                            ) : <></>
+                          )
+                        }
+                      </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
+                      />
+                    </div>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  <EventType
+                    state={selectedEventType}
+                    setState={setSelectedEventType}
+                    selectedEventTypeName={selectedEventTypeName}
+                    setSelectedEventTypeName={setSelectedEventTypeName}
+                  />
                 </Popover>
               </MenuTrigger>
 
@@ -1462,56 +1596,6 @@ const Pages = () => {
               </Popover>
             </MenuTrigger> */}
 
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.disabledBtn}>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Rank
-                        {rankToggles.isEventRank && (
-                          <span className={styles.input_selected_title}>
-                            [{selectedEventRank[0]} , {selectedEventRank[1]}]
-                          </span>
-                        )}
-                        {rankToggles.isLocalRank && (
-                          <span className={styles.input_selected_title}>
-                            [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
-                          </span>
-                        )}
-                        {rankToggles.isAviationRank && (
-                          <span className={styles.input_selected_title}>
-                            [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
-                          </span>
-                        )}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                {/* <Popover className={styles.filterPopover}>
-                  <Dialog className={styles.dialogBorder}>
-                    {({ close }) => (
-                      <RankInput
-                        selectedEventRank={selectedEventRank}
-                        setSelectedEventRank={setSelectedEventRank}
-                        selectedLocalRank={selectedLocalRank}
-                        setSelectedLocalRank={setSelectedLocalRank}
-                        selectedAviationRank={selectedAviationRank}
-                        setSelectedAviationRank={setSelectedAviationRank}
-                        rankToggles={rankToggles}
-                        setRankToggles={setRankToggles}
-                        onClose={close}
-                      />
-                    )}
-                  </Dialog>
-                </Popover> */}
-              </MenuTrigger>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
@@ -1651,6 +1735,45 @@ const Pages = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
+                          Event Keywords
+                          {selectedEventKeywords?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedEventKeywords.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedEventKeywords[0]?.replaceAll("_"," ")}
+                            </span>
+                          )}
+                        </div>
+                        <Image
+                          src={DropIcon}
+                          alt="dropicon"
+                          width={20}
+                          height={20}
+                          className={iconClass}
+                        />
+                      </div>
+                    </div>
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <Dialog className={styles.dialogBorder}>
+                      {({ close }) => (
+                        <EventKeyword
+                          state={selectedEventKeywords}
+                          setState={setSelectedEventKeywords}
+                          onClose={close}
+                        />
+                      )}
+                    </Dialog>
+                  </Popover>
+                </MenuTrigger>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
                           Event Attendance
                           {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
@@ -1720,6 +1843,38 @@ const Pages = () => {
                     </Dialog>
                   </Popover>
                 </MenuTrigger>
+                
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Event Edition
+                          {selectedEventEdition !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedEventEdition} %
+                            </span>
+                          )}
+                        </div>
+                        <Image
+                          src={DropIcon}
+                          alt="dropicon"
+                          width={20}
+                          height={20}
+                          className={iconClass}
+                        />
+                      </div>
+                    </div>
+                  </Button>
+                  <Popover>
+                    <Dialog className={styles.noBorder}>
+                      <RangeSlider
+                        state={selectedEventEdition}
+                        setState={setSelectedEventEdition}
+                      />
+                    </Dialog>
+                  </Popover>
+                </MenuTrigger>
 
                 {/* Disabled */}
                 <MenuTrigger onOpenChange={setMenuOpen}>
@@ -1760,75 +1915,56 @@ const Pages = () => {
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Edition
-                          {selectedEventEdition !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventEdition} %
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
+                <Button className={styles.disabledBtn}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Rank
+                        {rankToggles.isEventRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedEventRank[0]} , {selectedEventRank[1]}]
+                          </span>
+                        )}
+                        {rankToggles.isLocalRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
+                          </span>
+                        )}
+                        {rankToggles.isAviationRank && (
+                          <span className={styles.input_selected_title}>
+                            [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
+                          </span>
+                        )}
                       </div>
-                    </div>
-                  </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      <RangeSlider
-                        state={selectedEventEdition}
-                        setState={setSelectedEventEdition}
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
                       />
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Keywords
-                          {selectedEventKeywords?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventKeywords.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventKeywords[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={iconClass}
-                        />
-                      </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <EventKeyword
-                          state={selectedEventKeywords}
-                          setState={setSelectedEventKeywords}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                  </div>
+                </Button>
+                {/* <Popover className={styles.filterPopover}>
+                  <Dialog className={styles.dialogBorder}>
+                    {({ close }) => (
+                      <RankInput
+                        selectedEventRank={selectedEventRank}
+                        setSelectedEventRank={setSelectedEventRank}
+                        selectedLocalRank={selectedLocalRank}
+                        setSelectedLocalRank={setSelectedLocalRank}
+                        selectedAviationRank={selectedAviationRank}
+                        setSelectedAviationRank={setSelectedAviationRank}
+                        rankToggles={rankToggles}
+                        setRankToggles={setRankToggles}
+                        onClose={close}
+                      />
+                    )}
+                  </Dialog>
+                </Popover> */}
+              </MenuTrigger>
+
 
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button>
@@ -1872,6 +2008,143 @@ const Pages = () => {
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
               <div className={styles.inputdropdowns_container}>
                 {/* Disabled */}
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Reputation Score
+                          {selectedReptScore !== 0 && (
+                            <span className={styles.input_selected_title}>
+                            &gt; {selectedReptScore} %
+                          </span>
+                          )}
+                        </div>
+
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => { }}
+                                checked={selectedReptScore !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <RangeSlider
+                      state={selectedReptScore}
+                      setState={setSelectedReptScore}
+                      sliderType={'reverse'}
+                    />
+                  </Popover>
+                </MenuTrigger>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={`${styles.dropdown_button}`}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Trust Score
+                          {selectedTrustScore !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              &gt; {selectedTrustScore} %
+                            </span>
+                          )}
+                        </div>
+
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {}}
+                                checked={selectedTrustScore !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <RangeSlider
+                      state={selectedTrustScore}
+                      setState={setSelectedTrustScore}
+                      sliderType={'reverse'}
+                    />
+                  </Popover>
+                </MenuTrigger>
+
+                {/* Disabled */}
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <div className={styles.disabledBtn}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>Event Series</div>
+
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {
+                                  setSelectedEventSeries((prev) => !prev);
+                                }}
+                                checked={selectedEventSeries}
+                                disabled={true}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </MenuTrigger>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={styles.disabledBtn}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Maturity
+                          {selectedMaturity > 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedMaturity}
+                            </span>
+                          )}
+                        </div>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => { }}
+                                checked={(maturity ?? [])?.length > 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover className={styles.filterPopover}>
+                    <MaturitySlider
+                      state={selectedMaturity}
+                      setState={setSelectedMaturity}
+                    />
+                  </Popover> */}
+                </MenuTrigger>
+
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
@@ -1909,230 +2182,12 @@ const Pages = () => {
                     </div>
                   </div>
                 </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Trust Score
-                          {selectedTrustScore !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedTrustScore} %
-                            </span>
-                          )}
-                        </div>
-
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => { }}
-                                checked={selectedTrustScore !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <RangeSlider
-                          state={selectedTrustScore}
-                          setState={setSelectedTrustScore}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
-
-                {/* Disabled */}
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <div className={styles.disabledBtn}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>Event Series</div>
-
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => {
-                                  setSelectedEventSeries((prev) => !prev);
-                                }}
-                                checked={selectedEventSeries}
-                                disabled={true}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Reputation Score
-                          {selectedReptScore !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedReptScore} %
-                            </span>
-                          )}
-                        </div>
-
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => { }}
-                                checked={selectedReptScore !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <RangeSlider
-                          state={selectedReptScore}
-                          setState={setSelectedReptScore}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Maturity
-                          {selectedMaturity > 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedMaturity}
-                            </span>
-                          )}
-                        </div>
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => { }}
-                                checked={(maturity ?? [])?.length > 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
-                    <MaturitySlider
-                      state={selectedMaturity}
-                      setState={setSelectedMaturity}
-                    />
-                    {/* </Dialog> */}
-                  </Popover>
-                </MenuTrigger>
               </div>
             )}
 
             {/* AUDIENCE INTEL */}
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
               <div className={styles.inputdropdowns_container_AI}>
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          International Score
-                          {selectedINScore > 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedINScore}
-                            </span>
-                          )}
-                        </div>
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => { }}
-                                checked={(intScore ?? [])?.length > 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <IntScoreSlider
-                      state={selectedINScore}
-                      setState={setSelectedINScore}
-                    />
-                  </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Inbound Score
-                          {selectedInboundScore !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              {selectedInboundScore} %
-                            </span>
-                          )}
-                        </div>
-
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => { }}
-                                checked={selectedInboundScore !== 0}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <RangeSlider
-                          state={selectedInboundScore}
-                          setState={setSelectedInboundScore}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button>
@@ -2200,7 +2255,7 @@ const Pages = () => {
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                checked={template?.inputAreas?.length==0}
+                                checked={template?.inputAreas?.length == 0}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -2220,6 +2275,81 @@ const Pages = () => {
                       )}
                     </Dialog>
                   </Popover>
+                </MenuTrigger>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={styles.disabledBtn}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          International Score
+                          {selectedINScore > 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedINScore}
+                            </span>
+                          )}
+                        </div>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => { }}
+                                checked={(intScore ?? [])?.length > 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover className={styles.filterPopover}>
+                    <IntScoreSlider
+                      state={selectedINScore}
+                      setState={setSelectedINScore}
+                    />
+                  </Popover> */}
+                </MenuTrigger>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  <Button className={styles.disabledBtn}>
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <div className={styles.input_title}>
+                          Inbound Score
+                          {selectedInboundScore !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              {selectedInboundScore} %
+                            </span>
+                          )}
+                        </div>
+
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => { }}
+                                checked={selectedInboundScore !== 0}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                  {/* <Popover>
+                    <Dialog className={styles.noBorder}>
+                      {({ close }) => (
+                        <RangeSlider
+                          state={selectedInboundScore}
+                          setState={setSelectedInboundScore}
+                        />
+                      )}
+                    </Dialog>
+                  </Popover> */}
                 </MenuTrigger>
               </div>
             )}

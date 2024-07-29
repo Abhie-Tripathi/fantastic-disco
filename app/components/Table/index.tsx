@@ -692,8 +692,8 @@ const [val,setVal]=useState(1);
               <th>City</th>
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
-              {appliedKeywords.length > 0 && <th>Matched Keywords</th>}
-              {appliedKeywords.length >= 5 && <th>Match Score</th>}
+              {appliedKeywords.length > 0 || showInsights?.trackerKeywords && <th>Matched Keywords</th>}
+              {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && <th>Match Score</th>}
               <th>Category</th>
               {showInsights.eventSeries ||
                 (eventPerPage[0]?.series && <th>Event Series</th>)}
@@ -831,7 +831,7 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {appliedKeywords.length > 0 && (
+                {appliedKeywords.length > 0 || showInsights?.trackerKeywords && (
                   <>
                     <td style={{textAlign: "center"}}>
                       {event.matchedKeywords.length == 0 ? (
@@ -858,7 +858,7 @@ const [val,setVal]=useState(1);
                         </>
                       )}
                     </td>
-                    {appliedKeywords.length >= 5 && (
+                    {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>

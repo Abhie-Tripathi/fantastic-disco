@@ -127,18 +127,18 @@ export const convertToCustomFormat = (dateStr: string) => {
   const monthIndex = dateObject.getMonth();
   const year = dateObject.getFullYear();
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
     "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   const formattedDate = day + " " + monthNames[monthIndex] + " " + year;
   return formattedDate;
