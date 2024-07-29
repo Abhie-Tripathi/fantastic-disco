@@ -16,14 +16,14 @@ const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusPro
   const onClickHandler = (value: any) => {
     if(state.includes(value.id)) {
       setState(state.filter((data) => data !== value.id))
-    }else{
+    } else {
       setState([...state, value.id]);
       setSelectedEventTypeName(value.name);
     }
   };
 
   return (
-    <div className={styles.container} style={{background: theme==="light"?"white":""}}>
+    <div className={styles.container} style={{background: theme==="light" ? "white" : ""}}>
       <div className={styles.sub_container}>
         {EventStatusData.map((item) => (
           <div key={item.id} className={styles.checkbox_container}>
@@ -32,7 +32,7 @@ const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusPro
               onChange={() => onClickHandler(item)}
               checked={state.includes(item.id)}
             />
-            <label htmlFor={item.name}>{item.name}</label>
+            <label htmlFor={item.id}>{item.name}</label>
           </div>
         ))}
       </div>

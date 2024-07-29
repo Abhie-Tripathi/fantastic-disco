@@ -12,12 +12,15 @@ import styles from './sideNav.style.module.css';
 import Link from 'next/link';
 import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import { GAEvent } from '@/utils/GAEvent';
+import { useAuthContext } from '@/context';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
   const secondLast = pathName[pathName.length - 2];
+  const {setUser}=useAuthContext();
+  const token = searchParams.get("token");
   console.log(secondLast);
   const router = useRouter()
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
@@ -30,6 +33,63 @@ const Index = () => {
   }, [last])
   console.log(trackerSection);
   const [data, setData] = useState<any>([]);
+  useEffect(() => {
+    if (token && token.length > 0) {
+      const verifyToken = async () => {
+        const formData = {
+          token: token,
+          invite: true,
+        };
+        const url = `${baseUrl}/auth/customer/reset-password/page`;
+        try {
+          const { data, error } = await myFetch(url, {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          console.log("Data from signin", data);
+          console.log("Error from signnin", error);
+          if (error) {
+            console.error("Error fetching data:", error);
+            router.push("/signin");
+          } else {
+            console.log("Data fetched:", data);
+            const { id, firstname, lastname, email, role, profilePicture } =
+              data.info;
+            const user = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            const userObject = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            setUser(data.info);
+            localStorage.setItem("user",JSON.stringify(userObject));
+          }
+        } catch (err) {
+          console.error("Fetch failed:", err);
+          router.push("/signin");
+        }
+      };
+      verifyToken();
+    }
+  }, [token]);
   useEffect(() => {
     const fetchData = async () => {
       const url = `${baseUrl}/tracker/${secondLast}`;

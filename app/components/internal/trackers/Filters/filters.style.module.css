@@ -247,6 +247,7 @@
   /* Toggler */
   
   .toggle_container > span {
+    display: flex;
     color: #79747e;
     font-size: 16px;
     font-weight: 500;

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({ format, freq, entry, rank, keywords, eventRank, localRank, eventType }: any) => {
+const index = ({ format, freq, entry, rank, keywords, eventRank, localRank, eventType, isBranded, maturity }: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -89,18 +89,65 @@ const index = ({ format, freq, entry, rank, keywords, eventRank, localRank, even
                         ))}
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Rankings</div>
-                    <div className={styles.allCat}>
-                        {eventRank?.length!==0 && 
-                        <div className={styles.item}>Event Rank: {eventRank[0]}-{eventRank[1]}</div>
-                        }
-                        {localRank?.length!==0 && 
-                        <div className={styles.item}>Local Rank: {localRank[0]}-{localRank[1]}</div>
-                        }
-                    </div>
-                </div>
+                <div className={styles.branded}>
+          <div className={styles.formatHead}>Branded Event</div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${isBranded ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
             </div>
+            <div className={styles.formatFreq}>
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>Event Series</div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${rank==="true" ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>
+            Maturity
+            {/* {maturity?.length>0  && <span className={styles.newBtn}>{maturity}</span>} */}
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+               <span className={maturity?.length > 0 ? styles.sliderBranded : styles.slider}></span>
+
+              </label>
+            </span>
+          </div>
+        </div>
+      </div>
+    
             <div className={styles.formatFreq}>
                 <div className={styles.format}>
                     <div className={styles.formatHead}>Event Type</div>
