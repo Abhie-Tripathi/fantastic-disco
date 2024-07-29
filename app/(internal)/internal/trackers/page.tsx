@@ -177,7 +177,7 @@ const Trackers = () => {
       type: "template",
       domain: "Human Resource",
       img: Speaking,
-      url: "T_SPEAKING_OPPORTUINITY",
+      url: "T_SPEAKING_OPPORTUNITY",
       trackerName: "Speaking Opportunity",
       content:
         "Input team members and their details to keep track of the events with speaking opportunities.",
