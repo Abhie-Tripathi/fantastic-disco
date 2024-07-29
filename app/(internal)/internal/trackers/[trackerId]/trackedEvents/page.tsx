@@ -1,5 +1,5 @@
 "use client";
-import React, { lazy, Suspense, useEffect, useState, useLayoutEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import Expand from "/public/expand_more.svg";
 import { Notes } from "@/app/components/eventDetail/Notes";
 import ExportModal from "@/app/components/Search/ExportModal";
@@ -11,7 +11,7 @@ const Trackers = React.lazy(
 import Table from "@/app/components/Table";
 import { useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
-import { baseUrl, useAuthContext } from "@/context";
+import { baseUrl} from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";

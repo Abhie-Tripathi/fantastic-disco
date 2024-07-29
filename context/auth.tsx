@@ -15,11 +15,9 @@ import { SignUpResponse, SignInResponse, TSignInWithOTPSchema } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
-import { routeModule } from "next/dist/build/templates/app-page";
 
 type authContextType = {
   user: UserResponse | null;
-  setUser: any;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
@@ -40,7 +38,6 @@ interface newUserResponse {
 }
 const authContextDefaultValues: authContextType = {
   user: null,
-  setUser:null,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
   signOut: () => {},
@@ -99,7 +96,63 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
+  useEffect(() => {
+    if (token && token.length > 0) {
+      const verifyToken = async () => {
+        const formData = {
+          token: token,
+          invite: true,
+        };
+        const url = `${baseUrl}/auth/customer/reset-password/page`;
+        try {
+          const { data, error } = await myFetch(url, {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
 
+          console.log("Data from signin", data);
+          console.log("Error from signnin", error);
+          if (error) {
+            console.error("Error fetching data:", error);
+            router.push("/signin");
+          } else {
+            console.log("Data fetched:", data);
+            const { id, firstname, lastname, email, role, profilePicture } =
+              data.info;
+            const user = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            const userObject = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            setUser(data.info);
+            setLocalStorage(userObject);
+          }
+        } catch (err) {
+          console.error("Fetch failed:", err);
+          router.push("/signin");
+        }
+      };
+      verifyToken();
+    }
+  }, []);
 
   const signin = async (userDto: TSignInFormSchema) => {
     console.log("user_data_for_signin------------>", userDto);
@@ -259,7 +312,6 @@ export const AuthContextProvider = ({ children }: any) => {
     signup,
     signin,
     signOut,
-    setUser,
     verifyOtp,
     verifyLoginOTP,
     isProfileUpdated,
