@@ -3,6 +3,7 @@ import styles from './codewindow.style.module.css'
 import CopyIcon from '/public/page.svg'
 import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
+import { useTheme } from '@/context'
 
 const CodeWindow = () => {
 
@@ -16,6 +17,7 @@ const CodeWindow = () => {
         `;
         navigator.clipboard.writeText(textToCopy);
     };
+    const {theme} = useTheme();
     return (
         <div className={styles.body}>
             <div className={styles.domainHeader}>Whitelist your Domain</div>
@@ -26,9 +28,8 @@ const CodeWindow = () => {
                     <div className={styles.heading}>Please enter your website host domain to whitelist it on our platform</div>
                 </div>
                 <div className={styles.inputContainer}>
-                    <span>https://</span>
-                    <input placeholder='Your Company' />
-                    {/* <span>.com</span> */}
+                    <span style={{backgroundColor : theme === "light"?"#F2F2F2":"#292929"}}>https://</span>
+                    <input placeholder='Your Company' style={{color : theme === "light" ? "black":"white"}} />
                 </div>
             </div>
             <div className={styles.line}></div>
@@ -41,7 +42,7 @@ const CodeWindow = () => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.codeContainer}>
-                <div className={styles.codewindow}>
+                <div className={styles.codewindow} style={{backgroundColor : theme == "light" ?"#FAFAFA":"#1A1A1A" }}>
                     {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
                     {`<section-widget id="23"></section-widget>`}
                 </div>

@@ -1,9 +1,9 @@
 .body{
-    border: 1px solid #E0E1E4;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
 }
 .line{
-    border-top: 1px solid #F5F5F5;
+    border-top: 1px solid var(--border-color);
 }
 .headerContainer{
     display: flex;
@@ -13,7 +13,6 @@
 }
 .headerContainer div{
     font-size: 14px;
-    color: black;
     font-weight: 600;
 }
 

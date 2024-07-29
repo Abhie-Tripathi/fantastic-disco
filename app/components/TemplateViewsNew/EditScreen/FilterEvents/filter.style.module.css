@@ -23,7 +23,7 @@
 }
 .line{
     width: 100%;
-    border-top: 1px solid #F5F5F5;
+    border-top:1px solid var(--border-color);
 }
 .container{
     margin-top: 20px;

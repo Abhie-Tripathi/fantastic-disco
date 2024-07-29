@@ -62,7 +62,7 @@
 .customCheckbox {
     width: 20px;
     height: 20px;
-    border: 2px solid #EFEFEF;
+    border: 2px solid var(--border-color);
     border-radius: 50%;
     position: relative;
     cursor: pointer;
@@ -81,7 +81,7 @@
     height: 12px;
     border-radius: 50%;
     background-color: transparent;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
 .checkbox:checked+.customCheckbox {
@@ -94,7 +94,7 @@
 .line{
     margin-top: 12px;
     margin-bottom: 19px;
-    border-top: 1px solid #F5F5F5;
+    border-top: 1px solid var(--border-color);
 }
 .colorsContainer{
     display: flex;
@@ -128,7 +128,6 @@
     font-size: 11px;
 }
 .radiusContainer .radiusValue{
-    background-color: #F2F2F2;
     border-radius: 5px;
     font-size: 10px;
     line-height: 14px;
@@ -153,10 +152,22 @@
     font-size: 11px;
 }
 .btnTextContainer input{
-    border: 1px solid #C9C9C9;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 10px;
     line-height: 14px;
     padding: 8px 16px;
     width: 77%;
+    background-color: transparent;
+}
+@media screen and (max-width: 1406px) {
+    .body{
+        flex-direction: column;
+    }
+    .headingContainer{
+        width: 100%;
+    }
+    .editContainer{
+        width: 100%;
+    }
 }

@@ -42,7 +42,6 @@
     /* color: black; */
 }
 .radiusContainer .radiusValue{
-    background-color: #F2F2F2;
     border-radius: 5px;
     width: 70px;
     font-size: 10px;
@@ -56,4 +55,15 @@
 }
 .arrows div{
     cursor: pointer;
+}
+@media screen and (max-width: 1406px) {
+    .body{
+        flex-direction: column;
+    }
+    .headingContainer{
+        width: 100%;
+    }
+    .editContainer{
+        width: 100%;
+    }
 }

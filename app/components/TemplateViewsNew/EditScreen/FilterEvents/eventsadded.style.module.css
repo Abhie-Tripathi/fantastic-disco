@@ -1,9 +1,9 @@
 .body{
-    border: 1px solid #E0E1E4;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
 }
 .line{
-    border-top: 1px solid #F5F5F5;
+    border-top:1px solid var(--border-color);
 }
 .headerContainer{
     display: flex;
@@ -16,7 +16,6 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: black;
     font-weight: 600;
 }
 .headerContainer div span{
@@ -50,10 +49,12 @@
 .event{
     width: 100%;
     padding: 25px 34px 29px 23px;
-    /* border-left: 1px solid #EBEBEB; */
-    border-bottom: 1px solid #EBEBEB;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
+}
+.eventDetailsContainer{
+    width: 70%;
 }
 .eventName{
     color: #696B83;

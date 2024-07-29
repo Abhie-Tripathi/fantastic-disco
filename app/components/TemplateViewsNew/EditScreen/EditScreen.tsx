@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import styles from './edit.style.module.css'
-import BrandKit from './BrandKit/CustomizeComponents/BrandKit'
 import FilterEvents from './FilterEvents/FilterEvents'
 import CodeWindow from './Code/CodeWindow';
 import Customization from './BrandKit/Customization';
+import { useTheme } from '@/context';
 
 interface FontSettings {
     fontFamily: string;
@@ -47,12 +47,23 @@ interface EditScreenProps {
 const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle , setSelectedBtn,selectedBtn,setIsAddEventModalOpen}: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+    const {theme} = useTheme()
+    
+    const getIconColor = (navItem: string) => {
+        if (selectedNavItem === navItem) {
+            return "#6750a4";
+        } else {
+            return theme === "light" ? "#424242" : "#ffffff";
+        }
+    };
     return (
-        <div className={styles.body}>
-            <div className={styles.navbar}>
-                <button onClick={() => setSelectedNavItem("events")} className={selectedNavItem === "events" ? styles.activeBtn : ""}><FilterIcon color={selectedNavItem === "events" ? "#6750a4" : "#424242"} /><span>Select Events</span></button>
-                <button onClick={() => setSelectedNavItem("customize")} className={selectedNavItem === "customize" ? styles.activeBtn : ""}><CustomizeIcon color={selectedNavItem === "customize" ? "#6750a4" : "#424242"} /><span>Customize</span></button>
-                <button onClick={() => setSelectedNavItem("code")} className={selectedNavItem === "code" ? styles.activeBtn : ""}><CodeIcon color={selectedNavItem === "code" ? "#6750a4" : "#424242"} /><span>Code</span></button>
+        <div className={styles.body} >
+            <div className={styles.navbar} style={{backgroundColor : theme === "light" ? "#FBF8FF" : "#1F1F1F" }}>
+                <button onClick={() => setSelectedNavItem("events")} className={`${selectedNavItem === "events" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}> <FilterIcon color={getIconColor("events")} /><span>Select Events</span></button>
+
+                <button onClick={() => setSelectedNavItem("customize")} className={`${selectedNavItem === "customize" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>  <CustomizeIcon color={getIconColor("customize")} /><span>Customize</span></button>
+
+                <button onClick={() => setSelectedNavItem("code")} className={`${selectedNavItem === "code" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}> <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
                 {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn ={setSelectedBtn} cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedNavItem === "events" ? <FilterEvents setIsAddEventModalOpen={setIsAddEventModalOpen}/> : <CodeWindow/>}

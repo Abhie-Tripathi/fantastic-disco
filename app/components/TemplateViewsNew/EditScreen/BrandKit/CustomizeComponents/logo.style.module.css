@@ -46,3 +46,8 @@
     padding: 5px 8px;
     cursor: pointer;
 }
+@media screen and (max-width: 1406px) {
+    .body{
+        gap: 50px;
+    }
+}

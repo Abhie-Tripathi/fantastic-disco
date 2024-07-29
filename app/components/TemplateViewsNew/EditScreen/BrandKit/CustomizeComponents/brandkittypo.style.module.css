@@ -89,3 +89,8 @@
 .warning span{
     font-size: var(--font-size-xs);
 }
+@media screen and (max-width: 1406px) {
+    .body{
+        gap: 50px;
+    }
+}

@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react'
 import styles from './globalsearch.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
+import { useTheme } from '@/context'
 
 const GlobalSearch = () => {
 
     const [searchValue, setSearchValue] = useState<string>("")
     const [dataDropdown, setDatadropdown] = useState<boolean>(false)
     const [searchData, setSearchData] = useState<any[]>([])
+
+    const { theme } = useTheme();
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
@@ -40,10 +43,10 @@ const GlobalSearch = () => {
 
 
     return (
-        <div className={styles.searchContainer}>
-            <input type="text" placeholder='Search for events' onChange={(e) => setSearchValue(e.target.value)} />
+        <div className={styles.searchContainer} style={{backgroundColor : theme === "dark" ? "#1a1a1a" : "#F9F9F9"}}>
+            <input type="text" placeholder='Search for events' onChange={(e) => setSearchValue(e.target.value)} style={{color : theme === "light" ? "black" : "white"}}/>
             {dataDropdown &&
-                <div className={styles.dropdownContainer}>
+                <div className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown}`}>
                     {searchData.length > 0 ? searchData.map((event) => (
                         <div className={styles.dropdownEvent} key={event.id}>
                             <span className={styles.dropeventName}>{event.name}</span>
