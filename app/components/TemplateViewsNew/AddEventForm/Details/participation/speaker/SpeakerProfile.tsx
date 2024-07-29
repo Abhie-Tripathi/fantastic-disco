@@ -30,7 +30,7 @@ const SpeakerProfile = ({ setSpeakerModal, speakerProfilesData,handlePrefill }: 
             {speakerProfilesData.length > 0 && (
                 <div className={styles.speakerProfiles}>
                     {speakerProfilesData.map((profile, key) => (
-                        <div onClick={()=>handlePrefill(profile)}>
+                        <div onClick={()=>handlePrefill(profile)} key={key}>
                             <SpeakerCard linkedin={profile.linkedin} profileImage={profile.profileImage} designation={profile.designation} name={profile.name} key={key}/>
                         </div>
                     ))}

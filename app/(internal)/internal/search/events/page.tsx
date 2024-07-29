@@ -862,8 +862,7 @@ const Search = () => {
               placeholder="Search Events"
               // onChange={(e) => setSearchInput(e.target.value)}
               onChange={
-                
-                rchChange}
+                handleSearchChange}
               value={searchInput}
             ></input>
             {/* <div
