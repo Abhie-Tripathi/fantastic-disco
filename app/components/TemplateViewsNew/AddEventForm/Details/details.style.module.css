@@ -1,7 +1,9 @@
 .body {
     border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
     height: 100%;
     position: relative;
+    background-color: white;
 }
 
 .line {
@@ -39,7 +41,6 @@
     align-items: center;
     gap: 9px;
     padding: 17px 14px;
-    background-color: white;
     justify-content: flex-end;
 }
 
@@ -50,12 +51,6 @@
     border-radius: 4px;
     padding: 7px 12px;
 }
-
-.btnContainer .closeBtn {
-    background-color: #8F8F8F1F;
-    color: black;
-}
-
 .btnContainer .addBtn {
     color: white;
     background-color: #6750a4;

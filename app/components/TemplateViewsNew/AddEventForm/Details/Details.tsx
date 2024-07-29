@@ -14,7 +14,7 @@ import SpeakerProfile from './participation/speaker/SpeakerProfile'
 import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
-import TiptapEditor from './description/TiptapEditor'
+import { useTheme } from '@/context'
 
 interface SpeakerProfileType {
   id: string;
@@ -54,6 +54,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
   }
+  const {theme} = useTheme()
 
   useEffect(() => {
     const adjustHeight = () => {
@@ -99,8 +100,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
 
   return (
     <div className={styles.body}>
-      <div className={styles.btnContainer}>
-        <button className={styles.closeBtn} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
+      <div className={styles.btnContainer} style={{backgroundColor : theme === "dark" ? "#131313" : "#FAFAFA"}}>
+        <button className={styles.closeBtn} style={{color : theme === "dark" ? "white" :"black"}} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
         <button className={styles.addBtn}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>

@@ -29,9 +29,13 @@
     background-color: #1a1a1a;
     color: white;
 }
-.navbar .activeBtn{
+.navbar .lightactiveBtn{
     color: #6750a4;
     filter: drop-shadow(0px 1px 1px rgb(80, 80, 80));
+}
+.navbar .darkactiveBtn{
+    color: #6750a4;
+    border: 1px solid var(--background-secondary-color-active);
 }
 .container{
     margin-top: 30px;

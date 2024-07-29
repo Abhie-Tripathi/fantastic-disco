@@ -8,7 +8,6 @@
 }
 .header span{
     font-size: 10px;
-    color: black;
 }
 .editContainer{
     padding-left: 19px;
@@ -17,41 +16,59 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: white;
+
     margin-top: 13px;
     border-radius: 5px;
     border: 1px solid rgb(228, 228, 228);
     /* filter: drop-shadow(0px 2px 2px rgb(218, 218, 218)); */
     padding: 5px;
 }
+.bgLightContainer{
+    background-color: white;
+}
+.bgDarkContainer{
+    background-color: #1a1a1a;
+    border: 1px solid rgb(88, 88, 88);
+}
 .bgContainer span{
     color: #7D7D7D;
     font-size: 10px;
 }
 .fontContainer{
-    border: 1px solid #EBEBEB;
+    border: 1px solid var(--border-color);
     border-radius: 2px;
-    background-color: white;
     padding: 7px;
     margin-top: 6px;
     height: 120px;
     overflow-y: auto;
 }
+.darkFontContainer{
+    background-color: #1a1a1a;
+}
+.lightFontContainer{
+    background-color: white;
+}
 .font{
     font-size: 10px;
-    color: black;
     line-height: 17px;
     padding: 0px 10px 0px 10px;
     cursor: pointer;
     border-radius: 3px;
 }
-.font:hover{
+.darkFontContainer .font:hover{
+    background-color: #292929;
+}
+.lightFontContainer .font:hover{
     background-color: #F2F2F2;
-
 }
 .activeFont{
-    background-color: #F2F2F2;
     display: flex;
     align-items: center;
     gap: 3px;
+}
+.darkFontContainer .activeFont{
+    background-color: #292929;
+}
+.lightFontContainer .activeFont{
+    background-color: #F2F2F2;
 }

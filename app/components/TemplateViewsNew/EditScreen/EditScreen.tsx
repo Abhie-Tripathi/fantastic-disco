@@ -37,18 +37,18 @@ interface EditScreenProps {
     fontSettings: FontSettingsState
     cardBgColor: string
     cardBorderRadius: number;
-    cardStyle : string;
-    setCardStyle : React.Dispatch<React.SetStateAction<string>>;
-    setSelectedBtn : (value : "primary" | "secondary") =>void
-    selectedBtn : "primary" | "secondary"
-    setIsAddEventModalOpen : (value : boolean)=>void
+    cardStyle: string;
+    setCardStyle: React.Dispatch<React.SetStateAction<string>>;
+    setSelectedBtn: (value: "primary" | "secondary") => void
+    selectedBtn: "primary" | "secondary"
+    setIsAddEventModalOpen: (value: boolean) => void
 }
 
-const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle , setSelectedBtn,selectedBtn,setIsAddEventModalOpen}: EditScreenProps) => {
+const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, setIsAddEventModalOpen }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
-    const {theme} = useTheme()
-    
+    const { theme } = useTheme()
+
     const getIconColor = (navItem: string) => {
         if (selectedNavItem === navItem) {
             return "#6750a4";
@@ -58,15 +58,21 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
     };
     return (
         <div className={styles.body} >
-            <div className={styles.navbar} style={{backgroundColor : theme === "light" ? "#FBF8FF" : "#1F1F1F" }}>
-                <button onClick={() => setSelectedNavItem("events")} className={`${selectedNavItem === "events" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}> <FilterIcon color={getIconColor("events")} /><span>Select Events</span></button>
+            <div className={styles.navbar} style={{ backgroundColor: theme === "light" ? "#FBF8FF" : "#1F1F1F" }}>
+                <button onClick={() => setSelectedNavItem("events")}
+                    className={`${selectedNavItem === "events" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
+                    <FilterIcon color={getIconColor("events")} /><span>Select Events</span></button>
 
-                <button onClick={() => setSelectedNavItem("customize")} className={`${selectedNavItem === "customize" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>  <CustomizeIcon color={getIconColor("customize")} /><span>Customize</span></button>
+                <button onClick={() => setSelectedNavItem("customize")}
+                    className={`${selectedNavItem === "customize" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
+                    <CustomizeIcon color={getIconColor("customize")} /><span>Customize</span></button>
 
-                <button onClick={() => setSelectedNavItem("code")} className={`${selectedNavItem === "code" ? styles.activeBtn : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}> <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
+                <button onClick={() => setSelectedNavItem("code")}
+                    className={`${selectedNavItem === "code" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
+                    <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn ={setSelectedBtn} cardStyle={cardStyle} setCardStyle = {setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors}/> : selectedNavItem === "events" ? <FilterEvents setIsAddEventModalOpen={setIsAddEventModalOpen}/> : <CodeWindow/>}
+                {selectedNavItem === "customize" ? <Customization selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <CodeWindow />}
             </div>
         </div>
     )

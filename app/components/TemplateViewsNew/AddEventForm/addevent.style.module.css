@@ -2,13 +2,11 @@
     height: 100%;
     width: 100%;
     border-radius: 10px;
-    background-color: white;
     display: flex;
 }
 .appearance{
     width: 20%;
     height: 100%;
-    z-index: 2;
 }
 .details{
     width: 80%;

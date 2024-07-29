@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './fonts.style.module.css'
+import { useTheme } from '@/context';
 
 interface Props {
     eventFont: string;
@@ -9,17 +10,18 @@ interface Props {
 const FontContainer = ({ eventFont, setEventFont }: Props) => {
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
 
+    const { theme } = useTheme()
     return (
         <div className={styles.body}>
             <div className={styles.header}>
-                <FontIcon />
+                <FontIcon color={theme === "light" ? "black" : "white"} />
                 <span>FONT</span>
             </div>
             <div className={styles.editContainer}>
-                <div className={styles.bgContainer}><FontIcon2 /> <span>Font Family</span></div>
-                <div className={styles.fontContainer}>
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`}><FontIcon2 /> <span>Font Family</span></div>
+                <div className={`${styles.fontContainer} ${theme === "dark" ?styles.darkFontContainer : styles.lightFontContainer}`}>
                     {fontsList.map((font, key) => (
-                        <div key={key} onClick={() => setEventFont(font)} className={`${styles.font} ${font === eventFont ? styles.activeFont : ""}`}>{font === eventFont && <TickIcon/>}{font}</div>
+                        <div key={key} onClick={() => setEventFont(font)} className={`${styles.font} ${font === eventFont ? styles.activeFont : ""}`}>{font === eventFont && <TickIcon />}{font}</div>
                     ))}
                 </div>
             </div>
@@ -29,10 +31,14 @@ const FontContainer = ({ eventFont, setEventFont }: Props) => {
 
 export default FontContainer
 
-function FontIcon() {
+interface IconProps {
+    color: string;
+}
+
+function FontIcon({ color }: IconProps) {
     return (
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.5 3H9V9H9.5V9.5H7.5V9H8V7.5H6L5.25 9H6V9.5H4V9H4.5L7.5 3ZM8 3.5L6.25 7H8V3.5ZM1.5 0.5H4C4.555 0.5 5 0.945 5 1.5V7H3.5V4.5H2V7H0.5V1.5C0.5 0.945 0.945 0.5 1.5 0.5ZM2 1.5V3.5H3.5V1.5H2Z" fill="black" />
+            <path d="M7.5 3H9V9H9.5V9.5H7.5V9H8V7.5H6L5.25 9H6V9.5H4V9H4.5L7.5 3ZM8 3.5L6.25 7H8V3.5ZM1.5 0.5H4C4.555 0.5 5 0.945 5 1.5V7H3.5V4.5H2V7H0.5V1.5C0.5 0.945 0.945 0.5 1.5 0.5ZM2 1.5V3.5H3.5V1.5H2Z" fill={color} />
         </svg>
     )
 }

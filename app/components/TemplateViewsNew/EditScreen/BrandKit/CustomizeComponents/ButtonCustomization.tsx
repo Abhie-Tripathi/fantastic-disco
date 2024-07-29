@@ -93,8 +93,8 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                 <div className={styles.heading}>Button Customisations</div>
                 <div className={styles.subheading}>Select or customise your button components</div>
             </div>
-            <div className={styles.editContainer}>
-                <div className={styles.btnPreviewContainer}>
+            <div className={styles.editContainer} >
+                <div className={styles.btnPreviewContainer} style={{backgroundColor : theme === "light" ? "#f2f2f2" : "#1a1a1a"}}>
                     {selectedBtn === "primary" ? <button style={{ color: buttonSettings.primary.fontColor, backgroundColor: buttonSettings.primary.buttonColor, borderRadius: buttonSettings.primary.borderRadius, borderColor: buttonSettings.primary.borderColor }} className={styles.primaryPreview}>{buttonSettings.primary.buttonText}</button>
                         : <button style={{ color: buttonSettings.secondary.fontColor, backgroundColor: buttonSettings.secondary.buttonColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>{buttonSettings.secondary.buttonText}</button>}
                 </div>

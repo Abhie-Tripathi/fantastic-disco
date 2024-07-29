@@ -5,6 +5,7 @@ import ApperanceImage from '/public/appearance.png'
 import ColorContainer from './ColorContainer'
 import FontContainer from './FontContainer'
 import BrandKit from '../../EditScreen/BrandKit/CustomizeComponents/BrandKit'
+import { useTheme } from '@/context'
 
 interface Props{
     pageBgColor : string;
@@ -16,12 +17,14 @@ interface Props{
 }
 
 const Appearance = ({setPageBgColor, pageBgColor,eventFont, setEventFont,extractedColors,setExtractedColors}: Props) => {
+    const {theme} = useTheme()
     return (
-        <div className={styles.body}>
+        <div className={styles.body} style={{backgroundColor : theme === "dark" ? "#131313" : "#FAFAFA"}}>
             <div className={styles.appearanceHeader}>
                 <Image src={ApperanceImage} alt='appearance' />
                 <span>Set up your detail page</span>
             </div>
+            <div className={styles.line}></div>
             <BrandKit flex={false} extractedColors={extractedColors} setExtractedColors={setExtractedColors}/>
             <div className={styles.line}></div>
             <div className={styles.colorContainer}>
