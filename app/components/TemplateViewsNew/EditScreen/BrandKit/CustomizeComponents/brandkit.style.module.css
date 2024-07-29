@@ -1,5 +1,8 @@
-.body{
+.lightBody{
     background-color: #F9F9FF;
+}
+.darkBody{
+    background-color: #2E1938;
 }
 .header{
     display: flex;

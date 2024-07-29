@@ -18,8 +18,7 @@
 }
 
 .heading {
-    font-size: 14px;
-    color: #171717;
+    font-size: var(--font-size-default)
 }
 
 .subheading {
