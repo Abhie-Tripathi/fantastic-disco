@@ -19,6 +19,7 @@ import PopupViewImage1 from '/public/widgetimages/popupimages/popupviewportrait.
 import PopupViewImage2 from '/public/widgetimages/popupimages/popupviewlandscape.png'
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import { useRouter } from 'next/navigation';
 
 interface WidgetProps {
     widgetType: string;
@@ -54,6 +55,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
+    const router = useRouter()
 
     const handleRemove = async()=>{
         const editData = new FormData();
@@ -73,6 +75,10 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
         } else {
             console.log(error);
         }
+    }
+
+    const handleRoute = ()=>{
+        router.push(`/widget/edit/${widgetId}`);
     }
     
 
@@ -108,7 +114,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
                     <div className={styles.active}>Active</div>
                     <div className={styles.btnContainer}>
                         <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
-                        <button className={styles.editBtn}>Edit</button>
+                        <button className={styles.editBtn} onClick={handleRoute}>Edit</button>
                     </div>
                 </div>
             </div>

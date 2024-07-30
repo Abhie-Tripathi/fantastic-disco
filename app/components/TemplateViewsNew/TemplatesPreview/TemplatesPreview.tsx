@@ -60,7 +60,7 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchD
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
-                <PreviewWindow setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} templateName={templateName} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
+                <PreviewWindow draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>
     )

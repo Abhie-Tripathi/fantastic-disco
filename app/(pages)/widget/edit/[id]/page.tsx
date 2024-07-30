@@ -4,14 +4,12 @@ import styles from './page.style.module.css'
 import PreviewWindow from '@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow'
 import EditScreen from '@/app/components/TemplateViewsNew/EditScreen/EditScreen'
 import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
+import { usePathname } from 'next/navigation'
+import { baseUrl } from '@/constants'
+import { myFetch } from '@/utils/myFetch'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-
-  // This page will have an Id, through which we will be fetching out all the Events, Customizations etc.
-  // When the user will come here for the first time, all the feilds will be empty because there is nothing posted yet
-
-  // These states will be filled up with the fetched data, and if no data will be there, these will have default values
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
@@ -26,10 +24,42 @@ const Page = () => {
 
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>()
 
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
+  const pathName = usePathname();
+  const trackerParams = pathName.split("/");
 
-  // Selected Template will be fetched through Database, Right now we can pass as static
+  const asciiToString = (ascii: number): string => {
+    let convertedValue = ascii.toString();
+    let str = '';
+    for (let i = 0; i < convertedValue.length; i += 2) {
+      const code = convertedValue.substring(i, i + 2);
+      str += String.fromCharCode(parseInt(code, 10));
+    }
+    return str;
+  };
+
+  useEffect(() => {
+    const widgetId = trackerParams[3]
+    const fetchWidgetData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
+      if (data) {
+        setCardBgColor(data.customizationData.cardBgColor);
+        setCardBorderRadius(data.customizationData.cardBorderRadius);
+        setFontSettings(data.customizationData.fontSettings);
+        setButtonSettings(data.customizationData.buttonSettings);
+        setCardStyle(data.customizationData.selectedCard);
+        setSelectedBtn(data.customizationData.selectedBtn);
+        setSelectedTemplate(asciiToString(data.templatePublicId));
+      }
+      if (error) {
+        console.error("Error fetching widget data:", error);
+      }
+    }
+
+    fetchWidgetData();
+  }, [])
 
   return (
 
@@ -54,7 +84,7 @@ const Page = () => {
       <div className={styles.previewContainer}>
         <PreviewWindow
           selectedBtn={selectedBtn}
-          selectedTemplate='PUVL'
+          selectedTemplate={selectedTemplate}
           selectedCard={cardStyle}
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}
@@ -66,7 +96,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent setIsAddEventModalOpen={setIsAddEventModalOpen}/>
+        <AddEvent setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )

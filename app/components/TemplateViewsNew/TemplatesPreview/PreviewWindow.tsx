@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './preview.style.module.css'
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '../../TemplateViews/previews/section/Herobanner/HeroBanner';
@@ -14,6 +14,7 @@ import { useTheme } from '@/context';
 import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
+import { useRouter } from 'next/navigation';
 
 interface FontSettings {
     fontFamily: string;
@@ -36,7 +37,7 @@ interface PreviewProps {
     setIsFullScreen: (value: boolean) => void
     isFullScreen: boolean
     widgetSelected?: string;
-    templateName?: string;
+    // templateName?: string;
     selectedImage?: StaticImageData
     cardBgColor?: string;
     cardBorderRadius?: number;
@@ -51,9 +52,9 @@ interface PreviewProps {
     };
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
-    setDraftWidgets: (value: DraftWidgetsType[]) => void
-    draftWidgets: DraftWidgetsType[]
-    fetchDraftWidgets: () => Promise<void>; 
+    // setDraftWidgets: (value: DraftWidgetsType[]) => void
+    draftWidgets?: DraftWidgetsType[]
+    fetchDraftWidgets?: () => Promise<void>; 
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -62,7 +63,7 @@ interface DraftWidgetsType {
     status: string;
 }
 
-const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, templateName, selectedImage, draftWidget, setDraftWidgets,fetchDraftWidgets,
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget,fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
@@ -75,12 +76,12 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     },
     selectedBtn = "primary" }: PreviewProps) => {
     const { theme } = useTheme()
-
+    const router = useRouter();
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
 
-    const handleDraftWidgets = async () => {
+    const handleDraftWidgets = async (navigate: boolean) => {
         if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard) {
             console.error('Missing required data');
             return;
@@ -114,7 +115,12 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         );
         if (data) {
             console.log(data);
-            fetchDraftWidgets();
+            if(fetchDraftWidgets){
+                fetchDraftWidgets();
+            }
+            if (navigate && data.id) {
+                router.push(`/widget/edit/${data.id}`);
+            }
         } else {
             console.log(error);
         }
@@ -171,8 +177,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
                 {draftWidget && <div className={styles.previewBtnContainer}>
-                    <button onClick={handleDraftWidgets} className={styles.previewBtn}>Save to my widgets</button>
-                    <button className={styles.previewBtn}>Continue with this template</button>
+                    <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>
+                    <button onClick={() => handleDraftWidgets(true)} className={styles.previewBtn}> Continue with this template</button>
                 </div>}
             </div>
         </div>
