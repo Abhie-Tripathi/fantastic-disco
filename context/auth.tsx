@@ -66,10 +66,6 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const searchParams = useSearchParams();
-  const type=searchParams.get("type");
-  const paths = usePathname().split('/');
-  const trackerId = paths[paths.length - 2];
-  console.log(trackerId);
   
   const token = searchParams.get("token");
   const signup = async (userDto: SignUpDTO) => {
@@ -151,8 +147,6 @@ export const AuthContextProvider = ({ children }: any) => {
             setUser(data.info);
             setLocalStorage(userObject);
             setIsVerifiedToken(true);
-            // window.location.href=`/internal/trackers/${trackerId}/trackedEvents?type=${type}`;
-            // router.push(`/internal/trackers/${trackerId}/trackedEvents?type=${type}`)
           }
         } catch (err) {
           console.error("Fetch failed:", err);
