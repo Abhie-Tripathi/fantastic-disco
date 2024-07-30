@@ -1,0 +1,45 @@
+.body {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.heading {
+    font-size: 11px;
+    /* color: black; */
+}
+
+.pickedColorCode {
+    font-size: 9px;
+    background-color: #F2F2F2;
+    line-height: 14px;
+    padding: 5px 24px;
+    border-radius: 5px;
+    min-width: 85px;
+    max-width: 85px;
+}
+.body img {
+    cursor: pointer;
+}
+
+.colorPickerModal {
+    position: absolute;
+    top: 30px;
+    right: -10px;
+}
+
+.pickedColorOuter {
+    width: 30px;
+    height: 30px;
+    border: 2px solid;
+    padding: 3.4px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.pickedColorInner {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+}

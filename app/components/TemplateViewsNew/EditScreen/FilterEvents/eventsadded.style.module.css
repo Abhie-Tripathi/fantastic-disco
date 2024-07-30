@@ -1,0 +1,137 @@
+.body{
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+.line{
+    border-top:1px solid var(--border-color);
+}
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 30px 14px 23px;
+}
+.headerContainer div{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.headerContainer div span{
+    font-size: 11px;
+    font-weight: 500;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #E6E6F9;
+    color: #6750a4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.headerContainer button{
+    color: white;
+    background-color: #6750a4;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    padding: 5px 8px;
+}
+.allEventsHeading{
+    display: flex;
+    align-items: center;
+}
+.eventContainer{
+    display: flex;
+}
+.event{
+    width: 100%;
+    padding: 25px 34px 29px 23px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+}
+.eventDetailsContainer{
+    width: 70%;
+}
+.eventName{
+    color: #696B83;
+    font-weight: 600;
+}
+.eventLocationContainer{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 23px;
+}
+.eventLocationContainer div{
+    font-size: 11px;
+    font-weight: 500;
+    color: #6E6F89;
+}
+.eventDateContainer{
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.eventDateContainer div{
+    color: #6E6F89;
+    font-size: 10px;
+}
+.btnContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.promotEditBtnContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.promotEditBtnContainer div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    color: #6750a4;
+}
+.addButtonContainer{
+    display: flex;
+    position: relative;
+    gap: 8px;
+    align-items: center;
+}
+.addButtonContainer .heading{
+    color: #0062D1;
+    font-size: 12px;
+}
+.checkboxInput {
+    display: none;
+}
+.checkBox {
+    cursor: pointer;
+    background-color: #bebdc9;
+    height: 14px;
+    width: 25px;
+    border-radius: 12px;
+    border: 1px solid #79747E;
+}
+.checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 8px;
+    width:8px;
+    border-radius: 50%;
+    margin: 2.1px;
+    transition: transform 0.2s ease;
+}
+.checkboxInput:checked+.checkBox::before {
+    transform: translateX(11px);
+}
+
+.checkboxInput:checked+.checkBox {
+    background-color: #6750a4;
+}

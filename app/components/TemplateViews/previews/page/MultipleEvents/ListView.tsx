@@ -4,37 +4,26 @@ import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
 
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
+
 interface EditProps {
-    bgColor?: string;
-    cardRadius?: number;
-    cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    dateFontSize?: number;
-    locationFontSize?: number;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
+    cardBorderRadius? : number;
+    cardBgColor? : string;
     selectedCard?: string;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
 }
 
 
-const ListView = ({ cardRadius,
-    cardBgColor,
-    eventNameColor,
-    eventNameSize,
-    dateFontSize,
-    locationFontSize,
-    btnBgColor,
-    btnFontColor,
-    btnBorderWidth,
-    btnBorderColor,
-    btnRadius,
-    btnFontSize,
-    selectedCard }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: EditProps) => {
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -49,62 +38,10 @@ const ListView = ({ cardRadius,
     }
     return (
         <div className={styles.listView}>
-            <EventListCard
-                cardRadius={cardRadius}
-                cardBgColor={cardBgColor}
-                eventNameColor={eventNameColor}
-                eventNameSize={eventNameSize}
-                dateFontSize={dateFontSize}
-                locationFontSize={locationFontSize}
-                btnBgColor={btnBgColor}
-                btnFontColor={btnFontColor}
-                btnBorderWidth={btnBorderWidth}
-                btnBorderColor={btnBorderColor}
-                btnRadius={btnRadius}
-                btnFontSize={btnFontSize}
-            />
-                  <EventListCard
-                cardRadius={cardRadius}
-                cardBgColor={cardBgColor}
-                eventNameColor={eventNameColor}
-                eventNameSize={eventNameSize}
-                dateFontSize={dateFontSize}
-                locationFontSize={locationFontSize}
-                btnBgColor={btnBgColor}
-                btnFontColor={btnFontColor}
-                btnBorderWidth={btnBorderWidth}
-                btnBorderColor={btnBorderColor}
-                btnRadius={btnRadius}
-                btnFontSize={btnFontSize}
-            />
-                  <EventListCard
-                cardRadius={cardRadius}
-                cardBgColor={cardBgColor}
-                eventNameColor={eventNameColor}
-                eventNameSize={eventNameSize}
-                dateFontSize={dateFontSize}
-                locationFontSize={locationFontSize}
-                btnBgColor={btnBgColor}
-                btnFontColor={btnFontColor}
-                btnBorderWidth={btnBorderWidth}
-                btnBorderColor={btnBorderColor}
-                btnRadius={btnRadius}
-                btnFontSize={btnFontSize}
-            />
-                  <EventListCard
-                cardRadius={cardRadius}
-                cardBgColor={cardBgColor}
-                eventNameColor={eventNameColor}
-                eventNameSize={eventNameSize}
-                dateFontSize={dateFontSize}
-                locationFontSize={locationFontSize}
-                btnBgColor={btnBgColor}
-                btnFontColor={btnFontColor}
-                btnBorderWidth={btnBorderWidth}
-                btnBorderColor={btnBorderColor}
-                btnRadius={btnRadius}
-                btnFontSize={btnFontSize}
-            />
+            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+            
         </div>
     )
 }

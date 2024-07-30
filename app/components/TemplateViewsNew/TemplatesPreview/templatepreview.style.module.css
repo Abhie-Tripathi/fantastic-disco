@@ -84,12 +84,12 @@
     align-items: center;
     justify-content: space-between;
 }
-.btnContainer{
+.viewBtnContainer{
     display: flex;
     align-items: center;
     gap: 8px;
 }
-.btnContainer div{
+.viewBtnContainer div{
     cursor: pointer;
 }
 .heading{

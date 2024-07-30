@@ -1,30 +1,60 @@
-.heading_btnContainer{
+.body{
+    width: 100%;
+    height: 100%;
+}
+.header{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.heading{
-    color: white;
+.header div{
+    color: black;
+    font-size: 18px;
+    font-weight: 600;
 }
-.closeBtn{
-    padding: 5px;
-    border: 1px solid #6750a4;
-    border-radius: 10px;
-    color: #6750a4;
-    cursor: pointer;
+.header button{
+    color: #6750A4;
+    font-size: 12px;
+    font-weight: 600;
 }
-.emptyMessage{
-    background-color: #6750a4;
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
-    font-size: 20px;
-    margin-top: 50px;
-    text-align: center;
+.drafts{
+    display: flex;
+    gap: 8px;
+    margin-top: 29px;
+}
+.drafts div{
+    color: #6750A4;
+    font-weight: 600;
+    font-size: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #6750A4;
+    width: fit-content;
+}
+.drafts span{
+    color: #6750A4;
+    background-color: #E6E6F9;
+    height: 16px;
+    width: 15px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+.line{
+    margin-bottom: 27.5px;
+    border-bottom: 2px solid #F5F5F5;
 }
 .widgets{
-    margin-top: 20px;
+    overflow-y: auto;
+    height: 85%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+}
+.emptyCard{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 85%;
 }

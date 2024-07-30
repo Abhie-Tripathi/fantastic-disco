@@ -1,0 +1,65 @@
+.body{
+    display: flex;
+    position: relative;
+}
+.columnbody{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+.headingContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 35%;
+}
+.colheadingcontainer{
+    width: 100%;
+}
+
+.heading {
+    font-size: var(--font-size-default)
+}
+
+.subheading {
+    font-size: 10px;
+    color: #A8A8A8;
+}
+
+.colorList {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.extractedColorOutter {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.activeColor {
+    border: 2px solid;
+    padding: 3.4px;
+}
+
+.extractedColorInner {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+}
+
+.pickColorContainer {
+    margin-top: 23px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 10;
+}
+@media screen and (max-width: 1406px) {
+    .body{
+        gap: 50px;
+    }
+}
