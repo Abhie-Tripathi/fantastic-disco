@@ -15,11 +15,6 @@ import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 
-interface DraftWidgetsType {
-    widgetType: string;
-    widgetTemplateName: string;
-    selectedImage: StaticImageData
-}
 interface FontSettings {
     fontFamily: string;
     fontSize: number;
@@ -40,8 +35,6 @@ interface PreviewProps {
     setSelectedCard?: (value: string) => void
     setIsFullScreen: (value: boolean) => void
     isFullScreen: boolean
-    draftWidgets?: DraftWidgetsType[]
-    setDraftWidgets?: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
     widgetSelected?: string;
     templateName?: string;
     selectedImage?: StaticImageData
@@ -57,9 +50,10 @@ interface PreviewProps {
         secondary: ButtonSettings;
     };
     selectedBtn?: "primary" | "secondary"
+    draftWidget? :  boolean;
 }
 
-const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, draftWidgets, setDraftWidgets, widgetSelected, templateName, selectedImage,
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, templateName, selectedImage,draftWidget,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
@@ -86,23 +80,27 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         const customizeData = new FormData();
 
         customizeData.append('templatePublicId', templatePublicId);
-        customizeData.append('type', widgetSelected);
+        let tempSelectedWidget = widgetSelected
+        if(widgetSelected === "Sticky"){
+            tempSelectedWidget = "StickyTop"
+        }
+        customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
         customizeData.append('domain', 'http://example.com'); // replace with actual domain
-        // const customizationData = {
-        //     fontSettings,
-        //     buttonSettings,
-        //     cardBgColor,
-        //     cardBorderRadius,
-        //     selectedBtn,
-        //     selectedCard,
-        // };
-        // customizeData.append('customizationData', JSON.stringify(customizationData));
+        const customizationData = {
+            fontSettings,
+            buttonSettings,
+            cardBgColor,
+            cardBorderRadius,
+            selectedBtn,
+            selectedCard,
+        };
+        customizeData.append('customizationData', JSON.stringify(customizationData));
         const { data, error } = await myFetch(
             `${baseUrl}/widget`,
             {
                 method: 'POST',
-                body: customizeData,
+                body: customizeData,        
             }
         );
         if (data) {
@@ -158,11 +156,11 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                     selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                         selectedTemplate === "CV" ? <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                             selectedTemplate === "HS" ? <ScrollView type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                selectedTemplate === "LScroll" ? <ScrollView selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                    selectedTemplate === "RScroll" ? <ScrollView selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
-                {draftWidgets && <div className={styles.previewBtnContainer}>
+                {draftWidget && <div className={styles.previewBtnContainer}>
                     <button onClick={handleDraftWidgets} className={styles.previewBtn}>Save to my widgets</button>
                     <button className={styles.previewBtn}>Continue with this template</button>
                 </div>}

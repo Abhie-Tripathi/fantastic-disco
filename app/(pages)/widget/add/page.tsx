@@ -9,8 +9,9 @@ import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidge
 
 interface DraftWidgetsType{
     widgetType : string;
-    widgetTemplateName : string;
-    selectedImage : StaticImageData
+    templateId : string;
+    widgetId : string;
+    status: string;
 }
 
 const Page = () => {
@@ -54,8 +55,8 @@ const Page = () => {
                 <div className={`${styles.navItem} ${widgetSelected === "Sticky" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Sticky")}>Sticky Widgets
                     {widgetSelected === "Sticky" && <div className={styles.activeLine}></div>}
                 </div>
-                <div className={`${styles.navItem} ${widgetSelected === "Popup" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Popup")}>Pop-up Widget
-                    {widgetSelected === "Popup" && <div className={styles.activeLine}></div>}
+                <div className={`${styles.navItem} ${widgetSelected === "Pop" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Pop")}>Pop-up Widget
+                    {widgetSelected === "Pop" && <div className={styles.activeLine}></div>}
                 </div>
             </div>}
             {widgetOptionsWindow && <div className={styles.widgetOptions}>
@@ -66,11 +67,11 @@ const Page = () => {
             </div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview draftWidgets={draftWidgets} widgetSelected={widgetSelected} setDraftWidgets={setDraftWidgets} />
+                    <TemplatesPreview  widgetSelected={widgetSelected} />
                 </div>
             }
             <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-                <DraftWidgets setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} setYourWidgetModal={setYourWidgetModal} />
+                <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} />
             </div>
         </div>
     )

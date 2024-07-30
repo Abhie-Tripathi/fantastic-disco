@@ -2,23 +2,85 @@ import React, { useState } from 'react'
 import styles from './widgetcard.style.module.css'
 import { StaticImageData } from 'next/image';
 import Image from 'next/image';
+import ListViewImage from '/public/widgetimages/pageimages/listview.png'
+import GridViewImage from '/public/widgetimages/pageimages/gridview.png'
+import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
+import CarouselListImage from '/public/widgetimages/pageimages/CarouselList.png'
+import HeroGridViewImage from '/public/widgetimages/pageimages/HeroGridView.png'
+import HeroListViewImage from '/public/widgetimages/pageimages/HeroListView.png'
+import CarouselViewImage from '/public/widgetimages/sectionimages/carouselview.png'
+import HorizontalScrollImage from '/public/widgetimages/sectionimages/horizontalscroll.png'
+import LeftScrollImage from '/public/widgetimages/sectionimages/leftscroll.png'
+import RightScrollImage from '/public/widgetimages/sectionimages/rightscroll.png'
+import HeroBannerImage from '/public/widgetimages/pageimages/herobanner.png'
+import StickyTopImage from '/public/widgetimages/stickyimages/stickytop.png'
+import StickyBottomImage from '/public/widgetimages/stickyimages/stickybottom.png'
+import PopupViewImage1 from '/public/widgetimages/popupimages/popupviewportrait.png'
+import PopupViewImage2 from '/public/widgetimages/popupimages/popupviewlandscape.png'
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface WidgetProps {
     widgetType: string;
-    widgetTemplate: string;
-    image: StaticImageData;
+    templateId: TemplateId;
     widgetNumber?: number;
-    onDelete: () => void;
+    widgetId : string;
+    // onDelete: () => void;
 }
+type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
-const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber,onDelete }: WidgetProps) => {
+interface TemplateMap {
+    [key: string]: { image: StaticImageData; heading: string };
+  }
+const templateMap = {
+    'ST': { image: StickyTopImage, heading: 'Sticky Top' },
+    'SB': { image: StickyBottomImage, heading: 'Sticky Bottom' },
+    'HB': { image: HeroBannerImage, heading: 'Hero Banner' },
+    'GS': { image: GridViewImage, heading: 'Grid View' },
+    'LS': { image: ListViewImage, heading: 'List View' },
+    'HBL': { image: HeroListViewImage, heading: 'Hero List View' },
+    'HBG': { image: HeroGridViewImage, heading: 'Hero Grid View' },
+    'CVL': { image: CarouselListImage, heading: 'Carousel List' },
+    'CVG': { image: CarouselGridImage, heading: 'Carousel Grid' },
+    'CV': { image: HorizontalScrollImage, heading: 'Horizontal Scroll' },
+    'HS': { image: StickyTopImage, heading: 'Sticky Top' },
+    'LSR': { image: LeftScrollImage, heading: 'Left Scroll' },
+    'RSR': { image: RightScrollImage, heading: 'Right Scroll' },
+    'PUVP': { image: PopupViewImage1, heading: 'Popup View Portrait' },
+    'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
+  };
+  
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
+
+    const { image = null, heading = "" } = templateMap[templateId] || {};
+
+    const handleRemove = async()=>{
+        const editData = new FormData();
+        editData.append('widgetId', widgetId)
+        editData.append('published','false')
+      
+        const { data, error } = await myFetch(
+            `${baseUrl}/widget`,
+            {
+                method: 'POST',
+                body: editData,
+            }
+        );
+        if (data) {
+            console.log(data);
+        } else {
+            console.log(error);
+        }
+    }
+    
+
     return (
         <div className={styles.body}>
-            <Image src={image} alt='image' />
+            {image && <Image src={image} alt={heading} />}
             <div className={styles.details}>
                 <div className={styles.heading_eventsContainer}>
-                    <div className={styles.templateHeading}>{widgetTemplate}</div>
+                    <div className={styles.templateHeading}>{heading}</div>
                     <div className={styles.eventsHeading}>No Events Added</div>
                 </div>
                 <div className={styles.widgetTypeContainer}>
@@ -44,7 +106,7 @@ const WidgetCard = ({ widgetType, widgetTemplate, image, widgetNumber,onDelete }
                 <div className={styles.status_btnContainer}>
                     <div className={styles.active}>Active</div>
                     <div className={styles.btnContainer}>
-                        <button className={styles.removeBtn} onClick={onDelete}>Remove</button>
+                        <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
                         <button className={styles.editBtn}>Edit</button>
                     </div>
                 </div>
