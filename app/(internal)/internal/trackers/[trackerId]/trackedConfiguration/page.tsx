@@ -168,7 +168,7 @@ console.log(type);
         <div className={styles.trackerType}>
           <div className={styles.heading}>{type} Tracker</div>
           <div className={styles.content}>
-            Select from the available data filters to create a custom tracker
+            Select from the available data filters to create tracker
           </div>
         </div>
       </div>
