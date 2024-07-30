@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './preview.style.module.css'
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '../../TemplateViews/previews/section/Herobanner/HeroBanner';
@@ -50,10 +50,19 @@ interface PreviewProps {
         secondary: ButtonSettings;
     };
     selectedBtn?: "primary" | "secondary"
-    draftWidget? :  boolean;
+    draftWidget?: boolean;
+    setDraftWidgets: (value: DraftWidgetsType[]) => void
+    draftWidgets: DraftWidgetsType[]
+    fetchDraftWidgets: () => Promise<void>; 
+}
+interface DraftWidgetsType {
+    widgetType: string;
+    templateId: string;
+    widgetId: string;
+    status: string;
 }
 
-const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, templateName, selectedImage,draftWidget,
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, templateName, selectedImage, draftWidget, setDraftWidgets,fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
@@ -80,9 +89,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         const customizeData = new FormData();
 
         customizeData.append('templatePublicId', templatePublicId);
-        let tempSelectedWidget = widgetSelected
-        if(widgetSelected === "Sticky"){
-            tempSelectedWidget = "StickyTop"
+        let tempSelectedWidget = widgetSelected;
+        if (widgetSelected === "Sticky") {
+            tempSelectedWidget = "StickyTop";
         }
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
@@ -100,15 +109,16 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             `${baseUrl}/widget`,
             {
                 method: 'POST',
-                body: customizeData,        
+                body: customizeData,
             }
         );
         if (data) {
             console.log(data);
+            fetchDraftWidgets();
         } else {
             console.log(error);
         }
-    }
+    };
     return (
         <div className={styles.body}>
             <div className={styles.heading_btnContainer}>

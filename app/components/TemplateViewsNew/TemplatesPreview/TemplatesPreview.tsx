@@ -9,18 +9,22 @@ import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 import PreviewWindow from './PreviewWindow';
 
 
+
 interface Props {
     widgetSelected: string;
-    // draftWidgets: DraftWidgetsType[]
-    // setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
+    draftWidgets: DraftWidgetsType[]
+    setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
+    fetchDraftWidgets: () => Promise<void>; 
 }
-// interface DraftWidgetsType {
-//     widgetType: string;
-//     widgetTemplateName: string;
-//     selectedImage : StaticImageData
-// }
+interface DraftWidgetsType {
+    widgetType: string;
+    templateId: string;
+    widgetId: string;
+    status: string;
+  }
 
-const TemplatesPreview = ({ widgetSelected}: Props) => {
+
+const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchDraftWidgets}: Props) => {
     // const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>(""); // THIS IS TEMPLATE CODE
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -56,7 +60,7 @@ const TemplatesPreview = ({ widgetSelected}: Props) => {
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
-                <PreviewWindow draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} templateName={templateName} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen}/>
+                <PreviewWindow setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} templateName={templateName} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>
     )

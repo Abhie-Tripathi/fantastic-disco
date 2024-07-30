@@ -25,7 +25,7 @@ interface WidgetProps {
     templateId: TemplateId;
     widgetNumber?: number;
     widgetId : string;
-    // onDelete: () => void;
+    fetchDraftWidgets: () => Promise<void>; 
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
@@ -42,15 +42,15 @@ const templateMap = {
     'HBG': { image: HeroGridViewImage, heading: 'Hero Grid View' },
     'CVL': { image: CarouselListImage, heading: 'Carousel List' },
     'CVG': { image: CarouselGridImage, heading: 'Carousel Grid' },
-    'CV': { image: HorizontalScrollImage, heading: 'Horizontal Scroll' },
-    'HS': { image: StickyTopImage, heading: 'Sticky Top' },
+    'CV': { image: CarouselViewImage, heading: 'Carousel View' },
+    'HS': { image: HorizontalScrollImage, heading: 'Horizontal Scroll' },
     'LSR': { image: LeftScrollImage, heading: 'Left Scroll' },
     'RSR': { image: RightScrollImage, heading: 'Right Scroll' },
     'PUVP': { image: PopupViewImage1, heading: 'Popup View Portrait' },
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
   };
   
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId }: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftWidgets }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
@@ -69,6 +69,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId }: WidgetPr
         );
         if (data) {
             console.log(data);
+            fetchDraftWidgets()
         } else {
             console.log(error);
         }

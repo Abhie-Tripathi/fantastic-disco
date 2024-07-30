@@ -1,11 +1,13 @@
 'use client'
-import React, {useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import styles from './page.style.module.css'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
 import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview/TemplatesPreview'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface DraftWidgetsType{
     widgetType : string;
@@ -32,7 +34,35 @@ const Page = () => {
             setWidgetOptionsWindow(!widgetOptionsWindow)
         }
     }
-
+    const asciiToString = (ascii: number): string => {
+        let convertedValue = ascii.toString();
+        let str = '';
+        for (let i = 0; i < convertedValue.length; i += 2) {
+            const code = convertedValue.substring(i, i + 2);
+            str += String.fromCharCode(parseInt(code, 10));
+        }
+        return str;
+    };
+    const fetchDraftWidgets = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/widget`);
+        if (data) {
+            console.log(data);
+            const filteredWidgets = data.data.filter((widget: any) => widget.status === "draft")
+                .map((widget: any) => ({
+                    ...widget,
+                    templateId: asciiToString(widget.templatePublicId),
+                    widgetType: widget.type,
+                    widgetId: widget.id
+                }));
+            setDraftWidgets(filteredWidgets);
+        }
+        if (error) { 
+            console.log(error);
+        }
+    };
+    useEffect(()=>{
+        fetchDraftWidgets()
+    },[])
     return (
         <div className={`${styles.body}`}>
             <div className={styles.navRightBtns}>
@@ -67,11 +97,11 @@ const Page = () => {
             </div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview  widgetSelected={widgetSelected} />
+                    <TemplatesPreview setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets}/>
                 </div>
             }
             <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
-                <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} />
+                <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>
     )
