@@ -23,7 +23,7 @@ const GlobalSearch = () => {
     const handleSearchInput = async (text: string) => {
         if (text) {
             const { data, error } = await myFetch(
-                `${baseUrl}/event/search?eventName=${text}&max=5`
+                `${baseUrl}/event/suggestion?name=${text}`
             );
             if (error) {
                 console.log(error);
@@ -50,7 +50,7 @@ const GlobalSearch = () => {
                     {searchData.length > 0 ? searchData.map((event) => (
                         <div className={styles.dropdownEvent} key={event.id}>
                             <span className={styles.dropeventName}>{event.name}</span>
-                            <span className={styles.dropeventLocation}>{event.location.cityName}</span>
+                            <span className={styles.dropeventLocation}>{event.data.location_city}</span>
                         </div>
                     )) :
                         <div className={styles.noevent}>No events Found with this search</div>

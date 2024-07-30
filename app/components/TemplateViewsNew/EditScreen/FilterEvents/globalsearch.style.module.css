@@ -3,7 +3,7 @@
     position: relative;
 }
 .searchContainer input{
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-medium );
     border: 1px solid var(--border-color);
     background-color: transparent;
     padding: 10px 15px;
