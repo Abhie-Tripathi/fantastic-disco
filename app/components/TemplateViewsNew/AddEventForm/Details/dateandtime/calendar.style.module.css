@@ -1,0 +1,65 @@
+.react_aria_Calendar {
+    width: fit-content;
+    max-width: 100%;
+    background-color: white;
+    border-radius: 4px;
+    filter: drop-shadow(1px 1px 2px rgb(201, 201, 201));
+  }
+  
+  .react_aria_Calendar header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* margin: 0 4px .5rem 4px; */
+  }
+  
+  .react_aria_Calendar .react_aria_Heading {
+    flex: 1;
+    margin-left: 10px;
+    font-size: var(--font-size-small);
+    line-height: 32px;
+    font-weight: 500;
+    color: #6750a4;
+
+  }
+  
+  .react_aria_Calendar .react_aria_Button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+  }
+  
+  .react_aria_Calendar .react_aria_CalendarCell {
+    width: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    border-radius: 6px;
+    cursor: default;
+    outline: none;
+    margin: 1px;
+    color: #6750a4;
+    forced-color-adjust: none;
+    cursor: pointer;
+  }
+  
+  .react_aria_Calendar .react_aria_CalendarCell[data-outside-month] {
+    display: none;
+  }
+  
+  .react_aria_Calendar .react_aria_CalendarCell[data-pressed] {
+    background: grey;
+    color: white;
+    border-radius: 50%;
+  }
+  
+  .react_aria_Calendar .react_aria_CalendarCell[data-focus-visible] {
+    outline-offset: 2px;
+
+  }
+  
+  .react_aria_Calendar .react_aria_CalendarCell[data-selected] {
+    color: #6750a4;
+    background-color: #F1ECFF;
+    border-radius: 50%;
+  }
+  

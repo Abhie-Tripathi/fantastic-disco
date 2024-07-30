@@ -1,0 +1,17 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.time{
+    color: black;
+    font-size: var(--font-size-xs);
+    padding: 2px;
+    border-radius: 2px;
+}
+.time:hover{
+    background-color: #F2F2F2;
+}
+.activeTime{
+    background-color: #F2F2F2;
+}

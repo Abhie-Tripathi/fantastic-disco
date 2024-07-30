@@ -11,14 +11,17 @@ import HorizontalScrollImageDark from '/public/widgetimages/sectionimages/horizo
 import LeftScrollImageDark from '/public/widgetimages/sectionimages/leftscrolldark.png'
 import RightScrollImageDark from '/public/widgetimages/sectionimages/rightscrolldark.png'
 import HeroBannerImageDark from '/public/widgetimages/pageimages/herobannerdark.png'
+import { StaticImageData } from 'next/image'
 
 
 interface Props{
     setSelectedTemplate : (value : string) => void
     selectedTemplate : string;
+    setTempelateName : (value : string) => void
+    setSelectedImage : (value : StaticImageData) => void
 }
 
-const SectionTemplates = ({setSelectedTemplate, selectedTemplate} : Props) => {
+const SectionTemplates = ({setSelectedTemplate, selectedTemplate, setTempelateName, setSelectedImage} : Props) => {
     const SectionTemplates =
         [{ key: "HB", name: "Hero Banner", desc: "Hero Banner to captivate your audience with a stunning, prominent display", tag: "Single Event", image1 : HeroBannerImage, image2 : HeroBannerImageDark },
         { key: "CV", name: "Carousel Section", desc: "Feature the Top Section of your page in a Carousel View for a dynamic display.", tag: "Multiple Events", image1: CarouselViewImage, image2 : CarouselViewImageDark },
@@ -30,7 +33,7 @@ const SectionTemplates = ({setSelectedTemplate, selectedTemplate} : Props) => {
         <div className={`${styles.body}`}>
             <div className={styles.templates}>
                 {SectionTemplates.map((card, key) => (
-                    <TemplateCard selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} />))}
+                    <TemplateCard setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} widgetStyle={card.name} key={key} templateKey={card.key} setSelectedTemplate={setSelectedTemplate} tag={card.tag} desc={card.desc} image1={card.image1} image2={card.image2} setTempelateName={setTempelateName}/>))}
             </div>
         </div>
     )

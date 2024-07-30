@@ -1,0 +1,48 @@
+.lightBody{
+    background-color: #F9F9FF;
+}
+.darkBody{
+    background-color: #2E1938;
+}
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.heading{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.heading span{
+    font-size: 14px;
+}
+.btn{
+    cursor: pointer;
+}
+.brandColorContainer{
+    margin-bottom: 9px;
+}
+.btnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.kitBtn{
+    font-size: 12px;
+    line-height: 18px;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+.deactiveBtn{
+    display: none;
+}
+.activeBtn{
+    cursor:pointer;
+    color: white;
+    background-color: #6750a4;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}

@@ -4,12 +4,26 @@ import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 
-interface Props {
-    selectedCard?: string;
-    isFullScreen: boolean;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const CarouselView = ({ selectedCard, isFullScreen }: Props) => {
+interface Props {
+    isFullScreen : boolean;
+    cardBorderRadius?: number;
+    cardBgColor?: string;
+    selectedCard?: string;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+}
+
+const CarouselView = ({ selectedCard, isFullScreen,cardBgColor, cardBorderRadius, fontSettings }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [bannersPerPage, setBannersPerPage] = useState(1);
     const carouselRef = useRef<HTMLDivElement>(null);
@@ -28,13 +42,13 @@ const CarouselView = ({ selectedCard, isFullScreen }: Props) => {
     }
 
     const banners = [
-        <EventCard key="1" />,
-        <EventCard key="2" />,
-        <EventCard key="3" />,
-        <EventCard key="4" />,
-        <EventCard key="5" />,
-        <EventCard key="6" />,
-        <EventCard key="7" />,
+        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
+        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>,
     ]; // Array of HeroBanners
 
     useEffect(() => {

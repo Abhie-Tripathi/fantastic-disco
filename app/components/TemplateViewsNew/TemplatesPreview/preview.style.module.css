@@ -1,0 +1,81 @@
+.body{
+    height: 100%;
+    width: 100%;
+}
+.heading{
+    font-size: 18px;
+    font-weight: 500;
+}
+.preview_btnContainer{
+    margin-top: 20px;
+    height:95%;
+    width: 100%;
+}
+.styleBtns{
+    display: flex;
+    gap: 8px;
+    background-color: #FBF8FF;
+    border-radius: 10px;    
+    padding: 12px;
+}
+.darkStyleBtns{
+    background-color: #202020;
+}
+.styleBtn{
+    padding: 4px 8px;
+    border-radius: 3px;
+    background-color: white;
+    color: black;
+    filter: drop-shadow(1px 1px 2px rgb(205, 205, 205));
+}
+.darkStyleBtn{
+    background-color: #1a1a1a;
+    color: white;
+    filter: drop-shadow(1px 1px 2px rgb(49, 49, 49));
+}
+.activeBtn{
+    border: none;
+    border: 1px solid #6750a4
+}
+
+.preview{
+    border-radius: 10px;
+    background-color: #FAFAFA;
+    height: 92%;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+.darkPreview{
+    background-color: #1A1A1A;
+}
+.previewBtnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 10px;
+}
+.previewBtn{
+    background-color: #6750A4;
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    width: 300px;
+    height: 41px;
+}
+.heading_btnContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.viewBtnContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.viewBtnContainer div{
+    cursor: pointer;
+}

@@ -7,10 +7,10 @@ import Image from 'next/image'
 
 interface Props {
     shareUrl: string;
-    title: string;
-    hashtags: string[];
-    emailSubject: string;
-    emailBody: string;
+    title?: string;
+    hashtags?: string[];
+    emailSubject?: string;
+    emailBody?: string;
 }
 
 const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody }: Props) => {
@@ -23,7 +23,7 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody }: Pr
 
     return (
         <div className={styles.shareIconContainer}>
-            <FacebookShareButton url={shareUrl} title={title} hashtag={hashtags[0]}>
+            <FacebookShareButton url={shareUrl} title={title} hashtag={hashtags ? hashtags[0] : "#sometag"}>
                 <FaceBookIcon/>
             </FacebookShareButton>
             <TwitterShareButton url={shareUrl} title={title} hashtags={hashtags}>

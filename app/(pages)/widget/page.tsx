@@ -137,7 +137,7 @@ const Widget = () => {
         </div>
       </div>
       <div className={`${Styles.draftsModal} ${draftModal ? Styles.open : ''}`}>
-        <DraftWidgets setYourWidgetModal={setDraftModal} />
+        {/* <DraftWidgets setYourWidgetModal={setDraftModal} /> */}
       </div>
     </div>
   )

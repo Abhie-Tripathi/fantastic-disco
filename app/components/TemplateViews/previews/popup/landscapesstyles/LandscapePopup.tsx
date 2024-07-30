@@ -3,11 +3,37 @@ import Popup1 from './Popup1';
 import Popup2 from './Popup2';
 import Popup3 from './Popup3';
 
-interface Props {
-    selectedCard?: string;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const LandscapePopup = ({selectedCard} : Props) => {
+interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+}
+interface Props {
+    selectedCard?: string;
+    cardBgColor?: string;
+    cardBorderRadius?: number;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+    buttonSettings?: {
+        primary: ButtonSettings;
+        secondary: ButtonSettings;
+    };
+    selectedBtn? : "primary" | "secondary"
+}
+
+const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -21,7 +47,7 @@ const LandscapePopup = ({selectedCard} : Props) => {
             EventCard = Popup3; // Or some default component or message
     }
   return (
-    <EventCard/>
+    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
   )
 }
 

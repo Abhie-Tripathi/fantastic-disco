@@ -1,51 +1,55 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styles from './draftwidgets.style.module.css'
 import WidgetCard from './WidgetCard'
+import { StaticImageData } from 'next/image'
+import EmptyCard from './EmptyCard'
 
 interface Props {
   setYourWidgetModal: (value: boolean) => void
-  // draftWidgets: DraftWidget[];
+  draftWidgets: DraftWidgetsType[]
+  setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
 }
-
-interface DraftWidget {
+interface DraftWidgetsType {
   widgetType: string;
-  preview: string;
+  widgetTemplateName: string;
+  selectedImage: StaticImageData
 }
 
-const DraftWidgets = ({ setYourWidgetModal }: Props) => {
 
-  const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
+const DraftWidgets = ({ setYourWidgetModal, draftWidgets, setDraftWidgets }: Props) => {
 
-  useEffect(() => {
-    const storedDraftWidgets = localStorage.getItem('draftWidgets');
-    if (storedDraftWidgets) {
-      setDraftWidgets(JSON.parse(storedDraftWidgets));
-    }
-  }, []);
-  
-  const handleDeleteWidget = (widgetType: string, preview: string) => {
-    const updatedWidgets = draftWidgets.filter(widget => !(widget.widgetType === widgetType && widget.preview === preview));
-    setDraftWidgets(updatedWidgets);
-    localStorage.setItem('draftWidgets', JSON.stringify(updatedWidgets));
+  const handleDelete = (indexToDelete: any) => {
+    setDraftWidgets((prevDraftWidgets) =>
+      prevDraftWidgets.filter((_, index) => index !== indexToDelete)
+    );
   };
 
   return (
     <div className={styles.body}>
-      <div className={styles.heading_btnContainer}>
-        <div className={styles.heading}>Saved Drafts</div>
-        <div className={styles.closeBtn} onClick={() => (setYourWidgetModal(false))}>{`>>`}</div>
+      <div className={styles.header}>
+        <div>My Widgets</div>
+        <button onClick={() => setYourWidgetModal(false)}>Close</button>
       </div>
-
-      {draftWidgets.length === 0 && <div className={styles.emptyMessage}>
-        No widgets added to Draft.
-        <br/>Save a widget to draft to see here
-      </div>}
+      <div className={styles.drafts}>
+        <div>Drafts</div><span>{draftWidgets.length}</span></div>
+      <div className={styles.line}></div>
       <div className={styles.widgets}>
-        {draftWidgets.map((widget, key) => (
-          <WidgetCard status='Events Not Added' statusIcon="yellow" widgetType={widget.widgetType} widgetPreview = {widget.preview} key={key} onDelete={handleDeleteWidget}/>
-        ))}
-      </div>
+        {draftWidgets.length > 0 ? (
+          draftWidgets.map((card, index) => (
+            <WidgetCard
+              key={index}
+              image={card.selectedImage}
+              widgetTemplate={card.widgetTemplateName}
+              widgetType={card.widgetType}
+              widgetNumber={1}
+              onDelete={() => handleDelete(index)}
+            />
+          ))
+        ) : (
+          <div className={styles.emptyCard}><EmptyCard /></div>
 
+        )}
+      </div>
     </div>
   )
 }
