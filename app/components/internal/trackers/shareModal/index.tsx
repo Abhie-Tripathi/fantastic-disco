@@ -2,7 +2,7 @@ import React,{useState, useEffect} from 'react'
 import styles from './shareModal.style.module.css';
 import Account from '/public/account.svg';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
@@ -34,6 +34,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
     const path = usePathname().split('/');
+    const searchParams = useSearchParams();
+    const type  = searchParams.get('type');
     const [isClicked,setIsClicked]=useState(false);
     useEffect(() => {
         if(!id)
@@ -53,7 +55,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             if (typeof window !== 'undefined') {
                 const url = window.location.href;
                 const baseUrl = url.substring(0, url.lastIndexOf('/'));
-                setCurrentUrl(`${baseUrl}/trackedEvents?`);
+                setCurrentUrl(`${baseUrl}/trackedEvents?type=${type}`);
             }
         }, []);
         const handleFilterChange = (e: any) => {

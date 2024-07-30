@@ -18,6 +18,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 type authContextType = {
   user: UserResponse | null;
+  isVerifiedToken:boolean;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
@@ -38,6 +39,7 @@ interface newUserResponse {
 }
 const authContextDefaultValues: authContextType = {
   user: null,
+  isVerifiedToken:false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
   signOut: () => {},
@@ -64,7 +66,11 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const searchParams = useSearchParams();
-
+  const type=searchParams.get("type");
+  const paths = usePathname().split('/');
+  const trackerId = paths[paths.length - 2];
+  console.log(trackerId);
+  
   const token = searchParams.get("token");
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto);
@@ -144,6 +150,9 @@ export const AuthContextProvider = ({ children }: any) => {
             };
             setUser(data.info);
             setLocalStorage(userObject);
+            setIsVerifiedToken(true);
+            // window.location.href=`/internal/trackers/${trackerId}/trackedEvents?type=${type}`;
+            // router.push(`/internal/trackers/${trackerId}/trackedEvents?type=${type}`)
           }
         } catch (err) {
           console.error("Fetch failed:", err);
@@ -151,7 +160,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       };
       verifyToken();
-    }
+    }else setIsVerifiedToken(true);
   }, []);
 
   const signin = async (userDto: TSignInFormSchema) => {
@@ -310,6 +319,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const value = {
     user,
     signup,
+    isVerifiedToken,
     signin,
     signOut,
     verifyOtp,

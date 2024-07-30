@@ -11,6 +11,7 @@ import Name from '/public/userName_Icon.svg'
 import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
+import Loading from "@/app/components/UI/Loading";
 import Labels from "@/app/components/trackers/labels";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
@@ -59,9 +60,10 @@ const Page = () => {
   const typeVal = searchParams.get('type')
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
+  const [loading,setLoading]=useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const url = `${baseUrl}/tracker/${last}`;
+      const url = `${baseUrl}/tracker/${last}?edit=true`;
       try {
         const { data, error } = await myFetch(url, {
           method: "GET",
@@ -71,6 +73,7 @@ const Page = () => {
         } else {
           console.log("Data fetched:", data);
           setData(data);
+          setLoading(false)
         }
       } catch (err) {
         console.error("Fetch failed:", err);
@@ -154,261 +157,266 @@ const Page = () => {
 console.log(type);
 
   return (
+    <>
+    {loading ? <Loading/> :
     <div className={styles.container}>
-      <div className={styles.containerTop}>
-        <div className={styles.containerTopLeft}>
-          <div>
-            <CustomeTracker fillColor="#6750a4" />
-          </div>
-          <div className={styles.trackerType}>
-            <div className={styles.heading}>{type} Tracker</div>
-            <div className={styles.content}>
-              Select from the available data filters to create a custom tracker
-            </div>
-          </div>
+    <div className={styles.containerTop}>
+      <div className={styles.containerTopLeft}>
+        <div>
+          <CustomeTracker fillColor="#6750a4" />
         </div>
-        <div className={styles.outerRight}>
-          <div className={styles.containerTopRightTwo} >
-            <button onClick={() => setDel(true)}>Delete</button>
+        <div className={styles.trackerType}>
+          <div className={styles.heading}>{type} Tracker</div>
+          <div className={styles.content}>
+            Select from the available data filters to create a custom tracker
           </div>
-          <div className={styles.containerTopRight}>
-            <Link href={`/internal/trackers/${last}/editTracker?type=${data?.tracker?.type}`}>
-              <button
-                onClick={() =>
-                  GAEvent(
-                    "trackers",
-                    "Tracker Detail",
-                    "Edit",
-                    "Edit"
-                  )
-                }
-              >
-                Edit
-              </button>
-            </Link>
-          </div>
-
         </div>
       </div>
-      <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
-      <div className={styles.innerContainer}>
-        <div
-          className={styles.innerContainerLeft}
-          style={{ border: "1px solid var(--border-color)" }}
-        >
-          {data && (
-            <BasicFilter
-              category={
-                data?.tracker?.filterValue?.eventCategory?.length > 0
-                  ? data?.tracker?.filterValue?.eventCategory
-                  : []
-              }
-            />
-          )}
+      <div className={styles.outerRight}>
+        <div className={styles.containerTopRightTwo} >
+          <button onClick={() => setDel(true)}>Delete</button>
         </div>
-        <div className={styles.innerContainerRight}>
-          {data && (
-            <LocationFilter
-              start={
-                data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
+        <div className={styles.containerTopRight}>
+          <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
+            <button
+              onClick={() =>
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "Edit",
+                  "Edit"
+                )
               }
-              end={
-                data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
-              }
-              startDate={data?.tracker?.filterValue?.endDate?.split(",")[0]}
-              endDate={data?.tracker?.filterValue?.endDate?.split(",")[1]}
-              locations={locations}
-            />
-          )}
-          {/* {data && (
-            <Labels
-              labels={
-                data?.tracker?.filterValue?.labels
-                  ? data?.tracker?.filterValue?.labels
-                  : []
-              }
-            />
-          )} */}
-        </div>
-      </div>
-      {data.tracker && data.tracker.type === "T_COMPETITOR" &&
-        <>
-        <div className={styles.line}></div>
-          <div className={styles.innerContainer}>
-            <div
-              className={styles.innerContainerLeft}
-              style={{ paddingLeft: "20px" }}
             >
-              <div className={styles.advanceHead}>Competitor&apos;s Website</div>
-              <div className={styles.customContent}>
-                {/* <div className={styles.urlDiv}>
-                  <Image src={Url} alt="url" className="icons" />
-                  URL
-                  </div> */}
-                 Track your competitor experts, influencers and where they might be participating in events
-              </div>
-            </div>
-            <div className={styles.innerContainerRight}>
-            <div className={styles.allInputBox}>
-                  {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
-                    <div className={styles.singleUrl} key={ind}>
-                    <Image src={Url} alt="url_icon"/>
-                    <div key={ind} className={styles.singleInputBox}>{item}</div>
-                    </div>
-                  ))}
-                </div>
-            </div>
-          </div>
-        </>
-      }
-      {data.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
-        <>
-        <div className={styles.line}></div>
-          <div className={styles.innerContainer}>
-            <div
-              className={styles.innerContainerLeft}
-              style={{ paddingLeft: "20px" }}
-            >
-              <div className={styles.advanceHead}>Speaking Opportunity</div>
-              <div className={styles.customContent}>
-                {/* <div className={styles.urlDiv}>
-                  <Image src={Url} alt="url" className="icons" />
-                  URL
-                  </div> */}
-                 Team members and their details to keep track of the events with speaking opportunities.
-              </div>
-            </div>
-            <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
-            <div className={styles.speakerAllInputBox}>
-            <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                    {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
-                    <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Speaker&apos;s Name</div>
-            </div>
-                  {data?.tracker?.filterValue?.speakerName?.split(',')?.map((item: string, ind: number) => (
-                    <div className={styles.singleUrl} key={ind}>
-                    <Image src={Name} alt="url_icon" className="icons" width={10}/>
-                    <div key={ind} className={styles.singleInputBox}>{item}</div>
-                    </div>
-                  ))}
-            </div>
-            <div className={styles.speakerAllInputBox}>
-            <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                    {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
-                    <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
-                    </div>
-                  {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
-                    <div className={styles.singleUrl} key={ind}>
-                    <Image src={Company} alt="url_icon" className="icons" width={10}/>
-                    <div key={ind} className={styles.singleInputBox}>{item}</div>
-                    </div>
-                  ))}
-            </div>
-            </div>
-          </div>
-        </>
-      }
-      <div className={styles.line}></div>
-      <div className={styles.innerContainer}>
-        <div
-          className={styles.innerContainerLeft}
-          style={{ paddingLeft: "20px" }}
-        >
-          <div className={styles.advanceHead}>Advanced Details</div>
-          <div className={styles.advanceContent}>
-            Advanced and more detailed event filter criteria for precise and
-            personalized event tracking.
-          </div>
+              Edit
+            </button>
+          </Link>
         </div>
-        <div className={styles.innerContainerRight}>
-          <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []}
-            localRank={
-              data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
-            }
-            eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
-              ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
-              .map(item => item.name):[]}
-            eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
-          />
-        </div>
+
       </div>
-      <div className={styles.line}></div>
-      <div className={styles.innerContainer}>
-        <div
-          className={styles.innerContainerLeft}
-          style={{ paddingLeft: "20px" }}
-        >
-          <div className={styles.advanceHead}>Insights and Scores</div>
-          <div className={styles.advanceContent}>
-            Refine your event tracking with precise filters tailored to your
-            needs with accurate scores and insights on event data.
-          </div>
-        </div>
-        <div className={styles.innerContainerRight}>
-          <Insights
-            isBranded={data?.tracker?.filterValue?.brandedEvent}
-            trustScore={data?.tracker?.filterValue?.trustScore}
-            reputation={data?.tracker?.filterValue?.reputationScore}
-            maturity={data?.tracker?.filterValue?.maturity}
-            rank={data?.tracker?.filterValue?.eventSeries}
-          />
-        </div>
-      </div>
-      <div className={styles.line}></div>
-      <div className={styles.innerContainer}>
-        <div
-          className={styles.innerContainerLeft}
-          style={{ paddingLeft: "20px" }}
-        >
-          <div className={styles.advanceHead}>Audience Intel</div>
-          <div className={styles.advanceContent}>
-            Track your events based on the audience intel and insights to gain
-            more visibility and active participants
-          </div>
-        </div>
-        <div className={styles.innerContainerRight}>
-          <Intel
-            internationalScore={data?.tracker?.filterValue?.internationalScore}
-            inboundScore={data?.tracker?.filterValue?.inboundScore}
-            userRating={
-              data?.tracker?.filterValue?.eventRating
-                ? data?.tracker?.filterValue?.eventRating.split(",")
-                : []
-            }
-            exhibitScore={
-              data?.tracker?.filterValue?.eventSize
-                ? data?.tracker?.filterValue?.eventSize?.split(",")
-                : []
-            }
-          />
-        </div>
-      </div>
-      {del &&
-        (
-          <div className={styles.shareModal} >
-            <div className={styles.innerModal}>
-              <div className={styles.shareHead}>Delete Tracker</div>
-              {/* <div className={styles.bar}></div> */}
-              <div className={styles.linkCopy}>
-
-                <div className={styles.inviteAccess}>
-
-                  All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
-
-                </div>
-              </div>
-
-              <div className={styles.buttons}>
-
-                <button className={styles.send} onClick={deleteTracker}>Delete</button>
-                <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
-              </div>
-            </div>
-          </div>
-
-
-        )}
-
     </div>
+    <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
+    <div className={styles.innerContainer}>
+      <div
+        className={styles.innerContainerLeft}
+        style={{ border: "1px solid var(--border-color)" }}
+      >
+        {data && (
+          <BasicFilter
+            category={
+              data?.tracker?.filterValue?.eventCategory?.length > 0
+                ? data?.tracker?.filterValue?.eventCategory
+                : []
+            }
+          />
+        )}
+      </div>
+      <div className={styles.innerContainerRight}>
+        {data && (
+          <LocationFilter
+            start={
+              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
+            }
+            end={
+              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
+            }
+            startDate={data?.tracker?.filterValue?.endDate?.split(",")[0]}
+            endDate={data?.tracker?.filterValue?.endDate?.split(",")[1]}
+            locations={locations}
+          />
+        )}
+        {/* {data && (
+          <Labels
+            labels={
+              data?.tracker?.filterValue?.labels
+                ? data?.tracker?.filterValue?.labels
+                : []
+            }
+          />
+        )} */}
+      </div>
+    </div>
+    {data.tracker && data.tracker.type === "T_COMPETITOR" &&
+      <>
+      <div className={styles.line}></div>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>Competitor&apos;s Website</div>
+            <div className={styles.customContent}>
+              {/* <div className={styles.urlDiv}>
+                <Image src={Url} alt="url" className="icons" />
+                URL
+                </div> */}
+               Track your competitor experts, influencers and where they might be participating in events
+            </div>
+          </div>
+          <div className={styles.innerContainerRight}>
+          <div className={styles.allInputBox}>
+                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Url} alt="url_icon"/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+              </div>
+          </div>
+        </div>
+      </>
+    }
+    {data.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
+      <>
+      <div className={styles.line}></div>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>Speaking Opportunity</div>
+            <div className={styles.customContent}>
+              {/* <div className={styles.urlDiv}>
+                <Image src={Url} alt="url" className="icons" />
+                URL
+                </div> */}
+               Team members and their details to keep track of the events with speaking opportunities.
+            </div>
+          </div>
+          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Speaker&apos;s Name</div>
+          </div>
+                {data?.tracker?.filterValue?.speakerName?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
+                  </div>
+                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
+          </div>
+        </div>
+      </>
+    }
+    <div className={styles.line}></div>
+    <div className={styles.innerContainer}>
+      <div
+        className={styles.innerContainerLeft}
+        style={{ paddingLeft: "20px" }}
+      >
+        <div className={styles.advanceHead}>Advanced Details</div>
+        <div className={styles.advanceContent}>
+          Advanced and more detailed event filter criteria for precise and
+          personalized event tracking.
+        </div>
+      </div>
+      <div className={styles.innerContainerRight}>
+        <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []}
+          localRank={
+            data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+          }
+          eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
+            ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
+            .map(item => item.name):[]}
+          eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+        />
+      </div>
+    </div>
+    <div className={styles.line}></div>
+    <div className={styles.innerContainer}>
+      <div
+        className={styles.innerContainerLeft}
+        style={{ paddingLeft: "20px" }}
+      >
+        <div className={styles.advanceHead}>Insights and Scores</div>
+        <div className={styles.advanceContent}>
+          Refine your event tracking with precise filters tailored to your
+          needs with accurate scores and insights on event data.
+        </div>
+      </div>
+      <div className={styles.innerContainerRight}>
+        <Insights
+          isBranded={data?.tracker?.filterValue?.brandedEvent}
+          trustScore={data?.tracker?.filterValue?.trustScore}
+          reputation={data?.tracker?.filterValue?.reputationScore}
+          maturity={data?.tracker?.filterValue?.maturity}
+          rank={data?.tracker?.filterValue?.eventSeries}
+        />
+      </div>
+    </div>
+    <div className={styles.line}></div>
+    <div className={styles.innerContainer}>
+      <div
+        className={styles.innerContainerLeft}
+        style={{ paddingLeft: "20px" }}
+      >
+        <div className={styles.advanceHead}>Audience Intel</div>
+        <div className={styles.advanceContent}>
+          Track your events based on the audience intel and insights to gain
+          more visibility and active participants
+        </div>
+      </div>
+      <div className={styles.innerContainerRight}>
+        <Intel
+          internationalScore={data?.tracker?.filterValue?.internationalScore}
+          inboundScore={data?.tracker?.filterValue?.inboundScore}
+          userRating={
+            data?.tracker?.filterValue?.eventRating
+              ? data?.tracker?.filterValue?.eventRating.split(",")
+              : []
+          }
+          exhibitScore={
+            data?.tracker?.filterValue?.eventSize
+              ? data?.tracker?.filterValue?.eventSize?.split(",")
+              : []
+          }
+        />
+      </div>
+    </div>
+    {del &&
+      (
+        <div className={styles.shareModal} >
+          <div className={styles.innerModal}>
+            <div className={styles.shareHead}>Delete Tracker</div>
+            {/* <div className={styles.bar}></div> */}
+            <div className={styles.linkCopy}>
+
+              <div className={styles.inviteAccess}>
+
+                All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+              </div>
+            </div>
+
+            <div className={styles.buttons}>
+
+              <button className={styles.send} onClick={deleteTracker}>Delete</button>
+              <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+
+
+      )}
+
+  </div>
+    }
+    </>
+    
   );
 };
 
