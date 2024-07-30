@@ -1054,11 +1054,11 @@ setSelectedEventTypeName(EventStatusData
 
 
     
-      setSelectedINScore(
-        editData.tracker.filterValue?.internationalScore > 0
-          ? editData.tracker.filterValue?.internationalScore
-          : 0
-      );
+      // setSelectedINScore(
+      //   editData.tracker.filterValue?.internationalScore.length > 0
+      //     ? editData.tracker.filterValue?.internationalScore
+      //     : ""
+      // );
       setSelectedInboundScore(
         editData.tracker.filterValue?.inboundScore > 0
           ? editData.tracker.filterValue?.inboundScore
@@ -1201,6 +1201,11 @@ setSelectedEventTypeName(EventStatusData
     //   }).filter(item => Object.keys(item).length > 0)
     // );
   };
+  useEffect(()=>{
+    if(intScore==="low") setSelectedINScore(1);
+    if(intScore==="medium") setSelectedINScore(50);
+    if(intScore==="high") setSelectedINScore(100);
+  },[intScore])
   
   return (
     <>
@@ -2246,9 +2251,9 @@ setSelectedEventTypeName(EventStatusData
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           International Score
-                          {selectedINScore > 0 && (
+                          {intScore && intScore.length > 0 && (
                             <span className={styles.input_selected_title}>
-                              {intScore}
+                              {intScore?.charAt(0).toUpperCase()}{intScore?.substring(1)}
                             </span>
                           )}
                         </div>
