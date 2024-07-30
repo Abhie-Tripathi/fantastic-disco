@@ -49,4 +49,5 @@ export interface EventTableType {
         estimatedVisitor: number;
     };
     internationalAudience: string;
+    type: string[]
 }

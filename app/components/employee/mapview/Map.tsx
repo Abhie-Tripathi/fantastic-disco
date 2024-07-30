@@ -59,6 +59,90 @@ const EventListCard = (event: any) => {
   );
 };
 
+const markerIcon = (type?: string, eventSize: number = 0 ) => {
+  let iconColor = "#6750a4";
+  let fillColor = "white";
+  if(eventSize >= 500)  {
+    iconColor="#0079dd";
+  }
+  else if (eventSize >= 100 && eventSize < 500)  {
+    iconColor="#3187e2";
+  }
+  else iconColor="#64a3ea"
+
+
+  if(type && type == 'Conference') {
+    return(
+      <svg width={48} height={48} viewBox="0 0 97 129" fill="none" xmlns="http://www.w3.org/2000/svg" >
+        <g clipPath="url(#clip0_2119_4957)">
+          <mask
+            id="mask0_2119_4957"
+            style={{ maskType: "luminance" }}
+            maskUnits="userSpaceOnUse"
+            x={0}
+            y={0}
+            width={97}
+            height={129}
+          >
+            <path d="M96.75 0H0V129H96.75V0Z" fill="white" />
+          </mask>
+          <g mask="url(#mask0_2119_4957)">
+            <path
+              d="M96.75 48.375C96.75 70.3957 67.2715 109.6 54.3463 125.775C51.2473 129.63 45.5027 129.63 42.4037 125.775C29.4785 109.6 0 70.3957 0 48.375C0 21.668 21.668 0 48.375 0C75.082 0 96.75 21.668 96.75 48.375Z"
+              fill={iconColor}
+            />
+          </g>
+          <path
+            d="M57.3307 51.5013C57.3307 46.8989 53.5998 43.168 48.9974 43.168C44.395 43.168 40.6641 46.8989 40.6641 51.5013V61.918C40.6641 66.5203 44.395 70.2513 48.9974 70.2513C53.5998 70.2513 57.3307 66.5203 57.3307 61.918V51.5013Z"
+            fill={fillColor}
+          />
+          <path
+            d="M34.4141 61.918C34.4141 65.7857 35.9505 69.4951 38.6854 72.2298C41.4203 74.9648 45.1297 76.5013 48.9974 76.5013C52.8651 76.5013 56.5745 74.9648 59.3093 72.2298C62.0443 69.4951 63.5807 65.7857 63.5807 61.918"
+            stroke={fillColor}
+            strokeWidth="4.16667"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M49 82.7487V78.582"
+            stroke={fillColor}
+            strokeWidth="4.16667"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_2119_4957">
+            <rect width={97} height={129} fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+    )
+  }
+  else{
+    if(eventSize >= 500)  {
+      iconColor="#7461ae";
+    }
+    else if (eventSize >= 100 && eventSize < 500)  {
+      iconColor="#9183c1";
+    }
+    else iconColor="#a095ca"
+    return (
+      <svg width="48" height="48" viewBox="0 0 97 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_2099_4740)">
+        <path d="M96.875 48.4375C96.875 70.4866 67.3584 109.741 54.4165 125.937C51.3135 129.797 45.5615 129.797 42.4585 125.937C29.5166 109.741 0 70.4866 0 48.4375C0 21.696 21.696 0 48.4375 0C75.179 0 96.875 21.696 96.875 48.4375Z" fill={iconColor} />
+        <path d="M62.4465 41.0579H56.0213C56.0213 39.013 55.209 37.0519 53.763 35.6059C52.3171 34.16 50.3559 33.3477 48.311 33.3477C46.2662 33.3477 44.305 34.16 42.8591 35.6059C41.4131 37.0519 40.6008 39.013 40.6008 41.0579H34.1756C33.4939 41.0579 32.8402 41.3287 32.3582 41.8107C31.8762 42.2927 31.6055 42.9464 31.6055 43.628V62.9037C31.6055 63.5853 31.8762 64.239 32.3582 64.721C32.8402 65.203 33.4939 65.4738 34.1756 65.4738H62.4465C63.1282 65.4738 63.7819 65.203 64.2639 64.721C64.7458 64.239 65.0166 63.5853 65.0166 62.9037V43.628C65.0166 42.9464 64.7458 42.2927 64.2639 41.8107C63.7819 41.3287 63.1282 41.0579 62.4465 41.0579ZM43.1709 47.4831C43.1709 47.824 43.0355 48.1508 42.7945 48.3918C42.5535 48.6328 42.2266 48.7682 41.8858 48.7682C41.545 48.7682 41.2182 48.6328 40.9772 48.3918C40.7362 48.1508 40.6008 47.824 40.6008 47.4831V44.9131C40.6008 44.5722 40.7362 44.2454 40.9772 44.0044C41.2182 43.7634 41.545 43.628 41.8858 43.628C42.2266 43.628 42.5535 43.7634 42.7945 44.0044C43.0355 44.2454 43.1709 44.5722 43.1709 44.9131V47.4831ZM48.311 35.9177C49.6743 35.9177 50.9817 36.4593 51.9457 37.4233C52.9097 38.3872 53.4512 39.6947 53.4512 41.0579H43.1709C43.1709 39.6947 43.7124 38.3872 44.6764 37.4233C45.6404 36.4593 46.9478 35.9177 48.311 35.9177ZM56.0213 47.4831C56.0213 47.824 55.8859 48.1508 55.6449 48.3918C55.4039 48.6328 55.0771 48.7682 54.7363 48.7682C54.3955 48.7682 54.0686 48.6328 53.8276 48.3918C53.5866 48.1508 53.4512 47.824 53.4512 47.4831V44.9131C53.4512 44.5722 53.5866 44.2454 53.8276 44.0044C54.0686 43.7634 54.3955 43.628 54.7363 43.628C55.0771 43.628 55.4039 43.7634 55.6449 44.0044C55.8859 44.2454 56.0213 44.5722 56.0213 44.9131V47.4831Z" fill={fillColor} />
+        </g>
+        <defs>
+          <clipPath id="clip0_2099_4740">
+          <rect width="96.875" height="129.167" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+    );
+  }
+}
+
 interface MapProps {
   queryString?: string;
 }
@@ -145,7 +229,7 @@ const Map = (props: MapProps) => {
           setEventPerPage([]);
           const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
           const countryEventCountsObj: any = {};
-          countryEventCountsObj['totalEventCount'] = totalCount;
+          // countryEventCountsObj['totalEventCount'] = totalCount;
           apiData.data.forEach((country: any) => {
             countryEventCountsObj[country.countryCode] = country.eventCount;
           });
@@ -230,6 +314,7 @@ const Map = (props: MapProps) => {
         source="country-source"
         source-layer="country_boundaries"
         filter={['==', 'iso_3166_1', country]}
+        maxzoom={8}
         paint={{
           'fill-color': 'rgba(130, 80, 164, 0.6)',
           'fill-opacity': getOpacityValue(country),
@@ -238,6 +323,44 @@ const Map = (props: MapProps) => {
       />
     );
   });
+
+  const getRadius = () => {
+    let defaultRadius = 25;
+    return defaultRadius-((viewport.zoom -8)*(defaultRadius/16));
+  }
+
+  const setNewMarkers = async(lat: number, long: number, page: number) => {
+    const newMarkers = await myFetch(`${baseUrl}/event/search?mapRadius=${getRadius()*1000}&latitude=${lat}&longitude=${long}&offset=${(page-1)*20}&max=20&${props.queryString}`, {
+      method: "GET",
+      headers: headers,
+    });
+    setEventPerPage(prevIds => {
+      let oldIds = prevIds.map(
+        (event: any) => event.id
+      );
+      let tempObj = prevIds;
+      newMarkers.data.events.map(
+        (event: any) =>{
+          if(!oldIds.includes(event.id)) {
+            tempObj.push(event);}
+        }
+      );
+      if(tempObj.length > 100){
+        tempObj = tempObj.slice(tempObj.length - 100);
+      }
+      return tempObj;
+    });
+  }
+
+  useEffect(() => {
+    if(viewport.zoom >8){
+      // const debounceTimeout = setTimeout(() => {
+        setNewMarkers(viewport.latitude, viewport.longitude, 1);
+        setTimeout(()=>setNewMarkers(viewport.latitude, viewport.longitude, 2), 200)
+      // }, 300);
+      // return () => clearTimeout(debounceTimeout);
+    }
+  }, [viewport]);
 
   const zoneLevelProps = {zoom:1};
 
@@ -270,7 +393,21 @@ const Map = (props: MapProps) => {
           latitude: 51.50853,
           zoom: 2,
         }}
+        maxZoom={20}
         projection={{"name": "mercator"}}
+        onZoomEnd={(zoomEvent) => {
+          setViewport((prevViewport: any) => ({
+            ...prevViewport,
+            zoom: zoomEvent.viewState.zoom
+          }));
+        }}
+        onDragEnd={(dragEvent) => {
+          setViewport((prevViewport: any) => ({
+            ...prevViewport,
+            latitude: dragEvent.viewState.latitude,
+            longitude: dragEvent.viewState.longitude,
+          }));
+        }}
         // onViewportChange={(viewport) => {
         //   setViewport(viewport);
         // }}
@@ -290,7 +427,8 @@ const Map = (props: MapProps) => {
                   setSelectedPlace(event.id);
                 }}
               >
-                <Image src={MapPointer} alt="mapPointer" />
+                {/* <Image src={MapPointer} alt="mapPointer" /> */}
+                {markerIcon(event?.type[0], event?.stats?.eventFollower)}
               </button>
             </Marker>
             {selectedPlace == event.id ? (
