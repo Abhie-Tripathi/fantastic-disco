@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./map.module.css";
 import { useState } from "react";
-import eventData from "../../../../public/data/demoEvent.json";
-import MapPointer from "/public/Marker.svg";
-import {Map as Map2, Marker, Popup, Source, Layer } from "react-map-gl";
+// import eventData from "../../../../public/data/demoEvent.json";
+// import MapPointer from "/public/Marker.svg";
+import {Map as Map2, Marker, Popup, Source, Layer, useMap } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { formatDateRange } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
-import FestivalIcon from "/public/festivalIcon.svg";
+// import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
@@ -143,6 +143,13 @@ const markerIcon = (type?: string, eventSize: number = 0 ) => {
   }
 }
 
+const cityMarker = (count: number) => {
+  if (count >= 999) {
+    return `${(count / 1000).toFixed(1)}k`;
+  }
+  return count;
+}
+
 interface MapProps {
   queryString?: string;
 }
@@ -164,6 +171,34 @@ const zones = {
   "Western Europe": { lat: 45, lng: 5 },
 };
 
+interface MarkerProps {
+  lat: string,
+  long: string,
+  eventCount: number,
+  cityName: string,
+}
+
+const FlyToButton = (props: MarkerProps) => {
+  const { current: map } = useMap();
+
+  const handleClick = () => {
+    map?.flyTo({
+      center: [parseFloat(props.long), parseFloat(props.lat)],
+      zoom: 10,
+      speed: 0.8,
+    });
+  };
+  return (
+    <div
+      className={styles.cityPin}
+      data-name={props.cityName}
+      onClick={handleClick}
+    >
+      {cityMarker(props.eventCount)}
+    </div>
+  );
+}
+
 const Map = (props: MapProps) => {
   const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<number | string | null>(null);
@@ -172,6 +207,7 @@ const Map = (props: MapProps) => {
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
   const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
+  const [cityPerPage, setCityPerPage] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isListLoaded, setIsListLoaded] = useState<boolean>(true);
 
@@ -227,7 +263,7 @@ const Map = (props: MapProps) => {
         if(mapViewType == 'country'){
           setCountryPerPage(apiData.data);
           setEventPerPage([]);
-          const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
+          // const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
           const countryEventCountsObj: any = {};
           // countryEventCountsObj['totalEventCount'] = totalCount;
           apiData.data.forEach((country: any) => {
@@ -239,6 +275,11 @@ const Map = (props: MapProps) => {
           setEventPerPage(apiData.data.events);
           setCountryPerPage([]);
         }
+        const cityData = await myFetch(`${baseUrl}/event/search?groupBy=city&${props.queryString}`, {
+          method: "GET",
+          headers: headers,
+        });
+        setCityPerPage(cityData.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -314,7 +355,7 @@ const Map = (props: MapProps) => {
         source="country-source"
         source-layer="country_boundaries"
         filter={['==', 'iso_3166_1', country]}
-        maxzoom={8}
+        maxzoom={6}
         paint={{
           'fill-color': 'rgba(130, 80, 164, 0.6)',
           'fill-opacity': getOpacityValue(country),
@@ -329,31 +370,40 @@ const Map = (props: MapProps) => {
     return defaultRadius-((viewport.zoom -8)*(defaultRadius/16));
   }
 
+  const [loadMorePins, setLoadMorePins] = useState<any>([]);
+  
   const setNewMarkers = async(lat: number, long: number, page: number) => {
-    const newMarkers = await myFetch(`${baseUrl}/event/search?mapRadius=${getRadius()*1000}&latitude=${lat}&longitude=${long}&offset=${(page-1)*20}&max=20&${props.queryString}`, {
-      method: "GET",
-      headers: headers,
-    });
-    setEventPerPage(prevIds => {
-      let oldIds = prevIds.map(
-        (event: any) => event.id
-      );
-      let tempObj = prevIds;
-      newMarkers.data.events.map(
-        (event: any) =>{
-          if(!oldIds.includes(event.id)) {
-            tempObj.push(event);}
-        }
-      );
-      if(tempObj.length > 100){
-        tempObj = tempObj.slice(tempObj.length - 100);
+    try {
+      const newMarkers = await myFetch(`${baseUrl}/event/search?mapRadius=${getRadius()*1000}&latitude=${lat}&longitude=${long}&offset=${(page-1)*20}&max=20&${props.queryString}`, {
+        method: "GET",
+        headers: headers,
+      });
+
+      if(newMarkers.data) {
+        let oldIds = eventPerPage.map(
+          (event: any) => event.id
+        );
+        let tempObj: any = [];
+        newMarkers.data.events.map(
+          (event: any) =>{
+            if(!oldIds.includes(event.id)) {
+              tempObj.push(event);}
+          }
+        );
+        setLoadMorePins(tempObj);
       }
-      return tempObj;
-    });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
+  
+  useEffect(() => {
+    if(eventPerPage.length > 100) setEventPerPage(loadMorePins);
+    else setEventPerPage((prev)=>[...prev, ...loadMorePins]);
+  }, [loadMorePins]);
 
   useEffect(() => {
-    if(viewport.zoom >8){
+    if(viewport.zoom >= 9){
       // const debounceTimeout = setTimeout(() => {
         setNewMarkers(viewport.latitude, viewport.longitude, 1);
         setTimeout(()=>setNewMarkers(viewport.latitude, viewport.longitude, 2), 200)
@@ -398,7 +448,9 @@ const Map = (props: MapProps) => {
         onZoomEnd={(zoomEvent) => {
           setViewport((prevViewport: any) => ({
             ...prevViewport,
-            zoom: zoomEvent.viewState.zoom
+            zoom: zoomEvent.viewState.zoom,
+            latitude: zoomEvent.viewState.latitude,
+            longitude: zoomEvent.viewState.longitude,
           }));
         }}
         onDragEnd={(dragEvent) => {
@@ -413,12 +465,13 @@ const Map = (props: MapProps) => {
         // }}
         // {...zoneLevelProps}
       >
-        {eventPerPage && eventPerPage.map((event) => (
-          <div key={event.id}>
+        {(eventPerPage && viewport.zoom > 9) && eventPerPage.map((event) => (
+          ((event.location.geoCordinates.latitude && event.location.geoCordinates.longitude) || (event.location.cityCordinates.latitude && event.location.cityCordinates.longitude)) ?
+          <>
             <Marker
               key={event.id}
-              latitude={parseFloat(event.location.geoCordinates.latitude)}
-              longitude={parseFloat(event.location.geoCordinates.longitude)}
+              latitude={parseFloat(event.location.geoCordinates.latitude ? event.location.geoCordinates.latitude: event.location.cityCordinates.latitude)}
+              longitude={parseFloat(event.location.geoCordinates.longitude ? event.location.geoCordinates.longitude : event.location.cityCordinates.latitude)}
             >
               <button
                 className={styles.map_event_button}
@@ -434,8 +487,8 @@ const Map = (props: MapProps) => {
             {selectedPlace == event.id ? (
               <Popup
                 className={styles.popup}
-                latitude={parseFloat(event.location.geoCordinates.latitude)}
-                longitude={parseFloat(event.location.geoCordinates.longitude)}
+                latitude={parseFloat(event.location.geoCordinates.latitude ? event.location.geoCordinates.latitude: event.location.cityCordinates.latitude)}
+                longitude={parseFloat(event.location.geoCordinates.longitude ? event.location.geoCordinates.longitude : event.location.cityCordinates.latitude)}
                 onClose={() => {
                   setSelectedPlace(null);
                 }}
@@ -470,7 +523,7 @@ const Map = (props: MapProps) => {
               </div>
               </Popup>
             ) : null}
-          </div>
+          </> : <></>
         ))}
         
         {/* {zonePerPage && 
@@ -495,7 +548,21 @@ const Map = (props: MapProps) => {
             ))}
           </>
         } */}
-        { (countryPerPage && countryPerPage.length > 0) && 
+
+        {(cityPerPage && viewport.zoom > 6 && viewport.zoom <= 9) && cityPerPage.map((city) => (
+          (city.geoCordinates.latitude && city.geoCordinates.longitude && (cityPerPage.length < 100 || city.eventCount > 20)) ? (
+            <Marker
+              key={city.cityId}
+              latitude={parseFloat(city.geoCordinates.latitude)}
+              longitude={parseFloat(city.geoCordinates.longitude)}
+            >
+              {/* {cityMarker(city.eventCount)} */}
+              <FlyToButton lat={city.geoCordinates.latitude} long={city.geoCordinates.longitude} eventCount={city.eventCount} cityName={city.name} />
+            </Marker> ) : <></>
+          ))
+        }
+        
+        { ((countryPerPage && viewport.zoom <= 6) && countryPerPage.length > 0) && 
           <>
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
