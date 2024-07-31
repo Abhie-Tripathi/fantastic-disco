@@ -31,9 +31,10 @@ interface Props {
   pageBgColor: string;
   eventFont: string;
   widgetId: string;
-  fetchEvents : () => Promise<void>; 
+  fetchEvents: () => Promise<void>;
+  addedEventIds: string[]
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId,fetchEvents }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -110,8 +111,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId,fetc
   const handleAddEvent = async () => {
     const eventData = {
       format: eventFormat,
-      start_time : startTime,
-      end_time : endTime,
+      start_time: startTime,
+      end_time: endTime,
       end_date: endDate,
       start_date: startDate,
       description,
@@ -119,22 +120,67 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId,fetc
       location_country: countryName,
     };
     const formData = new FormData()
-    formData.append("name",eventName)
-    formData.append("data",JSON.stringify(eventData))
+    formData.append("name", eventName)
+    formData.append("data", JSON.stringify(eventData))
 
-    const {data, error} = await myFetch(`${baseUrl}/event`,{
-      method : 'POST',
-      body : formData
+    const { data, error } = await myFetch(`${baseUrl}/event`, {
+      method: 'POST',
+      body: formData
     })
-    if(data){
-      console.log(data)
+    if (data) {
+      const eventId = data.data.id
+      addEventToWidget(eventId)
+
       fetchEvents();
       setIsAddEventModalOpen(false)
     }
-    if(error){
+    if (error) {
       console.log(error)
     }
 
+  }
+  const addEventToWidget = async (eventId: string) => {
+    const customizedFormData = new FormData()
+    const otherData = {
+      event: [
+        {
+          id: eventId,
+          name: eventName,
+          pageBgColor,
+          description,
+          eventFont,
+          startDate,
+          endDate,
+          startTime,
+          endTime,
+          timeZone,
+          cityName,
+          countryName,
+          participationType,
+          eventFormat,
+          registerBtnColor,
+          registerBtnText,
+          registerMessage
+        },
+      ],
+    };
+
+    const eventIds = [...addedEventIds, eventId].join(',');
+
+    customizedFormData.append('widgetId', widgetId);
+    customizedFormData.append('otherdata', JSON.stringify(otherData))
+    customizedFormData.append('eventId', eventIds)
+    
+    const { data, error } = await myFetch(`${baseUrl}/widget`, {
+      method: 'POST',
+      body: customizedFormData
+    })
+    if(data){
+      console.log("widget event data", data)
+    }
+    if(error){
+      console.log("error in adding event to widget ", error)
+    }
   }
 
   return (
@@ -164,7 +210,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId,fetc
           </div>
         </div>
         <div className={styles.rightSection}>
-          <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e)=>setEventName(e.target.value)} value={eventName}/>
+          <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
           <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
           <div className={styles.locationContainer}><LocationContainer eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>

@@ -35,10 +35,11 @@ const Page = () => {
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
   const [selectedTemplate, setSelectedTemplate] = useState<string>()
-
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
 
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
+  const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
+  const [widgetType, setWidgetType] = useState<string>("");
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -82,6 +83,8 @@ const Page = () => {
         setCardStyle(data.customizationData.selectedCard);
         setSelectedBtn(data.customizationData.selectedBtn);
         setSelectedTemplate(asciiToString(data.templatePublicId));
+        setAddedEventIds(data.eventId)
+        setWidgetType(data.type)
       }
       if (error) {
         console.error("Error fetching widget data:", error);
@@ -141,6 +144,8 @@ const Page = () => {
           setIsAddEventModalOpen={setIsAddEventModalOpen}
           fetchedAllEvents = {fetchedAllEvents}
           fetchEvents = {fetchEvents}
+          widgetId={widgetId}
+          widgetType={widgetType}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -158,7 +163,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent addedEventIds={addedEventIds} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )
