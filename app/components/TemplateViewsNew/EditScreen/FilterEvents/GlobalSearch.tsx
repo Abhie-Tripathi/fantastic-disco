@@ -16,7 +16,7 @@ const GlobalSearch = () => {
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
             handleSearchInput(searchValue);
-        }, 500);
+        }, 300);
         return () => clearTimeout(debounceTimeout);
     }, [searchValue]);
 

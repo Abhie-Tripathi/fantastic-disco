@@ -1,9 +1,11 @@
 import React from 'react'
 import styles from './allevents.style.module.css'
 import GlobalSearch from './GlobalSearch';
-
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 
 interface AllEventsType {
+    eventId : string;
     name: string;
     location: string;
     startDate: string;
@@ -11,23 +13,44 @@ interface AllEventsType {
 }
 
 interface Props {
-    allEvents: AllEventsType[]
     setIsAddEventModalOpen: (value: boolean) => void
+    fetchedAllEvents : AllEventsType[]
+    fetchEvents : () => Promise<void>; 
 }
 
-const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
+const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props) => {
+
+    const handleDelete = async(eventId : string)=>{
+
+        const customizeData = new FormData();
+        customizeData.append("id", eventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+              method: 'PATCH',
+              body: customizeData,
+            }
+          );
+        if(data){
+            fetchEvents()
+        }
+        if(error){
+            console.log(error);
+        }
+ 
+    }
 
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>All Events <span>{allEvents.length}</span></div>
+                <div>All Events <span>{fetchedAllEvents.length}</span></div>
                 <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
             </div>
             <GlobalSearch />
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
-                {allEvents.map((event, key) => (
-                    // <div className={styles.eventContainer} key={key}>
+                {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
@@ -52,10 +75,9 @@ const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <DeleteIcon />
+                            <button onClick={()=>handleDelete(event.eventId)}><DeleteIcon /></button>
                         </div>
                     </div>
-                    // </div>
                 ))}
             </div>
         </div>

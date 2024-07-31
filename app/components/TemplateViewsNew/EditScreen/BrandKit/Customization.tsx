@@ -22,6 +22,7 @@ interface EditScreenProps {
   setCardStyle: React.Dispatch<React.SetStateAction<string>>;
   setSelectedBtn: (value: "primary" | "secondary") => void
   selectedBtn: "primary" | "secondary"
+  handleUpdateCustomization: () => Promise<void>;
 }
 
 interface FontSettings {
@@ -48,16 +49,20 @@ interface ButtonSettingsState {
   secondary: ButtonSettings;
 }
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn,selectedBtn }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
+
+  const handleUpdate = async () => {
+    handleUpdateCustomization()
+  }
 
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
         <div>Appearance</div>
-        <button>Apply</button>
+        <button onClick={handleUpdate}>Apply</button>
       </div>
       <div className={styles.brandKit}>
-        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex/>
+        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex />
       </div>
       <div className={styles.cardStylesContainer}>
         <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />

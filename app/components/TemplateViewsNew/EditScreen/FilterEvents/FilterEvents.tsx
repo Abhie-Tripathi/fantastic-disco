@@ -4,25 +4,20 @@ import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
 
 interface AllEventsType {
+    eventId : string;
     name: string;
     location: string;
     startDate: string;
     endDate: string;
-}
+  }
 
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
+    fetchedAllEvents : AllEventsType[]
+    fetchEvents : () => Promise<void>; 
 }
 
-const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
-
-    // We will be having the events data here and will be sending them as props to all events
-
-    const allEvents: AllEventsType[] = [{ name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" }
-    ]
+const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -33,7 +28,7 @@ const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen}/>}
             </div>
         </div>
     )

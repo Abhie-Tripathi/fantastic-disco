@@ -15,6 +15,8 @@ import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
 import { useTheme } from '@/context'
+import { myFetch } from '@/utils/myFetch'
+import { baseUrl } from '@/constants'
 
 interface SpeakerProfileType {
   id: string;
@@ -28,8 +30,10 @@ interface Props {
   setIsAddEventModalOpen: (value: boolean) => void
   pageBgColor: string;
   eventFont: string;
+  widgetId: string;
+  fetchEvents : () => Promise<void>; 
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId,fetchEvents }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -39,22 +43,27 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
   const [description, setDescription] = useState<string>("")
   const [textValue, setTextValue] = useState<string>(description)
   const [participationType, setParticipationType] = useState<string>("Attendee")
-
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
-
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-
   const [registerMessage, setRegisterMessage] = useState<string>("Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>("Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>("#1a1a1a")
   const [cityName, setCityName] = useState<string>("")
   const [countryName, setCountryName] = useState<string>("")
+  const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
+  const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
+  const [startTime, setStartTime] = useState<string>("12:00 A.M")
+  const [endTime, setEndTime] = useState<string>("12:00 A.M")
+  const [eventFormat, setEventFormat] = useState<string>("In-person")
+  const [eventName, setEventName] = useState<string>("");
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
   }
-  const {theme} = useTheme()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const adjustHeight = () => {
@@ -98,11 +107,41 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
     setPrefilledProfile(undefined);
   };
 
+  const handleAddEvent = async () => {
+    const eventData = {
+      format: eventFormat,
+      start_time : startTime,
+      end_time : endTime,
+      end_date: endDate,
+      start_date: startDate,
+      description,
+      location_city: cityName,
+      location_country: countryName,
+    };
+    const formData = new FormData()
+    formData.append("name",eventName)
+    formData.append("data",JSON.stringify(eventData))
+
+    const {data, error} = await myFetch(`${baseUrl}/event`,{
+      method : 'POST',
+      body : formData
+    })
+    if(data){
+      console.log(data)
+      fetchEvents();
+      setIsAddEventModalOpen(false)
+    }
+    if(error){
+      console.log(error)
+    }
+
+  }
+
   return (
     <div className={styles.body}>
-      <div className={styles.btnContainer} style={{backgroundColor : theme === "dark" ? "#131313" : "#FAFAFA"}}>
-        <button className={styles.closeBtn} style={{color : theme === "dark" ? "white" :"black"}} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-        <button className={styles.addBtn}>Save and Add event</button>
+      <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
+        <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
+        <button className={styles.addBtn} onClick={handleAddEvent}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
@@ -125,10 +164,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont }: Props) => {
           </div>
         </div>
         <div className={styles.rightSection}>
-          <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }}></textarea>
-          <div className={styles.dateTimeContainer}><DateTimeContainer /></div>
+          <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e)=>setEventName(e.target.value)} value={eventName}/>
+          <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-          <div className={styles.locationContainer}><LocationContainer setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+          <div className={styles.locationContainer}><LocationContainer eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
           <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
