@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './insights.style.module.css'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank }: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
@@ -11,6 +11,12 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
   return (
     <div className={styles.container}>
       <div className={styles.formatFreq}>
+      <div className={styles.branded}>
+                    <div className={styles.formatHead}>Event Attendence</div>
+                    <div className={styles.allCat}>
+                    {start?.length>0 &&<div style={{color:'#696B83'}}>{start} - {end}</div>}
+                    </div>
+                </div>
       <div className={styles.branded} >
                     <div className={styles.formatHead}>
                     Estimated Exhibitor Score
@@ -47,9 +53,48 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                           </span>
                         </div>
             </div>
-      </div>
-      <div className={styles.formatFreq}>
       <div className={styles.branded}>
+          <div className={styles.formatHead}>
+            Reputation Score
+            {parseInt(reputation) > 0 && <span className={styles.circle}> {reputation}</span>}
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+      <div className={styles.branded}>
+          <div className={styles.formatHead}>
+            Trust Score
+            {parseInt(trustScore) > 0 && <span className={styles.circle}> {trustScore}</span>}
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${parseInt(trustScore) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+      
+      {/* <div className={styles.branded}>
                     <div className={styles.formatHead}>Inbound Score</div>
                     <div className={styles.toggle_container}>
                           <span>
@@ -65,7 +110,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                             </label>
                           </span>
                         </div>
-                </div>
+                </div> */}
                 <div className={styles.branded}>
                     <div className={styles.formatHead}>Rankings</div>
                     <div className={styles.allCat}>

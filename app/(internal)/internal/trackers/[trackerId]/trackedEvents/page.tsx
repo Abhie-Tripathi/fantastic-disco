@@ -344,6 +344,7 @@ const Page = ({ params }: { params: any }) => {
       <Suspense fallback={<p>Loading feed...</p>}>
         <div className={styles.innerRight}>
           <div className={styles.eventStatus}>
+          {/* <div className={styles.new}></div> */}
             <div className={styles.eventStatusLeft}>
               <button
                 className={`${styles.eventStatusBtn} ${
@@ -452,11 +453,14 @@ const Page = ({ params }: { params: any }) => {
           </div>
 
           {view === "list" && (
+            <div style={{marginTop:"140px"}}>
+              <div className={styles.new}></div> 
             <Table
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
             />
+            </div>
           )}
 
           {view === "map" && (

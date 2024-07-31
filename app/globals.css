@@ -488,3 +488,11 @@ input[type="number"] {
     margin-left: 0;
   }
 }
+.new{
+  position: fixed;
+  top: 0;
+  z-index: 11;
+  width: calc(100vw - 134px);
+  background: var(--primary-foreground);
+  height: 250px;
+}

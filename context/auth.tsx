@@ -40,11 +40,11 @@ const authContextDefaultValues: authContextType = {
   user: null,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
-  signOut: () => {},
+  signOut: () => { },
   verifyOtp: () => Promise.resolve(null),
   verifyLoginOTP: () => Promise.resolve(null),
-  setIsProfileUpdated: () => {},
-  setProfilePic: () => {},
+  setIsProfileUpdated: () => { },
+  setProfilePic: () => { },
 };
 
 export const AuthContext = createContext<authContextType>(

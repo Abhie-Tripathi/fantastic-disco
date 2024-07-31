@@ -13,8 +13,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
            <div className={styles.formatFreq}>
         <div className={styles.branded}>
           <div className={styles.formatHead}>
-            Trust Score
-            {parseInt(trustScore) > 0 && <span className={styles.circle}> {trustScore}</span>}
+            Audience Quality Score
           </div>
           <div className={styles.toggle_container}>
             <span>
@@ -33,8 +32,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
         </div>
         <div className={styles.branded}>
           <div className={styles.formatHead}>
-            Reputation Score
-            {parseInt(reputation) > 0 && <span className={styles.circle}> {reputation}</span>}
+          Designation &amp; Department
           </div>
           <div className={styles.toggle_container}>
             <span>
@@ -51,46 +49,26 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
             </span>
           </div>
         </div>
-      </div>
-            <div className={styles.formatFreq}>
-            <div className={styles.brandeOuter} >
-                <div className={styles.rate}>
-                    <div className={styles.formatHead}>
-                        User Ratings
-                    </div>
-                    <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                // onChange={() => {}}
-                                // checked={}
-                                defaultChecked
-                                disabled
-                              />
-                              <span className={`${userRating?.length>0 ? styles.sliderBranded : styles.slider}`}></span>
-                            </label>
-                          </span>
-                        </div>
-                        </div>
-                        <div className={styles.allCat}>
-                        {userRating?.map((item:string, id:number) => (
-                            <>
-                                <label style={{display:"flex"}} >
-                                    <input
-
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={styles.item}>{item}</span>
-                                </label>
-                            </>
-                        ))}
-                    </div>
-                </div>
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>
+          Audience Spread
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+      
                 
             </div>
         </div>

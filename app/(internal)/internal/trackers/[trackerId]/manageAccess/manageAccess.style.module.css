@@ -40,6 +40,8 @@
 }
 .containerBottom{
     display: flex;
+    width: calc(100vw - 134px);
+    margin-top: 140px;
     gap:var(--spacing-xs);
 }
 .containerBottomLeft{
@@ -168,3 +170,20 @@
 .dropdownItem:hover {
     background-color: var(--background-color-hover);
 }
+/* .new{
+    position: fixed;
+    top: 0;
+    z-index: 11;
+    width: calc(100vw - 134px);
+    background: var(--primary-foreground);
+    height: 100px;
+  } */
+  .containerTop{
+    position: fixed;
+    top: 180px;
+    width: calc(100vw - 134px);
+    height: 70px;
+    color: white;
+    padding: 10px;
+    z-index: 119;
+  }
