@@ -665,7 +665,7 @@ const Pages = () => {
       );
       if (data) {
         console.log(data);
-        router.replace(`/internal/trackers/${secondLast}/trackedConfiguration`);
+        router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
       } else {
         console.log(error);
         setIsCreating(false);
