@@ -175,7 +175,7 @@ interface MarkerProps {
   lat: string,
   long: string,
   eventCount: number,
-  cityName: string,
+  name: string,
 }
 
 const FlyToButton = (props: MarkerProps) => {
@@ -191,11 +191,26 @@ const FlyToButton = (props: MarkerProps) => {
   return (
     <div
       className={styles.cityPin}
-      data-name={props.cityName}
+      data-name={props.name}
       onClick={handleClick}
     >
       {cityMarker(props.eventCount)}
     </div>
+  );
+}
+
+const FlyToCountry = (props: MarkerProps) => {
+  const { current: map } = useMap();
+
+  const handleClick = () => {
+    map?.flyTo({
+      center: [parseFloat(props.long), parseFloat(props.lat)],
+      zoom: 4.5,
+      speed: 0.8,
+    });
+  };
+  return (
+    <span className={styles.eventCountTag} onClick={handleClick} >{props.name+' - '+props.eventCount + ' Events'}</span>
   );
 }
 
@@ -355,7 +370,7 @@ const Map = (props: MapProps) => {
         source="country-source"
         source-layer="country_boundaries"
         filter={['==', 'iso_3166_1', country]}
-        maxzoom={6}
+        maxzoom={4}
         paint={{
           'fill-color': 'rgba(130, 80, 164, 0.6)',
           'fill-opacity': getOpacityValue(country),
@@ -549,7 +564,7 @@ const Map = (props: MapProps) => {
           </>
         } */}
 
-        {(cityPerPage && viewport.zoom > 6 && viewport.zoom <= 9) && cityPerPage.map((city) => (
+        {(cityPerPage && viewport.zoom > 4 && viewport.zoom <= 9) && cityPerPage.map((city) => (
           (city.geoCordinates.latitude && city.geoCordinates.longitude && (cityPerPage.length < 100 || city.eventCount > 20)) ? (
             <Marker
               key={city.cityId}
@@ -557,12 +572,12 @@ const Map = (props: MapProps) => {
               longitude={parseFloat(city.geoCordinates.longitude)}
             >
               {/* {cityMarker(city.eventCount)} */}
-              <FlyToButton lat={city.geoCordinates.latitude} long={city.geoCordinates.longitude} eventCount={city.eventCount} cityName={city.name} />
+              <FlyToButton lat={city.geoCordinates.latitude} long={city.geoCordinates.longitude} eventCount={city.eventCount} name={city.name} />
             </Marker> ) : <></>
           ))
         }
         
-        { ((countryPerPage && viewport.zoom <= 6) && countryPerPage.length > 0) && 
+        { ((countryPerPage && viewport.zoom <= 4) && countryPerPage.length > 0) && 
           <>
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
@@ -574,7 +589,7 @@ const Map = (props: MapProps) => {
                   latitude={(event.geoCordinates.latitude) ? parseFloat(event.geoCordinates.latitude) :0}
                   longitude={(event.geoCordinates.longitude) ? parseFloat(event.geoCordinates.longitude) :0}
                 >
-                  <span className={styles.eventCountTag}>{event.name+' - '+event.eventCount + ' Events'}</span>
+                  <FlyToCountry lat={event.geoCordinates.latitude} long={event.geoCordinates.longitude} eventCount={event.eventCount} name={event.name} />
                 </Marker>
               </div>
             ))}
