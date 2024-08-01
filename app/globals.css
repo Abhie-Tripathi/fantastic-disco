@@ -488,3 +488,19 @@ input[type="number"] {
     margin-left: 0;
   }
 }
+.dummyDiv{
+  position: fixed;
+  top: 0;
+  z-index: 11;
+  width: calc(100vw - 134px);
+  background: var(--primary-foreground);
+  height: 250px;
+}
+.fixedNav{
+  position: fixed;
+    top: 180px;
+    width: calc(100vw - 134px);
+    height: 70px;
+    padding: 10px;
+    z-index: 20;
+}

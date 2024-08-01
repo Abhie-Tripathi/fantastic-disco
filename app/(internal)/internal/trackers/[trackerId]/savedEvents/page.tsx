@@ -255,6 +255,7 @@ const Page = () => {
     <div className={styles.outerContainer} >
       {/* <div className={styles.innerLeft}><Trackers /></div>  */}
       <div className={styles.innerRight}>
+        <div className='dummyDiv' style={{height:"120px"}}></div>
    <Table showInsights={showInsights}/>
    </div>
    </div>

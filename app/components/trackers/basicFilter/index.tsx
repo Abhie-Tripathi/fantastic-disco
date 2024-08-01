@@ -47,7 +47,7 @@ const BasicFilter = ({category}:any) => {
      <div className={styles.allCat1}>
       <div className={styles.allCat}>
       {category?.map((item:any,id:any)=>(
-      <div key={id} style={{width:"120px"}}>
+      <div key={id}>
       <label >
        <input
          
