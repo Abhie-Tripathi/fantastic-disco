@@ -10,6 +10,7 @@ interface AllEventsType {
     location: string;
     startDate: string;
     endDate: string;
+    isLinkedToWidget : boolean;
 }
 
 interface Props {

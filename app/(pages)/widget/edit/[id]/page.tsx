@@ -17,6 +17,7 @@ interface AllEventsType {
   location: string;
   startDate: string;
   endDate: string;
+  isLinkedToWidget : boolean;
 }
 
 const Page = () => {
@@ -78,7 +79,7 @@ const Page = () => {
   const fetchAddedEvents = async()=>{
     const {data, error} = await myFetch(`${baseUrl}/widget/${widgetId}`)
     if (data) {
-      const events = data.otherdata.event;
+      const events = data.otherdata?.event;
       setfetchedAddedEvents(events);
     }
     if (error) {
@@ -96,7 +97,7 @@ const Page = () => {
         setCardStyle(data.customizationData.selectedCard);
         setSelectedBtn(data.customizationData.selectedBtn);
         setSelectedTemplate(asciiToString(data.templatePublicId));
-        setAddedEventIds(data.eventId)
+        setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
       }
       if (error) {
