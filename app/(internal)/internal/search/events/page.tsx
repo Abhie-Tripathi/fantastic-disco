@@ -1317,12 +1317,12 @@ const Search = () => {
                   />
                 <span className={styles.clearfilter_button}>
                   {" "}
-                  Advanced Filters
+                  Advanced
                 </span>
               </button>
               {/* <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x> */}
               <button ref={trackerBtnRef} onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
-                <span className={styles.clearfilter_button}>Save as Tracker</span>
+                <span className={styles.clearfilter_button}>Create Tracker</span>
               </button>
             </div>
           </div>

@@ -6,7 +6,6 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
   const entry = ["Free", "Paid", "Invites", "Member Access"];
   // const rank=["Country Rank","Category Rank"];
   const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
-  console.log(internationalScore);
   
   return (
     <div className={styles.container}>

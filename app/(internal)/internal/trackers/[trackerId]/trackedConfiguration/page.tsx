@@ -289,7 +289,7 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item}</span>
+                                    <span className={styles.item}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
                                 </label>
                             </>
                         ))}
@@ -308,7 +308,9 @@ const userRating=
       <div className={styles.format}>
                     <div className={styles.formatHead}>Date</div>
                     <div className={styles.allCat}>
-                    {startDate?.length>0&&formatDate(startDate)} {endDate?.length>0&&formatDate(endDate)}
+                    <div className={styles.item}>
+                    {startDate?.length>0&&formatDate(startDate)}{"-"}{endDate?.length>0&&formatDate(endDate)}
+                    </div>
                     </div>
                 </div>
                 <div className={styles.format}>
