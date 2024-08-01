@@ -95,7 +95,7 @@
     justify-content: center;
     display: flex;
     height: 100vh;
-    z-index: 1;
+    z-index: 99;
     backdrop-filter: blur(5px);
 }
 .shareTracker{

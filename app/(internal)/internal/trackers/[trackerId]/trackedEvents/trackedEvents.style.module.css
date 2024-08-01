@@ -168,6 +168,14 @@
 .active .loader{
     border: 3px solid var(--primary-color);
 }
+.eventStatus{
+  position: fixed;
+  top: 180px;
+  width: calc(100vw - 134px);
+  height: 70px;
+  color: white;
+  z-index: 119;
+}
 .loader {
     width: 20px;
     padding: 8px;

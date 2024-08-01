@@ -7,6 +7,8 @@
     display: flex;
     gap:20px;
     width: 100%;
+    margin-top: 55px;
+    width: calc(100vw - 134px);
 }
 .innerLeft{
     display: flex;

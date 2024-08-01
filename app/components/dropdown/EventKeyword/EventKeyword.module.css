@@ -1,7 +1,7 @@
 .container {
     filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
     gap: 20px;
-    position: absolute;
+    /* position: absolute; */
     min-width: 644px;
     z-index: 1;
     background-color: var(--primary-foreground);
