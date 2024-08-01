@@ -1,0 +1,46 @@
+.body{
+    height: 100%;
+    width: 100%;
+}
+.btnContainer{
+    background-color: #FBF8FF;
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+.darkbtnContainer{
+    background-color: #202020;
+}
+.btn{
+    background-color: white;
+    color: #424242;
+    padding: 8px 24px;
+    border-radius: 4px;
+    filter: drop-shadow(1px 1px 1px #0000000A);
+    height: 41px;
+    font-size: 13px;
+    width: 300px;
+}
+.darkBtn{
+    background-color: #1a1a1a;
+    color: white;
+}
+.activeBtn{
+    border: 1px solid #6750A4;
+}
+.templates{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 17px;
+    padding: 10px 14px;
+    row-gap: 16px;
+}
+/* @media screen and (max-width: 1400px) {
+    .templates{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0px;
+    }
+  } */

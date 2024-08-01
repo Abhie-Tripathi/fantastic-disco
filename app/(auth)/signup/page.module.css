@@ -1,158 +1,235 @@
 .container {
-    height: 100vh;
-    background: linear-gradient(270deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
-    width: 100vw;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  min-height: 120vh;
+  background-color: #fafaff;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.hero_container {
+  position: absolute;
+  top: 30px;
+  left: 35px;
+}
+
+.heroImage {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.heroTitle {
+  color: #303030;
+  font-size: 11px;
+  text-align: center;
+}
+
+.leftBackground_image {
+  position: absolute;
+  bottom: 120px;
+  left: -245px;
+  height: 435px;
+  z-index: -1;
+}
+.leftContainer {
+  width: 50%;
+  height: 100%;
+  background-color: #fafaff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.topRightBackground_image {
+  position: absolute;
+  top: -80px;
+  right: -22px;
+  height: 310px;
+  z-index: -1;
+}
+
+.bottomRightBackground {
+  position: absolute;
+  /* bottom: -320px; */
+  right: -90px;
+  z-index: -1;
+  height: 100%;
+}
+
+.sub_container {
+  display: flex;
+  box-shadow: 0px 8px 40px -2px #060c3b14;
+  width: 80%;
+  height: 90%;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+.sub_containerLeft {
+  width: 50%;
+  background-color: #fafaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.formContainer {
+  display: flex;
+  width: 50%;
+  background-color: white;
+  padding: 10px 0px;
+  justify-content: center;
+}
+.image {
+  width: 400px;
+  height: 390px;
+}
+.form_outercontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 50%;
+}
+.form_container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  /* padding: 20px 40px; */
+}
+
+.form_heading {
+  color: #242424;
+  font-weight: 500;
+  font-size: 24px;
+  /* margin-bottom: 20px; */
+  text-align: center;
+}
+
+.input_container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.error {
+  position: absolute;
+  top: 70px;
+  left: 5px;
+  font-size: 12px;
+  color: #f15050;
+}
+
+.error_boundary {
+  border-color: #f15050 !important;
+}
+.input_title {
+  color: #424242df;
+  /* color: white; */
+  margin-bottom: 2px;
+}
+
+.input {
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.visibility_Icon {
+  cursor: pointer;
+  position: absolute;
+  top: 33px;
+  right: 13px;
+}
+
+.checkbox_container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.checkbox_input {
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox_title {
+  color: #424242;
+}
+
+.button {
+  background-color: #6750a4;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+}
+
+.disable {
+  cursor: not-allowed;
+  background-color: #a68fe7;
+}
+
+.new_account {
+  text-align: center;
+  padding: 20px 0px;
+  border-bottom: 0.5px solid #e6e6e6;
+  font-size: 14px;
+  color: black;
+}
+
+.createNew_link {
+  color: #6750a4;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.privacyPolicy {
+  text-align: center;
+  color: #808080;
+  font-size: 12px;
+}
+
+.privacyPolicy_hightlighted {
+  color: #6750a4;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+@media screen and (max-width: 575px) {
+  .container {
+    /* height: 100vh; */
   }
-  
-  .hero_container {
-    position: absolute;
-    top: 30px;
-    left: 35px;
-  }
-  
-  .heroImage {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-  }
-  
-  .heroTitle {
-    color: #303030;
-    font-size: 11px;
-    text-align: center;
-  }
-  
-  .leftBackground_image {
-    position: absolute;
-    bottom: 120px;
-    left: -245px;
-    height: 435px;
-    z-index: -1;
-  }
-  
-  .topRightBackground_image {
-    position: absolute;
-    top: -80px;
-    right: -22px;
-    height: 310px;
-    z-index: -1;
-  }
-  
-  .bottomRightBackground {
-    position: absolute;
-    bottom: -320px;
-    right: -90px;
-    z-index: -1;
-  }
-  
   .sub_container {
-    display: flex;
-    gap: 140px;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column-reverse;
+    gap: 10px;
   }
-  
+
   .form_container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 350px;
+    width: 90%;
+    margin: auto;
   }
-  
   .form_heading {
-    /* color: #242424; */
-    font-weight: 700;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 20px;
   }
-  
-  .input_container{
-    position: relative;
+  .image {
+    width: 90px;
+    height: 90px;
   }
-  
-  .error {
-    position: absolute;
-    top: 70px;
-    left: 5px;
-    font-size: 12px;
-    color: #f15050;
+}
+@media screen and (max-width: 1030px) {
+  .sub_containerLeft {
+    display: none;
   }
-  
-  .input_title {
-    /* color: #424242df; */
-    color: white;
-    margin-bottom: 2px;
-  }
-  
-  .input {
-    font-size: inherit;
-    font-family: inherit;
-    outline: none;
-    border: 1px solid #e6e6e6;
-    border-radius: 10px;
-    padding: 10px 20px;
+  .formContainer {
     width: 100%;
   }
-  
-  .visibility_Icon {
-    cursor: pointer;
-    position: absolute;
-    top: 33px;
-    right: 13px;
-  }
-  
-  .checkbox_container {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .checkbox_input {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .checkbox_title {
-    color: #424242;
-  }
-  
-  .button {
-    background-color: #6750a4;
-    border-radius: 12px;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    cursor: pointer;
-    width: 100%;
-    border: none;
-  }
-  
-  .new_account {
-    text-align: center;
-    padding: 20px 0px;
-    border-bottom: 0.5px solid #e6e6e6;
-    font-size: 14px;
-  }
-  
-  .createNew_link {
-    color: #6750a4;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
-  .privacyPolicy {
-    text-align: center;
-    color: #808080;
-    font-size: 12px;
-  }
-  
-  .privacyPolicy_hightlighted {
-    color: #6750a4;
-    font-weight: 600;
-    margin-left: 2px;
-  }
+}

@@ -1,0 +1,15 @@
+.body {
+  padding: 30px;
+  min-width: 370px;
+}
+
+.body_light {
+  background-color: var(--primary-bg-light);
+  color: var(--primary-color-light);
+}
+
+@media screen and (max-width:576px) {
+  .body {
+    padding: 15px;
+  }
+}

@@ -17,6 +17,26 @@
     box-shadow: -4px -3px 7px rgba(0, 0, 0, 0.4);
 }
 
+.container1 {
+    padding: 30px 50px;
+    margin-bottom: 10px;
+    background-color: #201F24;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+    color: white;
+}
+
+.container1_light{
+    background-color: var(--secondary-bg-light);
+    color: black;
+}
+.container2 {
+    border-radius: 12px;
+    overflow-y: scroll;
+}
+
 .innerContainer1 {
     display: flex;
     align-items: center;
@@ -31,22 +51,13 @@
     padding: 0px 10px;
     height: 50px;
     background-color: black;
+    color: white;
     border-radius: 30px;
 }
 
-.container1 {
-    padding: 30px 50px;
-    margin-bottom: 10px;
-    background-color: #201F24;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 12px;
-}
-.container2 {
-    border-radius: 12px;
-    overflow-y: scroll;
-    /* max-height: 677px; */
+.innerContainer2_light{
+    background-color: white;
+    color: black;
 }
 
 .search {
@@ -54,6 +65,7 @@
     outline: none;
     height: 100%;
     background: transparent;
+    color: inherit;
 }
 
 .meetingContainer {
@@ -68,6 +80,11 @@
     gap: 10px;
     padding-right: 10px;
     grid-template-columns: repeat(2, 1fr);
+    color: white;
+}
+
+.mainCard_light{
+    color: black;
 }
 
 .card1 {
@@ -354,6 +371,10 @@ border-radius: 12px;
 .selectedDay {
     background-color: #0c0c0c;
     border-radius: 50%;
+}
+
+.icons_light{
+    filter: invert(1);
 }
 @media screen and (max-width: 1608px) {
     .allDetail{

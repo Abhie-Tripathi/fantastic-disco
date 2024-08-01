@@ -1,0 +1,95 @@
+.card{
+    width: 90%;
+    height: 50%;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    padding: 0px 12px 12px 10px;
+}
+.banner{
+    width: 40%;
+    height: 100%;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+}
+.detailsContainer{
+    width: 60%;
+}
+.detailsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.date_type_btnContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.dateTypeContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dateContainer{
+    background-color: #F6F6F6;
+    border-radius: 9px;
+    width: 50px;
+    height: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.date{
+    color: black;
+    font-size: 1vw;
+    font-weight: 600;
+}
+.month{
+    color: black;
+    font-size: .9vw;
+    font-weight: 400;
+}
+.line{
+    height: 60px;
+    border-left: 1px solid #F6F6F6;
+}
+.name_locationContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.locationContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.typeContainer{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 7px;
+}
+.pill{
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: .9vw;
+    font-weight: 500;
+}
+.type1{
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+.type2{
+    background-color: #F7E5EE;
+    color: #6750A4;
+}
+.registerBtn{
+    border: 1px solid;
+    padding: 4px 8px;
+    font-size: 1.2vw;
+    font-weight: 500;
+}

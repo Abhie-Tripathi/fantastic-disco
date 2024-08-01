@@ -1,0 +1,5 @@
+[
+  { "name": "Annual", "slug": "Annual" },
+  { "name": "Bi-Annual", "slug": "Bi-annual" },
+  { "name": "Quarterly", "slug": "Quarterly" }
+]

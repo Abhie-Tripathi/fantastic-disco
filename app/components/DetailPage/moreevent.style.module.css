@@ -1,0 +1,56 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+}
+.heading {
+    font-size: 24px;
+    color: white;
+    font-weight: 600;
+}
+
+.carousel {
+    width: 100%; /* Adjust this as needed */
+    overflow: hidden; /* Ensure overflow is hidden */
+}
+
+.carouselTrack {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 20px;
+    width: 90%;
+    /* Remove overflow hidden from here */
+}
+
+.carouselItem {
+    flex: 0 0 calc(100% / 3 ); /* Show 3 items at a time with a gap */
+    box-sizing: border-box;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.navButton {
+    position: absolute;
+    top: 54%;
+    transform: translateY(-50%);
+    z-index: 1;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    border-radius: 50px;
+    filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
+  }
+  .navButton:disabled {
+    display: none;
+  }
+  
+  .navButton:first-of-type {
+    left: -25px;
+  }
+  
+  .navButton:last-of-type {
+    right: -25px;
+  }

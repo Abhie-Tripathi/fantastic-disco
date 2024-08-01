@@ -7,8 +7,9 @@
   .monthcard_header {
     position: relative;
     padding: 20px 30px;
-    filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
-    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%);
+    /* filter: drop-shadow(1px 1px 1px rgb(2, 2, 2));
+    background: linear-gradient(118deg, #0c0c0c 0%, rgba(103,80,164,0.4) 100%); */
+    background-color: #6750a4;
     border-radius: 12px 12px 0px 0px;
     display: flex;
     align-items: center;
@@ -54,4 +55,47 @@
     padding: 10px;
     color: white;
     font-weight: 500;
+    position: relative;
+  }
+
+  .dayCard_light{
+    background-color: var(--primary-bg-light);
+    color: var(--primary-color-light);
+  }
+
+  .eventsCount {
+    position: absolute;
+    bottom: 10px;
+    cursor: pointer;
+    font-size: 10px;
+    background-color: rgb(246, 237, 255);
+    color: rgb(96, 74, 152);
+    padding: 2px 5px;
+    width: 100%;
+    left: 0;
+  }
+
+  .control_buttons_container {
+    /* position: absolute; */
+    z-index: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .control_buttons_container button {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .control_buttons_container div {
+    font-size: 24px;
+    font-weight: 500;
+    /* color: #222; */
+    width: 25%;
+    text-align: center;
   }

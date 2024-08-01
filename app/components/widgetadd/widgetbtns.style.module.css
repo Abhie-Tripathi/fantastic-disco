@@ -12,6 +12,7 @@
     align-items: center;
     gap: 6px;
     cursor: pointer;
+    color: grey;
 }
 .button.active {
     border: none;

@@ -1,0 +1,13 @@
+.body{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+}
+.appearance{
+    width: 20%;
+    height: 100%;
+}
+.details{
+    width: 80%;
+}

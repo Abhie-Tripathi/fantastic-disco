@@ -1,8 +1,10 @@
 [
     {
       "id": "49ba7769-4380-40fc-ab25-3d51f0429f41",
-      "text": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
+      "content": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
       "createdAt": "2024-02-21T10:04:25.172Z",
+      "upvote":10,
+      "type":"MESSAGE",
       "replies": [
         {
           "id": "bc82c047-f6cd-47b3-9973-9b78039eb8d6",
@@ -123,24 +125,28 @@
     },
     {
       "id": "4daaf3df-886f-4f74-8871-5cd7da0a4c8b",
-      "text": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
+      "content": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
       "createdAt": "2024-02-21T10:06:20.021Z",
+      "type":"MESSAGE",
+      "upvote":15,
       "replies": [],
       "user": {
         "id": "eed0e433-3d9b-4104-9ee3-b25174082dd3",
-        "firstname": "Sayyam",
-        "lastname": "Aneja",
+        "firstname": "Akash",
+        "lastname": "Jindal",
         "email": "sayyamaneja@gmail.com"
       }
     },
     {
       "id": "15bdc965-5a29-4383-af83-24ff076a7aee",
-      "text": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
+      "upvote":23,
+      "content": "Our current NS Instance is too customized; however, we are transitioning to another instance where we are trying to streamline processes. Way too many reports, some of the basic functionality that I expect to see is not inherent. Hard to report as too many filters. Hoping our new instance will make it better. Also, it is slow even in our new instance.",
       "createdAt": "2024-02-21T10:06:56.512Z",
+      "type":"MESSAGE",
       "replies": [],
       "user": {
         "id": "eed0e433-3d9b-4104-9ee3-b25174082dd3",
-        "firstname": "Sayyam",
+        "firstname": "Harshit",
         "lastname": "Aneja",
         "email": "sayyamaneja@gmail.com"
       }

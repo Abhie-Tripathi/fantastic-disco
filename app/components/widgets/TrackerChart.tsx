@@ -99,5 +99,4 @@ const TrackerChart = () => {
     </div>
   )
 }
-
 export default TrackerChart

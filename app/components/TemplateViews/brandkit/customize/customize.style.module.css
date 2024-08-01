@@ -1,0 +1,37 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    background-color: #1a1a1a;
+    gap: 20px;
+}
+.container{
+    padding: 20px;
+    color: white;
+    cursor: pointer;
+}   
+.container:hover{
+    background-color: black;
+}
+.modal{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.heading_btnContainer{
+    display: flex;
+    justify-content: space-between;
+}
+.heading{
+    color: white;
+    border: 1px solid white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.backBtn{
+    color: white;
+    background-color: black;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}

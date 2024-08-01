@@ -1,0 +1,15 @@
+[
+    
+    {
+      "name": "Online / Virtual",
+      "slug": "online"
+    },
+    {
+      "name": "Offline",
+      "slug": "offline"
+    },
+    {
+      "name": "Hybrid",
+      "slug": "hybrid"
+    }
+  ]

@@ -1,0 +1,90 @@
+
+import EventTable from "@/app/components/internal/trackers/EventTable/EventTable";
+import React from "react";
+import styles from './savedevent.style.module.css'  
+
+const eventData = [
+  {
+    id:1,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+  {
+    id:2,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+  {
+    id:3,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+  {
+    id:4,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+  {
+    id:5,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+  {
+    id:6,
+    title: "Sydney Royal Easter Show",
+    organizer: "Royal Agricultural Society of NSW",
+    new: true,
+    startdate: "14 Nov 2024",
+    enddate: "04 Apr 2024",
+    location: "Sydney, Australia",
+    category: "Entertainment & Media",
+    est_audience: "15,000 - 25000",
+    intl_audience: "Low",
+  },
+];
+
+const SavedEvents = () => {
+  // const pathName = usePathname();
+  return (
+    <div className={styles.body}>
+      <EventTable eventData={eventData} />
+    </div>
+  );
+};
+
+export default SavedEvents;

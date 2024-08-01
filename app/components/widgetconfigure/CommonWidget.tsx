@@ -14,6 +14,8 @@ import Tag from "../widgetadd/Tag";
 import useFetch from "@/hooks/useFetch";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from "@/context";
+import { useRouter } from "next/navigation";
 
 interface CommonWidgetProps {
     widgetType: string;
@@ -27,6 +29,8 @@ interface PromotedEvent {
 const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     // const [tagList, setTagList] = useState<string[]>([]);
     // const isAdd: boolean = true;
+    const {theme} = useTheme();
+    const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     const [geoInput, setGeoInput] = useState<string>("");
 
     const [eventFormat, setEventFormat] = useState<string[]>(EventFormatData)
@@ -57,6 +61,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
     const { data } = useFetch('https://api.eventgeni.com/es/find?company=104');
 
     const promotedEventsLimit = widgetType === 'Page' ? 3 : 1;
+    const router = useRouter();
 
     // This will run as soon as the form opens, So that it can be prefilled with the data
     useEffect(() => {
@@ -67,9 +72,8 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     throw new Error('Failed to fetch widget data');
                 }
                 const widgetData = await response.json();
-                parseQueryString(widgetData.query);
-                const formBody = JSON.parse(widgetData.body)
-                console.log(formBody)
+                parseQueryString(widgetData.data.query);
+                const formBody = JSON.parse(widgetData.data.body)
                 setPromotedEventTags(formBody.promotedEventTags)
                 setEventTypeTags(formBody.eventTypeTags)
                 setEventFormat(formBody.eventFormat)
@@ -250,6 +254,10 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
 
         return response.json();
     };
+      
+    const handleCancel = ()=>{
+        router.push("/widget")
+    }
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -262,7 +270,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                 <div className={styles.eventFormats}>
                     {EventFormatData.map((format, index) => (
                         <div
-                            key={format}
+                            key={index}
                             className={`${styles.eventChip} ${eventFormat.includes(format) ? styles.eventActiveChip : ''}`}
                             onClick={() => toggleFormatChipSelection(format)}>
                             {format}
@@ -284,7 +292,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={`${styles.eventGeoContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Regions</div>
                 <div className={`${styles.geoInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setGeoInput(e.target.value)}
@@ -296,7 +304,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={` ${styles.eventCategoryContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Categories</div>
                 <div className={`${styles.categoryInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setCategoryInput(e.target.value)}
@@ -321,7 +329,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             <div className={` ${styles.eventTypeContainer} ${styles.inputOuterContainer}`}>
                 <div className={styles.heading}>Event Types</div>
                 <div className={`${styles.typeInput} ${styles.inputInnerContainer}`} onClick={() => setIsEventTypeDropdownOpen(!isEventTypeDropdownOpen)}>
-                    <Image src={ArrowDownIcon} alt='dropdown' />
+                    <Image src={ArrowDownIcon} alt='dropdown' className={iconClass}/>
                     <div className={styles.placeholder}>For ex : Expo</div>
                 </div>
                 {isEventTypeDropdownOpen && (
@@ -359,7 +367,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
                     <label htmlFor="check" className={styles.checkBox}></label>
                 </div>
                 {promotedEventTags.length < promotedEventsLimit && <div className={`${styles.promotedInput} ${styles.inputInnerContainer}`}>
-                    <Image src={SearchIcon} alt='search' />
+                    <Image src={SearchIcon} alt='search' className={iconClass}/>
                     <input
                         type='text'
                         onChange={(e) => setPromotedInput(e.target.value)}
@@ -391,7 +399,7 @@ const CommonWidget = ({ widgetType, widgetId }: CommonWidgetProps) => {
             </div>
             <div className={styles.btns}>
                 <button className={styles.submitBtn}>Update</button>
-                <button className={styles.cancelBtn} type="button">Cancel</button>
+                <button className={styles.cancelBtn} type="button" onClick={handleCancel}>Cancel</button>
             </div>
         </form>
     )

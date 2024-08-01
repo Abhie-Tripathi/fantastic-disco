@@ -1,0 +1,127 @@
+
+.bodyHeight{
+    max-height: 90vh;
+    overflow: hidden;
+}
+.templates{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+.filterContainer{
+    border-bottom: 1px solid rgb(104, 104, 104);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.previewOn{
+    filter: blur(2px);
+}
+
+.widgetHeading{
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
+.widgetSubheading{
+    font-size: 15px;
+    border: 1px solid rgb(88, 88, 88);
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 5px 10px;
+    width: fit-content;
+}
+.infoIcon{
+    background-color: rgba(237, 215, 74, 0.718);
+    padding: 2px;
+    border-radius: 20px;
+    color: black;
+    margin-right: 5px;
+}
+.widgetInfo{
+    font-size: 12px;
+    margin-top: 5px;
+}
+.pageTemplateTypeOne{
+    position: relative;
+}
+
+.pageTemplateTypeTwo{
+    position: relative;
+}
+.pageTemplateTypeThree{
+    position: relative;
+}
+
+.templateContainer{
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    row-gap: 20px;
+}
+.viewAllBtn{
+    position: absolute;
+    right: -10px;
+    background-color:#e7c4ff;
+    top: 50%;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 5px;
+}
+.previewWindow{ 
+    background-color: #6750A4;
+    padding: 20px;
+    border-radius: 20px;
+    width: 90%;
+    height:85%;
+    position: absolute;
+    top: 100px;
+    left: 80px;
+    right: 80px;
+}
+.preview{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90%;
+}
+.heading_btnContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.closeBtn{
+    color: white;
+    background-color: #1a1a1a;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.heading{
+    color: white;
+    padding: 5px 10px;
+    border: 1px solid white;
+    width: fit-content;
+    border-radius: 5px;
+}
+.nextBtn{
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: flex-end;
+}
+.editModal{
+    background-color: #6750A4;
+    padding: 20px;
+    border-radius: 20px;
+    width: 90%;
+    height:85%;
+    position: absolute;
+    top: 100px;
+    left: 80px;
+    right: 80px;
+}

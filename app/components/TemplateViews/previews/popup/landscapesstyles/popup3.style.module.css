@@ -1,0 +1,48 @@
+.card{
+    width: 800px;
+    height:380px;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    padding: 12px;
+}
+.bannerContainer{
+    height: 100%;
+    width: 400px;
+    position: relative;
+}
+.type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 5px;
+    right: 9px;
+}
+.banner{
+    height: 100%;
+    width: 400px;
+    border-radius: 8px;
+}
+.eventDetails{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.locationContainer{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dateContainer{
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn{
+    padding: 10px 20px;
+}

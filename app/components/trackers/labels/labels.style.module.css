@@ -1,0 +1,31 @@
+.container{
+    display:flex;
+    flex-direction: column;
+    padding:12px;
+    height: inherit;
+    /* height: calc(100% - 40% + 40px); */
+    border: 1px solid #EBEBEB;
+    border-radius: var(--border-radius-sm);
+    gap:var(--spacing-sm);
+}
+.heading{
+    color:var(--primary-color);
+}
+.labels{
+    /* display: grid;
+    grid-template-columns: repeat(6, 1fr); */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+.label{
+    padding:7px;
+    text-wrap: nowrap;
+    background-color: #F7F7F9;
+    color: black;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-small);
+}

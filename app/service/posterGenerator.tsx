@@ -6,12 +6,12 @@ const usePosterGenerator = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const generatePrompt = async (location: string, description: string) => {
+  const generatePrompt = async (location: string, description: string, eventname : string) => {
     try {
       setIsLoading(true);
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API as string);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const promptText = `Generate a detailed single paragraph prompt without pointers for stable diffusion to generate a NICE ILLUSTRATION PAINTING/ART for the given location and description. Location is ${location}. Description is ${description}.`;
+      const promptText = `Generate a detailed single paragraph prompt without pointers for stable diffusion to generate a NICE ILLUSTRATION PAINTING/ART for the given location, name and description. Location is ${location}. Description is ${description}. Event name is ${eventname}.`;
       const result = await model.generateContent(promptText);
       const response = await result.response;
       const text = await response.text();
@@ -37,7 +37,7 @@ const usePosterGenerator = () => {
             prompt,
             num_inference_steps: 25,
             refiner_inference_steps: 50,
-            width: 1024,
+            width: 400,
             height: 1024,
             guidance_scale: 7.5,
             strength: 0.3,

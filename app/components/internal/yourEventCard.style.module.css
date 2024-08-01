@@ -1,14 +1,15 @@
 .card {
     width: 80%;
-    height: 240px;
-    border: 1px solid #6650a465;
+    /* height: 240px; */
+    /* border: 1px solid #6650a465; */
     background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
-    border-radius: 12px;
-    display: flex;
+    /* border-radius: 12px; */
+    /* display: flex; */
     justify-content: space-between;
     margin-bottom: 25px;
     margin-top: 40px;
-    padding: 25px;
+    /* padding: 25px; */
+    cursor: pointer;
 }
 
 .eventNameComp {
@@ -17,10 +18,11 @@
 }
 
 .company {
-    color: #8C8EA4;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 21px;
+    /* color: #8C8EA4; */
+    color: var(--tertiary-text-color);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-default);
     text-align: left;
 }
 
@@ -35,26 +37,13 @@
     z-index: 1;
 }
 
-.tag {
-    display: flex;
-    background-color: #1A1A1A;
-    border: 1px solid #6750A4;
-    border-radius: 40px;
-    font-size: 13px;
-    height: fit-content;
-    gap: 8px;
-    padding: 4px 12px;
-    font-weight: 600;
-    color: #B8B7EA;
-}
-
 .eventName {
-    font-size: 24px;
+    font-size: var(--font-size-h4);
 }
 
 .locationAndDateContainer {
     display: flex;
-    gap: 30px;
+    gap: var(--spacing-xl);
 }
 
 .circle1 {
@@ -70,7 +59,7 @@
 .eventLocation {
     display: flex;
     align-items: center;
-    font-size: 12px;
+    font-size: var(--font-size-small);
 }
 
 .eventLocation img {
@@ -83,86 +72,18 @@
 .eventDate {
     display: flex;
     align-items: center;
-    font-size: 8px;
+    font-size: var(--font-size-small);
     background-color: #313131;
     padding: 3px 6px;
-    border-radius: 5px;
+    border-radius: var(--border-radius-sm);
 }
 
 .eventDate img {
     margin-right: 7px;
 }
 
-.eventSpeakers .heading {
-    font-size: 9px;
-    margin-bottom: 14px;
-}
-
-.eventSpeakers .speakerContainer {
-    border-radius: 40px;
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    width: 180px;
-    position: relative;
-    background: #0c0c0c;
-}
-
-.eventSpeakers .speakerContainer::after {
-    content: '';
-    position: absolute;
-    left: -0.5px;
-    width: 101%;
-    height: 105%;
-    border-radius: 40px;
-    background: linear-gradient(118deg, rgba(103, 80, 164, 1) 0%, rgba(133, 133, 133, 1) 100%);
-    z-index: -1;
-}
-
-.eventSpeakers .speakerContainer img {
-    background-color: #6650a452;
-    border-radius: 50%;
-    padding: 6px;
-    margin-right: 7px;
-}
-
-.eventSpeakers .speakerContainer div {
-    font-size: 12px;
-}
-
-.eventDetails {
-    position: absolute;
-    color: white;
-    right: 0;
-    bottom: 0;
-}
-
-.eventDetails .detailContainer {
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    background: #0c0c0c;
-    padding: 9px 0px;
-    padding-right: 14px;
-    background: linear-gradient(90deg, rgba(103, 80, 164, 0.5) 0%, rgba(153, 153, 153, 0.5) 100%);
-}
-
-.eventDetails .detailContainer::after {
-    content: '';
-    position: absolute;
-    left: -1px;
-    width: 101.5%;
-    height: 105%;
-    border-radius: 40px;
-    background: linear-gradient(90deg, rgba(103, 80, 164, 1) 0%, rgba(102, 102, 102, 0.4) 100%);
-    z-index: -1;
-}
-
-/* .eventDetails .detailContainer div{
-    font-size: 16px;
-} */
 .cardImg {
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg);
 }
 
 .circles {
@@ -170,46 +91,116 @@
     display: flex;
 }
 
-.circle:hover {
-    transform: scale(1.05);
-    z-index: 1;
-}
-
-.circle {
-    position: relative;
-    cursor: pointer;
-    width: 45px;
+.total_upvotes {
+    border-right: .5px solid var(--bold-border-color);
+    font-size: var(--font-size-default);
+    padding-right: 10px;
     display: flex;
-    color: black;
-    flex-shrink: 0;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
-    height: 45px;
-    border-radius: 50%;
-    background-color: #fff;
-    border: none;
-    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
-    transition: transform 0.2s ease;
+    align-items: center;
 }
 
-.circle::before {
-    content: attr(data-name);
-    position: absolute;
-    bottom: 120%;
-    left: 50%;
-    white-space: nowrap;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+.leftContainer {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
-.circle:hover::before {
-    opacity: 1;
+@media screen and (max-width:1400px) {
+    .card {
+        /* padding: 15px 10px; */
+        margin-top: 15px;
+        width: 85%;
+    }
+    .cardImg{
+        width: 200px;
+        height: 160px;
+    }
+}
 
+@media screen and (max-width:1200px) {
+    .card {
+        min-width: 800px;
+        z-index: 1;
+    }
+    .cardImg{
+        width: 180px;
+        height: 140px;
+    }
+    /* .cardDetails {
+        gap: 5px;
+        padding-left: 10px;
+        margin-left: 0;
+    } */
+}
+
+@media screen and (max-width:992px) {
+    .topContainer {
+        border-bottom: 0.5px solid #3A3152;
+        padding: 12px 0;
+    }
+    .cardImg{
+      width: 115px;
+      height: 90px;
+    }
+    .eventName {
+      font-size: var(--font-size-default);
+    }
+    .locationAndDateContainer {
+      flex-direction: column-reverse;
+      gap: 4px;
+    }
+    .eventDate {
+      font-size: 8px;
+      margin-left: 0;
+      margin-top: 8px;
+      width: fit-content;
+    }
+    .eventLocation {
+      font-size: 8px;
+    }
+    .eventLocation img {
+        height: 20px;
+        width: 20px;
+        padding: 3px;
+    }
+    .card {
+      min-height: 140px;
+      height: unset;
+      /* padding: 15px 10px; */
+      margin-top: 15px;
+      width: 100%;
+      z-index: 1;
+      min-width: unset;
+      padding: 15px;
+    }
+    .cardDetails {
+      gap: 5px;
+      padding-left: 10px;
+      margin-left: 0;
+    }
+    .cardImg_container{
+      align-items: flex-start;
+    }
+    .circle {
+      width: 25px;
+      height: 25px;
+    }
+  
+    .circle .image {
+      width: 25px;
+      height: 25px;
+    }
+    .pill {
+      font-size: 8px;
+      padding: 3px 5px;
+    }
+    .total_upvotes {
+        border-right: unset;
+        font-size: var(--font-size-smal);
+        color: #BEA6FE;
+        font-weight: var(--font-weight-bold);
+        float: right;
+    }
 }

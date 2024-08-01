@@ -1,0 +1,19 @@
+.body{
+    display: flex;
+    flex-direction: column;
+}
+.widgetOptions{ 
+    display: flex;
+    gap: 16px;
+}
+.headingContainerDark{
+    color: white;
+}
+.heading {
+    font-weight: 500;
+}
+@media screen and (max-width : 1103px){
+    .widgetOptions{
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,118 @@
+.card{
+    width: 800px;
+    height:400px;
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+}
+.details{
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+}
+.banner{
+    width: 350px;
+    height: 100%;
+    border-radius: 15px;
+    filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+}
+.location_dateContainer {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.locationContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dateContainer {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.type_peopleContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.typeContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pill {
+    border-radius: 6px;
+    padding: 4px 8px;
+    /* font-size: 12px; */
+    font-weight: 500;
+}
+
+.type1 {
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+
+.type2 {
+    background-color: #F7E5EE;
+    color: #8C1D47;
+}
+
+.circles {
+    display: flex;
+}
+
+.circle:hover {
+    transform: scale(1.05);
+    z-index: 1;
+}
+.image{
+    width: 22px;
+    height: 22px;
+}
+.circle {
+    position: relative;
+    cursor: pointer;
+    /* width: 45px; */
+    display: flex;
+    color: black;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    /* height: 45px; */
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+    transition: transform 0.2s ease;
+}
+
+.circle::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.circle:hover::before {
+    opacity: 1;
+}
+.btn{
+    margin-top: 20px;
+    padding: 10px 20px;
+}

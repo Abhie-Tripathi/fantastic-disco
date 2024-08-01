@@ -1,0 +1,103 @@
+.container{
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    font-size: var(--font-size-default);
+    flex-direction: column;
+    gap:var(--spacing-sm);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+}
+.containerFirst{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.owner{
+    color: #7A7A7A;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
+}
+.add{
+    color:var(--primary-color);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.bar{
+    border: 1px solid var(--border-color);
+}
+.profiles{
+    display: flex;
+    gap:var(--spacing-lg);
+    flex-direction: column;
+}
+.profile{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.profileInner{
+    display:flex;
+    align-items: center;
+    gap:var(--spacing-sm);
+}
+.square{
+    width: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+}
+.name{
+    font-weight: var(--font-weight-medium);
+    color: #424242;
+}
+.tag{
+    color: var(--primary-color);
+    font-weight: var(--font-weight-defult);
+}
+.email{
+    color: #424242;
+    font-size: var(--font-size-xs);
+    
+}
+.profileCircle{
+    width: 50px;
+    height: 50px;
+    border-radius: var(--border-radius-rounded);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background: red; */
+}
+.dropdownContainer{
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    /* border: 1px solid #ccc; */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* z-index: 1000;  */
+}
+.dropdown {
+    background-color: var(--background-secondary-color);
+    border: 1px solid var(--input-border-color);
+    /* Ensure it appears above other elements */
+    position: absolute;
+    z-index: 1;
+  }
+  
+   .edit , .read {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .edit:hover, .read:hover {
+    background-color: var(--background-color-hover);
+  }

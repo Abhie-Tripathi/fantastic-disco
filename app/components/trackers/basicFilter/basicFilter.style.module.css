@@ -1,0 +1,105 @@
+.containerOuter{
+    /* border: 1px solid #EBEBEB; */
+    padding: 20px;
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-direction: column;
+    border-radius: 5px;
+    /* height:100px; */
+}
+.container {
+    display: block;
+    cursor: pointer;
+    height: 21px;
+    width: 21px;
+    font-size: var(--font-size-h4);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  .text{
+    background-color: #C4C4C4 !important;
+    border: 1px solid #C4C4C4;
+  }
+  /* Hide the browser's default checkbox */
+  .container input {
+   
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark [type="checkbox"] {
+   
+    top: 0;
+    left: 0;
+    height: 21px;
+    width: 21px;
+    border: 1px solid grey;
+    transition: border-color 0.15s linear;
+    font-weight: var(--font-weight-semibold);
+    border-radius: 2px;
+  }
+  .checkmark input[type="checkbox" ]{
+    background-color: #C4C4C4;
+    border: 1px solid #C4C4C4;
+  }
+  /* On mouse-over, add a grey background color */
+  /* .container:hover input ~ .checkmark {
+    border-color: #8f68ce;
+  } */
+  
+  /* When the checkbox is checked, add a blue background */
+  .container input:checked ~ .checkmark {
+    background-color: #C4C4C4;
+    border: 1px solid #C4C4C4;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 3px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  .allCat{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xs);
+    flex-direction: column;
+  }
+  .allCat1{
+    display: grid;
+    /* grid-template-columns: repeat(3, 1fr); */
+    /* gap: 20px; */
+  }
+  .heading{
+    color:var(--primary-color);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+  }
+  .item{
+    color:#2D3748;
+    padding-left: 5px;
+    font-size: var(--font-size-small);
+  }

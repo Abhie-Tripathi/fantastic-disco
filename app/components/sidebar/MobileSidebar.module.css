@@ -1,0 +1,252 @@
+.container {
+  position: fixed;
+  /* color: white; */
+  z-index: 2;
+  top: 0px;
+  /* left: 0px; */
+  height: 100%;
+  width: 60%;
+  /* margin-top: 80px; */
+  padding: 0px;
+  background-color: var(--primary-foreground);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* gap: 10px; */
+  transition: width 0.3s ease-in-out;
+  border-right: 1px solid var(--border-color);
+}
+
+/* .container_light {
+  background-color: white;
+  border-right: 1px solid #dcdfe4;
+} */
+
+.container.open {
+  width: 280px;
+}
+.userName {
+  margin-bottom: 62px;
+  margin-left: 21px;
+  background-color: var(--primary-color);
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  text-align: center;
+  padding-top: 8px;
+  border-radius: 50%;
+  color: white;
+}
+.homebtn {
+  margin-left: 17px;
+  display: flex;
+  margin-bottom: 48px;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+}
+.openHomeBtn {
+  display: flex;
+}
+
+.logo {
+  height: 30px;
+  width: 30px;
+}
+
+.togglebtn {
+  margin-left: 60px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.link {
+  padding: 18px 27px 18px 27px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  /* width: 260px; */
+  cursor: pointer;
+}
+.header_container {
+  position: relative;
+  border-bottom: 1px solid #90909040;
+  margin: 10px;
+}
+.header {
+  font-size: 22px;
+  display: flex;
+  gap: 10px;
+  height: 80px;
+  overflow: hidden;
+  /* padding-left: 10px; */
+  padding: 0;
+  text-decoration: none;
+  align-items: center;
+}
+
+.closeIcon {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  cursor: pointer;
+}
+.linkName {
+  flex: 1;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+.link:hover {
+  font-weight: 500;
+  color: #8f68ce;
+}
+.linkContainer {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  gap: 10px;
+}
+/* .activeLink {
+  padding-left: 21px;
+  border-left: 6px solid #8f68ce;
+  background-color: #292929;
+  font-weight: 500;
+  color: #8f68ce;
+} */
+
+.link.active {
+  padding-left: 21px;
+  border-left: 6px solid #8f68ce;
+  background-color: #292929;
+  font-weight: 500;
+  color: #8f68ce;
+}
+.container_light .link.active {
+  background-color: #f6edff;
+}
+
+.activeLink_light {
+  background-color: #f6edff;
+}
+
+.sublink {
+  margin-top: 10px;
+  margin-left: 30px;
+  font-size: 17px;
+  display: block;
+}
+
+.icons {
+  width: 24px;
+  height: 24px;
+}
+
+.circle {
+  border-radius: 50%;
+  display: flex;
+  background-color: #313131;
+  width: 41px;
+  height: 41px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  font-size: 19px;
+}
+.circle::before {
+  content: attr(data-name);
+  position: absolute;
+  top: 120%;
+  left: 60%;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.circle:hover::before {
+  opacity: 1;
+}
+
+.toggle_container > span {
+  color: #79747e;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.switch {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  display: inline-block;
+}
+
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  cursor: pointer;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 4px;
+  top: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.slider_tick_image {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
+input:checked + .slider {
+  background-color: #6750a4;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #6750a4;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+.mobile_sidebar_container {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px);
+}

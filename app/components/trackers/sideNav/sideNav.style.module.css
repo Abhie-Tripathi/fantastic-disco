@@ -1,0 +1,120 @@
+.bar{
+    padding: 18px 40px;
+    height: 60px;
+    background-color: var(--heading-background-color);
+    display: flex;
+    padding: 0px 10px;
+    justify-content: space-between;
+}
+  .containerLeft{
+    /* border-left: 2px solid #ECECF9; */
+    width: 20%;
+  }
+  .containerRight{
+    width: 80%;
+  }
+  .leftContainer{
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    /* flex-direction: column; */
+    /* gap: 10px; */
+  }
+  .heading{
+    color: #696B83;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 18px;
+    border-bottom: 4px solid var(--heading-background-color);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    /* transition: color 1s ease-in-out, border-bottom 1s ease-in-out; */
+  }
+  .bottom{
+    
+  }
+  .active{
+    color:var(--primary-color);
+    border-bottom: 4px solid var(--primary-color);
+    
+   
+  }
+  
+  .rightNavInner {
+    display: flex;
+    align-items: center;
+  }
+  /* .bar{
+    padding: 18px 40px;
+    background-color: #F8F8F8;
+    display: flex;
+    justify-content: space-between;
+} */
+.leftNav{
+  color: var(--primary-color);
+  display: flex;
+  width: 25%;
+  align-items: center;
+  font-size: var(--font-size-h6);
+  gap:var(--spacing-xxs);
+  font-weight: var(--font-weight-bold);
+}
+.rightNav{
+    color:#696B83;
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-medium);
+}
+.configAccess{
+  display: flex;
+  /* gap:var(--spacing-xs); */
+  width: 25%;
+  justify-content: flex-end;
+}
+.heading1{
+  display: flex;
+    height: 100%;
+    align-items: center;
+    color: #696B83;
+}
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+  
+}
+
+.tooltipContainer .tooltipText {
+  visibility: hidden;
+  /* width: 120px; */
+  background-color: #333;
+  text-wrap: nowrap;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  /* z-index: 1; */
+  bottom: 125%; 
+  left: 10%;
+  z-index: 1111;
+  margin-left: -70px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltipContainer .tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltipContainer:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}

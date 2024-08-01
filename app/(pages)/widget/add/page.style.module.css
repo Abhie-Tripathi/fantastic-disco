@@ -1,43 +1,147 @@
 .body {
-    background: #0F0F0F;
-    min-height: 100vh;
+    padding-right: 30px;
+    padding-left: 30px;
     font-family: var(--font-inter);
-  }
-  
-  .container {
-    padding-top: 100px;
+    position:relative;
+    width: 100vw;
+    min-height: 88vh;
+    /* height: 100vh; */
+    /* overflow-y: hidden; */
+}
+.widgetOptions {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    padding-top:20px ;
+}
+
+.leftNav {
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    padding-top: 20px;
+}
+
+.navItem {
+    color: #696B83;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.activeNavItem {
+    color: #6750A4;
+}
+
+.activeLine {
+    margin-top: 9px;
+    border-top: 3px solid #6750A4;
+}
+
+.navRightBtns {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    right: 30px;
+    top: 20px;
+}
+
+.hide_showBtn {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 17px;
+    cursor: pointer;
+}
+
+.line {
+    height: 20px;
+    border-right: 1px solid #D8D8D8;
+}
+
+.myWidgetBtnContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 12px;
+    border-radius: 4px;
+    background-color: #6750A4;
+    cursor: pointer;
+}
+
+.myWidgetBtn {
     color: white;
-    padding-bottom: 30px;
-  }
-  
-  .configurationForm {
-    background-color: #1A1A1A;
-    border-radius: 12px;
-    padding: 42px;
-    width: 40%;
-  }
-  
-  .previewSection {
-    width: 40%;
-  }
-  .fullPreview{
-    height: fit-content;
-    padding-left: 100px;
-    padding-right: 100px;
-    width: 100%;
-  }
-  @media screen and (max-width: 1360px) {
-    .container {
-      flex-direction: column;
-      align-items: center;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.myWidgetBtn span{
+    color: #6750A4;
+    background-color: #E6E6F9;
+    height: 16px;
+    width: 15px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+.exploreBtnContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.explporeBtn {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #C9C9C9;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 18px;
+    font-weight: 500;
+    width: 672px;
+    text-align: center;
+    padding-top: 17.5px;
+    padding-bottom: 17.5px;
+    transition: color 0.3s ease, background-color 0.4s ease;
+}
+
+.activeExploreBtn {
+    color: white;
+    background-color: #6750A4;
+}
+
+.templates_preview {
+    border-top: 1px solid var(--card-border-color);
+    margin-top: 20px;
+    padding-top: 20px;
+    /* height: 600px; */
+}
+.yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
+    height: 610px;
+    width: 600px;
+    background-color: #FFFFFF;
+    position:fixed;
+    z-index: 999;
+    top: 80px;
+    right: -610px;
+    padding: 25px 30px;
+    transition: right 0.3s ease; 
+    border-radius: 20px;
+}
+
+.yourWidgetModal.open {
+    right: 0; /* Move on-screen */
+    
+}
+@media screen and (max-width : 1023px) {
+    .leftNav{
+        width: 100%;
+        justify-content: space-between;
+        gap: 0px;
+        padding-top: 70px;
     }
-    .configurationForm {
-      width: 90%;
+    .navRightBtns{
+        top : 20px;
     }
-    .previewSection {
-      margin-top: 30px;
-      width: 90%;
-    }
-  }
+}

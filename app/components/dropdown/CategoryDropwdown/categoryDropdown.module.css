@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  outline: none;
+  border: none;
+  gap: 30px;
+  filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+  z-index: 1;
+  background-color: var(--primary-foreground);
+  padding: 20px 20px;
+  color: inherit;
+  border-radius: var(--border-radius-sm);
+}
+.heading {
+  white-space: nowrap;
+  font-size: var(--font-size-default);;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.list {
+  /* padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 30px;
+}
+
+.list li {
+  list-style: none;
+  font-size: var(--font-size-default);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,0 +1,33 @@
+.body{
+    background-color: #1a1a1a;
+    border-radius: 10px;
+}
+.kitItem{
+    padding: 20px;
+    color: white;
+    cursor: pointer;
+}  
+.kitItem:hover{
+    background-color: black;
+}
+.kitPreview{
+    padding: 20px;
+}
+.heading_btnContainer{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.heading{
+    color: white;
+    border: 1px solid white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.backBtn{
+    color: white;
+    background-color: black;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}

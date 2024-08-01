@@ -1,10 +1,17 @@
 .timelineItem{
     color: white;
-    position: absolute;
-    left: 17%;
+    /* position: absolute;
+    left: 220px; */
+    position: relative;
+    right: 36%;
     width: 150px;
     font-size: 18px;
 }
+
+.timelineItem_light{
+    color: var(--primary-color-light);
+}
+
 .timelineItem.showCircle::before {
     content: "";
     position: absolute;
@@ -21,6 +28,18 @@
     top: 4px;
     left: -14px;
     width: 1px;
-    height: 1400%;
+    height: 1500%;
     border-left: 1px dashed #6750A4;
 } 
+
+@media screen and (max-width:768px) {
+    /* .timelineItem{
+        right: 35%;
+    } */
+    .timelineItem{
+        left: -25%;
+    }
+    .timelineItem::after {
+        height: 1200%;
+    } 
+}

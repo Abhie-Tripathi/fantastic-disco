@@ -4,6 +4,7 @@ import LeftArrow from '@/public/leftArrow.svg'
 import RightArrow from '@/public/rightArrow.svg'
 import Video from '@/public/video.svg'
 import Image from 'next/image'
+import { useTheme } from '@/context'
 const MyCalendar = () => {
     const [weeks, setWeeks] = useState<string[][]>([]);
     const [start, setStart] = useState<number>();
@@ -16,6 +17,8 @@ const MyCalendar = () => {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
+    const {theme} = useTheme();
+
     useEffect(() => {
         const getStartingDayOfMonth = (year: number, month: number) => {
             const firstDayOfMonth: Date = new Date(year, month, 1);
@@ -75,14 +78,14 @@ const MyCalendar = () => {
     //     }
     //   }
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${theme === 'light' && styles.container_light}`}>
             <div className={styles.leftContainer}>
                 <div style={{fontWeight:"600"}}>My Calendar</div>
                 <div className={styles.card}>
                     <div className={styles.todayCard}>
                         <div className={styles.conatinerHead}><span style={{fontWeight:"700"}}>TODAY</span> <span style={{ color: "#6750A4", paddingLeft:"4px" }}>27/04/2024</span></div>
                         <div className={styles.meetDetail}>
-                            <div className={styles.upcomming}>2 Upcoming Meetings today</div>
+                            <div className={`${styles.upcomming} ${theme === 'light' && styles.upcomming_light}`}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>
                                 <div>
                                     <div className={styles.circle}></div>
@@ -107,7 +110,7 @@ const MyCalendar = () => {
                     <div className={styles.todayCard}>
                     <div className={styles.conatinerHead}><span style={{fontWeight:"700"}}>TODAY</span>  <span style={{ color: "#6750A4", paddingLeft:"4px" }}>27/04/2024</span></div>
                         <div className={styles.meetDetail}>
-                            <div className={styles.upcomming}>2 Upcoming Meetings today</div>
+                            <div className={`${styles.upcomming} ${theme === 'light' && styles.upcomming_light}`}>2 Upcoming Meetings today</div>
                             <div className={styles.timings}>
                                 <div>
                                     <div className={styles.circle} style={{backgroundColor:"#2DD4BF"}}></div>

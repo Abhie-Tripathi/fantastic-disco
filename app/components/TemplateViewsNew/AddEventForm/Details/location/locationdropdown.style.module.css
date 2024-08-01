@@ -1,0 +1,149 @@
+.body {
+    width: 100%;
+    padding: 12px;
+}
+
+.locationTypes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox {
+    display: none;
+}
+
+.customCheckbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #EFEFEF;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkboxContainer .checkboxLabel {
+    margin-left: 14px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.customCheckbox::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.1s;
+}
+
+.checkbox:checked+.customCheckbox {
+    border-color: #6750a4;
+}
+
+.checkbox:checked+.customCheckbox::before {
+    background-color: #6750a4;
+}
+
+.locationInputContainer {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+}
+.locationDropdown{
+    position: absolute;
+    top: 29px;
+    width: 100%;
+    max-height: 120px;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 3px;
+}
+.locationDropdown div{
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-small);
+    border-radius: 3px;
+    padding: 5px 8px;
+    cursor: pointer;
+}
+.locationDropdown div:hover{
+    background-color: #F2F2F2;
+}
+.locationInputContainer input {
+    border: 1px solid #EBEBEB;
+    border-radius: 2px;
+    padding: 8px;
+    color: black;
+    font-size: var(--font-size-xs);
+}
+
+.locationInputContainer input:focus {
+    outline: none;
+}
+
+.locationInputContainer .recentHeading {
+    color: black;
+    font-size: var(--font-size-xs);
+}
+.locationInputContainer .recentLocation{
+    background-color: #F2F2F2;
+    padding: 5px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.locationInputContainer .recentLocation .state{
+    font-size: var(--font-size-small);
+    color: #7D7D7D;
+    font-weight: var(--font-weight-medium);
+}
+.locationInputContainer .recentLocation .country{
+    font-size: var(--font-size-xs);
+    color: #7D7D7D;
+}
+.inputLinkContainer{
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.inputLinkContainer input {
+    border: 1px solid #EBEBEB;
+    border-radius: 2px;
+    padding: 8px;
+    color: black;
+    font-size: var(--font-size-xs);
+}
+.inputLinkContainer div{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.inputLinkContainer div .infoBtn{
+    width: 11px;
+    height: 11px;
+    background-color: #52A8FF;
+    color: white;
+    font-size: 8px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.inputLinkContainer div .info{
+    font-size: var(--font-size-small);
+    color: #52A8FF;
+}

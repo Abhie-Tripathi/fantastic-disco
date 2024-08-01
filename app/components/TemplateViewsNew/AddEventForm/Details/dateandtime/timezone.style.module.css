@@ -1,0 +1,29 @@
+.timezonecontainer {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  /* align-items: center; */
+}
+
+.timezone {
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 5px;
+  font-size: 10px;
+  color: #171717;
+  display: flex;
+  justify-content: space-between;
+}
+
+.timezone:hover {
+  background-color: #F2F2F2;
+}
+
+.activeTimeZone {
+  background-color: #F2F2F2;
+}
+
+.activeTimeZone>span:first-child {
+  display: flex;
+  align-items: center;
+}

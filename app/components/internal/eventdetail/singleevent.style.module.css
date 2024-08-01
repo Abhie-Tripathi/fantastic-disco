@@ -1,0 +1,44 @@
+.container{
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+}
+.image{
+    border-radius: 13px;
+}
+.eventName{
+    font-size: 18px;
+}
+.organiser{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.organiser img{
+    background-color: #6750A44D;
+    padding: 7.5px;
+    border-radius: 40px;
+}
+.detailContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.statusHeading{
+    color: #808080;
+    font-size: 14px;
+}
+.statusValue{
+    background-color: inherit;
+    border: 1px solid #6750A4;
+    border-radius: 40px;
+    padding: 5px 10px;
+    font-size: 10px;
+}
+
+@media screen and (max-width: 576px) {
+    .image{
+        height: 120px;
+        width: 160px;
+    }
+}

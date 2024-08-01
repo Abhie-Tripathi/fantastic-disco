@@ -1,0 +1,96 @@
+.ariaDaterangepicker [slot="end"] {
+  margin-right: 2rem;
+  flex: 1;
+}
+
+.ariaRangeCalendar {
+  padding: 10px;
+  color: white;
+}
+
+.ariaRangeCalendar_light{
+  color: var(--primary-color-light);
+}
+
+
+.ariaRangeCalendar header {
+  display: flex;
+  align-items: center;
+  margin: 0px 0px 0.5rem 0px;
+}
+
+.ariaRangeCalendar .ariaHeading {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  /* color: white; */
+  font-weight: 400;
+  outline: none;
+}
+
+.ariaRangeCalendar .ariaCalBtn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.ariaRangeCalendar table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ariaRangeCalendar table th {
+  /* color: white; */
+  font-weight: 500;
+}
+
+.ariaRangeCalendar table td {
+  padding: 2px 0;
+}
+
+.ariaRangeCalendar .ariaCalendarCell {
+  line-height: 2rem;
+  text-align: center;
+  border-radius: 6px;
+  cursor: default;
+  outline: none;
+  forced-color-adjust: none;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-outside-month] {
+  display: none;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-focus-visible] {
+  outline-offset: -2px;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-selected] {
+  cursor: pointer;
+  background: #8470c9;
+  /* color: white; */
+  border-radius: 0;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-selected][data-focus-visible] {
+  outline-offset: -3px;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-selection-start] {
+  border-start-start-radius: 6px;
+  border-end-start-radius: 6px;
+}
+
+.ariaRangeCalendar .ariaCalendarCell[data-selection-end] {
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+}
+.ariaCalendarCell{
+  /* color:white; */
+}
+
+.icons_light{
+  filter: invert(1);
+}

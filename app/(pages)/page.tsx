@@ -1,12 +1,18 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useLayoutEffect } from "react";
 import EmployeePage from "./employee/page";
-import Navbar from "../components/Navbar";
+import {  useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    router.replace("/internal");
+  });
   return (
-    <main>  
-      <EmployeePage/>
+    <main>
+      <EmployeePage />
     </main>
   );
 }

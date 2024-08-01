@@ -1,0 +1,16 @@
+.container{
+    display: flex;
+    border: 0.5px solid var(--border-color);
+    /* justify-content: space-evenly; */
+    border-radius: var(--border-radius-sm);
+    padding: 20px;
+    font-size: var(--font-size-default);
+    height: 100%;
+    gap:var(--spacing-sm);
+}
+.location{
+    display: flex;
+    width: 33%;
+    justify-content: center;
+    flex-direction: column;
+}

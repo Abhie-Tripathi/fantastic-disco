@@ -1,0 +1,3798 @@
+{
+    "status": {
+        "code": 1,
+        "message": [
+            ""
+        ]
+    },
+    "data": {
+        "events": [
+            {
+                "id": "1b27ff90-1a46-4f49-85eb-607b4d510eb1",
+                "name": "Carbon Forward Conference",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "India Subcontinent",
+                "verifiedby": 1,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "MAGIC",
+                "subEventType": null,
+                "multiCity": 1,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 588269,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 21,
+                "type": "Conference",
+                "typeNew": [
+                    "Conference"
+                ],
+                "punchLine": "International Apparel, Garments & Accessories Show",
+                "tags": "MAGIC LAS VEGAS MAGIC Fashion Beauty Apparel Clothing",
+                "originalDescription": "Every February and August, the retail industry convenes in Las Vegas for the United States most comprehensive fashion marketplace - MAGIC. Here you will find the latest in apparel, footwear, accessories, and manufacturing. From the height of advanced contemporary luxury brands, to the latest trends in fast fashion, MAGIC fuels the business of fashion.",
+                "description": "International Apparel, Garments & Accessories Show",
+                "website": null,
+                "startDate": "2024-05-07",
+                "endDate": "2024-05-09",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 1,
+                "promotionType": 40,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/magic",
+                "logo": "https://c1.10times.com/event/fc370eab303a939456079770cd3100ef/1522294251556/13039.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/0/7/0/13638070.jpeg",
+                    "https://c1.10times.com/user/images/3/6/5/13755365.jpeg",
+                    "https://c1.10times.com/user/images/0/7/1/15502071.jpg"
+                ],
+                "stats": {
+                    "score": 21099,
+                    "rating": 4,
+                    "attends": 142,
+                    "follows": 1086,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": null,
+                    "estimatedVisitors": null,
+                    "speakers": 0,
+                    "exhibitors": 26,
+                    "media": 55,
+                    "firstLogin": "2022-03-16",
+                    "verifiedOn": null,
+                    "ratingCount": 87,
+                    "comments": 43
+                },
+                "location": {
+                    "cityId": 70705,
+                    "cityName": "Hosur",
+                    "state": "Tamil Nadu",
+                    "cityUrl": null,
+                    "cityBaseUrl": "https://stg.10times.com/hosur-in",
+                    "countryId": "IN",
+                    "countryName": "India",
+                    "countryUrl": "https://stg.10times.com/india",
+                    "countryBaseUrl": "https://stg.10times.com/india",
+                    "venueId": null,
+                    "venueName": null,
+                    "venueAddress": null,
+                    "venueUrl": null,
+                    "geoCordinates": "12.741000,77.825000"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1,
+                        "modifiedBy": 16218206,
+                        "created": "2018-02-28 08:16:24",
+                        "modified": "2019-12-23 07:43:57"
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1,
+                        "modifiedBy": 16218206,
+                        "created": "2018-02-28 08:16:24",
+                        "modified": "2019-12-23 07:43:57"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 354036,
+                        "name": "Fashion Shows",
+                        "published": 0
+                    },
+                    {
+                        "id": 787,
+                        "name": "Gloves",
+                        "published": 1
+                    },
+                    {
+                        "id": 44344,
+                        "name": "footwears",
+                        "published": 1
+                    },
+                    {
+                        "id": 73171,
+                        "name": "Bridal Accessories",
+                        "published": 1
+                    },
+                    {
+                        "id": 88660,
+                        "name": "Toys",
+                        "published": 1
+                    },
+                    {
+                        "id": 139649,
+                        "name": "hair accessories",
+                        "published": 1
+                    },
+                    {
+                        "id": 203534,
+                        "name": "knitwear",
+                        "published": 1
+                    },
+                    {
+                        "id": 234762,
+                        "name": "Apparels",
+                        "published": 1
+                    },
+                    {
+                        "id": 600415,
+                        "name": "Women Cloths",
+                        "published": 1
+                    },
+                    {
+                        "id": 902173,
+                        "name": "Car Electronics",
+                        "published": 1
+                    },
+                    {
+                        "id": 923695,
+                        "name": "diaper bags",
+                        "published": 1
+                    },
+                    {
+                        "id": 984094,
+                        "name": "Werkzeuge Zum",
+                        "published": 1
+                    },
+                    {
+                        "id": 1374194,
+                        "name": "Car air purifiers & sterilizers",
+                        "published": 1
+                    },
+                    {
+                        "id": 1374215,
+                        "name": "Car holders",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 916231,
+                    "name": "UBM Fashion Inc.",
+                    "url": "https://stg.10times.com/company/ubm-fashion-inc",
+                    "published": 0,
+                    "promotionType": 3,
+                    "totalLeads": 3598,
+                    "logo": null,
+                    "countryName": "United States",
+                    "totalEvents": 25,
+                    "website": "http://www.ubmfashion.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null,
+                "ex_ed_leads_following": 500,
+                "eventRank": 2,
+                "rankType": "global"
+            },
+            {
+                "id": "0038c5e9-6ddd-451c-9ab1-c7c79890bc02",
+                "name": "AI in Finance Summit",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "Western Europe",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Texworld",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 768699,
+                "brandId": 3,
+                "multipleLocation": null,
+                "editionNumber": 23,
+                "totalEdition": 23,
+                "type": "Workshop",
+                "typeNew": [
+                    "Workshop"
+                ],
+                "punchLine": "Texworld Paris, the international fair for fashion of fabrics, trims, accessories",
+                "tags": "Texworld Paris Texworld International Trade Fair Apparel Clothing Fashion Beauty",
+                "originalDescription": "Taking place twice a year at Paris, Le Bourget, the Fairyland For Fashion offer to thousands of professional buyers from all over the world a rich variety of products. Apparel Sourcing Paris is the leading clothing sourcing platform for the European market which offers a wide range of products for men, women, and children, including Shawls&Scarves, specialized in accessories from the traditional to the most imaginative. Avantex Paris help fashion players to remain competitive in a constantly changing context thanks to high-tech products and innovation, from advanced materials to augmented retail. The Fairyland For Fashion showcases a Sustainable Sourcing Itinerary and a Small Quantity Itinerary. Many conferences take place during the fair and cover various themes related to trade, economy and technology. Moreover, some catwalks showcase a vast array of garments and accessories from selected manufacturers, shown in a contextualized scenography which evolves according to seasons.",
+                "description": "Texworld Paris, the international fair for fashion of fabrics, trims, accessories",
+                "website": "https://texworld-paris.fr.messefrankfurt.com/paris/en.html",
+                "startDate": "2023-04-11",
+                "endDate": "2023-04-12",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 43,
+                "eventEstimatedSize": "5000+",
+                "internationalAudience": 97,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/texworld-france",
+                "logo": null,
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/4/5/4/13630454.jpeg",
+                    "https://c1.10times.com/user/images/8/7/7/13376877_1537880435.jpeg",
+                    "https://c1.10times.com/user/images/2/4/6/363246_1537522390.jpeg"
+                ],
+                "stats": {
+                    "score": 14115,
+                    "rating": 4.4,
+                    "attends": 0,
+                    "follows": 943,
+                    "exhibitingLeads": 48,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 1800,
+                    "estimatedVisitors": 15000,
+                    "speakers": 0,
+                    "exhibitors": 1065,
+                    "media": 0,
+                    "firstLogin": "2014-09-30",
+                    "verifiedOn": null,
+                    "ratingCount": 55,
+                    "comments": 15
+                },
+                "location": {
+                    "cityId": 69308,
+                    "cityName": "Paris",
+                    "state": "ÃŽle-de-France",
+                    "cityUrl": "https://stg.10times.com/paris-fr",
+                    "cityBaseUrl": "https://stg.10times.com/paris-fr",
+                    "countryId": "FR",
+                    "countryName": "France",
+                    "countryUrl": "https://stg.10times.com/france",
+                    "countryBaseUrl": "https://stg.10times.com/france",
+                    "venueId": 142150,
+                    "venueName": "Paris Le Bourget Exhibition Centre",
+                    "venueAddress": "Carrefour Charles Lindbergh, 93350 Le Bourget",
+                    "venueUrl": "https://stg.10times.com/paris-le-bourget-exhibition-centre",
+                    "geoCordinates": "48.944144,2.430017"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1748,
+                        "modifiedBy": 1739,
+                        "created": "2018-02-27 08:56:28",
+                        "modified": "2020-04-10 03:11:38"
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1748,
+                        "modifiedBy": 1739,
+                        "created": "2018-02-27 08:56:28",
+                        "modified": "2020-04-10 03:11:38"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 1342623,
+                        "name": "Textile, Fabrics & Yarns",
+                        "published": 0
+                    },
+                    {
+                        "id": 21405,
+                        "name": "Fibers",
+                        "published": 0
+                    },
+                    {
+                        "id": 91367,
+                        "name": "Wool",
+                        "published": 1
+                    },
+                    {
+                        "id": 171858,
+                        "name": "Drapery",
+                        "published": 0
+                    },
+                    {
+                        "id": 268740,
+                        "name": "Denim",
+                        "published": 1
+                    },
+                    {
+                        "id": 1345961,
+                        "name": "Sportswear and functional fabrics",
+                        "published": 1
+                    },
+                    {
+                        "id": 1345962,
+                        "name": "Cotton & Blends",
+                        "published": 0
+                    },
+                    {
+                        "id": 1345964,
+                        "name": "Embroidery & Lace",
+                        "published": 1
+                    },
+                    {
+                        "id": 42336,
+                        "name": "Cotton",
+                        "published": 1
+                    },
+                    {
+                        "id": 580006,
+                        "name": "Jacquard",
+                        "published": 1
+                    },
+                    {
+                        "id": 801106,
+                        "name": "Knit",
+                        "published": 1
+                    },
+                    {
+                        "id": 1355774,
+                        "name": "Drapery & tailoring",
+                        "published": 1
+                    },
+                    {
+                        "id": 1355775,
+                        "name": "Linen & hemp",
+                        "published": 1
+                    },
+                    {
+                        "id": 1355776,
+                        "name": "Silk & silky aspects",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 3110,
+                    "name": "Messe Frankfurt France S.A.S.",
+                    "url": "https://stg.10times.com/company/messe-frankfurt-france-sas",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 1411,
+                    "logo": "https://c1.10times.com/event/messe-frankfurt-france-sas/1530172609054/logo1528870601.jpg",
+                    "countryName": "France",
+                    "totalEvents": 4,
+                    "website": "http://www.messefrankfurt.fr"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null,
+                "ex_ed_leads_following": 5000,
+                "eventRank": 4,
+                "rankType": "category"
+            },
+            {
+                "id": "1bf858b7-9656-4242-a5ab-e62b304a9b5a",
+                "name": "Finance Leaders' Conference",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "Western Europe",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "MEDICA",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 752386,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 12,
+                "type": "Workshop",
+                "typeNew": [
+                    "Workshop"
+                ],
+                "punchLine": "International trade fair for the medical sector",
+                "tags": "MEDICA MEDICA Wellness Health Fitness Medical Pharma",
+                "originalDescription": "MEDICA is the leading international trade fair for the medical sector. For this aim, it will be necessary to restructure and sort some focal areas. The goal of increasing the attractiveness of it for the attendees as an exhibitor and for our international specialist visitors is always the driving force / motor / motivation for this change for us.",
+                "description": "International trade fair for the medical sector",
+                "website": "https://www.medica-tradefair.com/cgi-bin/md_medica/lib/pub/tt.cgi/Online_Application.html?oid=40958&lang=2&ticket=g_u_e_s_t",
+                "startDate": "2019-11-18",
+                "endDate": "2019-11-21",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "-9.52",
+                "repeatSentiment": 66,
+                "eventEstimatedSize": "2000-5000",
+                "internationalAudience": 99,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/medica-de",
+                "logo": "https://c1.10times.com/event/cefe330eb249f35fb8d07af22ca6c96/1522294253697/1685.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/3/6/3/13775363.jpg",
+                    "https://c1.10times.com/user/images/9/5/4/98954_1537436985.jpeg",
+                    "https://c1.10times.com/user/images/1/5/9/271159.jpg"
+                ],
+                "stats": {
+                    "score": 9460,
+                    "rating": 4.4,
+                    "attends": 5,
+                    "follows": 375,
+                    "exhibitingLeads": 8,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 5148,
+                    "estimatedVisitors": 123500,
+                    "speakers": 0,
+                    "exhibitors": 6057,
+                    "media": 0,
+                    "firstLogin": "2019-02-07",
+                    "verifiedOn": null,
+                    "ratingCount": 28,
+                    "comments": 17
+                },
+                "location": {
+                    "cityId": 69154,
+                    "cityName": "DÃ¼sseldorf",
+                    "state": "North Rhine-Westphalia",
+                    "cityUrl": "https://stg.10times.com/dusseldorf-de",
+                    "cityBaseUrl": "https://stg.10times.com/dusseldorf-de",
+                    "countryId": "DE",
+                    "countryName": "Germany",
+                    "countryUrl": "https://stg.10times.com/germany",
+                    "countryBaseUrl": "https://stg.10times.com/germany",
+                    "venueId": 16901,
+                    "venueName": "Messe Dusseldorf",
+                    "venueAddress": "Stockumer Kirchstrase 61 40474 Dusseldorf",
+                    "venueUrl": "https://stg.10times.com/messe-dusseldorf",
+                    "geoCordinates": "51.256426,6.740812"
+                },
+                "category": [
+                    {
+                        "id": 27,
+                        "name": "Medical & Pharma",
+                        "shortName": "Medical & Pharmaceuticals",
+                        "icon": "fa-medkit",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/medical-pharma",
+                        "createdBy": 1739,
+                        "modifiedBy": 1748,
+                        "created": "2018-01-23 07:29:53",
+                        "modified": "2018-11-26 06:48:02"
+                    },
+                    {
+                        "id": 125,
+                        "name": "Wellness, Health & Fitness",
+                        "shortName": "Healthcare",
+                        "icon": "fa-heartbeat",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/wellness-healthcare",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/wellness-healthcare",
+                        "createdBy": 1739,
+                        "modifiedBy": 1748,
+                        "created": "2018-10-16 02:21:19",
+                        "modified": "2018-11-26 06:48:02"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 34306,
+                        "name": "Information Technology",
+                        "published": 1
+                    },
+                    {
+                        "id": 49974,
+                        "name": "Diagnostics",
+                        "published": 1
+                    },
+                    {
+                        "id": 345553,
+                        "name": "Medical Technology",
+                        "published": 1
+                    },
+                    {
+                        "id": 548516,
+                        "name": "laboratory technology",
+                        "published": 1
+                    },
+                    {
+                        "id": 771620,
+                        "name": "Communication Technology",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342648,
+                        "name": "Hospitals & Surgical",
+                        "published": 0
+                    },
+                    {
+                        "id": 1356069,
+                        "name": "Orthopaedic Technology",
+                        "published": 1
+                    },
+                    {
+                        "id": 1356070,
+                        "name": "Commodities and consumer goods",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 32089,
+                    "name": "BVV Trade Fair's Brno",
+                    "url": "https://stg.10times.com/company/bvv-trade-faiirs-brno",
+                    "published": 0,
+                    "promotionType": 3,
+                    "totalLeads": 2702,
+                    "logo": null,
+                    "countryName": "Czech Republic",
+                    "totalEvents": 168,
+                    "website": "http://http:check2651q4w.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": "5ea3b89a-b3b8-407b-a501-645d96bf84d9",
+                "name": "ExCred Americas",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Annual",
+                "eventZone": "Middle East",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Arab Health",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 653484,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": 44,
+                "totalEdition": 12,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "International Hospital, Medical Equipment, and Services Exhibition & Conference",
+                "tags": "Arab Health Arab Health Medical Pharma",
+                "originalDescription": "Arab Health is the International Hospital, Medical Equipment, and Services Exhibition & Conference. It is a great opportunity where you can access all kinds of medical products, innovations, and services under one roof. It’s the ideal place for distributors to find all the supplies and materials we need in one place. Lots of exhibitors will get a unique scope for the business promotion in the global markets.",
+                "description": "International Hospital, Medical Equipment, and Services Exhibition & Conference",
+                "website": "https://www.arabhealthonline.com/en/Home.html",
+                "startDate": "2019-01-28",
+                "endDate": "2019-01-31",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 100,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 89,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/arab-health",
+                "logo": "https://c1.10times.com/event/o74efeebde9569ad7df46b996075fd0a/1517283016717/3284.png",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/8/6/7/273867_1537522254.jpeg",
+                    "https://c1.10times.com/user/images/2/1/8/114218_1537472473.jpeg",
+                    "https://c1.10times.com/user/images/0/8/1/13725081.jpg"
+                ],
+                "stats": {
+                    "score": 6004,
+                    "rating": 4,
+                    "attends": 54,
+                    "follows": 489,
+                    "exhibitingLeads": 15,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 1,
+                    "estimatedExhibitors": 4150,
+                    "estimatedVisitors": 84500,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": "2014-08-11",
+                    "verifiedOn": null,
+                    "ratingCount": 40,
+                    "comments": 22
+                },
+                "location": {
+                    "cityId": 68873,
+                    "cityName": "Dubai",
+                    "state": "Dubai",
+                    "cityUrl": null,
+                    "cityBaseUrl": "https://stg.10times.com/dubai-ae",
+                    "countryId": "AE",
+                    "countryName": "UAE",
+                    "countryUrl": "https://stg.10times.com/unitedarabemirates",
+                    "countryBaseUrl": "https://stg.10times.com/unitedarabemirates",
+                    "venueId": 173623,
+                    "venueName": "Dubai International Convention & Exhibition Centre",
+                    "venueAddress": "Dubai World Trade Centre - Dubai",
+                    "venueUrl": "https://stg.10times.com/dubai-international-convention-exhibition-centre",
+                    "geoCordinates": "25.224440,55.287777"
+                },
+                "category": [
+                    {
+                        "id": 27,
+                        "name": "Medical & Pharma",
+                        "shortName": "Medical & Pharmaceuticals",
+                        "icon": "fa-medkit",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/medical-pharma",
+                        "createdBy": 1553,
+                        "modifiedBy": 29216,
+                        "created": "2018-02-12 06:18:28",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 44420,
+                        "name": "Medical Equipment",
+                        "published": 1
+                    },
+                    {
+                        "id": 45111,
+                        "name": "Health Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 539831,
+                        "name": "Disposables",
+                        "published": 1
+                    },
+                    {
+                        "id": 1202493,
+                        "name": "Orthopedic",
+                        "published": 1
+                    },
+                    {
+                        "id": 1358639,
+                        "name": "Imaging and Diagnostics",
+                        "published": 1
+                    },
+                    {
+                        "id": 1358640,
+                        "name": "Healthcare and General Services",
+                        "published": 1
+                    },
+                    {
+                        "id": 1358641,
+                        "name": "Healthcare Infrastructure",
+                        "published": 1
+                    },
+                    {
+                        "id": 1358642,
+                        "name": "Pharma and Supplements",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 358,
+                    "name": "Informa Middle East & Africa",
+                    "url": "https://stg.10times.com/company/informa-exhibitions-middle-east",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 1847,
+                    "logo": null,
+                    "countryName": "United Arab Emirates",
+                    "totalEvents": 50,
+                    "website": "https://www.informa-mea.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": "9306f250-0bed-4a0f-b7de-1f587e623f33",
+                "name": "Investival Showcase",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "North America",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 6886216,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": 27,
+                "totalEdition": 24,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "International Textiles and Fashion Industries Trade Show",
+                "tags": "Texworld Apparel Clothing Textile Fabrics Yarns",
+                "originalDescription": "Texworld is one among the largest sourcing event in the east coast featuring apparel fabrics and the fabrics industry. This fair provides new firms to spread their contacts all across the globe and create awareness about their brand worldwide. It helps in establishing contacts from potential clients and network with different industries. This fair provides a great opportunity to keep an eye on competitors and strategize accordingly to experience an overall growth in the brand status. Exhibitors can endorse their products and brands related to the textile industry among a crowd full of interested audience. The fair offers an opportunity for various brands and distributors to view a large range of textiles and fabrics among the most astounding garment, fabrics and textile mills all across the world under a single roof. The event focuses on raising the standard of fabrics industries all around the globe.",
+                "description": "International Textiles and Fashion Industries Trade Show",
+                "website": "https://texworld-usa.us.messefrankfurt.com/new-york/en.html#moreinfo",
+                "startDate": "2024-06-30",
+                "endDate": "2024-06-30",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/texworld-usa",
+                "logo": "https://c1.10times.com/event/a5a2c963d6621dfcb099cc10f747ab1/1516419104658/6646.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": 1,
+                "onlineEvent": 1,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/4/7/2/196472_1537521973.jpeg",
+                    "https://lh3.googleusercontent.com/cm/AJSPFBzk95R-EnGNmbLk5BRov_1CFaSrUO4G6nX4-xq4Db_XD-BRuP0Si5d9pL4-C-Q8=s100",
+                    "https://c1.10times.com/user/images/7/1/4/16889714.jpg"
+                ],
+                "stats": {
+                    "score": 5173,
+                    "rating": 4.2,
+                    "attends": 2,
+                    "follows": 326,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 360,
+                    "estimatedVisitors": 4300,
+                    "speakers": 0,
+                    "exhibitors": 346,
+                    "media": 0,
+                    "firstLogin": "2014-09-29",
+                    "verifiedOn": null,
+                    "ratingCount": 28,
+                    "comments": 12
+                },
+                "location": {
+                    "cityId": 70834,
+                    "cityName": "New York",
+                    "state": "New York",
+                    "cityUrl": "https://stg.10times.com/newyork-us",
+                    "cityBaseUrl": "https://stg.10times.com/newyork-us",
+                    "countryId": "US",
+                    "countryName": "USA",
+                    "countryUrl": "https://stg.10times.com/usa",
+                    "countryBaseUrl": "https://stg.10times.com/usa",
+                    "venueId": null,
+                    "venueName": null,
+                    "venueAddress": null,
+                    "venueUrl": null,
+                    "geoCordinates": "40.713000,-74.006000"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1748,
+                        "modifiedBy": 24390558,
+                        "created": "2018-02-09 06:25:10",
+                        "modified": "2021-06-17 08:48:32"
+                    },
+                    {
+                        "id": 5,
+                        "name": "automotive",
+                        "shortName": "Automobile",
+                        "icon": "fa-car",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/automotive/conferences",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/automotive",
+                        "createdBy": 24390558,
+                        "modifiedBy": null,
+                        "created": "2021-06-17 08:48:32",
+                        "modified": null
+                    },
+                    {
+                        "id": 38,
+                        "name": "Textile, Fabrics & Yarns",
+                        "shortName": "Textile, Yarn & Fabrics",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/textiles-fabrics",
+                        "createdBy": 17148502,
+                        "modifiedBy": 24390558,
+                        "created": "2018-03-09 02:43:15",
+                        "modified": "2021-06-17 08:48:32"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 1342623,
+                        "name": "Textile, Fabrics & Yarns",
+                        "published": 0
+                    },
+                    {
+                        "id": 42336,
+                        "name": "Cotton",
+                        "published": 1
+                    },
+                    {
+                        "id": 107138,
+                        "name": "knits",
+                        "published": 1
+                    },
+                    {
+                        "id": 129455,
+                        "name": "Embroidery",
+                        "published": 1
+                    },
+                    {
+                        "id": 161282,
+                        "name": "Findings",
+                        "published": 1
+                    },
+                    {
+                        "id": 171921,
+                        "name": "Functional Fabrics",
+                        "published": 1
+                    },
+                    {
+                        "id": 234762,
+                        "name": "Apparels",
+                        "published": 1
+                    },
+                    {
+                        "id": 268740,
+                        "name": "Denim",
+                        "published": 1
+                    },
+                    {
+                        "id": 580006,
+                        "name": "Jacquard",
+                        "published": 1
+                    },
+                    {
+                        "id": 605277,
+                        "name": "Faux Fur",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342623,
+                        "name": "Textile, Fabrics & Yarns",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 314,
+                    "name": "Messe Frankfurt Inc.",
+                    "url": "https://stg.10times.com/company/messe-frank-inc",
+                    "published": 0,
+                    "promotionType": 3,
+                    "totalLeads": 795,
+                    "logo": "https://c1.10times.com/event/messe-frank-inc/1530172833917/logo1528870791.jpg",
+                    "countryName": "United States",
+                    "totalEvents": 11,
+                    "website": "http://www.usa.messefrankfurt.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 1083,
+                "name": "The Big 5",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "Middle East",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Big5",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 765610,
+                "brandId": 12,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 7,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "",
+                "tags": "The Big Big5 Largest Construction Exhibition Building Construction Plant Machinery Industrial Engineering",
+                "originalDescription": "Big 5 brings the entire portfolio of building materials, construction products and solutions together under one roof. Manufacturers, suppliers, traders and service providers from Middle East Asia, Europe and Americas would be showcasing thousand of advanced technologies and solutions.",
+                "description": "Big 5 brings the entire portfolio of building materials, construction products and solutions together under one roof. Manufacturers, suppliers, traders and service providers from Middle East Asia, Europe...",
+                "website": "https://www.thebig5.ae/",
+                "startDate": "2019-11-25",
+                "endDate": "2019-11-28",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/the-big5",
+                "logo": "https://c1.10times.com/event/tf7c4810884875442ac319cfd638ff66/1545710486942/eventlogo-1502864244.jpg",
+                "smallWrapper": "https://c1.10times.com/event/yc9c067f57b6878a4d7ab47db15be97d/1536120025922/eventlogo-8-1536045249.jpg",
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/0/1/3/13773013.jpg",
+                    "https://c1.10times.com/abc/images/7/5/8/271758_1544077802.jpeg",
+                    "https://c1.10times.com/user/images/2/5/8/513258_1537522671.jpeg"
+                ],
+                "stats": {
+                    "score": 4823,
+                    "rating": 4.6,
+                    "attends": 3,
+                    "follows": 375,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 2601,
+                    "estimatedVisitors": 65000,
+                    "speakers": 4,
+                    "exhibitors": 3757,
+                    "media": 0,
+                    "firstLogin": null,
+                    "verifiedOn": null,
+                    "ratingCount": 23,
+                    "comments": 15
+                },
+                "location": {
+                    "cityId": 68873,
+                    "cityName": "Dubai",
+                    "state": "Dubai",
+                    "cityUrl": null,
+                    "cityBaseUrl": "https://stg.10times.com/dubai-ae",
+                    "countryId": "AE",
+                    "countryName": "UAE",
+                    "countryUrl": "https://stg.10times.com/unitedarabemirates",
+                    "countryBaseUrl": "https://stg.10times.com/unitedarabemirates",
+                    "venueId": 55,
+                    "venueName": "Pragati Maidan",
+                    "venueAddress": "Sangam Vihar New Delhi, India",
+                    "venueUrl": "https://stg.10times.com/pragati-maidan",
+                    "geoCordinates": "28.616703,77.243585"
+                },
+                "category": [
+                    {
+                        "id": 7,
+                        "name": "Build, Buildings & Construction",
+                        "shortName": "Infrastructure",
+                        "icon": "fa-building",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/building-construction",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/building-construction",
+                        "createdBy": 1553,
+                        "modifiedBy": 1758,
+                        "created": "2017-12-15 05:20:12",
+                        "modified": "2018-12-24 12:53:10"
+                    },
+                    {
+                        "id": 34,
+                        "name": "Industrial Engineering",
+                        "shortName": "Manufacturing & Engineering",
+                        "icon": "fa-industry",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/engineering",
+                        "createdBy": 15590180,
+                        "modifiedBy": 1758,
+                        "created": null,
+                        "modified": "2018-12-24 12:53:10"
+                    },
+                    {
+                        "id": 138,
+                        "name": "Plant & Machinery",
+                        "shortName": "Plant & Machines",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/plants-machinery",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/plants-machinery",
+                        "createdBy": 23360519,
+                        "modifiedBy": 1758,
+                        "created": null,
+                        "modified": "2018-12-24 12:53:10"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 9868,
+                        "name": "Solar",
+                        "published": 1
+                    },
+                    {
+                        "id": 53257,
+                        "name": "Building Interiors",
+                        "published": 1
+                    },
+                    {
+                        "id": 90733,
+                        "name": "Plant & Machinery",
+                        "published": 1
+                    },
+                    {
+                        "id": 171615,
+                        "name": "Concrete",
+                        "published": 1
+                    },
+                    {
+                        "id": 274098,
+                        "name": "Construction Tools",
+                        "published": 1
+                    },
+                    {
+                        "id": 298101,
+                        "name": "building material",
+                        "published": 1
+                    },
+                    {
+                        "id": 440666,
+                        "name": "Building Envelope",
+                        "published": 1
+                    },
+                    {
+                        "id": 683079,
+                        "name": "Hvac & Refrigeration",
+                        "published": 1
+                    },
+                    {
+                        "id": 992351,
+                        "name": "MEP Structural Bim Service",
+                        "published": 1
+                    },
+                    {
+                        "id": 1347936,
+                        "name": "Construction Technologyâ€‹",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 1769,
+                    "name": "dmg :: events (Middle East Asia)",
+                    "url": "https://stg.10times.com/company/dmg-world-media-dubai",
+                    "published": 0,
+                    "promotionType": 5,
+                    "totalLeads": 1378,
+                    "logo": "https://c1.10times.com/event/dmg-world-media-dubai/1505964823245/logo.png",
+                    "countryName": "United Arab Emirates",
+                    "totalEvents": 22,
+                    "website": "https://www.dmgeventsme.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 3125925,
+                "name": "Badal Dya",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "India Subcontinent",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "BDH",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 765610,
+                "brandId": 12,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 1,
+                "type": "Workshop",
+                "typeNew": [
+                    "Workshop",
+                    "Tradeshow"
+                ],
+                "punchLine": "",
+                "tags": "The Big Big5 Largest Construction Exhibition Building Construction Plant Machinery Industrial Engineering",
+                "originalDescription": "Big 5 brings the entire portfolio of building materials, construction products and solutions together under one roof. Manufacturers, suppliers, traders and service providers from Middle East Asia, Europe and Americas would be showcasing thousand of advanced technologies and solutions.",
+                "description": "Big 5 brings the entire portfolio of building materials, construction products and solutions together under one roof. Manufacturers, suppliers, traders and service providers from Middle East Asia, Europe...",
+                "website": "https://www.thebig5.ae/",
+                "startDate": "2019-11-25",
+                "endDate": "2019-11-28",
+                "status": "Postponed",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/the-big5-2",
+                "logo": "https://c1.10times.com/event/tf7c4810884875442ac319cfd638ff66/1545710486942/eventlogo-1502864244.jpg",
+                "smallWrapper": "https://c1.10times.com/event/yc9c067f57b6878a4d7ab47db15be97d/1536120025922/eventlogo-8-1536045249.jpg",
+                "wrapper2By1": null,
+                "hybrid": 1,
+                "onlineEvent": 1,
+                "followerPic": null,
+                "stats": {
+                    "score": 4823,
+                    "rating": null,
+                    "attends": 3,
+                    "follows": 0,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 2601,
+                    "estimatedVisitors": 65000,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": null,
+                    "verifiedOn": null,
+                    "ratingCount": 0,
+                    "comments": 0
+                },
+                "location": {
+                    "cityId": 70469,
+                    "cityName": "New Delhi",
+                    "state": "Delhi",
+                    "cityUrl": "https://stg.10times.com/newdelhi-in",
+                    "cityBaseUrl": "https://stg.10times.com/newdelhi-in",
+                    "countryId": "IN",
+                    "countryName": "India",
+                    "countryUrl": "https://stg.10times.com/india",
+                    "countryBaseUrl": "https://stg.10times.com/india",
+                    "venueId": 55,
+                    "venueName": "Pragati Maidan",
+                    "venueAddress": "Sangam Vihar New Delhi, India",
+                    "venueUrl": "https://stg.10times.com/pragati-maidan",
+                    "geoCordinates": "28.616703,77.243585"
+                },
+                "category": [],
+                "product": [],
+                "organizer": {
+                    "id": 1769,
+                    "name": "dmg :: events (Middle East Asia)",
+                    "url": "https://stg.10times.com/company/dmg-world-media-dubai",
+                    "published": 0,
+                    "promotionType": 5,
+                    "totalLeads": 1378,
+                    "logo": "https://c1.10times.com/event/dmg-world-media-dubai/1505964823245/logo.png",
+                    "countryName": "United Arab Emirates",
+                    "totalEvents": 22,
+                    "website": "https://www.dmgeventsme.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 1212,
+                "name": "Guangzhou International Lighting Exhibition Guangzhou International Lighting Exhibition Guangzhou International Lighting Exhibition",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "East Asia",
+                "verifiedby": 1739,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Test",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 701439,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 8,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The most influential and comprehensive Lighting and LED event in Asia.",
+                "tags": "Guangzhou International Lighting Exhibition Guangzhou International Lighting Exhibition The most influential comprehensive lighting LED event Asia Electric Electronics",
+                "originalDescription": "Guangzhou International Lighting Exhibition showcases the latest wave of innovative lighting-related products and also companies stage the newest applications for retail, residential, industrial, office, hospitality, transport and urban purposes. It is easily AsiaÃƒâ€šÃ¢â‚¬â„¢s most influential and comprehensive lighting and LED event and a professional industry platform for cultivating new business opportunities from both within and outside the traditional industry realms.",
+                "description": "The most influential and comprehensive Lighting and LED event in Asia.",
+                "website": "https://guangzhou-international-lighting-exhibition.hk.messefrankfurt.com/guangzhou/en/for-visitors/visit-the-fair/show-information.html",
+                "startDate": "2019-06-09",
+                "endDate": "2019-06-12",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 50,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 96,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/guangzhou-international-lighting",
+                "logo": "https://c1.10times.com/event/5d125b369402f59485c12322cbd08b6/1522294250501/1212.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/7/8/7/208787_1537522102.jpeg",
+                    "https://c1.10times.com/abc/images/3/2/7/421327_1545633002.jpeg",
+                    "https://c1.10times.com/user/images/4/2/0/421420.jpg"
+                ],
+                "stats": {
+                    "score": 4772,
+                    "rating": 3.6,
+                    "attends": 7,
+                    "follows": 313,
+                    "exhibitingLeads": 2,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 2428,
+                    "estimatedVisitors": 156000,
+                    "speakers": 0,
+                    "exhibitors": 139,
+                    "media": 0,
+                    "firstLogin": "2014-09-30",
+                    "verifiedOn": null,
+                    "ratingCount": 20,
+                    "comments": 9
+                },
+                "location": {
+                    "cityId": 69067,
+                    "cityName": "Guangzhou",
+                    "state": "Guangdong",
+                    "cityUrl": "https://stg.10times.com/guangzhou-cn",
+                    "cityBaseUrl": "https://stg.10times.com/guangzhou-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 5681,
+                    "venueName": "China Import and Export Fair(Canton Fair Complex)",
+                    "venueAddress": "382 Yuejiang Middle Rd Haizhu Qu Guangzhou Shi Guangdong Sheng 510310",
+                    "venueUrl": "https://stg.10times.com/china-import-export-fair-pazhou-complex",
+                    "geoCordinates": "23.102037,113.360812"
+                },
+                "category": [
+                    {
+                        "id": 13,
+                        "name": "Electric & Electronics",
+                        "shortName": "Electrical",
+                        "icon": "fa-plug",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/electronics-electricals",
+                        "createdBy": 1487,
+                        "modifiedBy": 1758,
+                        "created": "2017-06-19 11:46:43",
+                        "modified": "2018-06-23 05:59:14"
+                    }
+                ],
+                "product": [],
+                "organizer": {
+                    "id": 337,
+                    "name": "Messe Frankfurt (HK) Ltd.",
+                    "url": "https://stg.10times.com/company/messe-hk",
+                    "published": 0,
+                    "promotionType": 5,
+                    "totalLeads": 695,
+                    "logo": "https://c1.10times.com/event/messe-hk/1535637968845/logo1535348738.jpg",
+                    "countryName": "Hong Kong",
+                    "totalEvents": 7,
+                    "website": "http://www.messefrankfurt.com.hk"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 1249,
+                "name": "Intertextile Shanghai Apparel Fabrics",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Annual",
+                "eventZone": "East Asia",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Intertextile",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 732822,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 15,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "China International Trade Fair for Apparel Fabrics and Accessories",
+                "tags": "Intertextile Shanghai Apparel Fabrics Intertextile Where the worlds Fashion Innovation converge Fashion Shows Franchising Retailing Apparel Clothing",
+                "originalDescription": "Intertextile Shanghai Apparel Fabrics display product like Cotton, wool, silk, linen, ramie, man-made, knitted, coated fabrics, Lingerie & swimwear fabrics, Functional fabrics, Printed fabrics fibers & yarns,  Embroidery & lace, Accessories and Textile-related CAD/CAM/CIM technology and much more.",
+                "description": "China International Trade Fair for Apparel Fabrics and Accessories",
+                "website": "https://www.hk.messefrankfurt.com/hongkong/en/events.html",
+                "startDate": "2019-03-12",
+                "endDate": "2019-03-14",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 0,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 89,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/intertextile-shanghai-apparelfabrics",
+                "logo": "https://c1.10times.com/images/intertextile-shanghai-apparel-fabrics---spring-edition/2016-02-17/logo.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/5/1/8/143518.jpg",
+                    "https://c1.10times.com/user/images/4/5/4/13630454.jpeg",
+                    "https://c1.10times.com/user/images/8/1/1/463811.jpeg"
+                ],
+                "stats": {
+                    "score": 4432,
+                    "rating": 3.9,
+                    "attends": 5,
+                    "follows": 149,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 3386,
+                    "estimatedVisitors": 82314,
+                    "speakers": 0,
+                    "exhibitors": 7136,
+                    "media": 0,
+                    "firstLogin": "2014-09-30",
+                    "verifiedOn": null,
+                    "ratingCount": 15,
+                    "comments": 7
+                },
+                "location": {
+                    "cityId": 69091,
+                    "cityName": "Shanghai",
+                    "state": "Shanghai",
+                    "cityUrl": "https://stg.10times.com/shanghai-cn",
+                    "cityBaseUrl": "https://stg.10times.com/shanghai-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 75041,
+                    "venueName": "National Convention & Exhibition Center",
+                    "venueAddress": "China Shanghai Shi Lai Port Road Qingpu District No. 111",
+                    "venueUrl": "https://stg.10times.com/national-convention-and-exhibition-center",
+                    "geoCordinates": "31.190706,121.306102"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1,
+                        "modifiedBy": 15438581,
+                        "created": "2017-11-28 02:45:02",
+                        "modified": null
+                    },
+                    {
+                        "id": 111,
+                        "name": "Fashion Shows",
+                        "shortName": "Fashion Shows",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/fashion-shows",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-shows",
+                        "createdBy": null,
+                        "modifiedBy": 15438581,
+                        "created": "2018-04-13 12:27:36",
+                        "modified": null
+                    },
+                    {
+                        "id": 155,
+                        "name": "Franchising & Retailing",
+                        "shortName": "Franchise & Retailing",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/franchising",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/franchising",
+                        "createdBy": null,
+                        "modifiedBy": 15438581,
+                        "created": "2018-04-13 12:30:08",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 354036,
+                        "name": "Fashion Shows",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342661,
+                        "name": "Franchising & Retailing",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 337,
+                    "name": "Messe Frankfurt (HK) Ltd.",
+                    "url": "https://stg.10times.com/company/messe-hk",
+                    "published": 0,
+                    "promotionType": 5,
+                    "totalLeads": 695,
+                    "logo": "https://c1.10times.com/event/messe-hk/1535637968845/logo1535348738.jpg",
+                    "countryName": "Hong Kong",
+                    "totalEvents": 7,
+                    "website": "http://www.messefrankfurt.com.hk"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": "Admin - 10times",
+                "checkDate": "2024-03-01",
+                "opportunityScore": null
+            },
+            {
+                "id": 62397,
+                "name": "Bronner Bros International Beauty Show",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "North America",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Beauty Show",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 657741,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 12,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "International Hair Show in Atlanta.",
+                "tags": "Bronner Bros International Beauty Show Beauty Show Industrial Products Fashion Beauty Fashion Shows Cosmetics",
+                "originalDescription": "International Beauty Show is a professional beauty industry event and is the largest multicultural/multi-textural tradeshow in the United States. It includes over 100 professional education classes, innovative workshops sessions, exciting evening entertainment, an inspirational worship service, creative competitions and much more.",
+                "description": "International Hair Show in Atlanta.",
+                "website": "http://bronnerbros.com/future-show-dates/",
+                "startDate": "2018-08-04",
+                "endDate": "2018-08-06",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": -2.22,
+                "repeatSentiment": 100,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 22,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/bronner-bros-hair",
+                "logo": "https://c1.10times.com/event/49bfa9ab8a2895133880287ea3eb6bf/1522294296688/62397.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/3/5/4/13978354.jpg",
+                    "https://c1.10times.com/user/images/0/0/2/14383002.jpg",
+                    "https://c1.10times.com/user/images/8/1/5/89815_1537436895.jpeg"
+                ],
+                "stats": {
+                    "score": 4319,
+                    "rating": 4.1,
+                    "attends": 35,
+                    "follows": 168,
+                    "exhibitingLeads": 9,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 300,
+                    "estimatedVisitors": 30000,
+                    "speakers": 0,
+                    "exhibitors": 12,
+                    "media": 0,
+                    "firstLogin": "2017-04-28",
+                    "verifiedOn": null,
+                    "ratingCount": 12,
+                    "comments": 6
+                },
+                "location": {
+                    "cityId": 70790,
+                    "cityName": "Atlanta",
+                    "state": "Georgia",
+                    "cityUrl": "https://stg.10times.com/atlanta-us",
+                    "cityBaseUrl": "https://stg.10times.com/atlanta-us",
+                    "countryId": "US",
+                    "countryName": "USA",
+                    "countryUrl": "https://stg.10times.com/usa",
+                    "countryBaseUrl": "https://stg.10times.com/usa",
+                    "venueId": 201,
+                    "venueName": "Georgia World Congress Center",
+                    "venueAddress": "285 Andrew Young International Blvd NW Atlanta GA 30313",
+                    "venueUrl": "https://stg.10times.com/georgia-world-congress-center",
+                    "geoCordinates": "33.758409,-84.396917"
+                },
+                "category": [
+                    {
+                        "id": 11,
+                        "name": "Cosmetics",
+                        "shortName": "Perfumes & Cosmetics",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/cosmetics",
+                        "createdBy": 17148502,
+                        "modifiedBy": 20501,
+                        "created": "2018-03-09 02:21:08",
+                        "modified": null
+                    },
+                    {
+                        "id": 14,
+                        "name": "Industrial Products",
+                        "shortName": "Industrial Goods",
+                        "icon": "fa-wrench",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/industrial-products",
+                        "createdBy": 17148502,
+                        "modifiedBy": 20501,
+                        "created": "2018-03-09 02:21:08",
+                        "modified": null
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1732,
+                        "modifiedBy": 20501,
+                        "created": "2018-02-24 09:57:04",
+                        "modified": null
+                    },
+                    {
+                        "id": 111,
+                        "name": "Fashion Shows",
+                        "shortName": "Fashion Shows",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/fashion-shows",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-shows",
+                        "createdBy": 17148502,
+                        "modifiedBy": 20501,
+                        "created": "2018-03-09 02:21:08",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 17443,
+                        "name": "cosmetics",
+                        "published": 1
+                    },
+                    {
+                        "id": 59808,
+                        "name": "Industrial Products",
+                        "published": 1
+                    },
+                    {
+                        "id": 354036,
+                        "name": "Fashion Shows",
+                        "published": 1
+                    },
+                    {
+                        "id": 17443,
+                        "name": "cosmetics",
+                        "published": 0
+                    },
+                    {
+                        "id": 56041,
+                        "name": "Hair Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 59808,
+                        "name": "Industrial Products",
+                        "published": 0
+                    },
+                    {
+                        "id": 120073,
+                        "name": "Nail Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 354036,
+                        "name": "Fashion Shows",
+                        "published": 0
+                    },
+                    {
+                        "id": 679916,
+                        "name": "Make-up",
+                        "published": 1
+                    },
+                    {
+                        "id": 850109,
+                        "name": "Make-up Brushes",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 17708,
+                    "name": "Bronner Bros",
+                    "url": "https://stg.10times.com/company/bronner-bros",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 245,
+                    "logo": null,
+                    "countryName": "United States",
+                    "totalEvents": 1,
+                    "website": "http://www.bronnerbros.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": "CTV JM U1",
+                "checkDate": "2018-12-22",
+                "opportunityScore": null
+            },
+            {
+                "id": 195082,
+                "name": "China Import and Export Fair - Phase II",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "East Asia",
+                "verifiedby": null,
+                "createdby": "1487",
+                "functionality": "open",
+                "shortName": "Canton Fair - Phase II",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 750474,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 9,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "A Bond of Friendship A Bridge for Trade",
+                "tags": "China Import Export Fair Phase Canton Fair Phase China import export fair Gifts Gifting Furnishings Decor Business Services Consumer Fair",
+                "originalDescription": "China Import and Export Fair - Phase II is the largest trade fair for imports and exports. The event provides importing and exporting of various foreign goods and services from all corners of the world and aims to maintain a healthy and friendly relationship with countries worldwide. The event also provides an immense opportunity for all businesses and professionals to interact with one another and expand their networks worldwide by networking with officials from different parts of the world and suggesting them the benefits of their business. It exhibits over 150,000 kinds of quality Chinese products and overseas commodities with distinctive features from various sectors like Consumer Goods, Home Decorations, Gifts. It will serve as a platform for exhibitors to demonstrate their strengths, uplift their brand images and exchange information for exhibitors from home and abroad.",
+                "description": "A Bond of Friendship A Bridge for Trade",
+                "website": "http://www.cantonfair.org.cn/en/",
+                "startDate": "2019-04-15",
+                "endDate": "2019-04-19",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 6.12,
+                "repeatSentiment": 67,
+                "eventEstimatedSize": "50000-200000",
+                "internationalAudience": 98,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/china-import-and-export-fair",
+                "logo": "https://c1.10times.com/event/t1ebdc002158fc9253bfadc8c8f370f1/1542855924484/eventlogo.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/8/8/6/13665886.jpeg",
+                    "https://c1.10times.com/user/images/3/7/0/13850370.jpeg",
+                    "https://c1.10times.com/user/images/1/0/2/13610102.jpg"
+                ],
+                "stats": {
+                    "score": 4191,
+                    "rating": 4.3,
+                    "attends": 1,
+                    "follows": 538,
+                    "exhibitingLeads": 4,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 27000,
+                    "estimatedVisitors": 250000,
+                    "speakers": 0,
+                    "exhibitors": 244,
+                    "media": 0,
+                    "firstLogin": "2014-07-23",
+                    "verifiedOn": null,
+                    "ratingCount": 57,
+                    "comments": 18
+                },
+                "location": {
+                    "cityId": 69067,
+                    "cityName": "Guangzhou",
+                    "state": "Guangdong",
+                    "cityUrl": "https://stg.10times.com/guangzhou-cn",
+                    "cityBaseUrl": "https://stg.10times.com/guangzhou-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 5681,
+                    "venueName": "China Import and Export Fair(Canton Fair Complex)",
+                    "venueAddress": "382 Yuejiang Middle Rd Haizhu Qu Guangzhou Shi Guangdong Sheng 510310",
+                    "venueUrl": "https://stg.10times.com/china-import-export-fair-pazhou-complex",
+                    "geoCordinates": "23.102037,113.360812"
+                },
+                "category": [
+                    {
+                        "id": 46,
+                        "name": "Furnishings & Decor",
+                        "shortName": "Home Decor",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/home-textiles",
+                        "createdBy": null,
+                        "modifiedBy": 1487,
+                        "created": "2018-04-06 06:19:13",
+                        "modified": "2018-11-21 08:28:29"
+                    },
+                    {
+                        "id": 55,
+                        "name": "Business Services",
+                        "shortName": "Business",
+                        "icon": "fa-briefcase",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/business-consultancy",
+                        "createdBy": 1748,
+                        "modifiedBy": 1487,
+                        "created": "2018-05-07 06:09:38",
+                        "modified": "2018-11-21 08:28:29"
+                    },
+                    {
+                        "id": 121,
+                        "name": "Consumer Fair",
+                        "shortName": "Consumer Fest",
+                        "icon": "fa-tree",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/consumer-fairs",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/consumer-fairs",
+                        "createdBy": null,
+                        "modifiedBy": 1487,
+                        "created": "2018-04-06 06:32:18",
+                        "modified": "2018-11-21 08:28:29"
+                    },
+                    {
+                        "id": 123,
+                        "name": "Gifts & Gifting",
+                        "shortName": "Gifts",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": "https://stg.10times.com/gifts",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/gifts",
+                        "createdBy": null,
+                        "modifiedBy": 1487,
+                        "created": "2018-04-06 06:34:59",
+                        "modified": "2018-11-21 08:28:29"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 222505,
+                        "name": "Toiletries & Cosmetics",
+                        "published": 1
+                    },
+                    {
+                        "id": 513056,
+                        "name": "testing product",
+                        "published": 0
+                    },
+                    {
+                        "id": 1342626,
+                        "name": "Furnishings & Decor",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342642,
+                        "name": "Consumer Fair",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342644,
+                        "name": "Gifts & Gifting",
+                        "published": 1
+                    },
+                    {
+                        "id": 1343524,
+                        "name": "General Ceramics",
+                        "published": 1
+                    },
+                    {
+                        "id": 234193,
+                        "name": "Bathroom",
+                        "published": 1
+                    },
+                    {
+                        "id": 1182545,
+                        "name": "Sanitary & Durable Sinks",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 2221,
+                    "name": "China Foreign Trade Centre (Group)",
+                    "url": "https://stg.10times.com/company/cftc",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 1834,
+                    "logo": "https://c1.10times.com/event/cftc/1498275004436/logo.jpg",
+                    "countryName": "China",
+                    "totalEvents": 3,
+                    "website": "http://www.cftc.org.cn"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 5661,
+                "name": "Cosmoprof Worldwide Bologna",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Annual",
+                "eventZone": "Western Europe",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "CWWB",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 667589,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": 52,
+                "totalEdition": 12,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "International Perfumery & Cosmetics Industry Trade Fair",
+                "tags": "Cosmoprof Worldwide Bologna CWWB Fashion Beauty Cosmetics",
+                "originalDescription": "The African Studies Association aims to bring together people with a scholarly and professional interest in Africa. The association also provides information and services to the Africanist community.",
+                "description": "International Perfumery & Cosmetics Industry Trade Fair",
+                "website": "http://www.cosmoprof.com/",
+                "startDate": "2024-11-17",
+                "endDate": "2024-12-17",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/cosmoprof-bologna",
+                "logo": "https://c1.10times.com/event/e8dc7e0d3cf9e5aa27a9b63fa426248/1521171066826/5661.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/2/3/5/241235.jpg",
+                    "https://c1.10times.com/user/images/1/3/5/17377135.jpeg",
+                    "https://c1.10times.com/user/images/5/0/4/22876504.jpeg"
+                ],
+                "stats": {
+                    "score": 4150,
+                    "rating": 4.4,
+                    "attends": 17,
+                    "follows": 144,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 2822,
+                    "estimatedVisitors": 263121,
+                    "speakers": 0,
+                    "exhibitors": 120,
+                    "media": 0,
+                    "firstLogin": "2014-11-24",
+                    "verifiedOn": null,
+                    "ratingCount": 12,
+                    "comments": 6
+                },
+                "location": {
+                    "cityId": 69858,
+                    "cityName": "Bologna",
+                    "state": "Emilia-Romagna",
+                    "cityUrl": "https://stg.10times.com/bologna-it",
+                    "cityBaseUrl": "https://stg.10times.com/bologna-it",
+                    "countryId": "IT",
+                    "countryName": "Italy",
+                    "countryUrl": "https://stg.10times.com/italy",
+                    "countryBaseUrl": "https://stg.10times.com/italy",
+                    "venueId": 198385,
+                    "venueName": "Bologna Fair District",
+                    "venueAddress": "Via Giuseppe Dossetti, 13, 40128 Bologna BO, Italy",
+                    "venueUrl": null,
+                    "geoCordinates": "44.511759,11.355853"
+                },
+                "category": [
+                    {
+                        "id": 11,
+                        "name": "Cosmetics",
+                        "shortName": "Perfumes & Cosmetics",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/cosmetics",
+                        "createdBy": null,
+                        "modifiedBy": 30744,
+                        "created": "2018-04-06 06:12:07",
+                        "modified": null
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": null,
+                        "modifiedBy": 30744,
+                        "created": "2017-09-12 02:53:32",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 17443,
+                        "name": "cosmetics",
+                        "published": 1
+                    },
+                    {
+                        "id": 12461,
+                        "name": "Skincare",
+                        "published": 1
+                    },
+                    {
+                        "id": 17438,
+                        "name": "perfumery",
+                        "published": 1
+                    },
+                    {
+                        "id": 17442,
+                        "name": "packaging",
+                        "published": 1
+                    },
+                    {
+                        "id": 56008,
+                        "name": "toiletries",
+                        "published": 1
+                    },
+                    {
+                        "id": 56598,
+                        "name": "Natural Products",
+                        "published": 0
+                    },
+                    {
+                        "id": 56887,
+                        "name": "Machinery",
+                        "published": 1
+                    },
+                    {
+                        "id": 69670,
+                        "name": "Fragrances",
+                        "published": 1
+                    },
+                    {
+                        "id": 95244,
+                        "name": "Raw Materials",
+                        "published": 1
+                    },
+                    {
+                        "id": 1357027,
+                        "name": "Hair & Beauty",
+                        "published": 0
+                    },
+                    {
+                        "id": 1365590,
+                        "name": "Beauty and Spa",
+                        "published": 0
+                    }
+                ],
+                "organizer": {
+                    "id": 139,
+                    "name": "Bologna Fiere",
+                    "url": "https://stg.10times.com/company/bologna-fiere",
+                    "published": 0,
+                    "promotionType": 4,
+                    "totalLeads": 458,
+                    "logo": "https://c1.10times.com/event/bologna-fiere/2017-04-09/logo.jpg",
+                    "countryName": "Italy",
+                    "totalEvents": 20,
+                    "website": "http://www.bolognafiere.it"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 300828,
+                "name": "Canton Fair International Pavilion - Phase 1",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "East Asia",
+                "verifiedby": null,
+                "createdby": "1640",
+                "functionality": "open",
+                "shortName": "Canton Fair International Pavilion",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 746602,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 6,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "A bond of friendship & a Bridge for trade",
+                "tags": "Canton Fair International Pavilion Phase Canton Fair International Pavilion bond friendship Bridge for trade Electric Electronics",
+                "originalDescription": "Canton Fair International Pavilion - Phase 1, participate in China's No.1 Fair and present your products and technical developments to an international trade public. Access to professional, proactive buying audience around the world. Contact with top decision-makers of different enterprises around the world. Ideal conditions for establishing international business bond with target audience around the world.",
+                "description": "A bond of friendship & a Bridge for trade",
+                "website": "http://www.cantonfair.org.cn/en/international/index.aspx",
+                "startDate": "2019-04-15",
+                "endDate": "2019-04-19",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 0,
+                "repeatSentiment": 78,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 97,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/canton-fair-international-pavilion",
+                "logo": "https://c1.10times.com/event/479178ade797c05786bcc24a50c66d4/1522294279351/300828.png",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/9/1/6/1046916.jpg",
+                    "https://c1.10times.com/user/images/8/7/2/15534872.jpg",
+                    "https://c1.10times.com/user/images/5/3/3/207533.jpg"
+                ],
+                "stats": {
+                    "score": 4117,
+                    "rating": 4.3,
+                    "attends": 1,
+                    "follows": 489,
+                    "exhibitingLeads": 9,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 25000,
+                    "estimatedVisitors": 200000,
+                    "speakers": 0,
+                    "exhibitors": 2,
+                    "media": 0,
+                    "firstLogin": "2014-07-23",
+                    "verifiedOn": null,
+                    "ratingCount": 47,
+                    "comments": 22
+                },
+                "location": {
+                    "cityId": 69067,
+                    "cityName": "Guangzhou",
+                    "state": "Guangdong",
+                    "cityUrl": "https://stg.10times.com/guangzhou-cn",
+                    "cityBaseUrl": "https://stg.10times.com/guangzhou-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 5681,
+                    "venueName": "China Import and Export Fair(Canton Fair Complex)",
+                    "venueAddress": "382 Yuejiang Middle Rd Haizhu Qu Guangzhou Shi Guangdong Sheng 510310",
+                    "venueUrl": "https://stg.10times.com/china-import-export-fair-pazhou-complex",
+                    "geoCordinates": "23.102037,113.360812"
+                },
+                "category": [
+                    {
+                        "id": 13,
+                        "name": "Electric & Electronics",
+                        "shortName": "Electrical",
+                        "icon": "fa-plug",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/electronics-electricals",
+                        "createdBy": 1,
+                        "modifiedBy": 1758,
+                        "created": "2017-11-08 11:49:57",
+                        "modified": "2018-11-12 08:31:01"
+                    }
+                ],
+                "product": [],
+                "organizer": {
+                    "id": 2221,
+                    "name": "China Foreign Trade Centre (Group)",
+                    "url": "https://stg.10times.com/company/cftc",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 1834,
+                    "logo": "https://c1.10times.com/event/cftc/1498275004436/logo.jpg",
+                    "countryName": "China",
+                    "totalEvents": 3,
+                    "website": "http://www.cftc.org.cn"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 70488,
+                "name": "China International Beauty Expo",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "East Asia",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "CIBE",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 748995,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": 51,
+                "totalEdition": 10,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The Largest and Leading Beauty Industry Trade Fair",
+                "tags": "China International Beauty Expo CIBE Fashion Beauty",
+                "originalDescription": "China International Beauty Expo makes the adrenaline rush high of a beauty and cosmetic products-geeks. Products like skin care products, cosmetics, hair, natural health and nail products, equipment and tools for the beauty salon, daily cares and sanitation products, accessories, perfumery, essence, flavor, packaging material, and equipment are displayed and engaged within this mega show. To expand the beauty expo culture and expose it to the international market, this event comes up with conference and keynote speeches to attract and educate the attendees.",
+                "description": "The Largest and Leading Beauty Industry Trade Fair",
+                "website": "http://chinainternationalbeauty.com/gz/index.html",
+                "startDate": "2019-03-10",
+                "endDate": "2019-03-12",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 0,
+                "repeatSentiment": 100,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 94,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/guangdong-international-beauty",
+                "logo": "https://c1.10times.com/event/2/70488/logo_v75541.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/3/0/6/78306.jpeg",
+                    "https://c1.10times.com/user/images/0/6/0/13759060.jpg",
+                    "https://c1.10times.com/user/images/1/0/7/13784107.jpeg"
+                ],
+                "stats": {
+                    "score": 4011,
+                    "rating": 4.4,
+                    "attends": 6,
+                    "follows": 139,
+                    "exhibitingLeads": 4,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 3800,
+                    "estimatedVisitors": 910000,
+                    "speakers": 0,
+                    "exhibitors": 129,
+                    "media": 0,
+                    "firstLogin": "2015-08-31",
+                    "verifiedOn": null,
+                    "ratingCount": 19,
+                    "comments": 6
+                },
+                "location": {
+                    "cityId": 69067,
+                    "cityName": "Guangzhou",
+                    "state": "Guangdong",
+                    "cityUrl": "https://stg.10times.com/guangzhou-cn",
+                    "cityBaseUrl": "https://stg.10times.com/guangzhou-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 5681,
+                    "venueName": "China Import and Export Fair(Canton Fair Complex)",
+                    "venueAddress": "382 Yuejiang Middle Rd Haizhu Qu Guangzhou Shi Guangdong Sheng 510310",
+                    "venueUrl": "https://stg.10times.com/china-import-export-fair-pazhou-complex",
+                    "geoCordinates": "23.102037,113.360812"
+                },
+                "category": [
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1487,
+                        "modifiedBy": 16218206,
+                        "created": "2017-10-30 12:32:50",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 17438,
+                        "name": "perfumery",
+                        "published": 1
+                    },
+                    {
+                        "id": 22135,
+                        "name": "Personal Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 110918,
+                        "name": "Packaging Material",
+                        "published": 1
+                    },
+                    {
+                        "id": 214657,
+                        "name": "Cosmetic Product",
+                        "published": 1
+                    },
+                    {
+                        "id": 321423,
+                        "name": "Nail Products",
+                        "published": 1
+                    },
+                    {
+                        "id": 585485,
+                        "name": "Fashion & Accessories",
+                        "published": 1
+                    },
+                    {
+                        "id": 978767,
+                        "name": "Natural Health Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 1357027,
+                        "name": "Hair & Beauty",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 1095156,
+                    "name": "Guangdong Beauty & Cosmetic Association",
+                    "url": "https://stg.10times.com/company/guang-beauty-and-cosmetic-association",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 187,
+                    "logo": null,
+                    "countryName": "China",
+                    "totalEvents": 1,
+                    "website": "http://shen.chinainternationalbeauty.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 5175,
+                "name": "Premiere Vision-France",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "Western Europe",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "PV",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 729911,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 25,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The World's Textile, Fashion and Leather Trade Show",
+                "tags": "Premiere VisionFrance Apparel Clothing Fashion Beauty",
+                "originalDescription": "Premiere Vision-France is one among the leading French Company which is responsible for organizing Textile and Fashion Fairs. The event is considered as the heart of an international network. The event aims at promoting most innovative and unique designs. The meetings are organized by one of a kind fashion team consisting of professionals from different corners of the world. The professionals gather and exchange viewpoints on current trends and unique creations. It is the premier destination to promote emerging trends in the fashion industry and promotes a forward-looking and dynamic approach. This is a must-attend event for all fashion designers who are looking forward to sharing their most innovative designs and trends among a crowd full of top most professionals.",
+                "description": "The World's Textile, Fashion and Leather Trade Show",
+                "website": "https://www.premierevision.com/en",
+                "startDate": "2019-02-12",
+                "endDate": "2019-02-14",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 0,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 96,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/le-cuir-a-paris",
+                "logo": "https://c1.10times.com/event/5175/le-cuir-a-paris-5175-logo-125x100.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/7/3/8/13367738_1537880350.jpeg",
+                    "https://c1.10times.com/user/images/5/4/7/356547.jpg",
+                    "https://c1.10times.com/user/images/1/7/8/15379178.jpg"
+                ],
+                "stats": {
+                    "score": 3997,
+                    "rating": 4.2,
+                    "attends": 5,
+                    "follows": 152,
+                    "exhibitingLeads": 4,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 1900,
+                    "estimatedVisitors": 58000,
+                    "speakers": 0,
+                    "exhibitors": 2660,
+                    "media": 0,
+                    "firstLogin": "2015-01-14",
+                    "verifiedOn": null,
+                    "ratingCount": 5,
+                    "comments": 3
+                },
+                "location": {
+                    "cityId": 69308,
+                    "cityName": "Paris",
+                    "state": "ÃŽle-de-France",
+                    "cityUrl": "https://stg.10times.com/paris-fr",
+                    "cityBaseUrl": "https://stg.10times.com/paris-fr",
+                    "countryId": "FR",
+                    "countryName": "France",
+                    "countryUrl": "https://stg.10times.com/france",
+                    "countryBaseUrl": "https://stg.10times.com/france",
+                    "venueId": 5047,
+                    "venueName": "Parc des expositions Paris Nord Villepinte",
+                    "venueAddress": "ZAC Paris Nord 2, 93420 Villepinte",
+                    "venueUrl": "https://stg.10times.com/parc-des-expositions-france",
+                    "geoCordinates": "48.972348,2.516543"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1748,
+                        "modifiedBy": 49070,
+                        "created": "2018-02-28 05:45:35",
+                        "modified": null
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1748,
+                        "modifiedBy": 49070,
+                        "created": "2018-02-28 05:45:35",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 14345,
+                        "name": "Fabrics",
+                        "published": 1
+                    },
+                    {
+                        "id": 34241,
+                        "name": "Leather Products",
+                        "published": 1
+                    },
+                    {
+                        "id": 55761,
+                        "name": "Textile",
+                        "published": 1
+                    },
+                    {
+                        "id": 168905,
+                        "name": "Woven",
+                        "published": 1
+                    },
+                    {
+                        "id": 234756,
+                        "name": "Yarns",
+                        "published": 1
+                    },
+                    {
+                        "id": 268740,
+                        "name": "Denim",
+                        "published": 1
+                    },
+                    {
+                        "id": 599161,
+                        "name": "Knit Wear",
+                        "published": 1
+                    },
+                    {
+                        "id": 1363153,
+                        "name": "Embrodered Fabric",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 12649,
+                    "name": "Premiere Vision SA",
+                    "url": "https://stg.10times.com/company/premiere-vision-sa",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 542,
+                    "logo": null,
+                    "countryName": "France",
+                    "totalEvents": 9,
+                    "website": "http://www.premierevision.com/en/offices/"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 58816,
+                "name": "China International Agrochemical & Corp Protection Exhibition",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "East Asia",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "CAC",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 733855,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 7,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "World largest agrochemical trading platform.",
+                "tags": "China International Agrochemical Corp Protection Exhibition CAC Agriculture Forestry",
+                "originalDescription": "China International Agrochemical & Corp Protection Exhibition showcases products like Slow controlled-release fertilizer, Seaweed fertilizer, Humic acid fertilizer, Amino acid fertilizer, Microbial fertilizer, Micronutrient fertilizer, Fertilizer additive, Fertilizer packaging in the Agriculture & Forestry industry. CAC serves as world largest one-stop platform with the most active transactions for agrochemical trade, exchange and cooperation involved in pesticides, fertilizers, seeds, beyond-agriculture, production & packaging equipment, crop protection equipment, logistics, consultancy, laboratories and supportive services. It opens a window for Chinese agrochemical enterprises to march into the international market, and is the annual get-together for global agrochemical business performers.",
+                "description": "World largest agrochemical trading platform.",
+                "website": "http://agrochemshow.com/",
+                "startDate": "2019-03-05",
+                "endDate": "2019-03-07",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 0,
+                "repeatSentiment": 67,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 93,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/cac-shanghai",
+                "logo": "https://c1.10times.com/event/764a14136579d2c7638070ccb62a71f/1522294293416/58816.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/5/5/1/135551_1537460027.jpeg",
+                    "https://c1.10times.com/user/images/5/3/4/13482534_1537944629.jpeg",
+                    "https://c1.10times.com/user/images/1/9/7/13714197.png"
+                ],
+                "stats": {
+                    "score": 3942,
+                    "rating": 4.2,
+                    "attends": 12,
+                    "follows": 135,
+                    "exhibitingLeads": 7,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 1300,
+                    "estimatedVisitors": 33250,
+                    "speakers": 0,
+                    "exhibitors": 129,
+                    "media": 0,
+                    "firstLogin": "2014-07-10",
+                    "verifiedOn": null,
+                    "ratingCount": 22,
+                    "comments": 13
+                },
+                "location": {
+                    "cityId": 69091,
+                    "cityName": "Shanghai",
+                    "state": "Shanghai",
+                    "cityUrl": "https://stg.10times.com/shanghai-cn",
+                    "cityBaseUrl": "https://stg.10times.com/shanghai-cn",
+                    "countryId": "CN",
+                    "countryName": "China",
+                    "countryUrl": "https://stg.10times.com/china",
+                    "countryBaseUrl": "https://stg.10times.com/china",
+                    "venueId": 48,
+                    "venueName": "Shanghai New International Expo Centre(SNIEC)",
+                    "venueAddress": "2345 Longyang Rd ShiJi GongYuan Pudong Xinqu Shanghai Shi 201204",
+                    "venueUrl": "https://stg.10times.com/shanghai-new-international-expo-centresniec",
+                    "geoCordinates": "31.208904,121.564912"
+                },
+                "category": [
+                    {
+                        "id": 16,
+                        "name": "agriculture forestry",
+                        "shortName": "Agricultural",
+                        "icon": "fa-leaf",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/agriculture-forestry",
+                        "createdBy": 1487,
+                        "modifiedBy": 1758,
+                        "created": "2017-05-08 10:49:31",
+                        "modified": "2018-10-06 11:31:23"
+                    }
+                ],
+                "product": [],
+                "organizer": {
+                    "id": 4108,
+                    "name": "CCPIT Sub-Council OF Chemical Industry",
+                    "url": "https://stg.10times.com/company/ccpit-subcouncil-chemical-industry",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 701,
+                    "logo": "https://c1.10times.com/event/ccpit-subcouncil-chemical-industry/1535637945858/logo1531995667.jpg",
+                    "countryName": "China",
+                    "totalEvents": 7,
+                    "website": "http://ccpitchem.org.cn"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 3809,
+                "name": "Philconstruct",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Annual",
+                "eventZone": "SouthEast Asia",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "sdsf",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 6883767,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 13,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The Building Construction Material, Equipment and Sanitary ware Industry trade fair.",
+                "tags": "Philconstruct Construction Show Philippines Building Construction",
+                "originalDescription": "Philconstruct has been defining the landscape of building and construction in the country for over two decades and is the biggest construction show in the Philippines. The event will showcases products like building materials and components, construction equipment's and materials, building accessories, construction accessories, and essentials, interior design materials, exterior design products, building, and construction machinery and other related range of products etc.",
+                "description": "The Building Construction Material, Equipment and Sanitary ware Industry trade fair.",
+                "website": "http://www.glloballinkmp.com/#speakers",
+                "startDate": "2020-01-02",
+                "endDate": "2020-01-02",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": "0",
+                "repeatSentiment": 83,
+                "eventEstimatedSize": "50000-200000",
+                "internationalAudience": 11,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/philconstruct",
+                "logo": null,
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/8/1/3/13413813_1537880735.jpeg",
+                    "https://c1.10times.com/user/images/8/7/7/120877_1537468488.jpeg",
+                    "https://c1.10times.com/user/images/6/4/5/122645_1537471469.jpeg"
+                ],
+                "stats": {
+                    "score": 3790,
+                    "rating": 4.3,
+                    "attends": 0,
+                    "follows": 535,
+                    "exhibitingLeads": 11,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 800,
+                    "estimatedVisitors": 80012,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": "2015-01-13",
+                    "verifiedOn": null,
+                    "ratingCount": 111,
+                    "comments": 58
+                },
+                "location": {
+                    "cityId": 74369,
+                    "cityName": "Pasay",
+                    "state": "Metro Manila",
+                    "cityUrl": "https://stg.10times.com/pasay-ph",
+                    "cityBaseUrl": "https://stg.10times.com/pasay-ph",
+                    "countryId": "PH",
+                    "countryName": "Philippines",
+                    "countryUrl": "https://stg.10times.com/philippines",
+                    "countryBaseUrl": "https://stg.10times.com/philippines",
+                    "venueId": 647,
+                    "venueName": "SMX Convention Center",
+                    "venueAddress": "Seashell Ln Pasay 1300 Metro Manila",
+                    "venueUrl": "https://stg.10times.com/smx-convention-center",
+                    "geoCordinates": "14.532046,120.981573"
+                },
+                "category": [
+                    {
+                        "id": 7,
+                        "name": "Build, Buildings & Construction",
+                        "shortName": "Infrastructure",
+                        "icon": "fa-building",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/building-construction",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/building-construction",
+                        "createdBy": 1487,
+                        "modifiedBy": 1739,
+                        "created": "2018-02-03 09:00:03",
+                        "modified": "2020-07-08 11:52:37"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 20760,
+                        "name": "Floor Coverings",
+                        "published": 1
+                    },
+                    {
+                        "id": 33991,
+                        "name": "Building",
+                        "published": 1
+                    },
+                    {
+                        "id": 37592,
+                        "name": "Construction",
+                        "published": 1
+                    },
+                    {
+                        "id": 330248,
+                        "name": "Building Accessories",
+                        "published": 1
+                    },
+                    {
+                        "id": 580738,
+                        "name": "Cables & Wires",
+                        "published": 0
+                    },
+                    {
+                        "id": 1355772,
+                        "name": "Interior Design Materials",
+                        "published": 1
+                    },
+                    {
+                        "id": 1355773,
+                        "name": "Concrete Summit",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 724,
+                    "name": "Global-Link MP Events International Inc.",
+                    "url": "https://stg.10times.com/company/global-link",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 1766,
+                    "logo": "https://c1.10times.com/company/0/724/logo.jpg",
+                    "countryName": "Philippines",
+                    "totalEvents": 25,
+                    "website": "https://www.globallinkmp.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": "Admin - 10times",
+                "checkDate": "2021-08-17",
+                "opportunityScore": null
+            },
+            {
+                "id": 42998,
+                "name": "Canadian National Exhibition",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Annual",
+                "eventZone": "North America",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "CNE",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 726571,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": 10,
+                "totalEdition": 8,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The Greenest Fun Fair in North America",
+                "tags": "Canadian National Exhibition CNE Travel Tourism",
+                "originalDescription": "Canadian National Exhibition offers an amazing base to interact, entertain and have fun by taking a midway ride and participating in games and shows. Canadian National Exhibition being a popular event has also received the Eco-Logo certificate which declares it to be the greenest fair in the north of America. This event highlights the idea of green living to the masses.",
+                "description": "The Greenest Fun Fair in North America",
+                "website": "https://theex.com/main/getting-here/driving",
+                "startDate": "2019-08-16",
+                "endDate": "2019-09-02",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 0,
+                "repeatSentiment": 100,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 90,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/canadian-national-exhibition",
+                "logo": "https://c1.10times.com/event/ub088a468d089415e7fdb205e2a478cc/1523935853805/42998.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/0/4/4/13420044.jpg",
+                    "https://c1.10times.com/user/images/4/4/3/16299443.jpg",
+                    "https://c1.10times.com/user/images/4/3/6/400436_1537522453.jpeg"
+                ],
+                "stats": {
+                    "score": 3773,
+                    "rating": 3.8,
+                    "attends": 6,
+                    "follows": 136,
+                    "exhibitingLeads": 34,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 700,
+                    "estimatedVisitors": 3500,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": "2014-11-24",
+                    "verifiedOn": null,
+                    "ratingCount": 5,
+                    "comments": 3
+                },
+                "location": {
+                    "cityId": 69000,
+                    "cityName": "Toronto",
+                    "state": "Ontario",
+                    "cityUrl": null,
+                    "cityBaseUrl": "https://stg.10times.com/toronto-ca",
+                    "countryId": "CA",
+                    "countryName": "Canada",
+                    "countryUrl": "https://stg.10times.com/canada",
+                    "countryBaseUrl": "https://stg.10times.com/canada",
+                    "venueId": 15575,
+                    "venueName": "Exhibition Place",
+                    "venueAddress": "100 Princes' Blvd, Toronto, ON M6K 3C3",
+                    "venueUrl": "https://stg.10times.com/exhibition-place",
+                    "geoCordinates": "43.634963,-79.412686"
+                },
+                "category": [
+                    {
+                        "id": 50,
+                        "name": "Travel & Tourism",
+                        "shortName": "Travel",
+                        "icon": "fa-plane",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/travel-tourism",
+                        "createdBy": 1748,
+                        "modifiedBy": 15421,
+                        "created": "2017-09-06 07:33:33",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 38156,
+                        "name": "Games",
+                        "published": 1
+                    },
+                    {
+                        "id": 151713,
+                        "name": "Entertainment",
+                        "published": 1
+                    },
+                    {
+                        "id": 836215,
+                        "name": "Rides",
+                        "published": 1
+                    },
+                    {
+                        "id": 1368382,
+                        "name": "Animals Ride",
+                        "published": 1
+                    },
+                    {
+                        "id": 1368383,
+                        "name": "Parades & Sports",
+                        "published": 1
+                    },
+                    {
+                        "id": 1368384,
+                        "name": "Farm Animals",
+                        "published": 1
+                    },
+                    {
+                        "id": 1368385,
+                        "name": "Park Entertainer",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 12149,
+                    "name": "Canadian National Exhibition",
+                    "url": "https://stg.10times.com/company/canadian-national-exhibition-canada",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 149,
+                    "logo": null,
+                    "countryName": "Canada",
+                    "totalEvents": 1,
+                    "website": "http://www.theex.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 10039,
+                "name": "Construct Canada",
+                "zhName": null,
+                "verified": null,
+                "frequency": null,
+                "eventZone": "North America",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "Construct Canada",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 761754,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 12,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "International Canada's Largest Building Design and Construction Show",
+                "tags": "Construct Canada Construct Canada Furniture Household Consumables Furnishings Decor Building Construction Architecture Designing Real Estate Property",
+                "originalDescription": "Construct Canada will leave you with the tools needed to sharpen your skills and continue your professional development. North America's largest annual exposition, networking and educational event for design, architecture, construction and real estate.",
+                "description": "International Canada's Largest Building Design and Construction Show",
+                "website": "https://www.thebuildingsshow.com/en/home.html",
+                "startDate": "2019-12-04",
+                "endDate": "2019-12-06",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": null,
+                "reputationSentiment": null,
+                "repeatSentiment": null,
+                "eventEstimatedSize": null,
+                "internationalAudience": null,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/construct-canada",
+                "logo": "https://c1.10times.com/event/je50407c3c39f01d35d889392b003c9e/1522899132093/10039.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/abc/images/9/3/5/14165935_1542695433.jpeg",
+                    "https://c1.10times.com/user/images/3/6/7/13664367.jpg",
+                    "https://c1.10times.com/user/images/3/6/4/95364.jpg"
+                ],
+                "stats": {
+                    "score": 3443,
+                    "rating": 3.9,
+                    "attends": 0,
+                    "follows": 181,
+                    "exhibitingLeads": 1,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 1600,
+                    "estimatedVisitors": 30500,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": "2014-08-11",
+                    "verifiedOn": null,
+                    "ratingCount": 7,
+                    "comments": 2
+                },
+                "location": {
+                    "cityId": 68999,
+                    "cityName": "Montreal",
+                    "state": "QuÃ©bec",
+                    "cityUrl": null,
+                    "cityBaseUrl": "https://stg.10times.com/montreal-ca",
+                    "countryId": "CA",
+                    "countryName": "Canada",
+                    "countryUrl": "https://stg.10times.com/canada",
+                    "countryBaseUrl": "https://stg.10times.com/canada",
+                    "venueId": 28,
+                    "venueName": "Metro Toronto Convention Centre",
+                    "venueAddress": "222 Bremner Blvd Toronto ON M5V 3L9",
+                    "venueUrl": "https://stg.10times.com/direct-energy-centre-exhibition-place",
+                    "geoCordinates": "43.634910,-79.412706"
+                },
+                "category": [
+                    {
+                        "id": 7,
+                        "name": "Build, Buildings & Construction",
+                        "shortName": "Infrastructure",
+                        "icon": "fa-building",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/building-construction",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/building-construction",
+                        "createdBy": 1748,
+                        "modifiedBy": 1758,
+                        "created": "2017-12-18 11:01:01",
+                        "modified": "2018-12-15 12:57:44"
+                    },
+                    {
+                        "id": 46,
+                        "name": "Furnishings & Decor",
+                        "shortName": "Home Decor",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/home-textiles",
+                        "createdBy": 17148502,
+                        "modifiedBy": 1758,
+                        "created": "2018-03-09 02:18:47",
+                        "modified": "2018-12-15 12:57:44"
+                    },
+                    {
+                        "id": 56,
+                        "name": "Architecture & Designing",
+                        "shortName": "Architecture",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/architecture",
+                        "createdBy": null,
+                        "modifiedBy": 1758,
+                        "created": "2018-04-30 11:37:40",
+                        "modified": "2018-12-15 12:57:44"
+                    },
+                    {
+                        "id": 58,
+                        "name": "Real Estate & Property",
+                        "shortName": "Real Estate",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/real-estate",
+                        "createdBy": null,
+                        "modifiedBy": 1758,
+                        "created": "2018-04-30 11:38:11",
+                        "modified": "2018-12-15 12:57:44"
+                    },
+                    {
+                        "id": 74,
+                        "name": "Household Consumables",
+                        "shortName": "Home Services",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/home-supplies",
+                        "createdBy": null,
+                        "modifiedBy": 1758,
+                        "created": "2018-04-30 11:39:27",
+                        "modified": "2018-12-15 12:57:44"
+                    },
+                    {
+                        "id": 93,
+                        "name": "Furniture",
+                        "shortName": "Furniture",
+                        "icon": "fa-circle",
+                        "isGroup": 0,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/furniture-shows",
+                        "createdBy": null,
+                        "modifiedBy": 1758,
+                        "created": "2018-04-30 11:40:45",
+                        "modified": "2018-12-15 12:57:44"
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 17624,
+                        "name": "Furniture",
+                        "published": 1
+                    },
+                    {
+                        "id": 37592,
+                        "name": "Construction",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342626,
+                        "name": "Furnishings & Decor",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342627,
+                        "name": "Architecture & Designing",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342628,
+                        "name": "Real Estate & Property",
+                        "published": 1
+                    },
+                    {
+                        "id": 1342630,
+                        "name": "Household Consumables",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 1103928,
+                    "name": "Informa Canada",
+                    "url": "https://stg.10times.com/company/informa-exhibition",
+                    "published": 0,
+                    "promotionType": 0,
+                    "totalLeads": 647,
+                    "logo": null,
+                    "countryName": "Canada",
+                    "totalEvents": 11,
+                    "website": "https://www.informaexhibitions.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            },
+            {
+                "id": 7045,
+                "name": "SOURCING AT MAGIC",
+                "zhName": null,
+                "verified": null,
+                "frequency": "Bi-annual",
+                "eventZone": "North America",
+                "verifiedby": null,
+                "createdby": "1",
+                "functionality": "open",
+                "shortName": "",
+                "subEventType": null,
+                "multiCity": 0,
+                "customFlag": null,
+                "webcasturl": 0,
+                "edition": 718546,
+                "brandId": null,
+                "multipleLocation": null,
+                "editionNumber": null,
+                "totalEdition": 23,
+                "type": "Tradeshow",
+                "typeNew": [
+                    "Tradeshow"
+                ],
+                "punchLine": "The Apparel, Garments Clothing & Accessories Industry Trade Show",
+                "tags": "SOURCING MAGIC Apparel Clothing Fashion Beauty",
+                "originalDescription": "SOURCING AT MAGIC is your link to the entire global supply chain. This incredible source of inspiration, education, innovation, and resources is what keeps fashion moving. With over 40 countries represented, this must-see destination attracts designers, brands and retailers alike to discover what they need to move their business forward.",
+                "description": "The Apparel, Garments Clothing & Accessories Industry Trade Show",
+                "website": "http://www.ubmfashion.com/shows/sourcing-magic?tag=cl_x_x_le_x_fasmag1_x_x-10times-KII",
+                "startDate": "2019-02-04",
+                "endDate": "2019-02-07",
+                "status": "Active",
+                "published": 1,
+                "badgeEnabled": 0,
+                "promotionType": 0,
+                "pricing": "not_available",
+                "yoyGrowth": 10,
+                "reputationSentiment": 0,
+                "repeatSentiment": 67,
+                "eventEstimatedSize": "20000-50000",
+                "internationalAudience": 58,
+                "paymentMethod": null,
+                "url": "https://stg.10times.com/sourcing-at-magic",
+                "logo": "https://c1.10times.com/event/d2830b0b324aba85a5be4199b4d2773/1522294302212/7045.jpg",
+                "smallWrapper": null,
+                "wrapper2By1": null,
+                "hybrid": null,
+                "onlineEvent": null,
+                "followerPic": [
+                    "https://c1.10times.com/user/images/8/7/3/13789873.jpeg",
+                    "https://c1.10times.com/user/images/7/5/3/13707753.jpeg",
+                    "https://c1.10times.com/user/images/9/4/7/91947_1537459483.jpeg"
+                ],
+                "stats": {
+                    "score": 3365,
+                    "rating": 4.1,
+                    "attends": 19,
+                    "follows": 242,
+                    "exhibitingLeads": 11,
+                    "sponsoringLeads": 0,
+                    "speakingLeads": 0,
+                    "estimatedExhibitors": 450,
+                    "estimatedVisitors": 7000,
+                    "speakers": 0,
+                    "exhibitors": 0,
+                    "media": 0,
+                    "firstLogin": "2022-03-16",
+                    "verifiedOn": null,
+                    "ratingCount": 17,
+                    "comments": 9
+                },
+                "location": {
+                    "cityId": 70824,
+                    "cityName": "Las Vegas",
+                    "state": "Nevada",
+                    "cityUrl": "https://stg.10times.com/lasvegas-us",
+                    "cityBaseUrl": "https://stg.10times.com/lasvegas-us",
+                    "countryId": "US",
+                    "countryName": "USA",
+                    "countryUrl": "https://stg.10times.com/usa",
+                    "countryBaseUrl": "https://stg.10times.com/usa",
+                    "venueId": 4550,
+                    "venueName": "Las Vegas Convention Center",
+                    "venueAddress": "3150 Paradise Rd Las Vegas NV 89109",
+                    "venueUrl": "https://stg.10times.com/las-vegas-convention-center",
+                    "geoCordinates": "26.846694,80.946166"
+                },
+                "category": [
+                    {
+                        "id": 3,
+                        "name": "Apparel & Clothing",
+                        "shortName": "Apparel & Garments",
+                        "icon": "fa-shopping-bag",
+                        "isGroup": 1,
+                        "url": null,
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/apparel-fashion",
+                        "createdBy": 1,
+                        "modifiedBy": 16218206,
+                        "created": "2018-02-28 08:14:13",
+                        "modified": null
+                    },
+                    {
+                        "id": 107,
+                        "name": "Fashion & Beauty",
+                        "shortName": "Fashion & Lifestyle",
+                        "icon": "fa-circle",
+                        "isGroup": 1,
+                        "url": "https://stg.10times.com/fashion-accessories",
+                        "published": 1,
+                        "baseUrl": "https://stg.10times.com/fashion-accessories",
+                        "createdBy": 1,
+                        "modifiedBy": 16218206,
+                        "created": "2018-02-28 08:14:13",
+                        "modified": null
+                    }
+                ],
+                "product": [
+                    {
+                        "id": 513056,
+                        "name": "testing product",
+                        "published": 0
+                    },
+                    {
+                        "id": 354036,
+                        "name": "Fashion Shows",
+                        "published": 0
+                    },
+                    {
+                        "id": 38777,
+                        "name": "fashion accessories",
+                        "published": 1
+                    },
+                    {
+                        "id": 44344,
+                        "name": "footwears",
+                        "published": 1
+                    },
+                    {
+                        "id": 56041,
+                        "name": "Hair Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 120073,
+                        "name": "Nail Care",
+                        "published": 1
+                    },
+                    {
+                        "id": 234762,
+                        "name": "Apparels",
+                        "published": 1
+                    },
+                    {
+                        "id": 268740,
+                        "name": "Denim",
+                        "published": 0
+                    },
+                    {
+                        "id": 391461,
+                        "name": "Denims Jeans",
+                        "published": 1
+                    },
+                    {
+                        "id": 1354112,
+                        "name": "Fabric",
+                        "published": 1
+                    },
+                    {
+                        "id": 1362869,
+                        "name": "Fashion Product",
+                        "published": 1
+                    }
+                ],
+                "organizer": {
+                    "id": 916231,
+                    "name": "UBM Fashion Inc.",
+                    "url": "https://stg.10times.com/company/ubm-fashion-inc",
+                    "published": 0,
+                    "promotionType": 3,
+                    "totalLeads": 3598,
+                    "logo": null,
+                    "countryName": "United States",
+                    "totalEvents": 25,
+                    "website": "http://www.ubmfashion.com"
+                },
+                "settings": [
+                    {
+                        "rsvpFol": 0,
+                        "rsvpInt": 0,
+                        "rsvpExh": 0,
+                        "rsvpSpk": 0,
+                        "rsvpSpo": 0,
+                        "eappLogin": 0,
+                        "eappExh": 0,
+                        "eappSpk": 0,
+                        "eappSpo": 0,
+                        "esiteInt": 0,
+                        "esiteExh": 0,
+                        "esiteSpk": 0,
+                        "esiteSpo": 0
+                    }
+                ],
+                "checkBy": null,
+                "checkDate": null,
+                "opportunityScore": null
+            }
+        ],
+        "stats": {
+            "totalEvents": 17411,
+            "zeroResultData": 0,
+            "isFromHub": 0
+        }
+    }
+}

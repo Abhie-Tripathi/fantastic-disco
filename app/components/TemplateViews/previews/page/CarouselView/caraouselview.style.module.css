@@ -1,0 +1,46 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.innerSlider {
+  display: flex;
+  flex-shrink: 0;
+  transition: transform 0.5s ease-in-out;
+}
+
+  .banner {
+    /* flex: 0 0 200px;
+    box-sizing: border-box; */
+    padding: 12px;
+  }
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 50px;
+  filter: drop-shadow(1px 1px 3px rgb(83, 83, 83));
+  font-size: 20px;
+  color: black;
+}
+.navButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.navButton:first-of-type {
+  left: 0;
+}
+
+.navButton:last-of-type {
+  right: 0;
+}

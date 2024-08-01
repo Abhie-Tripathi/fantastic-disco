@@ -1,0 +1,560 @@
+.container {
+    padding: 20px;
+    width: 100%;
+    margin-top: 80px;
+}
+.container_light{
+    color: black;
+}
+.gradient_border {
+    position: relative;
+    padding-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.gradient_border::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(to right, #6750A4, #666666);
+}
+
+.downloadText {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 5px;
+}
+
+.firstContainer {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #16131E;
+    border: 1px solid #1F1F1F;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+}
+.firstContainer_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
+.billingUsage_container {
+    padding: 10px;
+}
+
+.divider {
+    border-left: 1px solid #666666;
+    height: 100px;
+    width: 1px;
+}
+
+.second_divider {
+    border-left: 1px solid #666666;
+    height: 20px;
+    width: 1px;
+}
+
+.basic_container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.basic_container_content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.statusBtn {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    background-color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 19px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+    outline: 0.47px solid transparent;
+}
+
+.activeFlag {
+    background-color: #19922C;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #0E9B1C;
+}
+
+.inactiveFlag {
+    background-color: #d83147;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.inactiveStatus {
+    font-size: 13.25px;
+    font-weight: 400;
+    line-height: 19.87px;
+    text-align: left;
+    color: #d83147;
+}
+
+.userSection {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+}
+
+.userContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px 5px 10px;
+    border-radius: 20px;
+    background-color: #1A1A1A;
+    gap: 5px;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+}
+
+
+.includeText {
+    color: #ACACAC;
+    font-size: 16px;
+    font-weight: 400;
+}
+.includeText_light{
+    color: #57606A;
+}
+.billing_number {
+    font-size: 14px;
+    padding-left: 8px;
+    padding-right: 3px;
+}
+
+.userText {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.masterCard_sec {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.masterCard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    /* color: #D9D9D9; */
+}
+
+.planContainer {
+    padding: 10px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.upgradeIcn {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 20px;
+    padding: 8px 10px 8px 10px;
+    background-color: #1A1A1A;
+    box-shadow: 0 0 0 0.47px inset #6750A4, 0 0 0 0.47px inset #666666;
+}
+.upgradeIcn_light{
+    background-color: var(--secondary-bg-light);
+}
+.dollar {
+    font-size: 25px;
+    font-size: 700;
+    /* color: #FFFFFF; */
+}
+
+.dollarText {
+    color: #ACACAC;
+    font-size: 16px;
+    font-weight: 500;
+}
+.dollarText_light{
+    color: gray;
+}
+.planContainerItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.icon_background {
+    background-color: #2B233D;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+
+}
+
+.secondContainer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #1F1F1F;
+    border-radius: 15px;
+}
+
+.secondText {
+    color: #CDCDCD;
+}
+
+.currentPlan_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.usagePolicy {
+    color: #B8B7EA;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.tracker_container {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.trackerCard {
+    padding: 20px;
+    border-radius: 25px;
+    border: 1px solid #1F1F1F;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.tracker {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: #1A1A1A;
+    border: 1px solid #B8B7EA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.outerTracker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #B8B7EA;
+    background-color: #A48BE6;
+}
+
+.trackerCard_content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tracker_text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.bottomLine {
+    border: 0.5px solid #3A3152;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.unlock_container {
+    margin-top: 20px;
+    background-color: #1C1C1C;
+    border: 1.25px solid #1F1F1F;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.unlock_container_light{
+    background-color: white;
+}
+.bellIcon_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.thirdDiv {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.accountManagemantCard {
+    padding: 20px;
+    border: 1px solid #1F1F1F;
+    border-radius: 15px;
+
+}
+
+.billing_container {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.billing_text {
+    color: #CDCDCD;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.changeText {
+    color: #B8B7EA;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+}
+
+.innerCard {
+    margin-top: 20px;
+    background-color: #1D1926;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.inner_card_content {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    gap: 230px;
+}
+
+.username_container {
+    display: flex;
+    gap: 10px;
+}
+
+.username {
+    color: #8C8EA4;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.imageDiv {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile {
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.superAdminCard {
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid grey;
+}
+
+.cardInformation_container {
+    margin-top: 20px;
+}
+
+.cardInformation_text {
+    color: #FFFFFF;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.right_container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tracker_icons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightSideContnet {
+    display: flex;
+    gap: 50px;
+}
+
+.tracker_sec {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    border-bottom: 0.5px solid #666666;
+
+}
+
+.tracker_text {
+    color: #AC8DFF;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.number {
+    font-size: 20;
+    font-weight: 700;
+    color: #D9D9D9;
+}
+
+
+.fourthDiv {
+    margin-top: 20px;
+}
+
+.pricingCard_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.cardUpper_sec {
+    margin-top: 20px;
+    background-color: #1F1F1F;
+    padding: 20px;
+    border-radius: 10px 10px 0px 0px;
+}
+.cardUpper_sec_light{
+    background: linear-gradient(to right, #6750A43D 5%, #7074783D 100%);
+}
+.cardLower_sec {
+    background-color: #1A1A1A;
+    padding: 20px;
+}
+.cardLower_sec_light{
+    background-color: var(--secondary-bg-light);
+}
+.upper_sec_content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+.planButton_container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #6750A4;
+    border-radius: 10px;
+
+    color: #AC8DFF;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.basicText {
+    /* color: #D8D8D8; */
+    font-size: 24px;
+    font-weight: 600;
+
+}
+
+.desc {
+    /* color: #D9D9D9; */
+    font-size: 13px;
+    font-weight: 400;
+
+}
+
+.price {
+    /* color: #D5D4D4; */
+    font-size: 48px;
+    font-weight: 400;
+}
+
+.monthy_price {
+    /* color: #D9D9D9; */
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.lowerCardText {
+    padding: 10px;
+    color: #57606A;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.card_texts {
+    padding-bottom: 20px;
+}
+@media screen and (max-width: 1730px) {
+    .upgradeIcn{
+        font-size:12px;
+        text-wrap: nowrap;
+    }
+    .userText{
+        font-size: 12px;
+    }
+    .number{
+        font-size: 12px;
+    }
+    .includeText{
+        font-size: 12px;
+    }
+    .masterCard{
+        font-size: 14px;
+    }
+}

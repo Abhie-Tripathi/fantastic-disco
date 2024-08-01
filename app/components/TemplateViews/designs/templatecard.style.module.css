@@ -1,0 +1,78 @@
+.hiddenCard{
+    display: none;
+}
+.card{
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: 10px;
+    height: 320px;
+    width: 200px;
+    filter: drop-shadow(1px 1px 5px rgb(63, 63, 63));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgb(94, 94, 94);
+}
+.placeHolder{
+    border-radius: 5px;
+    width: 100%;
+    min-height: 235px;
+    background-color: white;
+    position: relative;
+}
+.cardHeading{
+    color: white;
+}
+.cardDesc{
+    font-size: 12px;
+    color: rgb(210, 209, 209);
+}
+.placeHolder .btnContainer{
+    display: none;
+}
+.placeHolder:hover .btnContainer {
+    position: absolute;
+    background-color: rgba(128, 128, 128, 0.564);
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.placeHolder .activeCard{
+    position: absolute;
+    background-color: rgba(128, 128, 128, 0.564);
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.placeHolder .btnContainer .previewBtn {
+    color: white;
+    padding: 5px 10px;
+    width: fit-content;
+    background-color: #6750A4;
+    border-radius: 5px;
+    z-index: 1;
+    cursor: pointer;
+}
+.placeHolder .btnContainer .editBtn {
+    color: white;
+    padding: 5px 10px;
+    width: fit-content;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    z-index: 1;
+    cursor: pointer;
+}

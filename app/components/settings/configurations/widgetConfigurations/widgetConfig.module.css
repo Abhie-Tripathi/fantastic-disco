@@ -1,0 +1,169 @@
+.container {
+    padding: 20px;
+    margin-top: 80px;
+    width: 100%;
+}
+
+.gradient_border {
+    position: relative;
+    padding-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.gradient_border::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(to right, #6750A4, #666666);
+}
+
+.textContainer {
+    margin-top: 40px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.wigitCard_container {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.outreachPanelSec {
+    margin-top: 20px;
+}
+
+.subText {
+    margin-top: 40px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.outreachCard_container {
+    margin-top: 40px;
+    display: flex;
+    position: relative;
+    overflow-x: auto;
+}
+
+.outreachCard {
+    padding: 16px;
+    border-radius: 6px;
+    /* background-color: #1A1A1A; */
+    height: 350px;
+    width: 250px;
+    margin-left: 10px;
+    margin-right: 10px;
+    position: relative;
+}
+
+
+.cardbackgroundColor {
+    background-color: #1A1A1A;
+
+}
+
+.cardTopSec {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* position: relative; */
+}
+
+.cards_borderBottom {
+    position: absolute;
+    top: 30%;
+    border: 0.5px solid #342854;
+    width: 100vw;
+}
+
+.inner_sec {
+    margin-right: auto;
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 500;
+
+}
+
+.innerText {
+    margin-top: 20px;
+    font-size: 12px;
+
+}
+
+.addBtnContainer {
+    background-color: #342854;
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUp {
+    position: absolute;
+    background-color: #2A2A2A;
+    left: 50%;
+    right: 0;
+    padding: 10px;
+    border-radius: 6px;
+    color: #B8B8B8;
+    font-size: 12px;
+}
+
+.popUpContent{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+
+
+.editPopUp {
+    position: absolute;
+    background-color:#2A2A2A;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    border-radius: 6px;
+    color: #B8B8B8;
+    font-size: 12px;
+    z-index: 12;
+}
+
+.btn_container{
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.btn{
+    padding: 3px 5px 3px 5px;
+    border-radius: 5px;
+    border: 1px solid #6750A4;  
+    cursor: pointer; 
+}
+
+
+.inputBox {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #2A2A2A;
+  }
+
+  .inputBox:focus {
+    outline: none;
+  }
+  
+  .blur{
+    filter: blur(2px);
+}

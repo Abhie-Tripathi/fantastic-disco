@@ -1,0 +1,119 @@
+.container {
+  filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+  gap: 20px;
+  width: 644px;
+  z-index: 1;
+  background-color: var(--primary-foreground);
+  border-top: none;
+  border-radius: var(--border-radius-sm);;
+  color: inherit;
+  padding: 10px 0;
+  /* max-height: 350px;
+  overflow-y: auto; */
+}
+.header {
+  display: flex;
+  padding: 15px 20px;
+  align-items: center;
+}
+
+.header_title {
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  line-height: 1.1428571429;
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+
+.header_button {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  line-height: 1.8181818182;
+  letter-spacing: 0.1em;
+  font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.input_container {
+  /* margin-top: 20px; */
+  padding: 0 15px;
+  border: 1px solid var(--input-border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* background-color: #1a1a1a; */
+  border-radius: var(--border-radius-sm);
+}
+
+.location_input {
+  width: 100%;
+  font-family: inherit;
+  line-height: 42px;
+  font-size: var(--font-size-large);
+  outline: none;
+  border: none;
+  color: inherit;
+  background: transparent;
+}
+
+.radio_button {
+  align-self: flex-start;
+  width: 20px;
+  height: 20px;
+}
+
+.location_search_input {
+  padding: 0 20px;
+}
+
+.closeIcon {
+  cursor: pointer;
+}
+
+.resultData_list{
+  padding: 10px;
+  /* background-color: var(--heading-background-color);
+  margin-bottom: 6px; */
+  cursor: pointer;
+}
+
+.resultData_list:hover {
+  background-color: var(--heading-background-color);
+}
+
+/* .resultData_list_light {
+  background-color: #F7F7F9;
+} */
+
+.keywords_container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px;
+ }
+ 
+ .keyword_chip {
+  padding: 4px 12px;
+  font-size: var(--font-size-default);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  color: var(--primary-color);
+  font-weight: var(--font-weight-medium);
+ }
+ 
+ .closeChip {
+  cursor: pointer;
+ }
+
+ .suggestion_container {
+  max-height: 35vh;
+  overflow-y: auto;
+  padding: 10px;
+ }
+ 

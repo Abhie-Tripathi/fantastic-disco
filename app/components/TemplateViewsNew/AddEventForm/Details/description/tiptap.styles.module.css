@@ -1,0 +1,9 @@
+.body{
+    display: flex;
+    flex-direction: column;
+}
+.btns{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

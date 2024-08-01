@@ -1,28 +1,28 @@
 .navbar{
     display: flex;
     justify-content: space-between;
-    background-color: #1A1A1A;
+    /* background-color: #efecec; */
     padding: 18px;
     margin-bottom: 65px;
     width: 100%;
+    /* color: #ffffff; */
 }
 .navbar .heading{
     display: flex;
     align-items: center;
     font-size: 24px;
     font-weight: 700;
-    color: white;
 }
 .navbar .heading img{
     margin-right: 5px;
 }
 
 .navbar .btns{
-    color: white;
+    /* color: white; */
     display: flex;
     align-items: center;
 }
-.navbar .btns .calendar{
+/* .navbar .btns .calendar{
     border: 1px solid #808081;
     border-radius: 12px;
     padding: 5px 24px;
@@ -32,7 +32,7 @@
 .navbar .btns .calendar:hover{
     transition-duration: .2s;
     background-color: #808081;
-}
+} */
 .navbar .btns .settings{
     margin-right: 12px;
 }
@@ -41,6 +41,7 @@
     border-radius: 12px;
     padding: 5px 24px;
     margin-right: 12px;
+    display: flex;
 }
 .navbar .btns .add{
     border-radius: 12px;
@@ -49,7 +50,44 @@
     align-items: center;
     background-color: #6750A4;
     cursor: pointer;
+    color: white;
 }
 .navbar .btns .add img{
     margin-right: 10px;
+}
+
+.light{
+    color: var(--primary-color-light);
+    background-color: var(--secondary-bg-light);
+}
+
+@media screen and (max-width: 768px) {
+    .navbar .heading{
+        font-size: 14px;
+    }
+    .navbar .heading img{
+        font-size: 14px;
+    }
+    .navbar .btns .add{
+        font-size: 8px;
+        padding: 4px 14px;
+        border-radius: 7px;
+    }
+    .navbar .btns .sort{
+        border-radius: 4px;
+        padding: 2px 3px;
+    }
+    .navbar .btns .add img{
+        width: 7px;
+        height: 7px;
+    }
+    .navbar .btns .sort img{
+        width: 12px;
+        height: 12px;
+    }
+    .navbar{
+        margin-bottom: 20px;
+        width: 100vw;
+    }
+
 }

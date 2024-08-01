@@ -1,0 +1,14 @@
+.container{
+    height: calc(100vh - 212px);
+    width: 70%;
+
+}
+.outerContainer{
+    display: flex;
+    gap:20px;
+    width: 100%;
+}
+.innerLeft{
+    display: flex;
+    width: 30%;
+  }

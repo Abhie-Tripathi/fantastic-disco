@@ -1,0 +1,10 @@
+.container{
+    padding-top: 80px;
+    padding-left: 80px;
+    
+    /* background-color: white; */
+}
+
+.container_light{
+    background-color: white;
+}

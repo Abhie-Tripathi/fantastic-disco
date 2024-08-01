@@ -1,0 +1,7 @@
+.shareIconContainer{
+    display: flex;
+    gap: 20px;
+}
+.copyContainer{
+    cursor: pointer;
+}

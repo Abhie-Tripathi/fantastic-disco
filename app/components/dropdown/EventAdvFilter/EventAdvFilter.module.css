@@ -1,0 +1,28 @@
+.container {
+  width: var(--trigger-width);
+  filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
+  height: fit-content;
+  background-color: var(--primary-foreground);
+  color: inherit;
+  padding: 15px;
+  overflow: scroll;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.list {
+  padding: 14px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.list li {
+  list-style: none;
+  font-size: var(--font-size-default);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

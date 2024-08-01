@@ -4,6 +4,8 @@ import YourEventCard from './YourEventCard'
 import TimelineItem from './TimelineItem'
 import DropDown from './DropdownRef'
 import eventData from '../../../../public/data/demoEvent.json'
+import { useTheme } from '@/context'
+import EventTypeDropdown from './EventTypeDropdown'
 
 const ListView = () => {
     const [selectedRole, setSelectedRole] = useState("sponsoring")
@@ -11,6 +13,7 @@ const ListView = () => {
     const [teamSelection, setTeamSelection] = useState('All Events')
     // Sponsoring/Exhibiting/Speaking/Attending
     const personalize = DropDown();
+    const {theme} = useTheme();
 
 
     let prevDate: any = null;
@@ -48,17 +51,22 @@ const ListView = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.buttons}>
+            <div className={`${styles.buttons} ${theme === 'light' ? styles.buttons_light : ""}`}>
                 <div className={styles.filterBtns}>
                     <button onClick={() => handleFilter("Sponsoring")} className={`${selectedRoles.includes("Sponsoring") ? styles.activeFilterBtn : ''}`}>Sponsoring</button>
                     <button onClick={() => handleFilter("Exhibiting")} className={`${selectedRoles.includes("Exhibiting") ? styles.activeFilterBtn : ''}`}>Exhibiting</button>
                     <button onClick={() => handleFilter("Speaking")} className={` ${selectedRoles.includes('Speaking') ? styles.activeFilterBtn : ''}`}>Speaking</button>
                     <button onClick={() => handleFilter("Attending")} className={` ${selectedRoles.includes('Attending') ? styles.activeFilterBtn : ''}`}>Attending</button>
                 </div>
-                <div className={styles.eventsBtns}>
-                    <button onClick={() => selectedTeam('All ./YourEventCardEvents')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
-                    <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
-                    <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
+                <div className='desktop_view' >
+                    <div className={styles.eventsBtns}>
+                        <button onClick={() => selectedTeam('All Events')} className={teamSelection === "All Events" ? styles.activeTeamBtn : ""}>All Events</button>
+                        <button onClick={() => selectedTeam('Team Events')} className={teamSelection === "Team Events" ? styles.activeTeamBtn : ""}>Team Events</button>
+                        <button onClick={() => selectedTeam('My Events')} className={teamSelection === "My Events" ? styles.activeTeamBtn : ""}>My Events</button>
+                    </div>
+                </div>
+                <div className='mobile_view tablet_view' >
+                    <EventTypeDropdown label='Event Type' eventId={123} />
                 </div>
             </div>
 

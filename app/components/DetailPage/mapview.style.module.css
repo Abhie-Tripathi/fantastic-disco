@@ -1,0 +1,17 @@
+.heading{
+    font-weight: 700;
+    color: #A1A1A1;
+    font-size: 14px;
+}
+.line{
+    margin-top: 12px;
+    margin-bottom: 24px;
+    border-top: 1px solid #C9C9C9;
+}
+.venue{
+    font-weight: 600;
+}
+.map{
+    border-radius: 8px;
+    overflow: hidden;
+}

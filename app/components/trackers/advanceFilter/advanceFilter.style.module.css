@@ -1,0 +1,104 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+.formatFreq{
+    display: grid;
+    gap: var(--spacing-sm);
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+}
+.format{
+    padding:12px 15px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-direction: column;
+    border-radius: var(--border-radius-sm);
+}
+.formatHead{
+    color: var(--primary-color);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-medium);
+}
+.allCat{
+    display: flex;
+    gap: var(--spacing-sm);
+    /* flex-direction: column; */
+  }
+  .item{
+    color:#2D3748;
+    padding-left: 5px;
+    font-size: var(--font-size-small);
+  }
+  .formatFreq1{
+    display: grid;
+    gap: var(--spacing-sm);
+    /* grid-template-columns: repeat(2, 1fr); */
+  }
+  .key{
+    padding: 7px;
+    background-color: #F1FFF4;
+    color: black;
+    text-align: center;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-small);
+  }
+  .keyNegative{
+    padding: 7px;
+    background-color: #FFEFEF;
+    color: black;
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+    font-size: var(--font-size-small);
+  }
+  .allCat1{
+    flex-wrap: wrap;
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+  @media (max-width:1550px) {
+    .formatFreq{
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  }
+  .tooltipContainer {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .tooltipContainer .tooltipText {
+    visibility: hidden;
+    /* width: 120px; */
+    background-color: #333;
+    text-wrap: nowrap;
+    color: #fff;
+    text-align: center;
+    border-radius: var(--border-radius-sm);
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; 
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltipContainer .tooltipText::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  
+  .tooltipContainer:hover .tooltipText {
+    visibility: visible;
+    opacity: 1;
+  }

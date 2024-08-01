@@ -1,0 +1,181 @@
+.sub_container {
+    display: flex;
+      box-shadow: 0px 8px 40px -2px #060C3B14;
+      width: 80%;
+      height: 90%;
+      /* gap: 140px; */
+      align-items: center;
+      justify-content: center;
+      margin: 20px;
+  }
+  .sub_containerLeft{
+    width: 50%;
+    background-color: #FAFAFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    /* background-color: red; */
+  }
+  .leftContent{
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.5s ease-in-out;
+    gap:20px;
+  }
+  .circles{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+  }
+  .circle{
+    width: 10px;
+    cursor: pointer;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+  }
+  .loginForm{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image{
+    width: 400px;
+    height: 390px;
+  }
+  
+  .form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 400px;
+  }
+  
+  .input_container {
+    position: relative;
+  }
+  
+  .error {
+    position: absolute;
+    top: 70px;
+    left: 5px;
+    font-size: 12px;
+    color: #f15050;
+  }
+  
+  .form_heading {
+    /* color: #242424; */
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .input_title {
+    /* color: #424242df; */
+    margin-bottom: 2px;
+  }
+  
+  .input {
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    width: 100%;
+  }
+  
+  .visibility_Icon {
+    cursor: pointer;
+    position: absolute;
+    top: 33px;
+    right: 13px;
+  }
+  
+  .checkbox_container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .checkbox_input {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .checkbox_title {
+    color: #868686;
+  }
+  
+  .button {
+    background-color: #6750a4;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+  }
+  
+  .new_account {
+    text-align: center;
+    padding: 20px 0px;
+    border-bottom: 0.5px solid #e6e6e6;
+    font-size: 14px;
+  }
+  
+  .createNew_link {
+    color: #6750a4;
+    font-weight: 500;
+  }
+  
+  .forgot_password_link {
+    text-align: center;
+    color: #868686;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .heading{
+    font-size: 24px;
+    font-weight: 700;
+   
+    color:#6750A4;
+    text-align: center;
+  }
+  .content{
+    font-weight: 400;
+    font-size: 14px;
+    height: 35px;
+    text-align: center;
+    padding: 0px 40px;
+  }
+  .active{
+    background-color: #6750A4;
+    transform: scale(1.5);
+  }
+  @media screen and (max-width: 575px) {
+    .container {
+      min-height: 100vh;
+    }
+    .sub_container {
+      flex-direction: column-reverse;
+      gap: 10px;
+    }
+  
+    .form_container {
+      width: 90%;
+      min-width: 300px;
+      margin: auto;
+    }
+  
+    .image {
+      width: 90px;
+      height: 90px;
+    }
+  }
+  

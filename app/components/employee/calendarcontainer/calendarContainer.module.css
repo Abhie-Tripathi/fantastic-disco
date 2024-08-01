@@ -1,5 +1,6 @@
 .container{
     margin-bottom: 10px;
+    position: relative;
 }
 .monthCal{
     display: flex;
@@ -16,10 +17,14 @@
     margin-left: 10px;
     cursor: pointer;
 }
+.calendarBtns_light button{
+    color: var(--primary-color-light);
+}
 .calendarBtns button:hover{
     transition-duration: .2s;
     background-color: #9281be;
 }
 .calendarBtns button.activeCalendarBtn{
     background-color: #6750A4;
+    color: white;
 }
