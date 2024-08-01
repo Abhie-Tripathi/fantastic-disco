@@ -3,11 +3,37 @@ import HeroBanner1 from './HeroBanner1';
 import HeroBanner2 from './HeroBanner2';
 import HeroBanner3 from './HeroBanner3';
 
-interface Props {
-    selectedCard?: string;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const HeroBanner = ({selectedCard}: Props) => {
+interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+}
+interface Props {
+    selectedCard?: string;
+    cardBgColor?: string;
+    cardBorderRadius?: number;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+    buttonSettings?: {
+        primary: ButtonSettings;
+        secondary: ButtonSettings;
+    };
+    selectedBtn? : "primary" | "secondary"
+}
+
+const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn}: Props) => {
 
     let EventCard: ElementType;
 
@@ -22,9 +48,9 @@ const HeroBanner = ({selectedCard}: Props) => {
             EventCard = HeroBanner3; // Or some default component or message
     }
 
-  return (
-    <EventCard/>
-  )
+    return (
+        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings}/>
+    )
 }
 
 export default HeroBanner

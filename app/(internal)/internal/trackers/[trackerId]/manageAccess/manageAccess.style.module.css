@@ -6,7 +6,6 @@
 }
 .containerTop{
     display: flex;
-    width:100%;
     align-items: center;
     justify-content: space-between;
     background: var(--heading-background-color);
@@ -62,6 +61,7 @@
     justify-content: center;
     display: flex;
     height: 100vh;
+    z-index: 99;
     backdrop-filter: blur(5px);
 }
 .innerModal{
@@ -170,20 +170,3 @@
 .dropdownItem:hover {
     background-color: var(--background-color-hover);
 }
-/* .new{
-    position: fixed;
-    top: 0;
-    z-index: 11;
-    width: calc(100vw - 134px);
-    background: var(--primary-foreground);
-    height: 100px;
-  } */
-  .containerTop{
-    position: fixed;
-    top: 180px;
-    width: calc(100vw - 134px);
-    height: 70px;
-    color: white;
-    padding: 10px;
-    z-index: 119;
-  }

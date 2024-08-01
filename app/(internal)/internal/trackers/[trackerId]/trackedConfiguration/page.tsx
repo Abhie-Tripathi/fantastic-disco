@@ -60,24 +60,7 @@ const Page = () => {
   const typeVal = searchParams.get('type')
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
-  const [loading,setLoading]=useState(false);
-  function formatDate(dateString:Date) {
-    const date = new Date(dateString);
-    
-    // Get day
-    const day = date.getDate();
-    
-    // Get month and convert it to short format
-    const month = date.toLocaleString('default', { month: 'short' });
-    
-    // Get year
-    const year = date.getFullYear();
-    
-    // Format the date
-    const formattedDate = `${day} ${month}, ${year}`;
-    
-    return formattedDate;
-}
+  const [loading,setLoading]=useState(true);
   useEffect(() => {
     const fetchData = async () => {
       const url = `${baseUrl}/tracker/${last}?edit=true`;
@@ -99,6 +82,23 @@ const Page = () => {
 
     fetchData();
   }, []);
+  function formatDate(dateString:Date) {
+    const date = new Date(dateString);
+    
+    // Get day
+    const day = date.getDate();
+    
+    // Get month and convert it to short format
+    const month = date.toLocaleString('default', { month: 'short' });
+    
+    // Get year
+    const year = date.getFullYear();
+    
+    // Format the date
+    const formattedDate = `${day} ${month}, ${year}`;
+    
+    return formattedDate;
+}
   useEffect(()=>{
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
@@ -189,7 +189,7 @@ const userRating=
     <>
     {loading ? <Loading/> :
     <div className={styles.container}>
-    <div className={styles.containerTop}>
+    <div className={`fixedNav ${styles.containerTop}`}>
       <div className={styles.containerTopLeft}>
         <div>
           <CustomeTracker fillColor="#6750a4" />
@@ -225,7 +225,7 @@ const userRating=
       </div>
     </div>
     <div className={styles.outerContainer}>
-      <div className={styles.new}></div>
+      <div className='dummyDiv'></div>
     <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
     <div className={styles.innerContainer}>
       <div
@@ -246,7 +246,7 @@ const userRating=
       <div className={styles.formatFreq}>
       <div className={styles.format}>
                     <div className={styles.formatHead}>Location</div>
-                    <div className={styles.allCat}>
+                    <div className={styles.location}>
                         {locations?.map((item: string, id: number) => (
                             <>
                                 <span className={styles.item}>{item}</span>
@@ -491,6 +491,8 @@ const userRating=
               : []
           }
           internationalScore={data?.tracker?.filterValue?.internationalScore}
+          trustScore={data?.tracker?.filterValue?.trustScore}
+         reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
           eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
           localRank={

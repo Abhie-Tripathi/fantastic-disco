@@ -453,8 +453,8 @@ const Page = ({ params }: { params: any }) => {
           </div>
 
           {view === "list" && (
-            <div style={{marginTop:"140px"}}>
-              <div className={styles.new}></div> 
+            <div style={{marginTop:"140px",width: "calc(100vw - 134px)"}}>
+              <div className='dummyDiv'></div> 
             <Table
               showInsights={showInsights}
               eventType={active}

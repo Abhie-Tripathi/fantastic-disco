@@ -505,7 +505,7 @@ const [val,setVal]=useState(1);
           } else setAppliedKeywords([]);
 
           const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
-            (currPage - 1) * 10
+            (currPage - 1) * itemsPerPage
           }&${queryString}`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
           const apiData = await myFetch(apiUrl, {

@@ -18,6 +18,10 @@ export interface EventTableType {
             longitude: string,
             latitude: string
         }
+        cityCordinates: {
+            longitude: string,
+            latitude: string
+        }
     };
     categories: [{ name: string }];
     eventKeywords : string[];
@@ -49,4 +53,5 @@ export interface EventTableType {
         estimatedVisitor: number;
     };
     internationalAudience: string;
+    type: string[]
 }

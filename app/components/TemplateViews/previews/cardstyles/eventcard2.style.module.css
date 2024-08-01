@@ -1,18 +1,13 @@
 .card {
+    max-width: 300px;
+    max-height: 360px;
     min-width: 300px;
-    min-height: 330px;
-    border-radius: 8px;
+    min-height: 360px;
     padding: 22px 12px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     border: 1px solid #2E2E2E;
-}
-
-.eventName {
-    font-size: 18px;
-    font-weight: 700;
-    color: black;
 }
 
 .banner {
@@ -32,26 +27,12 @@
     align-items: center;
     gap: 8px;
 }
-
-.location {
-    color: #6E6F89;
-    font-size: 12px;
-    font-weight: 500;
-}
-
 .dateContainer {
     margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
-.date {
-    font-size: 10px;
-    color: #6E6F89;
-    font-weight: 400;
-}
-
 .dividerLine {
     width: 100%;
     border-top: 1px solid #E8EAF1;

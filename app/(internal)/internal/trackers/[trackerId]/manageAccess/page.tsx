@@ -169,8 +169,8 @@ const Page = () => {
     
     return (
         <div className={styles.container}>
-            <div className='new'></div>
-            <div className={styles.containerTop}>
+            <div className='dummyDiv'></div>
+            <div className={`fixedNav ${styles.containerTop}`}>
                 <div className={styles.containerTopLeft}>
                     <div></div>
                     <div className={styles.trackerType}>

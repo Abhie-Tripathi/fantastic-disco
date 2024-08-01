@@ -871,7 +871,8 @@ const Search = () => {
               type="text"
               placeholder="Search Events"
               // onChange={(e) => setSearchInput(e.target.value)}
-              onChange={handleSearchChange}
+              onChange={
+                handleSearchChange}
               value={searchInput}
             ></input>
             {/* <div
@@ -1408,7 +1409,7 @@ const Search = () => {
 
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
-                <div className={styles.inputdropdowns_container}>
+                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 1fr)"}}>
 
 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1471,7 +1472,7 @@ const Search = () => {
                 </MenuTrigger>
 
                 {/* Disabled */}
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <div className={styles.disabledBtn}>
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -1495,7 +1496,7 @@ const Search = () => {
                       </div>
                     </div>
                   </div>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1649,7 +1650,7 @@ const Search = () => {
 
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
-                <div className={styles.inputdropdowns_container}>
+                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 1fr)"}}>
 
 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1937,6 +1938,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
                 <div
                   className={styles.inputdropdowns_container_AI}
+                  style={{gridTemplateColumns:"repeat(4, 1fr)"}}
                 >
 
 <MenuTrigger onOpenChange={setMenuOpen}>

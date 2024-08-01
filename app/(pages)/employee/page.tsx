@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useContext, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import EmployeeNavbar from "../../components/employee/EmployeeNavbar";

@@ -8,8 +8,6 @@ import MoreEvents from '@/app/components/DetailPage/MoreEvents'
 import RegisterForm from '@/app/components/DetailPage/RegisterForm'
 import HostDetails from '@/app/components/DetailPage/HostDetails'
 import AttendingPeople from '@/app/components/DetailPage/AttendingPeople'
-import Script from 'next/script'
-
 
 interface PageProps {
     hashtags: string[];
@@ -26,70 +24,70 @@ const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject, emailBody }: PageProps) => {
     return (
         <div className={styles.body}>
-                <div className={styles.leftContainer}>
-                    <Image src={media} alt='poster' width={330} height={330} className={styles.poster} />
-                    <div className={styles.shareContainer}>
-                        <div className={styles.heading}>Share</div>
-                        <div className={styles.line}></div>
-                        <ShareButtons shareUrl={shareUrl} title={eventName} hashtags={hashtags} emailSubject={emailSubject} emailBody={emailBody} />
-                    </div>
-                    <div className={styles.hostContainer}>
-                        <div className={styles.heading}>Hosted By</div>
-                        <div className={styles.line}></div>
-                        <HostDetails />
-                    </div>
-                    <div className={styles.attedningContainer}>
-                        <div className={styles.heading}>8 Going</div>
-                        <div className={styles.line}></div>
-                        <AttendingPeople />
-                    </div>
-                    <div className={styles.contact_reportContainer}>
-                        <div>Contact the host</div>
-                        <div>Report Event</div>
-                    </div>
+            <div className={styles.leftContainer}>
+                <Image src={media} alt='poster' width={330} height={330} className={styles.poster} />
+                <div className={styles.shareContainer}>
+                    <div className={styles.heading}>Share</div>
+                    <div className={styles.line}></div>
+                    <ShareButtons shareUrl={shareUrl} title={eventName} hashtags={hashtags} emailSubject={emailSubject} emailBody={emailBody} />
                 </div>
-                <div className={styles.rightContainer}>
-                    <div className={styles.eventName}>{eventName}</div>
-                    <div className={styles.tags}>{hashtags.map((tag, key) => (
-                        <div key={key} className={styles.tag}>{tag}</div>
-                    ))}
-                    </div>
-                    <div className={styles.date_loactionContainer}>
-                        <div className={styles.dateContainer}>
-                            <div className={styles.dateIconContainer}>
-                                <div className={styles.iconMonth}>Jan</div>
-                                <div className={styles.iconLine}></div>
-                                <div className={styles.iconDate}>24</div>
-                            </div>
-                            <div className={styles.dateDetails}>
-                                <div className={styles.date}>Saturday, Jan 24</div>
-                                <div className={styles.time}>2:00 PM - 9:00 PM GMT+2</div>
-                            </div>
+                <div className={styles.hostContainer}>
+                    <div className={styles.heading}>Hosted By</div>
+                    <div className={styles.line}></div>
+                    <HostDetails />
+                </div>
+                <div className={styles.attedningContainer}>
+                    <div className={styles.heading}>8 Going</div>
+                    <div className={styles.line}></div>
+                    <AttendingPeople />
+                </div>
+                <div className={styles.contact_reportContainer}>
+                    <div>Contact the host</div>
+                    <div>Report Event</div>
+                </div>
+            </div>
+            <div className={styles.rightContainer}>
+                <div className={styles.eventName}>{eventName}</div>
+                <div className={styles.tags}>{hashtags.map((tag, key) => (
+                    <div key={key} className={styles.tag}>{tag}</div>
+                ))}
+                </div>
+                <div className={styles.date_loactionContainer}>
+                    <div className={styles.dateContainer}>
+                        <div className={styles.dateIconContainer}>
+                            <div className={styles.iconMonth}>Jan</div>
+                            <div className={styles.iconLine}></div>
+                            <div className={styles.iconDate}>24</div>
                         </div>
-                        <div className={styles.locationContainer}>
-                            <div className={styles.locationIconContainer}><LocationIcon /></div>
-                            <div className={styles.locationDetails}>
-                                <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
-                                <div className={styles.city}>Milano, Lombardia</div>
-                            </div>
+                        <div className={styles.dateDetails}>
+                            <div className={styles.date}>Saturday, Jan 24</div>
+                            <div className={styles.time}>2:00 PM - 9:00 PM GMT+2</div>
                         </div>
                     </div>
-                    <div className={styles.attendingContainer}>We are attending this event as a <span>Speaker</span> </div>
-                    <RegisterForm />
-                    <div className={styles.aboutEventContainer}>
-                        <div className={styles.heading}>About Event</div>
-                        <div className={styles.line}></div>
-                        <div className={styles.description}>{description}</div>
-                    </div>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <div className={styles.map}><Mapview latitude={37.7749}
-                            longitude={-122.4194}
-                            zoom={6} /></div>
-                    </Suspense>
-                    <div className={styles.moreEventsContainer}>
-                        <MoreEvents />
+                    <div className={styles.locationContainer}>
+                        <div className={styles.locationIconContainer}><LocationIcon /></div>
+                        <div className={styles.locationDetails}>
+                            <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
+                            <div className={styles.city}>Milano, Lombardia</div>
+                        </div>
                     </div>
                 </div>
+                <div className={styles.attendingContainer}>We are attending this event as a <span>Speaker</span> </div>
+                <RegisterForm />
+                <div className={styles.aboutEventContainer}>
+                    <div className={styles.heading}>About Event</div>
+                    <div className={styles.line}></div>
+                    <div className={styles.description}>{description}</div>
+                </div>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <div className={styles.map}><Mapview latitude={37.7749}
+                        longitude={-122.4194}
+                        zoom={6} /></div>
+                </Suspense>
+                <div className={styles.moreEventsContainer}>
+                    <MoreEvents />
+                </div>
+            </div>
             {/* </div> */}
         </div>
     )

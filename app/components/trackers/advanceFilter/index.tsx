@@ -6,7 +6,6 @@ const index = ({ freq, keywords, isBranded, eventEdition }: any) => {
     // const entry=["Free","Paid","Invites","Member Access"];
     // const rank=["Country Rank","Category Rank"];
     const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
-    console.log(parseInt(eventEdition)>0 );
     
     return (
         <div className={styles.container}>
@@ -41,7 +40,7 @@ const index = ({ freq, keywords, isBranded, eventEdition }: any) => {
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(eventEdition)===0 ? styles.slider : styles.sliderBranded}`}></span>
+                <span className={`${eventEdition>0 ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>

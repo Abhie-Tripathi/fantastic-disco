@@ -1,4 +1,4 @@
-
+"use client"
 import React,{Suspense} from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
@@ -6,6 +6,7 @@ import Back from '/public/back.svg';
 import Link from "next/link";
 import Image from "next/image";
 import Loading from "@/app/components/UI/Loading";
+import { useAuthContext } from "@/context";
 // import { useTheme } from "@/context/theme";
 // import Image from "next/image";
 // import MoreIcon from "/public/dots.svg";
@@ -16,6 +17,9 @@ function Location({ fillColor }:{fillColor:string}) {
   )
 }
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const {isVerifiedToken}=useAuthContext();
+  console.log(isVerifiedToken);
+  
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
         {/* <div className={styles.bar}>
@@ -32,16 +36,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   </div>
             </div>
         </div> */}
+        {isVerifiedToken===false? <Loading/>:
         <div className={styles.containerBottom}>
-      <div className={styles.containerLeft}>
-        <SideNav/>
+        <div className={styles.containerLeft}>
+          <SideNav/>
+        </div>
+        <div className={styles.containerRight}>
+        <Suspense fallback={<Loading/>}>
+        {children}
+        </Suspense>
+        </div>
       </div>
-      <div className={styles.containerRight}>
-      <Suspense fallback={<Loading/>}>
-      {children}
-      </Suspense>
-      </div>
-    </div>
+        }
+        
       
     </div>
   );

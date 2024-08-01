@@ -1,0 +1,52 @@
+.body {
+    position: relative;
+    display: flex;
+    padding: 30px 30px 100px 30px;
+    height: 88vh;
+    gap: 30px;
+}
+
+.modalOpen {
+    overflow-y: hidden;
+}
+
+.editContainer {
+    width: 55%;
+    height: 120%;
+}
+
+.previewContainer {
+    width: 50%;
+    height: 120%
+}
+
+.blackScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: .3;
+}
+
+.addEventModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 90%;
+    filter: drop-shadow(1px 1px 2px rgb(209, 209, 209));
+}
+
+@media screen and (max-width: 1406px) {
+    .editContainer{
+        width: 45%;
+    }
+    .previewContainer {
+        width: 55%;
+    }
+    
+}

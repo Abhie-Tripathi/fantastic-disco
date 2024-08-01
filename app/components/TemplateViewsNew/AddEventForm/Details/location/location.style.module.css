@@ -1,0 +1,44 @@
+.body{
+    padding: 9px 19px;
+    width: 100%;
+    background-color: #ffffff55;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+.editIcon{
+    cursor: pointer;
+}
+.locationContainer{
+    display: flex;
+    gap: 6px;
+}
+.eventLocation{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.eventLocation .eventLocationOne{
+    font-weight: 500;
+    color: #7D7D7D;
+    font-size: var(--font-size-medium);
+}
+.eventLocation .activeLocation{
+    color: black;
+}
+.eventLocation .eventLocationTwo{
+    color: #7D7D7D;
+    font-size: 10px;
+    line-height: 20px;
+}
+.dropdown{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(194, 194, 194));
+    background-color: white;
+    border-radius: 3px;
+    z-index: 1;
+}

@@ -4,30 +4,30 @@ import styles from './moreevent.style.module.css'
 import EventCard from '../TemplateViews/previews/cardstyles/EventCard2'
 
 const MoreEvents = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const items = [
-        <EventCard key="1" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-        <EventCard key="2" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-        <EventCard key="3" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-        <EventCard key="4" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-        <EventCard key="5" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-        <EventCard key="6" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
-    ];
+    // const [currentIndex, setCurrentIndex] = useState(0);
+    // const items = [
+    //     <EventCard key="1" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    //     <EventCard key="2" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    //     <EventCard key="3" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    //     <EventCard key="4" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    //     <EventCard key="5" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    //     <EventCard key="6" cardBgColor='transparent' eventNameColor='white' locationColor='white' dateColor='white'/>,
+    // ];
 
-    const itemsToShow = 2;
-    const totalItems = items.length;
+    // const itemsToShow = 2;
+    // const totalItems = items.length;
 
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => Math.min(prevIndex + itemsToShow, totalItems - itemsToShow));
-    };
+    // const handleNext = () => {
+    //     setCurrentIndex((prevIndex) => Math.min(prevIndex + itemsToShow, totalItems - itemsToShow));
+    // };
 
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => Math.max(prevIndex - itemsToShow, 0));
-    };
+    // const handlePrev = () => {
+    //     setCurrentIndex((prevIndex) => Math.max(prevIndex - itemsToShow, 0));
+    // };
 
     return (
         <div className={styles.body}>
-            <div className={styles.heading}>More Events</div>
+            {/* <div className={styles.heading}>More Events</div>
             <div className={styles.carousel}>
                 <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
                     <LeftArrowIcon />
@@ -42,7 +42,7 @@ const MoreEvents = () => {
                 <button className={styles.navButton} onClick={handleNext} disabled={currentIndex >= totalItems - itemsToShow}>
                     <RightArrowIcon />
                 </button>
-            </div>
+            </div> */}
         </div>
     )
 }

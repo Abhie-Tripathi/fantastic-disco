@@ -4,12 +4,25 @@ import EventCard1 from '../cardstyles/EventCard1';
 import EventCard2 from '../cardstyles/EventCard2';
 import EventCard3 from '../cardstyles/EventCard3';
 
-interface Props {
-    type: string;
-    selectedCard?: string;
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const ScrollView = ({ type, selectedCard }: Props) => {
+interface Props {
+    type: string;
+    cardBorderRadius?: number;
+    cardBgColor?: string;
+    selectedCard?: string;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+}
+const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -25,11 +38,11 @@ const ScrollView = ({ type, selectedCard }: Props) => {
     return (
         <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody}>
             <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
-                <EventCard />
-                <EventCard />
-                <EventCard />
-                <EventCard />
-                <EventCard />
+                <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
             </div>
         </div>
     )

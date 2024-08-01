@@ -23,7 +23,7 @@ const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusPro
   };
 
   return (
-    <div className={styles.container} style={{background: theme==="light" ? "white" : ""}}>
+    <div className={styles.container}>
       <div className={styles.sub_container}>
         {EventStatusData.map((item) => (
           <div key={item.id} className={styles.checkbox_container}>

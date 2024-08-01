@@ -1210,7 +1210,8 @@ setSelectedEventTypeName(EventStatusData
   return (
     <>
       <div
-        className={`${styles.topContainer}`}
+        className={`fixedNav ${styles.topContainer}` }
+        style={{top:pathName[pathName.length - 1]==="create"?"auto":""}}
       >
         <div className={styles.topInnerContainerLeft}>
           <div>
@@ -1241,6 +1242,8 @@ setSelectedEventTypeName(EventStatusData
           </button>
         </div>
       </div>
+      <div className={styles.allFilters} style={{marginTop: pathName[pathName.length - 1]==="create"?"90px":"140px"}}>
+        <div className="dummyDiv" style={{height: pathName[pathName.length - 1]==="create"?"120px":"250px"}}></div>
       <div
         className={styles.searchContainer}
         style={{
@@ -2480,6 +2483,7 @@ setSelectedEventTypeName(EventStatusData
           </div>
         </div>
       </Suspense>
+      </div>
     </>
   );
 };

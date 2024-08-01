@@ -1,0 +1,184 @@
+.body {
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 100%;
+    position: relative;
+    background-color: white;
+}
+
+.line {
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+
+.detailsContainer {
+    padding: 70px 120px 30px 70px;
+    /* border: 1px solid red; */
+    display: flex;
+    gap: 30px;
+    overflow-y: auto;
+    height: 89%;
+}
+
+.modalOpen {
+    filter: blur(1px);
+    overflow-y: hidden;
+}
+.leftSection{
+    width: 300px;
+}
+.rightSection {
+    height: fit-content;
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.btnContainer {
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: flex-end;
+}
+
+.btnContainer button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+.btnContainer .addBtn {
+    color: white;
+    background-color: #6750a4;
+}
+
+.posterContainer {
+    position: relative;
+}
+
+.posterContainer .posterIcons {
+    position: absolute;
+    right: 19px;
+    bottom: 12px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.posterContainer .posterIcons div {
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.participationContainer{
+    margin-top: 16px;
+    height: fit-content;
+    width: 100%;
+}
+
+.shareContainer {
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 18px 19px;
+}
+
+.shareContainer .heading {
+    margin-bottom: 11px;
+    color: #A1A1A1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.eventName {
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    /* height: 100px; */
+    resize: none;
+    overflow: hidden;
+    color: #1a1a1a;
+    font-weight: bolder;
+}
+
+.eventName:focus {
+    outline: none;
+}
+
+.descriptionModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 2px;
+    padding: 12px;
+    width: 50%;
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.descriptionModal textarea {
+    resize: none;
+    border: 1px solid #EBEBEB;
+    width: 100%;
+    padding: 8px;
+    height: 130px;
+}
+
+.descriptionModal textarea:focus {
+    outline: none;
+}
+
+.descriptionModal div {
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.descriptionModal div .close {
+    cursor: pointer;
+}
+
+.descriptionModal button {
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #6750a4;
+    padding: 5px 8px;
+    color: white;
+}
+.speakerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+.registerModal{
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+.speakerProfileContainer{
+    width: 100%;
+}

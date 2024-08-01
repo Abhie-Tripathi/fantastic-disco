@@ -5,42 +5,42 @@ import ListView from '../MultipleEvents/ListView';
 import GridView from '../MultipleEvents/GridView';
 import ListAndGridView from '../MultipleEvents/ListAndGridView';
 
+interface ButtonSettings {
+    buttonColor: string;
+    fontColor: string;
+    borderRadius: number;
+    borderColor: string;
+    buttonText: string;
+}
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
+}
+
 interface EditProps {
     type: string;
-    cardRadius?: number;
+    cardBorderRadius?: number;
     cardBgColor?: string;
-    eventNameColor?: string;
-    eventNameSize?: number;
-    dateFontSize?: number;
-    locationFontSize?: number;
-    btnBgColor?: string;
-    btnFontColor?: string;
-    btnBorderWidth?: number;
-    btnBorderColor?: string;
-    btnRadius?: number;
-    btnFontSize?: number;
     selectedCard?: string;
+    fontSettings?: {
+        heading: FontSettings;
+        subheading: FontSettings;
+        body: FontSettings;
+    };
+    buttonSettings?: {
+        primary: ButtonSettings;
+        secondary: ButtonSettings;
+    };
 }
-const HeroBannerAndViews = ({ cardRadius,
-    cardBgColor,
-    eventNameColor,
-    eventNameSize,
-    dateFontSize,
-    locationFontSize,
-    btnBgColor,
-    btnFontColor,
-    btnBorderWidth,
-    btnBorderColor,
-    btnRadius,
-    btnFontSize,
-    type,
-    selectedCard }: EditProps) => {
+const HeroBannerAndViews = ({ type, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedCard }: EditProps) => {
     return (
         <div className={styles.body}>
-            <HeroBanner selectedCard={selectedCard} />
+            <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} />
             <div className={styles.bottomView}>
-                {type === "list" ? <ListView selectedCard={selectedCard} cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
-                    type === "grid" ? <GridView selectedCard={selectedCard} cardRadius={cardRadius} cardBgColor={cardBgColor} eventNameColor={eventNameColor} eventNameSize={eventNameSize} dateFontSize={dateFontSize} locationFontSize={locationFontSize} btnBgColor={btnBgColor} btnFontColor={btnFontColor} btnBorderWidth={btnBorderWidth} btnBorderColor={btnBorderColor} btnRadius={btnRadius} btnFontSize={btnFontSize} /> :
+                {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                    type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                         <ListAndGridView />}</div>
         </div>
     )

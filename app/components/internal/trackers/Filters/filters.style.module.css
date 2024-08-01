@@ -488,3 +488,9 @@
     border: 1px solid var(--primary-color);
     cursor: pointer;
 }
+.allFilters{
+  display: flex;
+  flex-direction: column;
+  gap:24px;
+  width: calc(100vw - 134px);
+}
