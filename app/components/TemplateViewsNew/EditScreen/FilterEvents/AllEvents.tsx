@@ -21,7 +21,6 @@ interface Props {
 const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props) => {
 
     const handleDelete = async(eventId : string)=>{
-
         const customizeData = new FormData();
         customizeData.append("id", eventId)
         customizeData.append('published', "false");

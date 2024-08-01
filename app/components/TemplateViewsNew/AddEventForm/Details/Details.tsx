@@ -32,9 +32,10 @@ interface Props {
   eventFont: string;
   widgetId: string;
   fetchEvents: () => Promise<void>;
+  fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds,fetchAddedEvents }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -109,6 +110,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
+    const widgetIds : string[] = [widgetId]
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -117,7 +119,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       start_date: startDate,
       description,
       location_city: cityName,
-      location_country: countryName,
+      location_country: countryName, 
+      widgetIds
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -130,9 +133,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       const eventId = data.data.id
       addEventToWidget(eventId)
-
       fetchEvents();
-      setIsAddEventModalOpen(false)
+      fetchAddedEvents();
     }
     if (error) {
       console.log(error)
@@ -177,6 +179,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     })
     if(data){
       console.log("widget event data", data)
+      setIsAddEventModalOpen(false)
     }
     if(error){
       console.log("error in adding event to widget ", error)

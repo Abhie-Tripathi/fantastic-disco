@@ -9,6 +9,7 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AddedEventsType } from '@/types/addedwidgetevents'
 
 interface AllEventsType {
   eventId : string;
@@ -38,6 +39,7 @@ const Page = () => {
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
 
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
+  const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
 
@@ -55,8 +57,10 @@ const Page = () => {
     return str;
   };
 
+
+  // This function is fetching all the events regardless added in the widget or not
   const fetchEvents = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/event`)
+    const {data, error} = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
     if(data){
         const events = data.data.map((event : any)=>({
             eventId : event.id,
@@ -70,9 +74,18 @@ const Page = () => {
         console.log(error)
     }
 }
-
+  // Function for fetching the added events in widget
+  const fetchAddedEvents = async()=>{
+    const {data, error} = await myFetch(`${baseUrl}/widget/${widgetId}`)
+    if (data) {
+      const events = data.otherdata.event;
+      setfetchedAddedEvents(events);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
-
     const fetchWidgetData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
       if (data) {
@@ -93,6 +106,7 @@ const Page = () => {
 
     fetchWidgetData();
     fetchEvents();
+    fetchAddedEvents();
   }, [])
 
   const handleUpdateCustomization = async () => {
@@ -144,6 +158,7 @@ const Page = () => {
           setIsAddEventModalOpen={setIsAddEventModalOpen}
           fetchedAllEvents = {fetchedAllEvents}
           fetchEvents = {fetchEvents}
+          fetchedAddedEvents = {fetchedAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
         />
@@ -163,7 +178,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent addedEventIds={addedEventIds} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )

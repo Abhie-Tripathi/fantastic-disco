@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface AllEventsType {
     eventId : string;
@@ -14,10 +15,11 @@ interface AllEventsType {
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
     fetchedAllEvents : AllEventsType[]
-    fetchEvents : () => Promise<void>; 
+    fetchEvents : () => Promise<void>;
+    fetchedAddedEvents : AddedEventsType[]
 }
 
-const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents} : Props) => {
+const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetchedAddedEvents} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -28,7 +30,7 @@ const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents} : Pr
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen}/>}
+                {selectedBtn === "allevents" ? <AllEvents fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )

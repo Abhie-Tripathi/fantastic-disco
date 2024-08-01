@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface AllEventsType {
     name: string;
@@ -12,9 +13,10 @@ interface AllEventsType {
 
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
+    fetchedAddedEvents : AddedEventsType[]
 }
 
-const EventsAdded = ({ setIsAddEventModalOpen }: Props) => {
+const EventsAdded = ({ setIsAddEventModalOpen,fetchedAddedEvents }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
@@ -23,13 +25,13 @@ const EventsAdded = ({ setIsAddEventModalOpen }: Props) => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
-                {/* {allEvents.map((event, key) => (
+                {fetchedAddedEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
-                                <div>{event.location}</div>
+                                <div>{event.cityName}</div>
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
@@ -55,7 +57,7 @@ const EventsAdded = ({ setIsAddEventModalOpen }: Props) => {
                             </div>
                         </div>
                     </div>
-                ))} */}
+                ))}
             </div>
         </div>
     )
