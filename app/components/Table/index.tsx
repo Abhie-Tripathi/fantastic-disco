@@ -703,7 +703,7 @@ const [val,setVal]=useState(1);
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Internatinal</th>}
+              {showInsights.global && <th>International</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header
