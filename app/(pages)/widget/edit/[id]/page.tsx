@@ -38,11 +38,11 @@ const Page = () => {
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
   const [selectedTemplate, setSelectedTemplate] = useState<string>()
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
-
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
+  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<AddedEventsType>()
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -139,6 +139,17 @@ const Page = () => {
       console.log(error);
     }
   }
+
+  const handleAddEventModal = ()=>{
+    setPrefilledAddedEvent(undefined)
+    setIsAddEventModalOpen(true)
+  }
+
+  const handlePrefilledAddedEvent = (event : AddedEventsType)=>{
+    setPrefilledAddedEvent(event)
+    setIsAddEventModalOpen(true)
+  }
+
   return (
 
     <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
@@ -158,13 +169,14 @@ const Page = () => {
           buttonSettings={buttonSettings}
           cardBgColor={cardBgColor}
           cardBorderRadius={cardBorderRadius}
-          setIsAddEventModalOpen={setIsAddEventModalOpen}
           fetchedAllEvents = {fetchedAllEvents}
           fetchEvents = {fetchEvents}
           fetchedAddedEvents = {fetchedAddedEvents}
           fetchAddedEvents =  {fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
+          handlePrefilledAddedEvent = {handlePrefilledAddedEvent}
+          handleAddEventModal = {handleAddEventModal}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -182,7 +194,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )

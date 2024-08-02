@@ -14,13 +14,13 @@ interface AllEventsType {
 }
 
 interface Props {
-    setIsAddEventModalOpen: (value: boolean) => void
     fetchedAllEvents : AllEventsType[]
     fetchEvents : () => Promise<void>; 
     fetchAddedEvents : ()=>Promise<void>;
+    handleAddEventModal : (value: void) => void
 }
 
-const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetchAddedEvents }: Props) => {
+const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents }: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -51,7 +51,7 @@ const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetchAdd
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
-                <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
+                <button onClick={() => handleAddEventModal()}>Add Event</button>
             </div>
             <GlobalSearch />
             <div className={styles.line}></div>

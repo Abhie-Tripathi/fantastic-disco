@@ -41,37 +41,38 @@ interface Props {
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
+  prefilledAddedEvent : AddedEventsType | undefined;
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents ,prefilledAddedEvent}: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
   const [registerModal, setRegisterModal] = useState<boolean>(false)
-  const [description, setDescription] = useState<string>("")
+  const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
-  const [participationType, setParticipationType] = useState<string>("Attendee")
+  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType || "Attendee")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-  const [registerMessage, setRegisterMessage] = useState<string>("Welcome! To join the event, please register below.")
-  const [registerBtnText, setRegisterBtnText] = useState<string>("Register")
-  const [registerBtnColor, setRegisterBtnColor] = useState<string>("#1a1a1a")
-  const [cityName, setCityName] = useState<string>("")
-  const [countryName, setCountryName] = useState<string>("")
-  const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
+  const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
+  const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
+  const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || "")
+  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || "")
+  const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-  const [startDate, setStartDate] = useState<string>("")
-  const [endDate, setEndDate] = useState<string>("")
-  const [startTime, setStartTime] = useState<string>("12:00 A.M")
-  const [endTime, setEndTime] = useState<string>("12:00 A.M")
-  const [eventFormat, setEventFormat] = useState<string>("In-person")
-  const [eventName, setEventName] = useState<string>("");
-  const [boothNumber, setBoothNumber] = useState<string>("")
-  const [participationMessage, setParticipationMessage] = useState<string>("")
+  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || "")
+  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || "")
+  const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || "12:00 A.M")
+  const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || "12:00 A.M")
+  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || "In-person")
+  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || "");
+  const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
+  const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const [banner, setBanner] = useState<ImageState>({
-    placeHolder: Placeholder,
+    placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
     file: null
   });
 
@@ -217,7 +218,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
     }
-    console.log(imageUrl)
   }, [imageUrl]);
 
   return (

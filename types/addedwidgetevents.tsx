@@ -19,7 +19,7 @@ export interface AddedEventsType {
     boothNumber : string,
     speakerProfilesData : SpeakerProfileType[],
     participationMessage : string,
-    logoUrl : string;
+    bannerUrl : string;
   }
   interface SpeakerProfileType {
     id: string;

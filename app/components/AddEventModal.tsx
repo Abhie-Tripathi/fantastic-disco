@@ -13,7 +13,6 @@ import DescriptionModal from './DescriptionModal';
 import SearchIcon from '/public/search.svg'
 import EmployeeData from '../../public/data/employeeData.json'
 import logo from '/public/googlelogo.png'
-
 import Image from 'next/image';
 import { useTheme } from '@/context';
 
