@@ -4,9 +4,13 @@ import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import ExhibitorIcon from '/public/exhibitoricon.svg'
 
-const ExhibitorContainer = () => {
+interface Props{
+    setBoothNumber : (value : string)=>void;
+    boothNumber : string;
+}
 
-    const [boothNumber, setBoothNumber] = useState<string>("")
+const ExhibitorContainer = ({setBoothNumber, boothNumber} : Props) => {
+
     const [dropdown, setDropdown] = useState<boolean>(false)
 
     return (

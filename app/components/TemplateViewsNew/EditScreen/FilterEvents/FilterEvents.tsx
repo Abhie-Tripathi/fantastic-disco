@@ -18,9 +18,10 @@ interface Props{
     fetchedAllEvents : AllEventsType[]
     fetchEvents : () => Promise<void>;
     fetchedAddedEvents : AddedEventsType[]
+    fetchAddedEvents : ()=>Promise<void>;
 }
 
-const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetchedAddedEvents} : Props) => {
+const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -31,7 +32,7 @@ const FilterEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents,fetch
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} setIsAddEventModalOpen={setIsAddEventModalOpen} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )

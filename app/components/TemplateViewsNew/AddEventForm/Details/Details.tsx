@@ -17,15 +17,21 @@ import RegistrationModal from './resgistration/RegistrationModal'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
+import { AddedEventsType } from '@/types/addedwidgetevents'
+import usePosterGenerator from '@/app/service/posterGenerator'
 
 interface SpeakerProfileType {
   id: string;
   name: string;
   linkedin: string;
   designation: string;
-  profileImage: string | ArrayBuffer | null;
+  // profileImage: string | ArrayBuffer | null;
+  profileImage: File | null
 }
-
+interface ImageState {
+  placeHolder: any;
+  file: File | null;
+}
 interface Props {
   setIsAddEventModalOpen: (value: boolean) => void
   pageBgColor: string;
@@ -34,8 +40,9 @@ interface Props {
   fetchEvents: () => Promise<void>;
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
+  fetchedAddedEvents: AddedEventsType[]
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds,fetchAddedEvents }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -60,6 +67,13 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [endTime, setEndTime] = useState<string>("12:00 A.M")
   const [eventFormat, setEventFormat] = useState<string>("In-person")
   const [eventName, setEventName] = useState<string>("");
+  const [boothNumber, setBoothNumber] = useState<string>("")
+  const [participationMessage, setParticipationMessage] = useState<string>("")
+  const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
+  const [banner, setBanner] = useState<ImageState>({
+    placeHolder: Placeholder,
+    file: null
+  });
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -110,7 +124,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
-    const widgetIds : string[] = [widgetId]
+    const widgetIds: string[] = [widgetId]
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -119,8 +133,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       start_date: startDate,
       description,
       location_city: cityName,
-      location_country: countryName, 
-      widgetIds
+      location_country: countryName,
+      widgetIds,
+      logoUrl : imageUrl
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -132,39 +147,44 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     })
     if (data) {
       const eventId = data.data.id
-      addEventToWidget(eventId)
-      fetchEvents();
-      fetchAddedEvents();
+      const bannerUrl = data.data.data.logoUrl
+      addEventToWidget(eventId,bannerUrl)
     }
     if (error) {
       console.log(error)
     }
 
   }
-  const addEventToWidget = async (eventId: string) => {
+  const addEventToWidget = async (eventId: string, bannerUrl: string) => {
     const customizedFormData = new FormData()
+    const existingEvents = fetchedAddedEvents || [];
+    const newEvent = {
+      id: eventId,
+      name: eventName,
+      pageBgColor,
+      description,
+      eventFont,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      timeZone,
+      cityName,
+      countryName,
+      participationType,
+      eventFormat,
+      registerBtnColor,
+      registerBtnText,
+      registerMessage,
+      boothNumber,
+      speakerProfilesData,
+      participationMessage,
+      bannerUrl
+    };
+    const mergedEvents = [...existingEvents, newEvent];
+
     const otherData = {
-      event: [
-        {
-          id: eventId,
-          name: eventName,
-          pageBgColor,
-          description,
-          eventFont,
-          startDate,
-          endDate,
-          startTime,
-          endTime,
-          timeZone,
-          cityName,
-          countryName,
-          participationType,
-          eventFormat,
-          registerBtnColor,
-          registerBtnText,
-          registerMessage
-        },
-      ],
+      event: mergedEvents,
     };
 
     const eventIds = [...addedEventIds, eventId].join(',');
@@ -172,19 +192,33 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     customizedFormData.append('widgetId', widgetId);
     customizedFormData.append('otherdata', JSON.stringify(otherData))
     customizedFormData.append('eventId', eventIds)
-    
+
     const { data, error } = await myFetch(`${baseUrl}/widget`, {
       method: 'POST',
       body: customizedFormData
     })
-    if(data){
+    if (data) {
       console.log("widget event data", data)
+      fetchEvents();
+      fetchAddedEvents();
       setIsAddEventModalOpen(false)
     }
-    if(error){
+    if (error) {
       console.log("error in adding event to widget ", error)
     }
   }
+
+  const handleGeneratePoster = () => {
+    if (description && eventName && countryName) {
+      generatePrompt(countryName, description, eventName)
+    }
+  }
+  useEffect(() => {
+    if (imageUrl) {
+      setBanner({ placeHolder: imageUrl, file: null });
+    }
+    console.log(imageUrl)
+  }, [imageUrl]);
 
   return (
     <div className={styles.body}>
@@ -196,17 +230,20 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
         <div className={styles.leftSection}>
           <div className={styles.posterContainer}>
-            <Image src={Placeholder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />
+            {isLoading ?
+              <div className={styles.loader}>
+                <div className={styles.spinner}></div>
+              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />}
             <div className={styles.posterIcons}>
               <div>
-                <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
+                <Image src={AiIcon} onClick={handleGeneratePoster} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
               <div>
                 <Image src={UploadIcon} alt='upload'></Image>
               </div>
             </div>
           </div>
-          <div className={styles.participationContainer}><ParticipationContainer setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
             <ShareButtons shareUrl='www.10times.com' />
@@ -220,7 +257,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
           <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
-          {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer /></div> : <></>}
+          {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
           {cityName && <Suspense fallback={<div>Loading...</div>}>
             <div className={styles.map}><Mapview latitude={37.7749}

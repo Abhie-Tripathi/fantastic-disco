@@ -9,7 +9,8 @@ interface SpeakerProfileType {
     name: string;
     linkedin: string;
     designation: string;
-    profileImage: string | ArrayBuffer | null;
+    // profileImage: string | ArrayBuffer | null;
+    profileImage: File | null;
 }
 
 interface Props {

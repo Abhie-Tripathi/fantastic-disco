@@ -67,8 +67,9 @@ const Page = () => {
             eventId : event.id,
             name: event.name,
             location: event.data.location_city,
-            startDate: event.data.startDate,
-            endDate: event.data.endDate,
+            startDate: event.data.start_date,
+            endDate: event.data.end_date,
+            isLinkedToWidget : event.isWidgetLinked
         }))
         setFetchedAllEvents(events)
     }if(error){
@@ -86,6 +87,7 @@ const Page = () => {
       console.log(error);
     }
   }
+
   useEffect(() => {
     const fetchWidgetData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
@@ -160,6 +162,7 @@ const Page = () => {
           fetchedAllEvents = {fetchedAllEvents}
           fetchEvents = {fetchEvents}
           fetchedAddedEvents = {fetchedAddedEvents}
+          fetchAddedEvents =  {fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
         />
@@ -179,7 +182,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )
