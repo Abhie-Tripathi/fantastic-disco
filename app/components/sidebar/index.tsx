@@ -30,11 +30,14 @@ const Sidebar = () => {
   const outreachRef = useRef(null);
 
   const getActiveClass = (path: string) => {
-    return pathName === path
-      ? `${styles.active} ${
-          theme === "dark" ? "darkMode_secondary" : "lightMode_secondary"
-        }`
+    if(path===pathName)  return `${styles.active}
+      sidebar_active
+    `
+    else{
+    return (pathName.startsWith(path) && path!=='/internal')
+      ? `${styles.active} sidebar_active`
       : "";
+    }
   };
 
   const updateSteps = useCallback(() => {
@@ -160,12 +163,12 @@ const Sidebar = () => {
           pathName="internal"
         />
       )}
-      <Link href="/internal" className={`${styles.link} `}>
+      <Link href="/internal" className={`${styles.heroBanner} `}>
         <Image
           className={styles.logo_image}
           src={logo}
-          width={40}
-          height={48}
+          width={42}
+          height={50}
           alt="logo"
         />
         <div className={styles.logo_title}>EventGeni</div>

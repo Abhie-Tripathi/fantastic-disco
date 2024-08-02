@@ -118,7 +118,7 @@
 }
 .yourWidgetModal {
     filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
-    height: 610px;
+    height: 88%;
     width: 600px;
     background-color: #FFFFFF;
     position:fixed;

@@ -4,24 +4,27 @@ import PageTemplates from '../PageTemplates/PageTemplates'
 import SectionTemplates from '../SectionTemplates/SectionTemplates';
 import StickyTemplates from '../StickyTemplates/StickyTemplates';
 import PopupTemplate from '../PopupTemplate/PopupTemplate';
-import { useTheme } from '@/context';
 import { StaticImageData } from 'next/image';
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 import PreviewWindow from './PreviewWindow';
+
 
 
 interface Props {
     widgetSelected: string;
     draftWidgets: DraftWidgetsType[]
     setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
+    fetchDraftWidgets: () => Promise<void>; 
 }
 interface DraftWidgetsType {
     widgetType: string;
-    widgetTemplateName: string;
-    selectedImage : StaticImageData
-}
+    templateId: string;
+    widgetId: string;
+    status: string;
+  }
 
-const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets }: Props) => {
+
+const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchDraftWidgets}: Props) => {
     // const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>(""); // THIS IS TEMPLATE CODE
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -53,11 +56,11 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets }: Pro
                     {widgetSelected === "Page" ? <PageTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
                         widgetSelected === "Section" ? <SectionTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
                             widgetSelected === "Sticky" ? <StickyTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
-                                widgetSelected === "Popup" ? <PopupTemplate setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> : <></>}
+                                widgetSelected === "Pop" ? <PopupTemplate setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> : <></>}
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
-                <PreviewWindow draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} selectedCard={selectedCard} setSelectedCard={setSelectedCard} templateName={templateName} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen}/>
+                <PreviewWindow draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>
     )
