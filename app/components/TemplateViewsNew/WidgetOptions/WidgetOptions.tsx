@@ -40,7 +40,7 @@ const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow,
                 <WidgetCard widgetType="Page" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard={exploreWindow && widgetOptionsWindow} />
                 <WidgetCard widgetType="Section" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard={exploreWindow && widgetOptionsWindow} />
                 <WidgetCard widgetType="Sticky" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard={exploreWindow && widgetOptionsWindow} />
-                <WidgetCard widgetType="Popup" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard={exploreWindow && widgetOptionsWindow} />
+                <WidgetCard widgetType="Pop" setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} smallCard={exploreWindow && widgetOptionsWindow} />
             </div>
         </div>
     )

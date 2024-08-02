@@ -1,28 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './draftwidgets.style.module.css'
 import WidgetCard from './WidgetCard'
-import { StaticImageData } from 'next/image'
 import EmptyCard from './EmptyCard'
 
 interface Props {
   setYourWidgetModal: (value: boolean) => void
+  setDraftWidgets: (value: DraftWidgetsType[]) => void
   draftWidgets: DraftWidgetsType[]
-  setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
+  fetchDraftWidgets: () => Promise<void>; 
 }
+type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
   widgetType: string;
-  widgetTemplateName: string;
-  selectedImage: StaticImageData
+  templateId: string;
+  widgetId: string;
+  status: string;
 }
 
-
-const DraftWidgets = ({ setYourWidgetModal, draftWidgets, setDraftWidgets }: Props) => {
-
-  const handleDelete = (indexToDelete: any) => {
-    setDraftWidgets((prevDraftWidgets) =>
-      prevDraftWidgets.filter((_, index) => index !== indexToDelete)
-    );
-  };
+const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets,fetchDraftWidgets }: Props) => {
 
   return (
     <div className={styles.body}>
@@ -35,19 +30,18 @@ const DraftWidgets = ({ setYourWidgetModal, draftWidgets, setDraftWidgets }: Pro
       <div className={styles.line}></div>
       <div className={styles.widgets}>
         {draftWidgets.length > 0 ? (
-          draftWidgets.map((card, index) => (
+          draftWidgets.map((card,key) => (
             <WidgetCard
-              key={index}
-              image={card.selectedImage}
-              widgetTemplate={card.widgetTemplateName}
+              key={key}
+              widgetId = {card.widgetId}
+              templateId={card.templateId as TemplateId}
               widgetType={card.widgetType}
               widgetNumber={1}
-              onDelete={() => handleDelete(index)}
+              fetchDraftWidgets={fetchDraftWidgets}
             />
           ))
         ) : (
           <div className={styles.emptyCard}><EmptyCard /></div>
-
         )}
       </div>
     </div>

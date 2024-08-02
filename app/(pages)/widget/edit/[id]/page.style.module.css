@@ -3,7 +3,6 @@
     display: flex;
     padding: 30px 30px 100px 30px;
     height: 88vh;
-    gap: 30px;
 }
 
 .modalOpen {
@@ -11,8 +10,9 @@
 }
 
 .editContainer {
-    width: 55%;
+    width: 50%;
     height: 120%;
+    margin-right: 10px;
 }
 
 .previewContainer {
@@ -49,4 +49,16 @@
         width: 55%;
     }
     
+}
+@media screen and (max-width : 1250px){
+    .body{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .editContainer{
+        width: 100%;
+    }
+    .previewContainer{
+        width: 100%;
+    }
 }
