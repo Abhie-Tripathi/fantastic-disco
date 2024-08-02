@@ -19,7 +19,7 @@ interface CardProps {
     subheading: FontSettings;
     body: FontSettings;
   };
-  fetchedEvent: AddedEventsType
+  fetchedEvent?: AddedEventsType
 }
 const EventListCard1 = ({
   cardBgColor = "#ffffff",
