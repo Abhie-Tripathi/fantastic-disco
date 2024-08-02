@@ -3,6 +3,7 @@ import styles from './popup1.style.module.css'
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
+import { AddedEventsType } from '@/types/addedwidgetevents'
 
 interface FontSettings {
   fontFamily: string;
@@ -31,6 +32,7 @@ interface Props {
     secondary: ButtonSettings;
   };
   selectedBtn?: "primary" | "secondary"
+  fetchedAddedEvents? : AddedEventsType[]
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -43,10 +45,10 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary" }: Props) => {
+  }, selectedBtn = "primary",fetchedAddedEvents }: Props) => {
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image src={placeholder2} alt='banner' className={styles.banner} />
+      <Image width={380} height={385} src={fetchedAddedEvents? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>29</span>
@@ -55,12 +57,12 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
           <div className={styles.name_locationContainer}>
             <div className={styles.locationContainer}>
               <Image src={locationIcon} alt='location' />
-              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>Corpus Christi, USA</div>
+              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents ? fetchedAddedEvents[0].cityName +", "+ fetchedAddedEvents[0].countryName: "Corpus Christi, USA"}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>Join Gifts World Expo 2024</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents? fetchedAddedEvents[0].name : "Join Gifts World Expo 2024"}</div>
           </div>
         </div>
-        <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }}>Amidst this gathering, immerse yourself in an atmosphere of collaboration and creative energy, as manufacturers, retailers, and distributors unite.....</div>
+        <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }}>{fetchedAddedEvents ? fetchedAddedEvents[0].description : "Demo Description"}</div>
         <div className={styles.dateRange_typeContainer}>
           <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>29 Jan - 5 Feb</div>
           <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>

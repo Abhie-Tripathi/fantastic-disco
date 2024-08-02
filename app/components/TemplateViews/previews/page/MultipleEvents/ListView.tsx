@@ -3,6 +3,7 @@ import styles from './listview.style.module.css'
 import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface FontSettings {
     fontFamily: string;
@@ -12,18 +13,19 @@ interface FontSettings {
 }
 
 interface EditProps {
-    cardBorderRadius? : number;
-    cardBgColor? : string;
+    cardBorderRadius?: number;
+    cardBgColor?: string;
     selectedCard?: string;
     fontSettings?: {
         heading: FontSettings;
         subheading: FontSettings;
         body: FontSettings;
     };
+    fetchedAddedEvents?: AddedEventsType[]
 }
 
 
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedEvents }: EditProps) => {
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -38,12 +40,39 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: 
     }
     return (
         <div className={styles.listView}>
-            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            <EventListCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            
+            {fetchedAddedEvents ? (
+                fetchedAddedEvents.map((event, key) => (
+                    <EventListCard
+                        key={key}
+                        fetchedAddedEvents={fetchedAddedEvents}
+                        cardBgColor={cardBgColor}
+                        cardBorderRadius={cardBorderRadius}
+                        fontSettings={fontSettings}
+                        fetchedEvent = {event}
+                    />
+                ))
+            ) : (
+                <div>
+                    <EventListCard
+                        cardBgColor={cardBgColor}
+                        cardBorderRadius={cardBorderRadius}
+                        fontSettings={fontSettings}
+                    />
+                     <EventListCard
+                        cardBgColor={cardBgColor}
+                        cardBorderRadius={cardBorderRadius}
+                        fontSettings={fontSettings}
+                    />
+                    <EventListCard
+                        cardBgColor={cardBgColor}
+                        cardBorderRadius={cardBorderRadius}
+                        fontSettings={fontSettings}
+                    />
+                </div>
+            )}
         </div>
-    )
+    );
+    
 }
 
 export default ListView

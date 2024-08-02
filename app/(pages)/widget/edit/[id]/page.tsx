@@ -12,12 +12,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AddedEventsType } from '@/types/addedwidgetevents'
 
 interface AllEventsType {
-  eventId : string;
+  eventId: string;
   name: string;
   location: string;
   startDate: string;
   endDate: string;
-  isLinkedToWidget : boolean;
+  isLinkedToWidget: boolean;
 }
 
 const Page = () => {
@@ -60,25 +60,25 @@ const Page = () => {
 
 
   // This function is fetching all the events regardless added in the widget or not
-  const fetchEvents = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
-    if(data){
-        const events = data.data.map((event : any)=>({
-            eventId : event.id,
-            name: event.name,
-            location: event.data.location_city,
-            startDate: event.data.start_date,
-            endDate: event.data.end_date,
-            isLinkedToWidget : event.isWidgetLinked
-        }))
-        setFetchedAllEvents(events)
-    }if(error){
-        console.log(error)
+  const fetchEvents = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
+    if (data) {
+      const events = data.data.map((event: any) => ({
+        eventId: event.id,
+        name: event.name,
+        location: event.data.location_city,
+        startDate: event.data.start_date,
+        endDate: event.data.end_date,
+        isLinkedToWidget: event.isWidgetLinked
+      }))
+      setFetchedAllEvents(events)
+    } if (error) {
+      console.log(error)
     }
-}
+  }
   // Function for fetching the added events in widget
-  const fetchAddedEvents = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/widget/${widgetId}`)
+  const fetchAddedEvents = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
     if (data) {
       const events = data.otherdata?.event;
       setfetchedAddedEvents(events);
@@ -140,12 +140,12 @@ const Page = () => {
     }
   }
 
-  const handleAddEventModal = ()=>{
+  const handleAddEventModal = () => {
     setPrefilledAddedEvent(undefined)
     setIsAddEventModalOpen(true)
   }
 
-  const handlePrefilledAddedEvent = (event : AddedEventsType)=>{
+  const handlePrefilledAddedEvent = (event: AddedEventsType) => {
     setPrefilledAddedEvent(event)
     setIsAddEventModalOpen(true)
   }
@@ -169,14 +169,14 @@ const Page = () => {
           buttonSettings={buttonSettings}
           cardBgColor={cardBgColor}
           cardBorderRadius={cardBorderRadius}
-          fetchedAllEvents = {fetchedAllEvents}
-          fetchEvents = {fetchEvents}
-          fetchedAddedEvents = {fetchedAddedEvents}
-          fetchAddedEvents =  {fetchAddedEvents}
+          fetchedAllEvents={fetchedAllEvents}
+          fetchEvents={fetchEvents}
+          fetchedAddedEvents={fetchedAddedEvents}
+          fetchAddedEvents={fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
-          handlePrefilledAddedEvent = {handlePrefilledAddedEvent}
-          handleAddEventModal = {handleAddEventModal}
+          handlePrefilledAddedEvent={handlePrefilledAddedEvent}
+          handleAddEventModal={handleAddEventModal}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -190,11 +190,12 @@ const Page = () => {
           cardBorderRadius={cardBorderRadius}
           fontSettings={fontSettings}
           buttonSettings={buttonSettings}
+          fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )

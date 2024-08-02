@@ -15,6 +15,7 @@ import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { useRouter } from 'next/navigation';
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface FontSettings {
     fontFamily: string;
@@ -55,6 +56,7 @@ interface PreviewProps {
     // setDraftWidgets: (value: DraftWidgetsType[]) => void
     draftWidgets?: DraftWidgetsType[]
     fetchDraftWidgets?: () => Promise<void>; 
+    fetchedAddedEvents?:  AddedEventsType[]
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -74,7 +76,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
         secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
-    selectedBtn = "primary" }: PreviewProps) => {
+    selectedBtn = "primary", fetchedAddedEvents }: PreviewProps) => {
     const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
@@ -165,7 +167,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                             selectedTemplate === "HB" ? <HeroBanner selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
                                 selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                    selectedTemplate === "LS" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                    selectedTemplate === "LS" ? <ListView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                 selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
@@ -174,7 +176,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                             selectedTemplate === "HS" ? <ScrollView type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                                 selectedTemplate === "LSR" ? <ScrollView selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                                     selectedTemplate === "RSR" ? <ScrollView selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                        selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
+                                                                        selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
                 {draftWidget && <div className={styles.previewBtnContainer}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>
