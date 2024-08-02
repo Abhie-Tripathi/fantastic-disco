@@ -1,5 +1,12 @@
+import { Location } from "geist-icons";
 import ProgressBar from "../../UI/progressBar";
 import styles from "./overview.style.module.css";
+import { useTheme } from "@/context";
+import Image from "next/image";
+import PlaceHolder from '/public/placeholder.png'
+import Exhibitors from "./overviewSections/Exhibitors";
+import Speakers from "./overviewSections/Speakers";
+import Sponsors from "./overviewSections/Sponsors";
 
 interface OverviewProps {
   eventDetail: any;
@@ -13,6 +20,7 @@ function isUpcomingEvent(startDate: Date): boolean {
 }
 
 const Overview = ({ eventDetail }: OverviewProps) => {
+  const { theme } = useTheme();
   return (
     <>
       <div className={`${styles.infoCard} card`}>
@@ -110,6 +118,44 @@ const Overview = ({ eventDetail }: OverviewProps) => {
         </div>
       </div>
 
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Event Description</div>
+      <div className={styles.eventDesc}>
+        {eventDetail?.description}
+      </div>
+
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Organizer</div>
+      <div className={`${styles.infoCard} card`}>
+        <div className={styles.hostDetailsContainer}>
+            <Image src={PlaceHolder} alt='company' width={48} height={48} style={{ borderRadius: 12 }} />
+            <div className={styles.hostDetails}>
+                <div className={styles.hostname}>10 Times</div>
+                <div className={styles.hostlocation}>
+                  <Location color={theme === "dark" ? "white" : ""} />
+                    <span>Bengaluru, Karnataka</span>
+                </div>
+                <div className={styles.upcoming}>Upcoming Events <span>N/A</span></div>
+                <div className={styles.hosted}>Events Hosted <span>12</span></div>
+            </div>
+        </div>
+      </div>
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Exhibitors</div>
+      <Exhibitors />
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Speakers</div>
+      <Speakers />
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Sponsors</div>
+      <Sponsors />
+
+      
       <div className={styles.line}></div>
 
       <div className={styles.mainHeading}>Audience Intelligence</div>

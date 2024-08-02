@@ -5,12 +5,13 @@ import styles from "./eventInsight.style.module.css";
 import Image from "next/image";
 import { useTheme } from "@/context";
 import LocationIcon from "/public/location.svg";
-import { Buildings, Location } from "geist-icons";
+import { Bookmark, Buildings, Globe, Location, StarFill } from "geist-icons";
 import Overview from "@/app/components/internal/insightPage/Overview";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Link from "next/link";
 import Loading from "@/app/components/UI/Loading";
+import Intel from "@/app/components/internal/insightPage/Intel";
 
 function extractDay(startDate: Date): string {
   const weekdays = [
@@ -136,10 +137,10 @@ const InsightsPage = () => {
   const [eventStart, setEventStart] = useState<Date>(new Date());
 
   const [tabs, setTabs] = useState<any>([
-    { name: "Overview", status: "open", active: true },
-    // { name: "Event Details", status: "open", active: false },
-    // { name: "Intelligence Data", status: "open", active: false },
-    // { name: "Audience Data", status: "open", active: false },
+    // { name: "Overview", status: "open", active: true },
+    { name: "Event Details", status: "open", active: true },
+    { name: "Event Intel", status: "open", active: false },
+    { name: "Exhibitor & Audience Intel", status: "open", active: false },
     // { name: "More", status: "open", active: false },
   ]);
 
@@ -186,17 +187,27 @@ const InsightsPage = () => {
     <>
       <div className={styles.container}>
         <div className={styles.containerLeft}>
-          {/* <div className={styles.eventLogo}>
-            <Image
-              src={
-                "https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"
-              }
-              alt="logo"
-              width={230}
-              height={230}
-              className={styles.image}
-            />
-          </div> */}
+          {eventDetail?.logoUrl &&
+            <div className={styles.eventLogo}>
+              <Image
+                src={eventDetail.logoUrl}
+                alt="logo"
+                width={230}
+                height={230}
+                className={styles.image}
+              />
+            </div>
+          }
+          <div className={styles.actionContainer}>
+            <div className={styles.eventRating}>
+              {eventDetail.stats.rating.toFixed(1)}
+              <StarFill color={'orange'} height="18px" width="18px" />
+            </div>
+            <div className={styles.eventActions}>
+              <Globe color={theme === "dark" ? "white" : ""} />
+              <Bookmark color={theme === "dark" ? "white" : ""} />
+            </div>
+          </div>
           <div className={styles.eventTitle}>{eventDetail?.name}</div>
           <div className={styles.date_loactionContainer}>
             <div className={styles.dateContainer}>
@@ -283,7 +294,8 @@ const InsightsPage = () => {
             ))}
           </div>
           <div className={styles.tabContent}>
-            <Overview eventDetail={eventDetail} />
+            {/* <Overview eventDetail={eventDetail} /> */}
+            <Intel eventDetail={eventDetail} />
           </div>
         </div>
       </div>

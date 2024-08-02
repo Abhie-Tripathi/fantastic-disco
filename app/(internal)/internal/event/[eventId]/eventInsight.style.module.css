@@ -28,6 +28,25 @@
     word-break: break-word;
 }
 
+.actionContainer {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.eventRating {
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.eventActions {
+    display:  flex;
+    gap: var(--spacing-md);
+}
+
 .date_loactionContainer{
     margin-top: 24px;
     display: flex;

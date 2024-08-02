@@ -513,14 +513,10 @@ const [val,setVal]=useState(1);
             headers: headers,
           });
           if (apiData.data) {
-            if (currPage === 1) {
-              setTotalPages(
-                Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
-              );
-              setEventPerPage(apiData.data.events);
-            } else {
-              setEventPerPage(apiData.data.events);
-            }
+            setTotalPages(
+              Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
+            );
+            setEventPerPage(apiData.data.events);
           } else setEventPerPage([]);
         } catch (error) {
           console.error("Error fetching data:", error);
