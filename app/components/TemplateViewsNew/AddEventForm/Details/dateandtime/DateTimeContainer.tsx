@@ -8,20 +8,41 @@ const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
     return new Date(date).toLocaleDateString('en-US', options);
 };
+interface TimeSettingsProps {
+    timeZone: string;
+    setTimeZone: React.Dispatch<React.SetStateAction<string>>;
+    timeZoneKey: number;
+    setTimeZoneKey: React.Dispatch<React.SetStateAction<number>>;
+    startDate: string;
+    setStartDate: React.Dispatch<React.SetStateAction<string>>;
+    endDate: string;
+    setEndDate: React.Dispatch<React.SetStateAction<string>>;
+    startTime: string;
+    setStartTime: React.Dispatch<React.SetStateAction<string>>;
+    endTime: string;
+    setEndTime: React.Dispatch<React.SetStateAction<string>>;
+  }
+  
 
-const DateTimeContainer = () => {
+const DateTimeContainer = ({ 
+    timeZone,
+    setTimeZone,
+    timeZoneKey,
+    setTimeZoneKey,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    startTime,
+    setStartTime,
+    endTime,setEndTime}: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
     const [startCalendarDropdown, setStartCalendarDropdown] = useState<boolean>(false)
     const [endCalendarDropdown, setEndCalendarDropdown] = useState<boolean>(false)
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
-    const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
-    const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    const [startDate, setStartDate] = useState<string>("")
-    const [endDate, setEndDate] = useState<string>("")
-    const [startTime, setStartTime] = useState<string>("12:00 A.M")
-    const [endTime, setEndTime] = useState<string>("12:00 A.M")
+
 
     useEffect(() => {
         const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"

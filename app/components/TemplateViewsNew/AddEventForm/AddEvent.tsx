@@ -5,8 +5,12 @@ import Details from './Details/Details'
 
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
+    widgetId : string;
+    fetchEvents : () => Promise<void>; 
+    fetchAddedEvents : ()=> Promise<void>;
+    addedEventIds : string[]
 }
-const AddEvent = ({setIsAddEventModalOpen} : Props) => {
+const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents} : Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>("rgba(70, 83, 216, 0.1)")
   const [eventFont, setEventFont] = useState<string>("Arial")
@@ -15,7 +19,7 @@ const AddEvent = ({setIsAddEventModalOpen} : Props) => {
   return (
     <div className={styles.body}>
         <div className={styles.appearance}><Appearance extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont = {eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor}/></div>
-        <div className={styles.details}><Details eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
+        <div className={styles.details}><Details fetchAddedEvents={fetchAddedEvents} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
     </div>
   )
 }

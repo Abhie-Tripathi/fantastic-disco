@@ -55,7 +55,9 @@
     color: white;
     background-color: #6750a4;
 }
-
+.btnContainer .addBtn:hover{
+    background-color: #7962b8;
+}
 .posterContainer {
     position: relative;
 }

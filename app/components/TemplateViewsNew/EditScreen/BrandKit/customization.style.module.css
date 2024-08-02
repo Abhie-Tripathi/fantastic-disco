@@ -25,6 +25,9 @@
     line-height: 18px;
     padding: 5px 8px;
 }
+.headerContainer button:hover{
+    background-color: #8169c3;
+}
 .cardStylesContainer{
     padding: 15px 21px 20px 23px;
 }

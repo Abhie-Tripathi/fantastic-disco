@@ -2,36 +2,29 @@ import React from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
-
-interface AllEventsType {
-    name: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-}
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface Props {
-    allEvents: AllEventsType[]
     setIsAddEventModalOpen: (value: boolean) => void
+    fetchedAddedEvents : AddedEventsType[]
 }
 
-const EventsAdded = ({ allEvents, setIsAddEventModalOpen }: Props) => {
+const EventsAdded = ({ setIsAddEventModalOpen,fetchedAddedEvents }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>Events Added<span>{allEvents.length}</span></div>
+                <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
                 <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
-                {allEvents.map((event, key) => (
-                    // <div className={styles.eventContainer} key={key}>
+                {fetchedAddedEvents?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
-                                <div>{event.location}</div>
+                                <div>{event.cityName}</div>
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
@@ -57,7 +50,6 @@ const EventsAdded = ({ allEvents, setIsAddEventModalOpen }: Props) => {
                             </div>
                         </div>
                     </div>
-                    // </div>
                 ))}
             </div>
         </div>
