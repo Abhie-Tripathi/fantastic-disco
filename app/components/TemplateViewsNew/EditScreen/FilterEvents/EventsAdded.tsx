@@ -11,6 +11,10 @@ interface Props {
 }
 
 const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAddedEvent }: Props) => {
+    const formatDate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+        return new Date(date).toLocaleDateString('en-US', options);
+    };
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
@@ -29,7 +33,7 @@ const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAdd
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
-                                <div>{event.startDate} - {event.endDate}</div>
+                                <div>{formatDate(event.startDate)} - {formatDate(event.endDate)}</div>
                             </div>
                         </div>
                         <div className={styles.btnContainer}>

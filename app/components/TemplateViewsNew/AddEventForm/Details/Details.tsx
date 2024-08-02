@@ -41,9 +41,9 @@ interface Props {
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
-  prefilledAddedEvent : AddedEventsType | undefined;
+  prefilledAddedEvent: AddedEventsType | undefined;
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents ,prefilledAddedEvent}: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -136,7 +136,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       location_city: cityName,
       location_country: countryName,
       widgetIds,
-      logoUrl : imageUrl
+      logoUrl: imageUrl
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -149,7 +149,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       const eventId = data.data.id
       const bannerUrl = data.data.data.logoUrl
-      addEventToWidget(eventId,bannerUrl)
+      addEventToWidget(eventId, bannerUrl)
     }
     if (error) {
       console.log(error)
@@ -209,6 +209,93 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }
 
+  const handleSaveEvent = async () => {
+    if (!prefilledAddedEvent) return;
+    const eventData = {
+      id: prefilledAddedEvent.id,
+      format: eventFormat,
+      start_time: startTime,
+      end_time: endTime,
+      end_date: endDate,
+      start_date: startDate,
+      description,
+      location_city: cityName,
+      location_country: countryName,
+    };
+    const formData = new FormData();
+    formData.append("id", prefilledAddedEvent.id);
+    formData.append("name", eventName);
+    formData.append("data", JSON.stringify(eventData));
+    const { data, error } = await myFetch(`${baseUrl}/event`, {
+      method: 'PATCH',
+      body: formData,
+    });
+    if (data) {
+      const updatedEventId = data.data.id;
+      updateEventInWidget(updatedEventId);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }
+  const updateEventInWidget = async (eventId: string) => {
+    const customizedFormData = new FormData();
+    const existingEvents = fetchedAddedEvents || [];
+    const updatedEvent = {
+      id: eventId,
+      name: eventName,
+      pageBgColor,
+      description,
+      eventFont,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      timeZone,
+      cityName,
+      countryName,
+      participationType,
+      eventFormat,
+      registerBtnColor,
+      registerBtnText,
+      registerMessage,
+      boothNumber,
+      speakerProfilesData,
+      participationMessage,
+      bannerUrl : prefilledAddedEvent?.bannerUrl,
+    };
+  
+    // Find and update the existing event
+    const updatedEvents = existingEvents.map(event => 
+      event.id === eventId ? updatedEvent : event
+    );
+  
+    const otherData = {
+      event: updatedEvents,
+    };
+  
+    const eventIds = updatedEvents.map(event => event.id).join(',');
+  
+    customizedFormData.append('widgetId', widgetId);
+    customizedFormData.append('otherdata', JSON.stringify(otherData));
+    customizedFormData.append('eventId', eventIds);
+  
+    const { data, error } = await myFetch(`${baseUrl}/widget`, {
+      method: 'POST',
+      body: customizedFormData,
+    });
+    if (data) {
+      console.log("widget event data", data);
+      fetchEvents();
+      fetchAddedEvents();
+      setIsAddEventModalOpen(false);
+    }
+    if (error) {
+      console.log("error in updating event in widget ", error);
+    }
+  };
+  
+
   const handleGeneratePoster = () => {
     if (description && eventName && countryName) {
       generatePrompt(countryName, description, eventName)
@@ -224,7 +311,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     <div className={styles.body}>
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
         <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-        <button className={styles.addBtn} onClick={handleAddEvent}>Save and Add event</button>
+        <button className={styles.addBtn} onClick={prefilledAddedEvent ? handleSaveEvent : handleAddEvent}>Save and Add event</button>
       </div>
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
