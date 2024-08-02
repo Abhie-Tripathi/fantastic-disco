@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { Inter } from "next/font/google";
 import { useState } from "react";
 import "./../globals.css";
@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Joyride from "react-joyride";
+import { Metadata } from "next";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -20,12 +21,17 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+export const metadata: Metadata = {
+  title: "Eventgeni",
+  description: "Connecting Opportunities, Discover Events",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [event, setEvent] = useState();
+  // const [event, setEvent] = useState();
   return (
     <html lang="en" className={`${sora.className} ${inter.variable}`}>
       <body>
