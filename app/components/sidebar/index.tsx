@@ -30,14 +30,12 @@ const Sidebar = () => {
   const outreachRef = useRef(null);
 
   const getActiveClass = (path: string) => {
-    if(path===pathName)  return `${styles.active} ${
-      theme === "dark" ? "darkMode_secondary" : "lightMode_secondary"
-    }`
+    if(path===pathName)  return `${styles.active}
+      sidebar_active
+    `
     else{
     return (pathName.startsWith(path) && path!=='/internal')
-      ? `${styles.active} ${
-          theme === "dark" ? "darkMode_secondary" : "lightMode_secondary"
-        }`
+      ? `${styles.active} sidebar_active`
       : "";
     }
   };
