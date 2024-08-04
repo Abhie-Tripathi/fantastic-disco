@@ -15,7 +15,7 @@ interface Props{
 }
 const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent} : Props) => {
 
-  const [pageBgColor, setPageBgColor] = useState<string>("rgba(70, 83, 216, 0.1)")
+  const [pageBgColor, setPageBgColor] = useState<string>(prefilledAddedEvent?.pageBgColor || "rgba(70, 83, 216, 0.1)")
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
 
