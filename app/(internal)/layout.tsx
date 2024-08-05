@@ -24,7 +24,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Eventgeni",
-  description: "Connecting Opportunities, Discover Events",
+  description: "All-in-one solution to maximize ROI from your event GTM strategy.",
 };
 
 export default function RootLayout({
