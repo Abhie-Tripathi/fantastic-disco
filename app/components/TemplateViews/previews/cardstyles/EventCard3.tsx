@@ -32,6 +32,7 @@ const EventCard3 = ({
       body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
     },fetchedEvent
 }: CardProps) => {
+    
     const formatDate = (date: string) => {
         const dateObj = new Date(date);
     
