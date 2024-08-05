@@ -422,8 +422,8 @@ input[type="number"] {
   filter: var(--img-filter);
 }
 .body_layout {
-  margin-top: 80px;
-  margin-left: 80px;
+  margin-top: 70px;
+  margin-left: 70px;
 }
 
 .sidebar-open {
