@@ -39,7 +39,6 @@ const EventListCard2 = ({
     const month = dateObj.toLocaleString('en-US', { month: 'long' });
     const year = dateObj.getFullYear();
 
-    // Function to get the appropriate suffix for the day
     const getDayWithSuffix = (day: number) => {
       const suffixes = ['th', 'st', 'nd', 'rd'];
       const value = day % 100;

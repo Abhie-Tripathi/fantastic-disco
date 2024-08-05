@@ -29,11 +29,12 @@ const EventListCard3 = ({
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
   },fetchedEvent}: CardProps) => {
+    
     const formatDate = (date: string) => {
       const dateObj = new Date(date);
   
       const day = dateObj.getDate();
-      const month = dateObj.toLocaleString('en-US', { month: 'long' });
+      const month = dateObj.toLocaleString('en-US', { month: 'short' });
       const year = dateObj.getFullYear();
   
       // Function to get the appropriate suffix for the day

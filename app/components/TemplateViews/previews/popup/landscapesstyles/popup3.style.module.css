@@ -30,7 +30,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    justify-content: space-between;
+}
+.eventDetails .values{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 .locationContainer{
     display: flex;
@@ -42,6 +47,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+.description{
+    line-height: 20px;
 }
 .btn{
     padding: 10px 20px;
