@@ -49,7 +49,7 @@ interface ButtonSettingsState {
   secondary: ButtonSettings;
 }
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
+const   Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
 
   const handleUpdate = async () => {
     handleUpdateCustomization()

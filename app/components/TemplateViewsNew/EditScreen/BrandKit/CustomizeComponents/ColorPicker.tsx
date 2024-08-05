@@ -30,7 +30,7 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange}: ColorProps
                 </div>
             ) : null}
             <div className={styles.pickedColorCode} style={{backgroundColor :  theme === "light" ? "#F2F2F2" : "#1A1A1A"}}>{color}</div>
-            <div className={styles.pickedColorOuter} style={{ borderColor: color }} onClick={handleClick}>
+            <div className={styles.pickedColorOuter} onClick={handleClick}>
                 <div className={styles.pickedColorInner} style={{ backgroundColor: color }}></div>
             </div>
         </div>
