@@ -220,7 +220,7 @@ const Navbar = () => {
               {dotMenuCtas.isOpen && (
                 <div
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
-                  style={{ width: "fit-content" }}
+                  style={{ width: "fit-content", padding: '8px' }}
                 >
                   <Link href="#" className="">
                     <div
@@ -343,7 +343,7 @@ const Navbar = () => {
               )}
 
               {profilectas.isOpen && (
-                <div className={`${styles.userDropdown} card`}>
+                <div className={`${styles.userDropdown} card`} style={{padding: '8px' }} >
                   <Link
                     href={
                       pathName === "internal" ? "/internal/profile" : "/profile"

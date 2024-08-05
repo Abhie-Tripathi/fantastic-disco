@@ -62,7 +62,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [page, setPage] = useState(0);
-  const [trackerPerPage, setTrackerPerPage] = useState(1);
+  const [trackerPerPage, setTrackerPerPage] = useState(4);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [loadOne,setLoadOne]=useState(false);
   const [loadTwo,setLoadTwo]=useState(false);
@@ -99,17 +99,17 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
             setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
           setLoadOne(false);
           setLoadTwo(true);
-            const secondFetchResult = await myFetch(
-              `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
-            );
+            // const secondFetchResult = await myFetch(
+            //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
+            // );
 
-            if (secondFetchResult.data) {
-              setAllTracker((prevAllTracker:any[]) => [
-                ...prevAllTracker, ...secondFetchResult.data.trackerData
+            // if (secondFetchResult.data) {
+            //   setAllTracker((prevAllTracker:any[]) => [
+            //     ...prevAllTracker, ...secondFetchResult.data.trackerData
                 
-              ]);
-              setLoadTwo(false);
-            }
+            //   ]);
+            //   setLoadTwo(false);
+            // }
           }
         }
 
@@ -127,7 +127,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
 
   const handleNextPage = () => {
     if (page < totalPage - 1) {
-      setPage(page + 2);
+      setPage(page + 1);
       // setAllTracker([]);
     }
   };
@@ -185,9 +185,9 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}
-          {loadTwo && <div className={styles.loadingContainer}>
+          {/* {loadTwo && <div className={styles.loadingContainer}>
           <div className={styles.loadingBar}></div>
-        </div>}
+        </div>} */}
           {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
         </div>
         {/* {loading && <Loading/>} */}
