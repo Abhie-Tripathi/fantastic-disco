@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './colorpicker.style.module.css'
 import { SketchPicker } from 'react-color';
 import { useTheme } from '@/context';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface ColorProps {
     color: string;
@@ -15,9 +16,10 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange}: ColorProps
     const handleClick = () => {
         setDisplayColorPicker(!displayColorPicker);
     };
+    const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
     const {theme} = useTheme()
     return (
-        <div className={styles.body}>
+        <div className={styles.body} ref={colorPickerRef}>
             <div className={styles.heading}>{heading}</div>
             {displayColorPicker ? (
                 <div className={styles.colorPickerModal}>

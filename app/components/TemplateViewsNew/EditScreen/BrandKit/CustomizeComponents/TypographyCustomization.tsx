@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './typography.style.module.css'
 import ColorPicker from './ColorPicker'
 import { useTheme } from '@/context';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     extractedColors: string[]
@@ -31,6 +32,8 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
     const [styleDropdownOpen, setStyleDropdownOpen] = useState(false);
 
     const {theme} = useTheme()
+    const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
+    const styleDropdownRef = useOutsideClick(() => setStyleDropdownOpen(false));
 
     const handleCheckboxChange = (value: string) => {
         setSelectedType(value as "heading" | "subheading" | "body");
@@ -147,7 +150,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                         <div className={styles.fontFamilyContainer}>
                             <div className={styles.heading}>Font Family</div>
                             <FontFamilyIcon color={theme === "light" ? "black" : "white"}/>
-                            <div className={styles.dropDownContainer} style={{backgroundColor :  theme === "light" ? "#F2F2F2" : "#1A1A1A"}} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
+                            <div ref={familyDropdownRef} className={styles.dropDownContainer} style={{backgroundColor :  theme === "light" ? "#F2F2F2" : "#1A1A1A"}} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
                                 <div className={styles.display} >{selectedType === "heading" ? fontSettings.heading.fontFamily : selectedType === "subheading" ? fontSettings.subheading.fontFamily : fontSettings.body.fontFamily}</div>
                                 <DownArrow color={theme === "light" ? "black" : "white"}/>
                                 {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
@@ -179,7 +182,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                         <div className={styles.fontStyleContainer}>
                             <div className={styles.heading}>Font Weight</div>
                             <FontStyleIcon color={theme === "light" ? "black" : "white"}/>
-                            <div className={styles.dropDownContainer} style={{backgroundColor :  theme === "light" ? "#F2F2F2" : "#1A1A1A"}} onClick={() => setStyleDropdownOpen(!styleDropdownOpen)}>
+                            <div ref={styleDropdownRef} className={styles.dropDownContainer} style={{backgroundColor :  theme === "light" ? "#F2F2F2" : "#1A1A1A"}} onClick={() => setStyleDropdownOpen(!styleDropdownOpen)}>
                                 <div className={styles.display}>{selectedType === "heading" ? fontSettings.heading.fontWeight : selectedType === "subheading" ? fontSettings.subheading.fontWeight : fontSettings.body.fontWeight}</div>
                                 <DownArrow color={theme === "light" ? "black" : "white"}/>
                                 {styleDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
