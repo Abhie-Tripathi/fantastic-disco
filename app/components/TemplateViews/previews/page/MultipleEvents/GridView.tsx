@@ -42,7 +42,7 @@ const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard,fe
         <div className={styles.body}>
             {fetchedAddedEvents ? (
                 fetchedAddedEvents.map((event, key) => (
-                    <div className={styles.gridView}>
+                    <div className={styles.gridView} key={key}>
                     <EventCard
                         key={key}
                         cardBgColor={cardBgColor}
