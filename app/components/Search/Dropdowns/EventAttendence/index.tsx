@@ -18,9 +18,7 @@ const EventAttendance = ({
   const {theme} = useTheme();
 
   const [eventAttendanceRange, setEventAttendanceRange] = useState<string[]>(state);
-  useEffect(()=>{
-    console.log(eventAttendanceRange);
-    
+  useEffect(()=>{    
     if(eventAttendanceRange[0] && eventAttendanceRange[1]){
       setState(eventAttendanceRange);
     }else if(eventAttendanceRange[0] == '' || eventAttendanceRange[1] == '' ){
