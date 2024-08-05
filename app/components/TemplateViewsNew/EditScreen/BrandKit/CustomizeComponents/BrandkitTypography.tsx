@@ -3,6 +3,7 @@ import styles from './brandkittypo.style.module.css'
 import Image from 'next/image'
 import WarningIcon from '/public/warningicon.svg'
 import { useTheme } from '@/context';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     flex: boolean;
@@ -13,6 +14,7 @@ const BrandkitTypography = ({ flex }: Props) => {
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState<string>("Arial")
+    const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
 
     return (
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
@@ -24,7 +26,7 @@ const BrandkitTypography = ({ flex }: Props) => {
                 <div className={styles.fontFamilyContainer}>
                     <div className={styles.heading}>Font Family</div>
                     <FontFamilyIcon color={theme === "light" ? "black" : "white"} />
-                    <div className={styles.dropDownContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
+                    <div ref={familyDropdownRef} className={styles.dropDownContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
                         <div className={styles.display}>{selectedFont}</div>
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
