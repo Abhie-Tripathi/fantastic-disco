@@ -129,7 +129,7 @@
     flex-direction: column;
     gap: var( --spacing-lg);
     background: var(--background-secondary-color);
-    width: 33.33%;
+    width: 45%;
 }
 
 .cardHeading {
