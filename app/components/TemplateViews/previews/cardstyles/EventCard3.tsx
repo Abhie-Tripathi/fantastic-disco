@@ -3,6 +3,7 @@ import styles from './eventcard3.style.module.css'
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
+import { AddedEventsType } from '@/types/addedwidgetevents'
 
 interface FontSettings {
     fontFamily: string;
@@ -19,6 +20,7 @@ interface CardProps {
         subheading: FontSettings;
         body: FontSettings;
     };
+    fetchedEvent?: AddedEventsType
 }
 
 const EventCard3 = ({
@@ -28,24 +30,39 @@ const EventCard3 = ({
       heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
       subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
       body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-    },
+    },fetchedEvent
 }: CardProps) => {
-
+    const formatDate = (date: string) => {
+        const dateObj = new Date(date);
+    
+        const day = dateObj.getDate();
+        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const year = dateObj.getFullYear();
+    
+        // Function to get the appropriate suffix for the day
+        const getDayWithSuffix = (day: number) => {
+            const suffixes = ['th', 'st', 'nd', 'rd'];
+            const value = day % 100;
+            return day + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
+        };
+    
+        return `${getDayWithSuffix(day)} ${month} ${year}`;
+    };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <div className={styles.bannerContainer}>
-                <Image src={placeholder2} alt='placeholder' className={styles.banner} />
+            <Image width={100} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
                 <div className={styles.type}>Workshop</div>
             </div>
-            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>East Midlands Young Planners</div>
+            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <Image src={locationIcon} alt='location' />
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>Corpus Christi, USA</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon />
-                    <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>1st Apr 2024 - 20th Apr 2024</div>
+                    <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
                 </div>
             </div>
         </div>
