@@ -19,12 +19,15 @@ const EventAttendance = ({
 
   const [eventAttendanceRange, setEventAttendanceRange] = useState<string[]>(state);
   useEffect(()=>{
+    console.log(eventAttendanceRange);
+    
     if(eventAttendanceRange[0] && eventAttendanceRange[1]){
       setState(eventAttendanceRange);
       // onClose();
-    }else if(eventAttendanceRange[0] == '' && eventAttendanceRange[1] == ''){
+    }else if(eventAttendanceRange[0] == '' || eventAttendanceRange[1] == '' ){
       setState([]);
-      onClose();
+      // setEventAttendanceRange([]);
+      // onClose();
     }
   },[eventAttendanceRange])
   const removeHandler=()=>{
