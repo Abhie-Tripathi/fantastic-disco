@@ -16,6 +16,7 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { useRouter } from 'next/navigation';
 import { AddedEventsType } from '@/types/addedwidgetevents';
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
     fontFamily: string;
@@ -24,13 +25,6 @@ interface FontSettings {
     fontWeight: string;
 }
 
-interface ButtonSettings {
-    buttonColor: string;
-    fontColor: string;
-    borderRadius: number;
-    borderColor: string;
-    buttonText: string;
-}
 interface PreviewProps {
     selectedTemplate?: string;
     selectedCard?: string;
@@ -47,13 +41,9 @@ interface PreviewProps {
         subheading: FontSettings;
         body: FontSettings;
     };
-    buttonSettings?: {
-        primary: ButtonSettings;
-        secondary: ButtonSettings;
-    };
+    buttonSettings?: ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
-    // setDraftWidgets: (value: DraftWidgetsType[]) => void
     draftWidgets?: DraftWidgetsType[]
     fetchDraftWidgets?: () => Promise<void>; 
     fetchedAddedEvents?:  AddedEventsType[]
@@ -74,7 +64,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     },
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-        secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+        secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
     selectedBtn = "primary", fetchedAddedEvents }: PreviewProps) => {
     const { theme } = useTheme()

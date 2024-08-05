@@ -6,20 +6,13 @@ import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
 import { AddedEventsType } from '@/types/addedwidgetevents'
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 
 interface FontSettings {
   fontFamily: string;
   fontSize: number;
   fontColor: string;
   fontWeight: string;
-}
-
-interface ButtonSettings {
-  buttonColor: string;
-  fontColor: string;
-  borderRadius: number;
-  borderColor: string;
-  buttonText: string;
 }
 interface Props {
   cardBgColor?: string;
@@ -29,10 +22,7 @@ interface Props {
     subheading: FontSettings;
     body: FontSettings;
   };
-  buttonSettings?: {
-    primary: ButtonSettings;
-    secondary: ButtonSettings;
-  };
+  buttonSettings?: ButtonSettingsState,
   selectedBtn?: "primary" | "secondary"
   fetchedAddedEvents?: AddedEventsType[]
 }
@@ -46,7 +36,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
   },
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-    secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+    secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
   }, selectedBtn = "primary", fetchedAddedEvents }: Props) => {
 
   const formatDate = (date: string) => {
@@ -121,7 +111,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
           className={styles.btn}
           style={{
             color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
-            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor,
+            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
             borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
             borderColor: selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor
           }}

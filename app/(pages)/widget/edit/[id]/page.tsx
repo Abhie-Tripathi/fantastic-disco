@@ -10,6 +10,7 @@ import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddedEventsType } from '@/types/addedwidgetevents'
+import { ButtonSettingsState, PrimaryButtonSettings, SecondaryButtonSettings } from '@/types/buttoncustomizetypes'
 
 interface AllEventsType {
   eventId: string;
@@ -29,9 +30,9 @@ const Page = () => {
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
-  const [buttonSettings, setButtonSettings] = useState({
+  const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-    secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+    secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
   })
 
   const [cardStyle, setCardStyle] = useState<string>("style1")

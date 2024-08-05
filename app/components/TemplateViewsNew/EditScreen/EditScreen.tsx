@@ -5,6 +5,7 @@ import CodeWindow from './Code/CodeWindow';
 import Customization from './BrandKit/Customization';
 import { useTheme } from '@/context';
 import { AddedEventsType } from '@/types/addedwidgetevents';
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
     fontFamily: string;
@@ -18,17 +19,17 @@ interface FontSettingsState {
     subheading: FontSettings;
     body: FontSettings;
 }
-interface ButtonSettings {
-    buttonColor: string;
-    fontColor: string;
-    borderRadius: number;
-    borderColor: string;
-    buttonText: string;
-}
-interface ButtonSettingsState {
-    primary: ButtonSettings;
-    secondary: ButtonSettings;
-}
+// interface ButtonSettings {
+//     buttonColor: string;
+//     fontColor: string;
+//     borderRadius: number;
+//     borderColor: string;
+//     buttonText: string;
+// }
+// interface ButtonSettingsState {
+//     primary: ButtonSettings;
+//     secondary: ButtonSettings;
+// }
 interface EditScreenProps {
     setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
     setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;
@@ -62,7 +63,6 @@ interface AllEventsType {
     isLinkedToWidget : boolean;
   }
   
-
 const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn,handleUpdateCustomization,fetchedAllEvents, fetchEvents,widgetId, widgetType,    fetchedAddedEvents,fetchAddedEvents, handlePrefilledAddedEvent,handleAddEventModal  }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])

@@ -3,20 +3,13 @@ import Popup1 from './Popup1'
 import Popup2 from './Popup2'
 import Popup3 from './Popup3'
 import { AddedEventsType } from '@/types/addedwidgetevents';
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
     fontFamily: string;
     fontSize: number;
     fontColor: string;
     fontWeight: string;
-}
-
-interface ButtonSettings {
-    buttonColor: string;
-    fontColor: string;
-    borderRadius: number;
-    borderColor: string;
-    buttonText: string;
 }
 interface Props {
     selectedCard?: string;
@@ -27,10 +20,7 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    buttonSettings?: {
-        primary: ButtonSettings;
-        secondary: ButtonSettings;
-    };
+    buttonSettings?: ButtonSettingsState
     fetchedAddedEvents? : AddedEventsType[]
     selectedBtn? : "primary"|"secondary"
 }
