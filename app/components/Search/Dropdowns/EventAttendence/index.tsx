@@ -23,11 +23,8 @@ const EventAttendance = ({
     
     if(eventAttendanceRange[0] && eventAttendanceRange[1]){
       setState(eventAttendanceRange);
-      // onClose();
     }else if(eventAttendanceRange[0] == '' || eventAttendanceRange[1] == '' ){
       setState([]);
-      // setEventAttendanceRange([]);
-      // onClose();
     }
   },[eventAttendanceRange])
   const removeHandler=()=>{
