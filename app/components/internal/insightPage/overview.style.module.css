@@ -10,7 +10,8 @@
 .rankCards {
     display: flex;
     gap: var(--spacing-sm);
-    margin-top: 24px;
+    /* margin-top: 24px; */
+    justify-content: space-around;
 }
 
 .rankCards .cardItem {
@@ -230,4 +231,52 @@
     color: #FF990A;
     padding: 2px 5px;
     border-radius: 9px;
+}
+
+/* intel */
+
+.calculatorCardContainer {
+    margin: 24px 0;
+    display: flex;
+    gap: 24px;
+    color: black;
+}
+
+.relevanceCard {
+    background-color: #E0F0FF;
+    border-radius: 4px;
+    border: 1px solid #CBF0FF;
+    position: relative;
+    gap: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.costCard {
+    background-color: #F1E4FB;
+    border-radius: 4px;
+    border: 1px solid #EBEBEB;
+    position: relative;
+    gap: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* .cardHeading {
+    font-size: 20px;
+    font-weight: 600px;
+} */
+
+.cardCta {
+    padding: 10px 20px;
+    background-color: white;
+    width: fit-content;
+    /* font-size: 14px; */
+    font-weight: 600;
+}
+
+.cardImage {
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }

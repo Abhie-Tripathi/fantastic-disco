@@ -5,8 +5,8 @@ import styles from './sponsors.style.module.css'
 const Sponsors = () => {
   return (
     <div className={styles.exhibitorContainer}>
-      <div className="card"></div>
-      <div className="card"></div>
+      <div className="card">Home Accommodation Services Ltd</div>
+      <div className="card">RSS EXPRESS LTD T/A Ledbury Fuel Service Station</div>
     </div>
   );
 };

@@ -5,11 +5,13 @@
 }
 
 .containerLeft {
-    width: 33.33%;
+    width: 30%;
+    position: fixed;
 }
 
 .containerRight {
-    width: 66.67%;
+    width: 65%;
+    margin-left: auto;
 }
 
 .eventLogo {
@@ -156,9 +158,13 @@
 
 .tabActive {
     color: var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
 }
 
 .tabContent {
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    height: calc(100vh - 170px);
+    overflow-y: auto;
+    margin-right: -24px;
+    padding-right: 24px;
 }

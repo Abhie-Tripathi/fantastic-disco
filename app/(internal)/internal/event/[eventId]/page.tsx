@@ -295,7 +295,13 @@ const InsightsPage = () => {
           </div>
           <div className={styles.tabContent}>
             {/* <Overview eventDetail={eventDetail} /> */}
-            <Intel eventDetail={eventDetail} />
+            {/* <Intel eventDetail={eventDetail} /> */}
+            {
+              tabs.findIndex((tab: any) => tab.active) == 0 ?
+                <Overview eventDetail={eventDetail} /> :
+              tabs.findIndex((tab: any) => tab.active) == 1 ?
+                <Intel eventDetail={eventDetail} /> : <></>
+            }
           </div>
         </div>
       </div>

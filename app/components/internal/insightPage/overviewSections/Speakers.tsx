@@ -5,8 +5,8 @@ import styles from './speakers.style.module.css'
 const Speakers = () => {
   return (
     <div className={styles.exhibitorContainer}>
-      <div className="card"></div>
-      <div className="card"></div>
+      <div className="card">Daneil Azar</div>
+      <div className="card">Lesa Demetrios</div>
     </div>
   );
 };

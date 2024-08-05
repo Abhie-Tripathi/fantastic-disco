@@ -165,7 +165,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
       </div>
 
       <div style={{ display: "flex", gap: "12px" }}>
-        <div className={`${styles.audienceCard} ${styles.blurContent} card`}>
+        <div className={`${styles.audienceCard} card`}>
           <div className={styles.cardHeading}>Audience Profile</div>
           <div className={`${styles.audienceSubCard} card`}>
             <div className={styles.cardHeading}>Most interested Dept</div>
@@ -178,7 +178,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             <ProgressBar value={16} label="Student" />
           </div>
         </div>
-        <div className={`${styles.audienceCard} ${styles.blurContent} card`}>
+        <div className={`${styles.audienceCard} card`}>
           <div className={styles.cardHeading}>Audience Company Type</div>
           <div className={`${styles.audienceSubCard} card`}>
             <div className={styles.cardHeading}>
