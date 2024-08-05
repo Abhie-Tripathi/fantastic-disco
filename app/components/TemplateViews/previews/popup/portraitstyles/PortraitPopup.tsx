@@ -2,6 +2,7 @@ import React, { ElementType } from 'react'
 import Popup1 from './Popup1'
 import Popup2 from './Popup2'
 import Popup3 from './Popup3'
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface FontSettings {
     fontFamily: string;
@@ -30,10 +31,11 @@ interface Props {
         primary: ButtonSettings;
         secondary: ButtonSettings;
     };
+    fetchedAddedEvents? : AddedEventsType[]
     selectedBtn? : "primary"|"secondary"
 }
 
-const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn }: Props) => {
+const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn,fetchedAddedEvents }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -47,7 +49,7 @@ const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettin
             EventCard = Popup3; // Or some default component or message
     }
     return (
-        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
+        <EventCard fetchedAddedEvents={fetchedAddedEvents} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
     )
 }
 
