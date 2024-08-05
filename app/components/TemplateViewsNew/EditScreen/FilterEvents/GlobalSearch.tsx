@@ -20,6 +20,10 @@ const GlobalSearch = () => {
         return () => clearTimeout(debounceTimeout);
     }, [searchValue]);
 
+    const handleClickEvent = (event : any)=>{
+        console.log(event)
+    }
+
     const handleSearchInput = async (text: string) => {
         if (text) {
             const { data, error } = await myFetch(
@@ -48,7 +52,7 @@ const GlobalSearch = () => {
             {dataDropdown &&
                 <div className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown}`}>
                     {searchData.length > 0 ? searchData.map((event) => (
-                        <div className={styles.dropdownEvent} key={event.id}>
+                        <div className={styles.dropdownEvent} key={event.id} onClick={()=>handleClickEvent(event)}>
                             <span className={styles.dropeventName}>{event.name}</span>
                             <span className={styles.dropeventLocation}>{event.data.location_city}</span>
                         </div>

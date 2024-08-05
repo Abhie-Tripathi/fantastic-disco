@@ -12,8 +12,6 @@ interface Props{
   }
   
   const CardCustomization = ({extractedColors, setCardBgColor, setCardBorderRadius, cardBgColor, cardBorderRadius} : Props) => {
-    // const [color, setColor] = useState('#2c68f6');
-    // const [radiusValue, setRadiusValue] = useState<number>(2)
 
     const handleChange = (color: any) => {
         setCardBgColor(color.hex);

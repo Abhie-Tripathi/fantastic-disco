@@ -9,7 +9,8 @@ interface SpeakerProfileType {
     name: string;
     linkedin: string;
     designation: string;
-    profileImage: string | ArrayBuffer | null;
+    // profileImage: string | ArrayBuffer | null;
+    profileImage: File | null;
 }
 
 interface Props {
@@ -21,18 +22,43 @@ interface Props {
 }
 
 const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
-    const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
+    // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
+    const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
     const [name, setName] = useState<string>(prefilledProfile?.name || "");
     const [linkedinurl, setLinkedinurl] = useState<string>(prefilledProfile?.linkedin || "");
     const [designation, setDesignation] = useState<string>(prefilledProfile?.designation || "");
+
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = event.target.files?.[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             setImageSrc(reader.result);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
+    // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     const updatedProfile: SpeakerProfileType = {
+    //         id: prefilledProfile?.id || Date.now().toString(), // Use existing id or create a new one
+    //         name,
+    //         linkedin: linkedinurl,
+    //         designation,
+    //         profileImage: imageSrc,
+    //     };
+
+    //     if (prefilledProfile) {
+    //         updateSpeaker(updatedProfile);
+    //     } else {
+    //         setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
+    //         setSpeakerModal(false);
+    //     }
+    // };
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImageSrc(reader.result);
-            };
-            reader.readAsDataURL(file);
+            setImageFile(file);
         }
     };
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +68,7 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
             name,
             linkedin: linkedinurl,
             designation,
-            profileImage: imageSrc,
+            profileImage: imageFile, // Store the file
         };
 
         if (prefilledProfile) {
@@ -58,8 +84,13 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
             <div className={styles.header}>
                 <div className={styles.uploadContainer}>
                     <div className={styles.profileContainer}>
-                        {imageSrc ? (
+                        {/* {imageSrc ? (
                             <Image src={imageSrc as string} alt="profile" height={63} width={63} />
+                        ) : (
+                            <Image src={ProfileIcon} alt="profile" height={63} width={63} />
+                        )} */}
+                        {imageFile ? (
+                            <Image src={URL.createObjectURL(imageFile)} alt="profile" height={63} width={63} />
                         ) : (
                             <Image src={ProfileIcon} alt="profile" height={63} width={63} />
                         )}
@@ -83,7 +114,7 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
             {prefilledProfile ? <div className={styles.deletSaveContainer}>
                 <button type='button' className={styles.deleteBtn} onClick={() => {
                     if (prefilledProfile?.id) deleteSpeaker(prefilledProfile.id);
-                }}><DeleteIcon/>Delete</button>
+                }}><DeleteIcon />Delete</button>
                 <button type='submit' className={styles.saveBtn}>Save</button>
             </div> :
                 <div className={styles.addBtnContainer}>

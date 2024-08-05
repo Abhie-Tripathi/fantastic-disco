@@ -1,19 +1,31 @@
 export interface AddedEventsType {
+    id:string
+    name: string,
+    pageBgColor :string,
+    description : string,
+    eventFont : string,
+    startDate : string,
+    endDate : string,
+    startTime : string,
+    endTime : string,
+    timeZone: string,
+    cityName : string,
+    countryName : string,
+    participationType : string,
+    eventFormat : string,
+    registerBtnColor : string,
+    registerBtnText : string,
+    registerMessage : string,
+    boothNumber : string,
+    speakerProfilesData : SpeakerProfileType[],
+    participationMessage : string,
+    bannerUrl : string;
+  }
+  interface SpeakerProfileType {
     id: string;
     name: string;
-    endDate: string;
-    endTime: string;
-    cityName: string;
-    timeZone: string;
-    eventFont: string;
-    startDate: string;
-    startTime: string;
-    countryName: string;
-    description: string;
-    eventFormat: string;
-    pageBgColor: string;
-    registerBtnText: string;
-    registerMessage: string;
-    registerBtnColor: string;
-    participationType: string;
+    linkedin: string;
+    designation: string;
+    // profileImage: string | ArrayBuffer | null;
+    profileImage : File | null
   }

@@ -14,7 +14,7 @@
     filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
 }
 .date_location_nameContainer{
-    padding: 10px 14pax 0px 14px;
+    padding: 10px 14px 0px 14px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -97,4 +97,5 @@
 }
 .btn{
     padding: 10px 20px;
+    border: 1px solid;
 }
