@@ -20,9 +20,10 @@ interface Props{
     fetchAddedEvents : ()=>Promise<void>;
     handlePrefilledAddedEvent : (event : AddedEventsType)=>void
     handleAddEventModal : (value : void)=>void
+    widgetId : string;
 }
 
-const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal} : Props) => {
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -33,7 +34,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )
