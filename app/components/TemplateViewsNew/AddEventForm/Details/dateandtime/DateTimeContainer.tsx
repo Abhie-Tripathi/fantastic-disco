@@ -8,25 +8,48 @@ const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
     return new Date(date).toLocaleDateString('en-US', options);
 };
+interface TimeSettingsProps {
+    timeZone: string;
+    setTimeZone: React.Dispatch<React.SetStateAction<string>>;
+    timeZoneKey: number;
+    setTimeZoneKey: React.Dispatch<React.SetStateAction<number>>;
+    startDate: string;
+    setStartDate: React.Dispatch<React.SetStateAction<string>>;
+    endDate: string;
+    setEndDate: React.Dispatch<React.SetStateAction<string>>;
+    startTime: string;
+    setStartTime: React.Dispatch<React.SetStateAction<string>>;
+    endTime: string;
+    setEndTime: React.Dispatch<React.SetStateAction<string>>;
+}
 
-const DateTimeContainer = () => {
+
+const DateTimeContainer = ({
+    timeZone,
+    setTimeZone,
+    timeZoneKey,
+    setTimeZoneKey,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    startTime,
+    setStartTime,
+    endTime, setEndTime }: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
     const [startCalendarDropdown, setStartCalendarDropdown] = useState<boolean>(false)
     const [endCalendarDropdown, setEndCalendarDropdown] = useState<boolean>(false)
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
-    const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
-    const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    const [startDate, setStartDate] = useState<string>("")
-    const [endDate, setEndDate] = useState<string>("")
-    const [startTime, setStartTime] = useState<string>("12:00 A.M")
-    const [endTime, setEndTime] = useState<string>("12:00 A.M")
+
 
     useEffect(() => {
-        const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"
-        setStartDate(currentDate);
-        setEndDate(currentDate);
+        if (!startDate) {
+            const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"
+            setStartDate(currentDate);
+            setEndDate(currentDate);
+        }
     }, []);
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
@@ -70,27 +93,27 @@ const DateTimeContainer = () => {
                 <div className={styles.dateTimeBoxes}>
                     <div className={styles.dateBoxes}>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
-                        {formatDate(startDate)}
+                            {formatDate(startDate)}
                             {startCalendarDropdown && <div className={styles.calendarDropdown}>
-                                <CalendarDropdown setDate={setStartDate} dateValue={startDate}/>
+                                <CalendarDropdown setDate={setStartDate} dateValue={startDate} />
                             </div>}
                         </div>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
-                        {formatDate(endDate)}
+                            {formatDate(endDate)}
                             {endCalendarDropdown && <div className={styles.calendarDropdown}>
-                                <CalendarDropdown setDate={setEndDate} dateValue={endDate}/>
+                                <CalendarDropdown setDate={setEndDate} dateValue={endDate} />
                             </div>}
                         </div>
                     </div>
                     <div className={styles.timeBoxes}>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{startTime}
                             {startTimeDropdown && <div className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setStartTime} time = {startTime}/>
+                                <TimeDropdown setTime={setStartTime} time={startTime} />
                             </div>}
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
                             {endTimeDropdown && <div className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setEndTime} time = {endTime}/>
+                                <TimeDropdown setTime={setEndTime} time={endTime} />
                             </div>}
                         </div>
                     </div>

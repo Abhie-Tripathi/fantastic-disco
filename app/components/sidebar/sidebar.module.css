@@ -1,18 +1,16 @@
 .sidebar {
   position: fixed;
-  top: 0px;
-  height: 100vh;
-  width: 80px;
-  padding: 20px 0px;
-  background-color: var(--primary-foreground);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease;
-  overflow: hidden;
-  padding-top: 22.5px;
-  border-right: 1px solid var(--border-color);
-  z-index: 120;
+    top: 0;
+    height: 100%;
+    width: 70px;
+    padding: 15px 0;
+    background-color: var(--primary-foreground);
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    transition: width .3s ease;
+    border-right: 1px solid var(--border-color);
+    overflow: hidden;
 }
 
 .logo_image {
@@ -31,9 +29,11 @@
 } */
 
 .sidebar.open {
-  width: 260px;
+  width: 240px;
 }
-
+.link:hover {
+  background-color: var(--accent-color);
+}
 .heroLogo_container {
   margin-left: 20px;
   display: flex;
@@ -48,14 +48,24 @@
   border: none;
   cursor: pointer;
 }
-
-.link {
+.heroBanner{
   padding: 18px 27px 18px 27px;
-  height: 56px;
+  height: 50px;
   display: flex;
   align-items: center;
   gap: 16px;
-  width: 260px;
+  width: 240px;
+  cursor: pointer;
+  margin-bottom: 40px;
+}
+
+.link {
+  padding: 18px 27px 18px 27px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 240px;
   cursor: pointer;
 }
 
@@ -65,10 +75,10 @@
   white-space: nowrap;
 }
 
-.link:hover {
+/* .link:hover {
   font-weight: 500;
   color: #8f68ce;
-}
+} */
 
 .link.active {
   padding-left: 21px;

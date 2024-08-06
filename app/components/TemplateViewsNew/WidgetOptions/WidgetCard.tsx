@@ -13,7 +13,7 @@ import TickIcon from '/public/tick.svg'
 import { useTheme } from '@/context'
 
 interface WidgetCardProps {
-    widgetType: 'Page' | 'Section' | 'Sticky' | 'Popup';
+    widgetType: 'Page' | 'Section' | 'Sticky' | 'Pop';
     setWidgetSelected: (value: string) => void;
     widgetSelected: string;
     smallCard: boolean;
@@ -46,7 +46,7 @@ const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
         desc: "A user-friendly widget type that promotes events by enhancing navigation & accessibility on your website",
         color: "#E5FAEA"
     },
-    Popup: {
+    Pop: {
         name: "Pop-up Widget",
         length: 1,
         desc: "Interactive widget designed to capture attention and deliver important messages related to events on your website",
@@ -92,11 +92,11 @@ const WidgetCard = ({ widgetType, setWidgetSelected, widgetSelected, smallCard }
                             ? (widgetType === "Page" ? PageWidgetImageDark :
                                 widgetType === "Section" ? SectionWidgetImageDark :
                                     widgetType === "Sticky" ? StickyWidgetImageDark :
-                                        widgetType === "Popup" ? PopupWidgetImageDark : "")
+                                        widgetType === "Pop" ? PopupWidgetImageDark : "")
                             : (widgetType === "Page" ? PageWidgetImage :
                                 widgetType === "Section" ? SectionWidgetImage :
                                     widgetType === "Sticky" ? StickyWidgetImage :
-                                        widgetType === "Popup" ? PopupWidgetImage : "")
+                                        widgetType === "Pop" ? PopupWidgetImage : "")
                     }
                     alt='page'
                     width={imageWidth}

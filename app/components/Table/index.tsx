@@ -218,6 +218,7 @@ const Table = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const userMaxLimit = 100;
   const [pinEvent, setPinEvent] = useState<string>(
     "1b27ff90-1a46-4f49-85eb-607b4d510eb1"
   );
@@ -517,7 +518,7 @@ const [val,setVal]=useState(1);
               Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
             );
             setEventPerPage(apiData.data.events);
-          } else setEventPerPage([]);
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -666,6 +667,9 @@ const [val,setVal]=useState(1);
   }
 
   const loadMoreHandler = () => {
+    if((((currPage+1) * itemsPerPage) - userMaxLimit ) >= itemsPerPage) {
+      showToast('error', 'Please contact us to increase the limit.');return;
+    }
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
@@ -699,7 +703,7 @@ const [val,setVal]=useState(1);
               {showInsights.repeatSent && <th>Trust</th>}
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {showInsights.global && <th>Internatinal</th>}
+              {showInsights.global && <th>International</th>}
               <th
                 className={`${styles.table_actionColumn} ${
                   styles.table_actionColumn_header

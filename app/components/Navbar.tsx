@@ -131,6 +131,7 @@ const Navbar = () => {
           <Image
             src={menuIcon}
             alt="Menu"
+            width={16}
             className={`styles.mobile_menuIcon mobile_view ${iconClass}`}
             onClick={handelSideShow}
           />
@@ -173,7 +174,7 @@ const Navbar = () => {
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
             >
-              <Image src={lightModeIcon} alt="theme" className={iconClass} />
+              <Image src={lightModeIcon} alt="theme" className={iconClass} width={20}/>
             </div>
           </div>
         )}
@@ -210,7 +211,7 @@ const Navbar = () => {
                 <Image
                   src={dotMenuIcon}
                   alt="dotMenu"
-                  width={20}
+                  width={16}
                   height={20}
                   className={iconClass}
                 />
@@ -219,7 +220,7 @@ const Navbar = () => {
               {dotMenuCtas.isOpen && (
                 <div
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
-                  style={{ width: "fit-content" }}
+                  style={{ width: "fit-content", padding: '8px' }}
                 >
                   <Link href="#" className="">
                     <div
@@ -342,7 +343,7 @@ const Navbar = () => {
               )}
 
               {profilectas.isOpen && (
-                <div className={`${styles.userDropdown} card`}>
+                <div className={`${styles.userDropdown} card`} style={{padding: '8px' }} >
                   <Link
                     href={
                       pathName === "internal" ? "/internal/profile" : "/profile"

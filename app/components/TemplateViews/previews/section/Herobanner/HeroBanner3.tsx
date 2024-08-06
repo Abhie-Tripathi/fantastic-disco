@@ -3,6 +3,7 @@ import styles from './herobanner3.style.module.css';
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
     fontFamily: string;
@@ -26,10 +27,7 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    buttonSettings?: {
-        primary: ButtonSettings;
-        secondary: ButtonSettings;
-    };
+    buttonSettings?: ButtonSettingsState
     selectedBtn? : "primary" | "secondary"
 }
 
@@ -42,7 +40,7 @@ const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     },
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-        secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+        secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     }, selectedBtn ="primary" }: Props) => {
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
@@ -67,7 +65,7 @@ const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
                         className={styles.btn}
                         style={{
                             color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
-                            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor,
+                            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
                             borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
                             borderColor: selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor
                         }}

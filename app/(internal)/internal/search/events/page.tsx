@@ -1448,7 +1448,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Branded Event
+                          Branded / Series Event
                         </div>
 
                         <div className={styles.toggle_container}>
@@ -1947,14 +1947,14 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                         Audience Quality Score
-                          {selectedEventAttendanceRange[0] !== undefined ? (
+                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
                             </span>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </div>
                         <Image
                           src={DropIcon}
@@ -1985,14 +1985,14 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                         Designation &amp; Department
-                          {selectedEventAttendanceRange[0] !== undefined ? (
+                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
                             </span>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </div>
                         <Image
                           src={DropIcon}
@@ -2024,14 +2024,14 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                         Audience Spread
-                          {selectedEventAttendanceRange[0] !== undefined ? (
+                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
                             </span>
                           ) : (
                             ""
-                          )}
+                          )} */}
                         </div>
                         <Image
                           src={DropIcon}

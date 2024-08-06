@@ -1,33 +1,62 @@
 import React from 'react'
 import styles from './allevents.style.module.css'
 import GlobalSearch from './GlobalSearch';
-
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 
 interface AllEventsType {
+    eventId : string;
     name: string;
     location: string;
     startDate: string;
     endDate: string;
+    isLinkedToWidget : boolean;
 }
 
 interface Props {
-    allEvents: AllEventsType[]
-    setIsAddEventModalOpen: (value: boolean) => void
+    fetchedAllEvents : AllEventsType[]
+    fetchEvents : () => Promise<void>; 
+    fetchAddedEvents : ()=>Promise<void>;
+    handleAddEventModal : (value: void) => void
 }
 
-const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
+const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents }: Props) => {
+
+    const formatDate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+        return new Date(date).toLocaleDateString('en-US', options);
+    };
+    const handleDelete = async(eventId : string)=>{
+        const customizeData = new FormData();
+        customizeData.append("id", eventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+              method: 'PATCH',
+              body: customizeData,
+            }
+          );
+        if(data){
+            fetchEvents()
+            fetchAddedEvents()
+        }
+        if(error){
+            console.log(error);
+        }
+ 
+    }
 
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>All Events <span>{allEvents.length}</span></div>
-                <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
+                <div>All Events <span>{fetchedAllEvents.length}</span></div>
+                <button onClick={() => handleAddEventModal()}>Add Event</button>
             </div>
             <GlobalSearch />
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
-                {allEvents.map((event, key) => (
-                    // <div className={styles.eventContainer} key={key}>
+                {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
@@ -37,7 +66,7 @@ const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
-                                <div>{event.startDate} - {event.endDate}</div>
+                                <div>{formatDate(event.startDate)} - {formatDate(event.endDate)}</div>
                             </div>
                         </div>
                         <div className={styles.btnContainer}>
@@ -49,13 +78,13 @@ const AllEvents = ({ allEvents, setIsAddEventModalOpen }: Props) => {
                                     type="checkbox"
                                     id={key.toString()}
                                     className={styles.checkboxInput}
+                                    checked={event.isLinkedToWidget}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <DeleteIcon />
+                            <button onClick={()=>handleDelete(event.eventId)}><DeleteIcon /></button>
                         </div>
                     </div>
-                    // </div>
                 ))}
             </div>
         </div>
