@@ -23,22 +23,33 @@ const AudienceIntel = ({ eventDetail }: OverviewProps) => {
           </div>
           <div>
             <div className={styles.cardHeading}>International Score</div>
-            <div className={`${styles.estimatedVisitorCount} ${styles.blurContent}`}>74</div>
+            <div className={`${styles.internationalCount} ${styles.badge_success}`}>{eventDetail["internationalAudience%"] !== undefined ? eventDetail["internationalAudience%"] : '-'}</div>
           </div>
         </div>
         
         <div className={`${styles.audienceSpreadCard} card`}>
           <div className={styles.cardHeading}>Audience Spread</div>
-          <div>-</div>
+          <div className={`${styles.blurContent} card`} style={{display: 'flex', justifyContent: 'space-between', margin: '12px 0'}}>
+            <div>
+              Local
+              <div>234</div>
+            </div>
+            <div>National
+              <div>2312</div>
+            </div>
+            <div>Local
+              <div>1910</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className={styles.mainHeading} style={{marginTop: '24px'}}>Map View of Audience Spread</div>
-      <div className={`${styles.mapViewCard} ${styles.blurContent} card`} ></div>
+      {/* <div className={styles.mainHeading} style={{marginTop: '24px'}}>Audience Spread</div>
+      <div className={`${styles.mapViewCard} ${styles.blurContent} card`} ></div> */}
 
       <div className={`${styles.estimatedVisitorCard} card`}>
         <div className={styles.cardHeading}>Estimated Visitors</div>
-        <div className={styles.estimatedVisitorCount}>{eventDetail?.stats?.estimatedVisitor ? eventDetail?.stats?.estimatedVisitor : '-'}</div>
+        <div className={styles.estimatedVisitorCount}>{eventDetail?.eventSize ? eventDetail?.eventSize : '-'}</div>
         {/* <div>Has more visitor count that 92% of the events in the same category</div> */}
       </div>
 

@@ -1,10 +1,13 @@
 .heading {
     padding-bottom: 24px;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-color);
 }
 
-.cardsContainer {
+/* .cardsContainer {
     background-color: var(--background-secondary-color);
-}
+} */
 
 .pastEditionCards {
     max-height: 200px;

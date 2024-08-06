@@ -202,11 +202,11 @@ const InsightsPage = () => {
           <div className={styles.actionContainer}>
             <div className={styles.eventRating}>
               {eventDetail.stats.rating.toFixed(1)}
-              <StarFill color={'orange'} height="18px" width="18px" />
+              <StarFill color={'orange'} height="16px" width="16px" style={{verticalAlign: 'baseline'}} />
             </div>
             <div className={styles.eventActions}>
-              <Globe color={theme === "dark" ? "white" : ""} />
-              <Bookmark color={theme === "dark" ? "white" : ""} />
+              <Globe color={"var(--secondary-text-color)"} height="16px" width="16px" />
+              <Bookmark color={"var(--secondary-text-color)"} height="16px" width="16px" />
             </div>
           </div>
           <div className={styles.eventTitle}>{eventDetail?.name}</div>

@@ -27,7 +27,7 @@
 
 .infoCardLeft {
     width: 40%;
-    background: var(--background-secondary-color);
+    /* background: var(--background-secondary-color); */
     border-radius: var(--border-radius-sm);
     gap: var(--spacing-lg);
     display: flex;
@@ -35,7 +35,7 @@
 }
 .infoCardRight {
     width: 60%;
-    background: var(--background-secondary-color);
+    /* background: var(--background-secondary-color); */
     gap: var(--spacing-xl);
     display: flex;
     flex-direction: column;
@@ -196,8 +196,8 @@
 }
 
 .hostname{
-    color: white;
-    font-size: var(--font-size-h4);
+    color: var(--primary-text-color);
+    font-size: var(--font-size-large);
     font-weight: var(--font-weight-regular);
 }
 .hostlocation{
@@ -209,6 +209,7 @@
 .hostlocation span{
     color: var(--secondary-text-color);
     font-weight: 400;
+    font-size: var(--font-size-default);
 }
 .upcoming{
     margin-top: 20px;
@@ -277,7 +278,7 @@
 }
 
 .estimatedVisitorCard {
-    background-color: var(--background-secondary-color);
+    /* background-color: var(--background-secondary-color); */
     border-radius: var(--border-radius-sm);
     margin: 24px 0;
 }
@@ -289,9 +290,16 @@
 }
 
 .estimatedVisitorCount {
-    font-size: var(--font-size-h2);
+    font-size: var(--font-size-h3);
     font-weight: var(--font-weight-semibold);
     margin: 24px 0;
+}
+
+.internationalCount {
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+    margin: 36px 0;
+    width: fit-content;
 }
 
 .audienceScoreCard {
@@ -299,10 +307,10 @@
     display: flex;
     /* gap: 32px; */
     justify-content: space-between;
-    background-color: var(--background-secondary-color);
+    /* background-color: var(--background-secondary-color); */
 }
 
 .audienceSpreadCard {
     width: 50%;
-    background-color: var(--background-secondary-color);
+    /* background-color: var(--background-secondary-color); */
 }
