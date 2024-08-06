@@ -22,21 +22,27 @@
 
 .infoCard {
     display: flex;
-    gap: 12px;
-    background: var(--background-secondary-color);
+    gap: var(--spacing-sm);
 }
 
 .infoCardLeft {
-    width: 50%;
-}
-.infoCardRight {
-    width: 50%;
+    width: 40%;
+    background: var(--background-secondary-color);
+    border-radius: var(--border-radius-sm);
+    gap: var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    /* gap: 20px; */
+}
+.infoCardRight {
+    width: 60%;
     background: var(--background-secondary-color);
-    max-height: 30vh;
-    overflow-y: auto;
+    gap: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+}
+
+.infoCardLeft .categoryContainer {
+    align-items: center;
 }
 
 .tagsContainer {
@@ -63,7 +69,7 @@
 }
 
 .subHeading {
-    margin-top: 24px;
+    /* margin-top: 24px; */
     color: var(--secondary-text-color);
     font-size: var(--font-size-default);
 }
@@ -71,7 +77,11 @@
 .categoryContainer {
     display: flex;
     gap: var(--spacing-sm);
-    margin: 10px 0;
+}
+
+.categoryBadges {
+    display: flex;
+    gap: var(--spacing-sm);
     flex-wrap: wrap;
 }
 
@@ -83,6 +93,13 @@
     background-color: var(--neutral-light-color);
     font-weight: var(--font-weight-medium);
     text-wrap: nowrap;
+}
+
+.moreItems {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-color);
+    align-self: center;
 }
 
 .rankCards .rank {
@@ -115,7 +132,7 @@
 .mainHeading {
     font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
-    line-height: 20px;
+    line-height: var(--line-height-default);
 }
 
 .headingText {
@@ -144,17 +161,6 @@
     /* text-wrap: nowrap; */
 }
 
-.audienceCard {
-    width: 50%;
-    border-radius: var(--border-radius-sm);
-}
-
-.audienceSubCard {
-    margin: 20px 0;
-    background: var(--accent-color);
-    border-radius: var(--border-radius-sm);
-}
-
 .scoreChange {
     display: flex;
     align-items: center;
@@ -172,12 +178,6 @@
     font-size: var(--font-size-small);
 }
 
-.otherProfiles {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
 .blurContent {
     filter: blur(3px);
 }
@@ -192,45 +192,45 @@
 
 .hostDetailsContainer{
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-sm);
 }
 
 .hostname{
     color: white;
-    font-size: 24px;
+    font-size: var(--font-size-h4);
     font-weight: var(--font-weight-regular);
 }
 .hostlocation{
     margin-top: 8px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-sm);
 }
 .hostlocation span{
-    color: #A1A1A1;
+    color: var(--secondary-text-color);
     font-weight: 400;
 }
 .upcoming{
     margin-top: 20px;
     font-size: 14px;
-    color: #A1A1A1;
+    color: var(--secondary-text-color);
 }
 .upcoming span{
     background-color: #331B00;
     color: #FF990A;
     padding: 2px 5px;
-    border-radius: 9px;
+    border-radius: var(--border-radius-md);
 }
 .hosted{
-    margin-top: 16px;
-    font-size: 14px;
-    color: #A1A1A1;
+    margin-top: 20px;
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
 }
 .hosted span{
     background-color: #331B00;
     color: #FF990A;
     padding: 2px 5px;
-    border-radius: 9px;
+    border-radius: var(--border-radius-md);
 }
 
 /* intel */
@@ -238,45 +238,71 @@
 .calculatorCardContainer {
     margin: 24px 0;
     display: flex;
-    gap: 24px;
+    gap: var(--spacing-lg);
     color: black;
 }
 
 .relevanceCard {
     background-color: #E0F0FF;
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
     border: 1px solid #CBF0FF;
     position: relative;
-    gap: 12px;
+    gap: var(--spacing-sm);
     display: flex;
     flex-direction: column;
 }
 
 .costCard {
     background-color: #F1E4FB;
-    border-radius: 4px;
+    border-radius: var(--border-radius-sm);
     border: 1px solid #EBEBEB;
     position: relative;
-    gap: 12px;
+    gap: var(--spacing-sm);
     display: flex;
     flex-direction: column;
 }
-
-/* .cardHeading {
-    font-size: 20px;
-    font-weight: 600px;
-} */
 
 .cardCta {
     padding: 10px 20px;
     background-color: white;
     width: fit-content;
     /* font-size: 14px; */
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .cardImage {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+
+.estimatedVisitorCard {
+    background-color: var(--background-secondary-color);
+    border-radius: var(--border-radius-sm);
+    margin: 24px 0;
+}
+
+.mapViewCard {
+    background-color: var(--background-secondary-color);
+    height: 300px;
+    margin: 24px 0;
+}
+
+.estimatedVisitorCount {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-semibold);
+    margin: 24px 0;
+}
+
+.audienceScoreCard {
+    width: 50%;
+    display: flex;
+    /* gap: 32px; */
+    justify-content: space-between;
+    background-color: var(--background-secondary-color);
+}
+
+.audienceSpreadCard {
+    width: 50%;
+    background-color: var(--background-secondary-color);
 }

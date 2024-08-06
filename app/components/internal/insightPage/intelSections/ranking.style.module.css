@@ -1,6 +1,49 @@
-.exhibitorContainer {
-    margin: 24px 0px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+.rankCards {
+    display: flex;
+    gap: var(--spacing-sm);
+    /* margin-top: 24px; */
+    justify-content: space-around;
+}
+
+.rankCards .cardItem {
+    border-radius: var(--border-radius-sm);
+    padding: 0;
+    text-align: center;
+}
+
+.rankCards .rank {
+    padding: 6px 24px;
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-h3);
+
+}
+
+.rankType {
+    border-top: 1px solid var(--border-color);
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    background: var(--neutral-light-color);
+    padding: 6px 24px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.rankIn {
+    color: var(--secondary-text-color);
+    text-align: center;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: var(--font-size-default);
+}
+
+.rankName {
+    color: var(--info-color);
+    text-align: center;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
+}
+
+.blurContent {
+    filter: blur(3px);
 }

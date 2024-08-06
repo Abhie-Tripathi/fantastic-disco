@@ -4,6 +4,9 @@ import { useTheme } from "@/context";
 import Image from "next/image";
 import relevance_background  from "/public/internal/relevance_background.svg";
 import cost_background from "/public/internal/cost_background.svg";
+import Ranking from "./intelSections/Ranking";
+import RehostScores from "./intelSections/RehostScores";
+import PastEditions from "./intelSections/PastEditions";
 
 interface OverviewProps {
   eventDetail: any;
@@ -35,93 +38,17 @@ const Intel = ({ eventDetail }: OverviewProps) => {
       <div className={styles.headingText}>
         See where the event stands in industry and country rankings
       </div>
-      <div className="card" >
-        <div className={styles.rankCards}>
-          {/* {eventDetail?.rank?.localRank && eventDetail.rank.localRank > 0 ? ( */}
-          <div className={`${styles.cardItem} card`}>
-            <div className={styles.rank}>03</div>
-            <div className={styles.rankType}>Country Rank</div>
-          </div>
-          {/* ) : (
-              <></>
-          )} */}
-          {/* {eventDetail?.rank?.eventRank && eventDetail.rank.eventRank > 0 ? ( */}
-          <div className={`${styles.cardItem} card`}>
-            <div className={styles.rank}>12</div>
-            <div className={styles.rankType}>Industry Rank</div>
-          </div>
-          {/* ) : (
-              <></>
-          )} */}
-          <div className={`${styles.cardItem} card`}>
-            <div className={styles.rank}>31</div>
-            <div className={styles.rankType}>Country + Industry Rank</div>
-          </div>
-        </div>
-      </div>
+      <Ranking />
       <div className={styles.line}></div>
 
       <div className={styles.mainHeading}>Rehost Score & Graph</div>
       <div className={styles.headingText}>
         Track event engagement and impact with our Rehost Score & Graph.
       </div>
-      <div style={{ display: "flex" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", width: "50%" }}>
-          <div className={`${styles.scoreCard} card`}>
-            <div className={styles.cardHeading}>Rehost Score</div>
-            <div className={styles.score}>{eventDetail?.eventSize}</div>
-            {/* <div className={styles.scoreChange}>
-              <div className={styles.pill_info}>5.2 %</div>
-              <div>Since last edition</div>
-            </div> */}
-          </div>
-          <div className={`${styles.scoreCard} card`}>
-            <div className={styles.cardHeading}>No of editions</div>
-            <div className={styles.score}>
-              {eventDetail?.repeatSentiment && eventDetail?.repeatSentiment > 0
-                ? eventDetail?.repeatSentiment + "%"
-                : "-"}
-            </div>
-            {/* <div className={styles.scoreChange}>
-              <div className={styles.pill_info}>5.2 %</div>
-              <div>Since last edition</div>
-            </div> */}
-          </div>
-          <div className={`${styles.scoreCard} card`}>
-            <div className={styles.cardHeading}>Maturity</div>
-            {/* <div className={styles.score}>
-              {eventDetail?.reputationSentiment &&
-              eventDetail?.reputationSentiment > 0
-                ? eventDetail?.reputationSentiment
-                : "-"}
-            </div> */}
-            <div className={styles.scoreChange}>
-              <div className={styles.badge_danger}>High</div>
-            </div>
-          </div>
-          <div className={`${styles.scoreCard} card`}>
-            <div className={styles.cardHeading}>Rehost month</div>
-            <div className={styles.score}>
-              {eventDetail?.reputationSentiment &&
-              eventDetail?.reputationSentiment > 0
-                ? eventDetail?.reputationSentiment
-                : "-"}
-            </div>
-          </div>
-        </div>
-        <div className="card" style={{ width: "50%" }}>
-          <div className={"title"}>
-            Past Editions
-          </div>
-          <div className={styles.pastEditionCards}>
-            <div className="card">
-              Milano PharmaTech & LabTech Expo
-            </div>
-          </div>
-        </div>
+      <div style={{ display: "flex", margin: "16px 0" }}>
+        <RehostScores eventDetail={eventDetail} />
+        <PastEditions />
       </div>
-
-      <div className={styles.line}></div>
     </>
   );
 };

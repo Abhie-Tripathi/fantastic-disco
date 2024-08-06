@@ -7,10 +7,13 @@
 .containerLeft {
     width: 30%;
     position: fixed;
+    height: calc(100vh - 120px);
+    overflow-x: auto;
+    padding-right: 8px;
 }
 
 .containerRight {
-    width: 65%;
+    width: 63%;
     margin-left: auto;
 }
 
@@ -163,7 +166,7 @@
 
 .tabContent {
     /* margin-top: 20px; */
-    height: calc(100vh - 170px);
+    height: calc(100vh - 175px);
     overflow-y: auto;
     margin-right: -24px;
     padding-right: 24px;

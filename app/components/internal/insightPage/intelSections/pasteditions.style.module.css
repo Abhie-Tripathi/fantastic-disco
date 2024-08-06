@@ -1,0 +1,23 @@
+.heading {
+    padding-bottom: 24px;
+}
+
+.cardsContainer {
+    background-color: var(--background-secondary-color);
+}
+
+.pastEditionCards {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-direction: column;
+}
+
+.editionCard {
+    background-color: var(--primary-foreground);
+}
+
+.blurContent {
+    filter: blur(3px);
+}

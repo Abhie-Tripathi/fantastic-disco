@@ -12,6 +12,7 @@ import { baseUrl } from "@/constants";
 import Link from "next/link";
 import Loading from "@/app/components/UI/Loading";
 import Intel from "@/app/components/internal/insightPage/Intel";
+import AudienceIntel from "@/app/components/internal/insightPage/AudienceIntel";
 
 function extractDay(startDate: Date): string {
   const weekdays = [
@@ -300,7 +301,9 @@ const InsightsPage = () => {
               tabs.findIndex((tab: any) => tab.active) == 0 ?
                 <Overview eventDetail={eventDetail} /> :
               tabs.findIndex((tab: any) => tab.active) == 1 ?
-                <Intel eventDetail={eventDetail} /> : <></>
+                <Intel eventDetail={eventDetail} /> : 
+              tabs.findIndex((tab: any) => tab.active) == 2 ?
+                <AudienceIntel eventDetail={eventDetail} /> : <></>
             }
           </div>
         </div>

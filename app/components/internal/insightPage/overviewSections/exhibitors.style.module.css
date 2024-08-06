@@ -2,5 +2,23 @@
     margin: 24px 0px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: var(--spacing-lg);
+}
+
+.exhibitorCard {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.exhibitorWebsite {
+    margin-left: auto;
+    color: var(--primary-color);
+    font-size: var(--font-size-default);
+    text-wrap: nowrap;
+}
+
+.location {
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    margin-top: 8px;
 }
