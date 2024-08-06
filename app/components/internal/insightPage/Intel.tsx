@@ -27,7 +27,7 @@ const Intel = ({ eventDetail }: OverviewProps) => {
         </div>
         <div className={`${styles.costCard} card`} >
           <div className={styles.cardHeading} >Cost Estimate Calculator</div>
-          <div>Calculate how much it's going to cost you to attend this event.</div>
+          <div>Calculate how much it&apos;s going to cost you to attend this event.</div>
           <div className={styles.cardCta} >Check cost estimate {" "}
             <ArrowRight width="16px" />
           </div>
