@@ -3,24 +3,17 @@ import styles from './allevents.style.module.css'
 import GlobalSearch from './GlobalSearch';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
-
-interface AllEventsType {
-    eventId : string;
-    name: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    isLinkedToWidget : boolean;
-}
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props {
     fetchedAllEvents : AllEventsType[]
     fetchEvents : () => Promise<void>; 
     fetchAddedEvents : ()=>Promise<void>;
     handleAddEventModal : (value: void) => void
+    handlePrefillNormalEvent : (event : AllEventsType)=>void
 }
 
-const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents }: Props) => {
+const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents,handlePrefillNormalEvent }: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -62,7 +55,7 @@ const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedE
                             <div className={styles.eventName}>{event.name}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
-                                <div>{event.location}</div>
+                                <div>{event.cityName}</div>
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
@@ -79,6 +72,7 @@ const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedE
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
+                                    onChange={()=>handlePrefillNormalEvent(event)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>

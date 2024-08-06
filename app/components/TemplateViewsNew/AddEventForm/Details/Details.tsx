@@ -19,6 +19,7 @@ import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
 import { AddedEventsType } from '@/types/addedwidgetevents'
 import usePosterGenerator from '@/app/service/posterGenerator'
+import { AllEventsType } from '@/types/alleventtype'
 
 interface SpeakerProfileType {
   id: string;
@@ -41,16 +42,17 @@ interface Props {
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
-  prefilledAddedEvent: AddedEventsType | undefined;
+  prefilledAddedEvent?: AddedEventsType
+  prefilledNormalEvent?: AllEventsType
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
   const [registerModal, setRegisterModal] = useState<boolean>(false)
-  const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || "")
+  const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
   const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType || "Attendee")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
@@ -58,16 +60,16 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
-  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || "")
-  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || "")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "")
+  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || "")
   const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || "")
-  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || "")
-  const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || "12:00 A.M")
-  const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || "12:00 A.M")
-  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || "In-person")
-  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || "");
+  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || "")
+  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || "")
+  const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || prefilledNormalEvent?.startTime || "12:00 A.M")
+  const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || prefilledNormalEvent?.endTime || "12:00 A.M")
+  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || "In-person")
+  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || prefilledNormalEvent?.name || "");
   const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
   const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -136,11 +138,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       location_city: cityName,
       location_country: countryName,
       widgetIds,
-      logoUrl: imageUrl
     };
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
+    formData.append("logoUrl", imageUrl)
 
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'POST',
@@ -209,10 +211,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }
 
-  const handleSaveEvent = async () => {
-    if (!prefilledAddedEvent) return;
+  const handleSaveEvent = async (eventId: string) => {
+    // if (!prefilledAddedEvent) return;
     const eventData = {
-      id: prefilledAddedEvent.id,
+      id: eventId,
       format: eventFormat,
       start_time: startTime,
       end_time: endTime,
@@ -221,24 +223,29 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
+      logoUrl : banner.placeHolder
     };
     const formData = new FormData();
-    formData.append("id", prefilledAddedEvent.id);
+    formData.append("id", eventId);
     formData.append("name", eventName);
     formData.append("data", JSON.stringify(eventData));
+    if (banner.placeHolder.includes("eventgeni") == false) {
+      formData.append("logoUrl", imageUrl)
+    }
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'PATCH',
       body: formData,
     });
     if (data) {
       const updatedEventId = data.data.id;
-      updateEventInWidget(updatedEventId);
+      let updatedBannerUrl = data.data.data.logoUrl;
+      addEventToWidget(updatedEventId, updatedBannerUrl);
     }
     if (error) {
       console.log(error);
     }
   }
-  const updateEventInWidget = async (eventId: string) => {
+  const updateEventInWidget = async (eventId: string, updatedBannerUrl: string) => {
     const customizedFormData = new FormData();
     const existingEvents = fetchedAddedEvents || [];
     const updatedEvent = {
@@ -262,24 +269,24 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       boothNumber,
       speakerProfilesData,
       participationMessage,
-      bannerUrl : prefilledAddedEvent?.bannerUrl,
+      bannerUrl : updatedBannerUrl
     };
-  
+
     // Find and update the existing event
-    const updatedEvents = existingEvents.map(event => 
+    const updatedEvents = existingEvents.map(event =>
       event.id === eventId ? updatedEvent : event
     );
-  
+
     const otherData = {
       event: updatedEvents,
     };
-  
+
     const eventIds = updatedEvents.map(event => event.id).join(',');
-  
+
     customizedFormData.append('widgetId', widgetId);
     customizedFormData.append('otherdata', JSON.stringify(otherData));
     customizedFormData.append('eventId', eventIds);
-  
+
     const { data, error } = await myFetch(`${baseUrl}/widget`, {
       method: 'POST',
       body: customizedFormData,
@@ -294,7 +301,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       console.log("error in updating event in widget ", error);
     }
   };
-  
+
 
   const handleGeneratePoster = () => {
     if (description && eventName && countryName) {
@@ -311,7 +318,15 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     <div className={styles.body}>
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
         <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-        <button className={styles.addBtn} onClick={prefilledAddedEvent ? handleSaveEvent : handleAddEvent}>Save and Add event</button>
+        <button className={styles.addBtn} 
+        onClick={
+          prefilledAddedEvent 
+            ? () => handleSaveEvent(prefilledAddedEvent.id) 
+            : prefilledNormalEvent 
+              ? () => handleSaveEvent(prefilledNormalEvent.eventId) 
+              : handleAddEvent
+        }>
+          Save and Add event</button>
       </div>
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
@@ -322,8 +337,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 <div className={styles.spinner}></div>
               </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />}
             <div className={styles.posterIcons}>
-              <div>
-                <Image src={AiIcon} onClick={handleGeneratePoster} alt='aigenerate' className={styles.aiIcon}></Image>
+              <div onClick={handleGeneratePoster}>
+                <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
               <div>
                 <Image src={UploadIcon} alt='upload'></Image>

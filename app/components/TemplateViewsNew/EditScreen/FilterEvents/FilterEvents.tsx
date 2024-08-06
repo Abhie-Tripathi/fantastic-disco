@@ -3,15 +3,7 @@ import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
 import { AddedEventsType } from '@/types/addedwidgetevents';
-
-interface AllEventsType {
-    eventId : string;
-    name: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    isLinkedToWidget : boolean;
-  }
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props{
     fetchedAllEvents : AllEventsType[]
@@ -19,11 +11,13 @@ interface Props{
     fetchedAddedEvents : AddedEventsType[]
     fetchAddedEvents : ()=>Promise<void>;
     handlePrefilledAddedEvent : (event : AddedEventsType)=>void
+    handlePrefillNormalEvent : (event :  AllEventsType)=>void
     handleAddEventModal : (value : void)=>void
     widgetId : string;
+    addedEventIds : string[]
 }
 
-const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId} : Props) => {
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -34,7 +28,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )

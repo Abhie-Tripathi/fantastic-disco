@@ -11,15 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddedEventsType } from '@/types/addedwidgetevents'
 import { ButtonSettingsState, PrimaryButtonSettings, SecondaryButtonSettings } from '@/types/buttoncustomizetypes'
-
-interface AllEventsType {
-  eventId: string;
-  name: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  isLinkedToWidget: boolean;
-}
+import { AllEventsType } from '@/types/alleventtype'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -44,6 +36,7 @@ const Page = () => {
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
   const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<AddedEventsType>()
+  const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -67,10 +60,15 @@ const Page = () => {
       const events = data.data.map((event: any) => ({
         eventId: event.id,
         name: event.name,
-        location: event.data.location_city,
+        cityName: event.data.location_city,
+        countryName : event.data.location_country,
+        description : event.data.description,
         startDate: event.data.start_date,
         endDate: event.data.end_date,
-        isLinkedToWidget: event.isWidgetLinked
+        format : event.data.format,
+        isLinkedToWidget: event.isWidgetLinked,
+        startTime : event.data.startTime,
+        endTime : event.data.endTime,
       }))
       setFetchedAllEvents(events)
     } if (error) {
@@ -143,6 +141,7 @@ const Page = () => {
 
   const handleAddEventModal = () => {
     setPrefilledAddedEvent(undefined)
+    setPrefilledNormalEvent(undefined)
     setIsAddEventModalOpen(true)
   }
 
@@ -151,6 +150,11 @@ const Page = () => {
     setIsAddEventModalOpen(true)
   }
 
+  const handlePrefillNormalEvent = (event : AllEventsType) =>{
+    setPrefilledNormalEvent(event)
+    setIsAddEventModalOpen(true)
+  }
+  
   return (
 
     <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
@@ -177,7 +181,9 @@ const Page = () => {
           widgetId={widgetId}
           widgetType={widgetType}
           handlePrefilledAddedEvent={handlePrefilledAddedEvent}
+          handlePrefillNormalEvent = {handlePrefillNormalEvent}
           handleAddEventModal={handleAddEventModal}
+          addedEventIds = {addedEventIds}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -196,7 +202,7 @@ const Page = () => {
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )
