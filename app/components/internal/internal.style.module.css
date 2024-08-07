@@ -58,6 +58,14 @@
     font-weight: var(--font-weight-regular);
     font-size: var(--font-size-h4);
 }
+.searchBar{
+    border: 1px solid var(--disabled-background-color);
+    width: 30%;
+}
+.textArea{
+    border:none;
+    outline: none;
+}
 @media screen and (max-width:1200px) {
     .container{
         padding-left: 60px;
@@ -66,8 +74,23 @@
 }
 
 @media screen and (max-width:768px) {
+    .countsContainer{
+        margin: 0;
+    }
+    .exhibitorCount{
+        border-radius: calc(2* var(--border-radius-sm));
+    }
     .container{
         padding-left: 15px;
         padding-right: 15px;
+    }
+    .exhibitorCount{
+        padding: 10px;
+    }
+    .countTitle{
+        font-size: var(--font-size-xs);
+    }
+    .count{
+        font-size: var(--font-size-xs);
     }
 }

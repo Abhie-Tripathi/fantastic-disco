@@ -209,7 +209,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               />
             </div>
 
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', boxShadow: "var(--shadow-large)" }}>
               <Image
                 src={eventImage}
                 alt="eventImage"
@@ -245,7 +245,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             {eventLocation &&
               <div className={styles.eventLocation}>
                 <div className={styles.circle1}>
-                  <Image src={place} alt="locationIcon" width={24} height={24} className="icons" />
+                  <Image src={place} alt="locationIcon" width={24} height={24} style={{marginRight:"3px"}}className="icons" />
                 </div>
                 <div>{eventLocation}</div>
               </div>
@@ -264,7 +264,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>
           </div>
           <div className="tablet_view mobile_view">
-            <div style={{ marginTop: "-50px" }}>
+            <div>
               <div className={styles.total_upvotes}>
                 {upvote[0].like}
                 <div style={{ display: "flex", paddingTop: "5px" }}>
@@ -355,7 +355,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       <div className={styles.bottomContainer}>
         <div className="tablet_view mobile_view">
           <div
-            style={{ display: "flex", gap: "6px", paddingTop: "20px" }}
+            style={{ display: "flex", gap: "6px", paddingTop: "20px", justifyContent:"center" }}
             onClick={handleClickEvent}
           >
             <UpVoteTag

@@ -137,9 +137,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         </div>
     </div>
     <div className={styles.filters}>
-        <div className={styles.searchBar}>
-            
-        </div>
+        {/* <div className={styles.searchBar}>
+            <input className={styles.textArea} type='text'/>
+        </div> */}
         <div className={styles.statusDropdown}></div>
         <div className={styles.participantDropdown}></div>
         <div className={styles.dateFilter}></div>
