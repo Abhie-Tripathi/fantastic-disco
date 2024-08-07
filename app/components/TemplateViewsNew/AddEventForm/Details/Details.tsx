@@ -21,6 +21,7 @@ import { AddedEventsType } from '@/types/addedwidgetevents'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
+import useFetch from '@/hooks/useFetch'
 
 interface SpeakerProfileType {
   id: string;
@@ -61,7 +62,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
-  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "a")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "")
   const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || "")
   const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
@@ -102,9 +103,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       adjustHeight(); // Initial adjustment
     }
 
-    if (mapDivRef.current) {
-      setMapWidth(mapDivRef.current.getBoundingClientRect().width);
-    }
     return () => {
       if (textArea) {
         textArea.removeEventListener('input', adjustHeight);
@@ -112,6 +110,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     };
   }, []);
 
+  useEffect(()=>{
+    if (mapDivRef.current) {
+      setMapWidth(mapDivRef.current.getBoundingClientRect().width);
+    }
+  },[cityName])
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)

@@ -10,7 +10,7 @@ import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddedEventsType } from '@/types/addedwidgetevents'
-import { ButtonSettingsState, PrimaryButtonSettings, SecondaryButtonSettings } from '@/types/buttoncustomizetypes'
+import { ButtonSettingsState} from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 
 const Page = () => {
@@ -19,7 +19,7 @@ const Page = () => {
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
+    subheading: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
   const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({

@@ -84,9 +84,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
             let maxFontSize;
             if (selectedType === "heading") {
                 maxFontSize = 24;
-            } else if (selectedType === "subheading") {
-                maxFontSize = 16;
-            } else {
+            }else {
                 maxFontSize = 12;
             }
             return {
@@ -117,9 +115,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                 let maxFontSize;
                 if (selectedType === "heading") {
                     maxFontSize = 24;
-                } else if (selectedType === "subheading") {
-                    maxFontSize = 16;
-                } else {
+                }else {
                     maxFontSize = 12;
                 }
                 return {
