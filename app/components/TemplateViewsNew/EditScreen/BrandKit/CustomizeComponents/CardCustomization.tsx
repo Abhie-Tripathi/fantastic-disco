@@ -13,6 +13,10 @@ interface Props {
 
 const CardCustomization = ({ extractedColors, setCardBgColor, setCardBorderRadius, cardBgColor, cardBorderRadius }: Props) => {
 
+    const handleRadiusChange = (e : any)=>{
+        const value = Number(e.target.value)
+        setCardBorderRadius(value)
+    }
     const handleCardBgColorChange = (color: any) => {
         setCardBgColor(color.hex);
     };
@@ -40,7 +44,10 @@ const CardCustomization = ({ extractedColors, setCardBgColor, setCardBorderRadiu
                 <div className={styles.radiusContainer}>
                     <div className={styles.heading}>Border Radius</div>
                     <RadiusIcon color={theme === "light" ? "black" : "white"} />
-                    <div className={styles.radiusValue} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }}>{cardBorderRadius}px</div>
+                    <div className={styles.inputContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }} >
+                        <input className={styles.radiusValue} value={cardBorderRadius} onChange={(e)=>handleRadiusChange(e)} maxLength={2} style={{color : theme === "light" ? "black" : "white"}}/>
+                        <span>px</span>
+                    </div>
                     <div className={styles.arrows}>
                         <div onClick={() => setCardBorderRadius(cardBorderRadius + 1)}><UpIcon color={theme === "light" ? "black" : "white"} /></div>
                         <div onClick={() => setCardBorderRadius(cardBorderRadius - 1)}><DownIcon color={theme === "light" ? "black" : "white"} /></div>

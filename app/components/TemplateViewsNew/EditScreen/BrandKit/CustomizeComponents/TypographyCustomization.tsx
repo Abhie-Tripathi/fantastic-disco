@@ -109,6 +109,30 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
         }));
     };
 
+    const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number(e.target.value)
+
+        if (!isNaN(value) && value >= 0) {
+            setFontSettings((prevSettings) => {
+                let maxFontSize;
+                if (selectedType === "heading") {
+                    maxFontSize = 24;
+                } else if (selectedType === "subheading") {
+                    maxFontSize = 16;
+                } else {
+                    maxFontSize = 12;
+                }
+                return {
+                    ...prevSettings,
+                    [selectedType]: {
+                        ...prevSettings[selectedType],
+                        fontSize: value > maxFontSize ? maxFontSize : value,
+                    },
+                };
+            });
+        }
+    }
+
     return (
         <div className={styles.body}>
             <div className={styles.headingContainer}>
@@ -173,7 +197,9 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                             <div className={styles.heading}>Font Size</div>
                             <FontSizeIcon color={theme === "light" ? "black" : "white"} />
                             <div className={styles.sizeContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }}>
-                                <div className={styles.display}>{selectedType === "heading" ? `${fontSettings.heading.fontSize}px` : selectedType === "subheading" ? `${fontSettings.subheading.fontSize}px` : `${fontSettings.body.fontSize}px`}</div>
+                                <input type="text" maxLength={2} value={selectedType === "heading" ? fontSettings.heading.fontSize : selectedType === "subheading" ? fontSettings.subheading.fontSize : fontSettings.body.fontSize} onChange={(e)=>handleSizeChange(e)} style={{color : theme === "light" ? "black" : "white"}}/>
+                                <span>px</span>
+                                {/* <div className={styles.display}>{selectedType === "heading" ? `${fontSettings.heading.fontSize}px` : selectedType === "subheading" ? `${fontSettings.subheading.fontSize}px` : `${fontSettings.body.fontSize}px`}</div> */}
                             </div>
                             <div className={styles.arrows}>
                                 <div onClick={handleIncreaseFontSize}><UpArrow color={theme === "light" ? "black" : "white"} /></div>
