@@ -136,21 +136,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     fetchInterestedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  function calculateDaysBetweenDates(startDateString: string, endDateString: string) {
-    const startDate = new Date(startDateString);
-    const endDate = new Date(endDateString);
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-      throw new Error("Invalid date format");
-    }
-    const startTime = startDate.getTime();
-    const endTime = endDate.getTime();
-
-    const timeDifference = endTime - startTime;
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    const dayDifference = timeDifference / millisecondsPerDay;
-
-    return dayDifference;
-  }
   function formatEventDates(startDate: string, endDate: string) {
     const start = new Date(startDate);
     const end = new Date(endDate);
