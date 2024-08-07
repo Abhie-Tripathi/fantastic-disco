@@ -31,8 +31,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         const getCordinateList = async () => {
           try {
             const data = await myFetch(`${baseUrl}/userInterest/totalParticipent`);
-            console.log("cordinate", data?.data?.slice(1, data?.data.length));
-            // setCordinateData(data.data[]);
             setCoordinateCount(data?.data);
           } catch (error) {
             console.error("Error while fetching cordinate list:", error);

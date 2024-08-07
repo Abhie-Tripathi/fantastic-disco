@@ -45,6 +45,8 @@
 
 .locationAndDateContainer {
     display: flex;
+    align-items: center;
+    padding-top: 8px;
     gap: var(--spacing-xl);
 }
 

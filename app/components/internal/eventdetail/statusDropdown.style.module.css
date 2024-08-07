@@ -13,14 +13,14 @@
 .dropdown_container3 {
     display: flex;
     background-color: #6750A44D;
-    border: 1px solid #6750A4;
+    border: 1px solid var(--primary-color);
     border-radius: 40px;
     font-size: 13px;
     height: fit-content;
     gap: 8px;
     padding: 4px 12px;
     font-weight: 600;
-    color: #6750A4;
+    color: var(--primary-color);
     cursor: pointer;
 }
 
