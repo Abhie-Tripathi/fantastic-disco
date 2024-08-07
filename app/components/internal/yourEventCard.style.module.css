@@ -110,7 +110,7 @@
     font-size: var(--font-size-default);
     padding-right: 10px;
     display: flex;
-    color: #6750A4;
+    color: var(--primary-color);
     flex-direction: column;
     justify-content: center;
     align-items: center;
