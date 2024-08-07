@@ -51,21 +51,30 @@
 }
 
 .badge_success {
-    background-color: var(--neutral-light-color);
+    background-color: #e6feef;
     padding: 6px 24px;
     border-radius: var(--border-radius-sm);
     color: var(--success-text-color);
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-small);
+    /* font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small); */
 }
 
 .badge_danger {
-    background-color: var(--neutral-light-color);
+    background-color: var(--danger-background-color);
     padding: 6px 24px;
     border-radius: var(--border-radius-sm);
     color: var(--danger-text-color);
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-small);
+    /* font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small); */
+}
+
+.badge_primary {
+    background-color: #eeeaf9;
+    padding: 6px 24px;
+    border-radius: var(--border-radius-sm);
+    color: var(--primary-color);
+    /* font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small); */
 }
 
 .subHeading {
@@ -77,6 +86,7 @@
 .categoryContainer {
     display: flex;
     gap: var(--spacing-sm);
+    align-items: center;
 }
 
 .categoryBadges {
@@ -296,7 +306,7 @@
 }
 
 .internationalCount {
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
     margin: 36px 0;
     width: fit-content;

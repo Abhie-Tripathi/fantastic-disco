@@ -11,6 +11,10 @@ interface OverviewProps {
   eventDetail: any;
 }
 
+function toTitleCase(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
 function isUpcomingEvent(startDate: Date): boolean {
   startDate = new Date(startDate);
   const today = new Date();
@@ -29,7 +33,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             <div className={styles.categoryContainer}>
               <div className={styles.subHeading}>Format</div>
               <div className={styles.categoryBadges}>
-                <div className={styles.catItem}>{eventDetail.format}</div>
+                <div className={styles.catItem}>{toTitleCase(eventDetail.format)}</div>
               </div>
             </div>
           }
@@ -38,7 +42,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             <div className={styles.categoryContainer}>
               <div className={styles.subHeading}>Status</div>
               <div className={styles.categoryBadges}>
-                <div className={styles.catItem}>Online</div>
+                <div className={styles.catItem}>Upcoming Event</div>
               </div>
             </div>
           }
@@ -99,10 +103,17 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             {/* <Image src={PlaceHolder} alt='company' width={96} height={96} style={{ borderRadius: 8 }} /> */}
             <div className={styles.hostDetails}>
                 <div className={styles.hostname}>{eventDetail?.organizer?.name}</div>
-                <div className={styles.hostlocation}>
-                  <Location color={theme === "dark" ? "white" : ""} />
-                    <span>{eventDetail?.organizer?.cityName}, {eventDetail?.organizer?.countryName}</span>
-                </div>
+                {(eventDetail.organizer?.cityName || eventDetail.organizer?.countryName) &&
+                  <div className={styles.hostlocation}>
+                    <Location color={theme === "dark" ? "white" : ""} />
+                    <span>
+                      {(eventDetail.organizer?.cityName && eventDetail.organizer?.countryName) ?
+                        (eventDetail.organizer.cityName +', '+eventDetail.organizer?.countryName) :
+                        eventDetail.organizer.countryName
+                      }
+                    </span>
+                  </div>
+                }
                 <div style={{display: 'flex', gap: '24px'}}>
                 {/* <div className={styles.upcoming}>Upcoming Events <span>N/A</span></div>
                 <div className={styles.hosted}>Events Hosted <span>12</span></div> */}

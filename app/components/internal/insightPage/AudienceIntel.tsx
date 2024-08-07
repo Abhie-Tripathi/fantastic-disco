@@ -23,13 +23,28 @@ const AudienceIntel = ({ eventDetail }: OverviewProps) => {
           </div>
           <div>
             <div className={styles.cardHeading}>International Score</div>
-            <div className={`${styles.internationalCount} ${styles.badge_success}`}>{eventDetail["internationalAudience%"] !== undefined ? eventDetail["internationalAudience%"] : '-'}</div>
+            {/* <div className={`${styles.internationalCount} ${ styles.badge_success}`}>{eventDetail["internationalAudience%"] !== undefined ? eventDetail["internationalAudience%"] : '-'}</div> */}
+            <div className={styles.internationalCount}>
+              {eventDetail["internationalAudience%"] !== undefined ? (
+                eventDetail["internationalAudience%"] == "High" ? (
+                  <span className={styles.badge_success}>High</span>
+                ) : eventDetail["internationalAudience%"] == "Medium" ? (
+                  <span className={styles.badge_primary}>Medium</span>
+                ) : eventDetail["internationalAudience%"] == "Low" ? (
+                  <span className={styles.badge_danger}>Low</span>
+                ) : (
+                  <></>
+                )
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         </div>
         
         <div className={`${styles.audienceSpreadCard} card`}>
           <div className={styles.cardHeading}>Audience Spread</div>
-          <div className={`${styles.blurContent} card`} style={{display: 'flex', justifyContent: 'space-between', margin: '12px 0'}}>
+          <div className={`${styles.blurContent} card`} style={{display: 'flex', justifyContent: 'space-between'}}>
             <div>
               Local
               <div>234</div>
