@@ -11,9 +11,10 @@ interface Props {
     fetchAddedEvents : ()=>Promise<void>;
     handleAddEventModal : (value: void) => void
     handlePrefillNormalEvent : (event : AllEventsType)=>void
+    widgetId : string;
 }
 
-const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents,handlePrefillNormalEvent }: Props) => {
+const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents,handlePrefillNormalEvent,widgetId }: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -45,8 +46,8 @@ const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedE
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
                 <button onClick={() => handleAddEventModal()}>Add Event</button>
-            </div>
-            <GlobalSearch />
+            </div> 
+            <GlobalSearch widgetId={widgetId}/>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (

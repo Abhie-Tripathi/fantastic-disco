@@ -20,6 +20,7 @@ import { baseUrl } from '@/constants'
 import { AddedEventsType } from '@/types/addedwidgetevents'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
+import DescriptionModal from './description/DescriptionModal'
 
 interface SpeakerProfileType {
   id: string;
@@ -60,7 +61,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
-  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "a")
   const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || "")
   const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
@@ -77,6 +78,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
     file: null
   });
+  const [mapWidth, setMapWidth] = useState(0);
+  const mapDivRef = useRef<HTMLDivElement>(null);
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -99,6 +102,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       adjustHeight(); // Initial adjustment
     }
 
+    if (mapDivRef.current) {
+      setMapWidth(mapDivRef.current.getBoundingClientRect().width);
+    }
     return () => {
       if (textArea) {
         textArea.removeEventListener('input', adjustHeight);
@@ -127,7 +133,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
-    const widgetIds: string[] = [widgetId]
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -137,7 +142,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
-      widgetIds,
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -211,8 +215,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }
 
+  // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
-    // if (!prefilledAddedEvent) return;
     const eventData = {
       id: eventId,
       format: eventFormat,
@@ -223,7 +227,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
-      logoUrl : banner.placeHolder
+      logoUrl: banner.placeHolder
     };
     const formData = new FormData();
     formData.append("id", eventId);
@@ -239,7 +243,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       const updatedEventId = data.data.id;
       let updatedBannerUrl = data.data.data.logoUrl;
-      addEventToWidget(updatedEventId, updatedBannerUrl);
+      if(prefilledAddedEvent){
+        updateEventInWidget(updatedEventId,updatedBannerUrl)
+      }else{
+        addEventToWidget(updatedEventId, updatedBannerUrl);
+      }
+
     }
     if (error) {
       console.log(error);
@@ -269,7 +278,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       boothNumber,
       speakerProfilesData,
       participationMessage,
-      bannerUrl : updatedBannerUrl
+      bannerUrl: updatedBannerUrl
     };
 
     // Find and update the existing event
@@ -305,7 +314,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const handleGeneratePoster = () => {
     if (description && eventName && countryName) {
-      generatePrompt(countryName, description, eventName,1024, 1024)
+      generatePrompt(countryName, description, eventName, 1024, 1024)
     }
   }
   useEffect(() => {
@@ -318,14 +327,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     <div className={styles.body}>
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
         <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-        <button className={styles.addBtn} 
-        onClick={
-          prefilledAddedEvent 
-            ? () => handleSaveEvent(prefilledAddedEvent.id) 
-            : prefilledNormalEvent 
-              ? () => handleSaveEvent(prefilledNormalEvent.eventId) 
-              : handleAddEvent
-        }>
+        <button className={styles.addBtn}
+          onClick={
+            prefilledAddedEvent
+              ? () => handleSaveEvent(prefilledAddedEvent.id)
+              : prefilledNormalEvent
+                ? () => handleSaveEvent(prefilledNormalEvent.eventId)
+                : handleAddEvent
+          }>
           Save and Add event</button>
       </div>
       <div className={styles.line}></div>
@@ -361,26 +370,35 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
-          {cityName && <Suspense fallback={<div>Loading...</div>}>
-            <div className={styles.map}><Mapview latitude={37.7749}
-              longitude={-122.4194}
-              zoom={6} /></div>
-          </Suspense>}
+          {cityName &&
+            <div className={styles.map} ref={mapDivRef}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Mapview latitude={37.7749}
+                  width={mapWidth}
+                  longitude={-122.4194}
+                  zoom={6} />
+              </Suspense>
+            </div>
+          }
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>
       </div>
-      {descriptionModal && <div className={styles.descriptionModal}>
-        <div><span>Add your description</span><span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span></div>
-        <textarea onChange={(e) => setTextValue(e.target.value)} value={textValue} />
-        <button onClick={handleDescClick}>Save</button>
-      </div>}
-      {speakerModal && <div className={styles.speakerModal}>
-        <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile} deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker} />
-      </div>}
-      {registerModal && <div className={styles.registerModal}>
-        <RegistrationModal registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} setRegisterBtnColor={setRegisterBtnColor} setRegisterBtnText={setRegisterBtnText} setRegisterMessage={setRegisterMessage} />
-      </div>}
-    </div>
+      {
+        descriptionModal && <div className={styles.descriptionModal}>
+            <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
+        </div>
+      }
+      {
+        speakerModal && <div className={styles.speakerModal}>
+          <SpeakerModal setSpeakerProfilesData={setSpeakerProfilesData} setSpeakerModal={setSpeakerModal} prefilledProfile={prefilledProfile} deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker} />
+        </div>
+      }
+      {
+        registerModal && <div className={styles.registerModal}>
+          <RegistrationModal registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} setRegisterBtnColor={setRegisterBtnColor} setRegisterBtnText={setRegisterBtnText} setRegisterMessage={setRegisterMessage} />
+        </div>
+      }
+    </div >
   )
 }
 

@@ -159,7 +159,7 @@ const Page = () => {
 
     <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
       <ToastContainer />
-      <div className={styles.editContainer}>
+      {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
@@ -185,8 +185,8 @@ const Page = () => {
           handleAddEventModal={handleAddEventModal}
           addedEventIds = {addedEventIds}
         />
-      </div>
-      <div className={styles.previewContainer}>
+      </div>}
+      <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
         <PreviewWindow
           selectedBtn={selectedBtn}
           selectedTemplate={selectedTemplate}

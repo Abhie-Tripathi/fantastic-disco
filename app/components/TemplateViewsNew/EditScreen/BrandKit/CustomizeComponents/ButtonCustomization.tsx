@@ -201,7 +201,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                 <div className={styles.btnTextContainer}>
                     <div className={styles.heading}>Button Text</div>
                     <TextIcon color={theme === "light" ? "black" : "white"} />
-                    <input type="text" value={selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText} onChange={handleTextChange} style={{ color: theme === "light" ? "black" : "white" }} />
+                    <input type="text" value={selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText} onChange={handleTextChange} style={{ color: theme === "light" ? "black" : "white" }} maxLength={25} />
                 </div>
             </div>
         </div>

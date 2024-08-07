@@ -9,10 +9,11 @@ import Image from 'next/image';
 interface MapProps {
     latitude: number;
     longitude: number;
+    width : number;
     zoom: number;
 }
 
-const Mapview = ({ latitude, longitude, zoom }: MapProps) => {
+const Mapview = ({ latitude, longitude, zoom,width }: MapProps) => {
     const [viewport, setViewport] = useState({
         latitude,
         longitude,
@@ -24,7 +25,7 @@ const Mapview = ({ latitude, longitude, zoom }: MapProps) => {
             <div className={styles.heading}>Location</div>
             <div className={styles.line}></div>
             <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
-            <div className={styles.map} style={{ width: 580, height: 200, marginTop:24}}>
+            <div className={styles.map} style={{ width: width, height: 200, marginTop:24}}>
                 <Map
                     initialViewState={{
                         longitude: viewport.longitude,
@@ -37,8 +38,6 @@ const Mapview = ({ latitude, longitude, zoom }: MapProps) => {
                         height: "100%",
                     }}
                     mapStyle='mapbox://styles/mapbox/streets-v12'
-                    // onViewportChange={(viewport)=>setViewport(viewport)
-                    // }
                 >
                     <Marker latitude={latitude} longitude={longitude}>
                         <Image src={MapPointer} alt='pointer'/>

@@ -20,17 +20,7 @@ interface FontSettingsState {
     subheading: FontSettings;
     body: FontSettings;
 }
-// interface ButtonSettings {
-//     buttonColor: string;
-//     fontColor: string;
-//     borderRadius: number;
-//     borderColor: string;
-//     buttonText: string;
-// }
-// interface ButtonSettingsState {
-//     primary: ButtonSettings;
-//     secondary: ButtonSettings;
-// }
+
 interface EditScreenProps {
     setCardBgColor: React.Dispatch<React.SetStateAction<string>>;
     setCardBorderRadius: React.Dispatch<React.SetStateAction<number>>;

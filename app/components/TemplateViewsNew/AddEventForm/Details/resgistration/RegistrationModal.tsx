@@ -29,6 +29,9 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
     const handleColor = (color : any)=>{
         setBtnColor(color.hex)
     }
+    const handleHexInputChange = (hexcolor : string)=>{
+        setBtnColor(hexcolor)
+    }
 
   return (
     <form className={styles.body} onSubmit={handleSubmit}>
@@ -44,7 +47,7 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
             <input type="text" value={btnText} onChange={(e)=>setBtnText(e.target.value)} maxLength={30}/>
         </div>
         <div className={styles.colorPicker}>
-        <ColorPicker heading='Button Colour' color={btnColor} handleChange={handleColor}/>
+        <ColorPicker handleHexInputChange={handleHexInputChange} heading='Button Colour' color={btnColor} handleChange={handleColor}/>
         </div>
         <button className={styles.saveBtn} type='submit'>Save</button>
     </form>

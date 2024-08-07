@@ -12,10 +12,10 @@ interface Props {
     handlePrefilledAddedEvent: (event: AddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
-    addedEventIds: string[]
+    fetchEvents : () => Promise<void>;
 }
 
-const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, addedEventIds }: Props) => {
+const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId,fetchEvents }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
 
@@ -24,41 +24,56 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         return new Date(date).toLocaleDateString('en-US', options);
     };
 
-    const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventIds : string[]) => {
+    // This function is to trigger the delete event function from added events
+    const handleCheckboxChange = async (eventId: string) => {
+        const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
+        if (!updatedEvents) return;
+        try {
+            await updateWidget(widgetId, updatedEvents, eventId);
+        } catch (error) {
+            console.error('Failed to update events:', error);
+        }
+    };
+    const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventId: string) => {
         const customizedFormData = new FormData();
 
         const otherData = {
             event: updatedEvents,
         };
 
-        const updatedIds = eventIds.join(',')
+        // const updatedIds = eventIds.join(',')
         customizedFormData.append("widgetId", widgetId);
         customizedFormData.append("otherdata", JSON.stringify(otherData));
-        customizedFormData.append("eventId", updatedIds);
 
         const { data, error } = await myFetch(`${baseUrl}/widget`, {
             method: 'POST',
             body: customizedFormData
         })
         if (data) {
+            handleEventIdDelete(eventId)
             fetchAddedEvents()
+            fetchEvents()
         }
         if (error) {
             console.log(error)
         }
     };
 
-    // This function is to trigger the delete event function from added events
-    const handleCheckboxChange = async (eventId: string) => {
-        const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
-        const eventIds = addedEventIds?.filter(id => id !== eventId)
-        if (!updatedEvents) return;
-        try {
-            await updateWidget(widgetId, updatedEvents,eventIds);
-        } catch (error) {
-            console.error('Failed to update events:', error);
+    const handleEventIdDelete = async (eventId: string) => {
+        const customizedFormData = new FormData();
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("eventId", eventId)
+        customizedFormData.append("published", "false")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData
+        }) 
+        if(data){
+            console.log(data)
+        }if(error){
+            console.log(error)
         }
-    };
+    }
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>

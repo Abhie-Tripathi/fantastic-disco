@@ -15,7 +15,9 @@ const CardCustomization = ({ extractedColors, setCardBgColor, setCardBorderRadiu
 
     const handleRadiusChange = (e : any)=>{
         const value = Number(e.target.value)
-        setCardBorderRadius(value)
+        if (!isNaN(value) && value >= 0){
+            setCardBorderRadius(value)
+        }
     }
     const handleCardBgColorChange = (color: any) => {
         setCardBgColor(color.hex);
