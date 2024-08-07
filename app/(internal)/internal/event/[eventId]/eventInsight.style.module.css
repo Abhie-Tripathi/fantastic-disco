@@ -5,11 +5,16 @@
 }
 
 .containerLeft {
-    width: 33.33%;
+    width: 30%;
+    position: fixed;
+    height: calc(100vh - 120px);
+    overflow-x: auto;
+    padding-right: 8px;
 }
 
 .containerRight {
-    width: 66.67%;
+    width: 63%;
+    margin-left: auto;
 }
 
 .eventLogo {
@@ -28,8 +33,27 @@
     word-break: break-word;
 }
 
+.actionContainer {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.eventRating {
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.eventActions {
+    display:  flex;
+    gap: var(--spacing-md);
+}
+
 .date_loactionContainer{
-    margin-top: 24px;
+    /* margin-top: 24px; */
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -137,9 +161,13 @@
 
 .tabActive {
     color: var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
 }
 
 .tabContent {
-    margin-top: 20px;
+    /* margin-top: 20px; */
+    height: calc(100vh - 175px);
+    overflow-y: auto;
+    margin-right: -24px;
+    padding-right: 24px;
 }
