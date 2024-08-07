@@ -18,6 +18,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
     const handleCheckboxChange = () => {
         setSelectedBtn(selectedBtn === "primary" ? "secondary" : "primary");
     };
+    const {theme} = useTheme()
     const handleBtnColorChange = (color: any) => {
         setButtonSettings(prevSettings => ({
             ...prevSettings,
@@ -27,8 +28,6 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
             },
         }));
     };
-
-    const {theme} = useTheme()
     const handleFontColorChange = (color: any) => {
         setButtonSettings(prevSettings => ({
             ...prevSettings,
@@ -44,6 +43,37 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
             [selectedBtn]: {
                 ...prevSettings[selectedBtn],
                 borderColor: color.hex,
+            },
+        }));
+    };
+
+    // Hexinput methods are for the Input color code feature
+    const handleBtnHexInputChange = (hexColor: string) => {
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                buttonColor: hexColor,
+            },
+        }));
+    };
+    
+    const handleFontHexInputChange = (hexColor: string) => {
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                fontColor: hexColor,
+            },
+        }));
+    };
+    
+    const handleBorderHexInputChange = (hexColor: string) => {
+        setButtonSettings(prevSettings => ({
+            ...prevSettings,
+            [selectedBtn]: {
+                ...prevSettings[selectedBtn],
+                borderColor: hexColor,
             },
         }));
     };
@@ -119,6 +149,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                                 extractedColors={extractedColors}
                                 heading="Button Colour"
                                 handleChange={handleBtnColorChange}
+                                handleHexInputChange={handleBtnHexInputChange}
                             />
                         </div>
                         <div>
@@ -127,6 +158,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                                 extractedColors={extractedColors}
                                 heading="Border Colour"
                                 handleChange={handleBorderColorChange}
+                                handleHexInputChange={handleBorderHexInputChange}
                             />
                         </div>
                     </div>
@@ -136,6 +168,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                             extractedColors={extractedColors}
                             heading="Font Colour"
                             handleChange={handleFontColorChange}
+                            handleHexInputChange={handleFontHexInputChange}
                         />
                         <div className={styles.radiusContainer}>
                             <div className={styles.heading}>Border Radius</div>

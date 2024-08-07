@@ -305,7 +305,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const handleGeneratePoster = () => {
     if (description && eventName && countryName) {
-      generatePrompt(countryName, description, eventName)
+      generatePrompt(countryName, description, eventName,1024, 1024)
     }
   }
   useEffect(() => {

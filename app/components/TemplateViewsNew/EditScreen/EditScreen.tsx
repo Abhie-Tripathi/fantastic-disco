@@ -57,7 +57,7 @@ interface EditScreenProps {
     addedEventIds : string[]
 }
   
-const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn,handleUpdateCustomization,fetchedAllEvents, fetchEvents,widgetId, widgetType,    fetchedAddedEvents,fetchAddedEvents, handlePrefilledAddedEvent,handleAddEventModal,addedEventIds,handlePrefillNormalEvent  }: EditScreenProps) => {
+const   EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn,handleUpdateCustomization,fetchedAllEvents, fetchEvents,widgetId, widgetType,    fetchedAddedEvents,fetchAddedEvents, handlePrefilledAddedEvent,handleAddEventModal,addedEventIds,handlePrefillNormalEvent  }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const { theme } = useTheme()
