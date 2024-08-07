@@ -232,7 +232,7 @@ const InsightsPage = () => {
             </div>
             <div className={styles.locationContainer}>
               <div className={styles.locationIconContainer}>
-                <Location color={theme === "dark" ? "white" : ""} />
+                <Location color={"var(--secondary-text-color)"} />
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>
@@ -250,7 +250,7 @@ const InsightsPage = () => {
             </div>
             <div className={styles.locationContainer}>
               <div className={styles.locationIconContainer}>
-                <Buildings color={theme === "dark" ? "white" : ""} />
+                <Buildings color={"var(--secondary-text-color)"} />
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>

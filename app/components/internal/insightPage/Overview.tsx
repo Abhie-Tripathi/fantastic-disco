@@ -38,14 +38,14 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             </div>
           }
 
-          {eventDetail?.startDate && isUpcomingEvent(eventDetail.startDate) &&
+          {/* {eventDetail?.startDate && isUpcomingEvent(eventDetail.startDate) &&
             <div className={styles.categoryContainer}>
               <div className={styles.subHeading}>Status</div>
               <div className={styles.categoryBadges}>
                 <div className={styles.catItem}>Upcoming Event</div>
               </div>
             </div>
-          }
+          } */}
 
           {/* <div className={styles.categoryContainer}>
             <div className={styles.subHeading}>Edition</div>
@@ -105,7 +105,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
                 <div className={styles.hostname}>{eventDetail?.organizer?.name}</div>
                 {(eventDetail.organizer?.cityName || eventDetail.organizer?.countryName) &&
                   <div className={styles.hostlocation}>
-                    <Location color={theme === "dark" ? "white" : ""} />
+                    <Location color={"var(--secondary-text-color)"} />
                     <span>
                       {(eventDetail.organizer?.cityName && eventDetail.organizer?.countryName) ?
                         (eventDetail.organizer.cityName +', '+eventDetail.organizer?.countryName) :
