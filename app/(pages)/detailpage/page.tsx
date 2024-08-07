@@ -80,7 +80,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                     <div className={styles.description}>{description}</div>
                 </div>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <div className={styles.map}><Mapview latitude={37.7749}
+                    <div className={styles.map}><Mapview width={500} latitude={37.7749}
                         longitude={-122.4194}
                         zoom={6} /></div>
                 </Suspense>
@@ -88,7 +88,6 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                     <MoreEvents />
                 </div>
             </div>
-            {/* </div> */}
         </div>
     )
 }

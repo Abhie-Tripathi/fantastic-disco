@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './mapview.style.module.css'
 import MapPointer from "/public/Marker.svg";
 import {Map , Marker} from "react-map-gl";
@@ -13,12 +13,7 @@ interface MapProps {
     zoom: number;
 }
 
-const Mapview = ({ latitude, longitude, zoom,width }: MapProps) => {
-    const [viewport, setViewport] = useState({
-        latitude,
-        longitude,
-        zoom,
-    });
+const Mapview = ({ latitude, longitude, zoom, width }: MapProps) => {
 
     return (
         <div className={styles.body}>
@@ -28,9 +23,9 @@ const Mapview = ({ latitude, longitude, zoom,width }: MapProps) => {
             <div className={styles.map} style={{ width: width, height: 200, marginTop:24}}>
                 <Map
                     initialViewState={{
-                        longitude: viewport.longitude,
-                        latitude: viewport.latitude,
-                        zoom: viewport.zoom,
+                        longitude: longitude,
+                        latitude: latitude,
+                        zoom: zoom,
                       }}
                     mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
                     style={{
