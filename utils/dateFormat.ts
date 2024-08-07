@@ -143,3 +143,62 @@ export const convertToCustomFormat = (dateStr: string) => {
   const formattedDate = day + " " + monthNames[monthIndex] + " " + year;
   return formattedDate;
 };
+
+export const formatEventDates = (startDate: string, endDate: string) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start.getFullYear() === end.getFullYear()) {
+      if (start.getMonth() === end.getMonth()) {
+          if (start.getDate() === end.getDate()) {
+              return new Date(startDate).toLocaleDateString("en-GB", {
+                weekday: 'long',
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              });
+          } else {
+              return (
+                new Date(startDate).toLocaleDateString("en-GB", {
+                  weekday: 'long',
+                }) + ', ' +
+                new Date(startDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                }) + ' - ' +
+                new Date(endDate).toLocaleDateString("en-GB", {
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                })
+              );
+          }
+      } else {
+          return (
+            new Date(startDate).toLocaleDateString("en-GB", {
+              weekday: 'long',
+              month: "short",
+              day: "2-digit",
+            }) + ' - ' +
+            new Date(endDate).toLocaleDateString("en-GB", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            })
+          );
+      }
+  } else {
+      return (
+        new Date(startDate).toLocaleDateString("en-GB", {
+          weekday: 'long',
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }) + ' - ' +
+        new Date(endDate).toLocaleDateString("en-GB", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        })
+      );
+  }
+}

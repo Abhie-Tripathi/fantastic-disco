@@ -8,7 +8,7 @@ import CrossIcon from "/public/close.svg";
 import Link from "next/link";
 import Image from "next/image";
 import FestivalIcon from "/public/festivalIcon.svg";
-import { formatDateRange } from "@/utils/dateFormat";
+import { formatEventDates } from "@/utils/dateFormat";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { useTheme } from "@/context";
@@ -38,7 +38,7 @@ const EventListCard = (event: any) => {
         {event.event?.location?.cityName}
       </div>
       <div className={styles.eventListCard_date}>
-        {formatDateRange(event.event?.startDate, event.event?.endDate)}
+        {formatEventDates(event.event?.startDate, event.event?.endDate)}
       </div>
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
