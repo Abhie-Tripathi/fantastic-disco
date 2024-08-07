@@ -59,9 +59,10 @@
 .vote_tags {
   display: flex;
   height: fit-content;
-  gap: 8px;
+  gap: var(--spacing-xxs);
+  align-items: center;
   font-weight: 400;
-  color: white;
+  color: var(--primary-color);
   padding: 6px 12px;
   cursor: pointer;
   border-radius: 30px;
@@ -70,7 +71,7 @@
 }
 
 .upVoted {
-  background: #665A88;
+  background: #6750A44D;
 }
 
 .imageOverlap {

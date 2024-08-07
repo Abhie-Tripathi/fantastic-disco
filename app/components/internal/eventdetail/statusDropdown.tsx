@@ -6,6 +6,7 @@ import { useTheme } from '@/context';
 import { toast } from 'react-toastify';
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
+import upArrowLight from '/public/internal/up_arrow_light.svg'
 
 interface PropType {
   label: string;
@@ -91,8 +92,9 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            <Image src={ClockIcon} alt="clock" width={16} height={16} className={iconClass} />
+            <Image src={ClockIcon} alt="clock" width={16} height={16} />
             {value}
+            <Image src={upArrowLight} alt="up" width={16} height={16} style={{transform:"rotate(180deg)"}} />
           </div>
         </div>
         {isOpen && (

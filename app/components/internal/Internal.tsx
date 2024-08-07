@@ -13,7 +13,6 @@ interface Props{
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
     cardUpdated: boolean;
 }
-
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
     let prevDate: any = null;
 
@@ -22,13 +21,27 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const divRef: RefObject<HTMLDivElement> = useRef(null);
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
+    const [coordinateCount,setCoordinateCount]=useState<any>();
     const handleScrollEnd = () => {
         setTimeout(() => {
             if(!noMoreData) setPage(prevPage => prevPage + 1);
         }, 1000);
     };
-
+    useEffect(() => {
+        const getCordinateList = async () => {
+          try {
+            const data = await myFetch(`${baseUrl}/userInterest/totalParticipent`);
+            console.log("cordinate", data?.data?.slice(1, data?.data.length));
+            // setCordinateData(data.data[]);
+            setCoordinateCount(data?.data);
+          } catch (error) {
+            console.error("Error while fetching cordinate list:", error);
+          } finally {
+            // setIsLoading(false);
+          }
+        };
+        getCordinateList();
+      }, []);
     const fetchData = async () => {
         console.log('fetching data... page=', page);
         if(page > 0) {
@@ -103,10 +116,36 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             </div>
         );
     }
-
+    
   return (
     <div className={styles.scrollContainer} ref={divRef} >
     <div className={styles.container} >
+    <div className={styles.countsContainer}>
+        <div className={styles.exhibitorCount}>
+            <div className={styles.count}>{coordinateCount && coordinateCount[1]?.count}</div>
+            <div className={styles.countTitle}>Exhibitors</div>
+        </div>
+        <div className={styles.exhibitorCount}>
+            <div className={styles.count}>{coordinateCount && coordinateCount[2]?.count}</div>
+            <div className={styles.countTitle}>Sponsors</div>
+        </div>
+        <div className={styles.exhibitorCount}>
+            <div className={styles.count}>{coordinateCount && coordinateCount[3]?.count}</div>
+            <div className={styles.countTitle}>Speakers</div>
+        </div>
+        <div className={styles.exhibitorCount}>
+            <div className={styles.count}>{coordinateCount && coordinateCount[4]?.count}</div>
+            <div className={styles.countTitle}>Attendee</div>
+        </div>
+    </div>
+    <div className={styles.filters}>
+        <div className={styles.searchBar}>
+            
+        </div>
+        <div className={styles.statusDropdown}></div>
+        <div className={styles.participantDropdown}></div>
+        <div className={styles.dateFilter}></div>
+    </div>
     <div className={styles.timelineContainer} >
     {eventData1.map((item, index) => {
         // Check if current event's date is different from previous event's date
@@ -121,8 +160,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
                     enquiryId={item.enquiryId}
                     eventName={item.name}
                     eventLocation={item.city}
-                    eventImage={"https://miro.medium.com/v2/resize:fit:1400/1*nmMagIDyextUFs5J9aGnPw.jpeg"}
-                    eventDate={item.startDate}
+                    eventImage={item?.logo}
+                    eventStartDate={item.startDate}
+                    eventEndDate={item.endDate}
                     eventCompany={item.orgName}
                     eventDuration={item.duration}
                     userCount={item.userCount}
