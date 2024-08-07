@@ -1,5 +1,6 @@
 import React, { useState, useRef, RefObject, useEffect } from 'react'
 import YourEventCard from './YourEventCard'
+import Search from '/public/search.svg'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import eventData from '@/public/data/demoEvent.json'
@@ -136,14 +137,14 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             <div className={styles.countTitle}>Attendee</div>
         </div>
     </div>
-    <div className={styles.filters}>
-        {/* <div className={styles.searchBar}>
-            <input className={styles.textArea} type='text'/>
-        </div> */}
+    {/* <div className={styles.filters}>
+        <div className={styles.searchBar}>
+            <input className={styles.textArea} type='text' placeholder='Search Event'/>
+        </div>
         <div className={styles.statusDropdown}></div>
         <div className={styles.participantDropdown}></div>
         <div className={styles.dateFilter}></div>
-    </div>
+    </div> */}
     <div className={styles.timelineContainer} >
     {eventData1.map((item, index) => {
         // Check if current event's date is different from previous event's date

@@ -5,6 +5,7 @@
     /* background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
     /* border-radius: 12px; */
     /* display: flex; */
+    cursor: pointer;
     border: 1px solid var(--neutral-light-color);
     background: var(--card-background);
     justify-content: space-between;

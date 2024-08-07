@@ -195,7 +195,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     }
   }
   return (
-    <div className={`${styles.card} card`}>
+    <div className={`${styles.card} card`} onClick={handleModalOpen}>
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
           <div className={styles.leftContainer}>
@@ -325,7 +325,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               </div>
               <div className={styles.viewCtas}>
                 {/* <button className={styles.notesBtn} onClick={handleModalOpen}>Notes</button> */}
-                <button className={styles.notesBtn} style={{ backgroundColor: "var(--primary-color)", color: "white" }}
+                <button className={styles.notesBtn} style={{  color: "var(--primary-color)" }}
                   onClick={handleModalOpen}
                 >View Details</button>
               </div>

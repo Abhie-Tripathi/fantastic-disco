@@ -40,8 +40,7 @@
     justify-content: space-between;
 }
 .exhibitorCount{
-    /* background-color: var(--primary-light-color); */
-    border: 1px solid var(--primary-color);
+    background-color: var(--primary-light-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,6 +63,7 @@
 }
 .textArea{
     border:none;
+    height: 100%;
     outline: none;
 }
 @media screen and (max-width:1200px) {

@@ -29,8 +29,7 @@
   height: 25px;
   border-radius: 50%;
   background-color: #fff;
-  border: none;
-  box-shadow: -2px -1px 7px rgba(0, 0, 0, 0.7), 2px 1px 7px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neutral-light-color);
   transition: transform 0.2s ease;
 }
 
