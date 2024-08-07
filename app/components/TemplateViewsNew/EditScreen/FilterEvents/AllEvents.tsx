@@ -14,13 +14,18 @@ interface AllEventsType {
 }
 
 interface Props {
-    setIsAddEventModalOpen: (value: boolean) => void
     fetchedAllEvents : AllEventsType[]
     fetchEvents : () => Promise<void>; 
+    fetchAddedEvents : ()=>Promise<void>;
+    handleAddEventModal : (value: void) => void
 }
 
-const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props) => {
+const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents }: Props) => {
 
+    const formatDate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+        return new Date(date).toLocaleDateString('en-US', options);
+    };
     const handleDelete = async(eventId : string)=>{
         const customizeData = new FormData();
         customizeData.append("id", eventId)
@@ -34,6 +39,7 @@ const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props
           );
         if(data){
             fetchEvents()
+            fetchAddedEvents()
         }
         if(error){
             console.log(error);
@@ -45,7 +51,7 @@ const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
-                <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
+                <button onClick={() => handleAddEventModal()}>Add Event</button>
             </div>
             <GlobalSearch />
             <div className={styles.line}></div>
@@ -60,7 +66,7 @@ const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
-                                <div>{event.startDate} - {event.endDate}</div>
+                                <div>{formatDate(event.startDate)} - {formatDate(event.endDate)}</div>
                             </div>
                         </div>
                         <div className={styles.btnContainer}>
@@ -72,6 +78,7 @@ const AllEvents = ({setIsAddEventModalOpen,fetchedAllEvents,fetchEvents }: Props
                                     type="checkbox"
                                     id={key.toString()}
                                     className={styles.checkboxInput}
+                                    checked={event.isLinkedToWidget}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>

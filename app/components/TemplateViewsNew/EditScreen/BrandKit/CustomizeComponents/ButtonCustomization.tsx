@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './buttoncustom.style.module.css'
 import ColorPicker from './ColorPicker';
 import { useTheme } from '@/context';
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface Props {
     extractedColors: string[]
@@ -11,19 +12,8 @@ interface Props {
     selectedBtn: "primary" | "secondary"
 }
 
-interface ButtonSettings {
-    buttonColor: string;
-    fontColor: string;
-    borderRadius: number;
-    borderColor: string;
-    buttonText: string;
-}
-interface ButtonSettingsState {
-    primary: ButtonSettings;
-    secondary: ButtonSettings;
-}
 const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSettings, setSelectedBtn, selectedBtn }: Props) => {
-    // const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
+
 
     const handleCheckboxChange = () => {
         setSelectedBtn(selectedBtn === "primary" ? "secondary" : "primary");
@@ -96,7 +86,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
             <div className={styles.editContainer} >
                 <div className={styles.btnPreviewContainer} style={{backgroundColor : theme === "light" ? "#f2f2f2" : "#1a1a1a"}}>
                     {selectedBtn === "primary" ? <button style={{ color: buttonSettings.primary.fontColor, backgroundColor: buttonSettings.primary.buttonColor, borderRadius: buttonSettings.primary.borderRadius, borderColor: buttonSettings.primary.borderColor }} className={styles.primaryPreview}>{buttonSettings.primary.buttonText}</button>
-                        : <button style={{ color: buttonSettings.secondary.fontColor, backgroundColor: buttonSettings.secondary.buttonColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>{buttonSettings.secondary.buttonText}</button>}
+                        : <button style={{ color: buttonSettings.secondary.fontColor, borderRadius: buttonSettings.secondary.borderRadius, borderColor: buttonSettings.secondary.borderColor }} className={styles.secondaryPreview}>{buttonSettings.secondary.buttonText}</button>}
                 </div>
                 <div className={styles.btnOptions}>
                     <label className={styles.checkboxContainer}>
@@ -125,7 +115,7 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
                     <div className={styles.btnAndBorderColorContainer}>
                         <div className={styles.btnColorContainer}>
                             <ColorPicker
-                                color={selectedBtn === "primary" ? buttonSettings.primary.buttonColor : buttonSettings.secondary.buttonColor}
+                                color={buttonSettings.primary.buttonColor}
                                 extractedColors={extractedColors}
                                 heading="Button Colour"
                                 handleChange={handleBtnColorChange}

@@ -10,14 +10,15 @@ import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddedEventsType } from '@/types/addedwidgetevents'
+import { ButtonSettingsState, PrimaryButtonSettings, SecondaryButtonSettings } from '@/types/buttoncustomizetypes'
 
 interface AllEventsType {
-  eventId : string;
+  eventId: string;
   name: string;
   location: string;
   startDate: string;
   endDate: string;
-  isLinkedToWidget : boolean;
+  isLinkedToWidget: boolean;
 }
 
 const Page = () => {
@@ -29,20 +30,20 @@ const Page = () => {
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
-  const [buttonSettings, setButtonSettings] = useState({
+  const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-    secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+    secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
   })
 
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
   const [selectedTemplate, setSelectedTemplate] = useState<string>()
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
-
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
+  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<AddedEventsType>()
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -60,24 +61,25 @@ const Page = () => {
 
 
   // This function is fetching all the events regardless added in the widget or not
-  const fetchEvents = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
-    if(data){
-        const events = data.data.map((event : any)=>({
-            eventId : event.id,
-            name: event.name,
-            location: event.data.location_city,
-            startDate: event.data.startDate,
-            endDate: event.data.endDate,
-        }))
-        setFetchedAllEvents(events)
-    }if(error){
-        console.log(error)
+  const fetchEvents = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
+    if (data) {
+      const events = data.data.map((event: any) => ({
+        eventId: event.id,
+        name: event.name,
+        location: event.data.location_city,
+        startDate: event.data.start_date,
+        endDate: event.data.end_date,
+        isLinkedToWidget: event.isWidgetLinked
+      }))
+      setFetchedAllEvents(events)
+    } if (error) {
+      console.log(error)
     }
-}
+  }
   // Function for fetching the added events in widget
-  const fetchAddedEvents = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/widget/${widgetId}`)
+  const fetchAddedEvents = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
     if (data) {
       const events = data.otherdata?.event;
       setfetchedAddedEvents(events);
@@ -86,6 +88,7 @@ const Page = () => {
       console.log(error);
     }
   }
+
   useEffect(() => {
     const fetchWidgetData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
@@ -137,6 +140,17 @@ const Page = () => {
       console.log(error);
     }
   }
+
+  const handleAddEventModal = () => {
+    setPrefilledAddedEvent(undefined)
+    setIsAddEventModalOpen(true)
+  }
+
+  const handlePrefilledAddedEvent = (event: AddedEventsType) => {
+    setPrefilledAddedEvent(event)
+    setIsAddEventModalOpen(true)
+  }
+
   return (
 
     <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
@@ -156,12 +170,14 @@ const Page = () => {
           buttonSettings={buttonSettings}
           cardBgColor={cardBgColor}
           cardBorderRadius={cardBorderRadius}
-          setIsAddEventModalOpen={setIsAddEventModalOpen}
-          fetchedAllEvents = {fetchedAllEvents}
-          fetchEvents = {fetchEvents}
-          fetchedAddedEvents = {fetchedAddedEvents}
+          fetchedAllEvents={fetchedAllEvents}
+          fetchEvents={fetchEvents}
+          fetchedAddedEvents={fetchedAddedEvents}
+          fetchAddedEvents={fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
+          handlePrefilledAddedEvent={handlePrefilledAddedEvent}
+          handleAddEventModal={handleAddEventModal}
         />
       </div>
       <div className={styles.previewContainer}>
@@ -175,11 +191,12 @@ const Page = () => {
           cardBorderRadius={cardBorderRadius}
           fontSettings={fontSettings}
           buttonSettings={buttonSettings}
+          fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
       {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents = {fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
     </div>
   )

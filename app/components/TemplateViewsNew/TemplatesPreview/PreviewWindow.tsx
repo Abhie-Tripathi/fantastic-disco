@@ -15,6 +15,8 @@ import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { useRouter } from 'next/navigation';
+import { AddedEventsType } from '@/types/addedwidgetevents';
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
     fontFamily: string;
@@ -23,13 +25,6 @@ interface FontSettings {
     fontWeight: string;
 }
 
-interface ButtonSettings {
-    buttonColor: string;
-    fontColor: string;
-    borderRadius: number;
-    borderColor: string;
-    buttonText: string;
-}
 interface PreviewProps {
     selectedTemplate?: string;
     selectedCard?: string;
@@ -46,15 +41,12 @@ interface PreviewProps {
         subheading: FontSettings;
         body: FontSettings;
     };
-    buttonSettings?: {
-        primary: ButtonSettings;
-        secondary: ButtonSettings;
-    };
+    buttonSettings?: ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
-    // setDraftWidgets: (value: DraftWidgetsType[]) => void
     draftWidgets?: DraftWidgetsType[]
     fetchDraftWidgets?: () => Promise<void>; 
+    fetchedAddedEvents?:  AddedEventsType[]
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -72,9 +64,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     },
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
-        secondary: { buttonColor: "#6750a4", fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+        secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
-    selectedBtn = "primary" }: PreviewProps) => {
+    selectedBtn = "primary", fetchedAddedEvents }: PreviewProps) => {
     const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
@@ -163,18 +155,18 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                 <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
-                            selectedTemplate === "HB" ? <HeroBanner selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
-                                selectedTemplate === "GS" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                    selectedTemplate === "LS" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedEvents={fetchedAddedEvents}  selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
+                                selectedTemplate === "GS" ? <GridView fetchedAddedEvents={fetchedAddedEvents}  selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                    selectedTemplate === "LS" ? <ListView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                selectedTemplate === "CVL" ? <CaraouselAndViews  type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                     selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                        selectedTemplate === "CV" ? <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                            selectedTemplate === "HS" ? <ScrollView type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                selectedTemplate === "LSR" ? <ScrollView selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                    selectedTemplate === "RSR" ? <ScrollView selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                        selectedTemplate === "PUVP" ? <PortraitPopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
+                                                        selectedTemplate === "CV" ? <CaraouselView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents}selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                        selectedTemplate === "PUVP" ? <PortraitPopup fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
                 {draftWidget && <div className={styles.previewBtnContainer}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>

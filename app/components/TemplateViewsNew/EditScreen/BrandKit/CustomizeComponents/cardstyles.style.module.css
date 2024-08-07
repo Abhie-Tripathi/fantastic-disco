@@ -14,7 +14,6 @@
 
 .heading {
     font-size: 14px;
-    /* color: #171717; */
 }
 
 .subheading {
@@ -31,6 +30,10 @@
     flex-direction: column;
     gap: 15px;
     align-items: center;
+}
+.cardContainer img{
+    width: 100px;
+    height: 97px;
 }
 .checkboxContainer {
     display: flex;

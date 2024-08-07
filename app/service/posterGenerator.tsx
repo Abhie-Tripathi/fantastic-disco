@@ -37,7 +37,7 @@ const usePosterGenerator = () => {
             prompt,
             num_inference_steps: 25,
             refiner_inference_steps: 50,
-            width: 400,
+            width: 1024,
             height: 1024,
             guidance_scale: 7.5,
             strength: 0.3,

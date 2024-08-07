@@ -3,17 +3,31 @@ import styles from './speakercard.style.module.css'
 import Image from 'next/image';
 
 interface SpeakerCardProps {
-    profileImage?: string | ArrayBuffer | null;
+    // profileImage?: string | ArrayBuffer | null;
+    profileImage: File | null
     name: string;
     linkedin: string;
     designation: string;
 }
 
-const SpeakerCard = ({ profileImage,name,linkedin,designation }: SpeakerCardProps) => {
+const SpeakerCard = ({ profileImage, name, linkedin, designation }: SpeakerCardProps) => {
+    let imageSrc: string | undefined;
+
+    if (profileImage instanceof File) {
+        imageSrc = URL.createObjectURL(profileImage);
+    } else if (typeof profileImage === 'string') {
+        imageSrc = profileImage;
+    }
+
+
     return (
         <div className={styles.speaker}>
-            {profileImage && typeof profileImage === 'string' && (
-                <Image src={profileImage} alt='profile' width={63} height={63} style={{ borderRadius: 6 }} />
+            {/* {profileImage && typeof profileImage === 'string' && (
+                <Image src={URL.createObjectURL(profileImage)} alt='profile' width={63} height={63} style={{ borderRadius: 6 }} />
+                // <Image src={imageSrc} alt="profile" width={63} height={63} style={{ borderRadius: 6 }} />
+            )} */}
+            {imageSrc && (
+                <Image src={imageSrc} alt="profile" width={63} height={63} style={{ borderRadius: 6 }} />
             )}
             <div className={styles.detailsContainer}>
                 <div className={styles.nameLinkedinContainer}>

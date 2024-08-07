@@ -5,16 +5,21 @@ import StarIcon from '/public/staricon.svg'
 import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface Props {
-    setIsAddEventModalOpen: (value: boolean) => void
+    handleAddEventModal: (value: void) => void
     fetchedAddedEvents : AddedEventsType[]
+    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
 }
 
-const EventsAdded = ({ setIsAddEventModalOpen,fetchedAddedEvents }: Props) => {
+const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAddedEvent }: Props) => {
+    const formatDate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+        return new Date(date).toLocaleDateString('en-US', options);
+    };
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
-                <button onClick={() => setIsAddEventModalOpen(true)}>Add Event</button>
+                <button onClick={() => handleAddEventModal()}>Add Event</button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
@@ -28,7 +33,7 @@ const EventsAdded = ({ setIsAddEventModalOpen,fetchedAddedEvents }: Props) => {
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
-                                <div>{event.startDate} - {event.endDate}</div>
+                                <div>{formatDate(event.startDate)} - {formatDate(event.endDate)}</div>
                             </div>
                         </div>
                         <div className={styles.btnContainer}>
@@ -45,7 +50,7 @@ const EventsAdded = ({ setIsAddEventModalOpen,fetchedAddedEvents }: Props) => {
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
                             <div className={styles.promotEditBtnContainer}>
-                                <div><EditIcon /><span>Edit</span></div>
+                                <div onClick={()=>handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span></div>
                                 <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>
                             </div>
                         </div>
