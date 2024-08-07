@@ -151,6 +151,64 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
     return dayDifference;
   }
+  function formatEventDates(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    if (start.getFullYear() === end.getFullYear()) {
+        if (start.getMonth() === end.getMonth()) {
+            if (start.getDate() === end.getDate()) {
+                return new Date(startDate).toLocaleDateString("en-GB", {
+                  weekday: 'long',
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                });
+            } else {
+                return (
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    weekday: 'long',
+                  }) + ', ' +
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                  }) + ' - ' +
+                  new Date(endDate).toLocaleDateString("en-GB", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                );
+            }
+        } else {
+            return (
+              new Date(startDate).toLocaleDateString("en-GB", {
+                weekday: 'long',
+                month: "short",
+                day: "2-digit",
+              }) + ' - ' +
+              new Date(endDate).toLocaleDateString("en-GB", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })
+            );
+        }
+    } else {
+        return (
+          new Date(startDate).toLocaleDateString("en-GB", {
+            weekday: 'long',
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }) + ' - ' +
+          new Date(endDate).toLocaleDateString("en-GB", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        );
+    }
+  }
   return (
     <div className={`${styles.card} card`}>
       <div className={styles.topContainer} style={{ display: "flex" }}>
@@ -216,15 +274,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 className='icons'
               />
               <div>
-                {new Date(eventStartDate).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })}{" - "}{new Date(eventEndDate).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })}
+                {formatEventDates(eventStartDate, eventEndDate)}
               </div>
             </div>
           </div>
