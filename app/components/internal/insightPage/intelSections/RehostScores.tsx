@@ -11,10 +11,8 @@ const RehostScores = ({eventDetail} : ScoreProps) => {
     >
       <div className={`${styles.scoreCard} card`}>
         <div className={styles.cardHeading}>Rehost Score</div>
-        <div className={styles.score}>
-          {eventDetail?.repeatSentiment && eventDetail?.repeatSentiment > 0
-            ? eventDetail?.repeatSentiment + "%"
-            : "-"}
+        <div className={`${styles.score} ${styles.blurContent}`}>
+          65
         </div>
         {/* <div className={styles.scoreChange}>
               <div className={styles.pill_info}>5.2 %</div>
