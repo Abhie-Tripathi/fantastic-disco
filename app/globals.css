@@ -108,6 +108,7 @@ button {
 
 :root {
   --primary-color: #6750a4;
+  --coordinate-primary-color:#6750a4;
   --primary-color-hover: #59478c;
   --primary-color-active: #4b3f70;
   --primary-foreground: #ffffff;
@@ -189,6 +190,7 @@ body[data-theme="dark"] {
   --primary-text-color: #EDEDED;
   --sidebar-active:#242424;
   --border-color: #2E2E2E;
+  --coordinate-primary-color:#FFFFFF;
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
   --tabs-background-color: #1a1a1a;

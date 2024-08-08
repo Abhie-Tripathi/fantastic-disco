@@ -52,7 +52,10 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
         </div>
       </div>
       <div className={`${styles.vote_tags} ${status=='voted'?styles.upVoted:''}`} onClick={upVote}>
-        <Image src={upArrowLight} alt="up" width={16} height={16} />
+        {theme === 'light'? <Image src={upArrowLight} alt="up" width={16} height={16}/>:
+        <Image src={upArrow} alt="up" width={16} height={16} className='icons_light'/>
+        }
+        
         {type}
       </div>
     </div>
