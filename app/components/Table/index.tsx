@@ -356,7 +356,13 @@ const [val,setVal]=useState(1);
     // if(currPage!==1)
     fetchEventsData();
  
-  }, [ currPage, itemsPerPage, queryString]);
+  }, [ currPage, itemsPerPage]);
+
+  useEffect(() => {
+    if(currPage == 1) fetchEventsData();
+    else setCurrPage(1);
+  }, [queryString]);
+
 // useEffect(()=>{
 //   const secondLast = path[path.length - 2];
 //   if(currPage!==1)
@@ -1200,7 +1206,7 @@ const [val,setVal]=useState(1);
 
         <div className={styles.pagination_info_container}>
           <div>Showing</div>
-          <Image src={ExpandAll} alt="expandall" className={iconClass} />
+          {/* <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
             <select
               onChange={handlePageItems}
@@ -1212,7 +1218,8 @@ const [val,setVal]=useState(1);
               <option value="15" selected={itemsPerPage==15?true:false}>15</option>
               <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
-          </div>
+          </div> */}
+          <span className={styles.itemsPerPage} >10</span>
           <div>results/Page</div>
         </div>
 
