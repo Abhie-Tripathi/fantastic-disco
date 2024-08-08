@@ -3,6 +3,7 @@ import styles from './addevent.style.module.css'
 import Appearance from './Appearance/Appearance'
 import Details from './Details/Details'
 import { AddedEventsType } from '@/types/addedwidgetevents'
+import { AllEventsType } from '@/types/alleventtype'
 
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
@@ -11,9 +12,10 @@ interface Props{
     fetchAddedEvents : ()=> Promise<void>;
     addedEventIds : string[]
     fetchedAddedEvents : AddedEventsType[]
-    prefilledAddedEvent : AddedEventsType | undefined;
+    prefilledAddedEvent? : AddedEventsType 
+    prefilledNormalEvent? : AllEventsType
 }
-const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent} : Props) => {
+const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent,prefilledNormalEvent} : Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledAddedEvent?.pageBgColor || "rgba(70, 83, 216, 0.1)")
   const [eventFont, setEventFont] = useState<string>("Arial")
@@ -22,7 +24,7 @@ const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,f
   return (
     <div className={styles.body}>
         <div className={styles.appearance}><Appearance extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont = {eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor}/></div>
-        <div className={styles.details}><Details prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} fetchAddedEvents={fetchAddedEvents} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
+        <div className={styles.details}><Details prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} fetchAddedEvents={fetchAddedEvents} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
     </div>
   )
 }

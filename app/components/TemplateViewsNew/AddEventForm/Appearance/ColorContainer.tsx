@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './colors.style.module.css'
 import { SketchPicker } from 'react-color';
 import { useTheme } from '@/context';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     pageBgColor: string;
@@ -11,9 +12,9 @@ interface Props {
 const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
     const {theme} = useTheme()
 
-    // const [color, setColor] = useState<string>("#000000")
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+    const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
 
     const handleChange = (color: any) => {
         // Convert hex to rgba with 10% opacity
@@ -57,7 +58,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                         <div className={styles.colorPickerInner} style={{ backgroundColor: pageBgColor }}>
                         </div>
                     </div>
-                    {displayColorPicker && <div className={styles.sketchPicker}>
+                    {displayColorPicker && <div ref={colorPickerRef} className={styles.sketchPicker}>
                         <SketchPicker
                             color={pageBgColor}
                             onChange={handleChange}

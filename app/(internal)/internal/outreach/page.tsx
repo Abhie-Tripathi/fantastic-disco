@@ -4,7 +4,6 @@ import styles from "./page.style.module.css";
 import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
-import AddEventForm from "@/app/components/outreach/AddEventForm";
 import { enquiryType } from "@/types/outreachEnquiryTypes";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
@@ -407,7 +406,7 @@ const Page: React.FC = () => {
               openAddModalHandler();
           }}
         >
-          <AddEventForm />
+          {/* <AddEventForm /> */}
         </div>
       )}
       <ToastContainer />

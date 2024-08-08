@@ -39,7 +39,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
     }
     return (
         <div className={styles.body}>
-            {fetchedAddedEvents ? (
+               {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
                 fetchedAddedEvents.map((event, key) => (
                     <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody} key={key}>
                         <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>

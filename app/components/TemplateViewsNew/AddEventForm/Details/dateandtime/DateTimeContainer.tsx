@@ -3,6 +3,7 @@ import styles from './datetime.style.module.css'
 import TimezoneDropdown from './TimezoneDropdown'
 import CalendarDropdown from './CalendarDropdown'
 import TimeDropdown from './TimeDropdown'
+import useOutsideClick from '@/hooks/useOutsideClick'
 
 const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -42,6 +43,12 @@ const DateTimeContainer = ({
     const [endCalendarDropdown, setEndCalendarDropdown] = useState<boolean>(false)
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
+
+    const startCalDropdownRef = useOutsideClick(()=>setStartCalendarDropdown(false))
+    const endCalDropdownRef = useOutsideClick(()=>setEndCalendarDropdown(false))
+    const startTimeDropdownRef = useOutsideClick(()=>setStartTimeDropdown(false))
+    const endTimeDropdownRef = useOutsideClick(()=>setEndTimeDropdown(false))
+    const timezoneDropdownRef = useOutsideClick(()=>setTimezoneDropdown(false))
 
 
     useEffect(() => {
@@ -94,25 +101,25 @@ const DateTimeContainer = ({
                     <div className={styles.dateBoxes}>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
                             {formatDate(startDate)}
-                            {startCalendarDropdown && <div className={styles.calendarDropdown}>
+                            {startCalendarDropdown && <div ref={startCalDropdownRef} className={styles.calendarDropdown}>
                                 <CalendarDropdown setDate={setStartDate} dateValue={startDate} />
                             </div>}
                         </div>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
                             {formatDate(endDate)}
-                            {endCalendarDropdown && <div className={styles.calendarDropdown}>
+                            {endCalendarDropdown && <div ref={endCalDropdownRef} className={styles.calendarDropdown}>
                                 <CalendarDropdown setDate={setEndDate} dateValue={endDate} />
                             </div>}
                         </div>
                     </div>
                     <div className={styles.timeBoxes}>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{startTime}
-                            {startTimeDropdown && <div className={styles.timeDropdown}>
+                            {startTimeDropdown && <div ref={startTimeDropdownRef} className={styles.timeDropdown}>
                                 <TimeDropdown setTime={setStartTime} time={startTime} />
                             </div>}
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
-                            {endTimeDropdown && <div className={styles.timeDropdown}>
+                            {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
                                 <TimeDropdown setTime={setEndTime} time={endTime} />
                             </div>}
                         </div>
@@ -120,10 +127,10 @@ const DateTimeContainer = ({
                 </div>
 
             </div>
-            <div className={styles.timeZonesContainer}>
+            <div ref={timezoneDropdownRef} className={styles.timeZonesContainer} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
                 <div className={styles.header}>
                     <TimeZoneIcon />
-                    <div className={styles.dropdownIcon} onClick={() => setTimezoneDropdown(!timezoneDropdown)}><DownIcon /></div>
+                    <div className={styles.dropdownIcon}><DownIcon /></div>
                 </div>
                 <div className={styles.timeZone}>
                     {timeZone}

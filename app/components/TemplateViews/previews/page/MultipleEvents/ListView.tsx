@@ -40,7 +40,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
     }
     return (
         <div className={styles.listView}>
-            {fetchedAddedEvents ? (
+            {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
                 fetchedAddedEvents.map((event, key) => (
                     <EventListCard
                         key={key}

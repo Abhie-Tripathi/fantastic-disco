@@ -59,7 +59,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-           <Image width={380} height={220} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+           <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' width={380} height={220} className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
                 <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
