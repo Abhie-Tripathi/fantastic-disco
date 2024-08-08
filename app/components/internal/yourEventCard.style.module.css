@@ -47,7 +47,6 @@
 .locationAndDateContainer {
     display: flex;
     align-items: center;
-    padding-top: 8px;
     gap: var(--spacing-md);
 }
 
@@ -96,7 +95,6 @@
     gap: 16px;
     flex-wrap: wrap;
     margin-top: 15px;
-    margin-right: 1.5rem;
     justify-content: space-between;
 }
 .allTags{

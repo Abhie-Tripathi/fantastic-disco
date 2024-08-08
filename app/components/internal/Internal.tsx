@@ -172,6 +172,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
                     enquiryId={item.enquiryId}
                     eventName={item.name}
                     eventLocation={item.city}
+                    eventCountry={item.country}
                     eventImage={item?.logo}
                     eventStartDate={item.startDate}
                     eventEndDate={item.endDate}
