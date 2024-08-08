@@ -703,6 +703,22 @@ const Search = () => {
     setSelectedInsights({
       eventSize: true,
       eventKeywords: true,
+      eventRank: rankToggles.isEventRank,
+      matchScore: true,
+      growth: true,
+      eventSeries: selectedEventSeries,
+      global: (selectedINScore > 0),
+      reptSent: (selectedReptScore > 0),
+      eventRating: (selectedUserRatings.length > 0),
+      estExhibit: (selectedExhibitScore.length > 0),
+      repeatSent: (selectedTrustScore > 0),
+    });
+  }, [urlQueryString]);
+
+  useEffect(() => {
+    setSelectedInsights({
+      eventSize: true,
+      eventKeywords: true,
       global: true,
       reptSent: true,
       eventRank: rankToggles.isEventRank,
@@ -1696,7 +1712,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Estimated Exhibit Score
+                          Estimated Exhibitor
                           {selectedExhibitScore?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedExhibitScore.length}

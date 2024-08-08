@@ -7,7 +7,7 @@ import { useState } from "react";
 // import MapPointer from "/public/Marker.svg";
 import {Map as Map2, Marker, Popup, Source, Layer, useMap } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { formatDateRange } from "@/utils/dateFormat";
+import { formatEventDates } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 // import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
@@ -35,7 +35,7 @@ const EventListCard = (event: any) => {
         {event.event?.location?.cityName}
       </div>
       <div className={styles.eventListCard_date}>
-        {formatDateRange(event?.event?.startDate, event?.event?.endDate)}
+        {formatEventDates(event?.event?.startDate, event?.event?.endDate)}
       </div>
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
@@ -444,7 +444,7 @@ const Map = (props: MapProps) => {
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
       <Map2
         style={{
-          width: "calc(100vw - 137px)",
+          width: "calc(100vw - 120px)",
           height: "90vh",
         }}
         mapStyle={
