@@ -3,9 +3,8 @@
     position: relative;
 }
 .searchContainer input{
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-medium );
     border: 1px solid var(--border-color);
-    background-color: transparent;
     padding: 10px 15px;
     width: 100%;
     border-radius: 4px;
@@ -46,6 +45,11 @@
 .darkDropdown .dropdownEvent:hover{
     background-color: #292929;
 }
+.eventNameContaier{
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+}
 .lightDropdown .dropdownEvent:hover{
     background-color: #F2F2F2;
 }
@@ -57,4 +61,35 @@
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-bold);
     color: rgb(119, 119, 119);
+}
+.checkBoxContainer{
+    display: flex;
+}
+.checkBoxContainer .checkboxInput {
+    display: none;
+}
+.checkBoxContainer .checkBox {
+    cursor: pointer;
+    background-color: #bebdc9;
+    height: 14px;
+    width: 25px;
+    border-radius: 12px;
+    border: 1px solid #79747E;
+}
+.checkBoxContainer  .checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 8px;
+    width:8px;
+    border-radius: 50%;
+    margin: 2.1px;
+    transition: transform 0.2s ease;
+}
+.checkBoxContainer .checkboxInput:checked+.checkBox::before {
+    transform: translateX(11px);
+}
+
+.checkBoxContainer .checkboxInput:checked+.checkBox {
+    background-color: #6750a4;
 }

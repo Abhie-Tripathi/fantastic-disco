@@ -11,7 +11,7 @@ const Trackers = React.lazy(
 import Table from "@/app/components/Table";
 import { useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/context";
+import { baseUrl} from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
@@ -100,7 +100,6 @@ const Page = ({ params }: { params: any }) => {
 
     fetchData();
   }, []);
-
   useEffect(() => {
     const fetchTrackerDetail = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
@@ -345,6 +344,7 @@ const Page = ({ params }: { params: any }) => {
       <Suspense fallback={<p>Loading feed...</p>}>
         <div className={styles.innerRight}>
           <div className={styles.eventStatus}>
+          {/* <div className={styles.new}></div> */}
             <div className={styles.eventStatusLeft}>
               <button
                 className={`${styles.eventStatusBtn} ${
@@ -453,11 +453,14 @@ const Page = ({ params }: { params: any }) => {
           </div>
 
           {view === "list" && (
+            <div style={{marginTop:"140px",width: "calc(100vw - 134px)"}}>
+              <div className='dummyDiv'></div> 
             <Table
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
             />
+            </div>
           )}
 
           {view === "map" && (

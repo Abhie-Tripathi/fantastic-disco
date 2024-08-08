@@ -143,6 +143,7 @@ button {
   --input-placeholder-color: #a3a3a3; */
 
   --accent-color: #f2f2f2;
+  --sidebar-active:#f6edff; 
   --accent-foreground: white;
   --overlay-background-color: rgba(white, 0.8);
   --modal-background-color: white;
@@ -166,7 +167,7 @@ button {
   --neutral-light-color: #ebebeb;
   --tabs-background-color: #fbf8ff;
   --background-color-hover: #f2f2f2;
-  --input-border-color: #C9C9C9;
+  --input-border-color: #efefef;
   --bold-border-color: #A8A8A8;
   --danger-background-color: #FFF0F0;
   --warning-background-color: #FFF6E6;
@@ -186,6 +187,7 @@ button {
 body[data-theme="dark"] {
   --primary-foreground: #131313;
   --primary-text-color: #EDEDED;
+  --sidebar-active:#242424;
   --border-color: #2E2E2E;
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
@@ -420,8 +422,8 @@ input[type="number"] {
   filter: var(--img-filter);
 }
 .body_layout {
-  margin-top: 80px;
-  margin-left: 80px;
+  margin-top: 70px;
+  margin-left: 70px;
 }
 
 .sidebar-open {
@@ -445,7 +447,10 @@ input[type="number"] {
   background-color: #1a1a1a !important;
   color: #ffffff;
 }
-
+.sidebar_active{
+  color: var(--primary-foreground);
+  background-color: var(--sidebar-active);
+}
 .darkMode_secondary {
   background-color: #242424;
   color: white;
@@ -487,4 +492,20 @@ input[type="number"] {
     margin-top: 80px;
     margin-left: 0;
   }
+}
+.dummyDiv{
+  position: fixed;
+  top: 0;
+  z-index: 11;
+  width: calc(100vw - 134px);
+  background: var(--primary-foreground);
+  height: 250px;
+}
+.fixedNav{
+  position: fixed;
+    top: 180px;
+    width: calc(100vw - 134px);
+    height: 70px;
+    padding: 10px;
+    z-index: 20;
 }

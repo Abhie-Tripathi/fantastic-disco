@@ -8,7 +8,12 @@
 .details{
     display: flex;
     flex-direction: column;
-    gap: 21px;
+    justify-content: space-between;
+}
+.details .values{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 .banner{
     width: 350px;
@@ -112,7 +117,11 @@
 .circle:hover::before {
     opacity: 1;
 }
+.description{
+    line-height: 20px;
+}
 .btn{
     margin-top: 20px;
     padding: 10px 20px;
+    border: 1px solid;
 }

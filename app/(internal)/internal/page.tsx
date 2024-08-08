@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-
+import SearchBackground from "/public/search_background.svg";
+import TrendsBackground from "/public/trends_background.svg";
 import styles from "./page.style.module.css";
 import Research from "/public/internal/research.svg";
 import Image from "next/image";
@@ -216,6 +217,11 @@ const Dashboard = () => {
                     and category, all in one glance.
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}></div>
+                  {/* <Image
+                  className={styles.linkCard_backgroundImage}
+                  src={SearchBackground}
+                  alt="searchBackground"
+                />  */}
                 </Link>
 
                 <Link
@@ -281,6 +287,11 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}></div>
+                  {/* <Image
+                  className={styles.linkCard_backgroundImage}
+                  src={TrendsBackground}
+                  alt="trendsBackground"
+                />  */}
                 </Link>
               </div>
             )}

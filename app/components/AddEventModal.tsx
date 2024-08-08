@@ -13,7 +13,6 @@ import DescriptionModal from './DescriptionModal';
 import SearchIcon from '/public/search.svg'
 import EmployeeData from '../../public/data/employeeData.json'
 import logo from '/public/googlelogo.png'
-
 import Image from 'next/image';
 import { useTheme } from '@/context';
 
@@ -115,7 +114,7 @@ const AddEventModal = (props : Props) => {
 
     const handlePoster = () => {
         if (location && description) {
-            generatePrompt(location, description, searchInput)
+            generatePrompt(location, description, searchInput,1024,1024)
         }
     }
 
@@ -156,7 +155,7 @@ const AddEventModal = (props : Props) => {
 
     useEffect(() => {
         if (location && description) {
-            generatePrompt(location, description, searchInput)
+            generatePrompt(location, description, searchInput, 1024, 1024)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [description, location])

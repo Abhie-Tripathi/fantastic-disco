@@ -6,7 +6,6 @@
 }
 .containerTop{
     display: flex;
-    width:100%;
     align-items: center;
     justify-content: space-between;
     background: var(--heading-background-color);
@@ -40,6 +39,8 @@
 }
 .containerBottom{
     display: flex;
+    width: calc(100vw - 134px);
+    margin-top: 140px;
     gap:var(--spacing-xs);
 }
 .containerBottomLeft{
@@ -60,6 +61,7 @@
     justify-content: center;
     display: flex;
     height: 100vh;
+    z-index: 99;
     backdrop-filter: blur(5px);
 }
 .innerModal{

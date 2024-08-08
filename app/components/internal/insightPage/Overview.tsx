@@ -1,8 +1,18 @@
-import ProgressBar from "../../UI/progressBar";
+import { Location } from "geist-icons";
 import styles from "./overview.style.module.css";
+import { useTheme } from "@/context";
+import Image from "next/image";
+import PlaceHolder from '/public/placeholder.png'
+import Exhibitors from "./overviewSections/Exhibitors";
+import Speakers from "./overviewSections/Speakers";
+import Sponsors from "./overviewSections/Sponsors";
 
 interface OverviewProps {
   eventDetail: any;
+}
+
+function toTitleCase(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
 function isUpcomingEvent(startDate: Date): boolean {
@@ -13,140 +23,121 @@ function isUpcomingEvent(startDate: Date): boolean {
 }
 
 const Overview = ({ eventDetail }: OverviewProps) => {
+  const { theme } = useTheme();
   return (
     <>
-      <div className={`${styles.infoCard} card`}>
-        <div className={styles.infoCardLeft}>
-          <div className={styles.tagsContainer}>
-            {eventDetail?.format && (
-              <div className={styles.badge_danger}>{eventDetail.format}</div>
-            )}
-            {eventDetail?.startDate &&
-              isUpcomingEvent(eventDetail.startDate) && (
-                <div className={styles.badge_success}>Upcoming Event</div>
-              )}
-          </div>
-          <div className={styles.subHeading}>Category</div>
+      <div className={`${styles.infoCard}`}>
+        <div className={`${styles.infoCardLeft} card`}>
+
+          {eventDetail?.format &&
+            <div className={styles.categoryContainer}>
+              <div className={styles.subHeading}>Format</div>
+              <div className={styles.categoryBadges}>
+                <div className={styles.catItem}>{toTitleCase(eventDetail.format)}</div>
+              </div>
+            </div>
+          }
+
+          {/* {eventDetail?.startDate && isUpcomingEvent(eventDetail.startDate) &&
+            <div className={styles.categoryContainer}>
+              <div className={styles.subHeading}>Status</div>
+              <div className={styles.categoryBadges}>
+                <div className={styles.catItem}>Upcoming Event</div>
+              </div>
+            </div>
+          } */}
+
+          {/* <div className={styles.categoryContainer}>
+            <div className={styles.subHeading}>Edition</div>
+            <div className={styles.categoryBadges}>
+              <div className={styles.catItem}>Online</div>
+            </div>
+          </div> */}
+
+          {eventDetail?.frequency &&
+            <div className={styles.categoryContainer}>
+              <div className={styles.subHeading}>Frequency</div>
+              <div className={styles.categoryBadges}>
+                <div className={styles.catItem}>{eventDetail?.frequency}</div>
+              </div>
+            </div>
+          }
+        </div>
+        <div className={`${styles.infoCardRight} card`}>
           <div className={styles.categoryContainer}>
+            <div className={styles.subHeading}>Category</div>
+            <div className={styles.categoryBadges}>
             {eventDetail?.categories &&
               eventDetail.categories.map((cat: any, index: number) => (
                 <div key={index} className={styles.catItem}>{cat.name}</div>
               ))}
-          </div>
-
-          {/* <div className={styles.rankCards}>
-            {eventDetail?.rank?.localRank && eventDetail.rank.localRank > 0 ? (
-              <div className={`${styles.cardItem} card`}>
-                <div className={styles.rank}>03</div>
-                <div className={styles.rankType}>Category Rank</div>
-              </div>
-            ) : (
-              <></>
-            )}
-            {eventDetail?.rank?.eventRank && eventDetail.rank.eventRank > 0 ? (
-              <div className={`${styles.cardItem} card`}>
-                <div className={styles.rank}>12</div>
-                <div className={styles.rankType}>International Rank</div>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div> */}
-        </div>
-        {/* {eventDetail?.eventKeywords && eventDetail.eventKeywords.length > 0 && (
-          <div className={`${styles.infoCardRight} card`}>
-            <div className={styles.subHeading} style={{ margin: 0 }}>
-              Products
             </div>
+          </div>
+          {eventDetail?.eventKeywords && eventDetail.eventKeywords.length > 0 &&
             <div className={styles.categoryContainer}>
-              {eventDetail.eventKeywords.map((item: any) => (
-                <div className={styles.catItem}>{item}</div>
-              ))}
+              <div className={styles.subHeading}>Event Keywords</div>
+              <div className={styles.categoryBadges}>
+                {eventDetail.eventKeywords.slice(0,4).map((cat: any, index: number) => (
+                  <div key={index} className={styles.catItem}>{cat}</div>
+                ))}
+                {eventDetail.eventKeywords.length > 4 &&
+                  <span className={styles.moreItems}>+{eventDetail.eventKeywords.length - 4} more</span>
+                }
+              </div>
             </div>
-          </div>
-        )} */}
+          }
+        </div>
       </div>
       <div className={styles.line}></div>
 
-      <div className={styles.mainHeading}>Event Intelligence</div>
-      <div className={styles.headingText}>
-        Unlock actionable insights from the events with real-time analytics and
-        strategic intelligence
-      </div>
-
-      <div style={{ display: "flex", gap: "12px" }}>
-        <div className={`${styles.scoreCard} card`}>
-          <div className={styles.cardHeading}>Event Reputation Score</div>
-          <div className={styles.score}>
-            {eventDetail?.reputationSentiment &&
-            eventDetail?.reputationSentiment > 0
-              ? eventDetail?.reputationSentiment
-              : "-"}
-          </div>
-          {/* <div className={styles.scoreChange}>
-            <div className={styles.pill_info}>High</div>
-            <div>Since last edition</div>
-          </div> */}
-        </div>
-        <div className={`${styles.scoreCard} card`}>
-          <div className={styles.cardHeading}>Event Impact Score</div>
-          <div className={styles.score}>{eventDetail?.eventSize}</div>
-          {/* <div className={styles.scoreChange}>
-            <div className={styles.pill_info}>5.2 %</div>
-            <div>Since last edition</div>
-          </div> */}
-        </div>
-        <div className={`${styles.scoreCard} card`}>
-          <div className={styles.cardHeading}>Event Trust Score</div>
-          <div className={styles.score}>
-            {eventDetail?.repeatSentiment && eventDetail?.repeatSentiment > 0
-              ? eventDetail?.repeatSentiment + "%"
-              : "-"}
-          </div>
-          {/* <div className={styles.scoreChange}>
-            <div className={styles.pill_info}>5.2 %</div>
-            <div>Since last edition</div>
-          </div> */}
-        </div>
+      <div className={styles.mainHeading}>Event Description</div>
+      <div className={styles.eventDesc}>
+        {eventDetail?.description}
       </div>
 
       <div className={styles.line}></div>
 
-      <div className={styles.mainHeading}>Audience Intelligence</div>
-      <div className={styles.headingText}>
-        Gain deep understanding of the target audience with advanced data
-        analytics and insights
-      </div>
-
-      <div style={{ display: "flex", gap: "12px" }}>
-        <div className={`${styles.audienceCard} ${styles.blurContent} card`}>
-          <div className={styles.cardHeading}>Audience Profile</div>
-          <div className={`${styles.audienceSubCard} card`}>
-            <div className={styles.cardHeading}>Most interested Dept</div>
-            <ProgressBar value={95} label="Marketing" />
-          </div>
-          <div className={styles.otherProfiles}>
-            Other profiles
-            <ProgressBar value={82} label="CEO" />
-            <ProgressBar value={55} label="Manager" />
-            <ProgressBar value={16} label="Student" />
-          </div>
-        </div>
-        <div className={`${styles.audienceCard} ${styles.blurContent} card`}>
-          <div className={styles.cardHeading}>Audience Company Type</div>
-          <div className={`${styles.audienceSubCard} card`}>
-            <div className={styles.cardHeading}>
-              Most interested company type
+      <div className={styles.mainHeading}>Organizer</div>
+      <div className={`${styles.infoCard} card`}>
+        <div className={styles.hostDetailsContainer}>
+            {/* <Image src={PlaceHolder} alt='company' width={96} height={96} style={{ borderRadius: 8 }} /> */}
+            <div className={styles.hostDetails}>
+                <div className={styles.hostname}>{eventDetail?.organizer?.name}</div>
+                {(eventDetail.organizer?.cityName || eventDetail.organizer?.countryName) &&
+                  <div className={styles.hostlocation}>
+                    <Location color={"var(--secondary-text-color)"} />
+                    <span>
+                      {(eventDetail.organizer?.cityName && eventDetail.organizer?.countryName) ?
+                        (eventDetail.organizer.cityName +', '+eventDetail.organizer?.countryName) :
+                        eventDetail.organizer.countryName
+                      }
+                    </span>
+                  </div>
+                }
+                <div style={{display: 'flex', gap: '24px'}}>
+                {/* <div className={styles.upcoming}>Upcoming Events <span>N/A</span></div>
+                <div className={styles.hosted}>Events Hosted <span>12</span></div> */}
+                </div>
             </div>
-            <ProgressBar value={95} label="MSME" />
-          </div>
-          <div className={styles.otherProfiles}>
-            Other profiles
-            <ProgressBar value={82} label="SME" />
-            <ProgressBar value={55} label="Multi National" />
-            <ProgressBar value={16} label="Startups" />
-          </div>
         </div>
+      </div>
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Exhibitors</div>
+      <div className={styles.blurContent}>
+        <Exhibitors />
+      </div>
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Speakers</div>
+      <div className={styles.blurContent}>
+        <Speakers />
+      </div>
+      <div className={styles.line}></div>
+
+      <div className={styles.mainHeading}>Sponsors</div>
+      <div className={styles.blurContent}>
+        <Sponsors />
       </div>
     </>
   );

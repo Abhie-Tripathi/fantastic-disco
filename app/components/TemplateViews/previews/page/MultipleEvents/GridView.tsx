@@ -3,6 +3,7 @@ import styles from './gridview.style.module.css';
 import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
+import { AddedEventsType } from '@/types/addedwidgetevents';
 
 interface FontSettings {
     fontFamily: string;
@@ -12,17 +13,18 @@ interface FontSettings {
 }
 
 interface EditProps {
-    cardBorderRadius? : number;
-    cardBgColor? : string;
+    cardBorderRadius?: number;
+    cardBgColor?: string;
     selectedCard?: string;
     fontSettings?: {
         heading: FontSettings;
         subheading: FontSettings;
         body: FontSettings;
     };
+    fetchedAddedEvents?: AddedEventsType[]
 }
 
-const GridView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: EditProps) => {
+const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard,fetchedAddedEvents }: EditProps) => {
 
     let EventCard: ElementType;
 
@@ -37,11 +39,29 @@ const GridView = ({ cardBgColor, cardBorderRadius, fontSettings,selectedCard }: 
             EventCard = EventCard3; // Or some default component or message
     }
     return (
-        <div className={styles.gridView}>
-            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
-            <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}/>
+        <div className={styles.body}>
+            {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
+                fetchedAddedEvents.map((event, key) => (
+                    <div className={styles.gridView} key={key}>
+                    <EventCard
+                        key={key}
+                        cardBgColor={cardBgColor}
+                        cardBorderRadius={cardBorderRadius}
+                        fontSettings={fontSettings}
+                        fetchedEvent={event}
+                    />
+                    </div>
+                ))
+            ) : (
+                <div className={styles.gridView}>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                </div>
+            )}
         </div>
     )
 }

@@ -11,7 +11,6 @@ import Name from '/public/userName_Icon.svg'
 import Insights from "@/app/components/trackers/insights";
 import Intel from "@/app/components/trackers/intel";
 import AdvanceFilter from "@/app/components/trackers/advanceFilter";
-import Loading from "@/app/components/UI/Loading";
 import Labels from "@/app/components/trackers/labels";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
@@ -20,6 +19,7 @@ import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
 import { showToast } from '@/utils/showToast';
 import EventType from "@/app/components/Search/Dropdowns/EventType";
+import Loading from "@/app/components/UI/Loading";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -82,6 +82,23 @@ const Page = () => {
 
     fetchData();
   }, []);
+  function formatDate(dateString:Date) {
+    const date = new Date(dateString);
+    
+    // Get day
+    const day = date.getDate();
+    
+    // Get month and convert it to short format
+    const month = date.toLocaleString('default', { month: 'short' });
+    
+    // Get year
+    const year = date.getFullYear();
+    
+    // Format the date
+    const formattedDate = `${day} ${month}, ${year}`;
+    
+    return formattedDate;
+}
   useEffect(()=>{
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
@@ -155,12 +172,24 @@ const Page = () => {
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [data]);
 console.log(type);
+const eventType=data?.tracker?.filterValue?.eventType ? EventStatusData
+  ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
+  .map(item => item.name):[];
+const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
+const endDateValue = data?.tracker?.filterValue?.endDate;
+const startDate = endDateValue ? endDateValue.split(",")[0] : null;
+const endDate = endDateValue ? endDateValue.split(",")[1] : null;
+const eventStatus = data?.tracker?.filterValue?.eventStatus?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
+const userRating=
+  data?.tracker?.filterValue?.eventRating?.length>0
+    ? data?.tracker?.filterValue?.eventRating.split(",")
+    : []
 
   return (
     <>
     {loading ? <Loading/> :
     <div className={styles.container}>
-    <div className={styles.containerTop}>
+    <div className={`fixedNav ${styles.containerTop}`}>
       <div className={styles.containerTopLeft}>
         <div>
           <CustomeTracker fillColor="#6750a4" />
@@ -168,7 +197,7 @@ console.log(type);
         <div className={styles.trackerType}>
           <div className={styles.heading}>{type} Tracker</div>
           <div className={styles.content}>
-            Select from the available data filters to create tracker
+            Select from the available data filters to create a tracker
           </div>
         </div>
       </div>
@@ -195,6 +224,8 @@ console.log(type);
 
       </div>
     </div>
+    <div className={styles.outerContainer}>
+      <div className='dummyDiv'></div>
     <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
     <div className={styles.innerContainer}>
       <div
@@ -212,7 +243,118 @@ console.log(type);
         )}
       </div>
       <div className={styles.innerContainerRight}>
-        {data && (
+      <div className={styles.formatFreq}>
+      <div className={styles.format}>
+                    <div className={styles.formatHead}>Location</div>
+                    <div className={styles.location}>
+                        {locations?.map((item: string, id: number) => (
+                            <>
+                                <span className={styles.item}>{item}</span>
+                            </>
+                        ))}
+                    </div>
+                </div>
+      <div className={styles.format}>
+                    <div className={styles.formatHead}>Event Type</div>
+                    <div className={styles.allCat}>
+                        {eventType?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+
+      <div className={styles.format}>
+                    <div className={styles.formatHead}>Event Format</div>
+                    <div className={styles.allCat}>
+                        {format?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+                {/* <div className={styles.format}>
+                    <div className={styles.formatHead}>Location</div>
+                    <div className={styles.allCat}>
+                        {locations?.map((item: string, id: number) => (
+                            <>
+                                    <span className={styles.item}>{item}</span>
+                            </>
+                        ))}
+                    </div>
+                </div> */}
+      <div className={styles.format}>
+                    <div className={styles.formatHead}>Date</div>
+                    <div className={styles.allCat}>
+                    <div className={styles.item}>
+                    {startDate?.length>0&&formatDate(startDate)}{"-"}{endDate?.length>0&&formatDate(endDate)}
+                    </div>
+                    </div>
+                </div>
+                <div className={styles.format}>
+                    <div className={styles.formatHead}>Event Status</div>
+                    <div className={styles.allCat}>
+                        {eventStatus?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.format}>
+                    <div className={styles.formatHead}>User Ratings</div>
+                    <div className={styles.allCat}>
+                        {userRating?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+        </div>
+        {/* {data && (
           <LocationFilter
             start={
               data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
@@ -224,7 +366,7 @@ console.log(type);
             endDate={data?.tracker?.filterValue?.endDate?.split(",")[1]}
             locations={locations}
           />
-        )}
+        )} */}
         {/* {data && (
           <Labels
             labels={
@@ -318,21 +460,16 @@ console.log(type);
         className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
-        <div className={styles.advanceHead}>Advanced Details</div>
+        <div className={styles.advanceHead}>Advance Intel</div>
         <div className={styles.advanceContent}>
           Advanced and more detailed event filter criteria for precise and
           personalized event tracking.
         </div>
       </div>
       <div className={styles.innerContainerRight}>
-        <AdvanceFilter format={data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(',') : []} keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} entry={data?.tracker?.filterValue?.eventEntry?.length !== 0 ? data?.tracker?.filterValue?.eventEntry?.split(',') : []} rank={data?.tracker?.filterValue?.eventRanking ? data?.tracker?.filterValue?.eventRanking.split(',') : []}
-          localRank={
-            data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
-          }
-          eventType={data?.tracker?.filterValue?.eventType ? EventStatusData
-            ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
-            .map(item => item.name):[]}
-          eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+        <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
+          isBranded={data?.tracker?.filterValue?.brandedEvent}
+          eventEdition={data?.tracker?.filterValue?.editionRange}
         />
       </div>
     </div>
@@ -342,7 +479,7 @@ console.log(type);
         className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
-        <div className={styles.advanceHead}>Insights and Scores</div>
+        <div className={styles.advanceHead}>Insights &#x26; Score</div>
         <div className={styles.advanceContent}>
           Refine your event tracking with precise filters tailored to your
           needs with accurate scores and insights on event data.
@@ -350,11 +487,25 @@ console.log(type);
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
-          isBranded={data?.tracker?.filterValue?.brandedEvent}
+          exhibitScore={
+            data?.tracker?.filterValue?.eventSize
+              ? data?.tracker?.filterValue?.eventSize?.split(",")
+              : []
+          }
+          internationalScore={data?.tracker?.filterValue?.internationalScore}
           trustScore={data?.tracker?.filterValue?.trustScore}
-          reputation={data?.tracker?.filterValue?.reputationScore}
-          maturity={data?.tracker?.filterValue?.maturity}
-          rank={data?.tracker?.filterValue?.eventSeries}
+         reputation={data?.tracker?.filterValue?.reputationScore}
+          inboundScore={data?.tracker?.filterValue?.inboundScore}
+          eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+          localRank={
+            data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+          }
+          start={
+            data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
+          }
+          end={
+            data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
+          }
         />
       </div>
     </div>
@@ -372,7 +523,8 @@ console.log(type);
       </div>
       <div className={styles.innerContainerRight}>
         <Intel
-          internationalScore={data?.tracker?.filterValue?.internationalScore}
+         trustScore={data?.tracker?.filterValue?.trustScore}
+         reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
           userRating={
             data?.tracker?.filterValue?.eventRating
@@ -386,6 +538,7 @@ console.log(type);
           }
         />
       </div>
+    </div>
     </div>
     {del &&
       (
@@ -416,7 +569,6 @@ console.log(type);
   </div>
     }
     </>
-    
   );
 };
 

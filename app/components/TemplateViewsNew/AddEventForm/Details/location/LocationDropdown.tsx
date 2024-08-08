@@ -12,10 +12,12 @@ interface LocationSuggestion {
 interface Props {
     setCityName: (value: string) => void
     setCountryName: (value: string) => void
+    setEventFormat : (value : string)=>void;
+    eventFormat : string;
 }
 
-const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
-    const [selectedType, setSelectedType] = useState<string>("In-person")
+const LocationDropdown = ({ setCityName, setCountryName,setEventFormat,eventFormat }: Props) => {
+
     const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
@@ -94,8 +96,8 @@ const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "In-person"}
-                        onChange={() => setSelectedType("In-person")}
+                        checked={eventFormat === "In-person"}
+                        onChange={() => setEventFormat("In-person")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>In-person</span>
@@ -104,8 +106,8 @@ const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Virtual"}
-                        onChange={() => setSelectedType("Virtual")}
+                        checked={eventFormat === "Virtual"}
+                        onChange={() => setEventFormat("Virtual")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Virtual</span>
@@ -114,14 +116,14 @@ const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={selectedType === "Hybrid"}
-                        onChange={() => setSelectedType("Hybrid")}
+                        checked={eventFormat === "Hybrid"}
+                        onChange={() => setEventFormat("Hybrid")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Hybrid</span>
                 </label>
             </div>
-            {(selectedType === "In-person" || selectedType === "Hybrid") && <div className={styles.locationInputContainer}>
+            {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
                 <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
@@ -144,7 +146,7 @@ const LocationDropdown = ({ setCityName, setCountryName }: Props) => {
                     </div>
                 )}
             </div>}
-            {(selectedType === "Virtual" || selectedType === "Hybrid") &&
+            {(eventFormat === "Virtual" || eventFormat === "Hybrid") &&
                 <div className={styles.inputLinkContainer}>
                     <input type="text" placeholder='Enter Virtual Link' />
                     <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above.</span></div>

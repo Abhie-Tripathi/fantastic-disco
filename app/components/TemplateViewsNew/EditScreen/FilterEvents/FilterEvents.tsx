@@ -2,27 +2,22 @@ import React, { useState } from 'react'
 import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
-
-interface AllEventsType {
-    name: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-}
+import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props{
-    setIsAddEventModalOpen : (value : boolean)=>void
+    fetchedAllEvents : AllEventsType[]
+    fetchEvents : () => Promise<void>;
+    fetchedAddedEvents : AddedEventsType[]
+    fetchAddedEvents : ()=>Promise<void>;
+    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
+    handlePrefillNormalEvent : (event :  AllEventsType)=>void
+    handleAddEventModal : (value : void)=>void
+    widgetId : string;
+    addedEventIds : string[]
 }
 
-const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
-
-    // We will be having the events data here and will be sending them as props to all events
-
-    const allEvents: AllEventsType[] = [{ name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" },
-    { name: "East Midlands Young Planners Summer Social 2024", location: "Nottingham, UK", startDate: "1st  Apr 2024", endDate: "30th  Apr 2024" }
-    ]
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -33,7 +28,7 @@ const FilterEvents = ({setIsAddEventModalOpen} : Props) => {
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents} /> : <EventsAdded setIsAddEventModalOpen={setIsAddEventModalOpen} allEvents={allEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )

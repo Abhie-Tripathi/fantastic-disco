@@ -9,7 +9,7 @@
   position: fixed;
   width: 100%;
   z-index: 111;
-  height: 80px;
+  height: 70px;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -25,8 +25,8 @@
   border-radius: 50%;
   display: flex;
   background-color: var(--background-color-hover);
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -112,9 +112,9 @@
 }
 
 .page_title {
-  font-size: var(--font-size-h4);
+  font-size: 22px;
   font-weight: var(--font-weight-medium);
-  margin-left: 80px;
+  margin-left: 70px;
 }
 
 .dotMenu_icons {

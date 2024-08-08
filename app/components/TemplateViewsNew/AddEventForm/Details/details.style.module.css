@@ -24,9 +24,11 @@
     filter: blur(1px);
     overflow-y: hidden;
 }
-.leftSection{
+
+.leftSection {
     width: 300px;
 }
+
 .rightSection {
     height: fit-content;
     width: 65%;
@@ -51,15 +53,46 @@
     border-radius: 4px;
     padding: 7px 12px;
 }
+
 .btnContainer .addBtn {
     color: white;
     background-color: #6750a4;
+}
+
+.btnContainer .addBtn:hover {
+    background-color: #7962b8;
 }
 
 .posterContainer {
     position: relative;
 }
 
+.posterContainer .loader {
+    border: 1px solid grey;
+    height: 290px;
+    width: 296px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.posterContainer .loader .spinner {
+    border: 5px solid #EAF0F6;
+    border-radius: 50%;
+    border-top: 5px solid #FF7A59;
+    width: 30px;
+    height: 30px;
+    animation: spinner 2s linear infinite;
+}
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 .posterContainer .posterIcons {
     position: absolute;
     right: 19px;
@@ -78,8 +111,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    cursor: pointer;
 }
-.participationContainer{
+.participationContainer {
     margin-top: 16px;
     height: fit-content;
     width: 100%;
@@ -114,20 +148,13 @@
 .eventName:focus {
     outline: none;
 }
-
 .descriptionModal {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
-    border-radius: 2px;
-    padding: 12px;
     width: 50%;
     filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
 }
 
 .descriptionModal textarea {
@@ -163,6 +190,7 @@
     padding: 5px 8px;
     color: white;
 }
+
 .speakerModal {
     position: absolute;
     top: 50%;
@@ -171,7 +199,8 @@
     transform: translate(-50%, -50%);
     filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
 }
-.registerModal{
+
+.registerModal {
     position: absolute;
     top: 50%;
     width: 50%;
@@ -179,6 +208,7 @@
     transform: translate(-50%, -50%);
     filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
 }
-.speakerProfileContainer{
+
+.speakerProfileContainer {
     width: 100%;
 }

@@ -345,10 +345,10 @@
    cursor: pointer;
   }
   .container{
-    display:flex;
-    gap:20px;
-    width: 100%;
-    /* flex-direction: column; */
+    display: flex;
+    gap: 20px;
+    margin-top: 55px;
+    width: calc(100vw - 134px);
 }
   .outerContainer{
     display: flex;

@@ -14,11 +14,19 @@
     border-bottom-right-radius: 100px;
     filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
 }
-.detailsContainer{
+.detailsContainer{  
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* gap: 14px; */
+    padding: 10px;
+}
+.detailsContainer .valuesContainer {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    padding: 10px;
+    /* padding: 10px; */
 }
 .date_location_nameContainer{
     width: 100%;
@@ -59,9 +67,7 @@
     align-items: center;
     gap: 8px;
 }
-.description{
-    /* font-size: 10px; */
-    color: #6E6F89;
+.description{   
     font-weight: 500;
     line-height: 20px;
 }
@@ -92,4 +98,5 @@
 .btn{
     margin-top: 20px;
     padding: 10px 20px;
+    border: 1px solid;
 }

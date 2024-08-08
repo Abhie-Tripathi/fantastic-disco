@@ -3,7 +3,6 @@
     display: flex;
     padding: 30px 30px 100px 30px;
     height: 88vh;
-    gap: 30px;
 }
 
 .modalOpen {
@@ -11,15 +10,18 @@
 }
 
 .editContainer {
-    width: 55%;
+    width: 50%;
     height: 120%;
+    margin-right: 10px;
 }
 
 .previewContainer {
     width: 50%;
     height: 120%
 }
-
+.fullPreview{
+    width: 100%;
+}
 .blackScreen {
     position: absolute;
     top: 50%;
@@ -39,6 +41,7 @@
     height: 100%;
     width: 90%;
     filter: drop-shadow(1px 1px 2px rgb(209, 209, 209));
+    z-index: 1;
 }
 
 @media screen and (max-width: 1406px) {
@@ -49,4 +52,16 @@
         width: 55%;
     }
     
+}
+@media screen and (max-width : 1250px){
+    .body{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .editContainer{
+        width: 100%;
+    }
+    .previewContainer{
+        width: 100%;
+    }
 }

@@ -5,17 +5,39 @@ import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
 import { useTheme } from '@/context'
 
-const CodeWindow = () => {
+interface Props{
+    widgetType : string;
+    widgetId : string;
+}
+
+const CodeWindow = ({widgetType, widgetId}: Props) => {
 
     const [copyClick, setCopyClick] = useState(false) //To change the icon if the copy button is clicked
 
+    const getWidgetTag = (type : string) => {
+        switch (type) {
+            case 'Section':
+                return 'section-widget';
+            case 'Page':
+                return 'page-widget';
+            case 'Pop':
+                return 'popup-widget';
+            case 'StickyTop':
+                return 'sticky-widget';
+            default:
+                return 'section-widget'; // Default case if widgetType is not one of the specified types
+        }
+    };
+    const widgetTag = getWidgetTag(widgetType);
+
     const handleCopy = () => {
-        setCopyClick(true)
+        setCopyClick(true);
+        const widgetTag = getWidgetTag(widgetType);
         const textToCopy = `
             <script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>
-            <section-widget id="23"></section-widget>
+            <${widgetTag} id="${widgetId}"></${widgetTag}>
         `;
-        navigator.clipboard.writeText(textToCopy);
+        navigator.clipboard.writeText(textToCopy.trim());
     };
     const {theme} = useTheme();
     return (
@@ -44,7 +66,8 @@ const CodeWindow = () => {
             <div className={styles.codeContainer}>
                 <div className={styles.codewindow} style={{backgroundColor : theme == "light" ?"#FAFAFA":"#1A1A1A" }}>
                     {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
-                    {`<section-widget id="23"></section-widget>`}
+                    <br />
+                    {`<${widgetTag} id= "${widgetId}"></${widgetTag}>`}
                 </div>
             </div>
 

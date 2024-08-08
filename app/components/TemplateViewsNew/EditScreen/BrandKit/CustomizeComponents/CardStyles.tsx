@@ -3,7 +3,11 @@ import styles from './cardstyles.style.module.css'
 import Card1 from '/public/widgetimages/cardstyle1.png'
 import Card2 from '/public/widgetimages/cardstyle2.png'
 import Card3 from '/public/widgetimages/cardstyle3.png'
+import CardDark1 from '/public/widgetimages/cardstyledark1.png'
+import CardDark2 from '/public/widgetimages/cardstyledark2.png'
+import CardDark3 from '/public/widgetimages/cardstyledark3.png'
 import Image from 'next/image'
+import { useTheme } from '@/context'
 
 interface Props{
     cardStyle : string;
@@ -11,6 +15,8 @@ interface Props{
 }
 
 const CardStyles = ({ cardStyle, setCardStyle } : Props) => {
+    const {theme} = useTheme()
+
     return (
         <div className={styles.body}>
             <div className={styles.headingContainer}>
@@ -19,7 +25,7 @@ const CardStyles = ({ cardStyle, setCardStyle } : Props) => {
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.cardContainer} onClick={()=>setCardStyle("style1")}>
-                    <Image src={Card1} alt='style1'/>
+                    <Image src={theme === "light" ? Card1 : CardDark1} alt='style1'/>
                     <label className={styles.checkboxContainer}>
                         <input
                             type="checkbox"
@@ -32,7 +38,7 @@ const CardStyles = ({ cardStyle, setCardStyle } : Props) => {
                     </label>
                 </div>
                 <div className={styles.cardContainer} onClick={()=>setCardStyle("style2")}>
-                    <Image src={Card2} alt='style2'/>
+                    <Image src={theme === "light" ? Card2 : CardDark2} alt='style2'/>
                     <label className={styles.checkboxContainer}>
                         <input
                             type="checkbox"
@@ -45,7 +51,7 @@ const CardStyles = ({ cardStyle, setCardStyle } : Props) => {
                     </label>
                 </div>
                 <div className={styles.cardContainer} onClick={()=>setCardStyle("style3")}>
-                    <Image src={Card3} alt='style3'/>
+                    <Image src={theme === "light" ? Card3 : CardDark3} alt='style3'/>
                     <label className={styles.checkboxContainer}>
                         <input
                             type="checkbox"
