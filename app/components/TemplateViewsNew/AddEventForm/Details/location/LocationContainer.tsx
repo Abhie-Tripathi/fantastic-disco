@@ -3,6 +3,7 @@ import styles from './location.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import LocationDropdown from './LocationDropdown'
+import useOutsideClick from '@/hooks/useOutsideClick'
 
 interface Props{
     setCityName : (value : string)=>void;
@@ -15,6 +16,7 @@ interface Props{
 
 const LocationContainer = ({setCityName, cityName, setCountryName, countryName, setEventFormat, eventFormat}: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
+    const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
         <div className={styles.body}>
             <div className={styles.locationContainer}>
@@ -25,7 +27,7 @@ const LocationContainer = ({setCityName, cityName, setCountryName, countryName, 
                 </div>
             </div>
             <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            {dropdown && <div className={styles.dropdown}><LocationDropdown eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
 }

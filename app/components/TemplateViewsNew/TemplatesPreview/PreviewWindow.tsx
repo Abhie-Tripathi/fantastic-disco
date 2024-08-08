@@ -86,9 +86,13 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         if (widgetSelected === "Sticky") {
             tempSelectedWidget = "StickyTop";
         }
+        const otherdata = {
+            event : []
+        }
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
         customizeData.append('domain', 'http://example.com'); // replace with actual domain
+        customizeData.append('otherdata',JSON.stringify(otherdata))
         const customizationData = {
             fontSettings,
             buttonSettings,
