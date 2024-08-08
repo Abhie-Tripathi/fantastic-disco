@@ -1712,7 +1712,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Estimated Exhibit Score
+                          Estimated Exhibitor
                           {selectedExhibitScore?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedExhibitScore.length}
