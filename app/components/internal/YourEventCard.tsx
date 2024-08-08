@@ -271,11 +271,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 {upvote[0].like}
                 <div style={{ display: "flex", paddingTop: "5px" }}>
                   <Image
-                    src={upArrow}
+                    src={theme==="light"?upArrowLight:upArrow}
                     alt="up"
                     width={16}
                     height={16}
-                    className={"icons_light"}
                   />
                   &nbsp;Upvotes
                 </div>
@@ -291,12 +290,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className={styles.total_upvotes}>
                   {upvote[0].like}
                   <div style={{ display: "flex", paddingTop: "10px" }}>
-                    <Image
-                      src={upArrowLight}
-                      alt="up"
-                      width={16}
-                      height={16}
-                    />
+                  <Image
+                    src={theme==="light"?upArrowLight:upArrow}
+                    alt="up"
+                    width={16}
+                    height={16}
+                    className="icons"
+                  />
                     &nbsp;Upvotes
                   </div>
                 </div>
@@ -327,7 +327,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               </div>
               <div className={styles.viewCtas}>
                 {/* <button className={styles.notesBtn} onClick={handleModalOpen}>Notes</button> */}
-                <button className={styles.notesBtn} style={{  color: "var(--primary-color)" }}
+                <button className={styles.notesBtn} style={{  color: "var(--coordinate-primary-color)" }}
                   onClick={handleModalOpen}
                 >View Details</button>
               </div>

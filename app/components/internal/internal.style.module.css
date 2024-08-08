@@ -47,7 +47,7 @@
     flex-direction: column;
     padding: 10px 25px;
     border-radius:calc(4 * var(--border-radius-sm));
-    color: var(--primary-color);
+    color: var(--coordinate-primary-color);
 }
 .count{
     font-size: 56px;
