@@ -61,11 +61,12 @@
   gap: var(--spacing-xxs);
   align-items: center;
   font-weight: 400;
-  color: var(--primary-color);
   padding: 6px 12px;
   cursor: pointer;
   border-radius: 30px;
-  box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666;
+  /* box-shadow: 0 0 0 0.97px inset #6750A4, 0 0 0 0.47px inset #666666; */
+  color: var(--coordinate-primary-color);
+  border: 1px solid var(--coordinate-primary-color);
   outline: 0.97px solid transparent;
 }
 
