@@ -4,10 +4,15 @@ import Image from 'next/image'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 import { generateEmailContent } from '@/hooks/useEmailBody'
-import MoreEvents from '@/app/components/DetailPage/MoreEvents'
-import RegisterForm from '@/app/components/DetailPage/RegisterForm'
-import HostDetails from '@/app/components/DetailPage/HostDetails'
-import AttendingPeople from '@/app/components/DetailPage/AttendingPeople'
+import Placeholder from '/public/placeholder.png'
+import DateTimeContainer from '@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer'
+import LocationContainer from '@/app/components/TemplateViewsNew/AddEventForm/Details/location/LocationContainer'
+import ParticipationContainer from '@/app/components/TemplateViewsNew/AddEventForm/Details/participation/ParticipationContainer'
+import RegistrationForm from '@/app/components/TemplateViewsNew/AddEventForm/Details/resgistration/RegistrationForm'
+import DescriptionContainer from '@/app/components/TemplateViewsNew/AddEventForm/Details/description/DescriptionContainer'
+import SpeakerProfile from '@/app/components/TemplateViewsNew/AddEventForm/Details/participation/speaker/SpeakerProfile'
+import ExhibitorContainer from '@/app/components/TemplateViewsNew/AddEventForm/Details/participation/exhibitor/ExhibitorContainer'
+
 
 interface PageProps {
     hashtags: string[];
@@ -23,70 +28,34 @@ const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 
 const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject, emailBody }: PageProps) => {
     return (
-        <div className={styles.body}>
-            <div className={styles.leftContainer}>
-                <Image src={media} alt='poster' width={330} height={330} className={styles.poster} />
+        <div className={`${styles.detailsContainer}`} style={{ backgroundColor: "white" }}>
+            <div className={styles.leftSection}>
+                <div className={styles.posterContainer}>
+                    <Image src={Placeholder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />
+                </div>
+                {/* <div className={styles.participationContainer}><ParticipationContainer participationMessage="We are attending" participationType="Attendee" /></div> */}
                 <div className={styles.shareContainer}>
                     <div className={styles.heading}>Share</div>
-                    <div className={styles.line}></div>
-                    <ShareButtons shareUrl={shareUrl} title={eventName} hashtags={hashtags} emailSubject={emailSubject} emailBody={emailBody} />
-                </div>
-                <div className={styles.hostContainer}>
-                    <div className={styles.heading}>Hosted By</div>
-                    <div className={styles.line}></div>
-                    <HostDetails />
-                </div>
-                <div className={styles.attedningContainer}>
-                    <div className={styles.heading}>8 Going</div>
-                    <div className={styles.line}></div>
-                    <AttendingPeople />
-                </div>
-                <div className={styles.contact_reportContainer}>
-                    <div>Contact the host</div>
-                    <div>Report Event</div>
+                    <ShareButtons shareUrl='www.10times.com' />
                 </div>
             </div>
-            <div className={styles.rightContainer}>
-                <div className={styles.eventName}>{eventName}</div>
-                <div className={styles.tags}>{hashtags.map((tag, key) => (
-                    <div key={key} className={styles.tag}>{tag}</div>
-                ))}
+            <div className={styles.rightSection}>
+                <textarea className={styles.eventName} maxLength={80} placeholder='Event Name' value={eventName} />
+                
+                {/* <div className={styles.dateTimeContainer}><DateTimeContainer endDate="2024-08-07" startDate="2024-08-07" endTime="12:00 A.M" startTime="12:00 A.M" timeZone="GMT+05:30 Chennai" /></div> */}
+
+                {/* <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName="Delhi" countryName="India" /></div> */}
+
+                {/* <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor="#6750a4" registerBtnText="Register" registerMessage="Come meet us" /></div> */}
+                <div className={styles.map}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Mapview latitude={37.7749}
+                            width={600}
+                            longitude={-122.4194}
+                            zoom={6} />
+                    </Suspense>
                 </div>
-                <div className={styles.date_loactionContainer}>
-                    <div className={styles.dateContainer}>
-                        <div className={styles.dateIconContainer}>
-                            <div className={styles.iconMonth}>Jan</div>
-                            <div className={styles.iconLine}></div>
-                            <div className={styles.iconDate}>24</div>
-                        </div>
-                        <div className={styles.dateDetails}>
-                            <div className={styles.date}>Saturday, Jan 24</div>
-                            <div className={styles.time}>2:00 PM - 9:00 PM GMT+2</div>
-                        </div>
-                    </div>
-                    <div className={styles.locationContainer}>
-                        <div className={styles.locationIconContainer}><LocationIcon /></div>
-                        <div className={styles.locationDetails}>
-                            <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
-                            <div className={styles.city}>Milano, Lombardia</div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.attendingContainer}>We are attending this event as a <span>Speaker</span> </div>
-                <RegisterForm />
-                <div className={styles.aboutEventContainer}>
-                    <div className={styles.heading}>About Event</div>
-                    <div className={styles.line}></div>
-                    <div className={styles.description}>{description}</div>
-                </div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <div className={styles.map}><Mapview width={500} latitude={37.7749}
-                        longitude={-122.4194}
-                        zoom={6} /></div>
-                </Suspense>
-                <div className={styles.moreEventsContainer}>
-                    <MoreEvents />
-                </div>
+                {/* <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div> */}
             </div>
         </div>
     )

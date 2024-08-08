@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './datetime.style.module.css'
 import TimezoneDropdown from './TimezoneDropdown'
@@ -27,16 +28,18 @@ interface TimeSettingsProps {
 
 const DateTimeContainer = ({
     timeZone,
-    setTimeZone,
-    timeZoneKey,
-    setTimeZoneKey,
+    setTimeZone , // default to no-op function
+    timeZoneKey = 1,
+    setTimeZoneKey, // default to no-op function
     startDate,
-    setStartDate,
+    setStartDate, // default to no-op function
     endDate,
-    setEndDate,
+    setEndDate, // default to no-op function
     startTime,
-    setStartTime,
-    endTime, setEndTime }: TimeSettingsProps) => {
+    setStartTime, // default to no-op function
+    endTime,
+    setEndTime // default to no-op function
+  }: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
     const [startCalendarDropdown, setStartCalendarDropdown] = useState<boolean>(false)

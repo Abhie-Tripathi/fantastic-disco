@@ -2,7 +2,7 @@ import React, { ElementType } from 'react'
 import Popup1 from './Popup1';
 import Popup2 from './Popup2';
 import Popup3 from './Popup3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
@@ -22,10 +22,10 @@ interface Props {
     };
     buttonSettings?: ButtonSettingsState,
     selectedBtn? : "primary" | "secondary"
-    fetchedAddedEvents? : AddedEventsType[]
+    fetchedAddedOtherData? : PrefilledAddedEventsType[]
 }
 
-const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedEvents }: Props) => {
+const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedOtherData }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -39,7 +39,7 @@ const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSetti
             EventCard = Popup3; // Or some default component or message
     }
   return (
-    <EventCard fetchedAddedEvents={fetchedAddedEvents} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
+    <EventCard fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
   )
 }
 

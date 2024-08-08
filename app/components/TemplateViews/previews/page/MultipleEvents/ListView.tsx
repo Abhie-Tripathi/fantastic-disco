@@ -3,7 +3,7 @@ import styles from './listview.style.module.css'
 import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
 
 interface FontSettings {
     fontFamily: string;
@@ -21,11 +21,11 @@ interface EditProps {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedEvents?: AddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[]
 }
 
 
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedEvents }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData }: EditProps) => {
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -40,11 +40,11 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
     }
     return (
         <div className={styles.listView}>
-            {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
-                fetchedAddedEvents.map((event, key) => (
+            {fetchedAddedOtherData && fetchedAddedOtherData?.length>0 ? (
+                fetchedAddedOtherData.map((event, key) => (
                     <EventListCard
                         key={key}
-                        fetchedAddedEvents={fetchedAddedEvents}
+                        fetchedAddedEvents={fetchedAddedOtherData}
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}

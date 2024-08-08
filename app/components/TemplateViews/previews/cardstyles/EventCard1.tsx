@@ -3,7 +3,7 @@ import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
 
 interface FontSettings {
     fontFamily: string;
@@ -19,7 +19,7 @@ interface CardProps {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedEvent?: AddedEventsType
+    fetchedEvent?: PrefilledAddedEventsType
 }
 
 const EventCard1 = ({

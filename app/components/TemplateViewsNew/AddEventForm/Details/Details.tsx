@@ -17,11 +17,11 @@ import RegistrationModal from './resgistration/RegistrationModal'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
-import useFetch from '@/hooks/useFetch'
+import { AddedEventsType } from '@/types/addedeventtype'
 
 interface SpeakerProfileType {
   id: string;
@@ -44,7 +44,7 @@ interface Props {
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
-  prefilledAddedEvent?: AddedEventsType
+  prefilledAddedEvent?: PrefilledAddedEventsType
   prefilledNormalEvent?: AllEventsType
 }
 const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent }: Props) => {
@@ -110,11 +110,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     };
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (mapDivRef.current) {
       setMapWidth(mapDivRef.current.getBoundingClientRect().width);
     }
-  },[cityName])
+  }, [cityName])
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
@@ -145,6 +145,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
+      participationType: participationType,
+      gmt_time: timeZone
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -170,23 +172,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const existingEvents = fetchedAddedEvents || [];
     const newEvent = {
       id: eventId,
-      name: eventName,
       pageBgColor,
-      description,
       eventFont,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      timeZone,
-      cityName,
-      countryName,
-      participationType,
-      eventFormat,
       registerBtnColor,
       registerBtnText,
       registerMessage,
-      boothNumber,
       speakerProfilesData,
       participationMessage,
       bannerUrl
@@ -209,9 +199,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     })
     if (data) {
       console.log("widget event data", data)
+      setIsAddEventModalOpen(false)
       fetchEvents();
       fetchAddedEvents();
-      setIsAddEventModalOpen(false)
     }
     if (error) {
       console.log("error in adding event to widget ", error)
@@ -230,7 +220,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
-      logoUrl: banner.placeHolder
+      logoUrl: banner.placeHolder,
+      participationType: participationType,
+      gmt_time: timeZone
     };
     const formData = new FormData();
     formData.append("id", eventId);
@@ -246,9 +238,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       const updatedEventId = data.data.id;
       let updatedBannerUrl = data.data.data.logoUrl;
-      if(prefilledAddedEvent){
-        updateEventInWidget(updatedEventId,updatedBannerUrl)
-      }else{
+      if (prefilledAddedEvent) {
+        updateEventInWidget(updatedEventId, updatedBannerUrl)
+      } else {
         addEventToWidget(updatedEventId, updatedBannerUrl);
       }
 
@@ -262,19 +254,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const existingEvents = fetchedAddedEvents || [];
     const updatedEvent = {
       id: eventId,
-      name: eventName,
       pageBgColor,
-      description,
-      eventFont,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      timeZone,
-      cityName,
-      countryName,
-      participationType,
-      eventFormat,
       registerBtnColor,
       registerBtnText,
       registerMessage,
@@ -305,9 +285,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     });
     if (data) {
       console.log("widget event data", data);
+      setIsAddEventModalOpen(false);
       fetchEvents();
       fetchAddedEvents();
-      setIsAddEventModalOpen(false);
     }
     if (error) {
       console.log("error in updating event in widget ", error);
@@ -316,10 +296,20 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
 
   const handleGeneratePoster = () => {
-    if (description && eventName && countryName) {
-      generatePrompt(countryName, description, eventName, 1024, 1024)
+    if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
+      if (description && eventName && countryName) {
+        generatePrompt(countryName, description, eventName, 1024, 1024)
+      }
     }
   }
+  useEffect(() => {
+    if (!prefilledAddedEvent) { // we dont want the poster to start generating it self if prefilled event is there
+      if (description && eventName && countryName) {
+        generatePrompt(countryName, description, eventName, 1024, 1024)
+      }
+    }
+  }, [description, eventName, countryName])
+
   useEffect(() => {
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
@@ -388,7 +378,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       </div>
       {
         descriptionModal && <div className={styles.descriptionModal}>
-            <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
+          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick} />
         </div>
       }
       {

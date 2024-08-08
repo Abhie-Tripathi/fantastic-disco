@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import styles from './location.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
@@ -6,15 +7,22 @@ import LocationDropdown from './LocationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
 
 interface Props{
-    setCityName : (value : string)=>void;
+    setCityName: (value : string)=>void;
     cityName : string;
-    setCountryName :(value : string)=>void;
+    setCountryName:(value : string)=>void;
     countryName : string;
-    setEventFormat : (value : string)=>void;
+    setEventFormat: (value : string)=>void;
     eventFormat : string;
 }
 
-const LocationContainer = ({setCityName, cityName, setCountryName, countryName, setEventFormat, eventFormat}: Props) => {
+const LocationContainer = ({
+    setCityName, // default to no-op function
+    cityName,
+    setCountryName, // default to no-op function
+    countryName,
+    setEventFormat, // default to no-op function
+    eventFormat
+  }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (

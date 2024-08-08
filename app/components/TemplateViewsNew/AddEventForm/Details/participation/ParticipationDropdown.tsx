@@ -3,12 +3,12 @@ import styles from './dropdown.style.module.css'
 
 interface Props {
     setInputMessage: (value: string) => void
-    inuputMessage: string;
+    inputMessage: string;
     setParticipationType: (value: string) => void
     participationType: string;
 }
 
-const ParticipationDropdown = ({ setInputMessage, inuputMessage, setParticipationType, participationType }: Props) => {
+const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType }: Props) => {
 
     return (
         <div className={styles.body}>
@@ -56,7 +56,7 @@ const ParticipationDropdown = ({ setInputMessage, inuputMessage, setParticipatio
             </div>
             <div className={styles.messageContainer}>
                 <div className={styles.heading}>Customize your message</div>
-                <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inuputMessage}</textarea>
+                <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inputMessage}</textarea>
             </div>
         </div>
     )

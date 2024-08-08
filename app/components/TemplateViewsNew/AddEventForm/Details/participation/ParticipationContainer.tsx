@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import styles from './participation.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
@@ -9,11 +10,11 @@ import useOutsideClick from '@/hooks/useOutsideClick'
 interface Props{
   setParticipationType : (value : string)=>void
   participationType : string;
-  setParticipationMessage : (value : string)=>void
+  setParticipationMessage: (value : string)=>void
   participationMessage : string
 }
 
-const ParticipationContainer = ({setParticipationType, participationType, setParticipationMessage,participationMessage} : Props) => {
+const ParticipationContainer = ({  setParticipationType, participationType,   setParticipationMessage,participationMessage} : Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false)
   const dropdownRef = useOutsideClick(()=>setDropdown(false))
   return (
@@ -25,7 +26,7 @@ const ParticipationContainer = ({setParticipationType, participationType, setPar
       <span className={styles.inputMessage}>{participationMessage}</span>}
       <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn}/>
       {dropdown && <div className={styles.dropdown}>
-        <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inuputMessage={participationMessage  }/>
+        <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage}/>
       </div>}
     </div>
   )

@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import styles from './exhibitor.style.module.css'
 import EditIcon from '/public/EditIcon.svg'

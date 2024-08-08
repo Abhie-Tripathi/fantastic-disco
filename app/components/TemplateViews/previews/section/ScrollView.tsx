@@ -3,7 +3,7 @@ import styles from './scrollview.style.module.css'
 import EventCard1 from '../cardstyles/EventCard1';
 import EventCard2 from '../cardstyles/EventCard2';
 import EventCard3 from '../cardstyles/EventCard3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
     fontFamily: string;
@@ -22,9 +22,9 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedEvents?: AddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[]
 }
-const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedEvents }: Props) => {
+const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -39,8 +39,8 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
     }
     return (
         <div className={styles.body}>
-               {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
-                fetchedAddedEvents.map((event, key) => (
+               {fetchedAddedOtherData && fetchedAddedOtherData?.length>0 ? (
+                fetchedAddedOtherData.map((event, key) => (
                     <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody} key={key}>
                         <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
                         <EventCard fetchedEvent = {event} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />

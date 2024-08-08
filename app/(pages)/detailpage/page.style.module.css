@@ -1,183 +1,214 @@
 .body {
-    background-color: #0F0F0F;
-    padding: 20px;
-    gap: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 48px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 100%;
+    position: relative;
+    background-color: white;
 }
-.leftContainer {
+
+.line {
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+
+.detailsContainer {
+    padding: 70px 120px 30px 70px;
+    /* border: 1px solid red; */
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 330px;
+    gap: 30px;
     overflow-y: auto;
-}
-.rightContainer {
-    display: flex;
-    width: 45%;
-    flex-direction: column;
+    height: 89%;
 }
 
-.poster {
-    border-radius: 10px;
-    border: 1px solid rgb(70, 70, 70);
-}
-.eventName {
-    color: white;
-    font-size: 48px;
-    font-weight: 600;
+.modalOpen {
+    filter: blur(1px);
+    overflow-y: hidden;
 }
 
-.tags {
-    margin-top: 24px;
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
+.leftSection {
+    width: 300px;
 }
-.tag {
-    border-radius: 40px;
-    padding: 4px 12px;
-    font-weight: 500;
-    font-size: 12px;
-    color: #DF2670;
-    background-color: #3A1726;
-}
-.date_loactionContainer{
-    margin-top: 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-.dateContainer{
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-.dateIconContainer{
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #2E2E2E;
-    border-radius: 8px;
-    align-items: center;
-}
-.iconMonth{
-    font-size: 11px;
-    color: #EDEDED;
-    background-color: #1A1A1A;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    padding: 4px 14px;
-}
-.iconLine{
-    width: 100%;
-    border-bottom: 1px solid #2E2E2E;
-}
-.iconDate{
-    padding: 6px 14px;
-    font-size: 16px;
-    color: #A1A1A1;
-    font-weight: 600;
-}
-.dateDetails{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.date{
-    color: #EDEDED;
-    font-weight: 600;
-}
-.time{
-    color: #A1A1A1;
-    font-size: 14px;
-    font-weight: 400;
-}
-.locationContainer{
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-.locationIconContainer{
-    border: 1px solid #2E2E2E;
-    border-radius: 8px;
-    padding: 15px 16px;
-}
-.locationDetails{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.venue{
-    color: #EDEDED;
-    font-weight: 600;
-}
-.city{
-    color: #A1A1A1;
-    font-size: 14px;
-    font-weight: 400;
-}
-.attendingContainer{
-    margin-top: 48px;
-    padding: 20px 24px;
-    background-color: #454545;
-    border-radius: 4px;
-    color: #EDEDED;
-    margin-bottom: 64px;
-}
-.attendingContainer span{
-    color: #0072F5;
-    font-weight: 600;
-}
-.aboutEventContainer{
-    margin-top: 64px;
-}
-.aboutEventContainer .heading{
-    font-weight: 700;
-    color: #A1A1A1;
-    font-size: 14px;
-}
-.line{
-    margin-top: 12px;
-    margin-bottom: 24px;
-    border-top: 1px solid #454545;
-}
-.aboutEventContainer .description{
-    line-height: 24px;
-}
-.map{
-    margin-top: 56px;
-}
-.shareContainer{
-    margin-top: 36px;
-    width: 100%;
-}
-.leftContainer .heading{
-    font-weight: 700;
-    font-size: 14px;
-    color: #A1A1A1;
-}
-.leftContainer .line{
-    margin-top: 12px;
-    margin-bottom: 24px;
-    border-top: 1px solid #454545;
-}
-.hostContainer{
-    margin-top: 42px;
-}
-.moreEventsContainer{
-    margin-top: 40px;
-}
-.attedningContainer{
-    margin-top: 42px;
-}
-.contact_reportContainer{
-    margin-top: 42px;
+
+.rightSection {
+    height: fit-content;
+    width: 65%;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
-.contact_reportContainer div{
+
+.btnContainer {
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: flex-end;
+}
+
+.btnContainer button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+
+.btnContainer .addBtn {
+    color: white;
+    background-color: #6750a4;
+}
+
+.btnContainer .addBtn:hover {
+    background-color: #7962b8;
+}
+
+.posterContainer {
+    position: relative;
+}
+
+.posterContainer .loader {
+    border: 1px solid grey;
+    height: 290px;
+    width: 296px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.posterContainer .loader .spinner {
+    border: 5px solid #EAF0F6;
+    border-radius: 50%;
+    border-top: 5px solid #FF7A59;
+    width: 30px;
+    height: 30px;
+    animation: spinner 2s linear infinite;
+}
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.posterContainer .posterIcons {
+    position: absolute;
+    right: 19px;
+    bottom: 12px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.posterContainer .posterIcons div {
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.participationContainer {
+    margin-top: 16px;
+    height: fit-content;
+    width: 100%;
+}
+
+.shareContainer {
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 18px 19px;
+}
+
+.shareContainer .heading {
+    margin-bottom: 11px;
     color: #A1A1A1;
     font-size: 14px;
+    font-weight: 500;
+}
+
+.eventName {
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    /* height: 100px; */
+    resize: none;
+    overflow: hidden;
+    color: #1a1a1a;
+    font-weight: bolder;
+}
+
+.eventName:focus {
+    outline: none;
+}
+.descriptionModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+
+.descriptionModal textarea {
+    resize: none;
+    border: 1px solid #EBEBEB;
+    width: 100%;
+    padding: 8px;
+    height: 130px;
+}
+
+.descriptionModal textarea:focus {
+    outline: none;
+}
+
+.descriptionModal div {
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.descriptionModal div .close {
+    cursor: pointer;
+}
+
+.descriptionModal button {
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #6750a4;
+    padding: 5px 8px;
+    color: white;
+}
+
+.speakerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+
+.registerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+
+.speakerProfileContainer {
+    width: 100%;
 }

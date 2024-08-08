@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import styles from './addevent.style.module.css'  
 import Appearance from './Appearance/Appearance'
 import Details from './Details/Details'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { AddedEventsType } from '@/types/addedeventtype'
 import { AllEventsType } from '@/types/alleventtype'
 
 interface Props{
@@ -12,7 +13,7 @@ interface Props{
     fetchAddedEvents : ()=> Promise<void>;
     addedEventIds : string[]
     fetchedAddedEvents : AddedEventsType[]
-    prefilledAddedEvent? : AddedEventsType 
+    prefilledAddedEvent? : PrefilledAddedEventsType 
     prefilledNormalEvent? : AllEventsType
 }
 const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent,prefilledNormalEvent} : Props) => {
