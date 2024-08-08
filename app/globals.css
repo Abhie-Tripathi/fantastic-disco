@@ -108,10 +108,10 @@ button {
 
 :root {
   --primary-color: #6750a4;
+  --coordinate-primary-color:#6750a4;
   --primary-color-hover: #59478c;
   --primary-color-active: #4b3f70;
   --primary-foreground: #ffffff;
-
   /* --primary-color-faded: rgba(8, 139, 234, 0.1); */
   --primary-light-color: #e6e6f9;
   /* --primary-light-color-faded: rgba(249, 249, 219, 0.1); */
@@ -175,6 +175,7 @@ button {
   --disabled-background-color: #C9C9C9;
   --img-filter:invert(0);
   --disabled-btn-color: #c9c9c966;
+  --card-backgroud: #FFFFFF;
 }
 
 .card {
@@ -189,6 +190,7 @@ body[data-theme="dark"] {
   --primary-text-color: #EDEDED;
   --sidebar-active:#242424;
   --border-color: #2E2E2E;
+  --coordinate-primary-color:#FFFFFF;
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
   --tabs-background-color: #1a1a1a;
@@ -205,6 +207,7 @@ body[data-theme="dark"] {
   --disabled-btn-color: #454545;
   --neutral-light-color: #1F1F1F;
   --accent-color: #1a1a1a;
+  --card-background:linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); 
 }
 
 /* :root {

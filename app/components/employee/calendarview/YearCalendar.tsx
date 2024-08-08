@@ -122,8 +122,10 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
     } finally {
       setIsLoaded(true);
     }
-    }else
+    }else{
       setEventCountArr({});
+      setIsLoaded(true);
+    }
   }
 
   const prevButtonHandler = () => {

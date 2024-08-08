@@ -6,6 +6,7 @@ import person1 from "@/public/person1.svg";
 import place from "@/public/internal/place.svg";
 import person2 from "@/public/person2.svg";
 import Image from "next/image";
+import upArrowLight from '/public/internal/up_arrow_light.svg'
 import Link from "next/link";
 import ClockIcon from "/public/clock.svg";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
@@ -20,16 +21,18 @@ interface YourEventCardProps {
   enquiryId: string;
   eventName: string;
   eventCtas?: string[];
+  eventCountry:string;
   eventLocation: string;
   eventImage: string;
-  eventDate: string;
+  eventStartDate: string;
+  eventEndDate: string;
   eventCompany: string;
   eventDuration: string;
   userCount: number;
   currentEnquiryStatus: string;
   upvote: any;
   enquiryActivity: any;
-  handleModal: (id: string,enquiryId:string) => void;
+  handleModal: (id: string, enquiryId: string) => void;
   handleShortlistModal: (eventId: string, enquiryId: string) => void;
 }
 
@@ -45,8 +48,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   eventName,
   eventCtas,
   eventLocation,
+  eventCountry,
   eventImage,
-  eventDate,
+  eventStartDate,
+  eventEndDate,
   eventCompany,
   eventDuration,
   userCount,
@@ -56,7 +61,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handleModal,
   handleShortlistModal,
 }) => {
-  const formattedDate = formatDate(eventDate);
+  const formattedDate = formatDate(eventStartDate);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
@@ -97,7 +102,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   const handleModalOpen = () => {
-    handleModal(eventId,enquiryId);
+    handleModal(eventId, enquiryId);
   };
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -133,30 +138,91 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     fetchInterestedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  function formatEventDates(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    if (start.getFullYear() === end.getFullYear()) {
+        if (start.getMonth() === end.getMonth()) {
+            if (start.getDate() === end.getDate()) {
+                return new Date(startDate).toLocaleDateString("en-GB", {
+                  weekday: 'long',
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                });
+            } else {
+                return (
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    weekday: 'long',
+                  }) + ', ' +
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                  }) + ' - ' +
+                  new Date(endDate).toLocaleDateString("en-GB", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                );
+            }
+        } else {
+            return (
+              new Date(startDate).toLocaleDateString("en-GB", {
+                weekday: 'long',
+                month: "short",
+                day: "2-digit",
+              }) + ' - ' +
+              new Date(endDate).toLocaleDateString("en-GB", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })
+            );
+        }
+    } else {
+        return (
+          new Date(startDate).toLocaleDateString("en-GB", {
+            weekday: 'long',
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }) + ' - ' +
+          new Date(endDate).toLocaleDateString("en-GB", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        );
+    }
+  }
   return (
     <div className={`${styles.card} card`} onClick={handleModalOpen}>
       <div className={styles.topContainer} style={{ display: "flex" }}>
-        <div className={styles.leftContainer}>
-          <div className="tablet_view mobile_view">
-            <StatusChangeDropdown
-              label=""
-              eventId={eventId}
-              enquiryId={enquiryId}
-              currentEnquiryStatus={currentEnquiryStatus}
-              handleShortlistModal={handleShortlistModal}
-            />
+        {eventImage &&
+          <div className={styles.leftContainer}>
+            <div className="tablet_view mobile_view">
+              <StatusChangeDropdown
+                label=""
+                eventId={eventId}
+                enquiryId={enquiryId}
+                currentEnquiryStatus={currentEnquiryStatus}
+                handleShortlistModal={handleShortlistModal}
+              />
+            </div>
+
+            <div style={{ display: 'flex', boxShadow: "var(--shadow-large)" }}>
+              <Image
+                src={eventImage}
+                alt="eventImage"
+                width={238}
+                height={192}
+                className={styles.cardImg}
+              />
+            </div>
+
           </div>
-          {/* <div style={{display: 'flex'}}>
-            <Image
-              src={eventImage}
-              alt="eventImage"
-              width={238}
-              height={192}
-              className={styles.cardImg}
-            />
-          </div> */}
-        </div>
+        }
         <div className={styles.cardDetails}>
           <div className={styles.eventNameComp}>
             <div>
@@ -178,38 +244,37 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>
           </div>
           <div className={styles.locationAndDateContainer}>
-            <div className={styles.eventLocation}>
-              <Image src={place} alt="locationIcon" width={24} height={24} />
-              <div>{eventLocation}</div>
-            </div>
-            <div
-              className={styles.eventLocation}
-              style={{ display: "flex", gap: "5px" }}
-            >
-              <div className={styles.circle1}>7</div>
-              <div>Days Event</div>
-            </div>
+            {eventLocation &&
+              <div className={styles.eventLocation}>
+                <div className={styles.circle1}>
+                  <Image src={place} alt="locationIcon" width={24} height={24} style={{marginRight:"3px"}}className="icons" />
+                </div>
+                <div style={{marginLeft:"-4px"}}>{eventLocation}{", "}{eventCountry}</div>
+              </div>
+            }
             <div className={styles.eventDate}>
               <Image
                 src={calendarIcon}
                 alt="calendarIcon"
                 width={14}
                 height={14}
+                className='icons'
               />
-              <div>{formattedDate}</div>
+              <div>
+                {formatEventDates(eventStartDate, eventEndDate)}
+              </div>
             </div>
           </div>
           <div className="tablet_view mobile_view">
-            <div style={{ marginTop: "-50px" }}>
+            <div>
               <div className={styles.total_upvotes}>
                 {upvote[0].like}
                 <div style={{ display: "flex", paddingTop: "5px" }}>
                   <Image
-                    src={upArrow}
+                    src={theme==="light"?upArrowLight:upArrow}
                     alt="up"
                     width={16}
                     height={16}
-                    className={"icons_light"}
                   />
                   &nbsp;Upvotes
                 </div>
@@ -218,51 +283,54 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           </div>
           <div className="desktop_view">
             <div
-              style={{
-                display: "flex",
-                gap: "16px",
-                flexWrap: "wrap",
-                marginTop: "15px",
-              }}
+              className={styles.allTagsOuterContainer}
               onClick={handleClickEvent}
             >
-              <div className={styles.total_upvotes}>
-                {upvote[0].like}
-                <div style={{ display: "flex", paddingTop: "10px" }}>
+              <div className={styles.allTags}>
+                <div className={styles.total_upvotes}>
+                  {upvote[0].like}
+                  <div style={{ display: "flex", paddingTop: "10px" }}>
                   <Image
-                    src={upArrow}
+                    src={theme==="light"?upArrowLight:upArrow}
                     alt="up"
                     width={16}
                     height={16}
-                    className={"icons_light"}
+                    className="icons"
                   />
-                  &nbsp;Upvotes
+                    &nbsp;Upvotes
+                  </div>
                 </div>
+                <UpVoteTag
+                  type="Attending"
+                  status={voteStatus.Attending ? "voted" : ""}
+                  handleVoteClick={handleVoteClick}
+                  userList={interestedUsers.attendee}
+                />
+                <UpVoteTag
+                  type="Speaking"
+                  status={voteStatus.Speaking ? "voted" : ""}
+                  handleVoteClick={handleVoteClick}
+                  userList={interestedUsers.speakers}
+                />
+                <UpVoteTag
+                  type="Sponsoring"
+                  status={voteStatus.Sponsoring ? "voted" : ""}
+                  handleVoteClick={handleVoteClick}
+                  userList={interestedUsers.sponsors}
+                />
+                <UpVoteTag
+                  type="Exhibiting"
+                  status={voteStatus.Exhibiting ? "voted" : ""}
+                  handleVoteClick={handleVoteClick}
+                  userList={interestedUsers.exhibitors}
+                />
               </div>
-              <UpVoteTag
-                type="Attending"
-                status={voteStatus.Attending ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.attendee}
-              />
-              <UpVoteTag
-                type="Speaking"
-                status={voteStatus.Speaking ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.speakers}
-              />
-              <UpVoteTag
-                type="Sponsoring"
-                status={voteStatus.Sponsoring ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.sponsors}
-              />
-              <UpVoteTag
-                type="Exhibiting"
-                status={voteStatus.Exhibiting ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.exhibitors}
-              />
+              <div className={styles.viewCtas}>
+                {/* <button className={styles.notesBtn} onClick={handleModalOpen}>Notes</button> */}
+                <button className={styles.notesBtn} style={{  color: "var(--coordinate-primary-color)" }}
+                  onClick={handleModalOpen}
+                >View Details</button>
+              </div>
             </div>
           </div>
           {/* 
@@ -289,7 +357,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       <div className={styles.bottomContainer}>
         <div className="tablet_view mobile_view">
           <div
-            style={{ display: "flex", gap: "6px", paddingTop: "20px" }}
+            style={{ display: "flex", gap: "6px", paddingTop: "20px", justifyContent:"center" }}
             onClick={handleClickEvent}
           >
             <UpVoteTag

@@ -356,7 +356,13 @@ const [val,setVal]=useState(1);
     // if(currPage!==1)
     fetchEventsData();
  
-  }, [ currPage, itemsPerPage, queryString]);
+  }, [ currPage, itemsPerPage]);
+
+  useEffect(() => {
+    if(currPage == 1) fetchEventsData();
+    else setCurrPage(1);
+  }, [queryString]);
+
 // useEffect(()=>{
 //   const secondLast = path[path.length - 2];
 //   if(currPage!==1)
@@ -695,13 +701,15 @@ const [val,setVal]=useState(1);
               {appliedKeywords.length > 0 || showInsights?.trackerKeywords && <th>Matched Keywords</th>}
               {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && <th>Match Score</th>}
               <th>Category</th>
+              {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.eventSeries ||
                 (eventPerPage[0]?.series && <th>Event Series</th>)}
               {showInsights.eventRank && <th>Rank</th>}
-              {showInsights.growth && <th>Growth</th>}
+              {/* {showInsights.growth && <th>Growth</th>} */}
               {showInsights.reptSent && <th>Reputation</th>}
+              {showInsights.eventRating && <th>Rating</th>}
               {showInsights.repeatSent && <th>Trust</th>}
-              {showInsights.eventSize && <th>Event Size</th>}
+              {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>International</th>}
               <th
@@ -894,6 +902,12 @@ const [val,setVal]=useState(1);
                     "-"
                   )}
                 </td>
+                {showInsights.eventSize && (
+                  <td>
+                    {/* {getEventSize(event)} */}
+                    {event.eventSize ? event.eventSize : "-"}
+                  </td>
+                )}
                 {showInsights.eventSeries ||
                   (event?.series && (
                     <td>{event.series ? event.series : "-"}</td>
@@ -910,7 +924,7 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {showInsights.growth && (
+                {/* {showInsights.growth && (
                   <td>
                     {event.interestsGrowth && event.interestsGrowth != 0 ? (
                       event.interestsGrowth > 0 ? (
@@ -936,10 +950,10 @@ const [val,setVal]=useState(1);
                         event.interestsGrowthRange == 0) &&
                       "-"}
                   </td>
-                )}
+                )} */}
                 {showInsights.reptSent && (
                   <td>
-                    {event.stats.rating !== undefined &&
+                    {/* {event.stats.rating !== undefined &&
                       event.stats.rating !== null &&
                       event.stats.rating > "0" && (
                         <>
@@ -947,7 +961,7 @@ const [val,setVal]=useState(1);
                           &nbsp;
                           <Image src={StarIcon} alt="star" width={14} />
                         </>
-                      )}
+                      )} */}
                     {event.reputationSentiment !== undefined &&
                     event.reputationSentiment !== null &&
                     (event.reputationSentiment > 1 ||
@@ -963,24 +977,32 @@ const [val,setVal]=useState(1);
                           <Image src={DownArrow} alt="down" width={10} />{" "}
                         </div>
                       )
-                    ) : event.stats.rating == undefined ? (
-                      <>-</>
                     ) : (
-                      <></>
+                      <>-</>
                     )}
                   </td>
                 )}
+                {showInsights.eventRating && 
+                  <td>
+                    {(event.stats.rating !== undefined &&
+                      event.stats.rating !== null &&
+                      event.stats.rating > "0") ? (
+                        <>
+                          {getEventRating(event.stats.rating)}
+                          &nbsp;
+                          <Image src={StarIcon} alt="star" width={14} />
+                        </>
+                      ) : (
+                        <>-</>
+                      )
+                    }
+                  </td>
+                }
                 {showInsights.repeatSent && (
                   <td>
                     {event.repeatSentiment && event.repeatSentiment != 0
                       ? event.repeatSentiment + "%"
                       : "-"}
-                  </td>
-                )}
-                {showInsights.eventSize && (
-                  <td>
-                    {/* {getEventSize(event)} */}
-                    {event.eventSize ? event.eventSize : "-"}
                   </td>
                 )}
                 {showInsights.estExhibit && (
@@ -1184,7 +1206,7 @@ const [val,setVal]=useState(1);
 
         <div className={styles.pagination_info_container}>
           <div>Showing</div>
-          <Image src={ExpandAll} alt="expandall" className={iconClass} />
+          {/* <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
             <select
               onChange={handlePageItems}
@@ -1196,7 +1218,8 @@ const [val,setVal]=useState(1);
               <option value="15" selected={itemsPerPage==15?true:false}>15</option>
               <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
-          </div>
+          </div> */}
+          <span className={styles.itemsPerPage} >10</span>
           <div>results/Page</div>
         </div>
 

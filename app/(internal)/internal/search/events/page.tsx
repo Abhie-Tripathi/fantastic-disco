@@ -265,7 +265,7 @@ const Search = () => {
           ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
-          ...(selectedExhibitScore?.length>0 && {eventSize:selectedExhibitScore.join(',')}),
+          ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
           brandedEvent:selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
@@ -551,7 +551,7 @@ const Search = () => {
 
     // Estimated Exhibit Score
     if (selectedExhibitScore.length > 0) {
-      queryString.eventSize = selectedExhibitScore;
+      queryString.estimatedExhibitScore = selectedExhibitScore;
     }
 
     let query = new URLSearchParams(queryString);
@@ -698,6 +698,22 @@ const Search = () => {
       return updatedEvents;
     });
   };
+
+  useEffect(() => {
+    setSelectedInsights({
+      eventSize: true,
+      eventKeywords: true,
+      eventRank: rankToggles.isEventRank,
+      matchScore: true,
+      growth: true,
+      eventSeries: selectedEventSeries,
+      global: (selectedINScore > 0),
+      reptSent: (selectedReptScore > 0),
+      eventRating: (selectedUserRatings.length > 0),
+      estExhibit: (selectedExhibitScore.length > 0),
+      repeatSent: (selectedTrustScore > 0),
+    });
+  }, [urlQueryString]);
 
   useEffect(() => {
     setSelectedInsights({
@@ -911,9 +927,7 @@ const Search = () => {
         {isSearchResultOpen && searchResult && searchResult.length > 0 && (
           <div
             ref={triggerRef}
-            className={`${styles.resultContainer} ${
-              theme === "light" ? styles.resultContainer_light : ""
-            }`}
+            className={`${styles.resultContainer}`}
           >
             <div className={styles.resultData_heading}>Suggestions</div>
             {searchResult.map((item) => (
@@ -1419,7 +1433,7 @@ const Search = () => {
                           Event Edition
                           {selectedEventEdition !== 0 && (
                             <span className={styles.input_selected_title}>
-                              {selectedEventEdition} %
+                              &gt;{'='} {selectedEventEdition}
                             </span>
                           )}
                         </div>
@@ -1438,6 +1452,7 @@ const Search = () => {
                     <RangeSlider
                       state={selectedEventEdition}
                       setState={setSelectedEventEdition}
+                      sliderType="reverse"
                     />
                     {/* </Dialog> */}
                   </Popover>
@@ -1696,7 +1711,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Estimated Exhibit Score
+                          Estimated Exhibitor
                           {selectedExhibitScore?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedExhibitScore.length}
@@ -1863,7 +1878,7 @@ const Search = () => {
                           Reputation Score
                           {selectedReptScore !== 0 && (
                             <span className={styles.input_selected_title}>
-                              &gt; {selectedReptScore} %
+                              &gt;{'='} {selectedReptScore} %
                             </span>
                           )}
                         </div>
@@ -1900,7 +1915,7 @@ const Search = () => {
                           Trust Score
                           {selectedTrustScore !== 0 && (
                             <span className={styles.input_selected_title}>
-                              &gt; {selectedTrustScore} %
+                              &gt;{'='} {selectedTrustScore} %
                             </span>
                           )}
                         </div>
