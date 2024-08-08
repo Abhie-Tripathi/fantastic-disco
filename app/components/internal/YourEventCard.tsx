@@ -247,7 +247,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className={styles.circle1}>
                   <Image src={place} alt="locationIcon" width={24} height={24} style={{marginRight:"3px"}}className="icons" />
                 </div>
-                <div>{eventLocation}</div>
+                <div style={{marginLeft:"-4px"}}>{eventLocation}</div>
               </div>
             }
             <div className={styles.eventDate}>

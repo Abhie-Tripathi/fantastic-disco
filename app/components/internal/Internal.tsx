@@ -1,9 +1,12 @@
 import React, { useState, useRef, RefObject, useEffect } from 'react'
+import Image from 'next/image'
 import YourEventCard from './YourEventCard'
 import Search from '/public/search.svg'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
+import DropIcon from "/public/downArrow.svg";
 import eventData from '@/public/data/demoEvent.json'
+import { useTheme } from '@/context'
 import { eventDataType } from "../../../types/coordinateEventType";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
@@ -16,7 +19,8 @@ interface Props{
 }
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
     let prevDate: any = null;
-
+    const { theme } = useTheme();
+    const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
@@ -141,7 +145,16 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         <div className={styles.searchBar}>
             <input className={styles.textArea} type='text' placeholder='Search Event'/>
         </div>
-        <div className={styles.statusDropdown}></div>
+        <div className={styles.statusDropdown}>
+            <div>Status</div>
+            <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
+                      />
+        </div>
         <div className={styles.participantDropdown}></div>
         <div className={styles.dateFilter}></div>
     </div> */}
