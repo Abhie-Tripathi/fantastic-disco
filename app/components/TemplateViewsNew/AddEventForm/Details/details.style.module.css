@@ -66,12 +66,11 @@
 .posterContainer {
     position: relative;
 }
-
 .posterContainer .loader {
     border: 1px solid grey;
+    border-radius: 10px;
     height: 290px;
     width: 296px;
-    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -112,6 +111,26 @@
     justify-content: center;
     border-radius: 50%;
     cursor: pointer;
+    position: relative;
+}
+.posterContainer .posterIcons div::before{
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.posterContainer .posterIcons div:hover::before{
+    opacity: 1;
 }
 .participationContainer {
     margin-top: 16px;

@@ -298,14 +298,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (description && eventName && countryName) {
-        generatePrompt(countryName, description, eventName, 1024, 1024)
+        generatePrompt(countryName, description, eventName, 1920, 1080)
       }
     }
   }
   useEffect(() => {
     if (!prefilledAddedEvent) { // we dont want the poster to start generating it self if prefilled event is there
       if (description && eventName && countryName) {
-        generatePrompt(countryName, description, eventName, 1024, 1024)
+        generatePrompt(countryName, description, eventName, 1280, 720)
       }
     }
   }, [description, eventName, countryName])
@@ -337,12 +337,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             {isLoading ?
               <div className={styles.loader}>
                 <div className={styles.spinner}></div>
-              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />}
+              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 , objectFit : "cover"}} />}
             <div className={styles.posterIcons}>
-              <div onClick={handleGeneratePoster}>
+              <div onClick={handleGeneratePoster} data-name = "Generate Your Banner">
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
-              <div>
+              <div data-name = "Upload Your Banner">
                 <Image src={UploadIcon} alt='upload'></Image>
               </div>
             </div>

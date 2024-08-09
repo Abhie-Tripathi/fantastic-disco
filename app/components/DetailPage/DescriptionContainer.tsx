@@ -14,7 +14,7 @@ const DescriptionContainer = ({description} : Props) => {
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />
-                    <div className={styles.descriptionHeading}>Add Event Description</div>
+                    <div className={styles.descriptionHeading}>Event Description</div>
                 </div>
             </div>
             {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description }}></div>}

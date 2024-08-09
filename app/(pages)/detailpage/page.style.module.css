@@ -6,7 +6,7 @@
 
 .detailsContainer {
     /* padding: 70px 120px 30px 70px; */
-    background-color: rgba(255, 0, 0, 0.192);
+    background-color: rgba(70, 83, 216, 0.1);
     display: flex;
     gap: 30px;
     overflow-y: auto;

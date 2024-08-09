@@ -8,6 +8,7 @@ import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import useOutsideClick from '@/hooks/useOutsideClick'
 
 interface DraftWidgetsType{
     widgetType : string;
@@ -22,6 +23,7 @@ const Page = () => {
     const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(true)
     const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
     const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
+    const dropdownRef = useOutsideClick(()=>setYourWidgetModal(false))
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -100,7 +102,7 @@ const Page = () => {
                     <TemplatesPreview setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets}/>
                 </div>
             }
-            <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`}>
+            <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`} ref={dropdownRef}>
                 <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>

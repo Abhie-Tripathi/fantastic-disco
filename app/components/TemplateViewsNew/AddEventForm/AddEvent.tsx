@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './addevent.style.module.css'  
 import Appearance from './Appearance/Appearance'
 import Details from './Details/Details'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { AllEventsType } from '@/types/alleventtype'
+import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
@@ -20,7 +21,7 @@ const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,f
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledAddedEvent?.pageBgColor || "rgba(70, 83, 216, 0.1)")
   const [eventFont, setEventFont] = useState<string>("Arial")
-  const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+  const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])  
 
   return (
     <div className={styles.body}>

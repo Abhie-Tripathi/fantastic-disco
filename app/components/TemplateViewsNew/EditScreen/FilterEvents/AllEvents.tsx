@@ -66,7 +66,7 @@ const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedE
                         <div className={styles.btnContainer}>
                             <div className={styles.addButtonContainer}>
                                 <div className={styles.heading}>
-                                    Add to Widget
+                                {event.isLinkedToWidget ? "Added to Widget" : "Add to widget"}
                                 </div>
                                 <input
                                     type="checkbox"

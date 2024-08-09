@@ -9,8 +9,9 @@ import ParticipationContainer from '@/app/components/DetailPage/ParticipationCon
 import DateTimeContainer from '@/app/components/DetailPage/DateTimeContainer'
 import RegisterForm from '@/app/components/DetailPage/RegisterForm'
 import LocationContainer from '@/app/components/DetailPage/LocationContainer'
-import { useSearchParams } from 'next/navigation';
 import DescriptionContainer from '@/app/components/DetailPage/DescriptionContainer'
+import { baseUrl } from '@/constants'
+import { myFetch } from '@/utils/myFetch'
 
 interface PageProps {
     hashtags: string[];
@@ -29,7 +30,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
         <div className={`${styles.detailsContainer}`}>
             <div className={styles.leftSection}>
                 <div className={styles.posterContainer}>
-                    <Image src={Placeholder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />
+                    <Image src={"https://api.eventgeni.com/public/f5dff6bc-c589-49dd-bdde-f7ef407381ba2024-08-09T07:35:17.283Z.jpg"} alt='Poster' width={296} height={290} style={{ borderRadius: 20,objectFit:"cover"}} />
                 </div>
                 <div className={styles.participationContainer}><ParticipationContainer participationMessage='We are attending' participationType='Atendee' /></div>
                 <div className={styles.shareContainer}>
@@ -38,7 +39,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                 </div>
             </div>
             <div className={styles.rightSection}>
-                <textarea className={styles.eventName} disabled maxLength={80} placeholder='Event Name' value={eventName} />
+                <textarea className={styles.eventName} disabled maxLength={80} placeholder='Event Name' value="Dance Show" style={{fontFamily : "Arial"}}/>
                 <div className={styles.dateTimeContainer}><DateTimeContainer endDate="2024-08-07" startDate="2024-08-07" endTime="12:00 A.M" startTime="12:00 A.M" timeZone="GMT+05:30 Chennai" /></div>
 
                 <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName="Delhi" countryName="India" /></div>
@@ -53,38 +54,49 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                             zoom={6} />
                     </Suspense>
                 </div>
-                <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
+                <div className={styles.descriptionContainer} ><DescriptionContainer description={"Dance Show"} /></div>
             </div>
         </div>
     )
 }
-const fetchData = async () => {
-    const eventName = "Tomartina Tomato Fest";
-    const description = "Get ready for a tomato-filled adventure at the annual Tomartina Tomato Fest in Italy. This lively celebration brings together locals and visitors alike for a fun-filled day of festivities centered around everyone's favorite red fruit. From tomato-themed games and competitions to juicy tomato tastings and street parades, there's no shortage of excitement at this one-of-a-kind event. Whether you're dodging tomatoes in the streets or indulging in tomato-inspired delicacies, the Tomartina Tomato Fest is an experience not to be missed.";
-    const hashtags = await generateHashtags(eventName, description);
-    const { emailSubject, emailBody } = await generateEmailContent(eventName, description)
-    const shareUrl = "https://console.eventgeni.com/detailpage";
-    const media = "https://images.ladepeche.fr/api/v1/images/view/63106cfdef5bdc39f1680c68/large/image.jpg?v=1";
-
-    return { eventName, description, hashtags, shareUrl, media, emailSubject, emailBody };
+const fetchData = async (widgetId: string, eventId: string) => {
+    const { data, error } = await myFetch(`https://api.eventgeni.com/widget/${widgetId}?eventId=${eventId}`);
+    if(data){
+        console.log(data)
+    }
+    return data;
 };
-const DetailPage = async () => {
-    const data = await fetchData();
-    return <Page {...data} />;
+const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
+    const { widgetId, eventId } = searchParams;
+    console.log("widgetId:", widgetId);
+    console.log("eventId:", eventId);
+
+    try {
+        const data = await fetchData(widgetId, eventId);
+        return <Page {...data} />;
+    } catch (error) {
+        console.error("Error in DetailPage:", error);
+        return <div>Error loading page data. Please try again later.</div>;
+    }
 };
 export default DetailPage;
 
-export async function generateMetadata() {
-    const { eventName, description, media, shareUrl } = await fetchData();
-    return {
-        title: eventName,
-        description: description,
-        openGraph: {
-            title: eventName,
-            description: description,
-            images: [media],
-            url: shareUrl,
-            type: "website"
-        },
-    };
-}
+
+// export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) {
+//     const { widgetId, eventId } = searchParams
+//     const { eventName, description, media, shareUrl } = await fetchData(widgetId, eventId);
+//     return {
+//         title: eventName,
+//         description: description,
+//         openGraph: {
+//             title: eventName,
+//             description: description,
+//             images: [media],
+//             url: shareUrl,
+//             type: "website"
+//         },
+//     };
+// }
+
+//     const hashtags = await generateHashtags(eventName, description);
+//     const { emailSubject, emailBody } = await generateEmailContent(eventName, description)

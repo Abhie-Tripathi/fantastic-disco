@@ -53,7 +53,7 @@ const EventListCard1 = ({
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={275} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+      <Image width={275} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}>

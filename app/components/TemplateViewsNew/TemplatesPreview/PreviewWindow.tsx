@@ -200,9 +200,10 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                 <div className={styles.viewBtnContainer}>
                     <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>
-                    <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color={theme === "dark" ? "white" : "black"} /></div>
+                    <div onClick={() => setIsFullScreen(!isFullScreen)}>
+                        {isFullScreen ? <CloseFullScreenIcon  color={theme === "dark" ? "white" : "black"}/>: <FullScreenIcon color={theme === "dark" ? "white" : "black"} />}
+                        </div>
                 </div>
-
             </div>
             <div className={styles.preview_btnContainer}>
                 <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
@@ -253,5 +254,11 @@ function DesktopIcon({ color }: IconProps) {
 function FullScreenIcon({ color }: IconProps) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={color}><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z" /></svg>
+    )
+}
+
+function CloseFullScreenIcon ({color}: IconProps){
+    return(
+        <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill={color}></path></svg>
     )
 }
