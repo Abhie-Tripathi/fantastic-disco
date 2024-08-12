@@ -155,6 +155,7 @@ const templates = [
         img: Url,
         type: "text",
         placeholder: "Add Competitor Website",
+        required:true,
       }
     ]
   },
@@ -241,11 +242,13 @@ const templates = [
         img: Name,
         type: "text",
         placeholder: "Speaker's Name",
+        required:true,
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
+        required:true,
       }
     ]
   },
@@ -486,9 +489,9 @@ const Pages = () => {
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-
-
-
+    if (type === "T_COMPETITOR" && websites.length===0){
+      setIsMandatory(true);
+    }
     GAEvent(
       "trackers",
       "Tracker",
@@ -1140,7 +1143,7 @@ const Pages = () => {
       [index]: value
     }));
   };
-  let valid = true;
+  const [valid,setValid]=useState(true);
   const addNew = () => {
     if (!template) {
       console.error('Template is not found');
@@ -1149,11 +1152,12 @@ const Pages = () => {
 
     const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     let isValid = true;
+    if(template.type==="enabled"){
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
         if (inputArea.placeholder === 'Add Competitor Website') {
-          if (regex.test(value)) {
+          if (regex.test(value.trim())) {
             acc[inputArea.placeholder] = value;
           } else {
             isValid = false;
@@ -1161,8 +1165,9 @@ const Pages = () => {
         } else {
           if (value !== null && value.trim() !== '') {
             acc[inputArea.placeholder] = value;
-          } else {
+          } else {   
             isValid = false;
+            setValid(false);
           }
         }
         return acc;
@@ -1175,10 +1180,12 @@ const Pages = () => {
         ]);
         setInputValues({});
       } else {
+        setValid(false);
         console.error('Invalid input or URL');
       }
 
-    }
+    }else setValid(false);
+  }
   }
   console.log(valid);
   const truncate = (val: string) => {
@@ -1206,7 +1213,10 @@ const Pages = () => {
     if (intScore === "medium") setSelectedINScore(50);
     if (intScore === "high") setSelectedINScore(100);
   }, [intScore])
-
+useEffect(()=>{
+  if(valid===false) setValid(true);
+  if(isMandatory) setIsMandatory(false);
+},[inputValues])
   return (
     <>
       <div
@@ -1314,11 +1324,11 @@ const Pages = () => {
               <div className={`${styles.competitor}`} style={{ padding: "5px", borderRadius: "var(--border-radius-sm)" }}>
                 <div className={styles.subHeading}>{template.description}</div>
                 {!valid && (
-                  <div style={{ color: "red" }}>Invalid input&apos;s</div>
+                  <div style={{ color: "red", fontSize:"12px" }}>Enter valid input&apos;s</div>
                 )}
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
-                    <div key={index} className={styles.singleInputArea}>
+                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true ? "1px solid red":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
                         className={styles.textArea}
