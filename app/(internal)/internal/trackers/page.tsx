@@ -98,8 +98,21 @@ import { GAEvent } from "@/utils/GAEvent";
 import { useTheme } from "@/context";
 import { Step } from "react-joyride";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-
-const Trackers = () => {
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+interface Search {
+  searchParams: {
+    value:string;
+  }
+}
+const Trackers = ({ searchParams }: Search) => {
+  const {value}=searchParams;
+  console.log(value);
+  const router=useRouter();
+  useEffect(()=>{
+    if(value==="savedEvents") setType("Saved Events")
+    if(value==="customTrackers") setType("Custom Trackers")
+      if(value==="allTrackers") setType("All Trackers")
+  },[value])
   const [trackers, setTrackers] = useState<any[]>([]);
   const [type, setType] = useState("All Trackers");
   const [offset, setOffset] = useState(0);
@@ -289,6 +302,16 @@ const Trackers = () => {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    if(type==="All Trackers")
+    router.push(`/internal/trackers?value=allTrackers`);
+    if(type==="Custom Trackers")
+      router.push(`/internal/trackers?value=customTrackers`);
+    if(type==="Saved Events")
+      router.push(`/internal/trackers?value=savedEvents`)
+  }, [type]);
+  
+  
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
   //   if (allTrackerRef && allTrackerRef.current) {

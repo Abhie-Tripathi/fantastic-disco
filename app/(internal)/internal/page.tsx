@@ -5,14 +5,15 @@ import TrendsBackground from "/public/trends_background.svg";
 import styles from "./page.style.module.css";
 import Research from "/public/internal/research.svg";
 import Image from "next/image";
-import GotoIcon from "/public/rightArrow.svg";
+import GotoIcon from "/public/goTo.svg";
 import NewEvent from "/public/thunder.svg";
-import Timer from "/public/clock.svg";
+import Timer from "/public/lucide_timer.svg";
 import CircleCross from "/public/close.svg";
 import Link from "next/link";
 import ExhibitIcon from "/public/internal/exhibit.svg";
 import DatasetIcon from "/public/dataset.svg";
 import BellIcon from "/public/bell.svg";
+import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import Trend from "/public/internal/trend.svg";
 import Bookmark from "/public/bookmark.svg";
@@ -21,6 +22,7 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { useRouter } from "next/navigation";
+import Stars from '/public/internal/stars.svg'
 import TrackerSkeleton from "@/app/components/Skeleton/dashboardskeleton/TrackerSkeleton";
 import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/SavedEventsSkeleton";
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
@@ -198,13 +200,15 @@ const Dashboard = () => {
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
-                      <Image src={Research} alt="search" />
+                      <Image src={Research} alt="search" width={16} height={16}/>
                       <span>Research</span>
                     </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass} ${styles.goto_icon}`}
+                      width={28}
+                      height={28}
+                      className={`${styles.goto_icon}`}
                     />
                   </div>
 
@@ -217,11 +221,11 @@ const Dashboard = () => {
                     and category, all in one glance.
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}></div>
-                  {/* <Image
+                  <Image
                   className={styles.linkCard_backgroundImage}
                   src={SearchBackground}
                   alt="searchBackground"
-                />  */}
+                /> 
                 </Link>
 
                 <Link
@@ -230,13 +234,15 @@ const Dashboard = () => {
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
-                      <Image src={ExhibitIcon} alt="search" />
+                      <Image src={ExhibitIcon} alt="search" width={16} height={16}/>
                       <span>Outreach</span>
                     </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass} ${styles.goto_icon}`}
+                      width={28}
+                      height={28}
+                      className={`${styles.goto_icon}`}
                     />
                   </div>
 
@@ -256,7 +262,13 @@ const Dashboard = () => {
                       </div>
                     )}
                   </div>
-                  <div className={styles.linkCard_tagsOuterContainer}></div>
+                  <div className={styles.linkCard_tagsOuterContainer}>
+                  {/* <Image
+                  className={styles.linkCard_backgroundImage}
+                  src={ExhibitIcon}
+                  alt="trendsBackground"
+                />  */}
+                  </div>
                 </Link>
 
                 <Link
@@ -265,13 +277,15 @@ const Dashboard = () => {
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
-                      <Image src={Trend} alt="search" />
+                      <Image src={Trend} width={16} height={16} alt="search" />
                       <span>Create Tracker</span>
                     </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass} ${styles.goto_icon}`}
+                      width={28}
+                      height={28}
+                      className={`${styles.goto_icon}`}
                     />
                   </div>
 
@@ -287,11 +301,11 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}></div>
-                  {/* <Image
+                  <Image
                   className={styles.linkCard_backgroundImage}
                   src={TrendsBackground}
                   alt="trendsBackground"
-                />  */}
+                /> 
                 </Link>
               </div>
             )}
@@ -302,7 +316,6 @@ const Dashboard = () => {
               <Image
                 src={BellIcon}
                 alt="notificationsicon"
-                className={iconClass}
               />
               <span>Notification</span>
             </div>
@@ -334,6 +347,7 @@ const Dashboard = () => {
         <div className={styles.body_container}>
           <div className={styles.trackers_container}>
             <div className={`${styles.tracker_container_header} `}>
+              <Image src={Stars} alt="stars"/>
               <div>Here &apos;s what&apos;s new since you last checked in</div>
             </div>
 
@@ -349,7 +363,13 @@ const Dashboard = () => {
                   <>
                     <div className={styles.tracker_card_header}>
                       <span>{tracker.name}</span>
-                      <Image src={GotoIcon} alt="goto" className={iconClass} />
+                      <Image
+                      src={GotoIcon}
+                      alt="goto"
+                      width={28}
+                      height={28}
+                      className={`${styles.goto_icon}`}
+                    />
                     </div>
 
                     <div className={styles.desktop_trackerCard_container}>
@@ -371,7 +391,7 @@ const Dashboard = () => {
 
                       <div className={`${styles.eventCard} card`}>
                         <div className={styles.eventCard_title}>
-                          <Image src={Timer} alt="active" />
+                          <Image src={Timer} width={16} height={16} alt="active" />
                           <span>Active</span>
                         </div>
                         <div className={styles.eventCard_stats}>
@@ -429,11 +449,11 @@ const Dashboard = () => {
           <div className={styles.savedEvent_coordinateContainer}>
             <div className={styles.savedEventsContainer}>
               <div className={`${styles.tracker_container_header}`}>
-                <Image src={Bookmark} alt="save" className={iconClass} />
+                <Image src={Bookmark} alt="save"/>
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    router.push("internal/trackers/savedevents");
+                    router.push("internal/trackers?value=savedEvents");
                   }}
                 >
                   Saved Events
@@ -460,7 +480,7 @@ const Dashboard = () => {
                             unsavedEvent(event?.eventGroupId);
                           }}
                         >
-                          <BookmarkIcon fillColor={"#ff851b"} />
+                          <BookmarkIcon fillColor={"#6750a4"} />
                         </div>
                       </div>
                     ))
@@ -477,6 +497,9 @@ const Dashboard = () => {
               className={`${styles.linkCard_container} ${styles.coordinateCard}`}
             >
               <div className={`${styles.tracker_container_header}`}>
+                <div style={{color:"var(--primary-color)", display:"flex"}}>
+                <CoordinateIcon/>
+                </div>
                 Event shortlisting and Co-ordination
               </div>
 
@@ -491,17 +514,19 @@ const Dashboard = () => {
                 >
                   <div className={styles.linkCard_header}>
                     <div className={styles.linkCard_header_title}>
-                      <Image
+                      {/* <Image
                         src={DatasetIcon}
                         alt="data"
                         className={iconClass}
-                      />
+                      /> */}
                       <span>Coordinate</span>
                     </div>
                     <Image
                       src={GotoIcon}
                       alt="goto"
-                      className={`${iconClass}`}
+                      width={28}
+                      height={28}
+                      className={`${styles.goto_icon}`}
                     />
                   </div>
                   {coordinateData.length > 0 ? (
