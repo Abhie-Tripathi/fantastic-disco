@@ -1375,7 +1375,7 @@ const Pages = () => {
                           {
                             selectedEventType?.length == 1 ? (
                               <span className={styles.input_selected_title}>
-                                {selectedEventTypeName}
+                                {selectedEventType[0]}
                               </span>
                             ) : (
                               selectedEventType?.length > 1 ? (
