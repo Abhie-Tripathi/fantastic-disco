@@ -7,6 +7,7 @@ import Url from '/public/url.svg'
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
+import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 import EventType from "@/app/components/Search/Dropdowns/EventType";
@@ -1217,6 +1218,22 @@ useEffect(()=>{
   if(valid===false) setValid(true);
   if(isMandatory) setIsMandatory(false);
 },[inputValues])
+const dateShowFormatter = (selectedDateRange: string[]) => {
+  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+    selectedDateRange[0]
+  ).split(" ");
+  const [edDay, edMonth, edYear] = convertToCustomFormat(
+    selectedDateRange[1]
+  ).split(" ");
+
+  if (sdMonth === edMonth && sdYear === edYear) {
+    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+  }
+  if (sdYear === edYear) {
+    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+  }
+  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
+};
   return (
     <>
       <div

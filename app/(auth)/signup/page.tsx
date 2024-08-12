@@ -82,7 +82,10 @@ const SignUp = () => {
         generateOtp();
         setShowVerification(true);
       } else {
-        setErrors({ email: response[0].error.message });
+        if(response[0].error.message==="email already exists")
+        setErrors({ email: response[0].error.message.charAt(0).toUpperCase() + response[0].error.message.substring(1)});
+        else if(response[0].error.message==="phone number already exist") 
+          setErrors({ mobileNo: response[0].error.message.charAt(0).toUpperCase() + response[0].error.message.substring(1)});
       }
     } catch (error) {
       if (error instanceof ZodError) {
@@ -122,6 +125,8 @@ const SignUp = () => {
     email: email,
     path: "signup",
   };
+  console.log(errors);
+  
   return (
     <div className={styles.container}>
       {!showVerification && (
@@ -216,7 +221,7 @@ const SignUp = () => {
                   <div className={styles.error}>{errors.confirmPassword}</div>
                 )}
               </div>
-
+              <div>{errors?.message}</div>
               <div className={styles.actions_container}>
                 <button
                   className={`${styles.button} ${isLoading && styles.disable}`}
