@@ -13,6 +13,7 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState} from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
+import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -32,6 +33,7 @@ const Page = () => {
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
   const [selectedTemplate, setSelectedTemplate] = useState<string>()
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
+  const [isNormalEventModalOpen, setIsNormalEventModalOpen] = useState<boolean>(false)
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
@@ -159,7 +161,7 @@ const Page = () => {
   
   return (
 
-    <div className={`${styles.body} ${isAddEventModalOpen ? styles.modalOpen : ""}`}>
+    <div className={`${styles.body} ${isAddEventModalOpen || isNormalEventModalOpen ? styles.modalOpen : ""}`}>
       <ToastContainer />
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
@@ -186,6 +188,7 @@ const Page = () => {
           handlePrefillNormalEvent = {handlePrefillNormalEvent}
           handleAddEventModal={handleAddEventModal}
           addedEventIds = {addedEventIds}
+          setIsNormalEventModalOpen = {setIsNormalEventModalOpen}
         />
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
@@ -202,9 +205,12 @@ const Page = () => {
           fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
-      {isAddEventModalOpen && <div className={styles.blackScreen}></div>}
+      {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
         <AddEvent prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+      </div>}
+      {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
+        <AddNormalEvent setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
       </div>}
     </div>
   )

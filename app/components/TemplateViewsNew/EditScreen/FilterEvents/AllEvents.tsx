@@ -6,48 +6,52 @@ import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 
 interface Props {
-    fetchedAllEvents : AllEventsType[]
-    fetchEvents : () => Promise<void>; 
-    fetchAddedEvents : ()=>Promise<void>;
-    handleAddEventModal : (value: void) => void
-    handlePrefillNormalEvent : (event : AllEventsType)=>void
-    widgetId : string;
+    fetchedAllEvents: AllEventsType[]
+    fetchEvents: () => Promise<void>;
+    fetchAddedEvents: () => Promise<void>;
+    handleAddEventModal: (value: void) => void
+    handlePrefillNormalEvent: (event: AllEventsType) => void
+    widgetId: string;
+    setIsNormalEventModalOpen : (value : boolean) => void
 }
 
-const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedEvents,handlePrefillNormalEvent,widgetId }: Props) => {
+const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId ,setIsNormalEventModalOpen}: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
     };
-    const handleDelete = async(eventId : string)=>{
+    const handleDelete = async (eventId: string) => {
         const customizeData = new FormData();
         customizeData.append("id", eventId)
         customizeData.append('published', "false");
         const { data, error } = await myFetch(
             `${baseUrl}/event`,
             {
-              method: 'PATCH',
-              body: customizeData,
+                method: 'PATCH',
+                body: customizeData,
             }
-          );
-        if(data){
+        );
+        if (data) {
             fetchEvents()
             fetchAddedEvents()
         }
-        if(error){
+        if (error) {
             console.log(error);
         }
- 
+
     }
 
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
-                <button onClick={() => handleAddEventModal()}>Add Event</button>
-            </div> 
-            <GlobalSearch widgetId={widgetId}/>
+                <div className={styles.addBtnContainer}>
+                <button onClick={() => setIsNormalEventModalOpen(true)}>Add event</button>
+                <button onClick={() => handleAddEventModal()}>Add event to widget</button>
+                </div>
+            </div>
+            <GlobalSearch widgetId={widgetId} />
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
@@ -66,18 +70,18 @@ const AllEvents = ({handleAddEventModal,fetchedAllEvents,fetchEvents,fetchAddedE
                         <div className={styles.btnContainer}>
                             <div className={styles.addButtonContainer}>
                                 <div className={styles.heading}>
-                                {event.isLinkedToWidget ? "Added to Widget" : "Add to widget"}
+                                    {event.isLinkedToWidget ? "Added to Widget" : "Add to widget"}
                                 </div>
                                 <input
                                     type="checkbox"
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
-                                    onChange={()=>handlePrefillNormalEvent(event)}
+                                    onChange={() => handlePrefillNormalEvent(event)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <button onClick={()=>handleDelete(event.eventId)}><DeleteIcon /></button>
+                            <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
                         </div>
                     </div>
                 ))}
