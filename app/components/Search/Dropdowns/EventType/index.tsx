@@ -11,28 +11,27 @@ interface EventStatusProps {
   setSelectedEventTypeName: (name: string) => void;
 }
 
+const EventTypeData = ["Tradeshow", "Conference", "Workshop"];
+
 const EventType = ({ state, setState, setSelectedEventTypeName }: EventStatusProps) => {
   const {theme} = useTheme();
-  const onClickHandler = (value: any) => {
-    if(state.includes(value.id)) {
-      setState(state.filter((data) => data !== value.id))
-    } else {
-      setState([...state, value.id]);
-      setSelectedEventTypeName(value.name);
-    }
+  const onClickHandler = (value: string) => {
+    state.includes(value)
+      ? setState(state.filter((data) => data !== value))
+      : setState([...state, value]);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
-        {EventStatusData.map((item) => (
-          <div key={item.id} className={styles.checkbox_container}>
+        {EventTypeData.map((item) => (
+          <div key={item} className={styles.checkbox_container}>
             <CheckboxInput
-              id={item.id}
+              id={item}
               onChange={() => onClickHandler(item)}
-              checked={state.includes(item.id)}
+              checked={state.includes(item)}
             />
-            <label htmlFor={item.id}>{item.name}</label>
+            <label htmlFor={item}>{item}</label>
           </div>
         ))}
       </div>
