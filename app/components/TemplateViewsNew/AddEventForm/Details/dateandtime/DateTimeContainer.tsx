@@ -58,12 +58,7 @@ const DateTimeContainer = ({
             const currentDate = new Date();
             const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
             setStartDate(formattedStartDate);
-    
-            // Create a new date object for the end date (one day after the start date)
-            const nextDay = new Date(currentDate);
-            nextDay.setDate(currentDate.getDate() + 1); // Increment the day by 1
-            const formattedEndDate = nextDay.toISOString().split('T')[0]; // Format the end date as "yyyy-mm-dd"
-            setEndDate(formattedEndDate);
+            setEndDate(formattedStartDate)
         }
     }, []);
     
