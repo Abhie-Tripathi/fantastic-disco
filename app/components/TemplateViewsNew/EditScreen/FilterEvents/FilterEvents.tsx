@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AddedEventsType } from '@/types/addedeventtype';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { AllEventsType } from '@/types/alleventtype';
 
 interface Props{
@@ -10,7 +11,7 @@ interface Props{
     fetchEvents : () => Promise<void>;
     fetchedAddedEvents : AddedEventsType[]
     fetchAddedEvents : ()=>Promise<void>;
-    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
+    handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
     handlePrefillNormalEvent : (event :  AllEventsType)=>void
     handleAddEventModal : (value : void)=>void
     widgetId : string;

@@ -5,7 +5,7 @@ import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 
 interface FontSettings {
@@ -24,7 +24,7 @@ interface Props {
   };
   buttonSettings?: ButtonSettingsState,
   selectedBtn?: "primary" | "secondary"
-  fetchedAddedEvents?: AddedEventsType[]
+  fetchedAddedEvents?: PrefilledAddedEventsType[]
 }
 
 const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",

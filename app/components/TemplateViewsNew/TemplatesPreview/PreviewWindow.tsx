@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './preview.style.module.css'
 import StickyPreview from '@/app/components/TemplateViews/previews/sticky/StickyPreview'
 import HeroBanner from '../../TemplateViews/previews/section/Herobanner/HeroBanner';
@@ -15,7 +15,8 @@ import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { useRouter } from 'next/navigation';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { AddedEventsType } from '@/types/addedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
 interface FontSettings {
@@ -45,8 +46,8 @@ interface PreviewProps {
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
     draftWidgets?: DraftWidgetsType[]
-    fetchDraftWidgets?: () => Promise<void>; 
-    fetchedAddedEvents?:  AddedEventsType[]
+    fetchDraftWidgets?: () => Promise<void>;
+    fetchedAddedEvents?: AddedEventsType[]
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -55,7 +56,7 @@ interface DraftWidgetsType {
     status: string;
 }
 
-const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget,fetchDraftWidgets,
+const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
@@ -67,11 +68,59 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
     selectedBtn = "primary", fetchedAddedEvents }: PreviewProps) => {
+    const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
     const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
+
+    useEffect(() => {
+        const handleOtherDataFetch = async () => {
+            if (!fetchedAddedEvents) return;
+            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
+                fetchedAddedEvents.map(async (event) => {
+                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                    if (error) {
+                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                        return null;
+                    }
+                    if (data) {
+                        console.log("data of fetched event : ",)
+                    }
+                    return {
+                        id: event.id,
+                        name: data.data[0].name,
+                        pageBgColor: event.pageBgColor,
+                        description: data.data[0].data.description,
+                        eventFont: event.eventFont,
+                        startDate: data.data[0].data.start_date,
+                        endDate: data.data[0].data.end_date,
+                        startTime: data.data[0].data.start_time,
+                        endTime: data.data[0].data.end_time,
+                        timeZone: data.data[0].data.gmt_time,
+                        cityName: data.data[0].data.location_city,
+                        countryName: data.data[0].data.location_country,
+                        participationType: data.data[0].data.participationType,
+                        eventFormat: data.data[0].data.format,
+                        registerBtnColor: event.registerBtnColor,
+                        registerBtnText: event.registerBtnText,
+                        registerMessage: event.registerMessage,
+                        boothNumber: event.boothNumber,
+                        speakerProfilesData: event.speakerProfilesData,
+                        participationMessage: event.participationMessage,
+                        bannerUrl: event.bannerUrl
+                    } as PrefilledAddedEventsType;
+                })
+            );
+            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+        };
+        handleOtherDataFetch();
+    }, [fetchedAddedEvents]);
+
+    useEffect(() => {
+        console.log("other data : ", fetchedAddedOtherData)
+    }, [fetchedAddedOtherData])
 
     const handleDraftWidgets = async (navigate: boolean) => {
         if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard) {
@@ -87,12 +136,12 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             tempSelectedWidget = "StickyTop";
         }
         const otherdata = {
-            event : []
+            event: []
         }
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
         customizeData.append('domain', 'http://example.com'); // replace with actual domain
-        customizeData.append('otherdata',JSON.stringify(otherdata))
+        customizeData.append('otherdata', JSON.stringify(otherdata))
         const customizationData = {
             fontSettings,
             buttonSettings,
@@ -111,7 +160,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         );
         if (data) {
             console.log(data);
-            if(fetchDraftWidgets){
+            if (fetchDraftWidgets) {
                 fetchDraftWidgets();
             }
             if (navigate && data.id) {
@@ -151,26 +200,27 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                 <div className={styles.viewBtnContainer}>
                     <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>
-                    <div onClick={() => setIsFullScreen(!isFullScreen)}><FullScreenIcon color={theme === "dark" ? "white" : "black"} /></div>
+                    <div onClick={() => setIsFullScreen(!isFullScreen)}>
+                        {isFullScreen ? <CloseFullScreenIcon  color={theme === "dark" ? "white" : "black"}/>: <FullScreenIcon color={theme === "dark" ? "white" : "black"} />}
+                        </div>
                 </div>
-
             </div>
             <div className={styles.preview_btnContainer}>
                 <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
-                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedEvents={fetchedAddedEvents}  selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
-                                selectedTemplate === "GS" ? <GridView fetchedAddedEvents={fetchedAddedEvents}  selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                    selectedTemplate === "LS" ? <ListView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
+                                selectedTemplate === "GS" ? <GridView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                    selectedTemplate === "LS" ? <ListView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                selectedTemplate === "CVL" ? <CaraouselAndViews  type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                     selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                        selectedTemplate === "CV" ? <CaraouselView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedEvents={fetchedAddedEvents}selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                        selectedTemplate === "PUVP" ? <PortraitPopup fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup fetchedAddedEvents={fetchedAddedEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
+                                                        selectedTemplate === "CV" ? <CaraouselView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                                                                        selectedTemplate === "PUVP" ? <PortraitPopup fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
                 {draftWidget && <div className={styles.previewBtnContainer}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>
@@ -204,5 +254,11 @@ function DesktopIcon({ color }: IconProps) {
 function FullScreenIcon({ color }: IconProps) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={color}><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z" /></svg>
+    )
+}
+
+function CloseFullScreenIcon ({color}: IconProps){
+    return(
+        <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill={color}></path></svg>
     )
 }

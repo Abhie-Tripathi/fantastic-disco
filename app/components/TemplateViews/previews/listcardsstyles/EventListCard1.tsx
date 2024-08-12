@@ -3,7 +3,7 @@ import styles from './eventlistcard1.style.module.css'
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
 
 interface FontSettings {
   fontFamily: string;
@@ -19,7 +19,7 @@ interface CardProps {
     subheading: FontSettings;
     body: FontSettings;
   };
-  fetchedEvent?: AddedEventsType
+  fetchedEvent?: PrefilledAddedEventsType
 }
 const EventListCard1 = ({
   cardBgColor = "#ffffff",
@@ -53,7 +53,7 @@ const EventListCard1 = ({
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={275} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+      <Image width={275} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}>

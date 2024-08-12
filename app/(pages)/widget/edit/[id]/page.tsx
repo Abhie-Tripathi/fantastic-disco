@@ -9,9 +9,10 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState} from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
+import { AddedEventsType } from '@/types/addedeventtype'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -35,7 +36,7 @@ const Page = () => {
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
-  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<AddedEventsType>()
+  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<PrefilledAddedEventsType>()
   const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
 
   const pathName = usePathname();
@@ -57,7 +58,7 @@ const Page = () => {
   const fetchEvents = async () => {
     const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
     if (data) {
-      const events = data.data.map((event: any) => ({
+      const events : AllEventsType[] = data.data.map((event: any) => ({
         eventId: event.id,
         name: event.name,
         cityName: event.data.location_city,
@@ -69,6 +70,8 @@ const Page = () => {
         isLinkedToWidget: event.isWidgetLinked,
         startTime : event.data.startTime,
         endTime : event.data.endTime,
+        gmtZone : event.data.gmt_time,
+        participationType : event.data.participationType,
       }))
       setFetchedAllEvents(events)
     } if (error) {
@@ -145,7 +148,7 @@ const Page = () => {
     setIsAddEventModalOpen(true)
   }
 
-  const handlePrefilledAddedEvent = (event: AddedEventsType) => {
+  const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
     setPrefilledAddedEvent(event)
     setIsAddEventModalOpen(true)
   }

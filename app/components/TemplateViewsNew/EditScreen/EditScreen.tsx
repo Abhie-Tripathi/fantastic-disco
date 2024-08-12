@@ -4,7 +4,8 @@ import FilterEvents from './FilterEvents/FilterEvents'
 import CodeWindow from './Code/CodeWindow';
 import Customization from './BrandKit/Customization';
 import { useTheme } from '@/context';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AddedEventsType } from '@/types/addedeventtype';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 import { AllEventsType } from '@/types/alleventtype';
 
@@ -42,7 +43,7 @@ interface EditScreenProps {
     widgetId : string;
     widgetType : string;
     fetchedAddedEvents : AddedEventsType[]
-    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
+    handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
     handlePrefillNormalEvent : (event :  AllEventsType)=>void
     addedEventIds : string[]
 }
