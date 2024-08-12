@@ -1,5 +1,5 @@
 [
-    { "id": "3ff83ef6-0b8e-4fd1-aab0-128f9613adc6", "name": "Tradeshow" },
-    { "id": "caea6a8f-8306-4a87-996b-f53df52a5830", "name":	"Conference"},
-    { "id": "a813b051-1cb1-4f62-b342-3a002a8cebb3", "name":	"Workshop"}
+    { "id": "9b5524b4-60f5-5478-b3f0-38e2e12e3981", "name":	"Tradeshow"},
+    { "id": "4de48054-46fb-5452-a23f-8aac6c00592e", "name":	"Conference"},
+    { "id": "ad7c83a5-b8fc-5109-a159-9306848de22c", "name":	"Workshop"}
 ]
