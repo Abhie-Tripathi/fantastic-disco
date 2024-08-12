@@ -25,20 +25,19 @@ interface TimeSettingsProps {
     setEndTime: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
 const DateTimeContainer = ({
     timeZone,
-    setTimeZone , // default to no-op function
+    setTimeZone ,
     timeZoneKey = 1,
-    setTimeZoneKey, // default to no-op function
+    setTimeZoneKey, 
     startDate,
-    setStartDate, // default to no-op function
+    setStartDate, 
     endDate,
-    setEndDate, // default to no-op function
+    setEndDate, 
     startTime,
-    setStartTime, // default to no-op function
+    setStartTime, 
     endTime,
-    setEndTime // default to no-op function
+    setEndTime
   }: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
@@ -56,12 +55,18 @@ const DateTimeContainer = ({
 
     useEffect(() => {
         if (!startDate) {
-            const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"
-            setStartDate(currentDate);
-            setEndDate(currentDate);
+            const currentDate = new Date();
+            const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
+            setStartDate(formattedStartDate);
+    
+            // Create a new date object for the end date (one day after the start date)
+            const nextDay = new Date(currentDate);
+            nextDay.setDate(currentDate.getDate() + 1); // Increment the day by 1
+            const formattedEndDate = nextDay.toISOString().split('T')[0]; // Format the end date as "yyyy-mm-dd"
+            setEndDate(formattedEndDate);
         }
     }, []);
-
+    
     const handleTimeSelect = (label: string, value: string, key: number) => {
         setTimeZoneKey(key)
         const timeZoneString = `${value} ${label}`;
@@ -111,7 +116,7 @@ const DateTimeContainer = ({
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
                             {formatDate(endDate)}
                             {endCalendarDropdown && <div ref={endCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown setDate={setEndDate} dateValue={endDate} />
+                                <CalendarDropdown minDate={startDate} setDate={setEndDate} dateValue={endDate} />
                             </div>}
                         </div>
                     </div>
@@ -123,7 +128,7 @@ const DateTimeContainer = ({
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
                             {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setEndTime} time={endTime} />
+                            <TimeDropdown setTime={setEndTime} time={endTime} minTime={startTime} />
                             </div>}
                         </div>
                     </div>

@@ -15,7 +15,7 @@ const usePosterGenerator = () => {
       setIsLoading(true);
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API as string);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const promptText = `Generate a detailed single paragraph prompt without pointers for stable diffusion to generate a NICE ILLUSTRATION PAINTING/ART for the given location, name and description. Location is ${location}. Description is ${description}. Event name is ${eventname}.`;
+      const promptText = `Generate a detailed single paragraph prompt without pointers for stable diffusion to generate a POSTER for the given location, name and description. Location is ${location}. Description is ${description}. Event name is ${eventname}. Also include "Come join us at the event" on poster. Prompt characters should not be more then 300`;
       const result = await model.generateContent(promptText);
       const response = await result.response;
       const text = await response.text();

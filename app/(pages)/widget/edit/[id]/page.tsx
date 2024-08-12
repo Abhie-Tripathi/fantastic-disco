@@ -71,7 +71,6 @@ const Page = () => {
         startTime : event.data.startTime,
         endTime : event.data.endTime,
         gmtZone : event.data.gmt_time,
-        participationType : event.data.participationType,
       }))
       setFetchedAllEvents(events)
     } if (error) {

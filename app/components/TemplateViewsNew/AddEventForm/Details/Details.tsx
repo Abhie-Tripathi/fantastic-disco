@@ -56,7 +56,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerModal, setRegisterModal] = useState<boolean>(false)
   const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
-  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType || "Attendee")
+  const [participationType, setParticipationType] = useState<string>("Attendee")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
@@ -81,6 +81,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   });
   const [mapWidth, setMapWidth] = useState(0);
   const mapDivRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -135,6 +137,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     setPrefilledProfile(undefined);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setBanner({ placeHolder: fileUrl, file });
+    }
+  };
+
   const handleAddEvent = async () => {
     const eventData = {
       format: eventFormat,
@@ -145,13 +155,19 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
-      participationType: participationType,
-      gmt_time: timeZone
+      gmt_time: timeZone,
     };
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
-    formData.append("logoUrl", imageUrl)
+    if (banner.file) {
+      formData.append("file", banner.file); // Use the file field if uploaded by the user
+    } else {
+      formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+    }
+    formData.append("interest", participationType.toUpperCase())
+    formData.append("source", "eventgeni/widget/event")
+    formData.append("sourceId", widgetId)
 
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'POST',
@@ -218,18 +234,23 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       end_date: endDate,
       start_date: startDate,
       description,
+      logoUrl : banner.placeHolder,
       location_city: cityName,
       location_country: countryName,
-      logoUrl: banner.placeHolder,
-      participationType: participationType,
       gmt_time: timeZone
     };
     const formData = new FormData();
     formData.append("id", eventId);
     formData.append("name", eventName);
     formData.append("data", JSON.stringify(eventData));
-    if (banner.placeHolder.includes("eventgeni") == false) {
-      formData.append("logoUrl", imageUrl)
+    formData.append("interest", participationType.toUpperCase())
+    formData.append("sourceId", widgetId)
+    if (banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
+      if (banner.file) {
+        formData.append("file", banner.file); // Use the file field if uploaded by the user
+      } else {
+        formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+      }
     }
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'PATCH',
@@ -237,7 +258,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     });
     if (data) {
       const updatedEventId = data.data.id;
-      let updatedBannerUrl = data.data.data.logoUrl;
+      const updatedBannerUrl = data.data.data.logoUrl;
       if (prefilledAddedEvent) {
         updateEventInWidget(updatedEventId, updatedBannerUrl)
       } else {
@@ -303,7 +324,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }
   useEffect(() => {
-    if (!prefilledAddedEvent) { // we dont want the poster to start generating it self if prefilled event is there
+    if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
       if (description && eventName && countryName) {
         generatePrompt(countryName, description, eventName, 1280, 720)
       }
@@ -337,13 +358,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             {isLoading ?
               <div className={styles.loader}>
                 <div className={styles.spinner}></div>
-              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 , objectFit : "cover"}} />}
+              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
             <div className={styles.posterIcons}>
-              <div onClick={handleGeneratePoster} data-name = "Generate Your Banner">
+              <div onClick={handleGeneratePoster} data-name="Generate Your Banner">
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
-              <div data-name = "Upload Your Banner">
-                <Image src={UploadIcon} alt='upload'></Image>
+              <div data-name="Upload Your Banner">
+                <Image src={UploadIcon} alt='upload' onClick={() => fileInputRef.current?.click()}></Image>
+                <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
               </div>
             </div>
           </div>

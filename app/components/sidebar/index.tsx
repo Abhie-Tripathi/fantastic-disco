@@ -8,6 +8,10 @@ import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
 import EventTrends from "@/app/components/sidebar/Icons/EventTrends";
 import Tracker from "@/app/components/sidebar/Icons/Trackers";
 import OutreachIcon from "@/app/components/sidebar/Icons/Outreach";
+import WidgetIconOne from "@/app/components/sidebar/Icons/WidgetDashboard"
+import WidgetIconTwo from "@/app/components/sidebar/Icons/WidgetBrandKit"
+import WidgetIconThree from "@/app/components/sidebar/Icons/WidgetIcon2"
+import WidgetIconFour from "@/app/components/sidebar/Icons/WidgetIcon3"
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/context";
 import Image from "next/image";
@@ -30,13 +34,13 @@ const Sidebar = () => {
   const outreachRef = useRef(null);
 
   const getActiveClass = (path: string) => {
-    if(path===pathName)  return `${styles.active}
+    if (path === pathName) return `${styles.active}
       sidebar_active
     `
-    else{
-    return (pathName.startsWith(path) && path!=='/internal')
-      ? `${styles.active} sidebar_active`
-      : "";
+    else {
+      return (pathName.startsWith(path) && path !== '/internal')
+        ? `${styles.active} sidebar_active`
+        : "";
     }
   };
 
@@ -149,6 +153,7 @@ const Sidebar = () => {
       setIsSidebarOpen(false);
     }
   };
+  const isWidgetPath = pathName.startsWith("/widget");
   return (
     <div
       className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""}`}
@@ -174,63 +179,95 @@ const Sidebar = () => {
         <div className={styles.logo_title}>EventGeni</div>
       </Link>
 
-      <Link
-        href="/internal"
-        className={`${styles.link} ${getActiveClass("/internal")}`}
-        ref={dashboardRef}
-      >
-        <div ref={dashboardRef}>
-          <DashboardIcon />
-        </div>
-        <div className={styles.linkName}>Dashboard</div>
-      </Link>
+      {!isWidgetPath ? (
+        <>
+          <Link
+            href="/internal"
+            className={`${styles.link} ${getActiveClass("/internal")}`}
+            ref={dashboardRef}
+          >
+            <div ref={dashboardRef}>
+              <DashboardIcon />
+            </div>
+            <div className={styles.linkName}>Dashboard</div>
+          </Link>
 
-      <Link
-        href="/internal/search/events"
-        className={`${styles.link} ${getActiveClass(
-          "/internal/search/events"
-        )}`}
-        ref={researchRef}
-      >
-        <SearchIcon />
-        <div className={styles.linkName}>Research</div>
-      </Link>
+          <Link
+            href="/internal/search/events"
+            className={`${styles.link} ${getActiveClass(
+              "/internal/search/events"
+            )}`}
+            ref={researchRef}
+          >
+            <SearchIcon />
+            <div className={styles.linkName}>Research</div>
+          </Link>
 
-      <Link
-        href="/internal/trends"
-        className={`${styles.link} ${getActiveClass("/internal/trends")}`}
-        ref={trendsRef}
-      >
-        <EventTrends />
-        <div className={styles.linkName}>Event Trends</div>
-      </Link>
+          <Link
+            href="/internal/trends"
+            className={`${styles.link} ${getActiveClass("/internal/trends")}`}
+            ref={trendsRef}
+          >
+            <EventTrends />
+            <div className={styles.linkName}>Event Trends</div>
+          </Link>
 
-      <Link
-        href="/internal/trackers"
-        className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
-        ref={trackerRef}
-      >
-        <Tracker />
-        <div className={styles.linkName}>Trackers</div>
-      </Link>
+          <Link
+            href="/internal/trackers"
+            className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
+            ref={trackerRef}
+          >
+            <Tracker />
+            <div className={styles.linkName}>Trackers</div>
+          </Link>
 
-      <Link
-        href="/internal/coordinate"
-        className={`${styles.link} ${getActiveClass("/internal/coordinate")}`}
-        ref={coordinateRef}
-      >
-        <CoordinateIcon />
-        <div className={styles.linkName}>Coordinate</div>
-      </Link>
+          <Link
+            href="/internal/coordinate"
+            className={`${styles.link} ${getActiveClass("/internal/coordinate")}`}
+            ref={coordinateRef}
+          >
+            <CoordinateIcon />
+            <div className={styles.linkName}>Coordinate</div>
+          </Link>
 
-      <Link
-        href="/internal/outreach"
-        className={`${styles.link} ${getActiveClass("/internal/outreach")}`}
-        ref={outreachRef}
-      >
-        <OutreachIcon />
-        <div className={styles.linkName}>Outreach</div>
-      </Link>
+          <Link
+            href="/internal/outreach"
+            className={`${styles.link} ${getActiveClass("/internal/outreach")}`}
+            ref={outreachRef}
+          >
+            <OutreachIcon />
+            <div className={styles.linkName}>Outreach</div>
+          </Link>
+        </>) : <>
+        <Link
+          href="/widget"
+          className={`${styles.link} ${getActiveClass("/widget/dashboard")}`}
+        >
+          <WidgetIconOne />
+          <div className={styles.linkName}>Dashboard</div>
+        </Link>
+        <Link
+          href="/widget/add"
+          className={`${styles.link} ${getActiveClass("/widget/add")}`}
+        >
+          <WidgetIconTwo />
+          <div className={styles.linkName}>Widget</div>
+        </Link>
+        <Link
+          href="/widget/edit"
+          className={`${styles.link} ${getActiveClass("/widget/edit")}`}
+        >
+          <WidgetIconThree />
+          <div className={styles.linkName}>Widget</div>
+        </Link>
+        <Link
+          href="/widget/something"
+          className={`${styles.link} ${getActiveClass("/widget/something")}`}
+        >
+          <WidgetIconFour />
+          <div className={styles.linkName}>Widget</div>
+        </Link>
+      </>}
     </div>
   );
 };
