@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './timedropdown.style.module.css'
 
 interface Props {
@@ -16,17 +16,17 @@ const TimeDropdown = ({ setTime, time, minTime }: Props) => {
         "4:00 P.M", "4:30 P.M", "5:00 P.M", "5:30 P.M", "6:00 P.M", "6:30 P.M", "7:00 P.M", "7:30 P.M",
         "8:00 P.M", "8:30 P.M", "9:00 P.M", "9:30 P.M", "10:00 P.M", "10:30 P.M", "11:00 P.M", "11:30 P.M"
     ];
+    const timeToMinutes = (t: string) => {
+        const [hour, minute] = t.split(/:|\s/);
+        const isPM = t.includes("P.M");
+        return (parseInt(hour) % 12 + (isPM ? 12 : 0)) * 60 + parseInt(minute);
+    };
+
     const isDisabled = (value: string) => {
         if (!minTime) return false;
-
-        const timeToMinutes = (t: string) => {
-            const [hour, minute] = t.split(/:|\s/);
-            const isPM = t.includes("P.M");
-            return (parseInt(hour) % 12 + (isPM ? 12 : 0)) * 60 + parseInt(minute);
-        };
-
         return timeToMinutes(value) < timeToMinutes(minTime);
     };
+    
 
     return (
         <div className={styles.body}>
