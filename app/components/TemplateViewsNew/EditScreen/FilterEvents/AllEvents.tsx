@@ -4,6 +4,7 @@ import GlobalSearch from './GlobalSearch';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
+import { GolbalEventType } from '@/types/globaleventtype';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
@@ -11,11 +12,12 @@ interface Props {
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
     handlePrefillNormalEvent: (event: AllEventsType) => void
+    handlePrefillGlobalEvent : (event : GolbalEventType)=>void
     widgetId: string;
     setIsNormalEventModalOpen : (value : boolean) => void
 }
 
-const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId ,setIsNormalEventModalOpen}: Props) => {
+const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId ,setIsNormalEventModalOpen,handlePrefillGlobalEvent}: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -51,7 +53,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                 <button onClick={() => handleAddEventModal()}>Add event to widget</button>
                 </div>
             </div>
-            <GlobalSearch widgetId={widgetId} />
+            <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (

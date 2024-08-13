@@ -5,7 +5,7 @@ import Details from './Details/Details'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { AllEventsType } from '@/types/alleventtype'
-import { generateHashtags } from '@/hooks/usHashtagsGenerator'
+import { GolbalEventType } from '@/types/globaleventtype'
 
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
@@ -16,8 +16,9 @@ interface Props{
     fetchedAddedEvents : AddedEventsType[]
     prefilledAddedEvent? : PrefilledAddedEventsType 
     prefilledNormalEvent? : AllEventsType
+    prefilledGlobalEvent? :  GolbalEventType
 }
-const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent,prefilledNormalEvent} : Props) => {
+const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,fetchAddedEvents,fetchedAddedEvents,prefilledAddedEvent,prefilledNormalEvent, prefilledGlobalEvent} : Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledAddedEvent?.pageBgColor || "rgba(70, 83, 216, 0.1)")
   const [eventFont, setEventFont] = useState<string>("Arial")
@@ -26,7 +27,7 @@ const AddEvent = ({setIsAddEventModalOpen, widgetId,fetchEvents ,addedEventIds,f
   return (
     <div className={styles.body}>
         <div className={styles.appearance}><Appearance extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont = {eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor}/></div>
-        <div className={styles.details}><Details prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} fetchAddedEvents={fetchAddedEvents} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
+        <div className={styles.details}><Details prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} fetchAddedEvents={fetchAddedEvents} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor= {pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/></div>
     </div>
   )
 }

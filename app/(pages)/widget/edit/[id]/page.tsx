@@ -14,6 +14,7 @@ import { ButtonSettingsState} from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
+import { GolbalEventType } from '@/types/globaleventtype'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -40,6 +41,7 @@ const Page = () => {
   const [widgetType, setWidgetType] = useState<string>("");
   const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<PrefilledAddedEventsType>()
   const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
+  const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>()
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -146,6 +148,7 @@ const Page = () => {
   const handleAddEventModal = () => {
     setPrefilledAddedEvent(undefined)
     setPrefilledNormalEvent(undefined)
+    setPrefilledGlobalEvent(undefined)
     setIsAddEventModalOpen(true)
   }
 
@@ -156,6 +159,10 @@ const Page = () => {
 
   const handlePrefillNormalEvent = (event : AllEventsType) =>{
     setPrefilledNormalEvent(event)
+    setIsAddEventModalOpen(true)
+  }
+  const handlePrefillGlobalEvent = (event : GolbalEventType) =>{
+    setPrefilledGlobalEvent(event)
     setIsAddEventModalOpen(true)
   }
   
@@ -186,6 +193,7 @@ const Page = () => {
           widgetType={widgetType}
           handlePrefilledAddedEvent={handlePrefilledAddedEvent}
           handlePrefillNormalEvent = {handlePrefillNormalEvent}
+          handlePrefillGlobalEvent = {handlePrefillGlobalEvent}
           handleAddEventModal={handleAddEventModal}
           addedEventIds = {addedEventIds}
           setIsNormalEventModalOpen = {setIsNormalEventModalOpen}
@@ -207,7 +215,7 @@ const Page = () => {
       </div>
       {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
-        <AddEvent prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
+        <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
         <AddNormalEvent setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>

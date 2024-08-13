@@ -5,6 +5,7 @@ import EventsAdded from './EventsAdded';
 import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { AllEventsType } from '@/types/alleventtype';
+import { GolbalEventType } from '@/types/globaleventtype';
 
 interface Props{
     fetchedAllEvents : AllEventsType[]
@@ -13,13 +14,14 @@ interface Props{
     fetchAddedEvents : ()=>Promise<void>;
     handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
     handlePrefillNormalEvent : (event :  AllEventsType)=>void
+    handlePrefillGlobalEvent : (event : GolbalEventType)=>void
     handleAddEventModal : (value : void)=>void
     widgetId : string;
     addedEventIds : string[]
     setIsNormalEventModalOpen : (value : boolean)=> void
 }
 
-const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent,setIsNormalEventModalOpen} : Props) => {
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent,setIsNormalEventModalOpen,handlePrefillGlobalEvent} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -30,7 +32,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents setIsNormalEventModalOpen={setIsNormalEventModalOpen} widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents handlePrefillGlobalEvent={handlePrefillGlobalEvent} setIsNormalEventModalOpen={setIsNormalEventModalOpen} widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )
