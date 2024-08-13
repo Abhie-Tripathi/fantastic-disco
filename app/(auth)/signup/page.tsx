@@ -125,7 +125,6 @@ const SignUp = () => {
     email: email,
     path: "signup",
   };
-  console.log(errors);
   
   return (
     <div className={styles.container}>
@@ -221,7 +220,6 @@ const SignUp = () => {
                   <div className={styles.error}>{errors.confirmPassword}</div>
                 )}
               </div>
-              <div>{errors?.message}</div>
               <div className={styles.actions_container}>
                 <button
                   className={`${styles.button} ${isLoading && styles.disable}`}

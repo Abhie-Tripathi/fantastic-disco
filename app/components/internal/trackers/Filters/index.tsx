@@ -1274,7 +1274,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
           className={styles.searchContainer}
           style={{
             border:
-              isMandatory && trackerName.length === 0 ? "1px solid #f15050" : "",
+              isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
           }}
         >
           <input
@@ -1341,7 +1341,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                 <div className={styles.subHeading}>{template.description}</div>
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
-                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid #f15050":""}}>
+                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
                         className={styles.textArea}
@@ -1514,7 +1514,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                     <div className={styles.input_container}
                       style={{
                         border:
-                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid red" : "",
+                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid var(--danger-text-color)" : "",
                       }}
                     >
                       <div className={styles.input}>

@@ -118,11 +118,11 @@
   top: 70px;
   left: 5px;
   font-size: 12px;
-  color: #f15050;
+  color: var(--danger-text-color);
 }
 
 .error_boundary {
-  border-color: #f15050 !important;
+  border-color: var(--danger-text-color) !important;
 }
 .input_title {
   color: #424242df;

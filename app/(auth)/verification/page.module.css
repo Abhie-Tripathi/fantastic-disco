@@ -46,7 +46,7 @@
 .error {
   font-size: 12px;
   margin-top: -25px;
-  color: #f15050;
+  color: var(--danger-text-color);
   margin-left: 10px;
 }
 
