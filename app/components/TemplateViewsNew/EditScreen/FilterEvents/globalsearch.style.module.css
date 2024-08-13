@@ -14,7 +14,7 @@
 }
 .dropdownContainer{
     position:absolute;
-    width: 95%;
+    width: 93%;
     border-radius: 2px;
     z-index: 1;
     max-height: 200px;
@@ -54,7 +54,7 @@
     background-color: #F2F2F2;
 }
 .dropdownEvent .dropeventName{
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-default);
     font-weight: var(--font-weight-medium);
 }
 .dropdownEvent .dropeventLocation{

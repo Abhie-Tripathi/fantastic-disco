@@ -1,6 +1,12 @@
 .body{
     height: 100%;
     width: 100%;
+    background-color: #FAFAFA;
+    border-radius: 10px;
+    padding: 10px;
+}
+.darkBody{
+    background-color: #1A1A1A;
 }
 .heading{
     font-size: 18px;
@@ -39,17 +45,11 @@
 }
 
 .preview{
-    border-radius: 10px;
-    background-color: #FAFAFA;
-    height: 92%;
     overflow-y: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
-}
-.darkPreview{
-    background-color: #1A1A1A;
 }
 .previewBtnContainer{
     width: 100%;
@@ -69,12 +69,15 @@
 .heading_btnContainer{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    position: relative;
 }
 .viewBtnContainer{
+    position: absolute;
     display: flex;
     align-items: center;
     gap: 8px;
+    right: 0;
 }
 .viewBtnContainer div{
     cursor: pointer;
