@@ -33,7 +33,6 @@ import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import Loading from "@/app/components/UI/Loading";
 import { searchEvents } from "@/services/eventsService";
-import { convertToYYYYMMDD } from "@/utils/dateFormat";
 import {
   Button,
   Dialog,
@@ -1340,12 +1339,9 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
             {template?.inputAreas &&
               <div className={`${styles.competitor}`} style={{ padding: "5px", borderRadius: "var(--border-radius-sm)" }}>
                 <div className={styles.subHeading}>{template.description}</div>
-                {!valid && (
-                  <div style={{ color: "red", fontSize:"12px" }}>Enter valid input&apos;s</div>
-                )}
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
-                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true ? "1px solid red":""}}>
+                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "2px solid red":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
                         className={styles.textArea}
@@ -1362,6 +1358,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                   >
                     <Image src={Add} alt="add_Icon" />
                   </div>
+                  
                 </div>
                 {/* {customData.map((item:any, index:number) => (
         // <div key={index} className={styles.customDataOuterDiv}>
@@ -1374,6 +1371,9 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
           </div>
         ))}
       ))} */}
+      {!valid && (
+                  <div style={{ color: "red", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                )}
                 {customData.map((item: any, index: number) => (
                   <div key={index} className={styles.customDataOuterDiv}>
                     <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
@@ -1569,11 +1569,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                           {selectedDateRange.length > 0 &&
                             selectedDateRange[0] !== null ? (
                             <span className={styles.input_selected_title}>
-                              {`${convertISOToOriginalFormat(
-                                selectedDateRange[0]
-                              )} - ${convertISOToOriginalFormat(
-                                selectedDateRange[1]
-                              )}`}
+                              {dateShowFormatter(selectedDateRange)}
                             </span>
                           ) : (
                             ""
