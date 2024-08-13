@@ -1274,7 +1274,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
           className={styles.searchContainer}
           style={{
             border:
-              isMandatory && trackerName.length === 0 ? "2px solid red" : "",
+              isMandatory && trackerName.length === 0 ? "1px solid #f15050" : "",
           }}
         >
           <input
@@ -1341,7 +1341,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                 <div className={styles.subHeading}>{template.description}</div>
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
-                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "2px solid red":""}}>
+                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid #f15050":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
                         className={styles.textArea}
@@ -1372,7 +1372,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
         ))}
       ))} */}
       {!valid && (
-                  <div style={{ color: "red", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                  <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
                 )}
                 {customData.map((item: any, index: number) => (
                   <div key={index} className={styles.customDataOuterDiv}>
@@ -1514,7 +1514,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                     <div className={styles.input_container}
                       style={{
                         border:
-                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "2px solid red" : "",
+                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid red" : "",
                       }}
                     >
                       <div className={styles.input}>
