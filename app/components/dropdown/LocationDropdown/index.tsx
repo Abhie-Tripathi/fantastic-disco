@@ -116,8 +116,15 @@ const LocationDropdown = ({
   };
 
   useEffect(() => {
-    setState(selectedLocation)
-  }, [selectedLocation]);
+    const countryNames = selectedCountry 
+    ? Object.entries(selectedCountry).map(([id, name]) => name)
+    : [];
+    const cityNames = selectedCity ? Object.entries(selectedCity).map(([id, name]) => name):[];
+    const zoneNames = selectedZone ? Object.entries(selectedZone).map(([id, name]) => name):[];
+    console.log(countryNames);
+    
+    setState([...countryNames, ...cityNames, ...zoneNames])
+  }, [selectedCity, selectedCountry, selectedZone]);
 
   const handleSaveData = () => {
     // setState(selectedLocation)
@@ -160,6 +167,7 @@ const LocationDropdown = ({
   };
 console.log(selectedCity);
 console.log(selectedCountry);
+console.log(state);
 
   return (
     <div>

@@ -827,9 +827,9 @@ const Comment = ({
                   </span>
                 </span>
 
-                <p className={styles.designationText}>
+                {/* <p className={styles.designationText}>
                   Founder and leadership at Nityo Infotech
-                </p>
+                </p> */}
               </div>
             </header>
           </div>
@@ -1223,9 +1223,9 @@ const Comment = ({
                                 </span>
                               </span>
 
-                              <p className={styles.designationText}>
+                              {/* <p className={styles.designationText}>
                                 Founder and leadership at Nityo Infotech
-                              </p>
+                              </p> */}
                             </div>
                           </header>;
                           if (userArr?.includes("@" + username) || d === "@" + username) {

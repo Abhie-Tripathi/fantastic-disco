@@ -24,7 +24,7 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import List from "@/app/components/List";
 import Loading from "@/app/components/UI/Loading";
 import { searchEvents } from "@/services/eventsService";
-import { convertToYYYYMMDD } from "@/utils/dateFormat";
+import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import {
   Button,
   Dialog,
@@ -130,6 +130,23 @@ const data =[
       "Input team members and their details to keep track of the events with speaking opportunities.",
   },
 ]
+
+const dateShowFormatter = (selectedDateRange: string[]) => {
+  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+    selectedDateRange[0]
+  ).split(" ");
+  const [edDay, edMonth, edYear] = convertToCustomFormat(
+    selectedDateRange[1]
+  ).split(" ");
+
+  if (sdMonth === edMonth && sdYear === edYear) {
+    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+  }
+  if (sdYear === edYear) {
+    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+  }
+  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
+};
 
 const Search = () => {
   const searchParams = useSearchParams();
@@ -957,7 +974,7 @@ const Search = () => {
                         {
                           selectedEventType?.length == 1 ? (
                             <span className={styles.input_selected_title}>
-                              {selectedEventTypeName}
+                              {selectedEventType[0]}
                             </span>
                           ) : (
                             selectedEventType?.length > 1 ? (
@@ -1162,11 +1179,7 @@ const Search = () => {
                         {selectedDateRange.length > 0 &&
                         selectedDateRange[0] !== null ? (
                           <span className={styles.input_selected_title}>
-                            {`${convertISOToOriginalFormat(
-                              selectedDateRange[0]
-                            )} - ${convertISOToOriginalFormat(
-                              selectedDateRange[1]
-                            )}`}
+                            {dateShowFormatter(selectedDateRange)}
                           </span>
                         ) : (
                           ""
@@ -1915,7 +1928,11 @@ const Search = () => {
                           Trust Score
                           {selectedTrustScore !== 0 && (
                             <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedTrustScore} %
+                              {selectedTrustScore == 100 ? 
+                                <>{'='} {selectedTrustScore} %</> : 
+                                <>&gt;{'='} {selectedTrustScore} %</>
+                              }
+                              
                             </span>
                           )}
                         </div>
