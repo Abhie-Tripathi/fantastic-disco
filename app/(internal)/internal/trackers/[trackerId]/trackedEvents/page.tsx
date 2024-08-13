@@ -208,12 +208,7 @@ const Page = ({ params }: { params: any }) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
-      
-      if (decimalPart >= 0.5) {
-        return `${Math.ceil(value)}k`;
-      } else {
         return `${Math.floor(value)}k`;
-      }
     }
     console.log(count);
     return count;
