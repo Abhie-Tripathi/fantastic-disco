@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import styles from './addevent.style.module.css'  
 import Appearance from './Appearance/Appearance'
 import Details from './Details/Details'

@@ -218,7 +218,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
+        <AddNormalEvent fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
       </div>}
     </div>
   )

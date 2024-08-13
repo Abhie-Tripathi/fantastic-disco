@@ -82,9 +82,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     file: null
   });
   const [mapWidth, setMapWidth] = useState(0);
-  const [venue, setVenue] = useState(prefilledGlobalEvent?.venue || "")
-  const [latitude ,setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude ,setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) || -122.4194)
+  const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
+  const [latitude ,setLatitude] = useState(Number(prefilledAddedEvent?.latitude ||prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude ,setLongitude] = useState(Number(prefilledAddedEvent?.longitude ||prefilledGlobalEvent?.longitude) || -122.4194)
   const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -200,7 +200,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       registerMessage,
       speakerProfilesData,
       participationMessage,
-      bannerUrl
+      bannerUrl,
+      latitude,
+      longitude,
+      venue
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -287,7 +290,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       boothNumber,
       speakerProfilesData,
       participationMessage,
-      bannerUrl: updatedBannerUrl
+      bannerUrl: updatedBannerUrl,
+      latitude,
+      longitude,
+      venue
     };
 
     // Find and update the existing event

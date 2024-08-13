@@ -4,12 +4,15 @@ import DateTimeContainer from './Details/dateandtime/DateTimeContainer';
 import LocationContainer from './Details/location/LocationContainer';
 import DescriptionContainer from './Details/description/DescriptionContainer';
 import DescriptionModal from './Details/description/DescriptionModal';
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
+    fetchEvents: () => Promise<void>;
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen,fetchEvents }: Props) => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>("");
     const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
@@ -50,12 +53,47 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen }: Props) => {
             }
         };
     }, []);
+
+    const handleAddEvent = async () => {
+        const eventData = {
+            format: eventFormat,
+            start_time: startTime,
+            end_time: endTime,
+            end_date: endDate,
+            start_date: startDate,
+            description,
+            location_city: cityName,
+            location_country: countryName,
+            gmt_time: timeZone,
+        };
+        const formData = new FormData()
+        formData.append("name", eventName)
+        formData.append("data", JSON.stringify(eventData))
+
+        // Bottom 3 fields are for temporary purposes because there are mandatory in backend right now
+        formData.append("interest", "SPEAKER")
+        formData.append("source", "eventgeni/widget/event")
+        formData.append("sourceId", "1234")
+
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'POST',
+            body: formData
+        })
+        if (data) {
+            console.log(data)
+            setIsNormalEventModalOpen(false)
+            fetchEvents()
+        }
+        if (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={styles.header}>
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
-                    <button>Save</button>
+                    <button onClick={handleAddEvent}>Save</button>
                     <button onClick={() => setIsNormalEventModalOpen(false)}>Close</button>
                 </div>
             </div>

@@ -50,7 +50,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
                 <div className={styles.addBtnContainer}>
                 <button onClick={() => setIsNormalEventModalOpen(true)}>Add event</button>
-                <button onClick={() => handleAddEventModal()}>Add event to widget</button>
+                <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
                 </div>
             </div>
             <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
