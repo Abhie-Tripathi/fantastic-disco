@@ -216,6 +216,7 @@ const Table = ({
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [initialRender, setInitialRender] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const userMaxLimit = 100;
@@ -369,6 +370,7 @@ const [val,setVal]=useState(1);
 //   fetchData(secondLast);
 // },[currPage])
   useEffect(() => {
+    if(path[2] === "search") setInitialRender(true);
     const fetchBookmarkData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
       if (error) {
@@ -501,7 +503,7 @@ const [val,setVal]=useState(1);
       if (queryString) {
         try {
           setIsLoaded(false);
-
+          setInitialRender(false);
           const params = new URLSearchParams(queryString);
           const obj: any = {};
           params.forEach((value, key) => {
@@ -667,7 +669,10 @@ const [val,setVal]=useState(1);
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        No results containing all your search terms were found.
+        {initialRender ?
+          <>Discover insights on business trends filtered by geography and category, all in one glance.</> : 
+          <>No results containing all your search terms were found.</>
+        }
       </div>
     );
   }
