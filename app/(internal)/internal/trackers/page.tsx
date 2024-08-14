@@ -101,18 +101,17 @@ import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 interface Search {
   searchParams: {
-    value:string;
+    tab:string;
   }
 }
 const Trackers = ({ searchParams }: Search) => {
-  const {value}=searchParams;
-  console.log(value);
+  const {tab}=searchParams;
   const router=useRouter();
   useEffect(()=>{
-    if(value==="savedEvents") setType("Saved Events")
-    if(value==="customTrackers") setType("Custom Trackers")
-      if(value==="allTrackers") setType("All Trackers")
-  },[value])
+    if(tab==="savedEvents") setType("Saved Events")
+    if(tab==="customTrackers") setType("Custom Trackers")
+      if(tab==="allTrackers") setType("All Trackers")
+  },[tab])
   const [trackers, setTrackers] = useState<any[]>([]);
   const [type, setType] = useState("All Trackers");
   const [offset, setOffset] = useState(0);
@@ -304,11 +303,11 @@ const Trackers = ({ searchParams }: Search) => {
   }, []);
   useEffect(() => {
     if(type==="All Trackers")
-    router.push(`/internal/trackers?value=allTrackers`);
+    router.push(`/internal/trackers?tab=allTrackers`);
     if(type==="Custom Trackers")
-      router.push(`/internal/trackers?value=customTrackers`);
+      router.push(`/internal/trackers?tab=customTrackers`);
     if(type==="Saved Events")
-      router.push(`/internal/trackers?value=savedEvents`)
+      router.push(`/internal/trackers?tab=savedEvents`)
   }, [type]);
   
   

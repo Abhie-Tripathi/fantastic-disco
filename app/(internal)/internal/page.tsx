@@ -263,11 +263,11 @@ const Dashboard = () => {
                     )}
                   </div>
                   <div className={styles.linkCard_tagsOuterContainer}>
-                  {/* <Image
+                  <Image
                   className={styles.linkCard_backgroundImage}
-                  src={ExhibitIcon}
-                  alt="trendsBackground"
-                />  */}
+                  src={SearchBackground}
+                  alt="searchBackground"
+                /> 
                   </div>
                 </Link>
 
@@ -453,7 +453,7 @@ const Dashboard = () => {
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    router.push("internal/trackers?value=savedEvents");
+                    router.push("internal/trackers?tab=savedEvents");
                   }}
                 >
                   Saved Events

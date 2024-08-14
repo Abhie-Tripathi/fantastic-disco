@@ -206,7 +206,7 @@ const Sidebar = () => {
       </Link>
 
       <Link
-        href="/internal/trackers?value=allTrackers"
+        href="/internal/trackers?tab=allTrackers"
         className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
         ref={trackerRef}
       >
