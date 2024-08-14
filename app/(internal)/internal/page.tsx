@@ -179,6 +179,12 @@ const Dashboard = () => {
     }
   };
 
+  const formatTag=(tag:string)=>{
+    if(tag==="Exhibitors") return "Exhibit";
+    else if(tag==="Attendee") return "Attend";
+    else if(tag==="Speakers") return "Speak";
+    else return tag;
+  }
   return (
     <>
       <div className={styles.container}>
@@ -541,7 +547,7 @@ const Dashboard = () => {
                             key={key}
                           >
                             <div className={styles.linkCard_tagsName}>
-                              {tag.name}
+                              {formatTag(tag.name)}
                             </div>
                             <div className={styles.linkCard_tagsCount}>
                               {tag.count}

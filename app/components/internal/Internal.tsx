@@ -27,7 +27,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     let prevDate: any = null;
     const { theme } = useTheme();
     const status=["Shortlisted", "Pending"];
-    const participants=["Attendee", "Exhibitor", "Speaker", "Sponsor"];
+    const participants=["Attend", "Exhibit", "Speak", "Sponsors"];
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
@@ -164,7 +164,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     <div className={styles.countsContainer}>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[1]?.count}</div>
-            <div className={styles.countTitle}>Exhibitors</div>
+            <div className={styles.countTitle}>Exhibit</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[2]?.count}</div>
@@ -172,11 +172,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[3]?.count}</div>
-            <div className={styles.countTitle}>Speakers</div>
+            <div className={styles.countTitle}>Speak</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[4]?.count}</div>
-            <div className={styles.countTitle}>Attendee</div>
+            <div className={styles.countTitle}>Attend</div>
         </div>
     </div>
     <div className={styles.filters}>
