@@ -75,6 +75,7 @@
 .dateBoxes .dateBox {
   padding: 2px 15px;
   background-color: #ffffffa8;
+  width: 100px;
   border-radius: 4px;
   position: relative;
   cursor: pointer;

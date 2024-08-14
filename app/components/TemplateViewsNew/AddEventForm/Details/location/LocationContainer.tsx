@@ -16,11 +16,11 @@ interface Props{
 }
 
 const LocationContainer = ({
-    setCityName, // default to no-op function
+    setCityName,
     cityName,
-    setCountryName, // default to no-op function
+    setCountryName, 
     countryName,
-    setEventFormat, // default to no-op function
+    setEventFormat,
     eventFormat
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)

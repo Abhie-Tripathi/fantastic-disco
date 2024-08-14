@@ -115,6 +115,12 @@ const Navbar = () => {
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }
+    if (currPath.startsWith("/widget/edit")) {
+      setTitle("Edit");
+    }
+    if (currPath.startsWith("/widget/add")) {
+      setTitle("Add Widget");
+    }
   }, [currPath]);
   console.log(userDetail)
 
@@ -136,10 +142,12 @@ const Navbar = () => {
             onClick={handelSideShow}
           />
         )}
-        {pathName === "internal" ? (
-          <div className={styles.page_title}>{title.length !== 0 && title}</div>
-        ) : (
-          <Link href="/">
+        {/* {pathName === "internal" ? ( */}
+          <div className={styles.page_title}>
+            {currPath.startsWith("/widget/edit") && <Link href={"/widget/add"} className={styles.backBtn}>{`<-`}</Link>}
+            {title.length !== 0 && title}</div>
+        {/* ) : ( */}
+          {/* <Link href="/">
             <Image
               className={styles.logo}
               src={logo}
@@ -148,7 +156,7 @@ const Navbar = () => {
               alt="logo"
             />
           </Link>
-        )}
+        )} */}
       </div>
 
       <div className={styles.settings}>

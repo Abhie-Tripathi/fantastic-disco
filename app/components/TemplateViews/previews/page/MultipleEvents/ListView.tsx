@@ -52,7 +52,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                     />
                 ))
             ) : (
-                <div>
+                <div className={styles.listView}>
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
