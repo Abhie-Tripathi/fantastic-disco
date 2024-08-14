@@ -486,7 +486,7 @@ const Dashboard = () => {
                             unsavedEvent(event?.eventGroupId);
                           }}
                         >
-                          <BookmarkIcon fillColor={"#6750a4"} />
+                          <BookmarkIcon fillColor={"var(--primary-color)"} />
                         </div>
                       </div>
                     ))

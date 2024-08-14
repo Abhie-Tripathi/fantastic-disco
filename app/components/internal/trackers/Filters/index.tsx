@@ -1159,7 +1159,7 @@ const Pages = () => {
         
         if (inputArea.placeholder === 'Add Competitor Website') {
           if (regex.test(value.trim())) {
-            acc[inputArea.placeholder] = value.trim();
+            acc[inputArea.placeholder] = value;
           } else {
             isValid = false;
           }
