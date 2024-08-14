@@ -90,7 +90,7 @@ const usePosterGenerator = () => {
       setWidth(bannerwidth);
       setIsLoading(true);
       // Create the prompt directly
-      const promptText = `I NEED to test how the tool works with extremely simple prompts. DO NOT add any detail, just use it AS-IS. Generate a POSTER/BANNER for event "${eventname}" taking place at "${location}". Include message on the poster. Message is "Come join us at the event". DO NOT INCLUDE ANYTHING EXCEPT THE MESSAGE `;
+      const promptText = `Generate a POSTER/BANNER for event "${eventname}" taking place at "${location}". Include message on the poster. Message is "Come join us at the event ${eventname}". Do not make any Spelling mistakes on the generated poster. Do not include any other gibberish or any texts other then the provided message`;
       setPrompt(promptText);
     } catch (error) {
       console.error("Error generating prompt:", error);
@@ -113,7 +113,6 @@ const usePosterGenerator = () => {
             n: 1,
             size: `1792x1024`,
             response_format: "url",
-            style : "natural"
           }),
         });
         console.log('Response Status:', response.status);

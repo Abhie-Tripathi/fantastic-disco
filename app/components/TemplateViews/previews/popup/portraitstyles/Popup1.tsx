@@ -36,7 +36,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-    }, selectedBtn = "primary",fetchedAddedEvents }: Props) => {
+    }, selectedBtn = "primary", fetchedAddedEvents }: Props) => {
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
@@ -59,7 +59,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-           <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' width={380} height={220} className={styles.banner} />
+            <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' width={380} height={220} className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
                 <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
@@ -78,7 +78,16 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                 <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
                 <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
             </div>
-            <div className={styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }}>{description}</div>
+            <div
+                className={styles.desc}
+                style={{
+                    fontSize: fontSettings.body.fontSize,
+                    color: fontSettings.body.fontColor,
+                    fontFamily: fontSettings.body.fontFamily,
+                    fontWeight: fontSettings.body.fontWeight,
+                }}
+                dangerouslySetInnerHTML={{ __html: description }}
+            />
             <div className={styles.btnContainer}>
                 <button
                     className={styles.btn}

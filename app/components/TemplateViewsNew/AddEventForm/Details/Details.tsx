@@ -47,9 +47,9 @@ interface Props {
   fetchedAddedEvents: AddedEventsType[]
   prefilledAddedEvent?: PrefilledAddedEventsType
   prefilledNormalEvent?: AllEventsType
-  prefilledGlobalEvent? :  GolbalEventType
+  prefilledGlobalEvent?: GolbalEventType
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent,prefilledGlobalEvent }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent, prefilledGlobalEvent }: Props) => {
 
   const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -64,16 +64,16 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
-  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || prefilledGlobalEvent?.cityName ||"")
-  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName ||prefilledGlobalEvent?.countryName|| "")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || prefilledGlobalEvent?.cityName || "")
+  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || prefilledGlobalEvent?.countryName || "")
   const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
   const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || prefilledGlobalEvent?.startDate || "")
   const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || prefilledGlobalEvent?.endDate || "")
   const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || prefilledNormalEvent?.startTime || "12:00 A.M")
   const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || prefilledNormalEvent?.endTime || "12:00 A.M")
-  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format ||prefilledGlobalEvent?.format || "In-person")
-  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || prefilledNormalEvent?.name || prefilledGlobalEvent?.name ||"");
+  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || prefilledGlobalEvent?.format || "In-person")
+  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || prefilledNormalEvent?.name || prefilledGlobalEvent?.name || "");
   const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
   const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -83,8 +83,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   });
   const [mapWidth, setMapWidth] = useState(0);
   const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
-  const [latitude ,setLatitude] = useState(Number(prefilledAddedEvent?.latitude ||prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude ,setLongitude] = useState(Number(prefilledAddedEvent?.longitude ||prefilledGlobalEvent?.longitude) || -122.4194)
+  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
   const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -242,7 +242,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       end_date: endDate,
       start_date: startDate,
       description,
-      logoUrl : banner.placeHolder,
+      logoUrl: banner.placeHolder,
       location_city: cityName,
       location_country: countryName,
       gmt_time: timeZone
@@ -402,7 +402,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 <Mapview latitude={latitude}
                   width={mapWidth}
                   longitude={longitude}
-                  venue = {venue}
+                  venue={venue}
                   zoom={6} />
               </Suspense>
             </div>

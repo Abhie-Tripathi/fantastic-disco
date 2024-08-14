@@ -19,6 +19,7 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 
+
 interface FontSettings {
     fontFamily: string;
     fontSize: number;
@@ -86,7 +87,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         return null;
                     }
                     if (data) {
-                        console.log("data of fetched event : ",)
+                        console.log("data : ", data)
                     }
                     return {
                         id: event.id,

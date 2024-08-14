@@ -251,7 +251,7 @@ const Sidebar = () => {
           className={`${styles.link} ${getActiveClass("/widget/add")}`}
         >
           <WidgetIconTwo />
-          <div className={styles.linkName}>Widget</div>
+          <div className={styles.linkName}>Brandkit</div>
         </Link>
         <Link
           href="/widget/edit"
@@ -265,7 +265,7 @@ const Sidebar = () => {
           className={`${styles.link} ${getActiveClass("/widget/something")}`}
         >
           <WidgetIconFour />
-          <div className={styles.linkName}>Widget</div>
+          <div className={styles.linkName}>Events</div>
         </Link>
       </>}
     </div>

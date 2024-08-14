@@ -15,6 +15,7 @@ import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import { GolbalEventType } from '@/types/globaleventtype'
+import DOMPurify from 'dompurify';
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -67,7 +68,7 @@ const Page = () => {
         name: event.name,
         cityName: event.data.location_city,
         countryName : event.data.location_country,
-        description : event.data.description,
+        description :event.data.description,
         startDate: event.data.start_date,
         endDate: event.data.end_date,
         format : event.data.format,
