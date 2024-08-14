@@ -240,6 +240,13 @@ const Search = () => {
   const trackerBtnRef = useRef(null);
   const viewBtnRef = useRef(null);
 
+  // Dropdown open states
+  const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
+  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
+  const [isInternationalOpen, setInternationalOpen] = useState<boolean>(false);
+  const [isReputationOpen, setReputationOpen] = useState<boolean>(false);
+  const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
@@ -256,7 +263,19 @@ const Search = () => {
     fetchData();
   }, []);
   console.log(selectedUserRatings);
-  const [selectedInsights, setSelectedInsights] = useState<InsightsType>({});
+  const [selectedInsights, setSelectedInsights] = useState<InsightsType>({
+    eventSize: true,
+    eventKeywords: true,
+    eventRank: rankToggles.isEventRank,
+    matchScore: true,
+    growth: true,
+    eventSeries: selectedEventSeries,
+    global: false,
+    reptSent: false,
+    eventRating: false,
+    estExhibit: false,
+    repeatSent: false,
+  });
 
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const [customTrackerName, setCustomTrackerName] = useState<string>('');
@@ -716,6 +735,7 @@ const Search = () => {
     });
   };
 
+  /*
   useEffect(() => {
     setSelectedInsights({
       eventSize: true,
@@ -731,20 +751,21 @@ const Search = () => {
       repeatSent: (selectedTrustScore > 0),
     });
   }, [urlQueryString]);
+  */
 
   useEffect(() => {
-    setSelectedInsights({
-      eventSize: true,
-      eventKeywords: true,
-      global: true,
-      reptSent: true,
-      eventRank: rankToggles.isEventRank,
-      matchScore: true,
-      estExhibit: true,
-      growth: true,
-      repeatSent: true,
-      eventSeries: selectedEventSeries,
-    });
+    // setSelectedInsights({
+    //   eventSize: true,
+    //   eventKeywords: true,
+    //   global: true,
+    //   reptSent: true,
+    //   eventRank: rankToggles.isEventRank,
+    //   matchScore: true,
+    //   estExhibit: true,
+    //   growth: true,
+    //   repeatSent: true,
+    //   eventSeries: selectedEventSeries,
+    // });
 
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -1168,7 +1189,7 @@ const Search = () => {
             </div>
           </div>
           <div className={styles.filtersRow} >
-            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(3, minmax(0px, 245px))'}}>
+            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(3, minmax(0px, 18vw))'}}>
 
             <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
@@ -1279,10 +1300,11 @@ const Search = () => {
                 </MenuTrigger> */}
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  {/* <Button className={styles.dropdown_button}> */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
+                        <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setRatingOpen(true)}>
                           User Ratings
                           {selectedUserRatings?.length > 1 ? (
                             <span className={styles.input_selected_no}>
@@ -1294,14 +1316,20 @@ const Search = () => {
                             </span>
                           )}
                         </div>
+                        </Button>
 
                         <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
+                                onClick={() => {
+                                  if(selectedInsights?.eventRating) setSelectedUserRatings([])
+                                  else setRatingOpen(true)
+                                  setSelectedInsights((prevInsights) => ({ ...prevInsights, eventRating: !selectedInsights?.eventRating }));
+                                }}
                                 onChange={() => {}}
-                                checked={selectedUserRatings.length !== 0}
+                                checked={selectedInsights?.eventRating}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1309,8 +1337,8 @@ const Search = () => {
                         </div>
                       </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isRatingOpen} onOpenChange={setRatingOpen} >
                     <UserRatings
                       state={selectedUserRatings}
                       setState={setSelectedUserRatings}
@@ -1436,7 +1464,7 @@ const Search = () => {
 
             {/* ADVANCE DETAILS SECTION */}
             {showAdvanceFilter && selectedAdvFilter === "AP" && (
-                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 1fr)"}}>
+                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 18vw)"}}>
 
 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1678,7 +1706,7 @@ const Search = () => {
 
             {/* INSIGHTS AND SCORES */}
             {showAdvanceFilter && selectedAdvFilter === "IS" && (
-                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 1fr)"}}>
+                <div className={styles.inputdropdowns_container} style={{gridTemplateColumns:"repeat(4, 18vw)"}}>
 
 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
@@ -1720,10 +1748,11 @@ const Search = () => {
                 </MenuTrigger>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  {/* <Button className={styles.dropdown_button}> */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
+                        <Button className={styles.dropdown_button} style={{margin: '-16px'}}>
+                        <div className={styles.input_title} onClick={()=>setExhibitOpen(true)} style={{paddingLeft: '16px'}} >
                           Estimated Exhibitor
                           {selectedExhibitScore?.length > 1 ? (
                             <span className={styles.input_selected_no}>
@@ -1735,13 +1764,19 @@ const Search = () => {
                             </span>
                           )}
                         </div>
+                        </Button>
 
                         <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
-                                checked={selectedExhibitScore.length !== 0}
+                                onClick={() => {
+                                  if(selectedInsights?.estExhibit) setSelectedExhibitScore([])
+                                  else setExhibitOpen(true)
+                                  setSelectedInsights((prevInsights) => ({ ...prevInsights, estExhibit: !selectedInsights?.estExhibit }))
+                                }}
+                                checked={selectedInsights?.estExhibit}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1749,8 +1784,8 @@ const Search = () => {
                         </div>
                       </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isExhibitOpen} onOpenChange={setExhibitOpen} >
                     <EventAdvFilter
                       state={selectedExhibitScore}
                       setState={setSelectedExhibitScore}
@@ -1760,10 +1795,11 @@ const Search = () => {
                 </MenuTrigger>
 
                  <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`}>
+                  {/* <Button className={`${styles.dropdown_button}`}> */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
+                        <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setInternationalOpen(true)}>
                           International Score
                           {selectedINScore !== 0 && (
                             <span className={styles.input_selected_title}>
@@ -1771,13 +1807,19 @@ const Search = () => {
                             </span>
                           )}
                         </div>
+                        </Button>
                         <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={selectedINScore !== 0}
+                                onClick={() => {
+                                  if(selectedInsights?.global) setSelectedINScore(0)
+                                  else setInternationalOpen(true)
+                                  setSelectedInsights((prevInsights) => ({ ...prevInsights, global: !selectedInsights?.global }));
+                                }}
+                                checked={selectedInsights?.global}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1785,8 +1827,8 @@ const Search = () => {
                         </div>
                       </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isInternationalOpen} onOpenChange={setInternationalOpen} >
                     <IntScoreSlider
                       state={selectedINScore}
                       setState={setSelectedINScore}
@@ -1884,10 +1926,11 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
+                  {/* <Button className={styles.dropdown_button}> */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
+                      <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setReputationOpen(true)}>
                           Reputation Score
                           {selectedReptScore !== 0 && (
                             <span className={styles.input_selected_title}>
@@ -1895,6 +1938,7 @@ const Search = () => {
                             </span>
                           )}
                         </div>
+                        </Button>
 
                         <div className={styles.toggle_container}>
                           <span>
@@ -1902,7 +1946,12 @@ const Search = () => {
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={selectedReptScore !== 0}
+                                onClick={() => {
+                                  if(selectedInsights?.reptSent) setSelectedReptScore(0)
+                                  else setReputationOpen(true)
+                                  setSelectedInsights((prevInsights) => ({ ...prevInsights, reptSent: !selectedInsights?.reptSent }));
+                                }}
+                                checked={selectedInsights?.reptSent}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1910,8 +1959,8 @@ const Search = () => {
                         </div>
                       </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isReputationOpen} onOpenChange={setReputationOpen} >
                     <RangeSlider
                       state={selectedReptScore}
                       setState={setSelectedReptScore}
@@ -1921,10 +1970,11 @@ const Search = () => {
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`}>
+                  {/* <Button className={`${styles.dropdown_button}`}> */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
+                      <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setTrustOpen(true)}>
                           Trust Score
                           {selectedTrustScore !== 0 && (
                             <span className={styles.input_selected_title}>
@@ -1936,6 +1986,7 @@ const Search = () => {
                             </span>
                           )}
                         </div>
+                        </Button>
 
                         <div className={styles.toggle_container}>
                           <span>
@@ -1943,7 +1994,12 @@ const Search = () => {
                               <input
                                 type="checkbox"
                                 onChange={() => {}}
-                                checked={selectedTrustScore !== 0}
+                                onClick={() => {
+                                  if(selectedInsights?.repeatSent) setSelectedTrustScore(0)
+                                  else setTrustOpen(true)
+                                  setSelectedInsights((prevInsights) => ({ ...prevInsights, repeatSent: !selectedInsights?.repeatSent }));
+                                }}
+                                checked={selectedInsights?.repeatSent}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1951,8 +2007,8 @@ const Search = () => {
                         </div>
                       </div>
                     </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isTrustOpen} onOpenChange={setTrustOpen} >
                     <RangeSlider
                       state={selectedTrustScore}
                       setState={setSelectedTrustScore}
@@ -1970,7 +2026,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
                 <div
                   className={styles.inputdropdowns_container_AI}
-                  style={{gridTemplateColumns:"repeat(4, 1fr)"}}
+                  style={{gridTemplateColumns:"repeat(4, 18vw)"}}
                 >
 
 <MenuTrigger onOpenChange={setMenuOpen}>
