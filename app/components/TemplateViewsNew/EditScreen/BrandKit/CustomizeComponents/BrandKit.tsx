@@ -14,7 +14,7 @@ interface Props {
 const BrandKit = ({ extractedColors, setExtractedColors,flex }: Props) => {
 
     const {theme} = useTheme()
-    const [accordian, setAccordian] = useState<boolean>(false)
+    const [accordian, setAccordian] = useState<boolean>(true)
 
     const [valueUpdate, setValueUpdated] = useState<boolean>(false) // To activate the save kit button
 

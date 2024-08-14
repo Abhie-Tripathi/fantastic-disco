@@ -165,11 +165,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
-    if (banner.file) {
-      formData.append("file", banner.file); // Use the file field if uploaded by the user
-    } else {
-      formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+    if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
+      if (banner.file) {
+        formData.append("file", banner.file); // Use the file field if uploaded by the user
+      } else {
+        formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+      }
     }
+
     formData.append("interest", participationType.toUpperCase())
     formData.append("source", "eventgeni/widget/event")
     formData.append("sourceId", widgetId)
@@ -334,13 +337,13 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       }
     }
   }
-  useEffect(() => {
-    if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
-      if (description && eventName && countryName) {
-        // generatePrompt(countryName, description, eventName, 1024, 1024)
-      }
-    }
-  }, [description, eventName, countryName])
+  // useEffect(() => {
+  //   if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
+  //     if (description && eventName && countryName) {
+  //       generatePrompt(countryName, description, eventName, 1024, 1024)
+  //     }
+  //   }
+  // }, [description, eventName, countryName])
 
   useEffect(() => {
     if (imageUrl) {
