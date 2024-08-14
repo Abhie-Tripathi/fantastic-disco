@@ -74,6 +74,14 @@ const GlobalSearch = ({ widgetId,handlePrefillGlobalEvent }: Props) => {
         }
     };
 
+    const truncateName = (name : string)=>{
+        const length = name.length
+        let newName = name.substring(0,35)
+        if(length < 45){
+            return newName
+        }else return newName+"...";
+    }
+
 
     return (
         <div className={styles.searchContainer} style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }}>
@@ -83,7 +91,7 @@ const GlobalSearch = ({ widgetId,handlePrefillGlobalEvent }: Props) => {
                     {searchData.length > 0 ? searchData.map((event) => (
                         <div className={styles.dropdownEvent} key={event.id} onClick={() => handleClickEvent(event)}>
                             <div className={styles.eventNameContaier}>
-                                <span className={styles.dropeventName}>{event.name},</span>
+                                <span className={styles.dropeventName}>{truncateName(event.name)},</span>
                                 <span className={styles.dropeventLocation}>{event.data.location_city}</span>
                             </div>
                             {event.data.isMicroServiceData && <Image src={logo} alt="logo" width={15} height={15}/>}

@@ -73,11 +73,9 @@
     position: relative;
 }
 .viewBtnContainer{
-    position: absolute;
     display: flex;
     align-items: center;
     gap: 8px;
-    right: 0;
 }
 .viewBtnContainer div{
     cursor: pointer;

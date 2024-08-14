@@ -330,14 +330,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (description && eventName && countryName) {
-        generatePrompt(countryName, description, eventName, 1920, 1080)
+        generatePrompt(countryName, description, eventName, 1024, 1024)
       }
     }
   }
   useEffect(() => {
     if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
       if (description && eventName && countryName) {
-        generatePrompt(countryName, description, eventName, 1280, 720)
+        // generatePrompt(countryName, description, eventName, 1024, 1024)
       }
     }
   }, [description, eventName, countryName])
