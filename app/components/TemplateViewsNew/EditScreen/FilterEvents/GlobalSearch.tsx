@@ -7,6 +7,7 @@ import { useTheme } from '@/context'
 import Image from 'next/image';
 import logo from '/public/10timeslogo.png'
 import { GolbalEventType } from '@/types/globaleventtype';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     widgetId: string;
@@ -18,6 +19,7 @@ const GlobalSearch = ({ widgetId,handlePrefillGlobalEvent }: Props) => {
     const [searchValue, setSearchValue] = useState<string>("")
     const [dataDropdown, setDatadropdown] = useState<boolean>(false)
     const [searchData, setSearchData] = useState<any[]>([])
+    const dropdownRef = useOutsideClick(() => setDatadropdown(false))
 
     const { theme } = useTheme();
 
@@ -84,7 +86,7 @@ const GlobalSearch = ({ widgetId,handlePrefillGlobalEvent }: Props) => {
 
 
     return (
-        <div className={styles.searchContainer} style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }}>
+        <div className={styles.searchContainer} style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }} ref={dropdownRef}>
             <input type="text" placeholder='Search for events' onChange={(e) => setSearchValue(e.target.value)} style={{ color: theme === "light" ? "black" : "white", backgroundColor : theme === "light" ? "white" : "#131313" }} />
             {dataDropdown &&
                 <div className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown}`}>
