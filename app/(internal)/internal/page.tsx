@@ -183,7 +183,7 @@ const Dashboard = () => {
     if(tag==="Exhibitors") return "Exhibit";
     else if(tag==="Attendee") return "Attend";
     else if(tag==="Speakers") return "Speak";
-    else return tag;
+    else if(tag==="Sponsors")return "Sponsor";
   }
   return (
     <>

@@ -27,7 +27,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     let prevDate: any = null;
     const { theme } = useTheme();
     const status=["Shortlisted", "Pending"];
-    const participants=["Attend", "Exhibit", "Speak", "Sponsors"];
+    const participants=["Attendee", "Exhibitor", "Speaker", "Sponsor"];
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
@@ -158,6 +158,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             </div>
         );
     }
+    
   return (
     <div className={styles.scrollContainer} ref={divRef} >
     <div className={styles.container} >
@@ -168,7 +169,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[2]?.count}</div>
-            <div className={styles.countTitle}>Sponsors</div>
+            <div className={styles.countTitle}>Sponsor</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[3]?.count}</div>

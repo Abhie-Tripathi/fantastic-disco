@@ -24,7 +24,12 @@ const EventType = ({ state, setState, setSelectedEventTypeName, status }: EventS
     if(state.includes(value)) setState([]);
     else setState([value]);
   };
-
+  const formatTag=(tag:string)=>{
+    if(tag==="Exhibitor") return "Exhibit";
+    else if(tag==="Attendee") return "Attend";
+    else if(tag==="Speaker") return "Speak";
+    else return tag;
+  }
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
@@ -35,7 +40,7 @@ const EventType = ({ state, setState, setSelectedEventTypeName, status }: EventS
               onChange={() => onClickHandler(item)}
               checked={state.includes(item)}
             />
-            <label htmlFor={ind.toString()}>{item}</label>
+            <label htmlFor={ind.toString()}>{formatTag(item)}</label>
           </div>
         ))}
       </div>
