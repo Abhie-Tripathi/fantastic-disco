@@ -205,12 +205,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px 10px;
-}
-
-.sizeContainer .display {
     font-size: 10px;
 }
 
+.sizeContainer input {
+    font-size: 10px;
+    width: 80%;
+    background: none;
+    border: none;
+}
+.sizeContainer input:focus{
+    outline: none;
+}
 .arrows {
     display: flex;
     flex-direction: column;

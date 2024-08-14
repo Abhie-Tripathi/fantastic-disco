@@ -16,11 +16,11 @@ const index = ({ freq, keywords, isBranded, eventEdition }: any) => {
                         {keywords?.map((item: string, id: number) => (
                             item?.charAt(0) !== '-' ? (
                                 <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item.replaceAll("_"," ")}
-                                <span className={styles.tooltipText}>Include Keyword</span>
+                                <span className={styles.tooltipText}>Included Keyword</span>
                                 </div>
                             ) : (
                                 <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
-                                <span className={styles.tooltipText}>Exclude Keyword</span>
+                                <span className={styles.tooltipText}>Excluded Keyword</span>
                                 </div>
                             )
                         ))}

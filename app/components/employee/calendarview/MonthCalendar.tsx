@@ -294,8 +294,10 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
     } finally {
       setIsLoaded(true);
     }
-    }else
+    }else{
       setMonthEvents({});
+      setIsLoaded(true);
+    }
   }
 
   const setupCalendar = () => {

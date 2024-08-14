@@ -3,7 +3,7 @@ import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import styles from './popup3.style.module.css'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 
 interface FontSettings {
@@ -13,13 +13,6 @@ interface FontSettings {
   fontWeight: string;
 }
 
-interface ButtonSettings {
-  buttonColor: string;
-  fontColor: string;
-  borderRadius: number;
-  borderColor: string;
-  buttonText: string;
-}
 interface Props {
   cardBgColor?: string;
   cardBorderRadius?: number;
@@ -30,7 +23,7 @@ interface Props {
   };
   buttonSettings?: ButtonSettingsState,
   selectedBtn?: "primary" | "secondary"
-  fetchedAddedEvents?: AddedEventsType[]
+  fetchedAddedEvents?: PrefilledAddedEventsType[]
 }
 
 const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",

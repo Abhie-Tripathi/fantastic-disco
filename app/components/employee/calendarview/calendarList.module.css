@@ -18,14 +18,14 @@
     /* bottom: 0px; */
     z-index: 10;
     position: fixed;
-    top: 80px;
+    top: 70px;
 }
 
 .eventList {
     display: none;
     width: 30vw;
     /* height: 80vh; */
-    height: calc(100vh - 80px);
+    height: calc(100vh - 70px);
     background-color: var(--primary-foreground);
     padding: 0px 20px;
     overflow: hidden;

@@ -444,6 +444,9 @@ const WeekCalendar = (props: WeekCalendarProps) => {
   useEffect(() => {
     if(props.queryString)
       fetchEventsData();
+    else {
+      setIsLoaded(true);
+    }
   }, [weekDates, props.queryString]);
 
   useEffect(() => {

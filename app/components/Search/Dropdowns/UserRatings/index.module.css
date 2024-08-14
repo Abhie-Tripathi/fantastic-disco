@@ -1,5 +1,7 @@
 .container {
-  width: var(--trigger-width);
+  /* width: var(--trigger-width); */
+  width: 18vw;
+  margin-left: -16px;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   height: fit-content;
   background-color: var(--primary-foreground);

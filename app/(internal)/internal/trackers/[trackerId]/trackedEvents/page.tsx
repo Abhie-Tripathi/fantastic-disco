@@ -206,7 +206,9 @@ const Page = ({ params }: { params: any }) => {
   }, [active]);
   const formatCount = (count: number) => {
     if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`;
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+        return `${Math.floor(value)}k`;
     }
     console.log(count);
     return count;

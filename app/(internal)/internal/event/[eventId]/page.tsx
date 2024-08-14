@@ -86,7 +86,8 @@ function formatEventDates(startDate: string, endDate: string) {
               return (
                 new Date(startDate).toLocaleDateString("en-GB", {
                   weekday: 'long',
-                  month: "short",
+                }) + ', ' +
+                new Date(startDate).toLocaleDateString("en-GB", {
                   day: "2-digit",
                 }) + ' - ' +
                 new Date(endDate).toLocaleDateString("en-GB", {
@@ -200,14 +201,16 @@ const InsightsPage = () => {
             </div>
           }
           <div className={styles.actionContainer}>
-            <div className={styles.eventRating}>
-              {eventDetail.stats.rating.toFixed(1)}
-              <StarFill color={'orange'} height="16px" width="16px" style={{verticalAlign: 'baseline'}} />
-            </div>
-            <div className={styles.eventActions}>
+            {eventDetail.stats.rating > 0 &&
+              <div className={styles.eventRating}>
+                {eventDetail.stats.rating.toFixed(1)}
+                <StarFill color={'orange'} height="16px" width="16px" style={{verticalAlign: 'baseline'}} />
+              </div>
+            }
+            {/* <div className={styles.eventActions}>
               <Globe color={"var(--secondary-text-color)"} height="16px" width="16px" />
               <Bookmark color={"var(--secondary-text-color)"} height="16px" width="16px" />
-            </div>
+            </div> */}
           </div>
           <div className={styles.eventTitle}>{eventDetail?.name}</div>
           <div className={styles.date_loactionContainer}>
@@ -229,7 +232,7 @@ const InsightsPage = () => {
             </div>
             <div className={styles.locationContainer}>
               <div className={styles.locationIconContainer}>
-                <Location color={theme === "dark" ? "white" : ""} />
+                <Location color={"var(--secondary-text-color)"} />
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>
@@ -247,7 +250,7 @@ const InsightsPage = () => {
             </div>
             <div className={styles.locationContainer}>
               <div className={styles.locationIconContainer}>
-                <Buildings color={theme === "dark" ? "white" : ""} />
+                <Buildings color={"var(--secondary-text-color)"} />
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>

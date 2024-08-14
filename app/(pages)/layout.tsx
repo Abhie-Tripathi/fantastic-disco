@@ -33,7 +33,7 @@ export default function RootLayout({
         <AuthContextProvider>
           <ThemeProvider>
             <Navbar />
-            <div style={{ paddingTop: "80px" }}>{children}</div>
+            <div style={{ paddingTop: "70px" }}>{children}</div>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>

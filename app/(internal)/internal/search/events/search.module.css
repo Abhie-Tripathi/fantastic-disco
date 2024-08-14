@@ -121,7 +121,7 @@
 
 .inputdropdowns_container {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0px, 245px));
+  grid-template-columns: repeat(4, minmax(0px, 18vw));
   gap: 15px 25px;
 }
 
@@ -228,6 +228,7 @@
 
 .dropdown_button {
   color: inherit;
+  width: 100%;
 }
 
 .createtracker_button {
@@ -444,17 +445,13 @@ input:checked + .slider:before {
   position: absolute;
   max-height: 40vh;
   overflow-y: auto;
-  width: calc(100vw - 135px);
-  background-color: #1a1a1a;
+  width: calc(100vw - 115px);
+  background-color: var(--background-secondary-color);
   /* background-color: #131313; */
   z-index: 1;
   padding: 10px 0;
   border-radius: 14px;
   box-shadow: 2px 2px 12px 6px #0000000d;
-}
-
-.resultContainer_light {
-  background-color: #ffffff;
 }
 
 .resultData_heading {
@@ -572,4 +569,8 @@ input:checked + .slider:before {
   cursor: unset;
   background-color: var(--disabled-btn-color);
   border-radius: var(--border-radius-sm);
+}
+
+.input_title {
+  text-align: start;
 }

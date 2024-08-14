@@ -41,12 +41,23 @@
     font-size: 11px;
     /* color: black; */
 }
-.radiusContainer .radiusValue{
+.inputContainer{
     border-radius: 5px;
     width: 70px;
-    font-size: 10px;
     line-height: 14px;
-    padding: 5px 24px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px 5px 25px;
+    font-size: 10px;
+}
+.inputContainer input{
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    font-size: 10px;
+}
+.inputContainer input:focus{
+    outline: none;
 }
 .arrows{
     display: flex;

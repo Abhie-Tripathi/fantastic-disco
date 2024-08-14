@@ -19,7 +19,9 @@
     width: 50%;
     height: 120%
 }
-
+.fullPreview{
+    width: 100%;
+}
 .blackScreen {
     position: absolute;
     top: 50%;

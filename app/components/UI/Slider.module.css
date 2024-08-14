@@ -8,6 +8,7 @@
   background-color: var(--primary-foreground);
   color: inherit;
   border-radius: var(--border-radius-sm);
+  margin-left: -16px;
 }
 .slider {
   width: 350px;

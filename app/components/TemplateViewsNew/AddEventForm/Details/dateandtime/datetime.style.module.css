@@ -102,6 +102,7 @@
   width: 25%;
   position: relative;
   height:78px;
+  cursor: pointer;
 }
 
 .timeZonesContainer .header {

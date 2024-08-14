@@ -1,20 +1,128 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AddedEventsType } from '@/types/addedeventtype';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface Props {
     handleAddEventModal: (value: void) => void
-    fetchedAddedEvents : AddedEventsType[]
-    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
+    fetchedAddedEvents: AddedEventsType[]
+    handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
+    widgetId: string;
+    fetchAddedEvents: () => Promise<void>;
+    fetchEvents: () => Promise<void>;
 }
 
-const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAddedEvent }: Props) => {
+const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents }: Props) => {
+
+    const [check, setCheck] = useState<boolean>(true)
+    const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
     };
+
+    useEffect(() => {
+        const handleOtherDataFetch = async () => {
+            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
+                fetchedAddedEvents.map(async (event) => {
+                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                    if (error) {
+                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                        return null; 
+                    }
+                    if(data){
+                        console.log("data of fetched event : ",)
+                    }
+                    return {
+                        id: event.id,
+                        name: data.data[0].name,
+                        pageBgColor: event.pageBgColor,
+                        description: data.data[0].data.description,
+                        eventFont: event.eventFont,
+                        startDate: data.data[0].data.start_date,
+                        endDate: data.data[0].data.end_date,
+                        startTime: data.data[0].data.start_time,
+                        endTime: data.data[0].data.end_time,
+                        timeZone: data.data[0].data.gmt_time,
+                        cityName: data.data[0].data.location_city,
+                        countryName: data.data[0].data.location_country,
+                        participationType: data.data[0].data.participationType,
+                        eventFormat: data.data[0].data.format,
+                        registerBtnColor: event.registerBtnColor,
+                        registerBtnText: event.registerBtnText,
+                        registerMessage: event.registerMessage,
+                        boothNumber: event.boothNumber,
+                        speakerProfilesData: event.speakerProfilesData,
+                        participationMessage: event.participationMessage,
+                        bannerUrl: event.bannerUrl
+                    } as PrefilledAddedEventsType;
+                })
+            );
+            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+        };
+
+        handleOtherDataFetch();
+    }, [fetchedAddedEvents]);
+
+    useEffect(()=>{
+        console.log("other data : ", fetchedAddedOtherData)
+    },[fetchedAddedOtherData])
+
+    // This function is to trigger the delete event function from added events
+    const handleCheckboxChange = async (eventId: string) => {
+        const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
+        if (!updatedEvents) return;
+        try {
+            await updateWidget(widgetId, updatedEvents, eventId);
+        } catch (error) {
+            console.error('Failed to update events:', error);
+        }
+    };
+    const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventId: string) => {
+        const customizedFormData = new FormData();
+
+        const otherData = {
+            event: updatedEvents,
+        };
+
+        // const updatedIds = eventIds.join(',')
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("otherdata", JSON.stringify(otherData));
+
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData
+        })
+        if (data) {
+            handleEventIdDelete(eventId)
+            fetchAddedEvents()
+            fetchEvents()
+        }
+        if (error) {
+            console.log(error)
+        }
+    };
+
+    const handleEventIdDelete = async (eventId: string) => {
+        const customizedFormData = new FormData();
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("eventId", eventId)
+        customizedFormData.append("published", "false")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData
+        })
+        if (data) {
+            console.log(data)
+        } if (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
@@ -23,7 +131,7 @@ const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAdd
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>
-                {fetchedAddedEvents?.map((event, key) => (
+                {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
@@ -45,12 +153,13 @@ const EventsAdded = ({ handleAddEventModal,fetchedAddedEvents,handlePrefilledAdd
                                     type="checkbox"
                                     id={key.toString()}
                                     className={styles.checkboxInput}
-                                    checked
+                                    checked={check}
+                                    onChange={() => handleCheckboxChange(event.id)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
                             <div className={styles.promotEditBtnContainer}>
-                                <div onClick={()=>handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span></div>
+                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span></div>
                                 <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>
                             </div>
                         </div>

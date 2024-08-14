@@ -34,6 +34,16 @@ const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated,flex }:
         }
     };
 
+    const handleHexInputChange = (hexColor: string) => {
+        setValueUpdated(true);
+        setColor(hexColor);
+        const updatedColors = [...extractedColors];
+        if (selectedColorIndex !== null) {
+            updatedColors[selectedColorIndex] = hexColor;
+            setExtractedColors(updatedColors);
+        }
+    };
+
     return (
         <div className={`${styles.body} ${!flex ?styles.columnbody:""}`}>
             <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer:""}`}>
@@ -49,7 +59,7 @@ const BrandColor = ({ extractedColors,setExtractedColors,setValueUpdated,flex }:
                     ))}
                 </div>
                 <div className={styles.pickColorContainer}>
-                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} handleChange={handleChange} />
+                    <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} handleChange={handleChange} handleHexInputChange={handleHexInputChange}/>
                 </div>
             </div>
         </div>

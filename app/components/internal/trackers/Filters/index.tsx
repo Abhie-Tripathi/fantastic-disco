@@ -7,6 +7,7 @@ import Url from '/public/url.svg'
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
+import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 import EventType from "@/app/components/Search/Dropdowns/EventType";
@@ -32,7 +33,6 @@ import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import Loading from "@/app/components/UI/Loading";
 import { searchEvents } from "@/services/eventsService";
-import { convertToYYYYMMDD } from "@/utils/dateFormat";
 import {
   Button,
   Dialog,
@@ -155,6 +155,7 @@ const templates = [
         img: Url,
         type: "text",
         placeholder: "Add Competitor Website",
+        required:true,
       }
     ]
   },
@@ -241,11 +242,13 @@ const templates = [
         img: Name,
         type: "text",
         placeholder: "Speaker's Name",
+        required:true,
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
+        required:true,
       }
     ]
   },
@@ -486,9 +489,9 @@ const Pages = () => {
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-
-
-
+    if (type === "T_COMPETITOR" && websites.length===0){
+      setIsMandatory(true);
+    }
     GAEvent(
       "trackers",
       "Tracker",
@@ -1140,7 +1143,7 @@ const Pages = () => {
       [index]: value
     }));
   };
-  let valid = true;
+  const [valid,setValid]=useState(true);
   const addNew = () => {
     if (!template) {
       console.error('Template is not found');
@@ -1149,6 +1152,7 @@ const Pages = () => {
 
     const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     let isValid = true;
+    if(template.type==="enabled"){
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
@@ -1162,8 +1166,9 @@ const Pages = () => {
         } else {
           if (value !== null && value.trim() !== '') {
             acc[inputArea.placeholder] = value;
-          } else {
+          } else {   
             isValid = false;
+            setValid(false);
           }
         }
         return acc;
@@ -1176,10 +1181,12 @@ const Pages = () => {
         ]);
         setInputValues({});
       } else {
+        setValid(false);
         console.error('Invalid input or URL');
       }
 
-    }
+    }else setValid(false);
+  }
   }
   console.log(valid);
   const truncate = (val: string) => {
@@ -1207,7 +1214,26 @@ const Pages = () => {
     if (intScore === "medium") setSelectedINScore(50);
     if (intScore === "high") setSelectedINScore(100);
   }, [intScore])
+useEffect(()=>{
+  if(valid===false) setValid(true);
+  if(isMandatory) setIsMandatory(false);
+},[inputValues])
+const dateShowFormatter = (selectedDateRange: string[]) => {
+  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+    selectedDateRange[0]
+  ).split(" ");
+  const [edDay, edMonth, edYear] = convertToCustomFormat(
+    selectedDateRange[1]
+  ).split(" ");
 
+  if (sdMonth === edMonth && sdYear === edYear) {
+    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+  }
+  if (sdYear === edYear) {
+    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+  }
+  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
+};
   return (
     <>
       <div
@@ -1249,7 +1275,7 @@ const Pages = () => {
           className={styles.searchContainer}
           style={{
             border:
-              isMandatory && trackerName.length === 0 ? "2px solid red" : "",
+              isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
           }}
         >
           <input
@@ -1314,12 +1340,9 @@ const Pages = () => {
             {template?.inputAreas &&
               <div className={`${styles.competitor}`} style={{ padding: "5px", borderRadius: "var(--border-radius-sm)" }}>
                 <div className={styles.subHeading}>{template.description}</div>
-                {!valid && (
-                  <div style={{ color: "red" }}>Invalid input&apos;s</div>
-                )}
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
-                    <div key={index} className={styles.singleInputArea}>
+                    <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
                         className={styles.textArea}
@@ -1336,6 +1359,7 @@ const Pages = () => {
                   >
                     <Image src={Add} alt="add_Icon" />
                   </div>
+                  
                 </div>
                 {/* {customData.map((item:any, index:number) => (
         // <div key={index} className={styles.customDataOuterDiv}>
@@ -1348,6 +1372,9 @@ const Pages = () => {
           </div>
         ))}
       ))} */}
+      {!valid && (
+                  <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                )}
                 {customData.map((item: any, index: number) => (
                   <div key={index} className={styles.customDataOuterDiv}>
                     <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
@@ -1376,7 +1403,7 @@ const Pages = () => {
                           {
                             selectedEventType?.length == 1 ? (
                               <span className={styles.input_selected_title}>
-                                {selectedEventTypeName}
+                                {selectedEventType[0]}
                               </span>
                             ) : (
                               selectedEventType?.length > 1 ? (
@@ -1488,7 +1515,7 @@ const Pages = () => {
                     <div className={styles.input_container}
                       style={{
                         border:
-                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "2px solid red" : "",
+                          isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid var(--danger-text-color)" : "",
                       }}
                     >
                       <div className={styles.input}>
@@ -1543,11 +1570,7 @@ const Pages = () => {
                           {selectedDateRange.length > 0 &&
                             selectedDateRange[0] !== null ? (
                             <span className={styles.input_selected_title}>
-                              {`${convertISOToOriginalFormat(
-                                selectedDateRange[0]
-                              )} - ${convertISOToOriginalFormat(
-                                selectedDateRange[1]
-                              )}`}
+                              {dateShowFormatter(selectedDateRange)}
                             </span>
                           ) : (
                             ""

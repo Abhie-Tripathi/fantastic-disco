@@ -4,10 +4,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const usePosterGenerator = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [height, setHeight] = useState<number>(0)
+  const [width, setWidth] = useState<number>(0)
 
-  const generatePrompt = async (location: string, description: string, eventname : string) => {
+  const generatePrompt = async (location: string, description: string, eventname : string, bannerwidth : number, bannerheight:number) => {
     try {
+      setHeight(bannerheight)
+      setWidth(bannerwidth)
       setIsLoading(true);
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API as string);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -23,6 +27,8 @@ const usePosterGenerator = () => {
   };
 
   const generatePoster = async () => {
+    console.log("height : ", height)
+    console.log("width : ", width)
     const apiKey = process.env.NEXT_PUBLIC_RUNPOD_API;
     if (prompt) {
       const options: RequestInit = {
@@ -37,8 +43,8 @@ const usePosterGenerator = () => {
             prompt,
             num_inference_steps: 25,
             refiner_inference_steps: 50,
-            width: 1024,
-            height: 1024,
+            width: width,
+            height: height,
             guidance_scale: 7.5,
             strength: 0.3,
             seed: null,
