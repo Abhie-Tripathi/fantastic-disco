@@ -42,7 +42,6 @@ export default function RootLayout({
             <div className="desktop_view tablet_view">
               <Sidebar />
             </div>
-
             <Navbar />
             <div className="body_layout">{children}</div>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />

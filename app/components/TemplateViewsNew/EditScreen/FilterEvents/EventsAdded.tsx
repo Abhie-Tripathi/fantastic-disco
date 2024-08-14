@@ -51,7 +51,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         timeZone: data.data[0].data.gmt_time,
                         cityName: data.data[0].data.location_city,
                         countryName: data.data[0].data.location_country,
-                        participationType: data.data[0].data.participationType,
+                        // participationType: data.data[0].data.participationType,
                         eventFormat: data.data[0].data.format,
                         registerBtnColor: event.registerBtnColor,
                         registerBtnText: event.registerBtnText,
@@ -59,7 +59,12 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         boothNumber: event.boothNumber,
                         speakerProfilesData: event.speakerProfilesData,
                         participationMessage: event.participationMessage,
-                        bannerUrl: event.bannerUrl
+                        bannerUrl: event.bannerUrl,
+                        latitude : event.latitude,
+                        longitude : event.longitude,
+                        venue : event.venue
+                        
+                        
                     } as PrefilledAddedEventsType;
                 })
             );
@@ -127,7 +132,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
-                <button onClick={() => handleAddEventModal()}>Add Event</button>
+                <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.allEventsContainer}>

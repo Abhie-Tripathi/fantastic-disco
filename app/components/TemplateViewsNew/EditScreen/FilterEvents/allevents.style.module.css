@@ -30,6 +30,11 @@
     align-items: center;
     justify-content: center;
 }
+.headerContainer .addBtnContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .headerContainer button{
     color: white;
     background-color: #6750a4;

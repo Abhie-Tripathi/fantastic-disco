@@ -19,10 +19,20 @@
 .fullPreview{
     width: 100%;
 }
-.preview_btnContainer{
-    margin-top: 20px;
-    height:95%;
+.previewBtnContainer{
     width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 10px;
+}
+.previewBtn{
+    background-color: #6750A4;
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    width: 300px;
+    height: 41px;
 }
 .styleBtns{
     display: flex;

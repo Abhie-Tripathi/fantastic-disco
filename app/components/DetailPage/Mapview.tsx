@@ -11,15 +11,16 @@ interface MapProps {
     longitude: number;
     width : number;
     zoom: number;
+    venue? : string;
 }
 
-const Mapview = ({ latitude, longitude, zoom, width }: MapProps) => {
+const Mapview = ({ latitude, longitude, zoom, width,venue }: MapProps) => {
 
     return (
         <div className={styles.body}>
             <div className={styles.heading}>Location</div>
             <div className={styles.line}></div>
-            <div className={styles.venue}>Via Angelo della Pergola, 11/4</div>
+            <div className={styles.venue}>{venue ? venue : "Via Angelo della Pergola, 11/4"}</div>
             <div className={styles.map} style={{ width: width, height: 200, marginTop:24}}>
                 <Map
                     initialViewState={{
