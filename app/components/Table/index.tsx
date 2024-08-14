@@ -1018,11 +1018,11 @@ const [val,setVal]=useState(1);
                 {showInsights.global && (
                   <td>
                     {event["internationalAudience%"] !== undefined ? (
-                      event["internationalAudience%"] == "High" ? (
+                      event["internationalAudience%"] == "high" ? (
                         <span className={styles.badge_success}>High</span>
-                      ) : event["internationalAudience%"] == "Medium" ? (
+                      ) : event["internationalAudience%"] == "medium" ? (
                         <span className={styles.badge_primary}>Medium</span>
-                      ) : event["internationalAudience%"] == "Low" ? (
+                      ) : event["internationalAudience%"] == "low" ? (
                         <span className={styles.badge_danger}>Low</span>
                       ) : (
                         <></>
