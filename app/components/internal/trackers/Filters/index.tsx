@@ -60,7 +60,7 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import { Plus } from "geist-icons";
+import { ChevronDown, Plus } from "geist-icons";
 interface FilterValue {
   labels: string;
   name: string;
@@ -1395,13 +1395,16 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
             }
           </div>
         }
-        {/* <div className={styles.hideFilters}>
-          <div>
-          <Plus />
-          </div>
-          <div>Additional filters</div>
-          <div></div>
-        </div> */}
+        {type!=="CUSTOM" && 
+        <div className={`card ${styles.hiddenFilters}`}>
+        <div className={styles.hiddenFiltersInnerDiv}>
+        <Plus />
+        <div className={styles.hiddenFilterHeading}>Additional filters</div>
+        </div>
+        <div><ChevronDown /></div>
+      </div>
+        }
+        
         <Suspense fallback={<Loading />}>
           <div className={styles.container}>
             <div className={styles.sub_container}>
