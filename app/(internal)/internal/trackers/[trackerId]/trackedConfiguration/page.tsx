@@ -488,8 +488,8 @@ const userRating=
       <div className={styles.innerContainerRight}>
         <Insights
           exhibitScore={
-            data?.tracker?.filterValue?.eventSize
-              ? data?.tracker?.filterValue?.eventSize?.split(",")
+            data?.tracker?.filterValue?.estimatedExhibitScore
+              ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
               : []
           }
           internationalScore={data?.tracker?.filterValue?.internationalScore}
