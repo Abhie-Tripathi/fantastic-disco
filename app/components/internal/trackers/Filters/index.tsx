@@ -60,7 +60,6 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import { ChevronDown, Plus } from "geist-icons";
 interface FilterValue {
   labels: string;
   name: string;
@@ -93,7 +92,6 @@ interface FilterValue {
   editionRange: number;
   eventSize: any;
   eventCity: any;
-  estimatedExhibitScore:string;
   eventCountry: any;
   eventRegion: string;
   eventType: string[];
@@ -269,18 +267,13 @@ const templates = [
   {
     name: "T_PRODUCT_KEYWORDS",
     templateName: "Product Keywords",
-    type: "enabled",
     description: "List all the events which belongs to given industry or associated with keywords :",
-    inputAreas: [
-      {
-        type: "text",
-        placeholder: "Keywords Included",
-      },
-      {
-        type: "text",
-        placeholder: "Keywords Excluded",
-      }
-    ]
+    // inputAreas: [
+    //   {
+    //     type: "text",
+    //     placeholder: "Keywords",
+    //   }
+    // ]
   }
 ]
 const Pages = () => {
@@ -554,7 +547,7 @@ const Pages = () => {
             eventCategory: selectedCategories.join(","),
           }),
           ...(selectedExhibitScore?.length > 0 && {
-            estimatedExhibitScore: selectedExhibitScore.join(","),
+            eventSize: selectedExhibitScore.join(","),
           }),
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
@@ -735,7 +728,7 @@ const Pages = () => {
             eventCategory: selectedCategories.join(","),
           }),
           ...(selectedExhibitScore?.length > 0 && {
-            estimatedExhibitScore: selectedExhibitScore.join(","),
+            eventSize: selectedExhibitScore.join(","),
           }),
           brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
@@ -1081,9 +1074,9 @@ const Pages = () => {
           : []
       );
       setSelectedExhibitScore(
-        editData.tracker.filterValue?.estimatedExhibitScore &&
-          editData.tracker.filterValue?.estimatedExhibitScore?.length !== 0
-          ? editData.tracker.filterValue?.estimatedExhibitScore?.split(",")
+        editData.tracker.filterValue?.eventSize &&
+          editData.tracker.filterValue?.eventSize?.length !== 0
+          ? editData.tracker.filterValue?.eventSize?.split(",")
           : []
       );
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
@@ -1396,16 +1389,6 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
             }
           </div>
         }
-        {type!=="CUSTOM" && 
-        <div className={`card ${styles.hiddenFilters}`}>
-        <div className={styles.hiddenFiltersInnerDiv}>
-        <Plus />
-        <div className={styles.hiddenFilterHeading}>Additional filters</div>
-        </div>
-        <div><ChevronDown /></div>
-      </div>
-        }
-        
         <Suspense fallback={<Loading />}>
           <div className={styles.container}>
             <div className={styles.sub_container}>

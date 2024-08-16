@@ -847,7 +847,7 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {appliedKeywords.length > 0 && (
+                {appliedKeywords?.length > 0 && (
                   <>
                     <td style={{textAlign: "center"}}>
                       {event.matchedKeywords.length == 0 ? (
@@ -874,7 +874,7 @@ const [val,setVal]=useState(1);
                         </>
                       )}
                     </td>
-                    {appliedKeywords.length >= 5 && (
+                    {appliedKeywords?.length >= 5 && (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
