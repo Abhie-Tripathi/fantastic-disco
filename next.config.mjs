@@ -11,7 +11,8 @@ const config = {
           'cdn.choosechicago.com',
           'api.eventgeni.com',
           'logo.clearbit.com',
-          'c1.10times.com'
+          'c1.10times.com',
+          'oaidalleapiprodscus.blob.core.windows.net'
         ],
   },
   experimental: {

@@ -1,15 +1,23 @@
 .body {
     display: flex;
+    flex-direction: column;
     align-content: center;
     position: relative;
     gap: 30px;
 }
-
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header .btn{
+    cursor: pointer;
+}
 .headingContainer {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    width: 30%;
+    cursor: pointer;
 }
 .heading {
     font-size: 14px;
@@ -22,8 +30,7 @@
 .editContainer{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 65%;
+    gap: 20px;
 }
 .backgroundContainer {
     display: flex;

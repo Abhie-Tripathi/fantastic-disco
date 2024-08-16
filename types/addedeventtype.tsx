@@ -9,6 +9,9 @@ export interface AddedEventsType {
     speakerProfilesData : SpeakerProfileType[],
     participationMessage : string,
     bannerUrl : string;
+    latitude?: number;
+    longitude?: number;
+    venue?: string;
   }
   interface SpeakerProfileType {
     id: string;

@@ -6,9 +6,10 @@ import { parseDate } from '@internationalized/date';
 interface Props {
     setDate: (value: string) => void
     dateValue: string
+    minDate?: string; 
 }
 
-const CalendarDropdown = ({ setDate, dateValue }: Props) => {
+const CalendarDropdown = ({ setDate, dateValue,minDate }: Props) => {
 
     const handleChange = (newDate: any) => {
         const formattedDate = newDate.toString(); // Assuming newDate is an instance of CalendarDate from @internationalized/date
@@ -16,7 +17,7 @@ const CalendarDropdown = ({ setDate, dateValue }: Props) => {
     };
 
     return (
-        <Calendar aria-label="Appointment date" className={styles.react_aria_Calendar} defaultValue={parseDate(dateValue)} onChange={handleChange}>
+        <Calendar aria-label="Appointment date" className={styles.react_aria_Calendar} defaultValue={parseDate(dateValue)} onChange={handleChange} minValue={minDate ? parseDate(minDate) : undefined}>
             <header>
                 <Heading className={styles.react_aria_Heading} />
                 <div>

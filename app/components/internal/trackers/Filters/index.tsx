@@ -1163,6 +1163,7 @@ const Pages = () => {
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
+        
         if (inputArea.placeholder === 'Add Competitor Website') {
           if (regex.test(value.trim())) {
             acc[inputArea.placeholder] = value;

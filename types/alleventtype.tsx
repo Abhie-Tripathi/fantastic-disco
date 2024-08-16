@@ -11,5 +11,5 @@ export interface AllEventsType {
   format: string;
   isLinkedToWidget: boolean;
   gmtZone: string;
-  participationType: string;
+  interest: string;
 }

@@ -118,10 +118,6 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
-    useEffect(() => {
-        console.log("other data : ", fetchedAddedOtherData)
-    }, [fetchedAddedOtherData])
-
     const handleDraftWidgets = async (navigate: boolean) => {
         if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard) {
             console.error('Missing required data');
@@ -171,10 +167,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         }
     };
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body}  ${theme === "dark" ? styles.darkBody : ""}`} >
             <div className={styles.heading_btnContainer}>
-                <div className={styles.heading}>Preview</div>
-                {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LScroll" || selectedTemplate === "RScroll" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
+                {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LSR" || selectedTemplate === "RSR" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
                     <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
                         <button
                             className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
@@ -197,16 +192,16 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     </div>
                 )}
 
-                <div className={styles.viewBtnContainer}>
-                    <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
-                    <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div>
+                <div className={styles.viewBtnContainer} style={{position:"absolute", right : 10, top : selectedCard ? 10 : 0}}>
+                    {/* <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
+                    <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div> */}
                     <div onClick={() => setIsFullScreen(!isFullScreen)}>
                         {isFullScreen ? <CloseFullScreenIcon  color={theme === "dark" ? "white" : "black"}/>: <FullScreenIcon color={theme === "dark" ? "white" : "black"} />}
                         </div>
                 </div>
             </div>
             <div className={styles.preview_btnContainer}>
-                <div className={`${styles.preview} ${theme === "dark" ? styles.darkPreview : ""}`}>
+                <div className={styles.preview} style={{height : draftWidget ? "70%" : "100%"}} >
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                             selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :

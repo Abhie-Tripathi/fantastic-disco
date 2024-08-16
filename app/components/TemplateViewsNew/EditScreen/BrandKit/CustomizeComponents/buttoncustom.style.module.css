@@ -1,15 +1,23 @@
 .body {
     display: flex;
+    flex-direction: column;
     align-content: center;
     position: relative;
     gap: 30px;
 }
-
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header .btn{
+    cursor: pointer;
+}
 .headingContainer {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    width: 30%;
+    cursor: pointer;
 }
 
 .heading {
@@ -19,10 +27,6 @@
 .subheading {
     font-size: 10px;
     color: #A8A8A8;
-}
-
-.editContainer {
-    width: 70%;
 }
 
 .btnPreviewContainer {
