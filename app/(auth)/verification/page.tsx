@@ -133,7 +133,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
             for a quick verification code.
           </div>
 
-          <div className={styles.heading}>Enter OTP</div>
+          <div className={styles.heading}>Enter 4 Digit OTP</div>
 
           <OtpInput
             containerStyle={styles.input_container}
@@ -147,12 +147,12 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
             )}
             shouldAutoFocus={true}
             inputStyle={{
-              fontSize: "24px",
+              width:"40px",
+              height:"40px",
               fontFamily: "inherit",
               outline: "none",
               border: "1px solid #e6e6e6",
-              borderRadius: "10px",
-              width: "100%",
+              borderRadius: "var(--border-radius-sm)",
               textAlign: "center",
               borderColor: errors.otpError && "#f15050",
             }}
