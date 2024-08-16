@@ -364,7 +364,6 @@ const Page = ({ params }: { params: any }) => {
       setShowInsights(prev=>({...prev, keywords:keywords}));
     }
  },[trackerDetail])
- console.log(showInsights);
  
   return (
     <div className={styles.container}>
