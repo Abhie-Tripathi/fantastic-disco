@@ -1,11 +1,5 @@
 import React, { useState, useRef, RefObject, useEffect } from 'react'
 import Image from 'next/image'
-import DropDown from './commondropdown/DropDown';
-import {
-    Button,
-    MenuTrigger,
-    Popover,
-  } from "react-aria-components";
 import YourEventCard from './YourEventCard'
 import Search from '/public/search.svg'
 import styles from './internal.style.module.css'
@@ -26,8 +20,6 @@ interface Props{
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
     let prevDate: any = null;
     const { theme } = useTheme();
-    const status=["Shortlisted", "Pending"];
-    const participants=["Attendee", "Exhibitor", "Speaker", "Sponsor"];
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
@@ -35,17 +27,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [coordinateCount,setCoordinateCount]=useState<any>();
-    const [selectedStatusType, setSelectedStatusType] = useState<string[]>([]);
-    const [selectedParticipantType, setSelectedParticipantType] = useState<string[]>([]);
-    const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
-    const [popoverState, setPopoverState] = useState<boolean | null>(null);
-    const [selectedParticipantTypeName,setSelectedParticipantTypeName]=useState<string>('');
-      const setMenuOpen = () => {
-          if(popoverState === null) {
-            setPopoverState(false);
-          }else
-            setPopoverState(!popoverState);
-        };
     const handleScrollEnd = () => {
         setTimeout(() => {
             if(!noMoreData) setPage(prevPage => prevPage + 1);
@@ -64,34 +45,12 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         };
         getCordinateList();
       }, []);
-      const [statusType,setStatusType]=useState("PENDING");
-      const [participant,setParticipant]=useState("");
-      useEffect(()=>{
-        if(selectedParticipantType.length>0) {
-            setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
-        }else{
-          // setStatusType("PENDING");
-          setParticipant("");
-        } 
-        setPage(1);
-      },[selectedParticipantType])
-      useEffect(()=>{
-        if(selectedStatusType.length>0) {
-            setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
-        }else{
-         setStatusType("PENDING");
-        }
-        setPage(1);
-      },[selectedStatusType])
     const fetchData = async () => {
         console.log('fetching data... page=', page);
         if(page > 0) {
-            // setIsLoaded(false);
-            let apiUrl="";
+            setIsLoaded(false);
             try {
-            apiUrl = `${baseUrl}/userInterest?status=${statusType}&limit=10&offset=${(page-1)*10}${
-              participant.length > 0 ? `&interest=${participant}` : ''
-          }`;
+            const apiUrl = baseUrl + "/userInterest?status=PENDING&limit=10&offset=" + (page-1)*10;
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
@@ -137,6 +96,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         };
     }, [handleScrollEnd]);
 
+    useEffect(() => {
+        if(page>0)
+            fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
 
     useEffect(() => {
         if(page == 1)
@@ -145,13 +109,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             setPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardUpdated]);
-    useEffect(()=>{
-      if(page>0)
-        fetchData();
-    },[statusType, participant, page])
+
     if (!isLoaded && page <= 1) {
         return <div style={{padding: "50px"}}><Loading /></div>;
-    } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0 && page <= 1) {
+    } else if (isLoaded && eventData1.length == 0 && page <= 1) {
         return (
             <div className={styles.noData}>
                 An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
@@ -165,144 +126,68 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     <div className={styles.countsContainer}>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[1]?.count}</div>
-            <div className={styles.countTitle}>Exhibit</div>
+            <div className={styles.countTitle}>Exhibitors</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[2]?.count}</div>
-            <div className={styles.countTitle}>Sponsor</div>
+            <div className={styles.countTitle}>Sponsors</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[3]?.count}</div>
-            <div className={styles.countTitle}>Speak</div>
+            <div className={styles.countTitle}>Speakers</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[4]?.count}</div>
-            <div className={styles.countTitle}>Attend</div>
+            <div className={styles.countTitle}>Attendee</div>
         </div>
     </div>
-    <div className={styles.filters}>
-        {/* <div className={styles.searchBar}>
+    {/* <div className={styles.filters}>
+        <div className={styles.searchBar}>
             <input className={styles.textArea} type='text' placeholder='Search Event'/>
-        </div> */}
-         <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.dropdown_button}>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Status
-                        {/* {
-                          selectedStatusType?.length == 1 ? (
-                            <span className={styles.input_selected_title}>
-                              {selectedStatusTypeName}
-                            </span>
-                          ) : (
-                            selectedStatusType?.length > 1 ? (
-                              <span className={styles.input_selected_no}>
-                                {selectedStatusType.length}
-                              </span>
-                            ) : <></>
-                          )
-                        } */}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  <DropDown
-                    status={status}
-                    state={selectedStatusType}
-                    setState={setSelectedStatusType}
-                    selectedEventTypeName={selectedStatusTypeName}
-                    setSelectedEventTypeName={setSelectedStatusTypeName}
-                  />
-                </Popover>
-              </MenuTrigger>
-        <div className={styles.participantDropdown}>
-        <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.dropdown_button}>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                       Participant Type
-                        {/* {
-                          selectedParticipantType?.length == 1 ? (
-                            <span className={styles.input_selected_title}>
-                              {selectedParticipantType}
-                            </span>
-                          ) : (
-                            selectedParticipantType?.length > 1 ? (
-                              <span className={styles.input_selected_no}>
-                                {selectedParticipantType.length}
-                              </span>
-                            ) : <></>
-                          )
-                        } */}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  <DropDown
-                    status={participants}
-                    state={selectedParticipantType}
-                    setState={setSelectedParticipantType}
-                    selectedEventTypeName={selectedParticipantTypeName}
-                    setSelectedEventTypeName={setSelectedParticipantTypeName}
-                  />
-                </Popover>
-              </MenuTrigger>
         </div>
+        <div className={styles.statusDropdown}>
+            <div>Status</div>
+            <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={iconClass}
+                      />
+        </div>
+        <div className={styles.participantDropdown}></div>
         <div className={styles.dateFilter}></div>
-    </div>
+    </div> */}
     <div className={styles.timelineContainer} >
-    {eventData1.length===0 ? <div className={styles.noData} style={{textAlign:"center"}}>No results containing all your search terms were found.</div>:
-    <>
     {eventData1.map((item, index) => {
-      // Check if current event's date is different from previous event's date
-      const showDate = item.startDate !== prevDate;
-      // Update previous date
-      prevDate = item.startDate;
-      return (
-          <div key={index} className={styles.timeline}>
-              <TimelineItem eventDate={showDate ? item.startDate : null} />
-              <YourEventCard
-                  eventId={item.id}
-                  enquiryId={item.enquiryId}
-                  eventName={item.name}
-                  eventLocation={item.city}
-                  eventCountry={item.country}
-                  eventImage={item?.logo}
-                  eventStartDate={item.startDate}
-                  eventEndDate={item.endDate}
-                  eventCompany={item.orgName}
-                  eventDuration={item.duration}
-                  userCount={item.userCount}
-                  currentEnquiryStatus={item.status}
-                  upvote={item.upvote}
-                  enquiryActivity={item.enquiryActivity}
-                  handleModal={handleModal}
-                  handleShortlistModal={handleShortlistModal}
-              />
-          </div>
-      );
-  })}
-  </>
-    }
-    
+        // Check if current event's date is different from previous event's date
+        const showDate = item.startDate !== prevDate;
+        // Update previous date
+        prevDate = item.startDate;
+        return (
+            <div key={index} className={styles.timeline}>
+                <TimelineItem eventDate={showDate ? item.startDate : null} />
+                <YourEventCard
+                    eventId={item.id}
+                    enquiryId={item.enquiryId}
+                    eventName={item.name}
+                    eventLocation={item.city}
+                    eventCountry={item.country}
+                    eventImage={item?.logo}
+                    eventStartDate={item.startDate}
+                    eventEndDate={item.endDate}
+                    eventCompany={item.orgName}
+                    eventDuration={item.duration}
+                    userCount={item.userCount}
+                    currentEnquiryStatus={item.status}
+                    upvote={item.upvote}
+                    enquiryActivity={item.enquiryActivity}
+                    handleModal={handleModal}
+                    handleShortlistModal={handleShortlistModal}
+                />
+            </div>
+        );
+    })}
 </div>
     {noMoreData ? 
         <></> : <Loading />

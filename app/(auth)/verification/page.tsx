@@ -122,7 +122,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
             <Image src={logo} alt="logo" />
           </div>
 
-          {/* <div className={styles.message}>
+          <div className={styles.message}>
             <span className={styles.message_highlighted}>Check your </span>
             <Image
               src={ArchiveIcon}
@@ -131,7 +131,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
             />
             <span className={styles.message_highlighted}> mailbox </span>
             for a quick verification code.
-          </div> */}
+          </div>
 
           <div className={styles.heading}>Enter 4 Digit OTP</div>
 
@@ -179,7 +179,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
                 onClick={() => resend()}
                 style={{ cursor: time === 0 ? "pointer" : "default" }}
               >
-                Resend OTP
+                Resend
               </span>
             )}
           </div>
