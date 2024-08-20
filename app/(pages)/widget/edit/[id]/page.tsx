@@ -205,6 +205,7 @@ const Page = () => {
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
         <PreviewWindow
+        widgetId={widgetId}
           selectedBtn={selectedBtn}
           selectedTemplate={selectedTemplate}
           selectedCard={cardStyle}

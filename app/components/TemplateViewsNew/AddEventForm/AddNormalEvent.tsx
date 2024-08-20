@@ -30,6 +30,9 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [textValue, setTextValue] = useState<string>(description)
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
 
+    const [latitude, setLatitude] = useState(37.7749)
+    const [longitude, setLongitude] = useState(-122.4194)
+
     const handleDescClick = () => {
         setDescription(textValue)
         setDescriptionModal(false)
@@ -67,6 +70,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             location_city: cityName,
             location_country: countryName,
             gmt_time: timeZone,
+            latitude,
+            longitude
         };
         const formData = new FormData()
         formData.append("name", eventName)
@@ -105,7 +110,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
 
                 <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                <div className={styles.locationContainer}><LocationContainer eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
 
                 <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>

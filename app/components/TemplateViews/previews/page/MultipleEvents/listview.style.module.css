@@ -7,3 +7,6 @@
     gap: 10px;
     height: 100%;
 }
+.listView div{
+    cursor: pointer;
+}
