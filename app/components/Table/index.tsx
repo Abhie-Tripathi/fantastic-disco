@@ -290,7 +290,7 @@ const Table = ({
       } else if (formData.markedInterest == "unbookmark") {
         try {
           let payloadData = {
-            eventId: formData.entityId_id,
+            eventIds: [formData.entityId_id],
           };
           const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
@@ -1064,7 +1064,7 @@ const [val,setVal]=useState(1);
                         handleModalOpen(event.id, event.eventGroupId)
                       }
                     >
-                      {bookmarkedEvent?.includes(event.eventGroupId) ? (
+                      {bookmarkedEvent?.includes(event.id) ? (
                         <BookmarkIcon fillColor={"#ff851b"} />
                       ) : (
                         <BookmarkIcon
@@ -1108,7 +1108,7 @@ const [val,setVal]=useState(1);
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              {bookmarkedEvent?.includes(event.eventGroupId) ? (
+                              {bookmarkedEvent?.includes(event.id) ? (
                                 <>
                                   <input
                                     className={styles["form-check-input"]}

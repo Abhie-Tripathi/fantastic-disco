@@ -687,8 +687,12 @@ const Search = () => {
   const [isSearchResultOpen, setSearchResultOpen] = useState<boolean>(false);
   const triggerRef = useRef<HTMLDivElement>(null);
 
+  const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
+
   const handleSearchInput = async (text: string) => {
     if (text) {
+      setEventSearchLoader(true);
+      try{
       const { data, error } = await myFetch(
         `${baseUrl}/event/search?eventName=${text}&max=5`
       );
@@ -700,6 +704,11 @@ const Search = () => {
       if (data) {
         console.log(data);
         setSearchResult(data.events);
+      }
+      } catch (error) {
+        console.error("Error :", error);
+      } finally {
+        setEventSearchLoader(false);
       }
     } else {
       setSearchResult([]);
@@ -721,6 +730,7 @@ const Search = () => {
         }
         return { ...prev, [eventId]: eventName };
       });
+      setSearchInput('');
     }
   };
 
@@ -936,7 +946,11 @@ const Search = () => {
               Recent searches
             </div> */}
             <span>
-              <Image src={SearchIcon} alt="search" className={iconClass} />
+              {eventSearchLoader ?
+                <div className={styles.loader}></div> : 
+                <Image src={SearchIcon} alt="search" className={iconClass} />
+              }
+              
             </span>
           </div>
 
