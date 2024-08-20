@@ -81,11 +81,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
     file: null
   });
-  const [mapWidth, setMapWidth] = useState(0);
+  // const [mapWidth, setMapWidth] = useState(0);
   const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
   const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
   const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
-  const mapDivRef = useRef<HTMLDivElement>(null);
+  // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handlePrefill = (profile: SpeakerProfileType) => {
@@ -116,11 +116,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     };
   }, []);
 
-  useEffect(() => {
-    if (mapDivRef.current) {
-      setMapWidth(mapDivRef.current.getBoundingClientRect().width);
-    }
-  }, [cityName])
+  // useEffect(() => {
+  //   if (mapDivRef.current) {
+  //     setMapWidth(mapDivRef.current.getBoundingClientRect().width);
+  //   }
+  // }, [cityName])
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
@@ -399,15 +399,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
           {cityName &&
-            <div className={styles.map} ref={mapDivRef}>
+            // <div className={styles.map} ref={mapDivRef}>
               <Suspense fallback={<div>Loading...</div>}>
                 <Mapview latitude={latitude}
-                  width={mapWidth}
                   longitude={longitude}
                   venue={venue}
                   zoom={6} />
               </Suspense>
-            </div>
+            // </div>
           }
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
         </div>

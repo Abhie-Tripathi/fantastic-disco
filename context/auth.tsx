@@ -119,7 +119,7 @@ export const AuthContextProvider = ({ children }: any) => {
           console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
-            router.push("/signin");
+            // router.push("/signin");
           } else {
             console.log("Data fetched:", data);
             const { id, firstname, lastname, email, role, profilePicture } =
@@ -150,7 +150,7 @@ export const AuthContextProvider = ({ children }: any) => {
           }
         } catch (err) {
           console.error("Fetch failed:", err);
-          router.push("/signin");
+          // router.push("/signin");
         }
       };
       verifyToken();
@@ -297,7 +297,7 @@ export const AuthContextProvider = ({ children }: any) => {
         (token && token.length > 0);
 
       if (!isPublicPath) {
-        router.push("/signin");
+        // router.push("/signin");
       }
     }
   }, [pathName, router, isProfileUpdated]);

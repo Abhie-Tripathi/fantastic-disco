@@ -30,7 +30,9 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
         <div className={`${styles.detailsContainer}`}>
             <div className={styles.leftSection}>
                 <div className={styles.posterContainer}>
-                    <Image src={"https://api.eventgeni.com/public/f5dff6bc-c589-49dd-bdde-f7ef407381ba2024-08-09T07:35:17.283Z.jpg"} alt='Poster' width={296} height={290} style={{ borderRadius: 20,objectFit:"cover"}} />
+                    <Image className={styles.poster} src={"https://api.eventgeni.com/public/f5dff6bc-c589-49dd-bdde-f7ef407381ba2024-08-09T07:35:17.283Z.jpg"} alt='Poster'
+                        width={296} height={290}
+                        style={{ borderRadius: 20, objectFit: "cover" }} />
                 </div>
                 <div className={styles.participationContainer}><ParticipationContainer participationMessage='We are attending' participationType='Atendee' /></div>
                 <div className={styles.shareContainer}>
@@ -39,7 +41,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                 </div>
             </div>
             <div className={styles.rightSection}>
-                <textarea className={styles.eventName} disabled maxLength={80} placeholder='Event Name' value="Dance Show" style={{fontFamily : "Arial"}}/>
+                <textarea className={styles.eventName} disabled maxLength={80} placeholder='Event Name' value="Dance Show" style={{ fontFamily: "Arial" }} />
                 <div className={styles.dateTimeContainer}><DateTimeContainer endDate="2024-08-07" startDate="2024-08-07" endTime="12:00 A.M" startTime="12:00 A.M" timeZone="GMT+05:30 Chennai" /></div>
 
                 <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName="Delhi" countryName="India" /></div>
@@ -49,7 +51,6 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
                 <div className={styles.map}>
                     <Suspense fallback={<div>Loading...</div>}>
                         <Mapview latitude={37.7749}
-                            width={600}
                             longitude={-122.4194}
                             zoom={6} />
                     </Suspense>
@@ -61,7 +62,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
 }
 const fetchData = async (widgetId: string, eventId: string) => {
     const { data, error } = await myFetch(`https://api.eventgeni.com/widget/${widgetId}?eventId=${eventId}`);
-    if(data){
+    if (data) {
         console.log(data)
     }
     return data;
