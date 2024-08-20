@@ -212,14 +212,14 @@ const Sidebar = () => {
             <div className={styles.linkName}>Event Trends</div>
           </Link>
 
-          <Link
-            href="/internal/trackers"
-            className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
-            ref={trackerRef}
-          >
-            <Tracker />
-            <div className={styles.linkName}>Trackers</div>
-          </Link>
+      <Link
+        href="/internal/trackers?tab=allTrackers"
+        className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
+        ref={trackerRef}
+      >
+        <Tracker />
+        <div className={styles.linkName}>Trackers</div>
+      </Link>
 
           <Link
             href="/internal/coordinate"

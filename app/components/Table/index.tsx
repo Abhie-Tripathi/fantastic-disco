@@ -485,6 +485,9 @@ const [val,setVal]=useState(1);
   // const fetchAllSavedEvent=aync()=>{
 
   // }
+  useEffect(()=>{
+    setAppliedKeywords(showInsights.keywords);
+  },[showInsights.keywords])
   const fetchEventsData = async () => {
     if (path[path.length - 1] === "trackedEvents") {
       const secondLast = path[path.length - 2];
@@ -703,8 +706,8 @@ const [val,setVal]=useState(1);
               <th>City</th>
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
-              {appliedKeywords.length > 0 || showInsights?.trackerKeywords && <th>Matched Keywords</th>}
-              {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && <th>Match Score</th>}
+              {appliedKeywords?.length > 0 && <th>Matched Keywords</th>}
+              {appliedKeywords?.length >= 5 && <th>Match Score</th>}
               <th>Category</th>
               {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.eventSeries ||
@@ -844,7 +847,7 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {appliedKeywords.length > 0 || showInsights?.trackerKeywords && (
+                {appliedKeywords?.length > 0 && (
                   <>
                     <td style={{textAlign: "center"}}>
                       {event.matchedKeywords.length == 0 ? (
@@ -871,7 +874,7 @@ const [val,setVal]=useState(1);
                         </>
                       )}
                     </td>
-                    {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && (
+                    {appliedKeywords?.length >= 5 && (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>

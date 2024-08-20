@@ -31,7 +31,12 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
   const upVote = () =>{
     handleVoteClick(type);
   }
-
+  const formatTag=(tag:string)=>{
+    if(tag==="Exhibiting") return "Exhibit";
+    else if(tag==="Attending") return "Attend";
+    else if(tag==="Speaking") return "Speak";
+    else if(tag==="Sponsoring") return "Sponsor";
+  }
   return(
     <div className={styles.main} >
       <div className='desktop_view'>
@@ -56,7 +61,7 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
         <Image src={upArrow} alt="up" width={16} height={16} className='icons_light'/>
         }
         
-        {type}
+        {formatTag(type)}
       </div>
     </div>
   )

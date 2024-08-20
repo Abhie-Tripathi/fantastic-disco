@@ -40,18 +40,20 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState("list");
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
-  const showInsights = {
+  const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
-    global: true,
-    reptSent: true,
-    eventRank: true,
-    matchScore: true,
-    estExhibit: true,
-    growth: true,
-    repeatSent: true,
+    global: false,
+    reptSent: false,
+    eventRank: false,
+    matchScore: false,
+    estExhibit: false,
+    growth: false,
+    repeatSent: false,
     trackerKeywords: true,
-  };
+    eventRating:false, 
+    keywords:[]
+  });
   const lineData = {
     labels: [
       "01",
@@ -340,7 +342,29 @@ const Page = ({ params }: { params: any }) => {
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
   };
-
+ console.log(trackerDetail.filterValue);
+ useEffect(()=>{
+    if(trackerDetail?.filterValue?.internationalScore){
+      setShowInsights(prev=>({...prev, global:true}));
+    }
+    if(trackerDetail?.filterValue?.reputationScore){
+      setShowInsights(prev=>({...prev, reptSent:true}));
+    }
+    if(trackerDetail?.filterValue?.trustScore){
+      setShowInsights(prev=>({...prev, repeatSent:true}));
+    }
+    if(trackerDetail?.filterValue?.estimatedExhibitScore){
+      setShowInsights(prev=>({...prev, estExhibit:true}));
+    }
+    if(trackerDetail?.filterValue?.eventRating){
+      setShowInsights(prev=>({...prev, eventRating:true}));
+    }
+    if(trackerDetail?.filterValue?.eventKeywords?.length>0){
+      const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
+      setShowInsights(prev=>({...prev, keywords:keywords}));
+    }
+ },[trackerDetail])
+ 
   return (
     <div className={styles.container}>
       <Suspense fallback={<p>Loading feed...</p>}>

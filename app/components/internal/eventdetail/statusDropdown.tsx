@@ -101,6 +101,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
                     width={16}
                     height={16}
                     className="icons"
+                    style={{transform:"rotate(180deg)"}}
                   />
           </div>
         </div>
