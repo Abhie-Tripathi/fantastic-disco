@@ -20,8 +20,8 @@ const BrandKit = ({ extractedColors, setExtractedColors,flex }: Props) => {
 
     return (
         <div className={theme==="dark"?styles.darkBody : styles.lightBody} style={{padding : flex ?"12px 36px 17px 23px":0}}>
-            <div className={styles.header} style={{padding : flex ?0:"12px 19px"}}> 
-                <div className={styles.heading} onClick={() => setAccordian(!accordian)}>
+            <div className={styles.header} style={{padding : flex ?0:"12px 19px"}} onClick={() => setAccordian(!accordian)}> 
+                <div className={styles.heading} >
                     <StarIcon color={theme === "light" ? "black" : "white"}/>
                     <span>Brand Kit</span>
                 </div>

@@ -162,9 +162,12 @@ const Page = () => {
     setPrefilledNormalEvent(event)
     setIsAddEventModalOpen(true)
   }
-  const handlePrefillGlobalEvent = (event : GolbalEventType) =>{
+  const handlePrefillGlobalEvent = (event : GolbalEventType, type : string) =>{
     setPrefilledGlobalEvent(event)
-    setIsAddEventModalOpen(true)
+    if(type === "widget"){
+      setIsAddEventModalOpen(true)
+    }else setIsNormalEventModalOpen(true)
+    
   }
   
   return (
@@ -219,7 +222,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
+        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
       </div>}
     </div>
   )

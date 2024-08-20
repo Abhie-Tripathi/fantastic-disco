@@ -20,8 +20,8 @@ const CardStyles = ({ cardStyle, setCardStyle }: Props) => {
 
     return (
         <div className={styles.body}>
-            <div className={styles.header}>
-                <div className={styles.headingContainer} onClick={() => setAccordian(!accordian)}>
+            <div className={styles.header} onClick={() => setAccordian(!accordian)}>
+                <div className={styles.headingContainer}>
                     <div className={styles.heading}>Card Styles</div>
                     <div className={styles.subheading}>Select your card styles</div>
                 </div>

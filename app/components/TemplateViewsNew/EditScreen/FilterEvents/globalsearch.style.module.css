@@ -42,6 +42,18 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.buttons{
+    display: flex;
+    align-items: center;
+    gap:3px;
+}
+.buttons button{
+    font-size: var(--font-size-small);
+    border-radius: 4px;
+    background-color: #6750a4;
+    color: white;
+    padding: 5px;
+}
 .darkDropdown .dropdownEvent:hover{
     background-color: #292929;
 }

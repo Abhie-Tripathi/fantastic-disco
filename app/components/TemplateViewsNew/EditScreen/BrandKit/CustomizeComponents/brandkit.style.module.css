@@ -8,18 +8,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 .heading{
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
+
 }
 .heading span{
     font-size: 14px;
-}
-.btn{
-    cursor: pointer;
 }
 .brandColorContainer{
     margin-bottom: 9px;
