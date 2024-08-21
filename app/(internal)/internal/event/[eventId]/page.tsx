@@ -226,7 +226,10 @@ const InsightsPage = () => {
               <div className={styles.dateDetails} style={{alignSelf:'unset'}}>
                 <div className={styles.date}>
                   {eventDetail.status && (eventDetail.status === "CANCELLED" || eventDetail.status === "POSTPONED") ?
-                    <del data-toggle="tooltip" title={eventDetail.status}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</del> :
+                    <>
+                    <div className={styles.eventStatusTag}>{eventDetail.status}</div><br/>
+                    <del data-toggle="tooltip" title={eventDetail.status}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</del>
+                    </> :
                     formatEventDates(eventDetail.startDate, eventDetail.endDate)
                   }
                 </div>
