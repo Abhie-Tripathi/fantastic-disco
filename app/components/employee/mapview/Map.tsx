@@ -252,7 +252,7 @@ const Map = (props: MapProps) => {
   };
 
   const fetchEventsData = async() => {
-    let mapViewType = 'world';
+    let mapViewType = 'country';
     if(props.queryString){
       const params = new URLSearchParams(props.queryString);
       const obj:any = {};
@@ -582,7 +582,7 @@ const Map = (props: MapProps) => {
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
             </Source>
-            {countryPerPage.map((event) => (
+            {countryPerPage.length < 20 && countryPerPage.map((event) => (
               <div key={event.countryId} >
                 <Marker
                   key={event.countryId}

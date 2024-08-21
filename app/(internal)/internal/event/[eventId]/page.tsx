@@ -225,7 +225,10 @@ const InsightsPage = () => {
               </div>
               <div className={styles.dateDetails} style={{alignSelf:'unset'}}>
                 <div className={styles.date}>
-                  {formatEventDates(eventDetail.startDate, eventDetail.endDate)}
+                  {eventDetail.status && (eventDetail.status === "CANCELLED" || eventDetail.status === "POSTPONED") ?
+                    <del data-toggle="tooltip" title={eventDetail.status}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</del> :
+                    formatEventDates(eventDetail.startDate, eventDetail.endDate)
+                  }
                 </div>
                 {/* <div className={styles.time}>{parseTime(eventStart)}</div> */}
               </div>

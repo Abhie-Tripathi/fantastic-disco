@@ -256,6 +256,17 @@
   font-size: 14px;
 }
 
+.hybridTag {
+  background-color: var(--warning-background-color);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  color: var(--warning-text-color);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-small);
+  text-transform: capitalize;
+  display: inline-block;
+}
+
 .rank_tag {
   background-color: #fff6e5;
   padding: 6px 16px;
