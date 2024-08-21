@@ -687,8 +687,12 @@ const Search = () => {
   const [isSearchResultOpen, setSearchResultOpen] = useState<boolean>(false);
   const triggerRef = useRef<HTMLDivElement>(null);
 
+  const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
+
   const handleSearchInput = async (text: string) => {
     if (text) {
+      setEventSearchLoader(true);
+      try{
       const { data, error } = await myFetch(
         `${baseUrl}/event/search?eventName=${text}&max=5`
       );
@@ -700,6 +704,11 @@ const Search = () => {
       if (data) {
         console.log(data);
         setSearchResult(data.events);
+      }
+      } catch (error) {
+        console.error("Error :", error);
+      } finally {
+        setEventSearchLoader(false);
       }
     } else {
       setSearchResult([]);
@@ -721,6 +730,7 @@ const Search = () => {
         }
         return { ...prev, [eventId]: eventName };
       });
+      setSearchInput('');
     }
   };
 
@@ -936,7 +946,11 @@ const Search = () => {
               Recent searches
             </div> */}
             <span>
-              <Image src={SearchIcon} alt="search" className={iconClass} />
+              {eventSearchLoader ?
+                <div className={styles.loader}></div> : 
+                <Image src={SearchIcon} alt="search" className={iconClass} />
+              }
+              
             </span>
           </div>
 
@@ -1329,7 +1343,7 @@ const Search = () => {
                                   setSelectedInsights((prevInsights) => ({ ...prevInsights, eventRating: !selectedInsights?.eventRating }));
                                 }}
                                 onChange={() => {}}
-                                checked={selectedInsights?.eventRating}
+                                checked={selectedUserRatings.length !== 0 || selectedInsights?.eventRating}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1776,7 +1790,7 @@ const Search = () => {
                                   else setExhibitOpen(true)
                                   setSelectedInsights((prevInsights) => ({ ...prevInsights, estExhibit: !selectedInsights?.estExhibit }))
                                 }}
-                                checked={selectedInsights?.estExhibit}
+                                checked={selectedExhibitScore.length !== 0 || selectedInsights?.estExhibit}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1819,7 +1833,7 @@ const Search = () => {
                                   else setInternationalOpen(true)
                                   setSelectedInsights((prevInsights) => ({ ...prevInsights, global: !selectedInsights?.global }));
                                 }}
-                                checked={selectedInsights?.global}
+                                checked={selectedINScore !== 0 || selectedInsights?.global}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1951,7 +1965,7 @@ const Search = () => {
                                   else setReputationOpen(true)
                                   setSelectedInsights((prevInsights) => ({ ...prevInsights, reptSent: !selectedInsights?.reptSent }));
                                 }}
-                                checked={selectedInsights?.reptSent}
+                                checked={selectedReptScore !== 0 || selectedInsights?.reptSent}
                               />
                               <span className={styles.slider}></span>
                             </label>
@@ -1999,7 +2013,7 @@ const Search = () => {
                                   else setTrustOpen(true)
                                   setSelectedInsights((prevInsights) => ({ ...prevInsights, repeatSent: !selectedInsights?.repeatSent }));
                                 }}
-                                checked={selectedInsights?.repeatSent}
+                                checked={selectedTrustScore !== 0 || selectedInsights?.repeatSent}
                               />
                               <span className={styles.slider}></span>
                             </label>

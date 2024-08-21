@@ -5,6 +5,10 @@ export function middleware(request: NextRequest) {
   const cookie = request.cookies.get("token")?.value;
   if (!cookie) {
     return NextResponse.redirect(new URL("/signin", request.url));
+  }else{
+    if(request.nextUrl.pathname == '/'){
+      return NextResponse.redirect(new URL("/internal", request.url));
+    }
   }
   return NextResponse.next();
 }
