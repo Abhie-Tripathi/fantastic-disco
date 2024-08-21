@@ -1273,12 +1273,15 @@ useEffect(() => {
   }
 }, [inputValues]);
 const fetchSuggestionData=async()=>{
-  const url=`${baseUrl}/company/suggestion?q=${inputValues[0]}`
+  let url="";
+  if(inputValues[0].trim().length>0){
+  url=`${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`
     const { data, error } = await myFetch(url, {
       method: "GET",
     });
     if(data) setWebsiteSuggestion(data);
     else console.log(error); 
+  }
 }
 console.log(websiteSuggestion);
 const [selected,setSelected]=useState(false);
