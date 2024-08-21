@@ -9,6 +9,7 @@ import StarIcon from "/public/internal/rating_star.svg";
 import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
+import BookmarkFilled from "@/app/components/Table/icons/bookmarkFilled"
 import closeIcon from "/public/close.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -290,7 +291,7 @@ const Table = ({
       } else if (formData.markedInterest == "unbookmark") {
         try {
           let payloadData = {
-            eventId: formData.entityId_id,
+            eventIds: [formData.entityId_id],
           };
           const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
@@ -1067,11 +1068,11 @@ const [val,setVal]=useState(1);
                         handleModalOpen(event.id, event.eventGroupId)
                       }
                     >
-                      {bookmarkedEvent?.includes(event.eventGroupId) ? (
-                        <BookmarkIcon fillColor={"#ff851b"} />
+                      {bookmarkedEvent?.includes(event.id) ? (
+                        <BookmarkFilled fillColor={"var(--primary-color)"} />
                       ) : (
                         <BookmarkIcon
-                          fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                          fillColor={"var(--secondary-text-color)"}
                         />
                       )}
                     </span>
@@ -1111,7 +1112,7 @@ const [val,setVal]=useState(1);
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              {bookmarkedEvent?.includes(event.eventGroupId) ? (
+                              {bookmarkedEvent?.includes(event.id) ? (
                                 <>
                                   <input
                                     className={styles["form-check-input"]}

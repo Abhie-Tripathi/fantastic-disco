@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-//   const cookie = request.cookies.get("token")?.value;
-//   if (!cookie) {
-//     return NextResponse.redirect(new URL("/signin", request.url));
-//   }
-//   return NextResponse.next();
+  const cookie = request.cookies.get("token")?.value;
+  if (!cookie) {
+    return NextResponse.redirect(new URL("/signin", request.url));
+  }else{
+    if(request.nextUrl.pathname == '/'){
+      return NextResponse.redirect(new URL("/internal", request.url));
+    }
+  }
+  return NextResponse.next();
 }
 
 export const config = {
