@@ -60,6 +60,7 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
+import Suggestion from "../suggestion";
 interface FilterValue {
   labels: string;
   name: string;
@@ -98,6 +99,7 @@ interface FilterValue {
   speakerOrg: string;
   speakerName: string;
   orgWebsite: string;
+  orgName:string;
   eventAttendanceRange: any;
 }
 interface InputArea {
@@ -154,7 +156,7 @@ const templates = [
       {
         img: Url,
         type: "text",
-        placeholder: "Add Competitor Website",
+        placeholder: "Add Competitor Name or Website",
         required:true,
       }
     ]
@@ -293,6 +295,7 @@ const Pages = () => {
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
   // const [categorySlug, setCategorySlug] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
@@ -461,6 +464,7 @@ const Pages = () => {
     }
   }, [selectedINScore]);
   const [websites, setWebsites] = useState("");
+  const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -468,9 +472,19 @@ const Pages = () => {
   const [designations, setDesignations] = useState("");
   useEffect(() => {
     if (type === "T_COMPETITOR") {
-      const urls = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      setWebsites(urls);
-
+      const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+      const urls = customData
+      .map((item: {}) => Object.values(item)[0] as string)
+      .filter(value => regex.test(value))
+      .join(',');
+  
+    const orgNames = customData
+      .map((item: {}) => Object.values(item)[0] as string)
+      .filter(value => !regex.test(value))
+      .join(',');
+  
+    setWebsites(urls);
+    setOrg(orgNames);
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
@@ -489,7 +503,7 @@ const Pages = () => {
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-    if (type === "T_COMPETITOR" && websites.length===0){
+    if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
       setIsMandatory(true);
     }
     GAEvent(
@@ -519,6 +533,9 @@ const Pages = () => {
           }),
           ...(websites.length > 0 && {
             orgWebsite: websites,
+          }),
+          ...(org.length > 0 && {
+            orgName : org,
           }),
           ...(designations.length > 0 && {
             userDesignation: designations,
@@ -706,6 +723,9 @@ const Pages = () => {
           ...(websites.length > 0 && {
             orgWebsite: websites,
           }),
+          ...(org.length > 0 && {
+            orgName : org,
+          }),
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
           }),
@@ -874,13 +894,22 @@ const Pages = () => {
         setSelectedMaturity(25);
       }
       if (type === "T_COMPETITOR") {
-        const newData = editData?.tracker?.filterValue?.orgWebsite?.
+        const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
-        console.log(newData);
-        if (Array.isArray(newData)) {
+        const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
+          split(',');
+        if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
             ...prevData,
-            ...newData?.map((item) => (
+            ...orgNames?.map((item) => (
+              { companyUrl: item.trim() }
+            ))
+          ]);
+        }
+        if (Array.isArray(orgWebsites)) {
+          setCustomData((prevData: any) => [
+            ...prevData,
+            ...orgWebsites?.map((item) => (
               { companyUrl: item.trim() }
             ))
           ]);
@@ -1149,20 +1178,23 @@ const Pages = () => {
       console.error('Template is not found');
       return;
     }
-
     const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     let isValid = true;
+    let isPresent = false;
     if(template.type==="enabled"){
     if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
       const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
         const value = inputValues[index];
-        
-        if (inputArea.placeholder === 'Add Competitor Website') {
-          if (regex.test(value.trim())) {
+        if (inputArea.placeholder === 'Add Competitor Name or Website') {
+          //if (regex.test(value.trim())) {
             acc[inputArea.placeholder] = value;
-          } else {
-            isValid = false;
-          }
+            isPresent=customData.some((item) => {
+              return Object.values(item).includes(value.trim()); 
+            });
+          // } 
+          // else {
+          //   isValid = false;
+          // }
         } else {
           if (value !== null && value.trim() !== '') {
             acc[inputArea.placeholder] = value;
@@ -1174,7 +1206,7 @@ const Pages = () => {
         return acc;
       }, {});
 
-      if (isValid && template?.type === "enabled") {
+      if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
           ...prevData,
           newEntry
@@ -1182,6 +1214,7 @@ const Pages = () => {
         setInputValues({});
       } else {
         setValid(false);
+        setInputValues({});
         console.error('Invalid input or URL');
       }
 
@@ -1234,6 +1267,36 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   }
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
+useEffect(() => {
+  if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
+    fetchSuggestionData();
+  }
+}, [inputValues]);
+const fetchSuggestionData=async()=>{
+  let url="";
+  if(inputValues[0].trim().length>0){
+  url=`${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`
+    const { data, error } = await myFetch(url, {
+      method: "GET",
+    });
+    if(data) setWebsiteSuggestion(data);
+    else console.log(error); 
+  }
+}
+const [selected,setSelected]=useState(false);
+const addCompany=(val:string)=>{
+  setSelected(true);
+  setInputValues(prevValues => ({
+    ...prevValues,
+    [0]: val
+  }));
+}
+useEffect(()=>{
+  if(selected) {
+    addNew();
+    setSelected(false);
+  }
+},[selected])
   return (
     <>
       <div
@@ -1342,6 +1405,7 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                 <div className={styles.subHeading}>{template.description}</div>
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
+                    <>
                     <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
                       {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                       <input
@@ -1352,7 +1416,17 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
                         onChange={(e) => handleInput(index, e.target.value)}
                         onKeyPress={handleKeyDown}
                       />
+                      {type==="T_COMPETITOR" && inputValues[0]?.length > 0  && websiteSuggestion &&
+                      <div className={styles.suggestionBox}>
+                        <Suggestion 
+                        websiteData={websiteSuggestion}
+                        addCompany={addCompany}
+                        />
+                        </div>
+                    } 
                     </div>
+                    
+                    </>
                   ))}
                   <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
                     style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}

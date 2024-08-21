@@ -107,13 +107,14 @@ interface Search {
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
   const router=useRouter();
+  const [type, setType] = useState("All Trackers");
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
     if(tab==="customTrackers") setType("Custom Trackers")
       if(tab==="allTrackers") setType("All Trackers")
   },[tab])
   const [trackers, setTrackers] = useState<any[]>([]);
-  const [type, setType] = useState("All Trackers");
+ 
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);

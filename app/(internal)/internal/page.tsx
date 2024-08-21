@@ -456,14 +456,16 @@ const Dashboard = () => {
             <div className={styles.savedEventsContainer}>
               <div className={`${styles.tracker_container_header}`}>
                 <Image src={Bookmark} alt="save"/>
+                <Link href="internal/trackers?tab=savedEvents">
                 <div
                   style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    router.push("internal/trackers?tab=savedEvents");
-                  }}
+                  // onClick={() => {
+                  //   router.push("internal/trackers?tab=savedEvents");
+                  // }}
                 >
                   Saved Events
                 </div>
+                </Link>
               </div>
               {isLoading ? (
                 <SavedEventsSkeleton />
