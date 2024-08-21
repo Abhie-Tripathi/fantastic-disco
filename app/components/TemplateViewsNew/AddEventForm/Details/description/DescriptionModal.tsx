@@ -72,7 +72,7 @@ const DescriptionModal = ({
                 wrapperClassName={styles.wrapper}
             />
 
-            <button onClick={handleDescClick}>Save</button>
+            <button className={styles.saveBtn} onClick={handleDescClick}>Save</button>
         </div>
     );
 };

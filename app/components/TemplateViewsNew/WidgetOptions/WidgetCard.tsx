@@ -114,7 +114,7 @@ const WidgetCard = ({ widgetType, setWidgetSelected, widgetSelected, smallCard }
                 <div className={styles.widgetName}>{widgetName}</div>
                 <div className={`${styles.widgetDesc} ${theme === "dark" ? styles.darkDesc : ""}`}>{widgetDesc}</div>
             </div>
-            {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon} />}
+            {/* {widgetType === widgetSelected && <Image src={TickIcon} alt='tick' className={styles.tickIcon} />} */}
         </div>
     )
 }

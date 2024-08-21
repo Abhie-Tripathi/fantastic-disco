@@ -19,7 +19,6 @@
     border: none;
     display: flex;
     flex-direction: column;
-
 }
 .descriptionModal .toolbar {
     display: flex;   
@@ -36,21 +35,11 @@
     outline: none;
 }
 
-/* .descriptionModal div {
-    font-size: 12px;
-    color: #7D7D7D;
-    font-weight: 500;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-} */
-
-.descriptionModal div .close {
+.close {
     cursor: pointer;
 }
 
-.descriptionModal button {
+.saveBtn{
     font-size: 12px;
     border-radius: 5px;
     background-color: #6750a4;

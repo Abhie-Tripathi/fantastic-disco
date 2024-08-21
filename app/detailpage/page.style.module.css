@@ -1,17 +1,25 @@
 .line {
     width: 100%;
-    border-top: 1px solid #E6E6E6;
+    border-top: 1px solid #d4d4d4;
+}
+.body{
+    background-color: rgba(70, 83, 216, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding-top: 70px;
+    padding-bottom: 20px;
+    position: relative;
 }
 
 .detailsContainer {
-    background-color: rgba(70, 83, 216, 0.1);
     display: flex;
     gap: 30px;
     overflow-y: auto;
-    padding: 10px;
     justify-content: center;
+    
 }
-
 .leftSection {
     width: 300px;
 }
@@ -63,7 +71,10 @@
 .speakerProfileContainer {
     width: 100%;
 }
-
+.footer{
+    font-size: var(--font-size-small);
+    color: #7e7e7e;
+}
 @media screen and (max-width: 1110px) {
     .rightSection {
         width: 60%;

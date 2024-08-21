@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './sharebtns.style.module.css'
-import TickIcon from '/public/tick.svg'
 import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, EmailShareButton } from 'react-share';
 import Image from 'next/image'
 
@@ -39,7 +38,7 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody }: Pr
                 <CopyIcon/>
             </div>}
             {copyClick && <div className={styles.copyContainer} data-name="Copied">
-                <Image src={TickIcon} alt='copied' className={styles.copyIcon} width={20} height={20} />
+                <TickIcon/>
             </div>}
         </div>
     )
@@ -84,5 +83,11 @@ function EmailIcon() {
             <path fillRule="evenodd" clipRule="evenodd" d="M14.9222 1.9375H3.07775L9 7.01371L14.9222 1.9375ZM1.6875 2.96843V10.9375C1.6875 11.5588 2.19118 12.0625 2.8125 12.0625H15.1875C15.8088 12.0625 16.3125 11.5588 16.3125 10.9375V2.96843L9.5491 8.76562L9 9.23629L8.4509 8.76562L1.6875 2.96843ZM0 0.25H1.6875H16.3125H18V1.9375V10.9375C18 12.4908 16.7408 13.75 15.1875 13.75H2.8125C1.2592 13.75 0 12.4908 0 10.9375V1.9375V0.25Z" fill="#A1A1A1" />
         </svg>
 
+    )
+}
+
+function TickIcon(){
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="black"/></svg>
     )
 }
