@@ -4,7 +4,6 @@
     max-height: 250px;
     display: flex;
     overflow-y: auto;
-    overflow-x: hidden;
     gap: var(--spacing-xs);
     flex-direction: column;
     bottom: 100%;
