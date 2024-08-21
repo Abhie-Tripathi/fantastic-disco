@@ -1,24 +1,32 @@
 .outerContainer{
     top: 100%;
-    background-color: var(--primary-foreground);
+    padding: 10px 0px;
     max-height: 250px;
-    overflow-y: scroll;
     display: flex;
     overflow-y: auto;
     overflow-x: hidden;
     gap: var(--spacing-xs);
     flex-direction: column;
     bottom: 100%;
-    background-color: var(--primary-foreground);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-large);
+    background-color: var(--background-secondary-color);
+    border-radius: 14px;
+    box-shadow: 2px 2px 12px 6px #0000000d;
 }
 .content{
     padding: 6px;
     display: flex;
     align-items: center;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.5px;
 }
 .content:hover{
-    background-color:var(--background-color-hover);
+    background-color:var(--heading-background-color);
+}
+.subHeading{
+    font-size: 12px;
+    margin-left: 10px;
+    color: #a1a2a2;
 }
