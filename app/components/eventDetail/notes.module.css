@@ -60,7 +60,7 @@
 }
 
 .comment_name span span {
-  color: #8c8ea4;
+  color: var(--tertiary-text-color);
 }
 
 .comments {
@@ -267,7 +267,7 @@
 .designationText {
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
-  color: #8c8ea4;
+  color:var(--tertiary-text-color);
 }
 
 .followBtn {
