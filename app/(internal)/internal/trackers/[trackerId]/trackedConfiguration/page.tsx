@@ -386,7 +386,7 @@ const userRating=
             className={styles.innerContainerLeft}
             style={{ paddingLeft: "20px" }}
           >
-            <div className={styles.advanceHead}>Competitor&apos;s Website</div>
+            <div className={styles.advanceHead}>Competitor&apos;s Name / Website</div>
             <div className={styles.customContent}>
               {/* <div className={styles.urlDiv}>
                 <Image src={Url} alt="url" className="icons" />
@@ -397,9 +397,15 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={styles.allInputBox}>
+          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  {/* <Image src={Url} alt="url_icon"/> */}
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
                 {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
-                  <Image src={Url} alt="url_icon"/>
+                  {/* <Image src={Url} alt="url_icon"/> */}
                   <div key={ind} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}

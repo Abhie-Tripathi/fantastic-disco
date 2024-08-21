@@ -154,13 +154,14 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
               border: "1px solid #e6e6e6",
               borderRadius: "var(--border-radius-sm)",
               textAlign: "center",
-              borderColor: errors.otpError && "#f15050",
+              borderColor: errors.otpError && "var(--danger-text-color)",
             }}
           />
+          <div>
           {errors.otpError && (
             <div className={styles.error}>{errors.otpError}</div>
           )}
-
+          </div>
           <div className={styles.actions_container}>
             <div
               className={`${styles.button} ${isLoading && styles.disable}`}
