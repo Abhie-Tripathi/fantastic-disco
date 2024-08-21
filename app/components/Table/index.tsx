@@ -9,6 +9,7 @@ import StarIcon from "/public/internal/rating_star.svg";
 import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
+import BookmarkFilled from "@/app/components/Table/icons/bookmarkFilled"
 import closeIcon from "/public/close.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -1068,7 +1069,7 @@ const [val,setVal]=useState(1);
                       }
                     >
                       {bookmarkedEvent?.includes(event.id) ? (
-                        <BookmarkIcon fillColor={"var(--primary-color)"} />
+                        <BookmarkFilled fillColor={"var(--primary-color)"} />
                       ) : (
                         <BookmarkIcon
                           fillColor={"var(--secondary-text-color)"}
