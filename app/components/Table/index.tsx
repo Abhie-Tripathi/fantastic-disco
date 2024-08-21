@@ -1068,10 +1068,10 @@ const [val,setVal]=useState(1);
                       }
                     >
                       {bookmarkedEvent?.includes(event.id) ? (
-                        <BookmarkIcon fillColor={"#ff851b"} />
+                        <BookmarkIcon fillColor={"var(--primary-color)"} />
                       ) : (
                         <BookmarkIcon
-                          fillColor={theme === "light" ? "#000000" : "#ffffff"}
+                          fillColor={"var(--secondary-text-color)"}
                         />
                       )}
                     </span>
