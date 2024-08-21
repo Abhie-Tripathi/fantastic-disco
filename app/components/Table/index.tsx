@@ -798,7 +798,7 @@ const [val,setVal]=useState(1);
                 </td>
                 <td>
                   {event.format === "HYBRID" &&
-                    <div className={styles.hybridTag} data-toggle="tooltip" title="Hapenning virtually and offline at given venue" >Hybrid</div>
+                    <div className={styles.hybridTag} data-toggle="tooltip" title="Happening virtually and offline at given venue" >Hybrid</div>
                   }
                   {event.location.cityId !== "1" &&
                   event.format === "ONLINE" ? (
