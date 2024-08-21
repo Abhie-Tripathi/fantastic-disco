@@ -482,7 +482,9 @@ const Dashboard = () => {
                         }`}
                         key={event.id}
                       >
+                        <Link href={`/internal/event/${event.id}`} target="_blank" >
                         <div>{event.name}</div>
+                        </Link>
                         <div
                           onClick={() => {
                             unsavedEvent(event?.eventGroupId);
