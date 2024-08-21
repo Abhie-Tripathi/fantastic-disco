@@ -170,7 +170,6 @@
 
 .notification_defaultText {
   font-size: var(--font-size-default);
-  cursor: pointer;
   display: flex;
   height: 100%;
   color: var(--secondary-text-color);

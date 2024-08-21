@@ -354,7 +354,7 @@ const Dashboard = () => {
           <div className={styles.trackers_container}>
             <div className={`${styles.tracker_container_header} `}>
               <Image src={Stars} alt="stars"/>
-              <div>Here &apos;s what&apos;s new since you last checked in</div>
+              <div>Here&apos;s what&apos;s new since you last checked in</div>
             </div>
 
             {isLoading ? (
