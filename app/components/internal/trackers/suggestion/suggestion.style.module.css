@@ -9,24 +9,24 @@
     flex-direction: column;
     bottom: 100%;
     background-color: var(--background-secondary-color);
-    border-radius: 14px;
-    box-shadow: 2px 2px 12px 6px #0000000d;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-large);
 }
 .content{
-    padding: 6px;
+    padding: 0px 10px;;
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-h6);
     letter-spacing: 0.5px;
 }
 .content:hover{
     background-color:var(--heading-background-color);
 }
 .subHeading{
-    font-size: 12px;
+    font-size: var(--font-size-small);
     margin-left: 10px;
-    color: #a1a2a2;
+    color: var(--secondary-text-color);
 }
