@@ -827,9 +827,9 @@ const Comment = ({
                   </span>
                 </span>
 
-                {/* <p className={styles.designationText}>
-                  Founder and leadership at Nityo Infotech
-                </p> */}
+                <p className={styles.designationText}>
+                {comment?.user?.UserDetail?.designation}
+                </p>
               </div>
             </header>
           </div>

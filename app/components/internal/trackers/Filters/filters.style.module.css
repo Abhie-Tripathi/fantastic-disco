@@ -395,12 +395,20 @@ input:checked + .slider:before {
   gap:var(--spacing-sm);
 }
 .singleInputArea{
+  position: relative;
   padding: 0px 10px;
   border: 1px solid var(--border-color);
   display: flex;
   width: 100%;
   align-items: center;
   gap: 10px;
+}
+.suggestionBox{
+  position: absolute;
+  z-index: 11;
+  width: 100%;
+  right: 0;
+  top: 40px;
 }
 .textAreaUrl{
   border: none;

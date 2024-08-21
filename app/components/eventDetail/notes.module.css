@@ -33,7 +33,6 @@
 }
 
 .comment_name {
-  gap: var(--spacing-xs);
   font-family: var(--font-inter);
   display: flex;
   flex-direction: column;
@@ -266,7 +265,7 @@
 }
 
 .designationText {
-  font-size: var(--font-size-large);
+  font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
   color: #8c8ea4;
 }
