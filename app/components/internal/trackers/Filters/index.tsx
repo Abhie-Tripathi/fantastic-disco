@@ -1283,7 +1283,6 @@ const fetchSuggestionData=async()=>{
     else console.log(error); 
   }
 }
-console.log(websiteSuggestion);
 const [selected,setSelected]=useState(false);
 const addCompany=(val:string)=>{
   setSelected(true);
