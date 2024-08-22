@@ -68,10 +68,10 @@ const Page = () => {
     return (
         <div className={`${styles.body}`}>
             <div className={styles.navRightBtns}>
-                <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
+                {/* <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
                     {!widgetOptionsWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
-                </div>
-                <div className={styles.line}></div>
+                </div> */}
+                {/* <div className={styles.line}></div> */}
                 <div className={styles.myWidgetBtnContainer} onClick={()=>setYourWidgetModal(true)}>
                     <div className={styles.myWidgetBtn}>My Widgets <span>{draftWidgets.length}</span></div>
                     <Image src={RightArrow} alt='arrow' />
@@ -92,11 +92,11 @@ const Page = () => {
                 </div>
             </div>}
             {widgetOptionsWindow && <div className={styles.widgetOptions}>
-                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} />
+                <WidgetOptions setWidgetSelected={setWidgetSelected} widgetSelected={widgetSelected} widgetOptionsWindow={widgetOptionsWindow} exploreWindow={exploreWindow} handleExplore={handleExplore} />
             </div>}
-            {!exploreWindow && <div className={styles.exploreBtnContainer}>
+            {/* {!exploreWindow && <div className={styles.exploreBtnContainer}>
                 <div onClick={handleExplore} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`} style={!widgetSelected ? { cursor: "not-allowed" } : { cursor: "pointer" }}>Explore Styles</div>
-            </div>}
+            </div>} */}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
                     <TemplatesPreview setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets}/>

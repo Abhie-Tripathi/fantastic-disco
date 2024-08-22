@@ -22,10 +22,11 @@ interface Props {
     };
     buttonSettings?: ButtonSettingsState
     fetchedAddedOtherData? : PrefilledAddedEventsType[]
-    selectedBtn? : "primary"|"secondary"
+    selectedBtn? : "primary"|"secondary";
+    smallCard : boolean;
 }
 
-const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn,fetchedAddedOtherData }: Props) => {
+const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn,fetchedAddedOtherData,smallCard }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -39,7 +40,7 @@ const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettin
             EventCard = Popup3; // Or some default component or message
     }
     return (
-        <EventCard fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
+        <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
     )
 }
 

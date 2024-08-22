@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import styles from './dropdown.style.module.css'
+import { Editor } from "react-draft-wysiwyg";
+import { ContentState, EditorState, convertFromHTML, convertToRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; // Import editor styles
+import draftToHtml from "draftjs-to-html";
 
 interface Props {
     setInputMessage: (value: string) => void
@@ -9,6 +13,19 @@ interface Props {
 }
 
 const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType }: Props) => {
+
+    // const [editorState, setEditorState] = useState(() => {
+    //     const contentBlock = htmlToDraft(inputMessage);
+    //     const contentState = contentBlock ? convertFromRaw(contentBlock) : null;
+    //     return EditorState.createWithContent(contentState || convertToRaw(editorState.getCurrentContent()));
+    // });
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const onEditorStateChange = (state: EditorState) => {
+        setEditorState(state);
+        // Convert editor content to HTML and set text value
+        const htmlContent = draftToHtml(convertToRaw(state.getCurrentContent()));
+        setInputMessage(htmlContent);
+    };
 
     return (
         <div className={styles.body}>
@@ -56,7 +73,24 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
             </div>
             <div className={styles.messageContainer}>
                 <div className={styles.heading}>Customize your message</div>
-                <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inputMessage}</textarea>
+                <Editor
+                    editorState={editorState}
+                    toolbar={{
+                        options: ["inline", "colorPicker"],
+                        inline: {
+                            options: ["bold", "italic", "underline"],
+                            bold: { className: "toolbar-btn" },
+                            italic: { className: "toolbar-btn" },
+                            underline: { className: "toolbar-btn" },
+                        },
+                        colorPicker: { className: "toolbar-btn" }
+                    }}
+                    onEditorStateChange={onEditorStateChange}
+                    editorClassName={styles.editor}
+                    toolbarClassName={styles.toolbar}
+                    wrapperClassName={styles.wrapper}
+                />
+                {/* <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inputMessage}</textarea> */}
             </div>
         </div>
     )

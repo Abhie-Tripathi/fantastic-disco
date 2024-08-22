@@ -123,8 +123,8 @@ const ButtonCustomization = ({ extractedColors, setButtonSettings, buttonSetting
 
     return (
         <div className={styles.body}>
-            <div className={styles.header}>
-                <div className={styles.headingContainer} onClick={() => setAccordian(!accordian)}>
+            <div className={styles.header} onClick={() => setAccordian(!accordian)}>
+                <div className={styles.headingContainer}>
                     <div className={styles.heading}>Button Customisations</div>
                     <div className={styles.subheading}>Select or customise your button components</div>
                 </div>

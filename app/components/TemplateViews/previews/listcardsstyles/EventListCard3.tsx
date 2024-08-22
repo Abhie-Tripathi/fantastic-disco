@@ -71,7 +71,7 @@ const EventListCard3 = ({
             <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
           </div>
         </div>
-        <div className={styles.description} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}}>{description}</div>
+        <div className={styles.description} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}} dangerouslySetInnerHTML={{ __html: description }}></div>
       </div>
     </div>
   );

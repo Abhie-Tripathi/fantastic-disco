@@ -29,8 +29,8 @@ const CardCustomization = ({ extractedColors, setCardBgColor, setCardBorderRadiu
     const { theme } = useTheme()
     return (
         <div className={styles.body}>
-            <div className={styles.header}>
-                <div className={styles.headingContainer} onClick={() => setAccordian(!accordian)}>
+            <div className={styles.header} onClick={() => setAccordian(!accordian)}>
+                <div className={styles.headingContainer}>
                     <div className={styles.heading}>Card Customisations</div>
                     <div className={styles.subheading}>Select or customise your cards</div>
                 </div>

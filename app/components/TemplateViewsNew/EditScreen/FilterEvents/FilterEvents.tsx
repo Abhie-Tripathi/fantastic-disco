@@ -14,7 +14,7 @@ interface Props{
     fetchAddedEvents : ()=>Promise<void>;
     handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
     handlePrefillNormalEvent : (event :  AllEventsType)=>void
-    handlePrefillGlobalEvent : (event : GolbalEventType)=>void
+    handlePrefillGlobalEvent : (event : GolbalEventType,type : string)=>void
     handleAddEventModal : (value : void)=>void
     widgetId : string;
     addedEventIds : string[]

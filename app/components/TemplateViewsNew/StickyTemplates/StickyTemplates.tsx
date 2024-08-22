@@ -18,7 +18,7 @@ const StickyTemplates = ({setSelectedTemplate, selectedTemplate, setTempelateNam
 
     const StickyTemplates =
         [{ key: "ST", name: "Sticky Top", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image1: StickyTopImage,image2: StickyTopImageDark },
-        { key: "SB", name: "Sticky Bottom", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image1: StickyBottomImage, image2: StickyBottomImageDark },
+        // { key: "SB", name: "Sticky Bottom", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image1: StickyBottomImage, image2: StickyBottomImageDark },
         ]
     return (
         <div className={`${styles.body}`}>

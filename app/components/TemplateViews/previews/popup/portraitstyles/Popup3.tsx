@@ -24,6 +24,7 @@ interface Props {
   buttonSettings?: ButtonSettingsState,
   selectedBtn?: "primary" | "secondary"
   fetchedAddedEvents?: PrefilledAddedEventsType[]
+  smallCard : boolean;
 }
 
 const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -36,7 +37,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents,smallCard }: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
 
@@ -61,8 +62,8 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
   };
   const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : "Some Description";
   return (
-    <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={380} height={220} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+    <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
+      <Image width={380} height={smallCard ? 150 : 220} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
       <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].name : "Join Gifts World Expo 2024"}</div>
       <div className={styles.location_dateContainer}>
         <div className={styles.locationContainer}>
@@ -74,11 +75,12 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
           <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : "29 Jan - 5 Feb"}</div>
         </div>
       </div>
-      <div className={styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }}>{description}</div>
+      <div className={styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
       <div className={styles.btnContainer}>
         <button
-          className={styles.btn}
+          className={smallCard ? styles.smallBtn :styles.btn}
           style={{
+            fontSize : smallCard ? 14 : fontSettings?.subheading.fontSize,
             color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
             backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
             borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,

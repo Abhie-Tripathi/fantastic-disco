@@ -12,17 +12,18 @@ interface LocationSuggestion {
 interface Props {
     setCityName: (value: string) => void
     setCountryName: (value: string) => void
-    setEventFormat : (value : string)=>void;
-    eventFormat : string;
+    setEventFormat: (value: string) => void;
+    eventFormat: string;
+    setLongitude: (value: number) => void;
+    setLatitude: (value: number) => void;
 }
 
-const LocationDropdown = ({ setCityName, setCountryName,setEventFormat,eventFormat }: Props) => {
-
+const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude }: Props) => {
     const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
-    const handleSuggestionClick = (suggestion: LocationSuggestion) => {
+    const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
         setCityName(suggestion.name);
         if (suggestion.countryName) {
             setCountryName(suggestion.countryName);
@@ -30,9 +31,34 @@ const LocationDropdown = ({ setCityName, setCountryName,setEventFormat,eventForm
             setCountryName(suggestion.name);
         }
         setIsDropdownVisible(false);
+
+        // Fetch latitude and longitude
+        const locationName = suggestion.state ? `${suggestion.name}, ${suggestion.state}` : suggestion.name;
+        const latLong = await getLatLong(locationName);
+
+        if (latLong) {
+            setLatitude(latLong.lat);
+            setLongitude(latLong.lng);
+        }
+    }
+    const getLatLong = async (address: string) => {
+        try {
+            const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8`
+            );
+            const data = await response.json();
+
+            if (data.status === "OK") {
+                const location = data.results[0].geometry.location;
+                return { lat: location.lat, lng: location.lng };
+            } else {
+                console.error("Geocoding API error:", data.status);
+            }
+        } catch (error) {
+            console.error("Error fetching lat/long:", error);
+        }
+        return null;
     };
-
-
     const fetchSuggestions = async (query: string) => {
         try {
             const [locationResponse, countryResponse] = await Promise.all([
