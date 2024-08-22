@@ -348,6 +348,17 @@
   border-radius: var(--border-radius-sm);
 }
 
+.hybridTag {
+  background-color: var(--warning-background-color);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  color: var(--warning-text-color);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-small);
+  text-transform: capitalize;
+  display: inline-block;
+}
+
 
 .react-aria-Tooltip {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 20px;

@@ -745,67 +745,91 @@ const [val,setVal]=useState(1);
                   </div>
                 </td>
                 <td>
-                  <span
-                    {...(event.status && event.status === "CANCELED"
-                      ? { "data-toggle": "tooltip", title: "Cancelled" }
-                      : null)}
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    {new Date(event.startDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    })}
-                    <br />
-                    {new Date(event.startDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    }) !==
-                    new Date(event.endDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    })
-                      ? new Date(event.endDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "2-digit",
-                        })
-                      : null}
-                  </span>
+                  {event.status && (event.status === "CANCELLED" || event.status === "POSTPONED") ?
+                    <del data-toggle="tooltip" title={event.status} style={{ whiteSpace: "nowrap" }} >
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })}
+                      <br />
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      }) !==
+                      new Date(event.endDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })
+                        ? new Date(event.endDate).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "2-digit",
+                          })
+                        : null}
+                    </del> : 
+                    <span style={{ whiteSpace: "nowrap" }} >
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })}
+                      <br />
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      }) !==
+                      new Date(event.endDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })
+                        ? new Date(event.endDate).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "2-digit",
+                          })
+                        : null}
+                    </span>
+                  }
                 </td>
                 <td>
+                  {event.format === "HYBRID" &&
+                    <div className={styles.hybridTag} data-toggle="tooltip" title="Happening virtually and offline at given venue" >Hybrid</div>
+                  }
                   {event.location.cityId !== "1" &&
                   event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
                       event.location.venueName.length > 15 ? (
-                        <span
+                        <div
                           data-toggle="tooltip"
                           title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
-                        </span>
+                        </div>
                       ) : (
-                        event.location.venueName
+                       <div>{event.location.venueName}</div>
                       )
                     ) : (
-                      <span data-toggle="tooltip" title="To be announced">
+                      <div data-toggle="tooltip" title="To be announced">
                         Online
-                      </span>
+                      </div>
                     )
                   ) : event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
                     event.location.venueName.length > 25 ? (
-                      <span
+                      <div
                         data-toggle="tooltip"
                         title={event.location.venueName}
                       >
                         {event.location.venueName.slice(0, 15) + "…"}
-                      </span>
+                      </div>
                     ) : (
-                      event.location.venueName
+                      <div>{event.location.venueName}</div>
                     )
                   ) : event.location.cityId === "1" &&
                     (event.format === "ONLINE" ||
@@ -813,9 +837,9 @@ const [val,setVal]=useState(1);
                     "Online"
                   ) : event.location.cityId !== "1" &&
                     event.location.venueName !== undefined ? (
-                    <span data-toggle="tooltip" title="To be announced">
+                    <div data-toggle="tooltip" title="To be announced">
                       TBA
-                    </span>
+                    </div>
                   ) : null}
                 </td>
                 <td>{event.location.cityName}</td>
