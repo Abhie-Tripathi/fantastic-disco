@@ -343,6 +343,7 @@ body[data-theme="dark"] {
   margin: 0;
 }
 *::-webkit-scrollbar {
+  height: 5px;
   width: 5px;
 }
 *::-webkit-scrollbar-thumb {

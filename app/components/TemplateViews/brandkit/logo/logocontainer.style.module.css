@@ -1,0 +1,40 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+
+.heading {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+}
+
+.container {
+    display: flex;
+    gap: 10px;
+}
+
+.logoContainer {
+    cursor: pointer;
+    background-color: rgb(230, 230, 230);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+}
+
+.addLogo {
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    cursor: pointer;
+
+}

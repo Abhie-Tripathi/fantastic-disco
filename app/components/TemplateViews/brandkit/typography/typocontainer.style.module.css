@@ -1,0 +1,30 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.heading{
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+}
+.fontFamily {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    white-space: nowrap; /* Prevents the items from wrapping to the next line */
+    padding-bottom: 5px;
+}
+.font {
+    width: 150px;
+    height: 150px;
+    font-size: var(--font-size-small);
+    border-radius: 4px;
+    background-color: rgb(230, 230, 230);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0; /* Prevents the items from shrinking */
+    cursor: pointer;
+    color: black;
+}
