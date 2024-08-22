@@ -7,26 +7,29 @@ import ParticipationIcon from '/public/ParticipationIcon.svg'
 import ParticipationDropdown from './ParticipationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
 
-interface Props{
-  setParticipationType : (value : string)=>void
-  participationType : string;
-  setParticipationMessage: (value : string)=>void
-  participationMessage : string
+interface Props {
+  setParticipationType: (value: string) => void
+  participationType: string;
+  setParticipationMessage: (value: string) => void
+  participationMessage: string
 }
 
-const ParticipationContainer = ({  setParticipationType, participationType,   setParticipationMessage,participationMessage} : Props) => {
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage }: Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false)
-  const dropdownRef = useOutsideClick(()=>setDropdown(false))
+  const dropdownRef = useOutsideClick(() => setDropdown(false))
   return (
-    <div className={styles.body}  ref={dropdownRef}>
-      {!participationMessage ? <div className={styles.participationContainer}>
-        <Image src={ParticipationIcon} alt='svg' />
-        <span>Mode of Participation</span>
-      </div> :  
-      <span className={styles.inputMessage}>{participationMessage}</span>}
-      <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn}/>
+    <div className={styles.body} ref={dropdownRef}>
+      <div className={styles.participationContainer}>
+        <div className={styles.header}>
+          <Image src={ParticipationIcon} alt='svg' />
+          <span>Mode of Participation</span>
+        </div>
+        <div className={styles.inputMessage} dangerouslySetInnerHTML={{ __html: participationMessage }}></div>
+      </div>
+
+      <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn} />
       {dropdown && <div className={styles.dropdown}>
-        <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage}/>
+        <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
       </div>}
     </div>
   )

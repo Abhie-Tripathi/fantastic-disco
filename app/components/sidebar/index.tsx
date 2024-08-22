@@ -212,14 +212,14 @@ const Sidebar = () => {
             <div className={styles.linkName}>Event Trends</div>
           </Link>
 
-      <Link
-        href="/internal/trackers?tab=allTrackers"
-        className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
-        ref={trackerRef}
-      >
-        <Tracker />
-        <div className={styles.linkName}>Trackers</div>
-      </Link>
+          <Link
+            href="/internal/trackers?tab=allTrackers"
+            className={`${styles.link} ${getActiveClass("/internal/trackers")}`}
+            ref={trackerRef}
+          >
+            <Tracker />
+            <div className={styles.linkName}>Trackers</div>
+          </Link>
 
           <Link
             href="/internal/coordinate"
@@ -251,7 +251,7 @@ const Sidebar = () => {
           className={`${styles.link} ${getActiveClass("/widget/add")}`}
         >
           <WidgetIconTwo />
-          <div className={styles.linkName}>Widget</div>
+          <div className={styles.linkName}>Brandkit</div>
         </Link>
         <Link
           href="/widget/edit"
@@ -265,7 +265,7 @@ const Sidebar = () => {
           className={`${styles.link} ${getActiveClass("/widget/something")}`}
         >
           <WidgetIconFour />
-          <div className={styles.linkName}>Widget</div>
+          <div className={styles.linkName}>Events</div>
         </Link>
       </>}
     </div>

@@ -105,7 +105,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
               </div>
             </div>
           </div>
-          <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }}>{description}</div>
+          <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
         </div>
         <button
           className={styles.btn}

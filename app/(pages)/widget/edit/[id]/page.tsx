@@ -15,6 +15,7 @@ import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import { GolbalEventType } from '@/types/globaleventtype'
+import DOMPurify from 'dompurify';
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -67,7 +68,7 @@ const Page = () => {
         name: event.name,
         cityName: event.data.location_city,
         countryName : event.data.location_country,
-        description : event.data.description,
+        description :event.data.description,
         startDate: event.data.start_date,
         endDate: event.data.end_date,
         format : event.data.format,
@@ -161,9 +162,12 @@ const Page = () => {
     setPrefilledNormalEvent(event)
     setIsAddEventModalOpen(true)
   }
-  const handlePrefillGlobalEvent = (event : GolbalEventType) =>{
+  const handlePrefillGlobalEvent = (event : GolbalEventType, type : string) =>{
     setPrefilledGlobalEvent(event)
-    setIsAddEventModalOpen(true)
+    if(type === "widget"){
+      setIsAddEventModalOpen(true)
+    }else setIsNormalEventModalOpen(true)
+    
   }
   
   return (
@@ -201,6 +205,8 @@ const Page = () => {
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
         <PreviewWindow
+        widgetId={widgetId}
+        smallCard={false}
           selectedBtn={selectedBtn}
           selectedTemplate={selectedTemplate}
           selectedCard={cardStyle}
@@ -218,7 +224,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
+        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
       </div>}
     </div>
   )

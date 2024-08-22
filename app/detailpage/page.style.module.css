@@ -1,0 +1,104 @@
+.line {
+    width: 100%;
+    border-top: 1px solid #d4d4d4;
+}
+.body{
+    background-color: rgba(70, 83, 216, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding-top: 70px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.detailsContainer {
+    display: flex;
+    gap: 30px;
+    overflow-y: auto;
+    justify-content: center;
+    
+}
+.leftSection {
+    width: 300px;
+}
+
+.rightSection {
+    height: fit-content;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.posterContainer {
+    position: relative;
+}
+
+.participationContainer {
+    margin-top: 16px;
+    height: fit-content;
+    width: 100%;
+}
+
+.shareContainer {
+    width: 100%;
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 18px 19px;
+}
+
+.shareContainer .heading {
+    margin-bottom: 11px;
+    color: #A1A1A1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.eventName {
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    resize: none;
+    overflow: hidden;
+    color: #1a1a1a;
+    font-weight: bolder;
+}
+
+.speakerProfileContainer {
+    width: 100%;
+}
+.footer{
+    font-size: var(--font-size-small);
+    color: #7e7e7e;
+}
+@media screen and (max-width: 1110px) {
+    .rightSection {
+        width: 60%;
+    }
+}
+@media screen and (max-width: 875px) {
+    .rightSection {
+        width: 50%;
+    }
+}
+
+
+@media screen and (max-width: 821px) {
+    .detailsContainer{
+        flex-direction: column;
+        align-items: center;
+    }
+    .leftSection{
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .rightSection {
+        width: 80%;
+    }
+}

@@ -132,8 +132,8 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
 
     return (
         <div className={styles.body}>
-            <div className={styles.header}>
-                <div className={styles.headingContainer} onClick={() => setAccordian(!accordian)}>
+            <div className={styles.header} onClick={() => setAccordian(!accordian)}>
+                <div className={styles.headingContainer}>
                     <div className={styles.heading}>Typography Customisations</div>
                     <div className={styles.subheading}>Select or customise your text components</div>
                 </div>

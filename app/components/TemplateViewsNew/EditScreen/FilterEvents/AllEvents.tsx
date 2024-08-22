@@ -12,7 +12,7 @@ interface Props {
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
     handlePrefillNormalEvent: (event: AllEventsType) => void
-    handlePrefillGlobalEvent : (event : GolbalEventType)=>void
+    handlePrefillGlobalEvent : (event : GolbalEventType,type : string)=>void
     widgetId: string;
     setIsNormalEventModalOpen : (value : boolean) => void
 }

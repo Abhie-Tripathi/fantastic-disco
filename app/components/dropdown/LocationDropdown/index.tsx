@@ -92,6 +92,14 @@ const LocationDropdown = ({
     }
   }
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   useEffect(() => {
     if(inputText != ''){
       const debounceTimeout = setTimeout(() => {
@@ -329,6 +337,7 @@ console.log(state);
           <div className={styles.input_container} >
             <Image src={SearchIcon} alt="searchicon" />
             <input
+              ref={inputRef}
               placeholder="Search For a Location"
               className={styles.location_input}
               onChange={inputChangeHandler}

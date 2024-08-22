@@ -57,6 +57,16 @@
     font-size: 10px;
     color: #A8A8A8;
 }
+.messageContainer .wrapper{
+    border: none;
+    display: flex;
+    flex-direction: column;
+
+}
+.messageContainer .toolbar {
+    display: flex;   
+    /* flex-direction: column; */
+}
 .textarea{
     margin-top: 8px;
     resize: none;

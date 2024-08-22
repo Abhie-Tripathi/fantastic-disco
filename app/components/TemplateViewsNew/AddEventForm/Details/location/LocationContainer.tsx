@@ -13,6 +13,8 @@ interface Props{
     countryName : string;
     setEventFormat: (value : string)=>void;
     eventFormat : string;
+    setLongitude : (value : number)=>void;
+    setLatitude : (value : number)=> void;
 }
 
 const LocationContainer = ({
@@ -21,7 +23,9 @@ const LocationContainer = ({
     setCountryName, 
     countryName,
     setEventFormat,
-    eventFormat
+    eventFormat,
+    setLongitude,
+    setLatitude
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
@@ -35,7 +39,7 @@ const LocationContainer = ({
                 </div>
             </div>
             <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
 }

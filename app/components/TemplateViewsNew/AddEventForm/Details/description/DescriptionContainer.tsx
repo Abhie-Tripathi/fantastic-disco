@@ -15,7 +15,7 @@ const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />
-                    <div className={styles.descriptionHeading}>Add Event Description</div>
+                    <div className={styles.descriptionHeading} onClick={()=>setDescriptionModal(true)}>Add Event Description</div>
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>

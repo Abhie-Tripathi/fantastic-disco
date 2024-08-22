@@ -6,27 +6,32 @@ import DescriptionContainer from './Details/description/DescriptionContainer';
 import DescriptionModal from './Details/description/DescriptionModal';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import { GolbalEventType } from '@/types/globaleventtype';
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
     fetchEvents: () => Promise<void>;
+    prefilledGlobalEvent?: GolbalEventType
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen,fetchEvents }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent }: Props) => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const [eventName, setEventName] = useState<string>("");
+    const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
     const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    const [startDate, setStartDate] = useState<string>("")
-    const [endDate, setEndDate] = useState<string>("")
+    const [startDate, setStartDate] = useState<string>(prefilledGlobalEvent?.startDate || "")
+    const [endDate, setEndDate] = useState<string>(prefilledGlobalEvent?.endDate || "")
     const [startTime, setStartTime] = useState<string>("12:00 A.M")
     const [endTime, setEndTime] = useState<string>("12:00 A.M")
-    const [description, setDescription] = useState<string>("")
-    const [cityName, setCityName] = useState<string>("")
-    const [countryName, setCountryName] = useState<string>("")
+    const [description, setDescription] = useState<string>(prefilledGlobalEvent?.description || "")
+    const [cityName, setCityName] = useState<string>(prefilledGlobalEvent?.cityName || "")
+    const [countryName, setCountryName] = useState<string>(prefilledGlobalEvent?.countryName || "")
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>(description)
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
+
+    const [latitude, setLatitude] = useState(37.7749)
+    const [longitude, setLongitude] = useState(-122.4194)
 
     const handleDescClick = () => {
         setDescription(textValue)
@@ -65,6 +70,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen,fetchEvents }: Props) => {
             location_city: cityName,
             location_country: countryName,
             gmt_time: timeZone,
+            latitude,
+            longitude
         };
         const formData = new FormData()
         formData.append("name", eventName)
@@ -93,8 +100,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen,fetchEvents }: Props) => {
             <div className={styles.header}>
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
-                    <button onClick={handleAddEvent}>Save</button>
-                    <button onClick={() => setIsNormalEventModalOpen(false)}>Close</button>
+                    <button className={styles.closeBtn} onClick={() => setIsNormalEventModalOpen(false)}>Close</button>
+                    <button className={styles.saveBtn} onClick={handleAddEvent}>Save</button>
                 </div>
             </div>
             <div className={styles.line}></div>
@@ -103,7 +110,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen,fetchEvents }: Props) => {
 
                 <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                <div className={styles.locationContainer}><LocationContainer eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
 
                 <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
