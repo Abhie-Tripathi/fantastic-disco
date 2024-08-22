@@ -28,6 +28,7 @@ import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/Sav
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
 import CoordinateSkeleton from "@/app/components/Skeleton/dashboardskeleton/CoordinateSkeleton";
 import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/NotificationSkeleton";
+import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 
 interface SavedEvent {
   title: string;
@@ -86,7 +87,64 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
-
+  function formatEventDates(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    if (start.getFullYear() === end.getFullYear()) {
+        if (start.getMonth() === end.getMonth()) {
+            if (start.getDate() === end.getDate()) {
+                return new Date(startDate).toLocaleDateString("en-GB", {
+                  weekday: 'long',
+                  month: "short",
+                  day: "2-digit",
+                  year: "numeric",
+                });
+            } else {
+                return (
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    weekday: 'long',
+                  }) + ', ' +
+                  new Date(startDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                  }) + ' - ' +
+                  new Date(endDate).toLocaleDateString("en-GB", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                );
+            }
+        } else {
+            return (
+              new Date(startDate).toLocaleDateString("en-GB", {
+                weekday: 'long',
+                month: "short",
+                day: "2-digit",
+              }) + ' - ' +
+              new Date(endDate).toLocaleDateString("en-GB", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })
+            );
+        }
+    } else {
+        return (
+          new Date(startDate).toLocaleDateString("en-GB", {
+            weekday: 'long',
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }) + ' - ' +
+          new Date(endDate).toLocaleDateString("en-GB", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        );
+    }
+  }
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {
@@ -104,7 +162,7 @@ const Dashboard = () => {
 
   const getSavedEvents = async () => {
     try {
-      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=4`);
+      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=5`);
       console.log("saved_events", data?.data);
       setSavedEventsList(data?.result);
     } catch (error) {
@@ -482,9 +540,16 @@ const Dashboard = () => {
                         }`}
                         key={event.id}
                       >
+                        <div>
                         <Link href={`/internal/event/${event.id}`} target="_blank" >
-                        <div>{event.name}</div>
+                        <div>{event.name}
+                        <span className={styles.eventDate}>{formatEventDates(event?.startDate, event?.endDate)}</span>
+                        </div>
                         </Link>
+                        <div className={styles.event_organizer}>
+                        {event?.location?.countryName}
+                  </div>
+                        </div>
                         <div
                           onClick={() => {
                             unsavedEvent(event?.eventGroupId);
