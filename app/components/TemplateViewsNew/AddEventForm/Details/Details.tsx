@@ -349,6 +349,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setBanner({ placeHolder: imageUrl, file: null });
     }
   }, [imageUrl]);
+  // useEffect(() => {
+  //   console.log("latiude :", latitude)
+  // }, [latitude,longitude]);
 
   return (
     <div className={styles.body}>

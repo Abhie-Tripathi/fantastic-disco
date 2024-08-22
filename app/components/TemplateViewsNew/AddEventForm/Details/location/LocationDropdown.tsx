@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './locationdropdown.style.module.css'
 import { baseUrl } from "@/constants";
+import { GoogleMap, useLoadScript, StandaloneSearchBox, Libraries } from '@react-google-maps/api';
 
 interface LocationSuggestion {
     id: string;
@@ -17,30 +18,45 @@ interface Props {
     setLongitude: (value: number) => void;
     setLatitude: (value: number) => void;
 }
+const libraries: Libraries = ['places'];
 
 const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude }: Props) => {
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
+        libraries,
+    });
+
     const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
+    const [searchBox, setSearchBox] = useState<any>(null);
 
-    const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        setCityName(suggestion.name);
-        if (suggestion.countryName) {
-            setCountryName(suggestion.countryName);
-        } else {
-            setCountryName(suggestion.name);
-        }
+    const handleSuggestionClick = (place: google.maps.places.PlaceResult) => {
+        setCityName(place.name || '');
+        setCountryName(place.formatted_address || '');
+        setLatitude(place.geometry?.location?.lat() || 0);
+        setLongitude(place.geometry?.location?.lng() || 0);
         setIsDropdownVisible(false);
+    };
 
-        // Fetch latitude and longitude
-        const locationName = suggestion.state ? `${suggestion.name}, ${suggestion.state}` : suggestion.name;
-        const latLong = await getLatLong(locationName);
+    // const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
+    //     setCityName(suggestion.name);
+    //     if (suggestion.countryName) {
+    //         setCountryName(suggestion.countryName);
+    //     } else {
+    //         setCountryName(suggestion.name);
+    //     }
+    //     setIsDropdownVisible(false);
 
-        if (latLong) {
-            setLatitude(latLong.lat);
-            setLongitude(latLong.lng);
-        }
-    }
+    //     // Fetch latitude and longitude
+    //     const locationName = suggestion.state ? `${suggestion.name}, ${suggestion.state}` : suggestion.name;
+    //     const latLong = await getLatLong(locationName);
+
+    //     if (latLong) {
+    //         setLatitude(latLong.lat);
+    //         setLongitude(latLong.lng);
+    //     }
+    // }
     const getLatLong = async (address: string) => {
         try {
             const response = await fetch(
@@ -59,62 +75,76 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
         }
         return null;
     };
-    const fetchSuggestions = async (query: string) => {
-        try {
-            const [locationResponse, countryResponse] = await Promise.all([
-                fetch(`${baseUrl}/location/suggestion?q=${query}`),
-                fetch(`${baseUrl}/location/country?name=${query}`)
-            ]);
-
-            const locationData = await locationResponse.json();
-            const countryData = await countryResponse.json();
-
-            const citySuggestions = locationData.data.city.map((city: any) => ({
-                id: city.id,
-                name: city.name,
-                state: city.state,
-                countryName: city.countryName
-            }));
-            const stateSuggestions = locationData.data.state.map((state: any) => ({
-                id: state.id,
-                name: state.name,
-                countryName: state.countryName
-            }));
-            const countrySuggestions = countryData.data.map((country: any) => ({
-                id: country.id,
-                name: country.name,
-                countryName: country.name
-            }));
-            setSuggestions([...citySuggestions, ...stateSuggestions, ...countrySuggestions]);
+    const onPlacesChanged = () => {
+        const places = searchBox?.getPlaces();
+        if (places && places.length > 0) {
+            const place = places[0];
+            handleSuggestionClick(place);
+            setSuggestions(places.map((place: any) => ({
+                id: place.place_id || '',
+                name: place.name || '',
+                state: place.address_components?.find((comp: any) => comp.types.includes('administrative_area_level_1'))?.long_name,
+                countryName: place.address_components?.find((comp: any) => comp.types.includes('country'))?.long_name,
+            })));
             setIsDropdownVisible(true);
-        } catch (error) {
-            console.error("Error fetching location suggestions:", error);
         }
     };
+    // const fetchSuggestions = async (query: string) => {
+    //     try {
+    //         const [locationResponse, countryResponse] = await Promise.all([
+    //             fetch(`${baseUrl}/location/suggestion?q=${query}`),
+    //             fetch(`${baseUrl}/location/country?name=${query}`)
+    //         ]);
+
+    //         const locationData = await locationResponse.json();
+    //         const countryData = await countryResponse.json();
+
+    //         const citySuggestions = locationData.data.city.map((city: any) => ({
+    //             id: city.id,
+    //             name: city.name,
+    //             state: city.state,
+    //             countryName: city.countryName
+    //         }));
+    //         const stateSuggestions = locationData.data.state.map((state: any) => ({
+    //             id: state.id,
+    //             name: state.name,
+    //             countryName: state.countryName
+    //         }));
+    //         const countrySuggestions = countryData.data.map((country: any) => ({
+    //             id: country.id,
+    //             name: country.name,
+    //             countryName: country.name
+    //         }));
+    //         setSuggestions([...citySuggestions, ...stateSuggestions, ...countrySuggestions]);
+    //         setIsDropdownVisible(true);
+    //     } catch (error) {
+    //         console.error("Error fetching location suggestions:", error);
+    //     }
+    // };
 
     // Debounce the fetchSuggestions function
-    const debounce = (func: Function, delay: number) => {
-        let timer: NodeJS.Timeout;
-        return (...args: any) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                func(...args);
-            }, delay);
-        };
-    };
+    // const debounce = (func: Function, delay: number) => {
+    //     let timer: NodeJS.Timeout;
+    //     return (...args: any) => {
+    //         clearTimeout(timer);
+    //         timer = setTimeout(() => {
+    //             func(...args);
+    //         }, delay);
+    //     };
+    // };
 
     // Create a debounced version of the fetchSuggestions function
-    const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+    // const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
-    useEffect(() => {
-        if (query.length > 0) {
-            debouncedFetchSuggestions(query);
-        } else {
-            setSuggestions([]);
-            setIsDropdownVisible(false);
-        }
-    }, [query, debouncedFetchSuggestions]);
-
+    // useEffect(() => {
+    //     if (query.length > 0) {
+    //         debouncedFetchSuggestions(query);
+    //     } else {
+    //         setSuggestions([]);
+    //         setIsDropdownVisible(false);
+    //     }
+    // }, [query, debouncedFetchSuggestions]);
+    if (!isLoaded) return <div>Loading...</div>;
     return (
         <div className={styles.body}>
             <div className={styles.locationTypes}>
@@ -150,20 +180,48 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                 </label>
             </div>
             {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
-                <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
-                <div className={styles.recentHeading}>Recent Locations</div>
-                <div className={styles.recentLocation}>
-                    <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>
-                </div>
-                {isDropdownVisible && (
+                {/* <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
+                    <div className={styles.recentHeading}>Recent Locations</div>
+                    <div className={styles.recentLocation}>
+                        <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>
+                    </div>
+                    {isDropdownVisible && (
+                        <div className={styles.locationDropdown}>
+                            {suggestions.map(suggestion => (
+                                <div
+                                    key={suggestion.id}
+                                    className={styles.suggestion}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                >
+                                    <LocationIcon />
+                                    <span>{suggestion.name}</span>
+                                    {suggestion.state && <span>, {suggestion.state}</span>}
+                                    <span>, {suggestion.countryName}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )} */}
+                <StandaloneSearchBox
+                    onLoad={(ref) => setSearchBox(ref)}
+                    onPlacesChanged={onPlacesChanged}
+                >
+                    <input
+                        type="text"
+                        placeholder="Enter Location"
+                        onFocus={() => setIsDropdownVisible(true)}
+                        onBlur={() => setTimeout(() => setIsDropdownVisible(false), 200)}
+                        onChange={(e) => setQuery(e.target.value)}
+                        value={query}
+                    />
+                </StandaloneSearchBox>
+                {isDropdownVisible && suggestions.length > 0 && (
                     <div className={styles.locationDropdown}>
-                        {suggestions.map(suggestion => (
+                        {suggestions.map((suggestion) => (
                             <div
                                 key={suggestion.id}
                                 className={styles.suggestion}
-                                onClick={() => handleSuggestionClick(suggestion)}
+                                onMouseDown={() => handleSuggestionClick(suggestion as any)}
                             >
-                                <LocationIcon />
                                 <span>{suggestion.name}</span>
                                 {suggestion.state && <span>, {suggestion.state}</span>}
                                 <span>, {suggestion.countryName}</span>

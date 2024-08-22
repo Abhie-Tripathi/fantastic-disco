@@ -10,7 +10,7 @@ import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
-import { ButtonSettingsState} from '@/types/buttoncustomizetypes'
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
@@ -63,19 +63,19 @@ const Page = () => {
   const fetchEvents = async () => {
     const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
     if (data) {
-      const events : AllEventsType[] = data.data.map((event: any) => ({
+      const events: AllEventsType[] = data.data.map((event: any) => ({
         eventId: event.id,
         name: event.name,
         cityName: event.data.location_city,
-        countryName : event.data.location_country,
-        description :event.data.description,
+        countryName: event.data.location_country,
+        description: event.data.description,
         startDate: event.data.start_date,
         endDate: event.data.end_date,
-        format : event.data.format,
+        format: event.data.format,
         isLinkedToWidget: event.isWidgetLinked,
-        startTime : event.data.startTime,
-        endTime : event.data.endTime,
-        gmtZone : event.data.gmt_time,
+        startTime: event.data.startTime,
+        endTime: event.data.endTime,
+        gmtZone: event.data.gmt_time,
       }))
       setFetchedAllEvents(events)
     } if (error) {
@@ -158,18 +158,17 @@ const Page = () => {
     setIsAddEventModalOpen(true)
   }
 
-  const handlePrefillNormalEvent = (event : AllEventsType) =>{
+  const handlePrefillNormalEvent = (event: AllEventsType) => {
     setPrefilledNormalEvent(event)
     setIsAddEventModalOpen(true)
   }
-  const handlePrefillGlobalEvent = (event : GolbalEventType, type : string) =>{
+  const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
     setPrefilledGlobalEvent(event)
-    if(type === "widget"){
+    if (type === "widget") {
       setIsAddEventModalOpen(true)
-    }else setIsNormalEventModalOpen(true)
-    
+    } else setIsNormalEventModalOpen(true)
+
   }
-  
   return (
 
     <div className={`${styles.body} ${isAddEventModalOpen || isNormalEventModalOpen ? styles.modalOpen : ""}`}>
@@ -196,17 +195,17 @@ const Page = () => {
           widgetId={widgetId}
           widgetType={widgetType}
           handlePrefilledAddedEvent={handlePrefilledAddedEvent}
-          handlePrefillNormalEvent = {handlePrefillNormalEvent}
-          handlePrefillGlobalEvent = {handlePrefillGlobalEvent}
+          handlePrefillNormalEvent={handlePrefillNormalEvent}
+          handlePrefillGlobalEvent={handlePrefillGlobalEvent}
           handleAddEventModal={handleAddEventModal}
-          addedEventIds = {addedEventIds}
-          setIsNormalEventModalOpen = {setIsNormalEventModalOpen}
+          addedEventIds={addedEventIds}
+          setIsNormalEventModalOpen={setIsNormalEventModalOpen}
         />
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
         <PreviewWindow
-        widgetId={widgetId}
-        smallCard={false}
+          widgetId={widgetId}
+          smallCard={false}
           selectedBtn={selectedBtn}
           selectedTemplate={selectedTemplate}
           selectedCard={cardStyle}
@@ -224,7 +223,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen}/>
+        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
       </div>}
     </div>
   )
