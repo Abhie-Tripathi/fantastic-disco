@@ -11,12 +11,16 @@ interface EventKeywordProps {
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
   onClose: () => void;
+  type?:boolean;
+  isMandatory?:boolean
 }
 
 const EventKeyword = ({
   state,
   setState,
   onClose,
+  type,
+  isMandatory
 }: EventKeywordProps) => {
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
@@ -44,8 +48,28 @@ const EventKeyword = ({
     setNegativeKeyword(negative);
   }, [eventKeyword]);
 
+  useEffect(() => {
+    if(type){
+    const positive: string[] = [];
+    const negative: string[] = [];
+
+    state.forEach((item) => {
+      item =item.replaceAll(/ /g, "_")
+      if (item.startsWith('-')) {
+        negative.push(item.substring(1));
+      } else {
+        positive.push(item);
+      }
+    });
+
+    setPositiveKeyword(positive);
+    setNegativeKeyword(negative);
+  }
+  }, [state]);
+
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
+    // if(type) setIsMandatory(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -88,17 +112,23 @@ const EventKeyword = ({
       let inputKey = inputText.split(',');
       if(activeTab == "Keywords excluded") {
         inputKey = inputKey.map((keyword) => `-${keyword.replaceAll(/ /g, "_")}`);
-      }else inputKey = inputKey.map((keyword) => `${keyword.replaceAll(/ /g, "_")}`);
+        const newInputKey = inputKey.map((key) => key.substring(1));
+        setNegativeKeyword([...negativeKeyword, ...newInputKey]);
+      }else {
+        inputKey = inputKey.map((keyword) => `${keyword.replaceAll(/ /g, "_")}`);
+        setPositiveKeyword([...positiveKeyword, ...inputKey])
+      }
       newEventKeyword = [...newEventKeyword, ...inputKey]
     }
     setState(newEventKeyword);
+    setInputText('');
     onClose();
   };
-console.log(positiveKeyword);
-
+const negativeKeywords = state.filter(keyword => keyword.startsWith('-'))?.length;
+const positiveKeywords = state.filter(keyword => !keyword.startsWith('-'))?.length;
   return (
     <div>
-      <div className={`${styles.container}`}>
+      <div className={`${!type ? styles.container : styles.divContainer}`}>
         <div className={styles.header}>
         <div className={`${styles.tabs_container}`}>
           <div className={`${styles.keywordBtns}`} >
@@ -109,6 +139,7 @@ console.log(positiveKeyword);
               onClick={() => setActiveTab("Keywords")}
             >
               Keywords
+              {type && positiveKeywords>0 &&<span className={styles.selectedNo}>{positiveKeywords}</span>}
             </button>
             <button
               className={`${styles.tab} ${
@@ -116,7 +147,8 @@ console.log(positiveKeyword);
               }`}
               onClick={() => setActiveTab("Keywords excluded")}
             >
-              Keywords excluded
+              Keywords exclude
+              {type && negativeKeywords>0 &&<span className={styles.selectedNo}> {negativeKeywords}</span>}
             </button>
           </div>
         </div>
@@ -125,7 +157,13 @@ console.log(positiveKeyword);
           </div> */}
         </div>
 
-        <div className={`${styles.searchBar_container}`}>
+        <div className={`${styles.searchBar_container}`}
+        style={
+          isMandatory && type 
+            ? { border: "1px solid red" } 
+            : {}
+        }
+        >
           <input
             type="text"
             placeholder={

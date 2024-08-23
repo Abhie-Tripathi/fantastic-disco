@@ -506,6 +506,7 @@ width: calc(100vw - 134px);
 }
 .hiddenFiltersOuterContainer{
   border-radius: var(--border-radius-sm);
+  box-shadow: none;
   flex-direction: column;
   display: flex;
   gap: 24px;

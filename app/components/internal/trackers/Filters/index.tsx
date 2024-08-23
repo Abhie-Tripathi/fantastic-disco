@@ -269,7 +269,7 @@ const templates = [
   },
   {
     name: "T_PRODUCT_KEYWORDS",
-    templateName: "Product Keywords",
+    templateName: "Product and Topics",
     description: "List all the events which belongs to given industry or associated with keywords :",
     // inputAreas: [
     //   {
@@ -526,6 +526,7 @@ const Pages = () => {
         ...(type && type.length > 0 && {
           type: type.toUpperCase()
         }),
+        // accessLevel: editData?.tracker?.accessLevel,
         filterValue: {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -666,7 +667,12 @@ const Pages = () => {
       };
       console.log(formData);
       console.log(`${baseUrl}/tracker/${secondLast}`);
-      if (type !== "CUSTOM" && (trackerName.length === 0 || customData.length === 0)) {
+      if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -835,7 +841,12 @@ const Pages = () => {
         },
       };
       console.log(customData.length);
-      if (type !== "CUSTOM" && (trackerName.length === 0 || customData.length === 0)) {
+      if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1327,6 +1338,11 @@ useEffect(()=>{
     setSelected(false);
   }
 },[selected])
+const [isDiv,setIsDiv]=useState(false);
+useEffect(()=>{
+  if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
+}, [type])
+
   return (
     <>
       <div
@@ -1379,12 +1395,28 @@ useEffect(()=>{
             onChange={(event) => setTrackerName(event.target.value)}
           />
         </div>
+        {type==="T_PRODUCT_KEYWORDS" &&
+        <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"15px"}}>
+          <div className={styles.hiddenFilterHeading}>Product and Topics
+          <div className={styles.subHeading} style={{color:"var(--tertiary-text-color)"}}>{template?.description}</div>
+          </div>
+        <div style={{width:"50%"}}>
+        <EventKeyword state={selectedEventKeywords}
+        setState={setSelectedEventKeywords}
+        onClose={close} type={isDiv}
+        isMandatory={isMandatory}
+        setIsMandatory={setIsMandatory}
+        />
+        </div>
+        </div>
+        }
+        
         {template && template.inputAreas &&
           <div className={`${styles.competitor}`}>
-            <div className={styles.competitorHead}>
-              {/* <div className={styles.competitorHeading}>Upload custom data </div> */}
+            {/* <div className={styles.competitorHead}>
+              <div className={styles.competitorHeading}>Upload custom data </div>
               {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
-            </div>
+            </div> */}
             <div className={styles.bar}></div>
             <div className={`${styles.toggleDiv}`}>
               <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
@@ -1431,7 +1463,7 @@ useEffect(()=>{
               </div>
             </div>
             {template?.inputAreas &&
-              <div className={`${styles.competitor}`} style={{ padding: "10px", borderRadius: "var(--border-radius-sm)" }}>
+              <div className={`${styles.competitor}`} style={{ padding: "0px 10px", borderRadius: "var(--border-radius-sm)" }}>
                 <div className={styles.subHeading}>{template.description}</div>
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
@@ -1496,12 +1528,12 @@ useEffect(()=>{
        {
        <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
         {type !== "CUSTOM" &&
-        <div className={`${styles.hiddenFilters}`}>
+        <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
         <div className={styles.hiddenFiltersInnerDiv}>
         <Plus style={{width:"16px", height:"16px"}}/>
         <div className={styles.hiddenFilterHeading}>Additional filters</div>
         </div>
-        <div onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}><ChevronDown /></div>
+        <div><ChevronDown /></div>
         </div>
         }
         {(type==="CUSTOM" || opend )&&
@@ -2091,7 +2123,7 @@ useEffect(()=>{
                     </Dialog>
                   </Popover>
                 </MenuTrigger>
-
+                {type!=="T_PRODUCT_KEYWORDS" &&
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button>
                     <div className={styles.input_container}>
@@ -2104,7 +2136,7 @@ useEffect(()=>{
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEventKeywords[0]?.replaceAll("_", " ")}
+                              {selectedEventKeywords[0]?.charAt(0)==="-"?selectedEventKeywords[0]?.replaceAll("_", " ").substring(1):selectedEventKeywords[0]?.replaceAll("_", " ")}
                             </span>
                           )}
                         </div>
@@ -2130,7 +2162,7 @@ useEffect(()=>{
                     </Dialog>
                   </Popover>
                 </MenuTrigger>
-
+                  }
 
 
 

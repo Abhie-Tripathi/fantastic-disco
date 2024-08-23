@@ -225,9 +225,17 @@ const Dashboard = () => {
   };
 
   const unsavedEvent = async (id: string) => {
+    const dataToSend = {
+      eventIds: [id],
+      global: true,
+    };
     try {
-      const response = await myFetch(`${baseUrl}/tracker/saved-events/${id}`, {
+      const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
       });
       if (response) {
         getSavedEvents();
@@ -336,7 +344,7 @@ const Dashboard = () => {
                 </Link>
 
                 <Link
-                  href={"/internal/trackers/create"}
+                  href={"/internal/trackers?tab=allTrackers"}
                   className={`${styles.linkCard} card`}
                 >
                   <div className={styles.linkCard_header}>
@@ -547,12 +555,13 @@ const Dashboard = () => {
                         </div>
                         </Link>
                         <div className={styles.event_organizer}>
-                        {event?.location?.countryName}
+                        {event?.location?.cityName}{", "}{event?.location?.countryName}
                   </div>
                         </div>
                         <div
+                        style={{cursor:"pointer"}}
                           onClick={() => {
-                            unsavedEvent(event?.eventGroupId);
+                            unsavedEvent(event?.id);
                           }}
                         >
                           <BookmarkIcon fillColor={"var(--primary-color)"} />
