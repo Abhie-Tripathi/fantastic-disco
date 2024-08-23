@@ -1,13 +1,13 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './yourkit.style.module.css'
-import DefaultKit from './defaultkit/DefaultKit';
+// import DefaultKit from './defaultkit/DefaultKit';
 
 const YourKit = () => {
 
     return (
         <div className={styles.body}>
-            <DefaulKit kitName="default" />
+            {/* <DefaulKit kitName="default" /> */}
         </div>
     )
 }

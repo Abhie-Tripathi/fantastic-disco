@@ -6,7 +6,7 @@ import DetailSection from '@/app/components/TemplateViews/brandkit/DetailSection
 import ColorModal from '@/app/components/TemplateViews/brandkit/color/ColorModal'
 import LogoModal from '@/app/components/TemplateViews/brandkit/logo/LogoModal'
 
-const page = () => {
+const Page = () => {
   const [preview, setPreview] = useState<string>("");
   const [colorCode, setColorCode] = useState<string>("")
   return (
@@ -30,4 +30,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
