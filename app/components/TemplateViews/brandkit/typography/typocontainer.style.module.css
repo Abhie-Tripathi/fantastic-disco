@@ -1,19 +1,24 @@
-.body{
+.body {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-.heading{
+
+.heading {
     font-size: var(--font-size-h4);
     font-weight: var(--font-weight-semibold);
 }
+
 .fontFamily {
     display: flex;
     gap: 15px;
-    overflow-x: auto; /* Enables horizontal scrolling */
-    white-space: nowrap; /* Prevents the items from wrapping to the next line */
+    overflow-x: auto;
+    /* Enables horizontal scrolling */
+    white-space: nowrap;
+    /* Prevents the items from wrapping to the next line */
     padding-bottom: 5px;
 }
+
 .font {
     width: 150px;
     height: 150px;
@@ -24,7 +29,31 @@
     align-items: center;
     justify-content: center;
     border: 1px solid var(--border-color);
-    flex-shrink: 0; /* Prevents the items from shrinking */
-    cursor: pointer;
+    flex-shrink: 0;
     color: black;
+    position: relative;
+}
+
+.deleteBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    filter: drop-shadow(1px 1px 2px rgb(90, 90, 90));
+    border-radius: 30px;
+    opacity: 0;
+    transition: opacity 0.1s ease, transform 0.1s ease;
+    /* Prevents interaction when invisible */
+    display: flex;
+    padding: 2px 8px;
+    gap: 4px;
+    cursor: pointer;
+}
+.font:hover .deleteBtn {
+    opacity: 1;
+}
+.deleteBtn:hover {
+    background-color: rgba(255, 255, 255, 0.899);
+    transform: scale(1.05);
+    z-index: 1;
 }

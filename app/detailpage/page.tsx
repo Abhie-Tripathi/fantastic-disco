@@ -67,7 +67,7 @@ const Page = ({ hashtags, description, eventName, shareUrl, media, emailSubject,
     )
 }
 const fetchData = async (widgetId: string, eventId: string) => {
-    const { data, error } = await myFetch(`https://api.eventgeni.com/widget/${widgetId}?eventId=${eventId}`);
+    const { data, error } = await myFetch(`https://api.eventgeni.com/public/widget/${widgetId}`);
     if (data) {
         console.log(data)
     }
