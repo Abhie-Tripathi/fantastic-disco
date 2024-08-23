@@ -20,6 +20,11 @@
     font-size: 12px;
     line-height: 20px;
 }
+.registerContainer form{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
 .formSubHeading{
     color: #8F8F8F;
     font-size: 12px;

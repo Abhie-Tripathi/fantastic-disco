@@ -12,7 +12,6 @@ import LocationContainer from '@/app/components/DetailPage/LocationContainer'
 import DescriptionContainer from '@/app/components/DetailPage/DescriptionContainer'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
-import Logo from '/public/croppedlogo.png'
 
 interface EventProps {
     venue: string;
@@ -46,8 +45,10 @@ const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, widgetId, eventId }: EventProps) => {
     return (
-        <div className={styles.body} style={{ backgroundColor: pageBgColor }}>
-            {/* <Image src={Logo} alt='logo' width={42} height={50} className={styles.logo}/> */}
+        <div className={styles.body} 
+        style={{ backgroundColor: pageBgColor }}
+        >
+
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
