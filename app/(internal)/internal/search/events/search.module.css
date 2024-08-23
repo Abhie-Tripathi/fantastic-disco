@@ -111,18 +111,19 @@
 }
 
 .buttons_container2 {
-  /* flex: 1 1; */
+  flex: 1 1;
   display: flex;
   gap: 26px;
   padding: 7px;
   /* flex-direction: column; */
   align-items: center;
+  justify-content: space-between;
 }
 
 .inputdropdowns_container {
   display: grid;
   grid-template-columns: repeat(4, minmax(0px, 18vw));
-  gap: 15px 25px;
+  gap: 15px 15px;
 }
 
 .inputdropdowns_container_AI {
@@ -573,6 +574,19 @@ input:checked + .slider:before {
 
 .input_title {
   text-align: start;
+  font-size: var(--font-size-default);
+  line-height: var(--line-height-default);
+}
+
+.dropIcon {
+  height: 12px;
+  width: 12px;
+}
+
+.comingSoon_badge {
+  font-size: var(--font-size-xs);
+  padding: 4px;
+  margin-left: 5px;
 }
 
 .loader {

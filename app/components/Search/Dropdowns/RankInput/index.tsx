@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./rankinput.module.css";
 import ReactSlider from "react-slider";
 import { useTheme } from "@/context";
+import { InformationFillSmall } from "geist-icons";
 
 interface RankInputProps {
   className?: string;
@@ -73,21 +74,24 @@ const RankInput = ({
       className={`${styles.container} ${className}`}
     >
       <div className={styles.header}>
+        <div>Event Ranking {" "}
+          <InformationFillSmall color="var(--primary-text-color)" />
+        </div>
         <div className={styles.header_button} onClick={() => onClose()}>
-          Done
+          Apply
         </div>
       </div>
       <div className={styles.sub_container}>
         <div className={styles.slider_container}>
-          <label className={styles.checkbox_label}>
+          {/* <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isEventRank")}
               checked={rankToggles.isEventRank}
             />
             <span className={styles.checkbox}></span>
-          </label>
-          <div className={styles.checkbox_title}>Event Rank</div>
+          </label> */}
+          <div className={styles.checkbox_title}>Category Rank</div>
           <>
             <ReactSlider
               onChange={(values) => {setSelectedEventRank(values); handleRankSlider(values, "isEventRank")}}
@@ -99,6 +103,7 @@ const RankInput = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
+              disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -111,6 +116,7 @@ const RankInput = ({
                 }
                 className={styles.rank_input}
                 type="number"
+                disabled={true}
               />
               <span className={styles.input_gap}></span>
               <input
@@ -123,21 +129,22 @@ const RankInput = ({
                 }
                 className={styles.rank_input}
                 type="number"
+                disabled={true}
               />
             </div>
           </>
         </div>
 
         <div className={styles.slider_container}>
-          <label className={styles.checkbox_label}>
+          {/* <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isLocalRank")}
               checked={rankToggles.isLocalRank}
             />
             <span className={styles.checkbox}></span>
-          </label>
-          <div className={styles.checkbox_title}>Local Rank</div>
+          </label> */}
+          <div className={styles.checkbox_title}>Country Rank</div>
           <>
             <ReactSlider
               onChange={(values) => {setSelectedLocalRank(values); handleRankSlider(values, "isLocalRank")}}
@@ -149,6 +156,7 @@ const RankInput = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
+              disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -161,6 +169,7 @@ const RankInput = ({
                 }
                 className={styles.rank_input}
                 type="number"
+                disabled={true}
               />
               <span className={styles.input_gap}></span>
               <input
@@ -173,21 +182,22 @@ const RankInput = ({
                 }
                 className={styles.rank_input}
                 type="number"
+                disabled={true}
               />
             </div>
           </>
         </div>
 
-        {/* <div className={styles.slider_container}>
-          <label className={styles.checkbox_label}>
+        <div className={styles.slider_container}>
+          {/* <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isAviationRank")}
               checked={rankToggles.isAviationRank}
             />
             <span className={styles.checkbox}></span>
-          </label>
-          <div className={styles.checkbox_title}>Aviation Rank</div>
+          </label> */}
+          <div className={styles.checkbox_title}>Category + Country Rank</div>
           <>
             <ReactSlider
               onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "isAviationRank")}}
@@ -199,6 +209,7 @@ const RankInput = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
+              disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -210,6 +221,7 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
+                disabled={true}
               />
               <span className={styles.input_gap}></span>
               <input
@@ -221,10 +233,56 @@ const RankInput = ({
                   ])
                 }
                 className={styles.rank_input}
+                disabled={true}
               />
             </div>
           </>
-        </div> */}
+        </div>
+
+        <div className={styles.line}></div>
+
+        <div className={styles.slider_container}>
+          <div className={styles.checkbox_title}>Reputation Score</div>
+          <>
+            <ReactSlider
+              onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "isAviationRank")}}
+              value={selectedAviationRank}
+              className={styles.horizontal_slider}
+              thumbClassName={styles.thumb}
+              trackClassName={styles.track}
+              ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              pearling
+              minDistance={1}
+              disabled={true}
+            />
+            <div className={styles.rank_input_container}>
+              <input
+                value={selectedAviationRank[0]}
+                onChange={(e) =>
+                  setSelectedAviationRank([
+                    Number(e.target.value),
+                    selectedAviationRank[1],
+                  ])
+                }
+                className={styles.rank_input}
+                disabled={true}
+              />
+              <span className={styles.input_gap}></span>
+              <input
+                value={selectedAviationRank[1]}
+                onChange={(e) =>
+                  setSelectedAviationRank([
+                    selectedAviationRank[0],
+                    Number(e.target.value),
+                  ])
+                }
+                className={styles.rank_input}
+                disabled={true}
+              />
+            </div>
+          </>
+        </div>
       </div>
     </div>
   );

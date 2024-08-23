@@ -17,8 +17,8 @@
   gap: 20px;
   align-items: center;
   padding: 15px 0px;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  /* border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color); */
 }
 
 .checkbox_label {
@@ -75,26 +75,33 @@
 }
 
 .checkbox_title {
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
+  font-size: var(--font-size-default);
+  /* font-weight: var(--font-weight-semibold); */
+  /* text-transform: uppercase; */
   line-height: 1.3333333333;
-  letter-spacing: 0.05em;
+  /* letter-spacing: 0.05em; */
   width: 100px;
 }
 
 .header {
   padding: 24px 20px;
-  font-size: var(--font-size-small);
+  padding-bottom: 10px;
+  font-size: var(--font-size-default);
   font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   line-height: 1.8181818182;
-  letter-spacing: 0.1em;
-  color: var(--primary-color);
+  /* letter-spacing: 0.1em; */
+  /* color: var(--primary-color); */
+  display: flex;
+  justify-content: space-between;
 }
 
 .header_button {
   cursor: pointer;
+  color: var(--primary-color);
+  letter-spacing: 0.1em;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
 }
 
 .horizontal_slider {
@@ -167,4 +174,9 @@
   height: 1px;
   display: block;
   background-color: #222;
+}
+
+.line {
+  margin: 12px 0;
+  border-top: 1px solid var(--neutral-light-color);
 }
