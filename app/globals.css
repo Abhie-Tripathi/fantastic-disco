@@ -122,6 +122,8 @@ button {
   /* --paragraph-color: #b7b7bb; */
   --danger-text-color: #E5484D;
   --success-text-color: #45A557;
+  --info-text-color: #0072F5;
+  --warning-text-color: #A35200;
   --subtitle-color: #8056b2;
   --title-color: #323339;
   --background-color: #0c0f1e;
@@ -172,6 +174,7 @@ button {
   --danger-background-color: #FFF0F0;
   --warning-background-color: #FFF6E6;
   --success-background-color: #EFFBEF;
+  --info-background-color: #F0F7FF;
   --disabled-background-color: #C9C9C9;
   --img-filter:invert(0);
   --disabled-btn-color: #c9c9c966;
@@ -202,12 +205,14 @@ body[data-theme="dark"] {
   --danger-background-color: #2A1314;
   --warning-background-color: #291800;
   --success-background-color: #0B2212;
+  --info-background-color: #0F1C2E;
   --disabled-background-color: #454545;
   --img-filter: invert(1);
   --disabled-btn-color: #454545;
   --neutral-light-color: #1F1F1F;
   --accent-color: #1a1a1a;
   --card-background:linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); 
+  --warning-text-color: #FF990A;
 }
 
 /* :root {
