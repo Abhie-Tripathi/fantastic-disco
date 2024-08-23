@@ -5,9 +5,11 @@ interface Props {
     registerMessage: string
     registerBtnText: string
     registerBtnColor: string
+    widgetId : string;
+    eventId : string;
 }
 
-const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor }: Props) => {
+const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor,widgetId, eventId }: Props) => {
     // Function to convert hex to RGB
     const hexToRgb = (hex: string) => {
         const cleanHex = hex.replace('#', '');

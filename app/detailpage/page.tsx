@@ -67,7 +67,7 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
 
-                    <div className={styles.resgitrationContainer}><RegisterForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} /></div>
+                    <div className={styles.resgitrationContainer}><RegisterForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} widgetId={widgetId} eventId={eventId}/></div>
 
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
