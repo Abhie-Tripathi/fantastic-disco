@@ -13,10 +13,11 @@ interface Props {
 }
 
 const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody }: Props) => {
+    console.log("share url is : ", shareUrl)
     const [copyClick, setCopyClick] = useState(false)
     const handleCopy = () => {
         setCopyClick(true)
-        const textToCopy = "https://console.eventgeni.com/detailpage"
+        const textToCopy = shareUrl
         navigator.clipboard.writeText(textToCopy);
     };
 
