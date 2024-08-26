@@ -186,6 +186,7 @@ const Search = () => {
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
   );
+  const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
@@ -521,6 +522,10 @@ const Search = () => {
       queryString.eventAttendanceRange = selectedEventAttendanceRange;
     }
 
+    if(selectedVisitors.length > 0) {
+      queryString.eventSize = selectedVisitors;
+    }
+
     // Event Format
     if (selectedEventFormat.length > 0) {
       queryString.eventFormat = selectedEventFormat;
@@ -539,6 +544,10 @@ const Search = () => {
     // Event Edition
     if (selectedEventEdition > 0) {
       queryString.editionRange = selectedEventEdition;
+    }
+
+    if(selectedRegularity[0] > 0) {
+      queryString.editionRange = selectedRegularity[0];
     }
 
     // Event Keywords
@@ -1490,9 +1499,9 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Regularity & Edition
-                          {selectedEventEdition !== 0 && (
+                          {selectedRegularity[0] !== 0 && (
                             <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedEventEdition}
+                              &gt;{'='} {selectedRegularity[0]}
                             </span>
                           )}
                         </div>
@@ -1517,14 +1526,8 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <RegularityEdition
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
+                          selectedRegularity={selectedRegularity}
+                          setSelectedRegularity={setSelectedRegularity}
                           onClose={close}
                         />
                       )}
