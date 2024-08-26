@@ -9,7 +9,7 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
   
     return (
         <div className={styles.container}>
-          {type!=="Product Keyword" &&
+          {type!=="Product and Topics" &&
            <div className={styles.formatFreq1}>
            <div className={styles.format}>
                <div className={styles.formatHead}>Product / Topics</div>

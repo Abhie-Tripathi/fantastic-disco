@@ -103,7 +103,7 @@ const Page = () => {
   useEffect(()=>{
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
-    else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product Keyword")
+    else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
   },[])
   
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
