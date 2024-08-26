@@ -82,10 +82,10 @@ const SignUp = () => {
         generateOtp();
         setShowVerification(true);
       } else {
-        if(response[0].error.message==="email already exists")
-        setErrors({ email: response[0].error.message.charAt(0).toUpperCase() + response[0].error.message.substring(1)});
-        else if(response[0].error.message==="phone number already exist") 
-          setErrors({ mobileNo: response[0].error.message.charAt(0).toUpperCase() + response[0].error.message.substring(1)});
+        if(response[0].error.message==="Email already exists")
+        setErrors({ email: response[0].error.message});
+        else if(response[0].error.message==="Phone number already exist") 
+          setErrors({ mobileNo: response[0].error.message});
       }
     } catch (error) {
       if (error instanceof ZodError) {

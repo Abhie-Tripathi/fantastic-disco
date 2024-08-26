@@ -170,7 +170,6 @@
 
 .notification_defaultText {
   font-size: var(--font-size-default);
-  cursor: pointer;
   display: flex;
   height: 100%;
   color: var(--secondary-text-color);
@@ -219,7 +218,11 @@
   align-items: center;
   gap: var(--spacing-lg);
 }
-
+.tracker_container_header_innerContainer{
+  display: flex;
+  gap:var(--spacing-lg);
+  align-items: center;
+}
 .tracker_card {
   display: flex;
   flex-direction: column;
@@ -428,7 +431,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .savedEvent:hover {
@@ -473,6 +475,17 @@
 .mobile_trackerCard_container {
   display: none;
   gap: var(--spacing-sm);
+}
+.event_organizer {
+  /* color: #696b83; */
+  color: var(--tertiary-text-color);
+  font-size: var(--font-size-default);
+  margin-top: 5px;
+}
+.eventDate{
+  color: var(--tertiary-text-color);
+    font-size: var(--font-size-small);
+    margin-left: 5px;
 }
 
 @media screen and (max-width: 1250px) {
