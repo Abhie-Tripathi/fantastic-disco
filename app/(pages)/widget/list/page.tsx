@@ -1,9 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import WidgetCard from '@/app/components/TemplateViews/draftwidgets/WidgetCard'
-import More from '/public/more_horiz.svg'
 import styles from './page.style.module.css'
-import SkeletonWidget from '@/app/components/widgets/SkeletonWidget'
 import { useTheme } from '@/context'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { myFetch } from '@/utils/myFetch';
@@ -20,6 +18,7 @@ interface DraftWidgetsType {
   templateId: string;
   widgetId: string;
   status: string;
+  eventSize : number;
 }
 const Widget = () => {
   const [draftWidgetModal, setDraftWidgetModal] = useState<boolean>(false)
@@ -65,7 +64,8 @@ const Widget = () => {
           ...widget,
           templateId: asciiToString(widget.templatePublicId),
           widgetType: widget.type,
-          widgetId: widget.id
+          widgetId: widget.id,
+          eventSize : widget.otherdata.event.length
         }));
       setDraftWidgets(filteredWidgets);
     }
@@ -82,13 +82,15 @@ const Widget = () => {
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
-      widgetId: widget.id
+      widgetId: widget.id,
+      eventSize : widget.otherdata.event.length
     })) : [];
     const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
-      widgetId: widget.id
+      widgetId: widget.id,
+      eventSize : widget.otherdata.event.length
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
     setAllWidgets(combinedWidgets);
@@ -128,7 +130,7 @@ const Widget = () => {
         <div className={styles.navHeading}>All Widgets</div>
         <div className={styles.navBtns}>
           <button onClick={handleAddWidget}>Create Widget</button>
-          <button onClick={() => setDraftWidgetModal(true)}>Draft Widgets</button>
+          <button className={styles.draftBtn} onClick={() => setDraftWidgetModal(true)}>Draft Widgets<span>{draftWidgets.length}</span></button>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -144,6 +146,7 @@ const Widget = () => {
               widgetNumber={1}
               fetchDraftWidgets={fetchDraftWidgets}
               handleWidgetClick={handleWidgetClick}
+              fetchedEventsSize = {card.eventSize}
             />
           ))}
         </div>

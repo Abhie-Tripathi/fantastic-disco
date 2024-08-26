@@ -7,7 +7,7 @@ interface Props {
   setYourWidgetModal: (value: boolean) => void
   setDraftWidgets: (value: DraftWidgetsType[]) => void
   draftWidgets: DraftWidgetsType[]
-  fetchDraftWidgets: () => Promise<void>; 
+  fetchDraftWidgets: () => Promise<void>;
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
@@ -15,9 +15,10 @@ interface DraftWidgetsType {
   templateId: string;
   widgetId: string;
   status: string;
+  eventSize : number;
 }
 
-const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets,fetchDraftWidgets }: Props) => {
+const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetchDraftWidgets }: Props) => {
 
   return (
     <div className={styles.body}>
@@ -30,15 +31,16 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets,fetchD
       <div className={styles.line}></div>
       <div className={styles.widgets}>
         {draftWidgets.length > 0 ? (
-          draftWidgets.map((card,key) => (
+          draftWidgets.map((card, key) => (
             <WidgetCard
-            widgetStatus="Draft"
+              widgetStatus="Draft"
               key={key}
-              widgetId = {card.widgetId}
+              widgetId={card.widgetId}
               templateId={card.templateId as TemplateId}
               widgetType={card.widgetType}
               widgetNumber={1}
               fetchDraftWidgets={fetchDraftWidgets}
+              fetchedEventsSize={0}
             />
           ))
         ) : (

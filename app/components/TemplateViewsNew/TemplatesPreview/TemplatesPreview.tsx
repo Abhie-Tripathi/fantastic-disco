@@ -21,6 +21,7 @@ interface DraftWidgetsType {
     templateId: string;
     widgetId: string;
     status: string;
+    eventSize : number;
   }
 
 

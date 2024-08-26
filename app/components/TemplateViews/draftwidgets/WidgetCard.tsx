@@ -96,7 +96,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
             <div className={styles.details}>
                 <div className={styles.heading_eventsContainer}>
                     <div className={styles.templateHeading}>{heading}</div>
-                    <div className={styles.eventsHeading}>{widgetStatus === "Daft" ? "No Events Added" : "2 Events Added"}</div>
+                    <div className={styles.eventsHeading}>{fetchedEventsSize === 0 ? "No Events Added" : `${fetchedEventsSize} Events Added`}</div>
                 </div>
                 <div className={styles.widgetTypeContainer}>
                     <WidgetIcon />
