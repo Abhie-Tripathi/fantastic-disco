@@ -1181,6 +1181,41 @@ const Search = () => {
                 </Popover>
               </MenuTrigger>
 
+              <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Dates
+                        {selectedDateRange.length > 0 &&
+                        selectedDateRange[0] !== null ? (
+                          <span className={styles.input_selected_title}>
+                            {dateShowFormatter(selectedDateRange)}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={20}
+                        height={20}
+                        className={`${iconClass} ${styles.dropIcon}`}
+                      />
+                    </div>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  {/* <Dialog> */}
+                  <DateRange
+                    state={selectedDateRange}
+                    setState={setSelectedDateRange}
+                  />
+                  {/* </Dialog> */}
+                </Popover>
+              </MenuTrigger>
+
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
@@ -1218,47 +1253,12 @@ const Search = () => {
               
             </div>
 
-            <div className={styles.buttons_container}>
+            {/* <div className={styles.buttons_container}>
               <Button10x style={{color: 'white', width: '100%'}} variant="primary" size="md" onClick={searchHandler} >Apply</Button10x>
-            </div>
+            </div> */}
           </div>
           <div className={styles.filtersRow} >
-            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(4, minmax(0px, 18vw))'}}>
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button className={styles.dropdown_button}>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Dates
-                        {selectedDateRange.length > 0 &&
-                        selectedDateRange[0] !== null ? (
-                          <span className={styles.input_selected_title}>
-                            {dateShowFormatter(selectedDateRange)}
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={20}
-                        height={20}
-                        className={`${iconClass} ${styles.dropIcon}`}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  {/* <Dialog> */}
-                  <DateRange
-                    state={selectedDateRange}
-                    setState={setSelectedDateRange}
-                  />
-                  {/* </Dialog> */}
-                </Popover>
-              </MenuTrigger>
+            <div className={styles.inputdropdowns_container} style={{gridTemplateColumns: 'repeat(5, minmax(0px, 18vw))'}}>
 
               <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
@@ -1377,41 +1377,46 @@ const Search = () => {
                     />
                   </Popover>
                 </MenuTrigger>
+
+                <div style={{display: 'flex'}}>
+                  <button
+                    onClick={() => {
+                      setShowAdvanceFilter((prev) => !prev);
+                      GAEvent(
+                        "research",
+                        "Filters",
+                        "All Filter Modal | Viewed",
+                        "More Filter Icon"
+                      );
+                    }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        fontSize: "var(--font-size-small)",
+                      }}
+                    >
+                      <Image
+                        src={FilterIcon}
+                        width={18}
+                        height={18}
+                        alt="filters"
+                      />
+                    <span className={styles.clearfilter_button}>
+                      {" "}
+                      Advanced Filters
+                    </span>
+                  </button>
+                </div>
+
+                <div className={styles.buttons_container2}>
+                  <button ref={trackerBtnRef} onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
+                    <span className={styles.clearfilter_button}>Save as Tracker</span>
+                  </button>
+                  <Button10x style={{color: 'white'}} variant="primary" size="sm" onClick={searchHandler} >Apply Filters</Button10x>
+                </div>
             </div>
 
-            <div className={styles.buttons_container2}>
-              <button
-                onClick={() => {
-                  setShowAdvanceFilter((prev) => !prev);
-                  GAEvent(
-                    "research",
-                    "Filters",
-                    "All Filter Modal | Viewed",
-                    "More Filter Icon"
-                  );
-                }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
-                >
-                  <Image
-                    src={FilterIcon}
-                    width={18}
-                    height={18}
-                    alt="filters"
-                  />
-                <span className={styles.clearfilter_button}>
-                  {" "}
-                  Advanced
-                </span>
-              </button>
-              {/* <Button10x style={{textWrap: 'nowrap'}} variant={'primary'} size={'md'} onClick={createTrackerHandler} >Save as Tracker</Button10x> */}
-              <button ref={trackerBtnRef} onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
-                <span className={styles.clearfilter_button}>Save</span>
-              </button>
-            </div>
           </div>
 
           {/* <div className={styles.buttons_container}>

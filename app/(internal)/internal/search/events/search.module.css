@@ -118,11 +118,13 @@
   /* flex-direction: column; */
   align-items: center;
   justify-content: space-between;
+  padding: 0;
+  font-size: var(--font-size-small);
 }
 
 .inputdropdowns_container {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0px, 18vw));
+  grid-template-columns: repeat(5, minmax(0px, 18vw));
   gap: 15px 15px;
 }
 
@@ -190,20 +192,24 @@
   height: 40px;
   font-size: inherit;
   font-family: inherit;
-  background: #131313;
-  color: white;
+  background: var(--primary-foreground);
   border: none;
   cursor: pointer;
+  font-size: var(--font-size-default);
+  color: var(--primary-text-color);
+  border-radius: var(--border-radius-sm);
 }
 
-.advanceFilterBtns_light button {
+/* .advanceFilterBtns_light button {
   background: white;
   color: inherit;
-}
+} */
 
 .advanceFilterBtns button.active {
-  border: 1px solid var(--primary-color);
+  border: 2px solid var(--primary-color);
   border-radius: var(--border-radius-sm);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-semibold);
   /* color: white; */
 }
 
@@ -286,7 +292,7 @@
 .viewContainer {
   /* background-color: #fbf8ff;
   background-color: #f6edff; */
-  background-color: var(--tabs-background-color);
+  background-color: var(--background-secondary-color);
   padding: 10px 0px;
   border-radius: 12px;
   margin: 25px 0px;
