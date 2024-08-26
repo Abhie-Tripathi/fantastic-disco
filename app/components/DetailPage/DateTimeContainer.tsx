@@ -22,7 +22,7 @@ const DateTimeContainer = ({
     endDate,
     startTime,
     endTime,
-  }: TimeSettingsProps) => {
+}: TimeSettingsProps) => {
 
     return (
         <div className={styles.body}>
@@ -41,7 +41,6 @@ const DateTimeContainer = ({
                         <div className={styles.timeBox}>{endTime}</div>
                     </div>
                 </div>
-
             </div>
             <div className={styles.timeZonesContainer}>
                 <div className={styles.header}>

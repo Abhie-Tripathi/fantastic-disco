@@ -240,22 +240,22 @@ const Sidebar = () => {
           </Link>
         </>) : <>
         <Link
-          href="/widget"
+          href="/widget/dashboard"
           className={`${styles.link} ${getActiveClass("/widget/dashboard")}`}
         >
           <WidgetIconOne />
           <div className={styles.linkName}>Dashboard</div>
         </Link>
         <Link
-          href="/widget/add"
-          className={`${styles.link} ${getActiveClass("/widget/add")}`}
+          href="/widget/brandkit"
+          className={`${styles.link} ${getActiveClass("/widget/brandkit")}`}
         >
           <WidgetIconTwo />
           <div className={styles.linkName}>Brandkit</div>
         </Link>
         <Link
-          href="/widget/edit"
-          className={`${styles.link} ${getActiveClass("/widget/edit")}`}
+          href="/widget/list"
+          className={`${styles.link} ${getActiveClass("/widget/list")}`}
         >
           <WidgetIconThree />
           <div className={styles.linkName}>Widget</div>

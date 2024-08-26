@@ -1,40 +1,36 @@
 .body {
     width: 100%;
-    margin-top: 20px;
-    max-height: 83%;
+    border: 1px solid var(--border-color);
     display: flex;
-    border: 1px solid rgb(79, 79, 79);
+    padding: 10px;
+    border-radius: 10px;
+    gap: 20px;
 }
-.colorTypes{
+.colorContainer{
+    width:70%;
+    height: 400px;
+    border-radius: 5px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(2px 3px 2px rgb(150, 150, 150));
+}
+.colorContainer span{
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+}
+.configure{
     display: flex;
     flex-direction: column;
-    width: 30%;
-    margin: 10px;
-    border-right: 1px solid rgb(114, 114, 114);
+    gap: 20px;
 }
-.colorList{
-    color: white;
-    margin-bottom: 10px;
-    font-size: 12px;
+.line{
+    width: 100%;
+    border-top: 1px solid var(--border-color);
 }
-.selectableBtn{
-    cursor: pointer;
-    display: flex;
-    padding: 20px;
-    align-items: center;
-    gap: 5px;
-}
-
-.activeBtn{
-    background-color: #6750A466;
-    border-left: 5px solid #6750a4;
-}
-.configurations{
-    margin: 10px;
-    width: 70%;
-}
-.configHeading{
-    color: white;
-    margin-bottom: 10px;
-    font-size: 12px;
+.configure button{
+    width: 100%;
+    padding: 10px;
+    font-size: var(--font-size-default);
+    border-radius: 4px;
 }
