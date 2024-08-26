@@ -385,7 +385,6 @@ input:checked + .slider:before {
 }
 .subHeading{
   font-weight: var(--font-weight-regular);
-  color: var(--tertiary-text-color);;
   font-size: var(--font-size-large);
 }
 .competitor{
@@ -523,5 +522,4 @@ width: calc(100vw - 134px);
 .hiddenFilterHeading{
   font-size: var(--font-size-h6);
   font-weight: var(--font-weight-bold);
-  color: var(--primary-color);
 }

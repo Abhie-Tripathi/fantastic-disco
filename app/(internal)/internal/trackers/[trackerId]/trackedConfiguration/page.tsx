@@ -186,9 +186,7 @@ const userRating=
   data?.tracker?.filterValue?.eventRating?.length>0
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
-   const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []
-   const includedKeywords = allKeywords?.filter((item: string) => item?.charAt(0) !== '-');
-  const excludedKeywords = allKeywords?.filter((item: string) => item?.charAt(0) === '-');
+   const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
   return (
     <>
     {loading ? <Loading/> :
@@ -251,31 +249,19 @@ const userRating=
             </div>
           </div>
           <div className={styles.innerContainerRight}>
-          <div className={keyStyles.allCat1} style={{flexDirection:"column"}}>
-          <div className={styles.includedContainer}>
-            <div className={styles.formatHead}>Included Keywords</div>
-            <div className={styles.keywordsIncluded}>
-      {includedKeywords?.map((item: string, id: number) => (
-        <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>
-          {item.replaceAll("_", " ")}
-          <span className={keyStyles.tooltipText}>Included Keyword</span>
-        </div>
-      ))}
-      </div>
-    </div>
-
-    <div className={styles.excludedContainer}>
-    <div className={styles.formatHead}>Excluded Keywords</div>
-            <div className={styles.keywordsExcluded}>
-      {excludedKeywords?.map((item: string, id: number) => (
-        <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>
-          {item.replaceAll("_", " ").substring(1)}
-          <span className={keyStyles.tooltipText}>Excluded Keyword</span>
-        </div>
-      ))}
-      </div>
-    </div>
-                    </div>
+          <div className={keyStyles.allCat1}>
+                   {allKeywords?.map((item: string, id: number) => (
+                       item?.charAt(0) !== '-' ? (
+                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item.replaceAll("_"," ")}
+                           <span className={keyStyles.tooltipText}>Included Keyword</span>
+                           </div>
+                       ) : (
+                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
+                           <span className={keyStyles.tooltipText}>Excluded Keyword</span>
+                           </div>
+                       )
+                   ))}
+               </div>
           </div>
         </div>
         <div className={styles.line}></div>
