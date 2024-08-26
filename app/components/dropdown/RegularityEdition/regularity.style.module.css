@@ -83,6 +83,7 @@
 
 .header {
   padding: 24px 20px;
+  padding-bottom: 10px;
   font-size: var(--font-size-default);
   font-weight: var(--font-weight-semibold);
   /* text-transform: uppercase; */
@@ -190,4 +191,9 @@
   font-size: var(--font-size-xs);
   padding: 4px;
   width: fit-content;
+}
+
+.line {
+  margin-bottom: 12px;
+  border-top: 1px solid var(--neutral-light-color);
 }

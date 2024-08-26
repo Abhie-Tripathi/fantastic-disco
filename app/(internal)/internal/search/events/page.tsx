@@ -2120,7 +2120,7 @@ const Search = () => {
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                       </div>
                     </div>
                   </Button>

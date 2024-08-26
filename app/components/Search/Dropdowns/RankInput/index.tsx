@@ -88,51 +88,6 @@ const RankInput = ({
       <div className={styles.sub_container}>
 
         <div className={styles.slider_container}>
-          <div className={styles.checkbox_title}>Reputation Score</div>
-          <>
-            <ReactSlider
-              onChange={(values) => {setSelectedReputationScore([values, 100])}}
-              value={selectedReputationScore[0]}
-              className={styles.horizontal_slider}
-              thumbClassName={styles.thumb}
-              trackClassName={styles.track}
-              // ariaLabel={["Lower thumb", "Upper thumb"]}
-              ariaLabel={"Lower thumb"}
-              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-              pearling
-              minDistance={1}
-            />
-            <div className={styles.rank_input_container}>
-              <input
-                value={selectedReputationScore[0]}
-                onChange={(e) =>
-                  setSelectedReputationScore([
-                    Number(e.target.value),
-                    selectedReputationScore[1],
-                  ])
-                }
-                className={styles.rank_input}
-              />
-              <span className={styles.input_gap}></span>
-              <input
-                value={selectedReputationScore[1]}
-                onChange={(e) =>
-                  setSelectedReputationScore([
-                    selectedReputationScore[0],
-                    Number(e.target.value),
-                  ])
-                }
-                className={styles.rank_input}
-                disabled={true}
-              />
-            </div>
-          </>
-        </div>
-
-        <div className={styles.line}></div>
-        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>
-
-        <div className={styles.slider_container}>
           {/* <label className={styles.checkbox_label}>
             <input
               type="checkbox"
@@ -290,6 +245,50 @@ const RankInput = ({
         </div>
 
         <div className={styles.line}></div>
+
+        <div className={styles.slider_container}>
+          <div className={styles.checkbox_title}>Reputation Score</div>
+          <>
+            <ReactSlider
+              onChange={(values) => {setSelectedReputationScore([values, 100])}}
+              value={selectedReputationScore[0]}
+              className={styles.horizontal_slider}
+              thumbClassName={styles.thumb}
+              trackClassName={styles.track}
+              // ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaLabel={"Lower thumb"}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              pearling
+              minDistance={1}
+              disabled={true}
+            />
+            <div className={styles.rank_input_container}>
+              <input
+                value={selectedReputationScore[0]}
+                onChange={(e) =>
+                  setSelectedReputationScore([
+                    Number(e.target.value),
+                    selectedReputationScore[1],
+                  ])
+                }
+                className={styles.rank_input}
+                disabled={true}
+              />
+              <span className={styles.input_gap}></span>
+              <input
+                value={selectedReputationScore[1]}
+                onChange={(e) =>
+                  setSelectedReputationScore([
+                    selectedReputationScore[0],
+                    Number(e.target.value),
+                  ])
+                }
+                className={styles.rank_input}
+                disabled={true}
+              />
+            </div>
+          </>
+        </div>
 
       </div>
     </div>

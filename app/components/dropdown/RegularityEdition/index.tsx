@@ -37,7 +37,61 @@ const RegularityEdition = ({
         </div> */}
       </div>
       <div className={styles.sub_container}>
-        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>
+        <div className={styles.slider_container}>
+          <div className={styles.checkbox_title}>Edition</div>
+          <>
+            <ReactSlider
+              onChange={(values) => {
+                setEditionRange([values, 100]);
+                setRegularity(0);
+                setSelectedRegularity([values, 100]);
+              }}
+              value={editionRange[0]}
+              className={styles.horizontal_slider}
+              thumbClassName={styles.thumb}
+              trackClassName={styles.track}
+              ariaLabel={"Lower thumb"}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              pearling
+              minDistance={1}
+            />
+            <div className={styles.rank_input_container}>
+              <input
+                value={editionRange[0]}
+                onChange={(e) =>{
+                    setEditionRange([
+                    Number(e.target.value),
+                    editionRange[1],
+                  ]);
+                  setRegularity(0);
+                  setSelectedRegularity([Number(e.target.value), editionRange[1]]);
+                }
+                }
+                className={styles.rank_input}
+                type="number"
+              />
+              <span className={styles.input_gap}></span>
+              <input
+                value={editionRange[1]}
+                onChange={(e) =>{
+                    setEditionRange([
+                    editionRange[0],
+                    Number(e.target.value),
+                  ]);
+                  setRegularity(0);
+                  setSelectedRegularity([editionRange[0], Number(e.target.value)]);
+                }
+                }
+                className={styles.rank_input}
+                type="number"
+                disabled={true}
+              />
+            </div>
+          </>
+        </div>
+        <div className={styles.line}></div>
+        
+        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>    
         <div className={styles.slider_container}>
           <div className={styles.checkbox_title}>Regularity</div>
           <div className={styles.regularity_container}>
@@ -98,58 +152,6 @@ const RegularityEdition = ({
               </label>
             </div>
           </div>
-        </div>
-        <div className={styles.slider_container}>
-          <div className={styles.checkbox_title}>Edition</div>
-          <>
-            <ReactSlider
-              onChange={(values) => {
-                setEditionRange([values, 100]);
-                setRegularity(0);
-                setSelectedRegularity([values, 100]);
-              }}
-              value={editionRange[0]}
-              className={styles.horizontal_slider}
-              thumbClassName={styles.thumb}
-              trackClassName={styles.track}
-              ariaLabel={"Lower thumb"}
-              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-              pearling
-              minDistance={1}
-            />
-            <div className={styles.rank_input_container}>
-              <input
-                value={editionRange[0]}
-                onChange={(e) =>{
-                    setEditionRange([
-                    Number(e.target.value),
-                    editionRange[1],
-                  ]);
-                  setRegularity(0);
-                  setSelectedRegularity([Number(e.target.value), editionRange[1]]);
-                }
-                }
-                className={styles.rank_input}
-                type="number"
-              />
-              <span className={styles.input_gap}></span>
-              <input
-                value={editionRange[1]}
-                onChange={(e) =>{
-                    setEditionRange([
-                    editionRange[0],
-                    Number(e.target.value),
-                  ]);
-                  setRegularity(0);
-                  setSelectedRegularity([editionRange[0], Number(e.target.value)]);
-                }
-                }
-                className={styles.rank_input}
-                type="number"
-                disabled={true}
-              />
-            </div>
-          </>
         </div>
       </div>
     </div>
