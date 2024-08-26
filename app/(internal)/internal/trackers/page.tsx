@@ -106,7 +106,6 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  console.log(tab);
   
   const router=useRouter();
   const [type, setType] = useState("");

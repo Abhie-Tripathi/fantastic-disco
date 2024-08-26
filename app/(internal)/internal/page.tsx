@@ -14,6 +14,7 @@ import ExhibitIcon from "/public/internal/exhibit.svg";
 import DatasetIcon from "/public/dataset.svg";
 import BellIcon from "/public/bell.svg";
 import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
+import { formatEventDates } from "@/utils/dateFormat";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import Trend from "/public/internal/trend.svg";
 import Bookmark from "/public/bookmark.svg";
@@ -87,64 +88,6 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
-  function formatEventDates(startDate: string, endDate: string) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-  
-    if (start.getFullYear() === end.getFullYear()) {
-        if (start.getMonth() === end.getMonth()) {
-            if (start.getDate() === end.getDate()) {
-                return new Date(startDate).toLocaleDateString("en-GB", {
-                  weekday: 'long',
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                });
-            } else {
-                return (
-                  new Date(startDate).toLocaleDateString("en-GB", {
-                    weekday: 'long',
-                  }) + ', ' +
-                  new Date(startDate).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                  }) + ' - ' +
-                  new Date(endDate).toLocaleDateString("en-GB", {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
-                  })
-                );
-            }
-        } else {
-            return (
-              new Date(startDate).toLocaleDateString("en-GB", {
-                weekday: 'long',
-                month: "short",
-                day: "2-digit",
-              }) + ' - ' +
-              new Date(endDate).toLocaleDateString("en-GB", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-              })
-            );
-        }
-    } else {
-        return (
-          new Date(startDate).toLocaleDateString("en-GB", {
-            weekday: 'long',
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }) + ' - ' +
-          new Date(endDate).toLocaleDateString("en-GB", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })
-        );
-    }
-  }
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {

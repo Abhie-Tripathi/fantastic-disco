@@ -666,8 +666,6 @@ const Pages = () => {
           // }
         },
       };
-      console.log(formData);
-      console.log(`${baseUrl}/tracker/${secondLast}`);
       if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
         setIsCreating(false);
         setIsMandatory(true);
@@ -841,7 +839,6 @@ const Pages = () => {
           // }
         },
       };
-      console.log(customData.length);
       if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
         setIsCreating(false);
         setIsMandatory(true);
