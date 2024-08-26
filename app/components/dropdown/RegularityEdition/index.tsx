@@ -17,6 +17,14 @@ const RegularityEdition = ({
   onClose,
 }: RankInputProps) => {
 
+    const [regularity, setRegularity] = useState<number>(selectedRegularity[0]);
+    const [editionRange, setEditionRange] = useState(selectedRegularity);
+
+    const handleRegularityChange = (e: any) => {
+        setEditionRange([0, 100]);
+        setRegularity(Number(e.target.value));
+        setSelectedRegularity([Number(e.target.value), 100]);
+    }
   return (
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
@@ -24,9 +32,9 @@ const RegularityEdition = ({
           Regularity & Edition{" "}
           <InformationFillSmall color="var(--primary-text-color)" />
         </div>
-        <div className={styles.header_button} onClick={() => onClose()}>
+        {/* <div className={styles.header_button} onClick={() => onClose()}>
           Apply
-        </div>
+        </div> */}
       </div>
       <div className={styles.sub_container}>
         <div className={styles.slider_container}>
@@ -38,15 +46,10 @@ const RegularityEdition = ({
                 id="none"
                 name="regularity"
                 value="0"
-                onChange={(e) =>
-                  setSelectedRegularity([
-                    Number(e.target.value),
-                    selectedRegularity[1],
-                  ])
-                }
-                checked={selectedRegularity[0] == 0}
+                onChange={handleRegularityChange}
+                checked={regularity == 0}
               />
-              <label htmlFor="none" className="badge_primary">
+              <label htmlFor="none" className="badge_primary" style={{color: 'var(--primary-text-color)', backgroundColor: 'var(--heading-background-color)'}}>
                 None
               </label>
             </div>
@@ -56,13 +59,8 @@ const RegularityEdition = ({
                 id="low"
                 name="regularity"
                 value="1"
-                onChange={(e) =>
-                  setSelectedRegularity([
-                    Number(e.target.value),
-                    selectedRegularity[1],
-                  ])
-                }
-                checked={selectedRegularity[0] == 1}
+                onChange={handleRegularityChange}
+                checked={regularity == 1}
               />
               <label htmlFor="low" className="badge_danger">
                 Low
@@ -74,15 +72,10 @@ const RegularityEdition = ({
                 id="medium"
                 name="regularity"
                 value="2"
-                onChange={(e) =>
-                  setSelectedRegularity([
-                    Number(e.target.value),
-                    selectedRegularity[1],
-                  ])
-                }
-                checked={selectedRegularity[0] == 2}
+                onChange={handleRegularityChange}
+                checked={regularity == 2}
               />
-              <label htmlFor="medium" className="badge_info">
+              <label htmlFor="medium" className="badge_primary">
                 Medium
               </label>
             </div>
@@ -92,15 +85,10 @@ const RegularityEdition = ({
                 id="high"
                 name="regularity"
                 value="3"
-                onChange={(e) =>
-                  setSelectedRegularity([
-                    Number(e.target.value),
-                    selectedRegularity[1],
-                  ])
-                }
-                checked={selectedRegularity[0] == 3}
+                onChange={handleRegularityChange}
+                checked={regularity == 3}
               />
-              <label htmlFor="high" className="badge_warning">
+              <label htmlFor="high" className="badge_success">
                 High
               </label>
             </div>
@@ -111,9 +99,11 @@ const RegularityEdition = ({
           <>
             <ReactSlider
               onChange={(values) => {
+                setEditionRange(values);
+                setRegularity(0);
                 setSelectedRegularity(values);
               }}
-              value={selectedRegularity}
+              value={editionRange}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
               trackClassName={styles.track}
@@ -124,24 +114,30 @@ const RegularityEdition = ({
             />
             <div className={styles.rank_input_container}>
               <input
-                value={selectedRegularity[0]}
-                onChange={(e) =>
-                  setSelectedRegularity([
+                value={editionRange[0]}
+                onChange={(e) =>{
+                    setEditionRange([
                     Number(e.target.value),
-                    selectedRegularity[1],
-                  ])
+                    editionRange[1],
+                  ]);
+                  setRegularity(0);
+                  setSelectedRegularity([Number(e.target.value), editionRange[1]]);
+                }
                 }
                 className={styles.rank_input}
                 type="number"
               />
               <span className={styles.input_gap}></span>
               <input
-                value={selectedRegularity[1]}
-                onChange={(e) =>
-                  setSelectedRegularity([
-                    selectedRegularity[0],
+                value={editionRange[1]}
+                onChange={(e) =>{
+                    setEditionRange([
+                    editionRange[0],
                     Number(e.target.value),
-                  ])
+                  ]);
+                  setRegularity(0);
+                  setSelectedRegularity([editionRange[0], Number(e.target.value)]);
+                }
                 }
                 className={styles.rank_input}
                 type="number"

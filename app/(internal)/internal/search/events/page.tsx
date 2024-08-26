@@ -187,6 +187,7 @@ const Search = () => {
     searchParams.get("eventKeywords")?.split(",") || []
   );
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
+  const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
@@ -305,7 +306,7 @@ const Search = () => {
          ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
           ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
           ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
-          ...(selectedEventEdition>0 && {editionRange: selectedEventEdition.toString()}),
+          ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
@@ -329,8 +330,8 @@ const Search = () => {
           ...(selectedEventFrequency?.length > 0 && {
             eventFrequency: selectedEventFrequency.join(","),
           }),
-          ...(selectedReptScore > 0 && {
-            reputationScore: selectedReptScore.toString(),
+          ...(selectedReputationScore[0] > 0 && {
+            reputationScore: selectedReputationScore[0].toString(),
           }),
           ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
@@ -362,6 +363,9 @@ const Search = () => {
          }),
          ...(selectedEventType?.length>0 && {
             eventType: selectedEventType.join(',')
+         }),
+         ...(selectedVisitors?.length>0 && {
+          eventSize: selectedVisitors.join(",")
          }),
         },
       };
@@ -522,6 +526,7 @@ const Search = () => {
       queryString.eventAttendanceRange = selectedEventAttendanceRange;
     }
 
+    // Event Size
     if(selectedVisitors.length > 0) {
       queryString.eventSize = selectedVisitors;
     }
@@ -542,9 +547,9 @@ const Search = () => {
     }
 
     // Event Edition
-    if (selectedEventEdition > 0) {
-      queryString.editionRange = selectedEventEdition;
-    }
+    // if (selectedEventEdition > 0) {
+    //   queryString.editionRange = selectedEventEdition;
+    // }
 
     if(selectedRegularity[0] > 0) {
       queryString.editionRange = selectedRegularity[0];
@@ -576,8 +581,8 @@ const Search = () => {
     }
 
     // Reputation Score
-    if (selectedReptScore > 0) {
-      queryString.reputationScore = selectedReptScore;
+    if (selectedReputationScore[0] > 0) {
+      queryString.reputationScore = selectedReputationScore[0];
     }
 
     // Maturity
@@ -2097,6 +2102,11 @@ const Search = () => {
                               [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
                             </span>
                           )}
+                          {selectedReputationScore[0] !== 0 && (
+                            <span className={styles.input_selected_title}>
+                              [{selectedReputationScore[0]} ,{selectedReputationScore[1]}]
+                            </span>
+                          )}
                         </div>
                         {/* <Image
                           src={DropIcon}
@@ -2105,7 +2115,7 @@ const Search = () => {
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
                   </Button>
@@ -2113,6 +2123,8 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <RankInput
+                          selectedReputationScore={selectedReputationScore}
+                          setSelectedReputationScore={setSelectedReputationScore}
                           selectedEventRank={selectedEventRank}
                           setSelectedEventRank={setSelectedEventRank}
                           selectedLocalRank={selectedLocalRank}

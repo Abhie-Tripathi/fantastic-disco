@@ -46,9 +46,9 @@ const AnalyticsDropdown = ({
         <div>Event Analytics {" "}
           <InformationFillSmall color="var(--primary-text-color)" />
         </div>
-        <div className={styles.header_button} onClick={() => onClose()}>
+        {/* <div className={styles.header_button} onClick={() => onClose()}>
           Apply
-        </div>
+        </div> */}
       </div>
       <div className={styles.sub_container}>
         <div className={styles.slider_container}>
