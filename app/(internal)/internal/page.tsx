@@ -473,7 +473,7 @@ const Dashboard = () => {
                   Saved Events
                 </div>
                 </div>
-                <div>
+                <div style={{fontSize:"var(--font-size-small)"}}>
                 <Link href="internal/trackers?tab=savedEvents">
                   View All
                 </Link>
