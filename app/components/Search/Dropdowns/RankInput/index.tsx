@@ -96,7 +96,8 @@ const RankInput = ({
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
               trackClassName={styles.track}
-              ariaLabel={["Lower thumb", "Upper thumb"]}
+              // ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaLabel={"Lower thumb"}
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}

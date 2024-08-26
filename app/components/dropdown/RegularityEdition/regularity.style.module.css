@@ -185,3 +185,9 @@
   transform: scale(1.2);
   accent-color: var(--primary-color);
 }
+
+.comingSoon_badge {
+  font-size: var(--font-size-xs);
+  padding: 4px;
+  width: fit-content;
+}

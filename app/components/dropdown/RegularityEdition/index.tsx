@@ -37,6 +37,7 @@ const RegularityEdition = ({
         </div> */}
       </div>
       <div className={styles.sub_container}>
+        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>
         <div className={styles.slider_container}>
           <div className={styles.checkbox_title}>Regularity</div>
           <div className={styles.regularity_container}>
@@ -48,6 +49,7 @@ const RegularityEdition = ({
                 value="0"
                 onChange={handleRegularityChange}
                 checked={regularity == 0}
+                disabled={true}
               />
               <label htmlFor="none" className="badge_primary" style={{color: 'var(--primary-text-color)', backgroundColor: 'var(--heading-background-color)'}}>
                 None
@@ -61,6 +63,7 @@ const RegularityEdition = ({
                 value="1"
                 onChange={handleRegularityChange}
                 checked={regularity == 1}
+                disabled={true}
               />
               <label htmlFor="low" className="badge_danger">
                 Low
@@ -74,6 +77,7 @@ const RegularityEdition = ({
                 value="2"
                 onChange={handleRegularityChange}
                 checked={regularity == 2}
+                disabled={true}
               />
               <label htmlFor="medium" className="badge_primary">
                 Medium
@@ -87,6 +91,7 @@ const RegularityEdition = ({
                 value="3"
                 onChange={handleRegularityChange}
                 checked={regularity == 3}
+                disabled={true}
               />
               <label htmlFor="high" className="badge_success">
                 High
@@ -99,15 +104,15 @@ const RegularityEdition = ({
           <>
             <ReactSlider
               onChange={(values) => {
-                setEditionRange(values);
+                setEditionRange([values, 100]);
                 setRegularity(0);
-                setSelectedRegularity(values);
+                setSelectedRegularity([values, 100]);
               }}
-              value={editionRange}
+              value={editionRange[0]}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
               trackClassName={styles.track}
-              ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaLabel={"Lower thumb"}
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
@@ -141,6 +146,7 @@ const RegularityEdition = ({
                 }
                 className={styles.rank_input}
                 type="number"
+                disabled={true}
               />
             </div>
           </>
