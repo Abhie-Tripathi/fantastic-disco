@@ -1,154 +1,68 @@
-.outerContainer {
-    font-family: "Sora", sans-serif;
-    margin-top: 20px;
-    color: white;
-    /*background-color: #0F0F0F; */
-    display: flex;
-    /* min-height: 100vh; */
-    gap: 30px;
-    flex-direction: column;
-    align-items: center;
-    width: 100vw;
-    min-width:600px ;
-}
-.containerOne {
+.body{
+    padding: 25px;
+    font-family: var(--font-inter);
     position: relative;
-    display: flex;
-    /* background-color: #1A1A1A; */
-    padding: 18px;
-    width: 90%;
 }
-
-
-
-.c1left {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    text-align: left;
-}
-.widgetCount{
-    font-weight: 500;
-    margin-left: 5px;
-}
-
-.c1right {
-    align-items: center;
-    gap: 12px;
-    display: flex;
-    bottom: 25%;
-    position: absolute;
-    right: 18px;
-}
-.savedDraftsContainer{
-    padding: 5px 20px;
-    width: fit-content;
-    cursor: pointer;
-    background-color: #6750a4;
-    color: white;
-    border-radius: 10px;
+.nav{
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
-.savedDraftNumber{
-    padding:2px;
-    background-color: black;
-    border-radius: 10px;
+.navHeading{
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
 }
-.threeDots {
-    height: 25px;
-    padding: 0px 10px;
-    display: flex;
-    border-radius: 10px;
-    border: 1px solid #808081;
-    opacity: 0px;
-
-}
-
-.addBtn {
-    font-size: 16px;
-    font-weight: 500;
+.nav .navBtns{
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 5px 10px;
-    border-radius: 10px;
-    background-color: #6750A4;
 }
-
-.containerTwo {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    gap: 20px;
-    border-image-slice: 1;
-    border-image-width: 1;
-}
-
-.icons_light{
-    filter: invert(1);
-}
-.paginationContainer{
-    display: flex;
-    width: 90%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-}
-.paginationBtnContainer{
-    display: flex;
-    cursor: pointer;
-    align-items: center;
-    border-radius: 5px;
-    padding: 5px 10px;
-    border: 1px solid white;
+.navBtns button{
+    background-color: var(--primary-color);
     color: white;
+    font-size: var(--font-size-small);
+    padding: 7px 12px;
+    border-radius: 4px;
 }
-.paginationBtnContainer:hover{
-    background-color: #1A1A1A;
-    transition-duration: .2s;
+.navBtns button:hover{
+    transform: scale(1.02);
 }
-.inactivePaginationBtn{
-    color: white;
-    border: 1px solid #b1b1b1;
-    cursor:default;
-    background-color: rgb(73, 73, 73);
+.line{
+    width: 100%;
+    border-top: 1px solid var(--border-color);
 }
-.inactivePaginationBtn:hover{
-    background-color: rgb(73, 73, 73);
-}
-.pageNumberContainer{
+.widgetsAndPreview{
     display: flex;
+    margin-top: 25px;
     gap: 10px;
-    font-size: 16px;
 }
-.pageNumber{
-    cursor: pointer;
-    padding: 5px;
+.widgetsList{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 55%;
 }
-.pageNumber:hover{
-    transition-duration: .2s;
-    color: grey;
-}
-.activePageNumber{
-    background-color: #525252;
-    border-radius: 40px;
-}
-.draftsModal {
-    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
-    height: 89%;
-    width: 40%;
-    background-color: black;
-    position: absolute;
-    z-index: 1;
-    top: 80px;
-    right: -45%; /* Start off-screen */
-    padding: 20px;
-    transition: right 0.3s ease; /* Smooth transition */
+.preview{
+    width: 45%;
+    height: 520px;
     overflow-y: auto;
 }
+.yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
+    height: 89%;
+    width: 600px;
+    background-color: #FFFFFF;
+    position:fixed;
+    z-index: 999;
+    top: 70px;
+    right: -610px;
+    padding: 25px 30px;
+    transition: right 0.3s ease; 
+    border-radius: 20px;
+}
 
-.draftsModal.open {
+.yourWidgetModal.open {
     right: 0; /* Move on-screen */
+    
 }

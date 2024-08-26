@@ -25,14 +25,17 @@ interface WidgetProps {
     widgetType: string;
     templateId: TemplateId;
     widgetNumber?: number;
-    widgetId : string;
-    fetchDraftWidgets: () => Promise<void>; 
+    widgetId: string;
+    fetchDraftWidgets: () => Promise<void>;
+    handleWidgetClick?: (value: string) => Promise<void>
+    widgetStatus : string;
+    fetchedEventsSize? : number;
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
 interface TemplateMap {
     [key: string]: { image: StaticImageData; heading: string };
-  }
+}
 const templateMap = {
     'ST': { image: StickyTopImage, heading: 'Sticky Top' },
     'SB': { image: StickyBottomImage, heading: 'Sticky Bottom' },
@@ -49,19 +52,19 @@ const templateMap = {
     'RSR': { image: RightScrollImage, heading: 'Right Scroll' },
     'PUVP': { image: PopupViewImage1, heading: 'Popup View Portrait' },
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
-  };
-  
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftWidgets }: WidgetProps) => {
+};
+
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick ,widgetStatus,fetchedEventsSize}: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
     const router = useRouter()
 
-    const handleRemove = async()=>{
+    const handleRemove = async () => {
         const editData = new FormData();
         editData.append('widgetId', widgetId)
-        editData.append('published','false')
-      
+        editData.append('published', 'false')
+
         const { data, error } = await myFetch(
             `${baseUrl}/widget`,
             {
@@ -77,18 +80,23 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
         }
     }
 
-    const handleRoute = ()=>{
+    const handleRoute = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
         router.push(`/widget/edit/${widgetId}`);
     }
-    
 
+    const handleCardClick = () => {
+        if (handleWidgetClick) {
+            handleWidgetClick(widgetId)
+        }
+    }
     return (
-        <div className={styles.body}>
+        <div className={styles.body} onClick={handleCardClick}>
             {image && <Image src={image} alt={heading} />}
             <div className={styles.details}>
                 <div className={styles.heading_eventsContainer}>
                     <div className={styles.templateHeading}>{heading}</div>
-                    <div className={styles.eventsHeading}>No Events Added</div>
+                    <div className={styles.eventsHeading}>{widgetStatus === "Daft" ? "No Events Added" : "2 Events Added"}</div>
                 </div>
                 <div className={styles.widgetTypeContainer}>
                     <WidgetIcon />
@@ -111,10 +119,10 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
                         <div>1/1 Section widget selected.</div>
                     </div>}
                 <div className={styles.status_btnContainer}>
-                    <div className={styles.active}>Active</div>
+                    <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
                     <div className={styles.btnContainer}>
                         <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
-                        <button className={styles.editBtn} onClick={handleRoute}>Edit</button>
+                        <button className={styles.editBtn} onClick={(e) => handleRoute(e)}>Edit</button>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './draftwidgets.style.module.css'
 import WidgetCard from './WidgetCard'
 import EmptyCard from './EmptyCard'
@@ -32,6 +32,7 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets,fetchD
         {draftWidgets.length > 0 ? (
           draftWidgets.map((card,key) => (
             <WidgetCard
+            widgetStatus="Draft"
               key={key}
               widgetId = {card.widgetId}
               templateId={card.templateId as TemplateId}

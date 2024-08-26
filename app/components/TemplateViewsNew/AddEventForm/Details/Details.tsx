@@ -164,6 +164,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
+    
     if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
       if (banner.file) {
         formData.append("file", banner.file); // Use the file field if uploaded by the user
@@ -218,6 +219,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     customizedFormData.append('widgetId', widgetId);
     customizedFormData.append('otherdata', JSON.stringify(otherData))
     customizedFormData.append('eventId', eventIds)
+    customizedFormData.append('status', 'active');
 
     const { data, error } = await myFetch(`${baseUrl}/widget`, {
       method: 'POST',
