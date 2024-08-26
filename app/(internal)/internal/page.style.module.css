@@ -218,7 +218,11 @@
   align-items: center;
   gap: var(--spacing-lg);
 }
-
+.tracker_container_header_innerContainer{
+  display: flex;
+  gap:var(--spacing-lg);
+  align-items: center;
+}
 .tracker_card {
   display: flex;
   flex-direction: column;

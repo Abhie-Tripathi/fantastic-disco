@@ -1395,10 +1395,53 @@ useEffect(()=>{
         </div>
         {type==="T_PRODUCT_KEYWORDS" &&
         <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"15px"}}>
-          <div className={styles.hiddenFilterHeading}>Product and Topics
+          <div className={styles.hiddenFilterHeading}>
           <div className={styles.subHeading} style={{color:"var(--tertiary-text-color)"}}>{template?.description}</div>
           </div>
-        <div style={{width:"50%"}}>
+          <div className={`${styles.toggleDiv}`}>
+              <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                <div>
+                  <div className={styles.manualHeading}>Add data manually
+                  </div>
+                  <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+                </div>
+                <div>
+
+                  <span>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={true}
+                      />
+                      <span className={styles.slider}></span>
+                    </label>
+                  </span>
+
+                </div>
+              </div>
+              <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                <div>
+                  <div className={styles.manualHeading}>Import CSV Data
+                    <div className={styles.badgeSuccess}>Coming Soon</div>
+                  </div>
+                  <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+                </div>
+                <div>
+
+                  <span>
+                    <label className={styles.switch}>
+                      <input
+                        type="checkbox"
+                        checked={selectedExhibitScore.length !== 0}
+                      />
+                      <span className={styles.slider}></span>
+                    </label>
+                  </span>
+
+                </div>
+              </div>
+            </div>
+        <div style={{width:"calc(50% - 5px)"}}>
         <EventKeyword state={selectedEventKeywords}
         setState={setSelectedEventKeywords}
         onClose={close} type={isDiv}
@@ -1408,12 +1451,13 @@ useEffect(()=>{
         }
         
         {template && template.inputAreas &&
-          <div className={`${styles.competitor}`}>
+          <div className={`card ${styles.competitor}`}>
             {/* <div className={styles.competitorHead}>
               <div className={styles.competitorHeading}>Upload custom data </div>
               {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
             </div> */}
             <div className={styles.bar}></div>
+            <div className={styles.subHeading}>{template.description}</div>
             <div className={`${styles.toggleDiv}`}>
               <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
                 <div>
@@ -1459,8 +1503,7 @@ useEffect(()=>{
               </div>
             </div>
             {template?.inputAreas &&
-              <div className={`${styles.competitor}`} style={{ padding: "0px 10px", borderRadius: "var(--border-radius-sm)" }}>
-                <div className={styles.subHeading}>{template.description}</div>
+              <div className={`${styles.competitor}`}>
                 <div className={styles.allInputArea}>
                   {template?.inputAreas?.map((inputArea: any, index: number) => (
                     <>

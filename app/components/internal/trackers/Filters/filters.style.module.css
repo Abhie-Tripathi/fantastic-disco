@@ -385,7 +385,8 @@ input:checked + .slider:before {
 }
 .subHeading{
   font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-small);
+  color: var(--tertiary-text-color);;
+  font-size: var(--font-size-large);
 }
 .competitor{
   display: flex;

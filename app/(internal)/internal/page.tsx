@@ -18,7 +18,6 @@ import { formatEventDates } from "@/utils/dateFormat";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import Trend from "/public/internal/trend.svg";
 import Bookmark from "/public/bookmark.svg";
-import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
@@ -29,7 +28,7 @@ import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/Sav
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
 import CoordinateSkeleton from "@/app/components/Skeleton/dashboardskeleton/CoordinateSkeleton";
 import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/NotificationSkeleton";
-
+import BookmarkFilled from "@/app/components/Table/icons/bookmarkFilled";
 interface SavedEvent {
   title: string;
   eventGroupId: string;
@@ -462,18 +461,23 @@ const Dashboard = () => {
           <span className={styles.body_divider}></span>
           <div className={styles.savedEvent_coordinateContainer}>
             <div className={styles.savedEventsContainer}>
-              <div className={`${styles.tracker_container_header}`}>
+              <div className={`${styles.tracker_container_header}`} style={{justifyContent:"space-between"}}>
+                <div className={styles.tracker_container_header_innerContainer}>
                 <Image src={Bookmark} alt="save"/>
-                <Link href="internal/trackers?tab=savedEvents">
+                
                 <div
-                  style={{ cursor: "pointer" }}
                   // onClick={() => {
                   //   router.push("internal/trackers?tab=savedEvents");
                   // }}
                 >
                   Saved Events
                 </div>
+                </div>
+                <div>
+                <Link href="internal/trackers?tab=savedEvents">
+                  View All
                 </Link>
+                </div>
               </div>
               {isLoading ? (
                 <SavedEventsSkeleton />
@@ -511,7 +515,7 @@ const Dashboard = () => {
                             unsavedEvent(event?.id);
                           }}
                         >
-                          <BookmarkIcon fillColor={"var(--primary-color)"} />
+                          <BookmarkFilled fillColor={"var(--primary-color)"} />
                         </div>
                       </div>
                     ))
