@@ -115,11 +115,17 @@ const Navbar = () => {
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }
+    if (currPath.startsWith("/widget")) {
+      setTitle("Widget");
+    }
     if (currPath.startsWith("/widget/edit")) {
-      setTitle("Edit");
+      setTitle("Edit Widget");
     }
     if (currPath.startsWith("/widget/add")) {
       setTitle("Add Widget");
+    }
+    if (currPath.startsWith("/widget/brandkit")) {
+      setTitle("Brandkit");
     }
   }, [currPath]);
   console.log(userDetail)

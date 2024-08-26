@@ -95,6 +95,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(error)
         }
     }
+    useEffect(()=>{
+        console.log("latitude :", latitude)
+        console.log("longitude :", longitude)
+    },[latitude])
     return (
         <div className={styles.body}>
             <div className={styles.header}>
