@@ -28,8 +28,8 @@ interface WidgetProps {
     widgetId: string;
     fetchDraftWidgets: () => Promise<void>;
     handleWidgetClick?: (value: string) => Promise<void>
-    widgetStatus : string;
-    fetchedEventsSize? : number;
+    widgetStatus: string;
+    fetchedEventsSize?: number;
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
@@ -54,7 +54,7 @@ const templateMap = {
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
 };
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick ,widgetStatus,fetchedEventsSize}: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
@@ -119,12 +119,21 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
                         <div>1/1 Section widget selected.</div>
                     </div>}
                 <div className={styles.status_btnContainer}>
-                    <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
+                    <div className={styles.status_checkboxContainer}>
+                        <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
+                        {(widgetStatus === "Active" || widgetStatus === "Deactivate") && <input
+                            id={widgetId}
+                            type="checkbox"
+                            className={styles.checkboxInput}
+                        />}
+                        {(widgetStatus === "Active" || widgetStatus === "Deactivate") &&<label htmlFor={widgetId} className={styles.checkBox}></label>}
+                    </div>
                     <div className={styles.btnContainer}>
                         <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
                         <button className={styles.editBtn} onClick={(e) => handleRoute(e)}>Edit</button>
                     </div>
                 </div>
+
             </div>
         </div>
     )
