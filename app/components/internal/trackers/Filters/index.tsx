@@ -122,6 +122,7 @@ interface CategoryData {
 }
 interface Tracker {
   name: string;
+  accessLevel?:string;
   filterValue: FilterValue;
 }
 interface Cat {
@@ -523,10 +524,10 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
       const formData = {
         name: trackerName,
-        ...(type && type.length > 0 && {
-          type: type.toUpperCase()
-        }),
-        // accessLevel: editData?.tracker?.accessLevel,
+        // ...(type && type.length > 0 && {
+        //   type: type.toUpperCase()
+        // }),
+        accessLevel: editData?.tracker?.accessLevel,
         filterValue: {
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
@@ -1404,8 +1405,6 @@ useEffect(()=>{
         <EventKeyword state={selectedEventKeywords}
         setState={setSelectedEventKeywords}
         onClose={close} type={isDiv}
-        isMandatory={isMandatory}
-        setIsMandatory={setIsMandatory}
         />
         </div>
         </div>

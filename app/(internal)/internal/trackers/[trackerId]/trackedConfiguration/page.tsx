@@ -103,6 +103,7 @@ const Page = () => {
   useEffect(()=>{
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
+    else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product Keyword")
   },[])
   
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
@@ -208,22 +209,25 @@ const userRating=
         <div className={styles.containerTopRightTwo} >
           <button onClick={() => setDel(true)}>Delete</button>
         </div>
+        {/* {data?.tracker?.accessLevel!=="READ" && */}
         <div className={styles.containerTopRight}>
-          <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
-            <button
-              onClick={() =>
-                GAEvent(
-                  "trackers",
-                  "Tracker Detail",
-                  "Edit",
-                  "Edit"
-                )
-              }
-            >
-              Edit
-            </button>
-          </Link>
-        </div>
+        <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
+          <button
+            onClick={() =>
+              GAEvent(
+                "trackers",
+                "Tracker Detail",
+                "Edit",
+                "Edit"
+              )
+            }
+          >
+            Edit
+          </button>
+        </Link>
+      </div>
+        {/* } */}
+        
 
       </div>
     </div>
@@ -527,6 +531,7 @@ const userRating=
         <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
           isBranded={data?.tracker?.filterValue?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
+          type={type}
         />
       </div>
     </div>
