@@ -29,7 +29,6 @@ import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/Sav
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
 import CoordinateSkeleton from "@/app/components/Skeleton/dashboardskeleton/CoordinateSkeleton";
 import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/NotificationSkeleton";
-import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 
 interface SavedEvent {
   title: string;
@@ -498,7 +497,12 @@ const Dashboard = () => {
                         </div>
                         </Link>
                         <div className={styles.event_organizer}>
-                        {event?.location?.cityName}{", "}{event?.location?.countryName}
+                        {event?.location?.cityName &&
+                        event?.location?.countryName
+                        ? event.location.cityName +
+                          ", " +
+                          event.location?.countryName
+                        : event?.location?.countryName}
                   </div>
                         </div>
                         <div
