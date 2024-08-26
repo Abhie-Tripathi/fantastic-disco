@@ -16,6 +16,7 @@ interface DraftWidgetsType {
   widgetId: string;
   status: string;
   eventSize : number;
+  widgetStatus : string;
 }
 
 const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetchDraftWidgets }: Props) => {
@@ -33,7 +34,7 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetch
         {draftWidgets.length > 0 ? (
           draftWidgets.map((card, key) => (
             <WidgetCard
-              widgetStatus="Draft"
+              widgetStatus={card.widgetStatus}
               key={key}
               widgetId={card.widgetId}
               templateId={card.templateId as TemplateId}

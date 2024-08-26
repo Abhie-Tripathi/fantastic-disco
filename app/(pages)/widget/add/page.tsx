@@ -16,6 +16,7 @@ interface DraftWidgetsType{
     widgetId : string;
     status: string;
     eventSize : number;
+    widgetStatus : string;
 }
 
 const Page = () => {
@@ -56,7 +57,8 @@ const Page = () => {
                     templateId: asciiToString(widget.templatePublicId),
                     widgetType: widget.type,
                     widgetId: widget.id,
-                    eventSize : widget.otherdata.event.length
+                    eventSize : widget.otherdata.event.length,
+                    widgetStatus : "Draft"
                 }));
             setDraftWidgets(filteredWidgets);
         }

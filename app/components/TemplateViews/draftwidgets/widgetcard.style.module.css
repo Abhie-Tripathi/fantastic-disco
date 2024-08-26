@@ -118,6 +118,11 @@
     gap: 5px;
     align-items: center;
 }
+.status_checkboxContainer .inactive {
+    font-size: 12px;
+    font-style: italic;
+    color: #aa3232;
+}
 .status_checkboxContainer .active {
     font-size: 12px;
     font-style: italic;

@@ -22,6 +22,7 @@ interface DraftWidgetsType {
     widgetId: string;
     status: string;
     eventSize : number;
+    widgetStatus : string;
   }
 
 

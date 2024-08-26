@@ -57,6 +57,7 @@ interface DraftWidgetsType {
     templateId: string;
     widgetId: string;
     status: string;
+    widgetStatus : string;
 }
 
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,

@@ -60,7 +60,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
     const { image = null, heading = "" } = templateMap[templateId] || {};
     const router = useRouter()
 
-    const handleRemove = async () => {
+    const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
         const editData = new FormData();
         editData.append('widgetId', widgetId)
         editData.append('published', 'false')
@@ -90,6 +90,25 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
             handleWidgetClick(widgetId)
         }
     }
+
+    const handleWidgetStatus = async()=>{
+        const customizeData = new FormData();
+        customizeData.append("widgetId",widgetId)
+        customizeData.append("status","deactivate")
+        const { data, error } = await myFetch(
+            `${baseUrl}/widget`,
+            {
+                method: 'POST',
+                body: customizeData,
+            }
+        );
+        if(data){
+            console.log("Status Updated")
+        }
+        else{console.log(error)}
+
+    }
+
     return (
         <div className={styles.body} onClick={handleCardClick}>
             {image && <Image src={image} alt={heading} />}
@@ -121,15 +140,17 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
                 <div className={styles.status_btnContainer}>
                     <div className={styles.status_checkboxContainer}>
                         <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
-                        {(widgetStatus === "Active" || widgetStatus === "Deactivate") && <input
+                        {(widgetStatus === "Active" || widgetStatus === "Inactive") && <input
                             id={widgetId}
                             type="checkbox"
                             className={styles.checkboxInput}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={  handleWidgetStatus}
                         />}
-                        {(widgetStatus === "Active" || widgetStatus === "Deactivate") &&<label htmlFor={widgetId} className={styles.checkBox}></label>}
+                        {(widgetStatus === "Active" || widgetStatus === "Inactive") &&<label htmlFor={widgetId} className={styles.checkBox}></label>}
                     </div>
                     <div className={styles.btnContainer}>
-                        <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
+                        <button className={styles.removeBtn} onClick={(e) => handleRemove(e)}>Remove</button>
                         <button className={styles.editBtn} onClick={(e) => handleRoute(e)}>Edit</button>
                     </div>
                 </div>
