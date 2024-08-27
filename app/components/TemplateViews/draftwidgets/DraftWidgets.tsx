@@ -15,8 +15,8 @@ interface DraftWidgetsType {
   templateId: string;
   widgetId: string;
   status: string;
-  eventSize : number;
-  widgetStatus : string;
+  eventSize: number;
+  widgetStatus: string;
 }
 
 const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetchDraftWidgets }: Props) => {
@@ -24,7 +24,7 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetch
   return (
     <div className={styles.body}>
       <div className={styles.header}>
-        <div>My Widgets</div>
+        <div>Draft Widgets</div>
         <button onClick={() => setYourWidgetModal(false)}>Close</button>
       </div>
       <div className={styles.drafts}>
@@ -33,16 +33,18 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetch
       <div className={styles.widgets}>
         {draftWidgets.length > 0 ? (
           draftWidgets.map((card, key) => (
-            <WidgetCard
-              widgetStatus={card.widgetStatus}
-              key={key}
-              widgetId={card.widgetId}
-              templateId={card.templateId as TemplateId}
-              widgetType={card.widgetType}
-              widgetNumber={1}
-              fetchDraftWidgets={fetchDraftWidgets}
-              fetchedEventsSize={0}
-            />
+            <div className={styles.widgetCard}>
+              <WidgetCard
+                widgetStatus={card.widgetStatus}
+                key={key}
+                widgetId={card.widgetId}
+                templateId={card.templateId as TemplateId}
+                widgetType={card.widgetType}
+                widgetNumber={1}
+                fetchDraftWidgets={fetchDraftWidgets}
+                fetchedEventsSize={0}
+              />
+            </div>
           ))
         ) : (
           <div className={styles.emptyCard}><EmptyCard /></div>

@@ -33,7 +33,7 @@
     transform: scale(1.02);
 }
 .navBtns .draftBtn span{
-    color: #6750A4;
+    color: var(--primary-color);
     background-color: #E6E6F9;
     height: 16px;
     width: 15px;
@@ -52,11 +52,22 @@
     margin-top: 25px;
     gap: 10px;
 }
-.widgetsList{
+.widgetsList {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     width: 55%;
-    column-gap: 5px;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 9px;
+    row-gap: 12px;
+    padding-right: 3px;
+    overflow-y: auto;
+    margin: 0;
+    height: 520px;
+    align-content: start; /* Align items at the start to avoid stretching */
+}
+
+
+.widgetsList .widgetCard{
+    height: 178px;
 }
 .preview{
     width: 45%;
@@ -78,6 +89,18 @@
 }
 
 .yourWidgetModal.open {
-    right: 0; /* Move on-screen */
+    right: 0;
     
 }
+@media screen and (max-width: 1404px) {
+    .widgetsList{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 40%;
+    }
+    .preview{
+        width: 60%;
+    }
+  }
+  

@@ -18,8 +18,8 @@ interface DraftWidgetsType {
   templateId: string;
   widgetId: string;
   status: string;
-  eventSize : number;
-  widgetStatus : string;
+  eventSize: number;
+  widgetStatus: string;
 }
 const Widget = () => {
   const [draftWidgetModal, setDraftWidgetModal] = useState<boolean>(false)
@@ -66,8 +66,8 @@ const Widget = () => {
           templateId: asciiToString(widget.templatePublicId),
           widgetType: widget.type,
           widgetId: widget.id,
-          eventSize : widget.otherdata.event.length,
-          widgetStatus : "Draft"
+          eventSize: widget.otherdata.event.length,
+          widgetStatus: "Draft"
         }));
       setDraftWidgets(filteredWidgets);
     }
@@ -85,16 +85,16 @@ const Widget = () => {
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
       widgetId: widget.id,
-      eventSize : widget.otherdata.event.length,
-      widgetStatus : "Active"
+      eventSize: widget.otherdata.event.length,
+      widgetStatus: "Active"
     })) : [];
     const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
       widgetId: widget.id,
-      eventSize : widget.otherdata.event.length,
-      widgetStatus : "Inactive"
+      eventSize: widget.otherdata.event.length,
+      widgetStatus: "Inactive"
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
     setAllWidgets(combinedWidgets);
@@ -141,17 +141,20 @@ const Widget = () => {
       <div className={styles.widgetsAndPreview}>
         <div className={styles.widgetsList}>
           {allWidgets.map((card, key) => (
-            <WidgetCard
-              widgetStatus={card.widgetStatus}
-              key={key}
-              widgetId={card.widgetId}
-              templateId={card.templateId as TemplateId}
-              widgetType={card.widgetType}
-              widgetNumber={1}
-              fetchDraftWidgets={fetchDraftWidgets}
-              handleWidgetClick={handleWidgetClick}
-              fetchedEventsSize = {card.eventSize}
-            />
+            <div className={styles.widgetCard}>
+              <WidgetCard
+                widgetStatus={card.widgetStatus}
+                key={key}
+                widgetId={card.widgetId}
+                templateId={card.templateId as TemplateId}
+                widgetType={card.widgetType}
+                widgetNumber={1}
+                fetchDraftWidgets={fetchDraftWidgets}
+                handleWidgetClick={handleWidgetClick}
+                fetchedEventsSize={card.eventSize}
+                fetchAllWidgets={fetchAllWidgets}
+              />
+            </div>
           ))}
         </div>
         <div className={styles.preview}>

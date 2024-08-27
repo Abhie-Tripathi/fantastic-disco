@@ -30,6 +30,7 @@ interface WidgetProps {
     handleWidgetClick?: (value: string) => Promise<void>
     widgetStatus: string;
     fetchedEventsSize?: number;
+    fetchAllWidgets?: () => Promise<void>
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
@@ -54,7 +55,7 @@ const templateMap = {
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
 };
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize }: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
@@ -91,10 +92,10 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
         }
     }
 
-    const handleWidgetStatus = async()=>{
+    const handleWidgetStatus = async () => {
         const customizeData = new FormData();
-        customizeData.append("widgetId",widgetId)
-        customizeData.append("status","deactivate")
+        customizeData.append("widgetId", widgetId)
+        customizeData.append("status", widgetStatus === "Active" ? "deactivate" : "active")
         const { data, error } = await myFetch(
             `${baseUrl}/widget`,
             {
@@ -102,10 +103,13 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
                 body: customizeData,
             }
         );
-        if(data){
+        if (data) {
             console.log("Status Updated")
+            if (fetchAllWidgets) {
+                fetchAllWidgets();
+            }
         }
-        else{console.log(error)}
+        else { console.log(error) }
 
     }
 
@@ -113,15 +117,18 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
         <div className={styles.body} onClick={handleCardClick}>
             {image && <Image src={image} alt={heading} />}
             <div className={styles.details}>
-                <div className={styles.heading_eventsContainer}>
-                    <div className={styles.templateHeading}>{heading}</div>
-                    <div className={styles.eventsHeading}>{fetchedEventsSize === 0 ? "No Events Added" : `${fetchedEventsSize} Events Added`}</div>
+                <div>
+                    <div className={styles.heading_eventsContainer}>
+                        <div className={styles.templateHeading}>{heading}</div>
+                        <div className={styles.eventsHeading}>{fetchedEventsSize === 0 ? "No Events Added" : `${fetchedEventsSize} Events Added`}</div>
+                    </div>
+                    <div className={styles.widgetTypeContainer}>
+                        <WidgetIcon />
+                        <div>{widgetType} Widget</div>
+                    </div>
                 </div>
-                <div className={styles.widgetTypeContainer}>
-                    <WidgetIcon />
-                    <div>{widgetType} Widget</div>
-                </div>
-                {widgetType === "Sticky" ?
+
+                {/* {widgetType === "Sticky" ?
                     <div className={styles.widgetNumberContainerOne}>
                         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                             <InfoIcon />
@@ -136,25 +143,25 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
                     <div className={styles.widgetNumberContainerTwo}>
                         <TickIcon />
                         <div>1/1 Section widget selected.</div>
-                    </div>}
+                    </div>} */}
                 <div className={styles.status_btnContainer}>
                     <div className={styles.status_checkboxContainer}>
                         <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
                         {(widgetStatus === "Active" || widgetStatus === "Inactive") && <input
                             id={widgetId}
                             type="checkbox"
+                            checked={widgetStatus === "Active" ? true : false}
                             className={styles.checkboxInput}
                             onClick={(e) => e.stopPropagation()}
-                            onChange={  handleWidgetStatus}
+                            onChange={handleWidgetStatus}
                         />}
-                        {(widgetStatus === "Active" || widgetStatus === "Inactive") &&<label htmlFor={widgetId} className={styles.checkBox}></label>}
+                        {(widgetStatus === "Active" || widgetStatus === "Inactive") && <label htmlFor={widgetId} className={styles.checkBox}></label>}
                     </div>
                     <div className={styles.btnContainer}>
                         <button className={styles.removeBtn} onClick={(e) => handleRemove(e)}>Remove</button>
                         <button className={styles.editBtn} onClick={(e) => handleRoute(e)}>Edit</button>
                     </div>
                 </div>
-
             </div>
         </div>
     )
