@@ -15,7 +15,7 @@ import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import { GolbalEventType } from '@/types/globaleventtype'
-import DOMPurify from 'dompurify';
+import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
 
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -43,6 +43,8 @@ const Page = () => {
   const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<PrefilledAddedEventsType>()
   const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
   const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>()
+  const [isValid, setIsValid] = useState(true); // Track if the data is valid
+  const [loading, setLoading] = useState(true); // Track loading state
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -97,7 +99,11 @@ const Page = () => {
   useEffect(() => {
     const fetchWidgetData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
-      if (data) {
+      if (!data) {
+        console.log("data not found")
+        setIsValid(false);
+      }
+      else {
         setCardBgColor(data.customizationData.cardBgColor);
         setCardBorderRadius(data.customizationData.cardBorderRadius);
         setFontSettings(data.customizationData.fontSettings);
@@ -108,15 +114,13 @@ const Page = () => {
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
       }
-      if (error) {
-        console.error("Error fetching widget data:", error);
-      }
+      setLoading(false); 
     }
-
     fetchWidgetData();
     fetchEvents();
     fetchAddedEvents();
   }, [])
+
 
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
@@ -168,6 +172,13 @@ const Page = () => {
       setIsAddEventModalOpen(true)
     } else setIsNormalEventModalOpen(true)
 
+  }
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading state
+  }
+
+  if (!isValid) {
+    return <Errorpage type='id' />; // Render the 404 component if the data is invalid
   }
   return (
 

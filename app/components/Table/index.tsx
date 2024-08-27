@@ -653,7 +653,7 @@ const [val,setVal]=useState(1);
 
     if (data) {
       console.log(data);
-      showToast('default',"Saved event deleted");
+      showToast('error',"Saved event deleted");
       const newData = eventPerPage.filter(event => event?.id !== groupId);
       setEventPerPage(newData);
     } else {

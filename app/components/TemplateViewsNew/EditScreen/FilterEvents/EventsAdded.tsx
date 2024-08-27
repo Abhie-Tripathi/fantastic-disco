@@ -6,6 +6,7 @@ import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 
 interface Props {
     handleAddEventModal: (value: void) => void
@@ -33,9 +34,9 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                     const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
                     if (error) {
                         console.error(`Error fetching event data for event ID ${event.id}:`, error);
-                        return null; 
+                        return null;
                     }
-                    if(data){
+                    if (data) {
                         console.log("data of fetched event : ",)
                     }
                     return {
@@ -60,11 +61,11 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         speakerProfilesData: event.speakerProfilesData,
                         participationMessage: event.participationMessage,
                         bannerUrl: event.bannerUrl,
-                        latitude : event.latitude,
-                        longitude : event.longitude,
-                        venue : event.venue
-                        
-                        
+                        latitude: event.latitude,
+                        longitude: event.longitude,
+                        venue: event.venue
+
+
                     } as PrefilledAddedEventsType;
                 })
             );
@@ -74,9 +75,9 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log("other data : ", fetchedAddedOtherData)
-    },[fetchedAddedOtherData])
+    }, [fetchedAddedOtherData])
 
     // This function is to trigger the delete event function from added events
     const handleCheckboxChange = async (eventId: string) => {
@@ -135,7 +136,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                 <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
             </div>
             <div className={styles.line}></div>
-            <div className={styles.allEventsContainer}>
+            {fetchedAddedOtherData.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
@@ -170,7 +171,12 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         </div>
                     </div>
                 ))}
-            </div>
+            </div> : <div className={styles.emptyScreen}>
+                <Image src={EmptyImage} alt='empty' />
+                <div>Search or Add your Events</div>
+                <span>Start by searching for existing events to add to your widgets</span>
+                <span>or feel free to create your own event from scratch</span>
+            </div>}
         </div>
     )
 }

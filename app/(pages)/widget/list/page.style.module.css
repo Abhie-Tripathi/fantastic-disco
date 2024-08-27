@@ -1,154 +1,106 @@
-.outerContainer {
-    font-family: "Sora", sans-serif;
-    margin-top: 20px;
-    color: white;
-    /*background-color: #0F0F0F; */
-    display: flex;
-    /* min-height: 100vh; */
-    gap: 30px;
-    flex-direction: column;
-    align-items: center;
-    width: 100vw;
-    min-width:600px ;
-}
-.containerOne {
+.body{
+    padding: 25px;
+    font-family: var(--font-inter);
     position: relative;
-    display: flex;
-    /* background-color: #1A1A1A; */
-    padding: 18px;
-    width: 90%;
 }
-
-
-
-.c1left {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    text-align: left;
-}
-.widgetCount{
-    font-weight: 500;
-    margin-left: 5px;
-}
-
-.c1right {
-    align-items: center;
-    gap: 12px;
-    display: flex;
-    bottom: 25%;
-    position: absolute;
-    right: 18px;
-}
-.savedDraftsContainer{
-    padding: 5px 20px;
-    width: fit-content;
-    cursor: pointer;
-    background-color: #6750a4;
-    color: white;
-    border-radius: 10px;
+.nav{
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
-.savedDraftNumber{
-    padding:2px;
-    background-color: black;
-    border-radius: 10px;
+.navHeading{
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
 }
-.threeDots {
-    height: 25px;
-    padding: 0px 10px;
-    display: flex;
-    border-radius: 10px;
-    border: 1px solid #808081;
-    opacity: 0px;
-
-}
-
-.addBtn {
-    font-size: 16px;
-    font-weight: 500;
+.nav .navBtns{
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 5px 10px;
-    border-radius: 10px;
-    background-color: #6750A4;
 }
-
-.containerTwo {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    gap: 20px;
-    border-image-slice: 1;
-    border-image-width: 1;
-}
-
-.icons_light{
-    filter: invert(1);
-}
-.paginationContainer{
-    display: flex;
-    width: 90%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-}
-.paginationBtnContainer{
-    display: flex;
-    cursor: pointer;
-    align-items: center;
-    border-radius: 5px;
-    padding: 5px 10px;
-    border: 1px solid white;
+.navBtns button{
+    background-color: var(--primary-color);
     color: white;
-}
-.paginationBtnContainer:hover{
-    background-color: #1A1A1A;
-    transition-duration: .2s;
-}
-.inactivePaginationBtn{
-    color: white;
-    border: 1px solid #b1b1b1;
-    cursor:default;
-    background-color: rgb(73, 73, 73);
-}
-.inactivePaginationBtn:hover{
-    background-color: rgb(73, 73, 73);
-}
-.pageNumberContainer{
+    font-size: var(--font-size-small);
+    padding: 7px 12px;
+    border-radius: 4px;
     display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.navBtns button:hover{
+    transform: scale(1.02);
+}
+.navBtns .draftBtn span{
+    color: var(--primary-color);
+    background-color: #E6E6F9;
+    height: 16px;
+    width: 15px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+.widgetsAndPreview{
+    display: flex;
+    margin-top: 25px;
     gap: 10px;
-    font-size: 16px;
 }
-.pageNumber{
-    cursor: pointer;
-    padding: 5px;
+.widgetsList {
+    display: grid;
+    width: 55%;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 9px;
+    row-gap: 12px;
+    padding-right: 3px;
+    overflow-y: auto;
+    margin: 0;
+    height: 520px;
+    align-content: start; /* Align items at the start to avoid stretching */
 }
-.pageNumber:hover{
-    transition-duration: .2s;
-    color: grey;
+
+
+.widgetsList .widgetCard{
+    height: 178px;
 }
-.activePageNumber{
-    background-color: #525252;
-    border-radius: 40px;
-}
-.draftsModal {
-    filter: drop-shadow(1px 1px 5px rgb(87, 87, 87));
-    height: 89%;
-    width: 40%;
-    background-color: black;
-    position: absolute;
-    z-index: 1;
-    top: 80px;
-    right: -45%; /* Start off-screen */
-    padding: 20px;
-    transition: right 0.3s ease; /* Smooth transition */
+.preview{
+    width: 45%;
+    height: 520px;
     overflow-y: auto;
 }
-
-.draftsModal.open {
-    right: 0; /* Move on-screen */
+.yourWidgetModal {
+    filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
+    height: 89%;
+    width: 600px;
+    background-color: #FFFFFF;
+    position:fixed;
+    z-index: 999;
+    top: 70px;
+    right: -610px;
+    padding: 25px 30px;
+    transition: right 0.3s ease; 
+    border-radius: 20px;
 }
+
+.yourWidgetModal.open {
+    right: 0;
+    
+}
+@media screen and (max-width: 1404px) {
+    .widgetsList{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 40%;
+    }
+    .preview{
+        width: 60%;
+    }
+  }
+  

@@ -1,143 +1,181 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import WidgetCard from '../../../components/widgets/WidgetCard'
-import More from '/public/more_horiz.svg'
-import Styles from './page.style.module.css'
-import Add from '/public/add.svg'
-import Image from 'next/image';
-import Link from 'next/link'
-import SkeletonWidget from '@/app/components/widgets/SkeletonWidget'
+import WidgetCard from '@/app/components/TemplateViews/draftwidgets/WidgetCard'
+import styles from './page.style.module.css'
 import { useTheme } from '@/context'
-import LeftArrowIcon from '/public/leftArrow.svg'
-import RightArrowIcon from '/public/rightArrow.svg'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
+import useOutsideClick from '@/hooks/useOutsideClick'
+import { useRouter } from 'next/navigation'
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
+import PreviewWindow from '@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow'
+import { AddedEventsType } from '@/types/addedeventtype'
+import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
 
-interface DraftWidget {
+type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
+interface DraftWidgetsType {
   widgetType: string;
-  preview: string;
+  templateId: string;
+  widgetId: string;
+  status: string;
+  eventSize: number;
+  widgetStatus: string;
 }
-
 const Widget = () => {
+  const [draftWidgetModal, setDraftWidgetModal] = useState<boolean>(false)
+  const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
+  const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
+  const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
+  const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
+  const [fontSettings, setFontSettings] = useState({
+    heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
+    subheading: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" },
+    body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
+  });
+  const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({
+    primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
+    secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
+  })
 
-  const [widgets, setWidgets] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const widgetsPerPage = 3;
-  const { theme } = useTheme()
-  const [deleteId, setDeleteId] = useState("");
-  // const [draftWidgets, setDraftWidgets] = useState<DraftWidget[]>([]);
-  const [draftwidgetsLength, setDraftwidgetsLength]= useState<number>();
-  const [draftModal, setDraftModal] = useState<boolean>(false)
+  const [cardStyle, setCardStyle] = useState<string>("style1")
+  const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
+  const [selectedTemplate, setSelectedTemplate] = useState<string>()
+  const dropdownRef = useOutsideClick(() => setDraftWidgetModal(false))
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
+  const [selectedWidgetId, setWidgetId] = useState<string>("")
+  const router = useRouter()
+  const [isValid, setIsValid] = useState(true); // Track if the data is valid
+  const [loading, setLoading] = useState(true); // Track loading state
 
-  const iconClass = theme === 'light' ? Styles.icons_light : Styles.icon;
-  let totalPages = 1
-  if (widgets.length > 0) {
-    totalPages = Math.ceil(widgets.length / widgetsPerPage);
-  }
-  const fetchData = async (type: string): Promise<any[]> => {
-    try {
-      const response = await fetch(`https://api.eventgeni.com/widgets?type=${type}`);
-      const data = await response.json();
-      return data.data[type + 'Data'];
-    } catch (error) {
-      console.error('Error fetching widgets:', error);
-      return [];
+
+  const asciiToString = (ascii: number): string => {
+    let convertedValue = ascii.toString();
+    let str = '';
+    for (let i = 0; i < convertedValue.length; i += 2) {
+      const code = convertedValue.substring(i, i + 2);
+      str += String.fromCharCode(parseInt(code, 10));
+    }
+    return str;
+  };
+
+  const fetchDraftWidgets = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
+    if (data) {
+      console.log(data);
+      const filteredWidgets = data.data
+        .map((widget: any) => ({
+          ...widget,
+          templateId: asciiToString(widget.templatePublicId),
+          widgetType: widget.type,
+          widgetId: widget.id,
+          eventSize: widget.otherdata.event.length,
+          widgetStatus: "Draft"
+        }));
+      setDraftWidgets(filteredWidgets);
+    }
+    if (error) {
+      console.log(error);
     }
   };
 
-  useEffect(() => {
-    const fetchAllWidgets = async () => {
-      try {
-        const pageWidgets = await fetchData('page');
-        const stickyWidgets = await fetchData('sticky');
-        const allWidgets = [...pageWidgets, ...stickyWidgets];
-        const sortedWidgets = allWidgets.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        setWidgets(sortedWidgets);
-      } catch (error) {
-        console.error('Error fetching widgets:', error);
-      }
-    };
-    fetchAllWidgets();
-    const storedDraftWidgets = localStorage.getItem('draftWidgets');
-    if (storedDraftWidgets) {
-      setDraftwidgetsLength(JSON.parse(storedDraftWidgets).length);
+  // This function will fetch the widgets with status, ACTIVE and INACTIVE
+  const fetchAllWidgets = async () => {
+    const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
+    const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?status=deactivate`);
+    const activeWidgets = activeData ? activeData.data.map((widget: any) => ({
+      ...widget,
+      templateId: asciiToString(widget.templatePublicId),
+      widgetType: widget.type,
+      widgetId: widget.id,
+      eventSize: widget.otherdata.event.length,
+      widgetStatus: "Active"
+    })) : [];
+    const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
+      ...widget,
+      templateId: asciiToString(widget.templatePublicId),
+      widgetType: widget.type,
+      widgetId: widget.id,
+      eventSize: widget.otherdata.event.length,
+      widgetStatus: "Inactive"
+    })) : [];
+    const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
+    if (combinedWidgets.length === 0) {
+      setIsValid(false)
+    } else {
+      setAllWidgets(combinedWidgets);
     }
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0); // To scroll up when ever page changes
-  }, [currentPage])
-
-  // Pagination Logic
-  const indexOfLastWidget = currentPage * widgetsPerPage;
-  const indexOfFirstWidget = indexOfLastWidget - widgetsPerPage;
-  const currentWidgets = widgets.slice(indexOfFirstWidget, indexOfLastWidget);
-
-  const handlePrevPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(prevPage => prevPage - 1);
-    }
-
+    setLoading(false)
   }
-  const handleNextPage = () => {
-    if (currentPage !== totalPages) {
-      setCurrentPage(prevPage => prevPage + 1);
-    }
-
-  }
-  // To see the live deletion of widget, else if we use "widget" as dependency array, it will go in infinite loop
   useEffect(() => {
-    if (deleteId) {
-      window.location.reload(); // Reload the page when deleteId changes
-    }
-  }, [deleteId])
+    fetchDraftWidgets()
+    fetchAllWidgets()
+  }, [])
 
+  const handleAddWidget = () => {
+    router.push("/widget/add")
+  }
+
+  const handleWidgetClick = async (widgetId: string) => {
+    const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
+    setWidgetId(widgetId)
+    if (!data) {
+      console.log("data not found")
+    }
+    else {
+      setCardBgColor(data.customizationData.cardBgColor);
+      setCardBorderRadius(data.customizationData.cardBorderRadius);
+      setFontSettings(data.customizationData.fontSettings);
+      setButtonSettings(data.customizationData.buttonSettings);
+      setCardStyle(data.customizationData.selectedCard);
+      setSelectedBtn(data.customizationData.selectedBtn);
+      setSelectedTemplate(asciiToString(data.templatePublicId));
+      const events = data.otherdata?.event;
+      setfetchedAddedEvents(events);
+    }
+  }
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading state
+  }
+  if (!isValid) {
+    return <Errorpage type='list'/>; // Render the 404 component if the data is invalid
+  }
   return (
-    <div className={`${Styles.outerContainer}`}>
-      <div className={`${Styles.containerOne} ${theme === 'dark' ? 'darkMode' : "lightMode_secondary"}`}>
-        <div className={Styles.c1left}>Widgets <span className={Styles.widgetCount}>{`${widgets.length > 0 ? `(${widgets.length})` : ``}`}</span></div>
-        <div className={Styles.c1right}>
-          <div className={Styles.threeDots}><Image src={More} alt="more" /></div>
-          <div className={Styles.savedDraftsContainer} onClick={() => setDraftModal(true)}>
-            <div className={Styles.savedDraftHeading}>Saved Drafts</div>
-            <div className={Styles.savedDraftNumber}>{draftwidgetsLength}</div>
-          </div>
-          <Link className={Styles.addBtn} href={"/widget/add"}>
-            <div><Image src={Add} alt="add" className={iconClass} /></div>
-            <div>Add Widget</div>
-          </Link>
+    <div className={styles.body}>
+      <div className={styles.nav}>
+        <div className={styles.navHeading}>All Widgets</div>
+        <div className={styles.navBtns}>
+          <button onClick={handleAddWidget}>Create Widget</button>
+          <button className={styles.draftBtn} onClick={() => setDraftWidgetModal(true)}>Draft Widgets<span>{draftWidgets.length}</span></button>
         </div>
       </div>
-      {currentWidgets.length > 0 ? (
-        currentWidgets.map((item, index) => (
-          <div key={index} className={Styles.containerTwo}>
-            <WidgetCard data={item} setDeleteId={setDeleteId} />
-          </div>
-        ))
-      ) : (
-        <SkeletonWidget />
-      )}
-      <div className={Styles.paginationContainer}>
-        <div className={`${Styles.paginationBtnContainer} ${currentPage === 1 ? Styles.inactivePaginationBtn : ""}`} onClick={handlePrevPage}>
-          <Image src={LeftArrowIcon} alt='prev' className={Styles.paginationIcon} />
-          <div className={Styles.paginationHeading}>Prev</div>
+      <div className={styles.line}></div>
+      <div className={styles.widgetsAndPreview}>
+        <div className={styles.widgetsList}>
+          {allWidgets.map((card, key) => (
+            <div className={styles.widgetCard}  key={key}>
+              <WidgetCard
+                widgetStatus={card.widgetStatus}
+                key={key}
+                widgetId={card.widgetId}
+                templateId={card.templateId as TemplateId}
+                widgetType={card.widgetType}
+                widgetNumber={1}
+                fetchDraftWidgets={fetchDraftWidgets}
+                handleWidgetClick={handleWidgetClick}
+                fetchedEventsSize={card.eventSize}
+                fetchAllWidgets={fetchAllWidgets}
+              />
+            </div>
+          ))}
         </div>
-        <div className={Styles.pageNumberContainer}>
-          {Array.from({ length: totalPages }, (_, index) => {
-            const pageNumber = index + 1;
-            return (
-              <div key={pageNumber} className={`${Styles.pageNumber} ${pageNumber === currentPage ? Styles.activePageNumber : ""}`} onClick={() => setCurrentPage(pageNumber)}>
-                {pageNumber}
-              </div>
-            );
-          })}
-        </div>
-        <div className={`${Styles.paginationBtnContainer} ${currentPage === totalPages ? Styles.inactivePaginationBtn : ""}`} onClick={handleNextPage}>
-          <div className={Styles.paginationHeading}>Next</div>
-          <Image src={RightArrowIcon} alt='next' className={Styles.paginationIcon} />
+        <div className={styles.preview}>
+          <PreviewWindow fontSettings={fontSettings} buttonSettings={buttonSettings} cardBorderRadius={cardBorderRadius} cardBgColor={cardBgColor} selectedBtn={selectedBtn} selectedCard={cardStyle} selectedTemplate={selectedTemplate} isFullScreen={false} setIsFullScreen={setIsFullScreen} smallCard={false} fetchedAddedEvents={fetchedAddedEvents} widgetId={selectedWidgetId} />
         </div>
       </div>
-      <div className={`${Styles.draftsModal} ${draftModal ? Styles.open : ''}`}>
-        {/* <DraftWidgets setYourWidgetModal={setDraftModal} /> */}
+      <div className={`${styles.yourWidgetModal} ${draftWidgetModal ? styles.open : ''}`} ref={dropdownRef}>
+        <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setDraftWidgetModal} fetchDraftWidgets={fetchDraftWidgets} />
       </div>
     </div>
   )
