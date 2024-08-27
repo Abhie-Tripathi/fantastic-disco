@@ -94,14 +94,24 @@ const EventKeyword = ({
 
   const handleRemoveKeyword = (keyword: string) => {
     // setEventKeyword((prev) => prev.filter((item) => item !== keyword));
-    if(activeTab == "Keywords excluded")
-      setNegativeKeyword((prev) => prev.filter((item) => item !== keyword));
-    else
-      setPositiveKeyword((prev) => prev.filter((item) => item !== keyword));
+    let updatedNegativeKeywords = [...negativeKeyword]; 
+    let updatedPositiveKeywords = [...positiveKeyword];
+    if(activeTab == "Keywords excluded"){
+      updatedNegativeKeywords = negativeKeyword.filter((item) => item !== keyword);
+      setNegativeKeyword(updatedNegativeKeywords);
+    }
+    else{
+      updatedPositiveKeywords = positiveKeyword.filter((item) => item !== keyword);
+      setPositiveKeyword(updatedPositiveKeywords);
+
+    }
+    if(type){
+      setState([
+        ...updatedPositiveKeywords.map((kw) => kw.replace(/ /g, "_")),
+        ...updatedNegativeKeywords.map((kw) => `-${kw.replace(/ /g, "_")}`)
+    ]);
+    }
   };
-// useEffect(()=>{
-//   if(type) setState([...negativeKeyword, ...positiveKeyword])
-// },[type])
   const handleSaveData = () => {
     // setState(eventKeyword);
     const newPositiveKeyword=positiveKeyword.map((keyword)=>keyword.replaceAll(/ /g, "_"))

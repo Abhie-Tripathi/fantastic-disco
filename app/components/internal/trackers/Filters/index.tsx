@@ -1402,7 +1402,7 @@ useEffect(()=>{
       {type==="T_PRODUCT_KEYWORDS" &&
       <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
         <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"12px"}}>{template?.description}</div>
+        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}</div>
         <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
@@ -1466,7 +1466,7 @@ useEffect(()=>{
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"12px"}}>{template.description}</div>
+          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template.description}</div>
           <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
