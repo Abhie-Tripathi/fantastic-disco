@@ -666,7 +666,7 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -839,7 +839,7 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && selectedEventKeywords.length==0){
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1382,7 +1382,7 @@ useEffect(()=>{
         </button>
       </div>
     </div>
-    <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "90px" : "140px" }}>
+    <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
       <div className="dummyDiv" style={{ height: pathName[pathName.length - 1] === "create" ? "120px" : "250px" }}></div>
       <div
         className={styles.searchContainer}
@@ -1400,10 +1400,9 @@ useEffect(()=>{
         />
       </div>
       {type==="T_PRODUCT_KEYWORDS" &&
-      <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"15px"}}>
+      <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
         <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading}>{template?.description}</div>
-        </div>
+        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"5px"}}>{template?.description}</div>
         <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
@@ -1447,10 +1446,13 @@ useEffect(()=>{
               </div>
             </div>
           </div>
+        </div>
       <div style={{width:"calc(50% - 5px)"}}>
       <EventKeyword state={selectedEventKeywords}
       setState={setSelectedEventKeywords}
       onClose={close} type={isDiv}
+      isMandatory={isMandatory}
+      setIsMandatory={setIsMandatory}
       />
       </div>
       </div>
@@ -1463,7 +1465,8 @@ useEffect(()=>{
             {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div> */}
           <div className={styles.bar}></div>
-          <div className={styles.subHeading}>{template.description}</div>
+          <div>
+          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", paddingBottom:"5px"}}>{template.description}</div>
           <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
@@ -1507,6 +1510,7 @@ useEffect(()=>{
 
               </div>
             </div>
+          </div>
           </div>
           {template?.inputAreas &&
             <div className={`${styles.competitor}`}>
@@ -1575,10 +1579,10 @@ useEffect(()=>{
       {type !== "CUSTOM" &&
       <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
       <div className={styles.hiddenFiltersInnerDiv}>
-      <Plus style={{width:"16px", height:"16px"}}/>
+      <Plus style={{width:"16px", height:"16px"}} className="icons"/>
       <div className={styles.hiddenFilterHeading}>Additional filters</div>
       </div>
-      <div><ChevronDown /></div>
+      <div><ChevronDown className="icons"/></div>
       </div>
       }
       {(type==="CUSTOM" || opend )&&
