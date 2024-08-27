@@ -30,7 +30,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
 
       <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn} />
       {dropdown && <div className={styles.dropdown} style={{width : width === "large" ? "150%" : "100%"}}>
-        <ParticipationDropdown participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
+        <ParticipationDropdown width={width} participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
       </div>}
     </div>
   )

@@ -74,7 +74,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             location_country: countryName,
             gmt_time: timeZone,
             latitude,
-            longitude
+            longitude,
+            
         };
         const formData = new FormData()
         formData.append("name", eventName)

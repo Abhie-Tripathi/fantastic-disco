@@ -10,9 +10,10 @@ interface Props {
     inputMessage: string;
     setParticipationType: (value: string) => void
     participationType: string;
+    width : string;
 }
 
-const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType }: Props) => {
+const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType,width }: Props) => {
 
     // const [editorState, setEditorState] = useState(() => {
     //     const contentBlock = htmlToDraft(inputMessage);
@@ -71,7 +72,7 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
                     <span className={styles.checkboxLabel}>Organiser</span>
                 </label>
             </div>
-            <div className={styles.messageContainer}>
+            {width === "large" &&<div className={styles.messageContainer}>
                 <div className={styles.heading}>Customize your message</div>
                 <Editor
                     editorState={editorState}
@@ -91,7 +92,7 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
                     wrapperClassName={styles.wrapper}
                 />
                 {/* <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inputMessage}</textarea> */}
-            </div>
+            </div>}
         </div>
     )
 }
