@@ -73,7 +73,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     </div>
                 </div>
                 <div className={styles.rightSection}>
-                    <textarea className={styles.eventName} disabled maxLength={80} placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
+                    <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
