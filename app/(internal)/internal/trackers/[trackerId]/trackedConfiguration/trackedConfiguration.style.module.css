@@ -262,3 +262,13 @@
     margin-top: 140px;
     gap:24px;
 }
+.keywordsIncluded, .keywordsExcluded{
+    flex-wrap: wrap;
+    display: flex;
+    gap: var(--spacing-sm);
+}
+.includedContainer, .excludedContainer{
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-direction: column;
+}

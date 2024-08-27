@@ -106,12 +106,13 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
+  
   const router=useRouter();
-  const [type, setType] = useState("All Trackers");
+  const [type, setType] = useState("");
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
-    if(tab==="customTrackers") setType("Custom Trackers")
-      if(tab==="allTrackers") setType("All Trackers")
+    else if(tab==="customTrackers") setType("Custom Trackers")
+    else setType("All Trackers")
   },[tab])
   const [trackers, setTrackers] = useState<any[]>([]);
  
@@ -182,7 +183,7 @@ const Trackers = ({ searchParams }: Search) => {
       domain: "Sales",
       img: Keywords,
       url:"T_PRODUCT_KEYWORDS",
-      trackerName: "Product Keywords",
+      trackerName: "Product and Topics",
       content:
         "List all the events which belongs to given industry or associated with keywords.",
     },
@@ -303,12 +304,14 @@ const Trackers = ({ searchParams }: Search) => {
     fetchData();
   }, []);
   useEffect(() => {
+    if(type){
     if(type==="All Trackers")
     router.push(`/internal/trackers?tab=allTrackers`);
-    if(type==="Custom Trackers")
+    else if(type==="Custom Trackers")
       router.push(`/internal/trackers?tab=customTrackers`);
-    if(type==="Saved Events")
+    else if(type==="Saved Events")
       router.push(`/internal/trackers?tab=savedEvents`)
+    }
   }, [type]);
   
   

@@ -11,12 +11,18 @@ interface EventKeywordProps {
   state: string[];
   setState: React.Dispatch<React.SetStateAction<string[]>>;
   onClose: () => void;
+  type?:boolean;
+  isMandatory?:boolean;
+  setIsMandatory?:any;
 }
 
 const EventKeyword = ({
   state,
   setState,
   onClose,
+  type,
+  isMandatory,
+  setIsMandatory
 }: EventKeywordProps) => {
   const [activeTab, setActiveTab] = useState<string>("Keywords");
   const [inputText, setInputText] = useState<string>("");
@@ -44,8 +50,28 @@ const EventKeyword = ({
     setNegativeKeyword(negative);
   }, [eventKeyword]);
 
+  useEffect(() => {
+    if(type){
+    const positive: string[] = [];
+    const negative: string[] = [];
+
+    state.forEach((item) => {
+      item =item.replaceAll(/ /g, "_")
+      if (item.startsWith('-')) {
+        negative.push(item.substring(1));
+      } else {
+        positive.push(item);
+      }
+    });
+
+    setPositiveKeyword(positive);
+    setNegativeKeyword(negative);
+  }
+  }, [state]);
+
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
+    if(type) setIsMandatory(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -61,18 +87,31 @@ const EventKeyword = ({
         else
           setPositiveKeyword((prev) => [...prev, ...allKey]);
         setInputText("");
+        if(type) handleSaveData();
       }
     }
   };
 
   const handleRemoveKeyword = (keyword: string) => {
     // setEventKeyword((prev) => prev.filter((item) => item !== keyword));
-    if(activeTab == "Keywords excluded")
-      setNegativeKeyword((prev) => prev.filter((item) => item !== keyword));
-    else
-      setPositiveKeyword((prev) => prev.filter((item) => item !== keyword));
-  };
+    let updatedNegativeKeywords = [...negativeKeyword]; 
+    let updatedPositiveKeywords = [...positiveKeyword];
+    if(activeTab == "Keywords excluded"){
+      updatedNegativeKeywords = negativeKeyword.filter((item) => item !== keyword);
+      setNegativeKeyword(updatedNegativeKeywords);
+    }
+    else{
+      updatedPositiveKeywords = positiveKeyword.filter((item) => item !== keyword);
+      setPositiveKeyword(updatedPositiveKeywords);
 
+    }
+    if(type){
+      setState([
+        ...updatedPositiveKeywords.map((kw) => kw.replace(/ /g, "_")),
+        ...updatedNegativeKeywords.map((kw) => `-${kw.replace(/ /g, "_")}`)
+    ]);
+    }
+  };
   const handleSaveData = () => {
     // setState(eventKeyword);
     const newPositiveKeyword=positiveKeyword.map((keyword)=>keyword.replaceAll(/ /g, "_"))
@@ -88,17 +127,21 @@ const EventKeyword = ({
       let inputKey = inputText.split(',');
       if(activeTab == "Keywords excluded") {
         inputKey = inputKey.map((keyword) => `-${keyword.replaceAll(/ /g, "_")}`);
-      }else inputKey = inputKey.map((keyword) => `${keyword.replaceAll(/ /g, "_")}`);
+        const newInputKey = inputKey.map((key) => key.substring(1));
+        setNegativeKeyword([...negativeKeyword, ...newInputKey]);
+      }else {
+        inputKey = inputKey.map((keyword) => `${keyword.replaceAll(/ /g, "_")}`);
+        setPositiveKeyword([...positiveKeyword, ...inputKey])
+      }
       newEventKeyword = [...newEventKeyword, ...inputKey]
     }
     setState(newEventKeyword);
+    setInputText('');
     onClose();
   };
-console.log(positiveKeyword);
-
   return (
     <div>
-      <div className={`${styles.container}`}>
+      <div className={`${!type ? styles.container : styles.divContainer}`}>
         <div className={styles.header}>
         <div className={`${styles.tabs_container}`}>
           <div className={`${styles.keywordBtns}`} >
@@ -109,6 +152,7 @@ console.log(positiveKeyword);
               onClick={() => setActiveTab("Keywords")}
             >
               Keywords
+              {type && positiveKeyword.length>0 &&<span className={styles.selectedNo}>{positiveKeyword.length}</span>}
             </button>
             <button
               className={`${styles.tab} ${
@@ -116,7 +160,8 @@ console.log(positiveKeyword);
               }`}
               onClick={() => setActiveTab("Keywords excluded")}
             >
-              Keywords excluded
+              Keywords exclude
+              {type && negativeKeyword.length>0 &&<span className={styles.selectedNo}>{negativeKeyword.length}</span>}
             </button>
           </div>
         </div>
@@ -125,7 +170,13 @@ console.log(positiveKeyword);
           </div> */}
         </div>
 
-        <div className={`${styles.searchBar_container}`}>
+        <div className={`${styles.searchBar_container}`}
+        style={
+          isMandatory && type && state?.length==0
+            ? { border: "1px solid var(--danger-text-color)" } 
+            : {}
+        }
+        >
           <input
             type="text"
             placeholder={
@@ -172,11 +223,11 @@ console.log(positiveKeyword);
               </div>
             ))}
           </div>
-
           <div className={styles.button_container}>
+          {!type && 
             <div className={styles.button} onClick={handleSaveData}>
               Save
-            </div>
+            </div>}
           </div>
         </div>
       </div>
