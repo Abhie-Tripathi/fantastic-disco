@@ -1,6 +1,7 @@
 .body{
     border: 1px solid var(--border-color);
     border-radius: 10px;
+    height: 100%;
 }
 .line{
     border-top:1px solid var(--border-color);
@@ -135,4 +136,22 @@
 
 .checkboxInput:checked+.checkBox {
     background-color: #6750a4;
+}
+.emptyScreen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 13px;
+    height: 80%;
+}
+.emptyScreen div{
+    color: #7D7D7D;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.emptyScreen span{
+    color: #8F8F8F;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
 }
