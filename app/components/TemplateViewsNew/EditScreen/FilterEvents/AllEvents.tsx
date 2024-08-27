@@ -5,6 +5,8 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 import { GolbalEventType } from '@/types/globaleventtype';
+import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
+import Image from 'next/image';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
@@ -55,7 +57,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             </div>
             <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
             <div className={styles.line}></div>
-            <div className={styles.allEventsContainer}>
+            {fetchedAllEvents.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
@@ -87,7 +89,12 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>: <div className={styles.emptyScreen}>
+                <Image src={EmptyImage} alt='empty' />
+                <div>Search or Add your Events</div>
+                <span>Start by searching for existing events to add to your widgets</span>
+                <span>or feel free to create your own event from scratch</span>
+            </div>}
         </div>
     )
 }

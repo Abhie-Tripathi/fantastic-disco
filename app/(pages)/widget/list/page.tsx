@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 import PreviewWindow from '@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow'
 import { AddedEventsType } from '@/types/addedeventtype'
+import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
 
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
@@ -45,6 +46,9 @@ const Widget = () => {
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [selectedWidgetId, setWidgetId] = useState<string>("")
   const router = useRouter()
+  const [isValid, setIsValid] = useState(true); // Track if the data is valid
+  const [loading, setLoading] = useState(true); // Track loading state
+
 
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -97,8 +101,12 @@ const Widget = () => {
       widgetStatus: "Inactive"
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
-    setAllWidgets(combinedWidgets);
-
+    if (combinedWidgets.length === 0) {
+      setIsValid(false)
+    } else {
+      setAllWidgets(combinedWidgets);
+    }
+    setLoading(false)
   }
   useEffect(() => {
     fetchDraftWidgets()
@@ -127,7 +135,12 @@ const Widget = () => {
       setfetchedAddedEvents(events);
     }
   }
-
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading state
+  }
+  if (!isValid) {
+    return <Errorpage type='list'/>; // Render the 404 component if the data is invalid
+  }
   return (
     <div className={styles.body}>
       <div className={styles.nav}>

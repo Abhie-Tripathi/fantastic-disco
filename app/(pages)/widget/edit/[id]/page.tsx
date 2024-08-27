@@ -178,7 +178,7 @@ const Page = () => {
   }
 
   if (!isValid) {
-    return <Errorpage />; // Render the 404 component if the data is invalid
+    return <Errorpage type='id' />; // Render the 404 component if the data is invalid
   }
   return (
 
