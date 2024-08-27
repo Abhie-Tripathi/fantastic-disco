@@ -390,9 +390,10 @@ input:checked + .slider:before {
 .competitor{
   display: flex;
   flex-direction: column;
+  box-shadow: none;
   border-radius: var(--border-radius-sm);
   /* border: 1px solid var(--border-color); */
-  gap:var(--spacing-sm);
+  gap:var(--spacing-lg);
 }
 .singleInputArea{
   position: relative;
@@ -522,4 +523,5 @@ width: calc(100vw - 134px);
 .hiddenFilterHeading{
   font-size: var(--font-size-h6);
   font-weight: var(--font-weight-bold);
+  color: var(--primary-color);
 }

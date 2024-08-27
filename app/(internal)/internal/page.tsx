@@ -14,6 +14,7 @@ import ExhibitIcon from "/public/internal/exhibit.svg";
 import DatasetIcon from "/public/dataset.svg";
 import BellIcon from "/public/bell.svg";
 import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
+import { showToast } from "@/utils/showToast";
 import { formatEventDates } from "@/utils/dateFormat";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import Trend from "/public/internal/trend.svg";
@@ -179,6 +180,7 @@ const Dashboard = () => {
         body: JSON.stringify(dataToSend),
       });
       if (response) {
+        showToast("error","Saved event deleted")
         getSavedEvents();
       }
     } catch (error) {
