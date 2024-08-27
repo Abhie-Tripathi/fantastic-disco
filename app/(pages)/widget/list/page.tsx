@@ -154,7 +154,7 @@ const Widget = () => {
       <div className={styles.widgetsAndPreview}>
         <div className={styles.widgetsList}>
           {allWidgets.map((card, key) => (
-            <div className={styles.widgetCard}>
+            <div className={styles.widgetCard}  key={key}>
               <WidgetCard
                 widgetStatus={card.widgetStatus}
                 key={key}

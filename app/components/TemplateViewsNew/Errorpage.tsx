@@ -28,11 +28,11 @@ const Errorpage = ({ type }: Props) => {
       {type === "detail" && <div>Page not found</div>}
 
       {type === "id" ? (
-        <span>We can't find the widget you're looking for. It seems the ID might be invalid</span>
+        <span>We can&apos;t find the widget you&apos;re looking for. It seems the ID might be invalid</span>
       ) : type === "list" ? (
-        <span>Start by building your first widget—it's as easy as drag, drop, and customize.</span>
+        <span>Start by building your first widget—it&apos;s as easy as drag, drop, and customize.</span>
       ) : (
-        <span>We can't find the page you're looking for. It seems the ID might be invalid</span>
+        <span>We can&apos;t find the page you&apos;re looking for. It seems the ID might be invalid</span>
       )}
 
       {type === "id" ? (
@@ -49,8 +49,8 @@ const Errorpage = ({ type }: Props) => {
         </button>
       )}
     </div>
+);
 
-  )
 }
 
 export default Errorpage

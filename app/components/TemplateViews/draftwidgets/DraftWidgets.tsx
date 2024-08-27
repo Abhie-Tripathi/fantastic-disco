@@ -33,7 +33,7 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetch
       <div className={styles.widgets}>
         {draftWidgets.length > 0 ? (
           draftWidgets.map((card, key) => (
-            <div className={styles.widgetCard}>
+            <div className={styles.widgetCard} key={key}>
               <WidgetCard
                 widgetStatus={card.widgetStatus}
                 key={key}
