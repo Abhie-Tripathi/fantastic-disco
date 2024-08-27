@@ -97,6 +97,11 @@ const ForgetPassword = () => {
               >
                 Submit
               </button>
+              <div className={styles.loginBtn}>
+                <Link href={"/signin"}>
+                  Or click here to <span className={styles.createNew_link} > Log In</span>
+                </Link>
+              </div>
             </div>
           </div>
         </form>

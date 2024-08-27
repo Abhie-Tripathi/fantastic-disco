@@ -8,6 +8,8 @@ interface RankInputProps {
   className?: string;
   selectedReputationScore: number[];
   setSelectedReputationScore: (rank: number[]) => void;
+  selectedTrustScore: number[];
+  setSelectedTrustScore: (rank: number[]) => void;
   selectedEventRank: number[];
   setSelectedEventRank: (rank: number[]) => void;
   selectedLocalRank: number[];
@@ -23,6 +25,8 @@ const RankInput = ({
   className,
   selectedReputationScore,
   setSelectedReputationScore,
+  selectedTrustScore,
+  setSelectedTrustScore,
   selectedEventRank,
   setSelectedEventRank,
   selectedLocalRank,
@@ -86,6 +90,54 @@ const RankInput = ({
         </div> */}
       </div>
       <div className={styles.sub_container}>
+
+        <div className={styles.slider_container}>
+          <div className={styles.checkbox_title}>Trust Score</div>
+          <>
+            <ReactSlider
+              onChange={(values) => {setSelectedTrustScore([values, 100])}}
+              value={selectedTrustScore[0]}
+              className={styles.horizontal_slider}
+              thumbClassName={styles.thumb}
+              trackClassName={styles.track}
+              // ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaLabel={"Lower thumb"}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              pearling
+              minDistance={1}
+              // disabled={true}
+            />
+            <div className={styles.rank_input_container}>
+              <input
+                value={selectedTrustScore[0]}
+                onChange={(e) =>
+                  setSelectedTrustScore([
+                    Number(e.target.value),
+                    selectedTrustScore[1],
+                  ])
+                }
+                className={styles.rank_input}
+                // disabled={true}
+              />
+              <span className={styles.input_gap}></span>
+              <input
+                value={selectedTrustScore[1]}
+                onChange={(e) =>
+                  setSelectedTrustScore([
+                    selectedTrustScore[0],
+                    Number(e.target.value),
+                  ])
+                }
+                className={styles.rank_input}
+                disabled={true}
+              />
+            </div>
+          </>
+        </div>
+
+        <div className={styles.line}></div>
+
+        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>
 
         <div className={styles.slider_container}>
           {/* <label className={styles.checkbox_label}>
@@ -244,7 +296,7 @@ const RankInput = ({
           </>
         </div>
 
-        <div className={styles.line}></div>
+        {/* <div className={styles.line}></div> */}
 
         <div className={styles.slider_container}>
           <div className={styles.checkbox_title}>Reputation Score</div>

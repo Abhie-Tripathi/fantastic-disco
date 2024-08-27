@@ -68,7 +68,7 @@
   z-index: 11;
   background: var(--primary-foreground);
   color: var(--primary-text-color);
-  width: 14vw;
+  width: 160px;
   text-align: center;
   font-size: var(--font-size-default);
   padding: 8px;

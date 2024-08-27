@@ -153,6 +153,12 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -227,7 +233,7 @@ const Search = () => {
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
-  const [selectedTrustScore, setSelectedTrustScore] = useState(0);
+  const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState(0);
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
@@ -324,8 +330,8 @@ const Search = () => {
           ...(selectedEntry?.length > 0 && {
             eventEntry: selectedEntry.join(","),
           }),
-          ...(selectedTrustScore > 0 && {
-            trustScore: selectedTrustScore.toString(),
+          ...(selectedTrustScore[0] > 0 && {
+            trustScore: selectedTrustScore[0].toString(),
           }),
           ...(selectedEventFrequency?.length > 0 && {
             eventFrequency: selectedEventFrequency.join(","),
@@ -571,8 +577,8 @@ const Search = () => {
     }
 
     // Trust Score
-    if (selectedTrustScore > 0) {
-      queryString.trustScore = selectedTrustScore;
+    if (selectedTrustScore[0] > 0) {
+      queryString.trustScore = selectedTrustScore[0];
     }
 
     // Event Series
@@ -848,10 +854,12 @@ const Search = () => {
       ...prevInsights,
       eventRating: (selectedUserRatings.length > 0),
       estExhibit: (selectedExhibitScore.length > 0),
+      repeatSent: (selectedTrustScore[0] > 0),
     }));
   }, [
     selectedUserRatings,
     selectedExhibitScore,
+    selectedTrustScore,
   ]);
 
   useEffect(() => {
@@ -1123,7 +1131,7 @@ const Search = () => {
                           </span>
                         ) : (
                           <span className={styles.input_selected_title}>
-                            {selectedEventFormat[0]}
+                            {formatText(selectedEventFormat[0])}
                           </span>
                         )}
                       </div>
@@ -1284,7 +1292,7 @@ const Search = () => {
                           </span>
                         ) : (
                           <span className={styles.input_selected_title}>
-                            {selectedEventStatus[0]}
+                            {formatText(selectedEventStatus[0])}
                           </span>
                         )}
                       </div>
@@ -1320,7 +1328,7 @@ const Search = () => {
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEntry[0]}
+                              {formatText(selectedEntry[0])}
                             </span>
                           )}
                         </div>
@@ -1683,7 +1691,7 @@ const Search = () => {
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEventFrequency[0]}
+                              {formatText(selectedEventFrequency[0])}
                             </span>
                           )}
                         </div>
@@ -2132,7 +2140,7 @@ const Search = () => {
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
                   </Button>
@@ -2142,6 +2150,8 @@ const Search = () => {
                         <RankInput
                           selectedReputationScore={selectedReputationScore}
                           setSelectedReputationScore={setSelectedReputationScore}
+                          selectedTrustScore={selectedTrustScore}
+                          setSelectedTrustScore={setSelectedTrustScore}
                           selectedEventRank={selectedEventRank}
                           setSelectedEventRank={setSelectedEventRank}
                           selectedLocalRank={selectedLocalRank}

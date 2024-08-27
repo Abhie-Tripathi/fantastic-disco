@@ -1040,7 +1040,10 @@ const [val,setVal]=useState(1);
                 )}
                 {showInsights.estExhibit && (
                   <td>
-                    {getEstimatedExhibitors(event)}
+                    {/* {getEstimatedExhibitors(event)} */}
+                    {(event.stats?.estimatedExhibitor && event.stats?.estimatedExhibitor !== '' && event.stats?.estimatedExhibitor !== 'null') ?
+                      event.stats?.estimatedExhibitor : '-'
+                    }
                   </td>
                 )}
                 {showInsights.global && (
