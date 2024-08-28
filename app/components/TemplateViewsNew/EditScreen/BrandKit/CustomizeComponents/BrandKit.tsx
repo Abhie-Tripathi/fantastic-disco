@@ -9,9 +9,11 @@ interface Props {
     extractedColors: string[];
     setExtractedColors: (value: string[]) => void
     flex : boolean
+    setPageBgColor: (value: string) => void
+    pageBgColor: string;
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors,flex }: Props) => {
+const BrandKit = ({ extractedColors, setExtractedColors,flex,setPageBgColor,pageBgColor }: Props) => {
 
     const {theme} = useTheme()
     const [accordian, setAccordian] = useState<boolean>(true)
@@ -34,7 +36,7 @@ const BrandKit = ({ extractedColors, setExtractedColors,flex }: Props) => {
                 </div>
                 {!flex && <div className={styles.line}></div>}
                 <div className={styles.brandColorContainer} style={{padding : flex ?0:"12px 19px", marginTop : flex ? 36 : 0}}>
-                    <BrandColor flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
+                    <BrandColor setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
                 </div>
                 {!flex && <div className={styles.line}></div>}
                 <div className={styles.fontContainer} style={{padding : flex ?0:"12px 19px",marginTop : flex ? 36 : 0}}>

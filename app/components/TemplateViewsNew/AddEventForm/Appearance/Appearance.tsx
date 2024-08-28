@@ -25,7 +25,7 @@ const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extr
                 <span>Set up your detail page</span>
             </div>
             <div className={styles.line}></div>
-            <BrandKit flex={false} extractedColors={extractedColors} setExtractedColors={setExtractedColors} />
+            <BrandKit flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} />
             <div className={styles.line}></div>
             <div className={styles.colorContainer}>
                 <ColorContainer setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
