@@ -14,10 +14,11 @@ import ExhibitIcon from "/public/internal/exhibit.svg";
 import DatasetIcon from "/public/dataset.svg";
 import BellIcon from "/public/bell.svg";
 import CoordinateIcon from "@/app/components/sidebar/Icons/Coordinate";
+import { showToast } from "@/utils/showToast";
+import { formatEventDates } from "@/utils/dateFormat";
 import PolarAreaChart from "@/app/components/internal/trackers/PolarAreaChart/PolarArea";
 import Trend from "/public/internal/trend.svg";
 import Bookmark from "/public/bookmark.svg";
-import BookmarkIcon from "@/app/components/Table/icons/bookmark";
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
@@ -28,7 +29,7 @@ import SavedEventsSkeleton from "@/app/components/Skeleton/dashboardskeleton/Sav
 import SkeletonCards from "@/app/components/Skeleton/dashboardskeleton/CardsSkeleton";
 import CoordinateSkeleton from "@/app/components/Skeleton/dashboardskeleton/CoordinateSkeleton";
 import NotificationSkeleton from "@/app/components/Skeleton/dashboardskeleton/NotificationSkeleton";
-
+import BookmarkFilled from "@/app/components/Table/icons/bookmarkFilled";
 interface SavedEvent {
   title: string;
   eventGroupId: string;
@@ -86,7 +87,6 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
-
   useEffect(() => {
     const getListOfTrackers = async () => {
       try {
@@ -104,7 +104,7 @@ const Dashboard = () => {
 
   const getSavedEvents = async () => {
     try {
-      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=4`);
+      const { data } = await myFetch(`${baseUrl}/tracker/saved-events?limit=5`);
       console.log("saved_events", data?.data);
       setSavedEventsList(data?.result);
     } catch (error) {
@@ -167,11 +167,20 @@ const Dashboard = () => {
   };
 
   const unsavedEvent = async (id: string) => {
+    const dataToSend = {
+      eventIds: [id],
+      global: true,
+    };
     try {
-      const response = await myFetch(`${baseUrl}/tracker/saved-events/${id}`, {
+      const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
       });
       if (response) {
+        showToast("error","Saved event deleted")
         getSavedEvents();
       }
     } catch (error) {
@@ -278,7 +287,7 @@ const Dashboard = () => {
                 </Link>
 
                 <Link
-                  href={"/internal/trackers/create"}
+                  href={"/internal/trackers?tab=allTrackers"}
                   className={`${styles.linkCard} card`}
                 >
                   <div className={styles.linkCard_header}>
@@ -354,7 +363,7 @@ const Dashboard = () => {
           <div className={styles.trackers_container}>
             <div className={`${styles.tracker_container_header} `}>
               <Image src={Stars} alt="stars"/>
-              <div>Here &apos;s what&apos;s new since you last checked in</div>
+              <div>Here&apos;s what&apos;s new since you last checked in</div>
             </div>
 
             {isLoading ? (
@@ -454,18 +463,23 @@ const Dashboard = () => {
           <span className={styles.body_divider}></span>
           <div className={styles.savedEvent_coordinateContainer}>
             <div className={styles.savedEventsContainer}>
-              <div className={`${styles.tracker_container_header}`}>
+              <div className={`${styles.tracker_container_header}`} style={{justifyContent:"space-between"}}>
+                <div className={styles.tracker_container_header_innerContainer}>
                 <Image src={Bookmark} alt="save"/>
-                <Link href="internal/trackers?tab=savedEvents">
+                
                 <div
-                  style={{ cursor: "pointer" }}
                   // onClick={() => {
                   //   router.push("internal/trackers?tab=savedEvents");
                   // }}
                 >
                   Saved Events
                 </div>
+                </div>
+                <div style={{fontSize:"var(--font-size-small)"}}>
+                <Link href="internal/trackers?tab=savedEvents">
+                  View All
                 </Link>
+                </div>
               </div>
               {isLoading ? (
                 <SavedEventsSkeleton />
@@ -482,13 +496,28 @@ const Dashboard = () => {
                         }`}
                         key={event.id}
                       >
-                        <div>{event.name}</div>
+                        <div>
+                        <Link href={`/internal/event/${event.id}`} target="_blank" >
+                        <div>{event.name}
+                        <span className={styles.eventDate}>{formatEventDates(event?.startDate, event?.endDate)}</span>
+                        </div>
+                        </Link>
+                        <div className={styles.event_organizer}>
+                        {event?.location?.cityName &&
+                        event?.location?.countryName
+                        ? event.location.cityName +
+                          ", " +
+                          event.location?.countryName
+                        : event?.location?.countryName}
+                  </div>
+                        </div>
                         <div
+                        style={{cursor:"pointer"}}
                           onClick={() => {
-                            unsavedEvent(event?.eventGroupId);
+                            unsavedEvent(event?.id);
                           }}
                         >
-                          <BookmarkIcon fillColor={"var(--primary-color)"} />
+                          <BookmarkFilled fillColor={"var(--primary-color)"} />
                         </div>
                       </div>
                     ))

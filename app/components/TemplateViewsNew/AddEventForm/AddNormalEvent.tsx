@@ -7,6 +7,7 @@ import DescriptionModal from './Details/description/DescriptionModal';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import { GolbalEventType } from '@/types/globaleventtype';
+import ParticipationContainer from './Details/participation/ParticipationContainer'
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
@@ -32,6 +33,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
 
     const [latitude, setLatitude] = useState(37.7749)
     const [longitude, setLongitude] = useState(-122.4194)
+    const [participationMessage, setParticipationMessage] = useState<string>("")
+    const [participationType, setParticipationType] = useState<string>("Attendee")
 
     const handleDescClick = () => {
         setDescription(textValue)
@@ -71,7 +74,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             location_country: countryName,
             gmt_time: timeZone,
             latitude,
-            longitude
+            longitude,
+            
         };
         const formData = new FormData()
         formData.append("name", eventName)
@@ -95,10 +99,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(error)
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         console.log("latitude :", latitude)
         console.log("longitude :", longitude)
-    },[latitude])
+    }, [latitude])
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -116,7 +120,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
 
                 <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
-
+                <div className={styles.participationContainer}><ParticipationContainer width="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
                 <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
             </div>
             {
