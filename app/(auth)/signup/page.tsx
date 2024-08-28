@@ -86,6 +86,9 @@ const SignUp = () => {
         setErrors({ email: response[0].error.message});
         else if(response[0].error.message==="Phone number already exist") 
           setErrors({ mobileNo: response[0].error.message});
+        else if(response[0].error.message==="email not accepted")
+          setErrors({ email: response[0].error.message});
+        else setErrors({ otherError: response[0].error.message});
       }
     } catch (error) {
       if (error instanceof ZodError) {
@@ -221,6 +224,9 @@ const SignUp = () => {
                 )}
               </div>
               <div className={styles.actions_container}>
+                {errors.otherError && (
+                  <div className={styles.otherError}>{errors.otherError}</div>
+                )}
                 <button
                   className={`${styles.button} ${isLoading && styles.disable}`}
                   type="submit"

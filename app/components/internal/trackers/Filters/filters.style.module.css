@@ -62,7 +62,7 @@
 .inputdropdowns_container {
   display: grid;
   /* grid-template-columns: repeat(4, minmax(0px, 245px)); */
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-lg);
 }
 .inputdropdowns_container button, .inputdropdowns_container_AI button{
@@ -118,21 +118,25 @@
 .advanceFilterBtns {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 10px;
 }
 .advanceFilterBtns button {
   width: 225px;
   height: 40px;
   font-size: inherit;
   font-family: inherit;
-  /* background: #131313; */
-  color: inherit;
+  background: var(--primary-foreground);
   border: none;
   cursor: pointer;
+  font-size: var(--font-size-default);
+  color: var(--primary-text-color);
+  border-radius: var(--border-radius-sm);
 }
 .advanceFilterBtns button.active {
-  border: 1px solid var(--primary-color);
+  border: 2px solid var(--primary-color);
   border-radius: var(--border-radius-sm);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-semibold);
   /* color: white; */
 }
 
@@ -148,12 +152,24 @@
 
 .input_container {
   width: 100%;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--input-border-color);
   border-radius: var(--border-radius-sm);
   white-space: nowrap;
   padding: 8px 16px;
   color: inherit;
   background-color: inherit;
+}
+
+.input_title{
+  text-align: start;
+    font-size: var(--font-size-default);
+    line-height: var(--line-height-default);
+}
+
+.comingSoon_badge {
+  font-size: var(--font-size-xs);
+  padding: 4px;
+  margin-left: 5px;
 }
 
 .createtracker_button {
@@ -176,7 +192,6 @@
 }
 
 .input {
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -356,7 +371,7 @@ input:checked + .slider:before {
   padding:4px 27px;
   border-radius: var(--border-radius-sm);
   width: 100%;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--input-border-color);
 }
 .textArea{
   /* background: #808080; */
@@ -466,7 +481,6 @@ input:checked + .slider:before {
   font-size: 16px;
   font-weight: 500;
   display: flex;
-  gap:10px;
   align-items: center;
   /* color: var(--primary-color); */
 }
@@ -524,4 +538,16 @@ width: calc(100vw - 134px);
   font-size: var(--font-size-h6);
   font-weight: var(--font-weight-bold);
   color: var(--primary-color);
+}
+.selected_no_filters{
+  height: 20px;
+  width: 20px;
+  background-color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-rounded);
+  color: #fff;
+  margin-left: 5px;
+  font-size: var(--font-size-sm);
 }

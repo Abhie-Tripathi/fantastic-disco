@@ -153,6 +153,12 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -227,7 +233,7 @@ const Search = () => {
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
-  const [selectedTrustScore, setSelectedTrustScore] = useState(0);
+  const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState(0);
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
@@ -254,6 +260,8 @@ const Search = () => {
   const [isInternationalOpen, setInternationalOpen] = useState<boolean>(false);
   const [isReputationOpen, setReputationOpen] = useState<boolean>(false);
   const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
+
+  const [requestExhausted, setRequestExhausted] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -324,8 +332,8 @@ const Search = () => {
           ...(selectedEntry?.length > 0 && {
             eventEntry: selectedEntry.join(","),
           }),
-          ...(selectedTrustScore > 0 && {
-            trustScore: selectedTrustScore.toString(),
+          ...(selectedTrustScore[0] > 0 && {
+            trustScore: selectedTrustScore[0].toString(),
           }),
           ...(selectedEventFrequency?.length > 0 && {
             eventFrequency: selectedEventFrequency.join(","),
@@ -571,8 +579,8 @@ const Search = () => {
     }
 
     // Trust Score
-    if (selectedTrustScore > 0) {
-      queryString.trustScore = selectedTrustScore;
+    if (selectedTrustScore[0] > 0) {
+      queryString.trustScore = selectedTrustScore[0];
     }
 
     // Event Series
@@ -841,6 +849,20 @@ const Search = () => {
     selectedLocalRank
   ]);
   */
+
+  // Table coloumn show/hide with filter value change
+  useEffect(() => {
+    setSelectedInsights((prevInsights) => ({ 
+      ...prevInsights,
+      eventRating: (selectedUserRatings.length > 0),
+      estExhibit: (selectedExhibitScore.length > 0),
+      repeatSent: (selectedTrustScore[0] > 0),
+    }));
+  }, [
+    selectedUserRatings,
+    selectedExhibitScore,
+    selectedTrustScore,
+  ]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -1111,7 +1133,7 @@ const Search = () => {
                           </span>
                         ) : (
                           <span className={styles.input_selected_title}>
-                            {selectedEventFormat[0]}
+                            {formatText(selectedEventFormat[0])}
                           </span>
                         )}
                       </div>
@@ -1272,7 +1294,7 @@ const Search = () => {
                           </span>
                         ) : (
                           <span className={styles.input_selected_title}>
-                            {selectedEventStatus[0]}
+                            {formatText(selectedEventStatus[0])}
                           </span>
                         )}
                       </div>
@@ -1308,7 +1330,7 @@ const Search = () => {
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEntry[0]}
+                              {formatText(selectedEntry[0])}
                             </span>
                           )}
                         </div>
@@ -1393,7 +1415,7 @@ const Search = () => {
                         display: "flex",
                         alignItems: "center",
                         gap: "4px",
-                        fontSize: "var(--font-size-small)",
+                        fontSize: "var(--font-size-default)",
                       }}
                     >
                       <Image
@@ -1413,7 +1435,7 @@ const Search = () => {
                   <button ref={trackerBtnRef} onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
                     <span className={styles.clearfilter_button}>Save as Tracker</span>
                   </button>
-                  <Button10x style={{color: 'white'}} variant="primary" size="sm" onClick={searchHandler} >Apply Filters</Button10x>
+                  <Button10x style={{color: 'white', textWrap: 'nowrap'}} variant="primary" size="sm" onClick={searchHandler} >Apply Filters</Button10x>
                 </div>
             </div>
 
@@ -1671,7 +1693,7 @@ const Search = () => {
                             </span>
                           ) : (
                             <span className={styles.input_selected_title}>
-                              {selectedEventFrequency[0]}
+                              {formatText(selectedEventFrequency[0])}
                             </span>
                           )}
                         </div>
@@ -2092,26 +2114,9 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Ranking
-                          {rankToggles.isEventRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedEventRank[0]} , {selectedEventRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isLocalRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isAviationRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
-                            </span>
-                          )}
-                          {selectedReputationScore[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedReputationScore[0]} ,{selectedReputationScore[1]}]
-                            </span>
-                          )}
+                          {selectedTrustScore[0] > 0 &&
+                            <span className={styles.selected_no_filters}>1</span>
+                          }
                         </div>
                         {/* <Image
                           src={DropIcon}
@@ -2120,7 +2125,7 @@ const Search = () => {
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
                   </Button>
@@ -2130,6 +2135,8 @@ const Search = () => {
                         <RankInput
                           selectedReputationScore={selectedReputationScore}
                           setSelectedReputationScore={setSelectedReputationScore}
+                          selectedTrustScore={selectedTrustScore}
+                          setSelectedTrustScore={setSelectedTrustScore}
                           selectedEventRank={selectedEventRank}
                           setSelectedEventRank={setSelectedEventRank}
                           selectedLocalRank={selectedLocalRank}
@@ -2489,8 +2496,8 @@ const Search = () => {
             </ModalOverlay>
           </DialogTrigger> */}
         </div>
-        {eventData?.events.length === 0 ? (
-          <div className={styles.message}>No Events</div>
+        {requestExhausted ? (
+          <div className={styles.noData}>You have reached the maximum limit to view data. Please get in touch with us.</div>
         ) : (
           <div className={styles.dataView}>
             {selectedView === "list" && (
@@ -2499,17 +2506,18 @@ const Search = () => {
                 <Table
                   showInsights={selectedInsights}
                   queryString={urlQueryString}
+                  setRequestExhausted={setRequestExhausted}
                 />
               </Suspense>
             )}
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
-                <Calendar queryString={urlQueryString} />
+                <Calendar queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
               </Suspense>
             )}
             {selectedView === "map" && (
               <Suspense fallback={<Loading />}>
-                <Map queryString={urlQueryString} />
+                <Map queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
               </Suspense>
             )}
           </div>

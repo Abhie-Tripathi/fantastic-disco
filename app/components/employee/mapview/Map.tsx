@@ -152,6 +152,7 @@ const cityMarker = (count: number) => {
 
 interface MapProps {
   queryString?: string;
+  setRequestExhausted?: any;
 }
 
 const zones = {
@@ -269,25 +270,25 @@ const Map = (props: MapProps) => {
       if(mapViewType == 'country')
         apiUrl = `${baseUrl}/event/search?groupBy=country&${props.queryString}`;
 
-      const apiData = await myFetch(apiUrl, {
+        const {data, error} = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
       });
-      if(apiData.data) {
+      if(data) {
         // setZonePerPage(apiData.data);
         if(mapViewType == 'country'){
-          setCountryPerPage(apiData.data);
+          setCountryPerPage(data);
           setEventPerPage([]);
           // const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
           const countryEventCountsObj: any = {};
           // countryEventCountsObj['totalEventCount'] = totalCount;
-          apiData.data.forEach((country: any) => {
+          data.forEach((country: any) => {
             countryEventCountsObj[country.countryCode] = country.eventCount;
           });
           setCountryEventCounts(countryEventCountsObj);
         }
         else{
-          setEventPerPage(apiData.data.events);
+          setEventPerPage(data.events);
           setCountryPerPage([]);
         }
         const cityData = await myFetch(`${baseUrl}/event/search?groupBy=city&${props.queryString}`, {
@@ -295,6 +296,11 @@ const Map = (props: MapProps) => {
           headers: headers,
         });
         setCityPerPage(cityData.data);
+      }
+      if(error) {
+        if(props.setRequestExhausted && error.message === "no of request exhausted"){
+          props.setRequestExhausted(true);
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);

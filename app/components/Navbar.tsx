@@ -357,7 +357,7 @@ const Navbar = () => {
               )}
 
               {profilectas.isOpen && (
-                <div className={`${styles.userDropdown} card`} style={{padding: '8px' }} >
+                <div className={`${styles.userDropdown} card`} style={{padding: '8px', borderRadius: 'var(--border-radius-sm)' }} >
                   <Link
                     href={
                       pathName === "internal" ? "/internal/profile" : "/profile"

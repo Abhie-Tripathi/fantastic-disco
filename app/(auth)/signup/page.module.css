@@ -119,6 +119,17 @@
   color: var(--danger-text-color);
 }
 
+.error:first-letter {
+  text-transform: capitalize;
+}
+
+.otherError {
+  font-size: var(--font-size-small);
+  color: var(--danger-text-color);
+  margin-bottom: 16px;
+  text-transform: capitalize;
+}
+
 .error_boundary {
   border-color: var(--danger-text-color) !important;
 }
