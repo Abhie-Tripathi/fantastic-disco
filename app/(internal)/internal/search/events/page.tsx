@@ -255,6 +255,8 @@ const Search = () => {
   const [isReputationOpen, setReputationOpen] = useState<boolean>(false);
   const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
 
+  const [requestExhausted, setRequestExhausted] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
@@ -2489,8 +2491,8 @@ const Search = () => {
             </ModalOverlay>
           </DialogTrigger> */}
         </div>
-        {eventData?.events.length === 0 ? (
-          <div className={styles.message}>No Events</div>
+        {requestExhausted ? (
+          <div className={styles.noData}>You have reached the maximum limit to view data. Please get in touch with us.</div>
         ) : (
           <div className={styles.dataView}>
             {selectedView === "list" && (
@@ -2499,17 +2501,18 @@ const Search = () => {
                 <Table
                   showInsights={selectedInsights}
                   queryString={urlQueryString}
+                  setRequestExhausted={setRequestExhausted}
                 />
               </Suspense>
             )}
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
-                <Calendar queryString={urlQueryString} />
+                <Calendar queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
               </Suspense>
             )}
             {selectedView === "map" && (
               <Suspense fallback={<Loading />}>
-                <Map queryString={urlQueryString} />
+                <Map queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
               </Suspense>
             )}
           </div>

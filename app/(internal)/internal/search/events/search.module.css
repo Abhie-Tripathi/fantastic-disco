@@ -611,3 +611,8 @@ input:checked + .slider:before {
   animation: l3 1s infinite linear;
 }
 @keyframes l3 {to{transform: rotate(1turn)}}
+
+.noData {
+  padding: 20px;
+  text-align: center;
+}
