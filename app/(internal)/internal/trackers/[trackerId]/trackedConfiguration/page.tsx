@@ -174,9 +174,13 @@ const Page = () => {
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [data]);
 console.log(type);
-const eventType=data?.tracker?.filterValue?.eventType ? EventStatusData
-  ?.filter(item => data.tracker.filterValue.eventType.includes(item.id))
-  .map(item => item.name):[];
+const eventType=data?.tracker?.filterValue?.eventType?
+data?.tracker?.filterValue?.eventType
+  :[];
+  const eventEntry=data?.tracker?.filterValue?.eventEntry ?
+  data?.tracker?.filterValue?.eventEntry?.split(','):[];
+  const eventSize=data?.tracker?.filterValue?.eventSize ?
+  data?.tracker?.filterValue?.eventSize?.split(','):[];
 const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
 const endDateValue = data?.tracker?.filterValue?.endDate;
 const startDate = endDateValue ? endDateValue.split(",")[0] : null;
@@ -457,6 +461,26 @@ const userRating=
                     </div>
                 </div>
                 <div className={styles.format}>
+                    <div className={styles.formatHead}>Event Entry</div>
+                    <div className={styles.allCat}>
+                        {eventEntry?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.format}>
                     <div className={styles.formatHead}>User Ratings</div>
                     <div className={styles.allCat}>
                         {userRating?.map((item: string, id: number) => (
@@ -554,6 +578,7 @@ const userRating=
           end={
             data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
           }
+          eventSize={eventSize}
         />
       </div>
     </div>
