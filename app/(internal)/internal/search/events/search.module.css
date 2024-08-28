@@ -235,7 +235,7 @@
 
 .dropdown_button {
   color: inherit;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .createtracker_button {
