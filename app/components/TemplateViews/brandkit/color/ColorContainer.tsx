@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './colorcontainer.style.module.css'
 
 interface Props {
@@ -47,26 +47,26 @@ const ColorContainer = ({ setPreview, setColorCode }: Props) => {
         return luminance < 0.5;
     };
 
-    const scrollRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleScroll = (event: WheelEvent) => {
-            if (scrollRef.current) {
-                event.preventDefault();
-                scrollRef.current.scrollLeft += event.deltaY;
-            }
-        };
+    // const scrollRef = useRef<HTMLDivElement>(null);
+    // useEffect(() => {
+    //     const handleScroll = (event: WheelEvent) => {
+    //         if (scrollRef.current) {
+    //             event.preventDefault();
+    //             scrollRef.current.scrollLeft += event.deltaY;
+    //         }
+    //     };
 
-        const refCurrent = scrollRef.current;
-        if (refCurrent) {
-            refCurrent.addEventListener('wheel', handleScroll);
-        }
+    //     const refCurrent = scrollRef.current;
+    //     if (refCurrent) {
+    //         refCurrent.addEventListener('wheel', handleScroll);
+    //     }
 
-        return () => {
-            if (refCurrent) {
-                refCurrent.removeEventListener('wheel', handleScroll);
-            }
-        };
-    }, []);
+    //     return () => {
+    //         if (refCurrent) {
+    //             refCurrent.removeEventListener('wheel', handleScroll);
+    //         }
+    //     };
+    // }, []);
 
     const handleColorClick = (color: string) => {
         setColorCode(color)
@@ -76,7 +76,7 @@ const ColorContainer = ({ setPreview, setColorCode }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.heading}>Brand Colors</div>
-            <div className={styles.colorPallete} ref={scrollRef}>
+            <div className={styles.colorPallete}>
                 {colors.map((color, key) => (
                     <div className={styles.color} key={key} style={{ backgroundColor: color }} onClick={() => handleColorClick(color)} onMouseLeave={handleMouseLeave}>
                         <span style={{ color: isColorDark(color) ? '#ffffff' : '#000000' }}>{color}</span>
