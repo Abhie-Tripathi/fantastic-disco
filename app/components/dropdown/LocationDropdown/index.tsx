@@ -71,6 +71,8 @@ const LocationDropdown = ({
   const [inputText, setInputText] = useState("");
   const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
 
+  const [locationSearchLoader, setLocationSearchLoader] = useState<boolean>(false);
+
   const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     if(newValue.trim() != '') setInputText(newValue.trim());
@@ -78,6 +80,7 @@ const LocationDropdown = ({
 
   const fetchSuggestions = async(text: string) => {
     try {
+      setLocationSearchLoader(true);
       const [suggestionResponse, countryResponse] = await Promise.all([
         myFetch(`${baseUrl}/location/suggestion?q=${text}`),
         myFetch(`${baseUrl}/location/country?name=${text}`),
@@ -89,6 +92,8 @@ const LocationDropdown = ({
       setZoneData(suggestionResponse.data.zone);
     } catch (error) {
       console.error("Error fetching location data:", error);
+    } finally {
+      setLocationSearchLoader(false);
     }
   }
 
@@ -102,6 +107,7 @@ const LocationDropdown = ({
 
   useEffect(() => {
     if(inputText != ''){
+      setLocationSearchLoader(true);
       const debounceTimeout = setTimeout(() => {
         fetchSuggestions(inputText);
       }, 500);
@@ -342,6 +348,9 @@ console.log(state);
               className={styles.location_input}
               onChange={inputChangeHandler}
             />
+            {locationSearchLoader &&
+              <div className={styles.loader}></div>
+            }
           </div>
         </div>
 

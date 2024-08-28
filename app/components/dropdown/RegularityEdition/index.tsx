@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./regularity.style.module.css";
 import ReactSlider from "react-slider";
-import { InformationFillSmall } from "geist-icons";
+// import { InformationFillSmall } from "geist-icons";
 
 interface RankInputProps {
   className?: string;
@@ -30,7 +30,7 @@ const RegularityEdition = ({
       <div className={styles.header}>
         <div>
           Regularity & Edition{" "}
-          <InformationFillSmall color="var(--primary-text-color)" />
+          {/* <InformationFillSmall color="var(--primary-text-color)" /> */}
         </div>
         {/* <div className={styles.header_button} onClick={() => onClose()}>
           Apply
@@ -90,7 +90,7 @@ const RegularityEdition = ({
           </>
         </div>
         <div className={styles.line}></div>
-        
+
         <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>    
         <div className={styles.slider_container}>
           <div className={styles.checkbox_title}>Regularity</div>
