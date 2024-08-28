@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import styles from "./eventdesc.style.module.css";
 import Image from "next/image";
 import PeopleIcon from "/public/user.svg";
-import Placehodler from "/public/placeholder.png";
+// import Placehodler from "/public/placeholder.png";
+import PlaceHolder from "/public/speaker1.jpeg";
 import downArrowIcon from '/public/arrow_down.svg'
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import { showToast } from "@/utils/showToast";
+// import { showToast } from "@/utils/showToast";
+import { formatEventDates } from "@/utils/dateFormat";
 
 interface Props {
   open: boolean;
@@ -16,10 +18,11 @@ interface Props {
 }
 
 interface POCtypes {
-  userId: string;
+  id: number;
   name: string;
   profilePicture: null | string;
-  designation: string;
+  designation: string | null;
+  emailActive: string | null;
 }
 
 const EventPoc = ({ open, eventId }: Props) => {
@@ -30,20 +33,20 @@ const EventPoc = ({ open, eventId }: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(
-        `${baseUrl}/event-follow/${eventId}`
+      const apiData = await fetch(
+        `${baseUrl}/event-poc/${eventId}`
       );
 
+      const data = await apiData.json();
       if (data) {
-        console.log(data);
-        setPocData(data);
+        setPocData(data.eventPoc);
       }
 
-      if (error) {
-        console.log(error);
-        showToast("error", error.message);
-        return;
-      }
+      // if (error) {
+      //   console.log(error);
+      //   showToast("error", error.message);
+      //   return;
+      // }
     };
     fetchData();
   }, []);
@@ -66,23 +69,33 @@ const EventPoc = ({ open, eventId }: Props) => {
       </div>
       {accordianToggle && (
         <div className={styles.accordian}>
-          {pocData.length > 0 ? (
-            pocData.map((poc: POCtypes) => (
-              <div className={styles.organiserContainer} key={poc.userId}>
-                <Image
-                  src={poc.profilePicture ? poc.profilePicture : ""}
-                  alt="placeholder"
-                  className={styles.orgLogo}
-                />
-                <div className={styles.organiserNameContainer}>
-                  <div style={{ fontSize: 14 }}>{poc.name}</div>
-                  <div style={{ fontSize: 12 }}>{poc.designation}</div>
+          <div className={styles.allFollowerContainer}>
+            {pocData.length > 0 ? (
+              pocData.map((poc: POCtypes) => (
+                <div className={styles.followerContainer} key={poc.id}>
+                  <Image
+                    src={ poc?.profilePicture === null ? PlaceHolder : poc?.profilePicture }
+                    alt="banner"
+                    width={80}
+                    height={80}
+                    className={styles.followerProfilePhoto}
+                  />
+                  <div className={styles.followerDetails}>
+                    <div className={styles.followerName}>
+                      {poc?.name}
+                      {/* <span className={styles.username}>{item.username}</span> */}
+                    </div>
+                    <div className={styles.followerPosition}>{poc?.designation}</div>
+                    {poc?.emailActive &&
+                      <div className={styles.emailActiveStatus}>Last Active: {formatEventDates(poc?.emailActive, poc?.emailActive)}</div>
+                    }
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className={styles.noData_text}>No Data Found</div>
-          )}
+              ))
+            ) : (
+              <div className={styles.noData_text}>No Data Found</div>
+            )}
+          </div>
         </div>
       )}
     </div>

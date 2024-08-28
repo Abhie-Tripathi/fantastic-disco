@@ -259,7 +259,19 @@
   color: #8c8ea4;
 }
 .followerPosition {
-  font-size: 12px;
+  font-size: var(--font-size-small);
+  color: var(--secondary-text-color);
+  margin: 5px 0;
+}
+
+.emailActiveStatus {
+  font-size: var(--font-size-small);
+  color: var(--tertiary-text-color);
+}
+
+.allFollowerContainer {
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .statusCard {
