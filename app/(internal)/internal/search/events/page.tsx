@@ -2114,26 +2114,9 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Ranking
-                          {rankToggles.isEventRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedEventRank[0]} , {selectedEventRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isLocalRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isAviationRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
-                            </span>
-                          )}
-                          {selectedReputationScore[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedReputationScore[0]} ,{selectedReputationScore[1]}]
-                            </span>
-                          )}
+                          {selectedTrustScore[0] > 0 &&
+                            <span className={styles.selected_no_filters}>1</span>
+                          }
                         </div>
                         {/* <Image
                           src={DropIcon}

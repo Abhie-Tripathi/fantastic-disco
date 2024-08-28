@@ -617,3 +617,16 @@ input:checked + .slider:before {
   padding: 20px;
   text-align: center;
 }
+
+.selected_no_filters{
+  height: 20px;
+  width: 20px;
+  background-color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-rounded);
+  color: #fff;
+  margin-left: 5px;
+  font-size: var(--font-size-sm);
+}
