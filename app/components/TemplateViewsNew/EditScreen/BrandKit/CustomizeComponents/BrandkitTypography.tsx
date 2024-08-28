@@ -7,14 +7,21 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     flex: boolean;
+    eventFont: string;
+    setEventFont: (value: string) => void
 }
 
-const BrandkitTypography = ({ flex }: Props) => {
+const BrandkitTypography = ({ flex, eventFont, setEventFont }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState<string>("Arial")
     const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
+
+    const handleFontSelect = (font : string)=>{
+        setSelectedFont(font)
+        setEventFont(font)
+    }
 
     return (
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
@@ -31,7 +38,7 @@ const BrandkitTypography = ({ flex }: Props) => {
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
                             {fontsList.map((font, key) => (
-                                <div key={key} className={styles.dropdownFont} onClick={() => setSelectedFont(font)}>{font}</div>
+                                <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
                             ))}
                         </div>}
                     </div>
