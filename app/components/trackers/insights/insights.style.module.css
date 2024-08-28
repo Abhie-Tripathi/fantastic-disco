@@ -9,7 +9,12 @@
     grid-template-columns: repeat(2, 1fr);
 }
 .format{
-
+  padding:12px 15px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-direction: column;
+  border-radius: var(--border-radius-sm);
 }
 .sliderBranded {
   position: absolute;
@@ -184,6 +189,7 @@
   .allCat{
     display: flex;
     gap: var(--spacing-sm);
+    flex-wrap: wrap;
     /* flex-direction: column; */
   }
   .item{
