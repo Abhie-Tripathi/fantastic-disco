@@ -14,9 +14,22 @@ interface Props {
     pageBgColor?: string;
     eventFont?: string;
     setEventFont?: (value: string) => void
+    setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+}
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont,setCardBgColor }: Props) => {
+interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+}
+
+const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont,setCardBgColor,setFontSettings }: Props) => {
 
     const { theme } = useTheme()
     const [accordian, setAccordian] = useState<boolean>(true)
@@ -43,7 +56,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                 </div>
                 {!flex && <div className={styles.line}></div>}
                 <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
-                    <BrandkitTypography flex={flex} setEventFont={setEventFont} eventFont={eventFont}/>
+                    <BrandkitTypography setFontSettings={setFontSettings} flex={flex} setEventFont={setEventFont} eventFont={eventFont}/>
                 </div>
                 <div className={styles.btnContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
                     <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>

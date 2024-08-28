@@ -9,9 +9,22 @@ interface Props {
     flex: boolean;
     eventFont?: string;
     setEventFont?: (value: string) => void
+    setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+}
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const BrandkitTypography = ({ flex, eventFont, setEventFont }: Props) => {
+interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+}
+
+const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
@@ -23,6 +36,24 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont }: Props) => {
         if (setEventFont) {
             setEventFont(font)
         }
+        if (setFontSettings) {
+            setFontSettings((prevSettings) => ({
+                ...prevSettings,
+                heading: {
+                    ...prevSettings.heading,
+                    fontFamily: font,
+                },
+                subheading: {
+                    ...prevSettings.subheading,
+                    fontFamily: font,
+                },
+                body: {
+                    ...prevSettings.body,
+                    fontFamily: font,
+                }
+            }));
+        }
+
     }
 
     return (
