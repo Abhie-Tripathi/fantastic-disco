@@ -16,6 +16,7 @@
     /* Enables horizontal scrolling */
     white-space: nowrap;
     /* Prevents the items from wrapping to the next line */
+    padding-bottom: 3px;
 }
 
 .color {
