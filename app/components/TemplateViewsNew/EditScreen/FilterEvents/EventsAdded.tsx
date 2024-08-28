@@ -75,20 +75,37 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
-    useEffect(() => {
-        console.log("other data : ", fetchedAddedOtherData)
-    }, [fetchedAddedOtherData])
 
     // This function is to trigger the delete event function from added events
     const handleCheckboxChange = async (eventId: string) => {
         const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
-        if (!updatedEvents) return;
+        if (!updatedEvents) {
+            return;
+        }
+        if(updatedEvents.length === 0){
+            handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
+        }
         try {
             await updateWidget(widgetId, updatedEvents, eventId);
         } catch (error) {
             console.error('Failed to update events:', error);
         }
+
     };
+
+    // To move the widget to draft if all events are deleted
+    const handleDraftWidget = async () => {
+        const formData = new FormData();
+        formData.append("widgetId", widgetId)
+        formData.append("status", "draft")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: "POST",
+            body: formData
+        })
+        if (data) {
+            console.log("widget moved to draft widgets")
+        }
+    }
     const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventId: string) => {
         const customizedFormData = new FormData();
 

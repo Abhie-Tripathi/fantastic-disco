@@ -116,6 +116,7 @@ const Widget = () => {
     fetchAllWidgets()
   }, [])
 
+  // Need to do this to display the data on the load of the page
   useEffect(()=>{
     handleWidgetClick(selectedWidgetId)
   },[selectedWidgetId])
