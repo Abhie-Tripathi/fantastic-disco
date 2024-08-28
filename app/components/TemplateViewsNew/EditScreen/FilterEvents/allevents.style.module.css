@@ -101,6 +101,11 @@
     color: #0062D1;
     font-size: 12px;
 }
+.delete_editBtn{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 .checkboxInput {
     display: none;
 }

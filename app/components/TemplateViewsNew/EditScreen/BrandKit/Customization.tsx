@@ -52,7 +52,7 @@ const   Customization = ({ extractedColors, setExtractedColors, setCardBgColor, 
         <button onClick={handleUpdate}>Apply</button>
       </div>
       <div className={styles.brandKit}>
-        <BrandKit extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex />
+        <BrandKit setCardBgColor={setCardBgColor} extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex />
       </div>
       <div className={styles.cardStylesContainer}>
         <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />

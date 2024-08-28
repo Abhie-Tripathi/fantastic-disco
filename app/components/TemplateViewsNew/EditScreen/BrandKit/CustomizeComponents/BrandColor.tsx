@@ -8,11 +8,12 @@ interface Props {
     setExtractedColors: (value: string[]) => void
     setValueUpdated: (value: boolean) => void
     flex: boolean;
-    setPageBgColor: (value: string) => void
-    pageBgColor: string;
+    setPageBgColor?: (value: string) => void
+    pageBgColor?: string;
+    setCardBgColor? :(value : string)=>void
 }
 
-const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor }: Props) => {
+const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor,setCardBgColor }: Props) => {
 
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
@@ -20,8 +21,12 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
     const handleSelectColor = (index: number, color : any) => {
         setSelectedColorIndex(index)
         const rgbaColor = hexToRgba(color, 0.1);
-        setPageBgColor(rgbaColor);
-
+        if(setPageBgColor){
+            setPageBgColor(rgbaColor);    
+        }
+        if(setCardBgColor){
+            setCardBgColor(color)
+        }
     }
     const hexToRgba = (hex: string, opacity: number) => {
         let r = 0, g = 0, b = 0;
@@ -55,7 +60,12 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
             setExtractedColors(updatedColors);
         }
         const rgbaColor = hexToRgba(color.hex, 0.1);
-        setPageBgColor(rgbaColor);
+        if(setPageBgColor){
+            setPageBgColor(rgbaColor);    
+        }
+        if(setCardBgColor){
+            setCardBgColor(color)
+        }
     };
 
     const handleHexInputChange = (hexColor: string) => {

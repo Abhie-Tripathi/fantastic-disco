@@ -7,8 +7,8 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     flex: boolean;
-    eventFont: string;
-    setEventFont: (value: string) => void
+    eventFont?: string;
+    setEventFont?: (value: string) => void
 }
 
 const BrandkitTypography = ({ flex, eventFont, setEventFont }: Props) => {
@@ -18,9 +18,11 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont }: Props) => {
     const [selectedFont, setSelectedFont] = useState<string>("Arial")
     const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
 
-    const handleFontSelect = (font : string)=>{
+    const handleFontSelect = (font: string) => {
         setSelectedFont(font)
-        setEventFont(font)
+        if (setEventFont) {
+            setEventFont(font)
+        }
     }
 
     return (

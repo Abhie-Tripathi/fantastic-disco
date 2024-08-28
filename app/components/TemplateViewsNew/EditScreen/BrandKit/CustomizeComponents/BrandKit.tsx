@@ -9,13 +9,14 @@ interface Props {
     extractedColors: string[];
     setExtractedColors: (value: string[]) => void
     flex: boolean
-    setPageBgColor: (value: string) => void
-    pageBgColor: string;
-    eventFont: string;
-    setEventFont: (value: string) => void
+    setPageBgColor?: (value: string) => void
+    setCardBgColor? :(value: string) => void
+    pageBgColor?: string;
+    eventFont?: string;
+    setEventFont?: (value: string) => void
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont }: Props) => {
+const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont,setCardBgColor }: Props) => {
 
     const { theme } = useTheme()
     const [accordian, setAccordian] = useState<boolean>(true)
@@ -38,7 +39,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                 </div>
                 {!flex && <div className={styles.line}></div>}
                 <div className={styles.brandColorContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
-                    <BrandColor setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
+                    <BrandColor setCardBgColor={setCardBgColor} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
                 </div>
                 {!flex && <div className={styles.line}></div>}
                 <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
