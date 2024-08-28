@@ -1,120 +1,155 @@
 .body {
-    display: flex;
-    gap: 6px;
-  }
-  
-  .dateAndTimeContainer {
-    padding: 11px 10px 11px 35px;
-    background-color: #ffffff53;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 75%;
-  }
-  
+  display: flex;
+  gap: 6px;
+}
+
+.dateAndTimeContainer {
+  padding: 11px 10px 11px 35px;
+  background-color: #ffffff53;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 75%;
+}
+
+.startEndStyle {
+  color: #7D7D7D;
+  font-size: 12px;
+  line-height: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* position: relative; */
+}
+
+.startEndStyle .start,
+.startEndStyle .end {
+  position: relative;
+}
+
+.startEndStyle .start::before,
+.startEndStyle .end::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  left: -16px;
+  top: 3px;
+}
+
+.startEndStyle .start::before {
+  background-color: #D9D9D9;
+}
+
+.startEndStyle .end::before {
+  border: 1px solid #D9D9D9;
+}
+
+.startEndStyle .start::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 25px;
+  border-left: 1px dashed #A8A8A8;
+  left: -11px;
+  top: 12px;
+}
+
+.dateTimeBoxes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: black;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.dateBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dateBoxes .dateBox {
+  padding: 2px 15px;
+  background-color: #ffffffa8;
+  border-radius: 4px;
+  position: relative;
+  /* cursor: pointer; */
+}
+
+.timeBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeBoxes .timeBox {
+  padding: 2px 15px;
+  background-color: #ffffffa8;
+  border-radius: 4px;
+  position: relative;
+  /* cursor: pointer; */
+  width: 90px;
+}
+
+.timeZonesContainer {
+  background-color: #ffffff53;
+  border-radius: 10px;
+  padding: 10px;
+  width: 25%;
+  position: relative;
+  height: 78px;
+  /* cursor: pointer; */
+}
+
+.timeZonesContainer .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timeZonesContainer .timeZone {
+  color: black;
+  font-size: 10px;
+  margin-top: 11px;
+}
+.mobileView{
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.mobile_dateIconContainer{
+  display: flex;
+  gap: 5px;
+}
+.mobile_dateContainer{
+  font-size: var(--font-size-default);
+  font-weight: 500;
+}
+.mobile_timeGmtContainer{
+  display: flex;
+  font-size: var(--font-size-small);
+  gap: 10px;
+  color: #7D7D7D;
+  font-weight: 600;
+}
+@media screen and (max-width: 821px) {
   .startEndStyle {
-    color: #7D7D7D;
-    font-size: 12px;
-    line-height: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    /* position: relative; */
+    display: none;
   }
-  
-  .startEndStyle .start,
-  .startEndStyle .end {
-    position: relative;
-  }
-  
-  .startEndStyle .start::before,
-  .startEndStyle .end::before {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 10px;
-    left: -16px;
-    top: 3px;
-  }
-  
-  .startEndStyle .start::before {
-    background-color: #D9D9D9;
-  }
-  
-  .startEndStyle .end::before {
-    border: 1px solid #D9D9D9;
-  }
-  
-  .startEndStyle .start::after {
-    content: '';
-    position: absolute;
-    width: 1px;
-    height: 25px;
-    border-left: 1px dashed #A8A8A8;
-    left: -11px;
-    top: 12px;
-  }
-  
-  .dateTimeBoxes {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: black;
-    font-size: 12px;
-    line-height: 20px;
-  }
-  
-  .dateBoxes {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .dateBoxes .dateBox {
-    padding: 2px 15px;
-    background-color: #ffffffa8;
-    border-radius: 4px;
-    position: relative;
-    /* cursor: pointer; */
-  }
-  
-  .timeBoxes {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .timeBoxes .timeBox {
-    padding: 2px 15px;
-    background-color: #ffffffa8;
-    border-radius: 4px;
-    position: relative;
-    /* cursor: pointer; */
-    width: 90px;
-  }
-  
+
   .timeZonesContainer {
-    background-color: #ffffff53;
-    border-radius: 10px;
-    padding: 10px;
-    width: 25%;
-    position: relative;
-    height:78px;
-    /* cursor: pointer; */
+    display: none;
   }
-  
-  .timeZonesContainer .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+  .dateAndTimeContainer {
+    padding: 11px 10px 11px 19px;
+    width: 100%;
   }
-  
-  .timeZonesContainer .timeZone {
-    color: black;
-    font-size: 10px;
-    margin-top: 11px;
+  .dateTimeBoxes{
+    display: none;
   }
-  
-  
+}

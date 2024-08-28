@@ -49,8 +49,8 @@ export interface EventTableType {
         sponsoringLeads: number;
         speakingLeads: number;
         eventFollower: number;
-        estimatedExhibitor: number;
-        estimatedVisitor: number;
+        estimatedExhibitor: string | null;
+        estimatedVisitor: string | null;
     };
     internationalAudience: string;
     type: string[]

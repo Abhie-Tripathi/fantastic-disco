@@ -1,8 +1,7 @@
 import React from "react";
 import styles from "./analyticsdropdown.module.css";
 import ReactSlider from "react-slider";
-import { useTheme } from "@/context";
-import { InformationFillSmall } from "geist-icons";
+// import { InformationFillSmall } from "geist-icons";
 
 interface RankInputProps {
   className?: string;
@@ -26,7 +25,7 @@ const AudienceQuality = ({
     >
       <div className={styles.header}>
         <div>{type} Quality Score {" "}
-          <InformationFillSmall color="var(--primary-text-color)" />
+          {/* <InformationFillSmall color="var(--primary-text-color)" /> */}
         </div>
         {/* <div className={styles.header_button} onClick={() => onClose()}>
           Apply

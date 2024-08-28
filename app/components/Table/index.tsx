@@ -203,12 +203,14 @@ const Table = ({
   queryString,
   eventType,
   setActiveValue,
+  setRequestExhausted,
 }: {
   eventData?: any;
   showInsights: any;
   queryString?: string;
   eventType?:string;
   setActiveValue?:any;
+  setRequestExhausted?: any;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
@@ -521,15 +523,20 @@ const [val,setVal]=useState(1);
             (currPage - 1) * itemsPerPage
           }&${queryString}`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
-          const apiData = await myFetch(apiUrl, {
+          const {data, error} = await myFetch(apiUrl, {
             method: "GET",
             headers: headers,
           });
-          if (apiData.data) {
+          if (data) {
             setTotalPages(
-              Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
+              Math.ceil(data.stats.totalEvents / itemsPerPage)
             );
-            setEventPerPage(apiData.data.events);
+            setEventPerPage(data.events);
+          }
+          if(error) {
+            if(error.message === "no of request exhausted"){
+              setRequestExhausted(true);
+            }
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -1040,7 +1047,10 @@ const [val,setVal]=useState(1);
                 )}
                 {showInsights.estExhibit && (
                   <td>
-                    {getEstimatedExhibitors(event)}
+                    {/* {getEstimatedExhibitors(event)} */}
+                    {(event.stats?.estimatedExhibitor && event.stats?.estimatedExhibitor !== '' && event.stats?.estimatedExhibitor !== 'null') ?
+                      event.stats?.estimatedExhibitor : '-'
+                    }
                   </td>
                 )}
                 {showInsights.global && (

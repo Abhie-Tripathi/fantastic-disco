@@ -25,14 +25,18 @@ interface WidgetProps {
     widgetType: string;
     templateId: TemplateId;
     widgetNumber?: number;
-    widgetId : string;
-    fetchDraftWidgets: () => Promise<void>; 
+    widgetId: string;
+    fetchDraftWidgets: () => Promise<void>;
+    handleWidgetClick?: (value: string) => Promise<void>
+    widgetStatus: string;
+    fetchedEventsSize?: number;
+    fetchAllWidgets?: () => Promise<void>
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
 interface TemplateMap {
     [key: string]: { image: StaticImageData; heading: string };
-  }
+}
 const templateMap = {
     'ST': { image: StickyTopImage, heading: 'Sticky Top' },
     'SB': { image: StickyBottomImage, heading: 'Sticky Bottom' },
@@ -49,19 +53,19 @@ const templateMap = {
     'RSR': { image: RightScrollImage, heading: 'Right Scroll' },
     'PUVP': { image: PopupViewImage1, heading: 'Popup View Portrait' },
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
-  };
-  
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftWidgets }: WidgetProps) => {
+};
+
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
     const router = useRouter()
 
-    const handleRemove = async()=>{
+    const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
         const editData = new FormData();
         editData.append('widgetId', widgetId)
-        editData.append('published','false')
-      
+        editData.append('published', 'false')
+
         const { data, error } = await myFetch(
             `${baseUrl}/widget`,
             {
@@ -77,24 +81,54 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
         }
     }
 
-    const handleRoute = ()=>{
+    const handleRoute = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
         router.push(`/widget/edit/${widgetId}`);
     }
-    
+
+    const handleCardClick = () => {
+        if (handleWidgetClick) {
+            handleWidgetClick(widgetId)
+        }
+    }
+
+    const handleWidgetStatus = async () => {
+        const customizeData = new FormData();
+        customizeData.append("widgetId", widgetId)
+        customizeData.append("status", widgetStatus === "Active" ? "deactivate" : "active")
+        const { data, error } = await myFetch(
+            `${baseUrl}/widget`,
+            {
+                method: 'POST',
+                body: customizeData,
+            }
+        );
+        if (data) {
+            console.log("Status Updated")
+            if (fetchAllWidgets) {
+                fetchAllWidgets();
+            }
+        }
+        else { console.log(error) }
+
+    }
 
     return (
-        <div className={styles.body}>
+        <div className={styles.body} onClick={handleCardClick}>
             {image && <Image src={image} alt={heading} />}
             <div className={styles.details}>
-                <div className={styles.heading_eventsContainer}>
-                    <div className={styles.templateHeading}>{heading}</div>
-                    <div className={styles.eventsHeading}>No Events Added</div>
+                <div>
+                    <div className={styles.heading_eventsContainer}>
+                        <div className={styles.templateHeading}>{heading}</div>
+                        <div className={styles.eventsHeading}>{fetchedEventsSize === 0 ? "No Events Added" : `${fetchedEventsSize} Events Added`}</div>
+                    </div>
+                    <div className={styles.widgetTypeContainer}>
+                        <WidgetIcon />
+                        <div>{widgetType} Widget</div>
+                    </div>
                 </div>
-                <div className={styles.widgetTypeContainer}>
-                    <WidgetIcon />
-                    <div>{widgetType} Widget</div>
-                </div>
-                {widgetType === "Sticky" ?
+
+                {/* {widgetType === "Sticky" ?
                     <div className={styles.widgetNumberContainerOne}>
                         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                             <InfoIcon />
@@ -109,12 +143,23 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId,fetchDraftW
                     <div className={styles.widgetNumberContainerTwo}>
                         <TickIcon />
                         <div>1/1 Section widget selected.</div>
-                    </div>}
+                    </div>} */}
                 <div className={styles.status_btnContainer}>
-                    <div className={styles.active}>Active</div>
+                    <div className={styles.status_checkboxContainer}>
+                        <div className={widgetStatus === "Draft" ? styles.draft : widgetStatus === "Active" ? styles.active : styles.inactive}>{widgetStatus}</div>
+                        {(widgetStatus === "Active" || widgetStatus === "Inactive") && <input
+                            id={widgetId}
+                            type="checkbox"
+                            checked={widgetStatus === "Active" ? true : false}
+                            className={styles.checkboxInput}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={handleWidgetStatus}
+                        />}
+                        {(widgetStatus === "Active" || widgetStatus === "Inactive") && <label htmlFor={widgetId} className={styles.checkBox}></label>}
+                    </div>
                     <div className={styles.btnContainer}>
-                        <button className={styles.removeBtn} onClick={handleRemove}>Remove</button>
-                        <button className={styles.editBtn} onClick={handleRoute}>Edit</button>
+                        <button className={styles.removeBtn} onClick={(e) => handleRemove(e)}>Remove</button>
+                        <button className={styles.editBtn} onClick={(e) => handleRoute(e)}>Edit</button>
                     </div>
                 </div>
             </div>

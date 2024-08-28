@@ -63,27 +63,27 @@
 
 .userDropdown {
   position: absolute;
-  top: 56px;
+  top: 46px;
   right: 0;
   z-index: 11;
   background: var(--primary-foreground);
   color: var(--primary-text-color);
-  width: 14vw;
-  text-align: center;
+  width: 160px;
   font-size: var(--font-size-default);
+  line-height: var(--line-height-default);
   padding: 8px;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
 }
 
 .btns {
   padding: 6px 16px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   transition: background-color 0.2s ease;
 }
 
 .btns:hover {
-  background-color: var(--heading-background-color);
+  background-color: var(--accent-color);
   /* color: white; */
 }
 

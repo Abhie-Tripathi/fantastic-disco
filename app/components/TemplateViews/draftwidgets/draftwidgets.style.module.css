@@ -52,6 +52,9 @@
     flex-direction: column;
     gap: 16px;
 }
+.widgets .widgetCard{
+    height: 178px;
+}
 .emptyCard{
     display: flex;
     align-items: center;
