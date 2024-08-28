@@ -110,14 +110,16 @@ const RankInput = ({
             <div className={styles.rank_input_container}>
               <input
                 value={selectedTrustScore[0]}
-                onChange={(e) =>
-                  setSelectedTrustScore([
-                    Number(e.target.value),
-                    selectedTrustScore[1],
-                  ])
-                }
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  if (value <= 100) {
+                    setSelectedTrustScore([value, selectedTrustScore[1]]);
+                  }
+                }}
                 className={styles.rank_input}
                 // disabled={true}
+                type="number"
+                max="100"
               />
               <span className={styles.input_gap}></span>
               <input

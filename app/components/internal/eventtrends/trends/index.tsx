@@ -2,11 +2,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.style.module.css";
 import styles1 from "@/app/(internal)/internal/search/events/search.module.css";
-import DropIcon from "/public/internal/dropdown_arrow.svg";
+import DropIcon from "/public/internal/drop_down_angle.svg";
 import Image from "next/image";
 import PeriodicAnalytics from "@/app/components/internal/eventtrends/tableView/PeriodicAnalytics";
 import TableAnalytics from "@/app/components/internal/eventtrends/tableView/TableAnalytics";
 import LineChart from "@/app/components/internal/eventtrends/chart/LineChart";
+import { useTheme } from "@/context";
 import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
 import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
 import RankInput from "@/app/components/Search/Dropdowns/RankInput";
@@ -39,6 +40,8 @@ interface GroupingByDate {
 }
 const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
+  const iconClass = theme === "light" ? "icons_light" : "icon";
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
@@ -253,7 +256,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                       </span>
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                  <Image src={DropIcon} alt="dropicon" width={12} height={12} className={iconClass}/>
                 </div>
               </div>
             </Button>
@@ -288,7 +291,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                       </span>
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                  <Image src={DropIcon} alt="dropicon" width={12} height={12} className={iconClass}/>
                 </div>
               </div>
             </Button>
@@ -326,7 +329,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                       ""
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                  <Image src={DropIcon} alt="dropicon" width={12} height={12} className={iconClass}/>
                 </div>
               </div>
             </Button>
@@ -366,7 +369,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                       </span>
                     )}
                   </div>
-                  <Image src={DropIcon} alt="dropicon" width={20} height={20} />
+                  <Image src={DropIcon} alt="dropicon" width={12} height={12} className={iconClass}/>
                 </div>
               </div>
             </Button>
