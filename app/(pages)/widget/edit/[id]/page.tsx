@@ -156,15 +156,22 @@ const Page = () => {
     setPrefilledGlobalEvent(undefined)
     setIsAddEventModalOpen(true)
   }
+  const handleNormalEventModal = () =>{
+    setPrefilledNormalEvent(undefined)
+    setIsNormalEventModalOpen(true)
+  }
 
   const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
     setPrefilledAddedEvent(event)
     setIsAddEventModalOpen(true)
   }
 
-  const handlePrefillNormalEvent = (event: AllEventsType) => {
+  const handlePrefillNormalEvent = (event: AllEventsType, type : string) => {
     setPrefilledNormalEvent(event)
-    setIsAddEventModalOpen(true)
+    if(type === "add"){
+      setIsAddEventModalOpen(true)
+    } else setIsNormalEventModalOpen(true)
+
   }
   const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
     setPrefilledGlobalEvent(event)
@@ -210,7 +217,7 @@ const Page = () => {
           handlePrefillGlobalEvent={handlePrefillGlobalEvent}
           handleAddEventModal={handleAddEventModal}
           addedEventIds={addedEventIds}
-          setIsNormalEventModalOpen={setIsNormalEventModalOpen}
+          handleNormalEventModal={handleNormalEventModal}
         />
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
@@ -234,7 +241,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
+        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
       </div>}
     </div>
   )

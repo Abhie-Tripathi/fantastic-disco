@@ -14,13 +14,13 @@ interface Props {
     fetchEvents: () => Promise<void>;
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
-    handlePrefillNormalEvent: (event: AllEventsType) => void
+    handlePrefillNormalEvent: (event: AllEventsType, type : string) => void
     handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void
     widgetId: string;
-    setIsNormalEventModalOpen: (value: boolean) => void
+    handleNormalEventModal: (value : void) => void
 }
 
-const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, setIsNormalEventModalOpen, handlePrefillGlobalEvent }: Props) => {
+const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, handleNormalEventModal, handlePrefillGlobalEvent }: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -52,7 +52,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
                 <div className={styles.addBtnContainer}>
-                    <button onClick={() => setIsNormalEventModalOpen(true)}>Add event</button>
+                    <button onClick={() => handleNormalEventModal()}>Add event</button>
                     <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
                 </div>
             </div>
@@ -82,12 +82,12 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
-                                    onChange={() => handlePrefillNormalEvent(event)}
+                                    onChange={() => handlePrefillNormalEvent(event, "add")}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
                             <div className={styles.delete_editBtn}>
-                                <button><Image src={EditIcon} alt='edit' /></button>
+                                <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button>
                                 <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
                             </div>
                         </div>

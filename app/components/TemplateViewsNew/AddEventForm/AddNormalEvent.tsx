@@ -8,25 +8,27 @@ import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import { GolbalEventType } from '@/types/globaleventtype';
 import ParticipationContainer from './Details/participation/ParticipationContainer'
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
     fetchEvents: () => Promise<void>;
     prefilledGlobalEvent?: GolbalEventType
+    prefilledNormalEvent? : AllEventsType
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent ,prefilledNormalEvent}: Props) => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || "");
-    const [timeZone, setTimeZone] = useState<string>("GMT+05:30 Chennai")
+    const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name ||"");
+    const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
     const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    const [startDate, setStartDate] = useState<string>(prefilledGlobalEvent?.startDate || "")
-    const [endDate, setEndDate] = useState<string>(prefilledGlobalEvent?.endDate || "")
-    const [startTime, setStartTime] = useState<string>("12:00 A.M")
-    const [endTime, setEndTime] = useState<string>("12:00 A.M")
-    const [description, setDescription] = useState<string>(prefilledGlobalEvent?.description || "")
-    const [cityName, setCityName] = useState<string>(prefilledGlobalEvent?.cityName || "")
-    const [countryName, setCountryName] = useState<string>(prefilledGlobalEvent?.countryName || "")
+    const [startDate, setStartDate] = useState<string>(prefilledGlobalEvent?.startDate || prefilledNormalEvent?.startDate|| "")
+    const [endDate, setEndDate] = useState<string>(prefilledGlobalEvent?.endDate || prefilledNormalEvent?.endDate|| "")
+    const [startTime, setStartTime] = useState<string>(prefilledNormalEvent?.startTime || "12:00 A.M")
+    const [endTime, setEndTime] = useState<string>(prefilledNormalEvent?.endTime || "12:00 A.M")
+    const [description, setDescription] = useState<string>(prefilledGlobalEvent?.description || prefilledNormalEvent?.description|| "")
+    const [cityName, setCityName] = useState<string>(prefilledGlobalEvent?.cityName || prefilledNormalEvent?.cityName|| "")
+    const [countryName, setCountryName] = useState<string>(prefilledGlobalEvent?.countryName || prefilledNormalEvent?.countryName|| "")
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>(description)
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
@@ -62,6 +64,46 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         };
     }, []);
 
+    const handleAddUpdateEvent = (type : string)=>{
+        if(type === "update"){
+            handleSaveEvent()
+        }else{
+            handleAddEvent()
+        }
+    }
+    const handleSaveEvent = async () => {
+        const eventData = {
+            format: eventFormat,
+            start_time: startTime,
+            end_time: endTime,
+            end_date: endDate,
+            start_date: startDate,
+            description,
+            location_city: cityName,
+            location_country: countryName,
+            gmt_time: timeZone,
+            latitude,
+            longitude,
+            participationType 
+        };
+        const formData = new FormData()
+        formData.append("name", eventName)
+        formData.append("data", JSON.stringify(eventData))
+        formData.append("id", prefilledNormalEvent?.eventId || "")
+        
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'PATCH',
+            body: formData
+        })
+        if (data) {
+            console.log(data)
+            setIsNormalEventModalOpen(false)
+            fetchEvents()
+        }
+        if (error) {
+            console.log(error)
+        }
+    }
     const handleAddEvent = async () => {
         const eventData = {
             format: eventFormat,
@@ -75,7 +117,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             gmt_time: timeZone,
             latitude,
             longitude,
-            
+            participationType 
         };
         const formData = new FormData()
         formData.append("name", eventName)
@@ -83,7 +125,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
 
         // Bottom 3 fields are for temporary purposes because there are mandatory in backend right now
         formData.append("interest", "SPEAKER")
-        formData.append("source", "eventgeni/widget/event")
+        // formData.append("source", "eventgeni/widget/event")
         formData.append("sourceId", "1234")
 
         const { data, error } = await myFetch(`${baseUrl}/event`, {
@@ -109,7 +151,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
                     <button className={styles.closeBtn} onClick={() => setIsNormalEventModalOpen(false)}>Close</button>
-                    <button className={styles.saveBtn} onClick={handleAddEvent}>Save</button>
+                    <button className={styles.saveBtn} onClick={()=>handleAddUpdateEvent(prefilledNormalEvent ? "update" : "add")}>Save</button>
                 </div>
             </div>
             <div className={styles.line}></div>
