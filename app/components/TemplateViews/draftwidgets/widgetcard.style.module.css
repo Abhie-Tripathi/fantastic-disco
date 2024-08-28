@@ -10,6 +10,9 @@
     gap: 14px;
     cursor: pointer;
 }
+.selectedCard{
+    border: 1px solid var(--primary-color);
+}
 
 .body img {
     height: 100%;
