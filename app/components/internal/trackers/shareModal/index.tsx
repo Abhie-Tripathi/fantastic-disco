@@ -137,6 +137,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             });
             if (error) {
                 console.error('Error fetching data:', error);
+                showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
+                closeShareModal();
             } else {
                 console.log(data.user.id);
                 setId(data.user.id);
