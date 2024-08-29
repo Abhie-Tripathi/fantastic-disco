@@ -30,7 +30,8 @@ interface WidgetProps {
     handleWidgetClick?: (value: string) => Promise<void>
     widgetStatus: string;
     fetchedEventsSize?: number;
-    fetchAllWidgets?: () => Promise<void>
+    fetchAllWidgets?: () => Promise<void>;
+    selected? : boolean
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
@@ -55,7 +56,7 @@ const templateMap = {
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
 };
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets }: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};
@@ -75,6 +76,9 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
         );
         if (data) {
             console.log(data);
+            if (fetchAllWidgets) {
+                fetchAllWidgets();
+            }
             fetchDraftWidgets()
         } else {
             console.log(error);
@@ -114,7 +118,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
     }
 
     return (
-        <div className={styles.body} onClick={handleCardClick}>
+        <div className={`${styles.body} ${selected ? styles.selectedCard : ""}`} onClick={handleCardClick}>
             {image && <Image src={image} alt={heading} />}
             <div className={styles.details}>
                 <div>

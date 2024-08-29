@@ -7,19 +7,20 @@ import { AllEventsType } from '@/types/alleventtype';
 import { GolbalEventType } from '@/types/globaleventtype';
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import Image from 'next/image';
+import EditIcon from '/public/EditIcon.svg'
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
     fetchEvents: () => Promise<void>;
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
-    handlePrefillNormalEvent: (event: AllEventsType) => void
-    handlePrefillGlobalEvent : (event : GolbalEventType,type : string)=>void
+    handlePrefillNormalEvent: (event: AllEventsType, type : string) => void
+    handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void
     widgetId: string;
-    setIsNormalEventModalOpen : (value : boolean) => void
+    handleNormalEventModal: (value : void) => void
 }
 
-const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId ,setIsNormalEventModalOpen,handlePrefillGlobalEvent}: Props) => {
+const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, handleNormalEventModal, handlePrefillGlobalEvent }: Props) => {
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -51,11 +52,11 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             <div className={styles.headerContainer}>
                 <div>All Events <span>{fetchedAllEvents.length}</span></div>
                 <div className={styles.addBtnContainer}>
-                <button onClick={() => setIsNormalEventModalOpen(true)}>Add event</button>
-                <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
+                    <button onClick={() => handleNormalEventModal()}>Add event</button>
+                    <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
                 </div>
             </div>
-            <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
+            <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
             <div className={styles.line}></div>
             {fetchedAllEvents.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
@@ -81,15 +82,18 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
-                                    onChange={() => handlePrefillNormalEvent(event)}
+                                    onChange={() => handlePrefillNormalEvent(event, "add")}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
+                            <div className={styles.delete_editBtn}>
+                                <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button>
+                                <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
+                            </div>
                         </div>
                     </div>
                 ))}
-            </div>: <div className={styles.emptyScreen}>
+            </div> : <div className={styles.emptyScreen}>
                 <Image src={EmptyImage} alt='empty' />
                 <div>Search or Add your Events</div>
                 <span>Start by searching for existing events to add to your widgets</span>
