@@ -10,6 +10,8 @@ import downArrowIcon from "/public/arrow_down.svg";
 import person2 from "@/public/person2.svg";
 import person1 from "@/public/person1.svg";
 import { useTheme } from "@/context";
+import { formatEventDates } from "@/utils/dateFormat";
+import { Calendar, Location } from "geist-icons";
 
 
 const formatDate = (dateString: string | null): string => {
@@ -60,8 +62,9 @@ const EventDescription = ({
                 theme === "light" ? styles.dateContainer_light : ""
               }`}
             >
-              <Image src={CalendarIcon} alt="date" className={iconClass} height={18} width={18} />
-              <div className={styles.date}>{formatDate(eventDetail.startDate)} - {formatDate(eventDetail.endDate)}</div>
+              {/* <Image src={CalendarIcon} alt="date" className={iconClass} height={18} width={18} /> */}
+              <Calendar height={'16px'} width={'16px'} color="var(--primary-text-color)" />
+              <div className={styles.date}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</div>
             </div>
             {shortlist && (
               <div className={styles.statusContainer}>
@@ -72,7 +75,8 @@ const EventDescription = ({
           </div>
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
-              <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} />
+              {/* <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} /> */}
+              <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" />
               <div className={styles.location}>
                 {(eventDetail.location?.cityName && eventDetail.location?.countryName) ?
                   (eventDetail.location.cityName +', '+eventDetail.location?.countryName) :

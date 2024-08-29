@@ -58,10 +58,12 @@
   /* border: 1px solid red; */
   position: absolute;
   padding: 20px;
-  /* padding-top: 20px; */
+  padding-top: 0;
+  top: 70px;
   z-index: 1;
   background-color: var(--primary-foreground);
   color: var(--primary-text-color);
+  width: calc(100vw - 70px);
 }
 
 /* .modal_light {

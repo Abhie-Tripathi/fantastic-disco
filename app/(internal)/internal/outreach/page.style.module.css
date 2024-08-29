@@ -77,12 +77,12 @@
   height: fit-content;
   background-color: #131313;
   position: absolute;
-  top: 75px;
+  top: 70px;
   padding: 20px;
-  padding-top: 50px;
+  padding-top: 0;
   z-index: 1;
   color: #ffffff;
-  width: calc(100vw - 100px);
+  width: calc(100vw - 70px);
 }
 
 .modal::-webkit-scrollbar {
