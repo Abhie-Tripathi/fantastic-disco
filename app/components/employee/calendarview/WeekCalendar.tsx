@@ -233,6 +233,7 @@ function fillPosition(event: any) {
 
 interface WeekCalendarProps {
   queryString: string;
+  handleButtonLoading?: (v: boolean) => void;
 }
 
 const WeekCalendar = (props: WeekCalendarProps) => {
@@ -423,6 +424,7 @@ const WeekCalendar = (props: WeekCalendarProps) => {
       setApiResult({})
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
   }
 
