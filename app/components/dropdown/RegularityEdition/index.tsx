@@ -59,12 +59,15 @@ const RegularityEdition = ({
               <input
                 value={editionRange[0]}
                 onChange={(e) =>{
+                    const value = Number(e.target.value);
+                    if (value <= 100) {
                     setEditionRange([
                     Number(e.target.value),
                     editionRange[1],
                   ]);
                   setRegularity(0);
                   setSelectedRegularity([Number(e.target.value), editionRange[1]]);
+                }
                 }
                 }
                 className={styles.rank_input}
