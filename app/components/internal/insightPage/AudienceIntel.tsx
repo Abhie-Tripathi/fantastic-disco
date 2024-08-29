@@ -26,11 +26,11 @@ const AudienceIntel = ({ eventDetail }: OverviewProps) => {
             {/* <div className={`${styles.internationalCount} ${ styles.badge_success}`}>{eventDetail["internationalAudience%"] !== undefined ? eventDetail["internationalAudience%"] : '-'}</div> */}
             <div className={styles.internationalCount}>
               {eventDetail["internationalAudience%"] !== undefined ? (
-                eventDetail["internationalAudience%"] == "High" ? (
+                eventDetail["internationalAudience%"] == "high" ? (
                   <span className={styles.badge_success}>High</span>
-                ) : eventDetail["internationalAudience%"] == "Medium" ? (
+                ) : eventDetail["internationalAudience%"] == "medium" ? (
                   <span className={styles.badge_primary}>Medium</span>
-                ) : eventDetail["internationalAudience%"] == "Low" ? (
+                ) : eventDetail["internationalAudience%"] == "low" ? (
                   <span className={styles.badge_danger}>Low</span>
                 ) : (
                   <></>

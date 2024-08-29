@@ -204,6 +204,7 @@ const Table = ({
   eventType,
   setActiveValue,
   setRequestExhausted,
+  handleButtonLoading,
 }: {
   eventData?: any;
   showInsights: any;
@@ -211,6 +212,7 @@ const Table = ({
   eventType?:string;
   setActiveValue?:any;
   setRequestExhausted?: any;
+  handleButtonLoading?: (val: boolean) => void;
 }) => {
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
@@ -542,6 +544,7 @@ const [val,setVal]=useState(1);
           console.error("Error fetching data:", error);
         } finally {
           setIsLoaded(true);
+          handleButtonLoading?.(false);
         }
       } else {
         setIsLoaded(true);

@@ -228,6 +228,7 @@ const Search = () => {
     isEventRank: false,
     isLocalRank: false,
     isAviationRank: false,
+    isTrustScore: false,
   });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
@@ -262,6 +263,12 @@ const Search = () => {
   const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
 
   const [requestExhausted, setRequestExhausted] = useState<boolean>(false);
+
+  const [isDataLoading, setDataLoading] = useState<boolean>(false);
+
+  const handleButtonLoading = (val: boolean) => {
+    setDataLoading(val);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -773,23 +780,22 @@ const Search = () => {
     });
   };
 
-  /*
   useEffect(() => {
-    setSelectedInsights({
-      eventSize: true,
-      eventKeywords: true,
-      eventRank: rankToggles.isEventRank,
-      matchScore: true,
-      growth: true,
-      eventSeries: selectedEventSeries,
-      global: (selectedINScore > 0),
-      reptSent: (selectedReptScore > 0),
-      eventRating: (selectedUserRatings.length > 0),
-      estExhibit: (selectedExhibitScore.length > 0),
-      repeatSent: (selectedTrustScore > 0),
-    });
+    // setSelectedInsights({
+    //   eventSize: true,
+    //   eventKeywords: true,
+    //   eventRank: rankToggles.isEventRank,
+    //   matchScore: true,
+    //   growth: true,
+    //   eventSeries: selectedEventSeries,
+    //   global: (selectedINScore > 0),
+    //   reptSent: (selectedReptScore > 0),
+    //   eventRating: (selectedUserRatings.length > 0),
+    //   estExhibit: (selectedExhibitScore.length > 0),
+    //   repeatSent: (selectedTrustScore > 0),
+    // });
+    if(urlQueryString && urlQueryString !== '') handleButtonLoading(true);
   }, [urlQueryString]);
-  */
 
   useEffect(() => {
     // setSelectedInsights({
@@ -854,14 +860,15 @@ const Search = () => {
   useEffect(() => {
     setSelectedInsights((prevInsights) => ({ 
       ...prevInsights,
-      eventRating: (selectedUserRatings.length > 0),
-      estExhibit: (selectedExhibitScore.length > 0),
-      repeatSent: (selectedTrustScore[0] > 0),
+      eventRating: (selectedUserRatings.length > 0 || selectedInsights?.eventRating),
+      estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
+      repeatSent: (rankToggles.isTrustScore),
     }));
   }, [
     selectedUserRatings,
     selectedExhibitScore,
     selectedTrustScore,
+    rankToggles,
   ]);
 
   useEffect(() => {
@@ -1435,7 +1442,7 @@ const Search = () => {
                   <button ref={trackerBtnRef} onClick={createTrackerHandler} style={{ display: "flex", alignItems: "center", gap: "4px" }} >
                     <span className={styles.clearfilter_button}>Save as Tracker</span>
                   </button>
-                  <Button10x style={{color: 'white', textWrap: 'nowrap'}} variant="primary" size="sm" onClick={searchHandler} >Apply Filters</Button10x>
+                  <Button10x style={{color: 'white', textWrap: 'nowrap'}} variant="primary" size="sm" onClick={searchHandler} isLoading={isDataLoading} >Apply Filters</Button10x>
                 </div>
             </div>
 
@@ -2507,17 +2514,26 @@ const Search = () => {
                   showInsights={selectedInsights}
                   queryString={urlQueryString}
                   setRequestExhausted={setRequestExhausted}
+                  handleButtonLoading={handleButtonLoading}
                 />
               </Suspense>
             )}
             {selectedView === "calendar" && (
               <Suspense fallback={<Loading />}>
-                <Calendar queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
+                <Calendar
+                  queryString={urlQueryString}
+                  setRequestExhausted={setRequestExhausted}
+                  handleButtonLoading={handleButtonLoading}
+                />
               </Suspense>
             )}
             {selectedView === "map" && (
               <Suspense fallback={<Loading />}>
-                <Map queryString={urlQueryString} setRequestExhausted={setRequestExhausted} />
+                <Map
+                  queryString={urlQueryString}
+                  setRequestExhausted={setRequestExhausted}
+                  handleButtonLoading={handleButtonLoading}
+                />
               </Suspense>
             )}
           </div>

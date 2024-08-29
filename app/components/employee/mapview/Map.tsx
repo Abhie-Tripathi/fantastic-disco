@@ -153,6 +153,7 @@ const cityMarker = (count: number) => {
 interface MapProps {
   queryString?: string;
   setRequestExhausted?: any;
+  handleButtonLoading?: (val: boolean) => void;
 }
 
 const zones = {
@@ -306,6 +307,7 @@ const Map = (props: MapProps) => {
       console.error('Error fetching data:', error);
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
   }
 
@@ -462,7 +464,7 @@ const Map = (props: MapProps) => {
         initialViewState={{
           longitude: -0.076132,
           latitude: 51.50853,
-          zoom: 2,
+          zoom: 1,
         }}
         maxZoom={20}
         projection={{"name": "mercator"}}
