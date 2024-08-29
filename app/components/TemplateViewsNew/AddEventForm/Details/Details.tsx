@@ -408,7 +408,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               <Suspense fallback={<div>Loading...</div>}>
                 <Mapview latitude={latitude}
                   longitude={longitude}
-                  venue={venue}
+                  venue={cityName}
                   zoom={6} />
               </Suspense>
             // </div>
