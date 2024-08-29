@@ -130,6 +130,9 @@ const Navbar = () => {
     if (currPath.startsWith("/widget/events")) {
       setTitle("Events");
     }
+    if (currPath.startsWith("/widget/dashboard")) {
+      setTitle("Dashboard");
+    }
   }, [currPath]);
   console.log(userDetail)
 
@@ -239,7 +242,7 @@ const Navbar = () => {
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
                   style={{ width: "fit-content", padding: '8px' }}
                 >
-                  <Link href="#" className="">
+                  <Link href="/widget/dashboard" className="">
                     <div
                       className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                     >
