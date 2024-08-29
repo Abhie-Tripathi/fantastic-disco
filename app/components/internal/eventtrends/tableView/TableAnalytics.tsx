@@ -6,6 +6,7 @@ import styles from "./table.style.module.css";
 import descSort from "/public/internal/sort_down_arrow.svg";
 import ascSort from "/public/internal/sort_up_arrow.svg";
 import { useTheme } from "@/context";
+import { Cursor } from "geist-icons";
 
 interface Event {
   slug: string;
@@ -112,15 +113,23 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({
 
   const objectValues: any = Object.entries(eventData)[0][1];
   const calculateTotalCount = (events: any) => {
-    return events.reduce(
+    const totalCount=events.reduce(
       (total: any, event: any) =>
         total +
         (event.attendance !== undefined ? event.attendance : 0) +
         (event.events !== undefined ? event.events : 0),
       0
     );
+    return formatCount(totalCount);
   };
-
+  const formatCount = (count: number) => {
+    if (count >= 1000) {
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+        return `${Math.floor(value)}k`;
+    }
+    return count;
+  };
   return (
     <>
       <div className={styles.analytics_header}>
@@ -138,7 +147,7 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({
             <tr className={styles.table_head_row}>
               <th style={{ width: "200px" }}>
                 <div
-                  style={{ width: "150px" }}
+                  style={{ width: "150px", cursor:"pointer" }}
                   className={styles.table_column_heading}
                   onClick={() => sortHandler("date")}
                 >
@@ -196,7 +205,7 @@ const TableAnalytics: React.FC<TableAnalyticsProps> = ({
                   {items.map((item: any, index: number) => (
                     <td key={index}>
                       {item.attendance !== undefined
-                        ? item.attendance
+                        ? formatCount(item.attendance)
                         : item.events}
                     </td>
                   ))}

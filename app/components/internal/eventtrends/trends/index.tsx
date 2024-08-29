@@ -224,7 +224,9 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     const [edDay, edMonth, edYear] = convertToCustomFormat(
       selectedDateRange[1]
     ).split(" ");
-
+    if(sdDay===edDay && sdYear===edYear && sdMonth===edMonth){
+      return `${edDay} ${sdMonth} ${sdYear}`;
+    }
     if (sdMonth === edMonth && sdYear === edYear) {
       return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
     }
