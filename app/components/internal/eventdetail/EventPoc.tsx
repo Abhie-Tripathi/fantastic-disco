@@ -33,20 +33,18 @@ const EventPoc = ({ open, eventId }: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const apiData = await fetch(
+      const {data, error} = await myFetch(
         `${baseUrl}/event-poc/${eventId}`
       );
 
-      const data = await apiData.json();
+      // const data = await apiData.json();
       if (data) {
         setPocData(data.eventPoc);
       }
 
-      // if (error) {
-      //   console.log(error);
-      //   showToast("error", error.message);
-      //   return;
-      // }
+      if (error) {
+        console.error(error);
+      }
     };
     fetchData();
   }, []);
@@ -70,7 +68,7 @@ const EventPoc = ({ open, eventId }: Props) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.allFollowerContainer}>
-            {pocData.length > 0 ? (
+            {pocData?.length > 0 ? (
               pocData.map((poc: POCtypes) => (
                 <div className={styles.followerContainer} key={poc.id}>
                   <Image
