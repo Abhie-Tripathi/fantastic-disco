@@ -6,7 +6,6 @@ import styles from "./table.style.module.css";
 import descSort from "/public/internal/sort_down_arrow.svg";
 import ascSort from "/public/internal/sort_up_arrow.svg";
 import { useTheme } from "@/context";
-import { Cursor } from "geist-icons";
 
 interface Event {
   slug: string;

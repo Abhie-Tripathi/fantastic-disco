@@ -13,7 +13,6 @@ interface GraphProps {
 
 const LineChart = ({ activeChip, groupedData }: GraphProps) => {
   const { groupingByDate }: any = groupedData;
-  console.log(groupingByDate);
   
   let labels = Object.keys(groupingByDate);
   
