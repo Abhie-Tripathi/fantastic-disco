@@ -138,7 +138,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             if (error) {
                 console.error('Error fetching data:', error);
                 showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
-                closeShareModal();
+                setFilter("");
             } else {
                 console.log(data.user.id);
                 setId(data.user.id);
@@ -149,6 +149,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }
         } else {
             showToast("error", "Enter Valid Name or Email");
+            setFilter('');
             setIsClicked(false);
             
         }
