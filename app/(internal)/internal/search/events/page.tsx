@@ -228,6 +228,7 @@ const Search = () => {
     isEventRank: false,
     isLocalRank: false,
     isAviationRank: false,
+    isTrustScore: false,
   });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
@@ -859,14 +860,15 @@ const Search = () => {
   useEffect(() => {
     setSelectedInsights((prevInsights) => ({ 
       ...prevInsights,
-      eventRating: (selectedUserRatings.length > 0),
-      estExhibit: (selectedExhibitScore.length > 0),
-      repeatSent: (selectedTrustScore[0] > 0),
+      eventRating: (selectedUserRatings.length > 0 || selectedInsights?.eventRating),
+      estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
+      repeatSent: (rankToggles.isTrustScore),
     }));
   }, [
     selectedUserRatings,
     selectedExhibitScore,
     selectedTrustScore,
+    rankToggles,
   ]);
 
   useEffect(() => {
