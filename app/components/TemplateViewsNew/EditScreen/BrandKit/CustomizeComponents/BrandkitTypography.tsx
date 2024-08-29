@@ -7,14 +7,54 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     flex: boolean;
+    eventFont?: string;
+    setEventFont?: (value: string) => void
+    setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+}
+interface FontSettings {
+    fontFamily: string;
+    fontSize: number;
+    fontColor: string;
+    fontWeight: string;
 }
 
-const BrandkitTypography = ({ flex }: Props) => {
+interface FontSettingsState {
+    heading: FontSettings;
+    subheading: FontSettings;
+    body: FontSettings;
+}
+
+const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
     const [selectedFont, setSelectedFont] = useState<string>("Arial")
     const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
+
+    const handleFontSelect = (font: string) => {
+        setSelectedFont(font)
+        if (setEventFont) {
+            setEventFont(font)
+        }
+        if (setFontSettings) {
+            setFontSettings((prevSettings) => ({
+                ...prevSettings,
+                heading: {
+                    ...prevSettings.heading,
+                    fontFamily: font,
+                },
+                subheading: {
+                    ...prevSettings.subheading,
+                    fontFamily: font,
+                },
+                body: {
+                    ...prevSettings.body,
+                    fontFamily: font,
+                }
+            }));
+        }
+
+    }
 
     return (
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
@@ -31,7 +71,7 @@ const BrandkitTypography = ({ flex }: Props) => {
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
                             {fontsList.map((font, key) => (
-                                <div key={key} className={styles.dropdownFont} onClick={() => setSelectedFont(font)}>{font}</div>
+                                <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
                             ))}
                         </div>}
                     </div>

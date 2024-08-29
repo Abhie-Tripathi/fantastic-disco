@@ -48,6 +48,7 @@ const Widget = () => {
   const router = useRouter()
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
+  const [selectedKey, setSelectedKey] = useState<number>(0)
 
 
   const asciiToString = (ascii: number): string => {
@@ -101,6 +102,8 @@ const Widget = () => {
       widgetStatus: "Inactive"
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
+    setWidgetId(combinedWidgets[0].id)
+    setSelectedKey(0)
     if (combinedWidgets.length === 0) {
       setIsValid(false)
     } else {
@@ -113,13 +116,18 @@ const Widget = () => {
     fetchAllWidgets()
   }, [])
 
+  // Need to do this to display the data on the load of the page
+  useEffect(()=>{
+    handleWidgetClick(selectedWidgetId)
+  },[selectedWidgetId])
+
   const handleAddWidget = () => {
     router.push("/widget/add")
   }
 
   const handleWidgetClick = async (widgetId: string) => {
     const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
-    setWidgetId(widgetId)
+    // setWidgetId(widgetId)
     if (!data) {
       console.log("data not found")
     }
@@ -139,7 +147,7 @@ const Widget = () => {
     return <div>Loading...</div>; // Show a loading state
   }
   if (!isValid) {
-    return <Errorpage type='list'/>; // Render the 404 component if the data is invalid
+    return <Errorpage type='list' />; // Render the 404 component if the data is invalid
   }
   return (
     <div className={styles.body}>
@@ -154,7 +162,7 @@ const Widget = () => {
       <div className={styles.widgetsAndPreview}>
         <div className={styles.widgetsList}>
           {allWidgets.map((card, key) => (
-            <div className={styles.widgetCard}  key={key}>
+            <div className={styles.widgetCard} onClick={() => setSelectedKey(key)} key={key}>
               <WidgetCard
                 widgetStatus={card.widgetStatus}
                 key={key}
@@ -166,6 +174,7 @@ const Widget = () => {
                 handleWidgetClick={handleWidgetClick}
                 fetchedEventsSize={card.eventSize}
                 fetchAllWidgets={fetchAllWidgets}
+                selected={selectedKey === key}
               />
             </div>
           ))}

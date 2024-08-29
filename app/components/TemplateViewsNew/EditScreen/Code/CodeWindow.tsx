@@ -5,16 +5,17 @@ import Image from 'next/image'
 import TickIcon from '/public/tick.svg'
 import { useTheme } from '@/context'
 
-interface Props{
-    widgetType : string;
-    widgetId : string;
+interface Props {
+    widgetType: string;
+    widgetId: string;
 }
 
-const CodeWindow = ({widgetType, widgetId}: Props) => {
+const CodeWindow = ({ widgetType, widgetId }: Props) => {
 
     const [copyClick, setCopyClick] = useState(false) //To change the icon if the copy button is clicked
+    const [addClicked, setAddClicked] = useState(false) //To change the icon if the copy button is clicked
 
-    const getWidgetTag = (type : string) => {
+    const getWidgetTag = (type: string) => {
         switch (type) {
             case 'Section':
                 return 'section-widget';
@@ -39,7 +40,7 @@ const CodeWindow = ({widgetType, widgetId}: Props) => {
         `;
         navigator.clipboard.writeText(textToCopy.trim());
     };
-    const {theme} = useTheme();
+    const { theme } = useTheme();
     return (
         <div className={styles.body}>
             <div className={styles.domainHeader}>Whitelist your Domain</div>
@@ -50,21 +51,30 @@ const CodeWindow = ({widgetType, widgetId}: Props) => {
                     <div className={styles.heading}>Please enter your website host domain to whitelist it on our platform</div>
                 </div>
                 <div className={styles.inputContainer}>
-                    <span style={{backgroundColor : theme === "light"?"#F2F2F2":"#292929"}}>https://</span>
-                    <input placeholder='Your Company' style={{color : theme === "light" ? "black":"white"}} />
+                    <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
+                    <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={"10times.com"} />
                 </div>
+                {addClicked &&
+                    <div className={styles.save_inputContainer}>
+                        <div className={styles.inputContainer}>
+                            <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
+                            <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} />
+                        </div>
+                        <button className={styles.saveBtn}>Save</button>
+                    </div>}
+                <div className={styles.addBtn} onClick={() => setAddClicked(true)}>+ Add Domain</div>
             </div>
             <div className={styles.line}></div>
             <div className={styles.codeHeader}>
                 <div className={styles.heading}>Widget Code</div>
                 <button className={styles.copyBtn} onClick={handleCopy}>
-                    {copyClick ? <Image src={TickIcon} alt='tick' width={16} height={18}/> : <Image src={CopyIcon} alt='copy' width={16} height={18} />}
+                    {copyClick ? <Image src={TickIcon} alt='tick' width={16} height={18} /> : <Image src={CopyIcon} alt='copy' width={16} height={18} />}
                     <div>Copy Code</div>
                 </button>
             </div>
             <div className={styles.line}></div>
             <div className={styles.codeContainer}>
-                <div className={styles.codewindow} style={{backgroundColor : theme == "light" ?"#FAFAFA":"#1A1A1A" }}>
+                <div className={styles.codewindow} style={{ backgroundColor: theme == "light" ? "#FAFAFA" : "#1A1A1A" }}>
                     {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
                     <br />
                     {`<${widgetTag} id= "${widgetId}"></${widgetTag}>`}
