@@ -8,9 +8,10 @@ import { useRouter } from 'next/navigation';
 
 interface Props {
   type: string;
+  size?: string;
 }
 
-const Errorpage = ({ type }: Props) => {
+const Errorpage = ({ type,size }: Props) => {
   const router = useRouter()
   const handleRouting = () => {
     if (type === "id") {
@@ -23,24 +24,24 @@ const Errorpage = ({ type }: Props) => {
       {(type === "id" || type === "detail") && <Image src={WidgetIdEmptyIcon} alt="empty" />}
       {type === "list" && <Image src={WidgetListEmptyIcon} alt="empty" />}
 
-      {type === "id" && <div>Page not found</div>}
-      {type === "list" && <div>No Widget Added</div>}
-      {type === "detail" && <div>Page not found</div>}
+      {type === "id" && <div className={styles.heading}>Page not found</div>}
+      {type === "list" && <div className={size === "short" ? styles.smallHeading : styles.heading}>No Widgets Added</div>}
+      {type === "detail" && <div className={styles.heading}>Page not found</div>}
 
       {type === "id" ? (
-        <span>We can&apos;t find the widget you&apos;re looking for. It seems the ID might be invalid</span>
+        <span className={styles.subheading}>We can&apos;t find the widget you&apos;re looking for. It seems the ID might be invalid</span>
       ) : type === "list" ? (
-        <span>Start by building your first widget—it&apos;s as easy as drag, drop, and customize.</span>
+        <span className={size === "short" ? styles.smallSubHeading : styles.subheading}>Start by building your first widget—it&apos;s as easy as drag, drop, and customize.</span>
       ) : (
-        <span>We can&apos;t find the page you&apos;re looking for. It seems the ID might be invalid</span>
+        <span className={styles.subheading}>We can&apos;t find the page you&apos;re looking for. It seems the ID might be invalid</span>
       )}
 
       {type === "id" ? (
-        <span>Try checking the link, or view the dashboard for details.</span>
+        <span className={styles.subheading}>Try checking the link, or view the dashboard for details.</span>
       ) : type === "list" ? (
-        <span>Your journey to a perfect dashboard begins here!</span>
+        <span className={size === "short" ? styles.smallSubHeading : styles.subheading}>Your journey to a perfect dashboard begins here!</span>
       ) : (
-        <span>Try checking the link.</span>
+        <span className={styles.subheading}>Try checking the link.</span>
       )}
 
       {(type === "id" || type === "list") && (

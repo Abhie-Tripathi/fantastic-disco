@@ -117,9 +117,9 @@ const Widget = () => {
   }, [])
 
   // Need to do this to display the data on the load of the page
-  useEffect(()=>{
+  useEffect(() => {
     handleWidgetClick(selectedWidgetId)
-  },[selectedWidgetId])
+  }, [selectedWidgetId])
 
   const handleAddWidget = () => {
     router.push("/widget/add")
@@ -147,7 +147,7 @@ const Widget = () => {
     return <div>Loading...</div>; // Show a loading state
   }
   if (!isValid) {
-    return <Errorpage type='list' />; // Render the 404 component if the data is invalid
+    return <div className={styles.errorPage}><Errorpage type='list' /></div>; // Render the 404 component if the data is invalid
   }
   return (
     <div className={styles.body}>

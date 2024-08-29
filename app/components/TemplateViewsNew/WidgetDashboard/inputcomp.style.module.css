@@ -9,11 +9,18 @@
     justify-content: center;
     padding: 32px;
 }
+.fetchedBody{
+    padding: 26px;
+}
+.fetchedHeading{
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-semibold);
+    margin-top: 0px;
+}
 .emptyHeading{
     margin-top: 32px;
     font-size: var(--font-size-h6);
     font-weight: var(--font-weight-semibold);
-
 }
 .emptySubHeading{
     margin-top: 18px;

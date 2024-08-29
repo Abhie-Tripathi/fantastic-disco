@@ -3,6 +3,9 @@
     font-family: var(--font-inter);
     position: relative;
 }
+.errorPage{
+    height: 88vh;
+}
 .nav{
     display: flex;
     align-items: center;

@@ -1,8 +1,18 @@
 .body{
     min-height: 90vh;
     padding: 18px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
 }
 .inputScreen{
     width: 100%;
     margin-top: 100px;
-}   
+} 
+.fetchedInputScreen{
+    margin-top: 0px;
+}
+.container{
+    display: flex;
+    gap: 24px;
+}

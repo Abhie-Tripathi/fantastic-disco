@@ -1,19 +1,30 @@
 .body{
-    height: 88vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 24px;
 }
-.body div{
+.body .heading{
     color: #7D7D7D;
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-h5);
 }
-.body span{
+
+.body .smallHeading{
+    font-size: var(--font-size-small);
+    color: #7D7D7D;
+    font-weight: var(--font-weight-bold);
+}
+.body .subheading{
     color: #8F8F8F;
     font-size: var(--font-size-default);
+    font-weight: var(--font-weight-medium);
+}
+.body .smallSubHeading{
+    color: #8F8F8F;
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
 }
 .body button{
