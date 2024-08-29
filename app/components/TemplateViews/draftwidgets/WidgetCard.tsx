@@ -32,12 +32,13 @@ interface WidgetProps {
     fetchedEventsSize?: number;
     fetchAllWidgets?: () => Promise<void>;
     selected? : boolean
+    key : number;
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
-interface TemplateMap {
-    [key: string]: { image: StaticImageData; heading: string };
-}
+// interface TemplateMap {
+//     [key: string]: { image: StaticImageData; heading: string };
+// }
 const templateMap = {
     'ST': { image: StickyTopImage, heading: 'Sticky Top' },
     'SB': { image: StickyBottomImage, heading: 'Sticky Bottom' },
@@ -56,7 +57,7 @@ const templateMap = {
     'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
 };
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected }: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected,key }: WidgetProps) => {
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};

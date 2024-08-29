@@ -127,6 +127,9 @@ const Navbar = () => {
     if (currPath.startsWith("/widget/brandkit")) {
       setTitle("Brandkit");
     }
+    if (currPath.startsWith("/widget/events")) {
+      setTitle("Events");
+    }
   }, [currPath]);
   console.log(userDetail)
 
