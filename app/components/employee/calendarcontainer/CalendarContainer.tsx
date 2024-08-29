@@ -8,6 +8,7 @@ import { useTheme } from '@/context'
 interface CalendarContainerProps {
     queryString?: string;
     setRequestExhausted?: any;
+    handleButtonLoading?: (v: boolean) => void;
 }
 
 const CalendarContainer = (props: CalendarContainerProps) => {
@@ -25,9 +26,9 @@ const CalendarContainer = (props: CalendarContainerProps) => {
                 <button onClick={() => handleCalendar("month")} className={`${styles.monthBtn} ${selectedCalendar === 'month' ? styles.activeCalendarBtn : ''}`}>Month</button>
                 <button onClick={() => handleCalendar("year")} className={`${styles.yearBtn} ${selectedCalendar === 'year' ? styles.activeCalendarBtn : ''}`}>Year</button>
             </div>
-            {selectedCalendar === "month" && <MonthCalendar queryString={props.queryString ? props.queryString : ''} setRequestExhausted={props.setRequestExhausted} />}
-            {selectedCalendar === "year" && <YearCalendar queryString={props.queryString ? props.queryString : ''} />}
-            {selectedCalendar === "week" && <WeekCalendar queryString={props.queryString ? props.queryString : ''} />}
+            {selectedCalendar === "month" && <MonthCalendar queryString={props.queryString ? props.queryString : ''} setRequestExhausted={props.setRequestExhausted} handleButtonLoading={props?.handleButtonLoading} />}
+            {selectedCalendar === "year" && <YearCalendar queryString={props.queryString ? props.queryString : ''} handleButtonLoading={props?.handleButtonLoading} />}
+            {selectedCalendar === "week" && <WeekCalendar queryString={props.queryString ? props.queryString : ''} handleButtonLoading={props?.handleButtonLoading} />}
         </div>
     )
 }
