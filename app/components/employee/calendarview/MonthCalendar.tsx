@@ -256,6 +256,7 @@ function getDurationInDays(startDate: Date | string | number, endDate: Date | st
 interface MonthCalendarProps {
   queryString: string;
   setRequestExhausted?: any;
+  handleButtonLoading?: (v: boolean) => void;
 }
 
 const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
@@ -299,6 +300,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
       setMonthEvents({});
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
     }else{
       setMonthEvents({});

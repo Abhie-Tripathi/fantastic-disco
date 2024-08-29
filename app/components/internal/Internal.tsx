@@ -11,6 +11,7 @@ import { eventDataType } from "../../../types/coordinateEventType";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
+import useInfiniteScroll from '@/utils/useInfiniteScroll'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -72,6 +73,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         }
     };
 
+    /*
     useEffect(() => {
         const handleScroll = () => {
             const currentDiv = divRef.current;
@@ -95,6 +97,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             }
         };
     }, [handleScrollEnd]);
+    */
+   const scroller = useInfiniteScroll(divRef, handleScrollEnd);
 
     useEffect(() => {
         if(page>0)

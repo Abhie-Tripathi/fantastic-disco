@@ -63,6 +63,12 @@ const RankInput = ({
         selectedLocalRank.length === 0
       ) {
         setSelectedLocalRank([0, 100]);
+      } else if (
+        key === "TS" &&
+        newState.isTrustScore &&
+        selectedTrustScore.length === 0
+      ) {
+        setSelectedTrustScore([0, 100]);
       }
 
       return newState;
@@ -92,10 +98,18 @@ const RankInput = ({
       <div className={styles.sub_container}>
 
         <div className={styles.slider_container}>
+          <label className={styles.switch}>
+            <input
+              type="checkbox"
+              onChange={() => handleToggleChange("isTrustScore")}
+              checked={rankToggles.isTrustScore}
+            />
+            <span className={styles.slider}></span>
+          </label>
           <div className={styles.checkbox_title}>Trust Score</div>
           <>
             <ReactSlider
-              onChange={(values) => {setSelectedTrustScore([values, 100])}}
+              onChange={(values) => {setSelectedTrustScore([values, 100]); handleRankSlider([values, 100], "isTrustScore")}}
               value={selectedTrustScore[0]}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
