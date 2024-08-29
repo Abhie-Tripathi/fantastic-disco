@@ -178,7 +178,7 @@ const Page: React.FC = () => {
         theme === "dark" ? "dark" : "light"
       } ${modalOpen && styles.bodyContainer_openModal}`}
     >
-      <div style={{ paddingTop: "10px" }}>
+      <div>
         <div className="mobile_view">
           <div className={styles.mobileTab}>
             <div

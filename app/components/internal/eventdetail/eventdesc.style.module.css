@@ -247,7 +247,7 @@
 .followerDetails {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
 }
 .followerProfilePhoto {
   border-radius: 12px;

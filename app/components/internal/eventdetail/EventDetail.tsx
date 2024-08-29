@@ -12,6 +12,7 @@ import OwnerList from "./ownerList";
 import StatusChangeDropdown from "./statusChangeDropdown";
 import { usePathname } from "next/navigation";
 import closeIcon from "/public/close.svg";
+import backIcon from "/public/back.svg"
 import Image from "next/image";
 import EventRequest from "./EventRequest";
 import { myFetch } from "@/utils/myFetch";
@@ -164,7 +165,8 @@ const EventDetail = ({
       }
     >
       <div className={styles.closeIcon} onClick={handleCloseModal}>
-        <Image src={closeIcon} alt="close" height={22} width={22} />
+        <Image src={backIcon} alt="close" height={22} width={22} />
+        Back
       </div>
 
       <div className={styles.modalContainer}>

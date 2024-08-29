@@ -37,7 +37,6 @@ const EventPoc = ({ open, eventId }: Props) => {
         `${baseUrl}/event-poc/${eventId}`
       );
 
-      // const data = await apiData.json();
       if (data) {
         setPocData(data.eventPoc);
       }
@@ -84,9 +83,9 @@ const EventPoc = ({ open, eventId }: Props) => {
                       {/* <span className={styles.username}>{item.username}</span> */}
                     </div>
                     <div className={styles.followerPosition}>{poc?.designation}</div>
-                    {poc?.emailActive &&
+                    {/* {poc?.emailActive &&
                       <div className={styles.emailActiveStatus}>Last Active: {formatEventDates(poc?.emailActive, poc?.emailActive)}</div>
-                    }
+                    } */}
                   </div>
                 </div>
               ))
