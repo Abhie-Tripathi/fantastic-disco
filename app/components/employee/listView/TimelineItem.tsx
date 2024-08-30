@@ -18,7 +18,6 @@ const TimelineItem: React.FC<Props> = ({ eventDate }) => {
     if (eventDate !== null) {
         formattedDate = formatDate(eventDate);
     }
-
     const showCircle = formattedDate !== "";
 
     return (
