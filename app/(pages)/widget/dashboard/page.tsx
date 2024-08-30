@@ -6,6 +6,7 @@ import BrandKit from '@/app/components/TemplateViewsNew/EditScreen/BrandKit/Cust
 import DashboardBrandkit from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardBrandkit'
 import DashboardWidgets from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardWidgets'
 import DashboardEvents from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEvents'
+import { AddedEventsType } from '@/types/addedeventtype'
 
 const page = () => {
 

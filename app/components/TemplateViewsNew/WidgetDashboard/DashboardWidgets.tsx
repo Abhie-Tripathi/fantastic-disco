@@ -93,7 +93,7 @@ const DashboardWidgets = () => {
       {selectedBtn === "Widgets" ? <div className={styles.allWidgetContainer}>
         {allWidgets.length > 0 ?
           <div className={styles.widgetList}>
-            {allWidgets.map((card, key) => (
+            {allWidgets.slice(0, 2).map((card, key) => (
               <div className={styles.widgetCard} key={key}>
                 <WidgetCard
                   widgetStatus={card.widgetStatus}

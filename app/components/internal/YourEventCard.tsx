@@ -38,6 +38,7 @@ interface YourEventCardProps {
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
+  source? : string;
 }
 
 const formatDate = (dateString: string): string => {
@@ -65,7 +66,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handleModal,
   handleShortlistModal,
   geniEvent,
-  handlePrefillEvent
+  handlePrefillEvent,
+  source
 }) => {
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
@@ -215,7 +217,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   }
 
   return (
-    <div className={`${styles.card} card`} onClick={handleModalOpen}>
+    <div className={`${styles.card} card ${source === "dashboard" ? styles.shortCard : ""}`} onClick={handleModalOpen}>
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
           <div className={styles.leftContainer}>
@@ -292,7 +294,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               <div>{geniEvent.startTime}{" - "}{geniEvent.endTime}{", "}{geniEvent.gmtZone}</div>
             </div>}
           </div>
-          {geniEvent && <div className={styles.description}>
+          {(geniEvent && source !== "dashboard") && <div className={styles.description}>
             {geniEvent.description.substring(0, 100)}{geniEvent.description.length > 100 && "..."}
           </div>}
           {geniEvent && <div className={styles.tags_deleteContainer}>

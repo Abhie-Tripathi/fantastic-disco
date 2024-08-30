@@ -60,3 +60,50 @@
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
 }
+.addEvent{
+    margin-top: 25px;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.addEvent span{
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+    color: var(--secondary-text-color);
+}
+.addEvent a{
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.fetchedEventsContainer{
+    margin-top: 12px;
+    height: 100%;
+    width: 100%;
+}
+.eventsList{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.addedEventsContainer{
+    margin-top: 12px;
+    height: 100%;
+    width: 100%;
+}
+.allEventBtn{
+    margin-top: 12px;
+    width: 100%;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+    line-height: 18px;
+    padding: 9px;
+    text-align: center;
+}
+.allEventBtn:hover{
+    background-color: var(--primary-light-color);
+}
