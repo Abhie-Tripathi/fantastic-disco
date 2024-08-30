@@ -1886,7 +1886,7 @@ const Search = () => {
                       <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Event Visitors
+                          Estimated Visitors
                           {selectedVisitors?.length > 1 ? (
                             <span className={styles.input_selected_no}>
                               {selectedVisitors.length}

@@ -291,7 +291,7 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
         // setupCalendar();
       }
       if(error) {
-        if(props.setRequestExhausted && error.message === "no of request exhausted"){
+        if(props.setRequestExhausted && error.status === 429){
           props.setRequestExhausted(true);
         }
       }
