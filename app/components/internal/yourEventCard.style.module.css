@@ -13,11 +13,6 @@
     margin-top: 40px;
     /* padding: 25px; */
 }
-.shortCard{
-    margin-bottom: 0px;
-    margin-top: 0px;
-    width: 100%;
-}
 .topContainer:not(:only-child) {
     gap:30px;
   }

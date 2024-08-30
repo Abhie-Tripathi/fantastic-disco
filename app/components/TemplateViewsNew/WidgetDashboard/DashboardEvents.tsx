@@ -7,9 +7,10 @@ import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 import { baseUrl } from '@/constants';
 import YourEventCard from '@/app/components/internal/YourEventCard'
+import DashboardEventCard from './DashboardEventCard';
 
 const DashboardEvents = () => {
-    const [selectedBtn, setSelectedBtn] = useState<string>("Fetched")
+    const [selectedBtn, setSelectedBtn] = useState<string>("Added")
     const [fetchedAddedEvents, setFetchedAddedEvents] = useState<AllEventsType[]>([])
     const [siteFetchedEvents, setSiteFetchedEvents] = useState([])
 
@@ -26,8 +27,8 @@ const DashboardEvents = () => {
                 endDate: event.data.end_date,
                 format: event.data.format,
                 isLinkedToWidget: event.isWidgetLinked,
-                startTime: event.data.startTime,
-                endTime: event.data.endTime,
+                startTime: event.data.start_time,
+                endTime: event.data.end_time,
                 gmtZone: event.data.gmt_time,
             }))
             setFetchedAddedEvents(events)
@@ -67,7 +68,7 @@ const DashboardEvents = () => {
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
                             {fetchedAddedEvents.slice(0, 2).map((event,key)=>(
-                                <YourEventCard geniEvent={event} key={key} source = {"dashboard"}/>
+                                <div className={styles.eventCard} key={key}><DashboardEventCard event={event}/></div>
                             ))}
                         </div>
 

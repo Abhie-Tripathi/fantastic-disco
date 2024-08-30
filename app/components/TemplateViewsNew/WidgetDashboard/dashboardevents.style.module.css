@@ -87,6 +87,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+}
+.eventsList .eventCard{
+    width: 100%;
 }
 .addedEventsContainer{
     margin-top: 12px;
