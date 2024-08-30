@@ -13,17 +13,35 @@ interface GraphProps {
 
 const LineChart = ({ activeChip, groupedData }: GraphProps) => {
   const { groupingByDate }: any = groupedData;
-
-  const labels = Object.keys(groupingByDate);
-
+  
+  let labels = Object.keys(groupingByDate);
+  
   const data = labels.map((date) =>
     groupingByDate[date].reduce((total: any, event: any) => {
       return total + (event.attendance || event.events || 0);
     }, 0)
   );
-
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+  
+    const options: Intl.DateTimeFormatOptions = { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    };
+    const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+  
+    return formattedDate.replace(',', '');
+  }
+  
+  let updatedLabels=[];
+  updatedLabels=labels.map((label)=>formatDate(label))
+  if(updatedLabels.length===1) {
+    updatedLabels.unshift(updatedLabels[0]);
+    data.unshift(data[0]);
+  }
   const chartData: any = {
-    labels: labels,
+    labels: updatedLabels,
     datasets: [
       {
         label: "Total Attendance",
@@ -36,7 +54,6 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
       },
     ],
   };
-
   return (
     <div className={styles.chart_container}>
       <Line
@@ -47,29 +64,19 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
               display: false,
             },
           },
+          
           scales: {
             y: {
-              title: {
+             title: {
                 display: true,
                 text: activeChip,
-              },
-              min: Math.min(...data),
-              max: Math.max(...data),
-              ticks: {
-                source: "auto",
-              },
+               },
+              min: labels.length === 1 ? 0 : Math.min(...data),
             },
             x: {
               title: {
                 display: true,
                 text: "Date",
-              },
-              type: "time",
-              time: {
-                unit: "day",
-              },
-              ticks: {
-                source: "auto",
               },
               grid: {
                 display: false, // Hide the vertical grid lines

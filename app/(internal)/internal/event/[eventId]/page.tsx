@@ -242,12 +242,13 @@ const InsightsPage = () => {
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>
-                  {eventDetail?.location?.venueAddress}
+                  {eventDetail?.location?.venueName}
                 </div>
                 <div className={styles.time}>
+                  {eventDetail?.location?.venueAddress}
                   {eventDetail?.location?.cityName &&
                   eventDetail?.location?.countryName
-                    ? eventDetail.location.cityName +
+                    ? ", " + eventDetail.location.cityName +
                       ", " +
                       eventDetail.location?.countryName
                     : eventDetail?.location?.countryName}

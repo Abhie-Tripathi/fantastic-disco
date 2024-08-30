@@ -26,13 +26,13 @@
 
 .btn_container {
   display: inline-flex;
-  right: 77px;
+  right: 30px;
   gap: 10px;
   position: absolute;
 }
 
 .input_container_btns {
-  width: 22%;
+  width: 22vw;
 }
 
 .dropdown_title {
@@ -127,8 +127,8 @@
 
 .inputdropdowns_container {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 30px;
 }
 
 .input_selected_title {
