@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import WidgetCard from '@/app/components/TemplateViews/draftwidgets/WidgetCard'
 import styles from './page.style.module.css'
-import { useTheme } from '@/context'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
@@ -49,7 +48,6 @@ const Widget = () => {
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [selectedKey, setSelectedKey] = useState<number>(0)
-
 
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();

@@ -307,7 +307,7 @@ const Navbar = () => {
           </>
         )}
 
-        {pathName !== "internal" && (
+        {/* {pathName !== "internal" && (
           <>
             <Link
               className={`${styles.circle}`}
@@ -327,7 +327,7 @@ const Navbar = () => {
               <Image src={settingsIcon} alt="settings" className={iconClass} />
             </Link>
           </>
-        )}
+        )} */}
         {userDetail && (
           <div
             className={`${

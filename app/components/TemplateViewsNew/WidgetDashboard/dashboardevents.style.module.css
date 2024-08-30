@@ -17,19 +17,30 @@
     gap: 12px;
     width: fit-content;
 }
-.selectedBtn{
-    background-color: var(--primary-foreground);
-    border-radius: 2px;
-    font-size: var(--font-size-small);
-    padding: 5px 30px;
-    font-weight: var(--font-weight-semibold);
-    color: var(--primary-text-color);
-}
-.deselectedBtn{
+.btn{
     padding: 5px 30px;
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-small);
     color: var(--secondary-text-color);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.selectedBtn{
+    background-color: var(--primary-foreground);
+}
+.btn .count{
+    background-color: var(--primary-light-color);
+    font-size: var(--font-size-xs);
+    color: var(--bold-border-color);
+    line-height: 14px;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+.btn .selectedCount{
+    background-color: var(--primary-color);
+    color: white;
 }
 .emptyScreen{
     display: flex;

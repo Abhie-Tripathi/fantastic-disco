@@ -8,8 +8,14 @@ const DashboardEvents = () => {
     return (
         <div className={styles.body}>
             <div className={styles.btnContainer}>
-                <button className={selectedBtn === "Fetched" ? styles.selectedBtn : styles.deselectedBtn} onClick={() => setSelectedBtn("Fetched")}>Fetched</button>
-                <button className={selectedBtn === "Added" ? styles.selectedBtn : styles.deselectedBtn} onClick={() => setSelectedBtn("Added")}>Added</button>
+                <button className={`${styles.btn} ${selectedBtn === "Fetched" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Fetched")}>
+                    <span>Fetched</span>
+                    <span className={`${styles.count} ${selectedBtn === "Fetched" ? styles.selectedCount : ""}`}>02</span>
+                </button>
+                <button className={`${styles.btn} ${selectedBtn === "Added" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Added")}>
+                    <span>Added</span>
+                    <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>02</span>
+                </button>
             </div>
             <div className={styles.emptyScreen}>
                 <Image src={EmptyImage} alt='empty' />
