@@ -536,7 +536,7 @@ const [val,setVal]=useState(1);
             setEventPerPage(data.events);
           }
           if(error) {
-            if(error.message === "no of request exhausted"){
+            if(error.status === 429){
               setRequestExhausted(true);
             }
           }
