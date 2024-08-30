@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './widgetcard.style.module.css'
-import { StaticImageData } from 'next/image';
 import Image from 'next/image';
 import ListViewImage from '/public/widgetimages/pageimages/listview.png'
 import GridViewImage from '/public/widgetimages/pageimages/gridview.png'
@@ -8,18 +7,34 @@ import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 import CarouselListImage from '/public/widgetimages/pageimages/CarouselList.png'
 import HeroGridViewImage from '/public/widgetimages/pageimages/HeroGridView.png'
 import HeroListViewImage from '/public/widgetimages/pageimages/HeroListView.png'
+import ListViewImageDark from '/public/widgetimages/pageimages/listviewdark.png'
+import GridViewImageDark from '/public/widgetimages/pageimages/gridviewdark.png'
+import CarouselGridImageDark from '/public/widgetimages/pageimages/CarouselGridDark.png'
+import CarouselListImageDark from '/public/widgetimages/pageimages/CarouselListDark.png'
+import HeroGridViewImageDark from '/public/widgetimages/pageimages/HeroGridViewDark.png'
+import HeroListViewImageDark from '/public/widgetimages/pageimages/HeroListViewDark.png'
 import CarouselViewImage from '/public/widgetimages/sectionimages/carouselview.png'
 import HorizontalScrollImage from '/public/widgetimages/sectionimages/horizontalscroll.png'
 import LeftScrollImage from '/public/widgetimages/sectionimages/leftscroll.png'
 import RightScrollImage from '/public/widgetimages/sectionimages/rightscroll.png'
+import CarouselViewImageDark from '/public/widgetimages/sectionimages/carouselviewdark.png'
+import HorizontalScrollImageDark from '/public/widgetimages/sectionimages/horizontalscrolldark.png'
+import LeftScrollImageDark from '/public/widgetimages/sectionimages/leftscrolldark.png'
+import RightScrollImageDark from '/public/widgetimages/sectionimages/rightscrolldark.png'
+import HeroBannerImageDark from '/public/widgetimages/pageimages/herobannerdark.png'
 import HeroBannerImage from '/public/widgetimages/pageimages/herobanner.png'
 import StickyTopImage from '/public/widgetimages/stickyimages/stickytop.png'
 import StickyBottomImage from '/public/widgetimages/stickyimages/stickybottom.png'
+import StickyTopImageDark from '/public/widgetimages/stickyimages/stickytopdark.png'
+import StickyBottomImageDark from '/public/widgetimages/stickyimages/stickybottomdark.png'
 import PopupViewImage1 from '/public/widgetimages/popupimages/popupviewportrait.png'
 import PopupViewImage2 from '/public/widgetimages/popupimages/popupviewlandscape.png'
+import PopupViewImage1Dark from '/public/widgetimages/popupimages/popupviewportraitdark.png'
+import PopupViewImage2Dark from '/public/widgetimages/popupimages/popupviewlandscapedark.png'
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@/context';
 
 interface WidgetProps {
     widgetType: string;
@@ -31,33 +46,32 @@ interface WidgetProps {
     widgetStatus: string;
     fetchedEventsSize?: number;
     fetchAllWidgets?: () => Promise<void>;
-    selected? : boolean
-    key : number;
+    selected?: boolean
+    key: number;
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
-// interface TemplateMap {
-//     [key: string]: { image: StaticImageData; heading: string };
-// }
-const templateMap = {
-    'ST': { image: StickyTopImage, heading: 'Sticky Top' },
-    'SB': { image: StickyBottomImage, heading: 'Sticky Bottom' },
-    'HB': { image: HeroBannerImage, heading: 'Hero Banner' },
-    'GS': { image: GridViewImage, heading: 'Grid View' },
-    'LS': { image: ListViewImage, heading: 'List View' },
-    'HBL': { image: HeroListViewImage, heading: 'Hero List View' },
-    'HBG': { image: HeroGridViewImage, heading: 'Hero Grid View' },
-    'CVL': { image: CarouselListImage, heading: 'Carousel List' },
-    'CVG': { image: CarouselGridImage, heading: 'Carousel Grid' },
-    'CV': { image: CarouselViewImage, heading: 'Carousel View' },
-    'HS': { image: HorizontalScrollImage, heading: 'Horizontal Scroll' },
-    'LSR': { image: LeftScrollImage, heading: 'Left Scroll' },
-    'RSR': { image: RightScrollImage, heading: 'Right Scroll' },
-    'PUVP': { image: PopupViewImage1, heading: 'Popup View Portrait' },
-    'PUVL': { image: PopupViewImage2, heading: 'Popup View Landscape' },
-};
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected, key }: WidgetProps) => {
+    const { theme } = useTheme()
+    const templateMap = {
+        'ST': { image: theme === "light" ? StickyTopImage : StickyTopImageDark, heading: 'Sticky Top' },
+        'SB': { image: theme === "light" ? StickyBottomImage : StickyBottomImageDark, heading: 'Sticky Bottom' },
+        'HB': { image: theme === "light" ? HeroBannerImage : HeroBannerImageDark, heading: 'Hero Banner' },
+        'GS': { image: theme === "light" ? GridViewImage : GridViewImageDark, heading: 'Grid View' },
+        'LS': { image: theme === "light" ? ListViewImage : ListViewImageDark, heading: 'List View' },
+        'HBL': { image: theme === "light" ? HeroListViewImage : HeroListViewImageDark, heading: 'Hero List View' },
+        'HBG': { image: theme === "light" ? HeroGridViewImage : HeroGridViewImageDark, heading: 'Hero Grid View' },
+        'CVL': { image: theme === "light" ? CarouselListImage : CarouselListImageDark, heading: 'Carousel List' },
+        'CVG': { image: theme === "light" ? CarouselGridImage : CarouselGridImageDark, heading: 'Carousel Grid' },
+        'CV': { image: theme === "light" ? CarouselViewImage : CarouselViewImageDark, heading: 'Carousel View' },
+        'HS': { image: theme === "light" ? HorizontalScrollImage : HorizontalScrollImageDark, heading: 'Horizontal Scroll' },
+        'LSR': { image: theme === "light" ? LeftScrollImage : LeftScrollImageDark, heading: 'Left Scroll' },
+        'RSR': { image: theme === "light" ? RightScrollImage : RightScrollImageDark, heading: 'Right Scroll' },
+        'PUVP': { image: theme === "light" ? PopupViewImage1 : PopupViewImage1Dark, heading: 'Popup View Portrait' },
+        'PUVL': { image: theme === "light" ? PopupViewImage2 : PopupViewImage2Dark, heading: 'Popup View Landscape' },
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected,key }: WidgetProps) => {
+    };
+
     const borderClass = widgetNumber === 1 ? styles.halfBorder : styles.fullBorder;
 
     const { image = null, heading = "" } = templateMap[templateId] || {};

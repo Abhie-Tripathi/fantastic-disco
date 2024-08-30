@@ -15,12 +15,14 @@ const page = () => {
   return (
     <div className={styles.body}>
       <div className={fetchedBoolean ? styles.fetchedInputScreen : styles.inputScreen}>
-        <InputComponent fetched={fetchedBoolean}/>
+        <InputComponent fetched={fetchedBoolean} />
       </div>
       {fetchedBoolean && <div className={styles.container}>
-        <div className={styles.brandKitContainer}><DashboardBrandkit/></div>
-        <div className={styles.widgetContainer}><DashboardWidgets/></div>
-        <div className={styles.eventContainer}><DashboardEvents/></div>
+        <div className={styles.brandKitContainer}><DashboardBrandkit /></div>
+        <div className={styles.widgetEventsContainer}>
+          <div className={styles.widgetContainer}><DashboardWidgets /></div>
+          <div className={styles.eventContainer}><DashboardEvents /></div>
+        </div>
       </div>}
     </div>
   )
