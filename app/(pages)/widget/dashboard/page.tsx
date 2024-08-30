@@ -5,6 +5,7 @@ import InputComponent from '@/app/components/TemplateViewsNew/WidgetDashboard/In
 import BrandKit from '@/app/components/TemplateViewsNew/EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import DashboardBrandkit from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardBrandkit'
 import DashboardWidgets from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardWidgets'
+import DashboardEvents from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEvents'
 
 const page = () => {
 
@@ -15,11 +16,11 @@ const page = () => {
       <div className={fetchedBoolean ? styles.fetchedInputScreen : styles.inputScreen}>
         <InputComponent fetched={fetchedBoolean}/>
       </div>
-      <div className={styles.container}>
+      {fetchedBoolean && <div className={styles.container}>
         <div className={styles.brandKitContainer}><DashboardBrandkit/></div>
         <div className={styles.widgetContainer}><DashboardWidgets/></div>
-        <div className={styles.eventContainer}></div>
-      </div>
+        <div className={styles.eventContainer}><DashboardEvents/></div>
+      </div>}
     </div>
   )
 }

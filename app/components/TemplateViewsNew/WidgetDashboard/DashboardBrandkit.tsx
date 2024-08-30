@@ -5,6 +5,7 @@ import BrandColor from '../EditScreen/BrandKit/CustomizeComponents/BrandColor'
 import BrandkitTypography from '../EditScreen/BrandKit/CustomizeComponents/BrandkitTypography'
 import GotoIcon from "/public/goTo.svg";
 import Image from 'next/image'
+import Link from 'next/link'
 
 const DashboardBrandkit = () => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -13,7 +14,7 @@ const DashboardBrandkit = () => {
         <div className={styles.body}>
             <div className={styles.header}>
                 <div className={styles.heading}>Brand Kit</div>
-                <Image src={GotoIcon} alt='linkicon' />
+                <Link href={"/widget/brandkit"}><Image src={GotoIcon} alt='linkicon' /></Link>
             </div>
             <div className={styles.brandKitContainer}>
                 <div className={styles.container}>

@@ -16,3 +16,9 @@
     display: flex;
     gap: 24px;
 }
+.widgetContainer{
+    width: 32%;
+}
+.eventContainer{
+    width: 46%;
+}
