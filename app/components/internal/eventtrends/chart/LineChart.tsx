@@ -36,7 +36,10 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
   
   let updatedLabels=[];
   updatedLabels=labels.map((label)=>formatDate(label))
-  
+  if(updatedLabels.length===1) {
+    updatedLabels.unshift(updatedLabels[0]);
+    data.unshift(data[0]);
+  }
   const chartData: any = {
     labels: updatedLabels,
     datasets: [
@@ -47,12 +50,10 @@ const LineChart = ({ activeChip, groupedData }: GraphProps) => {
         borderColor: "rgb(253,29,133)",
         borderWidth: 2,
         fill: true,
-        pointStyle: labels.length===1?"circle":false,
+        pointStyle: false,
       },
     ],
   };
-console.log(data);
-
   return (
     <div className={styles.chart_container}>
       <Line
@@ -70,7 +71,7 @@ console.log(data);
                 display: true,
                 text: activeChip,
                },
-              // min: Math.min(...data),
+              min: labels.length === 1 ? 0 : Math.min(...data),
             },
             x: {
               title: {
