@@ -25,7 +25,7 @@ const InputComponent = ({ fetched }: Props) => {
             </div>
             {fetched && <div className={styles.infoContainer}>
                 <span className={styles.infoBtn}>i</span>
-                <span className={styles.info}>Once you've created a widget, the URL cannot be changed. Please ensure all details are accurate before finalizing. However, if you delete all existing widgets, you will have the option to change the URL.</span>
+                <span className={styles.info}>Once you&apos;ve created a widget, the URL cannot be changed. Please ensure all details are accurate before finalizing. However, if you delete all existing widgets, you will have the option to change the URL.</span>
             </div>}
 
         </div>

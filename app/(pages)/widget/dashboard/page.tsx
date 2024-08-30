@@ -2,13 +2,11 @@
 import React, { useState } from 'react'
 import styles from './page.style.module.css'
 import InputComponent from '@/app/components/TemplateViewsNew/WidgetDashboard/InputComponent'
-import BrandKit from '@/app/components/TemplateViewsNew/EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import DashboardBrandkit from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardBrandkit'
 import DashboardWidgets from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardWidgets'
 import DashboardEvents from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEvents'
-import { AddedEventsType } from '@/types/addedeventtype'
 
-const page = () => {
+const Page = () => {
 
   const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(true)
 
@@ -28,4 +26,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

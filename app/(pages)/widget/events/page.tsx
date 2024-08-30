@@ -8,8 +8,7 @@ import { AllEventsType } from '@/types/alleventtype'
 import { baseUrl } from '@/constants'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 
-const page = () => {
-
+const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
     const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false)
     const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
@@ -43,22 +42,20 @@ const page = () => {
             console.error('Error fetching events:', error);
         }
     }
-    const handlePrefillEvent = (event : AllEventsType)=>{
+    const handlePrefillEvent = (event: AllEventsType) => {
         setPrefilledNormalEvent(event)
         setIsEventFormModal(true)
     }
     return (
         <div className={`${styles.body} ${isEventFormModal ? styles.modalOpen : ""}`}>
             {fetchedEvents.map((event, index) => {
-                // Check if current event's date is different from previous event's date
                 const showDate = event.startDate !== prevDate;
-                // Update previous date
                 prevDate = event.startDate;
                 return (
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.startDate : null} />
                         <YourEventCard
-                            handlePrefillEvent = {handlePrefillEvent}
+                            handlePrefillEvent={handlePrefillEvent}
                             geniEvent={event}
                         />
                     </div>
@@ -66,10 +63,10 @@ const page = () => {
             })}
             {isEventFormModal && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addNormalEventModal}>
-                <AddNormalEvent setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent}/>
+                <AddNormalEvent setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />
             </div>}
         </div>
     )
 }
 
-export default page
+export default Page

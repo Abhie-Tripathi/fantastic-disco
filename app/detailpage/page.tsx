@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react'
-import styles from './page.style.module.css'
+import React from 'react'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { notFound } from 'next/navigation';

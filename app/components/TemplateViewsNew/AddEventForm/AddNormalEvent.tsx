@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './addnormal.style.module.css'
 import DateTimeContainer from './Details/dateandtime/DateTimeContainer';
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent }: Props) => {
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    // const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
     const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
@@ -30,9 +31,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [cityName, setCityName] = useState<string>(prefilledGlobalEvent?.cityName || prefilledNormalEvent?.cityName || "")
     const [countryName, setCountryName] = useState<string>(prefilledGlobalEvent?.countryName || prefilledNormalEvent?.countryName || "")
     const [eventFormat, setEventFormat] = useState<string>("In-person")
-    const [textValue, setTextValue] = useState<string>(description)
+    const [textValue, setTextValue] = useState<string>("")
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-
     const [latitude, setLatitude] = useState(37.7749)
     const [longitude, setLongitude] = useState(-122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
@@ -42,27 +42,6 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         setDescription(textValue)
         setDescriptionModal(false)
     }
-    useEffect(() => {
-        const adjustHeight = () => {
-            const textArea = textAreaRef.current;
-            if (textArea) {
-                textArea.style.height = 'auto'; // Reset the height
-                textArea.style.height = `${textArea.scrollHeight}px`; // Set the height to the scroll height
-            }
-        };
-
-        const textArea = textAreaRef.current;
-        if (textArea) {
-            textArea.addEventListener('input', adjustHeight);
-            adjustHeight(); // Initial adjustment
-        }
-
-        return () => {
-            if (textArea) {
-                textArea.removeEventListener('input', adjustHeight);
-            }
-        };
-    }, []);
 
     const handleAddUpdateEvent = (type: string) => {
         if (type === "update") {
@@ -142,10 +121,9 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(error)
         }
     }
-    useEffect(() => {
-        console.log("latitude :", latitude)
-        console.log("longitude :", longitude)
-    }, [latitude])
+    useEffect(()=>{
+        setTextValue(description)
+    },[description])
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -157,14 +135,14 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             </div>
             <div className={styles.line}></div>
             <div className={styles.form}>
-                <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+                <textarea className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
 
                 <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                 <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
-                <div className={styles.participationContainer}><ParticipationContainer width="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
-                <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+                <div className={styles.participationContainer}><ParticipationContainer size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+                <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div> 
             </div>
             {
                 descriptionModal && <div className={styles.descriptionModalFill}>
