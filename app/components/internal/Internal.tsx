@@ -173,6 +173,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.id}
+                    isDateSame={showDate}
                     enquiryId={item.enquiryId}
                     eventName={item.name}
                     eventLocation={item.city}
