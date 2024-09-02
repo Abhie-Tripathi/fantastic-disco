@@ -61,7 +61,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
 
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={smallCard ? 250 : 380} height={ smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={smallCard ? styles.smallBanner : styles.banner} />
+      <Image width={smallCard ? 280 : 380} height={ smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={smallCard ? styles.smallBanner : styles.banner} />
       <div className={styles.detailsContainer}>
         <div className={styles.valuesContainer}>
           <div className={styles.date_location_nameContainer}>

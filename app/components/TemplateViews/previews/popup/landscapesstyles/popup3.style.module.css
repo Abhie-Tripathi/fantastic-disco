@@ -14,9 +14,14 @@
     align-items: center;
     padding: 12px;
 }
+.smallBannerContainer{
+    height: 100%;
+    width: 280px;
+    position: relative;
+}
 .bannerContainer{
     height: 100%;
-    width: 400px;
+    width: 385px;
     position: relative;
 }
 .type{
@@ -29,9 +34,14 @@
     bottom: 5px;
     right: 9px;
 }
+.smallerBanner{
+    height: 100%;
+    width: 285px;
+    border-radius: 8px;
+}
 .banner{
     height: 100%;
-    width: 400px;
+    width: 385px;
     border-radius: 8px;
 }
 .eventDetails{

@@ -64,8 +64,8 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
   const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : "Some Description";
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <div className={styles.bannerContainer}>
-        <Image width={smallCard ? 280 : 380} height={smallCard ? 285:385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+      <div className={smallCard ? styles.smallBannerContainer : styles.bannerContainer}>
+        <Image width={smallCard ? 280 : 380} height={smallCard ? 285:385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={smallCard ?styles.smallerBanner:styles.banner} />
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>

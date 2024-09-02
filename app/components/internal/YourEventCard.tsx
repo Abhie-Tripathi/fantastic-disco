@@ -110,13 +110,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   const handleModalOpen = () => {
-    if (enquiryId && eventId && handleModal){
+    if (enquiryId && eventId && handleModal) {
       handleModal(eventId, enquiryId);
     }
-    else if(geniEvent && handlePrefillEvent){
+    else if (geniEvent && handlePrefillEvent) {
       handlePrefillEvent(geniEvent)
     }
-      
+
   };
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
