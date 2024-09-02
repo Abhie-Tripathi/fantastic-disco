@@ -215,7 +215,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   }
 
   return (
+  
+     <div className={styles.outerDiv}>
     <div className={`${styles.card} card`} onClick={handleModalOpen}>
+    {/* <div className={styles.cardBefore}></div> */}
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
           <div className={styles.leftContainer}>
@@ -266,6 +269,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div style={{ marginLeft: "-4px" }}>
                   {eventLocation ? `${eventLocation}, ${eventCountry}` : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
                 </div>
+                <div style={{marginLeft:"-4px"}}>{eventLocation===eventCountry? eventCountry :`${eventLocation}, ${eventCountry}`}</div>
               </div>
             )}
             <div className={styles.eventDate}>
@@ -424,7 +428,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             />
           </div>
         </div>
-      </div>}
+      </div>
+    </div>
     </div>
   );
 };
