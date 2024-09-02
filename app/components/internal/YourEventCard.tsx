@@ -20,6 +20,7 @@ import { AllEventsType } from "@/types/alleventtype";
 
 interface YourEventCardProps {
   eventId?: string;
+  isDateSame?:boolean;
   enquiryId?: string;
   eventName?: string;
   eventCtas?: string[];
@@ -65,7 +66,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handleModal,
   handleShortlistModal,
   geniEvent,
-  handlePrefillEvent
+  handlePrefillEvent,
+  isDateSame
 }) => {
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
@@ -215,7 +217,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   }
 
   return (
-    <div className={`${styles.card} card`} onClick={handleModalOpen}>
+  
+     <div className={styles.outerDiv} >
+    <div className={`${styles.card} card`} onClick={handleModalOpen} style={{marginTop: (!isDateSame && !geniEvent) ?"0px":"25px"}}>
+    {/* <div className={styles.cardBefore}></div> */}
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
           <div className={styles.leftContainer}>
@@ -258,16 +263,28 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>}
           </div>
           <div className={styles.locationAndDateContainer}>
-            {(eventLocation || geniEvent) && (
-              <div className={styles.eventLocation}>
-                <div className={styles.circle1}>
-                  <Image src={place} alt="locationIcon" width={24} height={24} style={{ marginRight: "3px" }} className="icons" />
-                </div>
-                <div style={{ marginLeft: "-4px" }}>
-                  {eventLocation ? `${eventLocation}, ${eventCountry}` : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
-                </div>
-              </div>
-            )}
+          {(eventLocation || geniEvent) && (
+  <div className={styles.eventLocation}>
+    <div className={styles.circle1}>
+      <Image
+        src={place}
+        alt="locationIcon"
+        width={24}
+        height={24}
+        style={{ marginRight: "3px" }}
+        className="icons"
+      />
+    </div>
+    <div style={{ marginLeft: "-4px" }}>
+      {eventLocation 
+        ? eventLocation === eventCountry
+          ? eventCountry
+          : `${eventLocation}, ${eventCountry}`
+        : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
+    </div>
+  </div>
+)}
+
             <div className={styles.eventDate}>
               <Image
                 src={calendarIcon}
@@ -425,6 +442,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           </div>
         </div>
       </div>}
+    </div>
     </div>
   );
 };

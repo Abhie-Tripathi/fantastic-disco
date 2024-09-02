@@ -53,7 +53,7 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
-  handleRefresh,
+  handleRefresh
 }: Props) => {
   const [meet, setMeet] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef

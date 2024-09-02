@@ -1,45 +1,41 @@
 .timelineItem{
-    color: white;
-    /* position: absolute;
-    left: 220px; */
-    position: relative;
-    right: 36%;
+    color: var(--primary-text-color);
+    position: absolute;
+    left: 20px;
+    top: -10px;
+    /* right: 0; */
     width: 150px;
     font-size: 18px;
-}
-
-.timelineItem_light{
-    color: var(--primary-color-light);
 }
 
 .timelineItem.showCircle::before {
     content: "";
     position: absolute;
-    top: 4px;
-    left: -20px;
-    width: 13px; 
-    height: 13px; 
+    top: 6px;
+    left: -26px;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
-    background-color: #6750A4; 
+    background-color: var(--primary-color);
 }
-.timelineItem::after {
+/* .timelineItem::after {
     content: "";
     position: absolute;
-    top: 4px;
-    left: -14px;
+    top: 7px;
+    left: -20px;
     width: 1px;
-    height: 1500%;
+    height: 100%;
     border-left: 1px dashed #6750A4;
-} 
+}  */
 
 @media screen and (max-width:768px) {
     /* .timelineItem{
         right: 35%;
     } */
-    .timelineItem{
+    /* .timelineItem{
         left: -25%;
     }
     .timelineItem::after {
         height: 1200%;
-    } 
+    }  */
 }

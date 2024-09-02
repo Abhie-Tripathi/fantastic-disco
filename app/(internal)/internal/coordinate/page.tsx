@@ -70,13 +70,11 @@ const Page = () => {
           ))}
         </div>
       )}
-      {!modalOpen && (
         <Internal
           handleModal={handleModal}
           handleShortlistModal={handleShortlistModal}
           cardUpdated={cardUpdated}
         />
-      )}
       {modalOpen && (
         <div
           className={`${styles.modal}`}
