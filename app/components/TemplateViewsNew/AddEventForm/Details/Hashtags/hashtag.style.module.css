@@ -1,0 +1,109 @@
+.body{
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    justify-content: space-between;
+}
+.hashtagsContainer{
+    width: 90%;
+    font-size: var(--font-size-small);
+    color: grey;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+.hashtagButton{
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+.tagsLoader{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tagSpinner{
+    border: 5px solid #EAF0F6;
+    border-radius: 50%;
+    border-top: 5px solid #FF7A59;
+    width: 30px;
+    height: 30px;
+    animation: spinner 2s linear infinite;
+}
+.hashtag{
+    background-color: #EBEBEB;
+    color: #666666;
+    font-size: var(--font-size-xs);
+    font-weight: 500;    
+    line-height: 18px;
+    padding: 3px 12px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.hashtag .deleteIcon{
+    cursor: pointer;
+    color: white;
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: #414141;
+}
+.addBtn{
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    font-size: 20px;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    color: white;
+}
+.inputContainer{
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    background-color: #EBEBEB;
+    color: #666666;
+    font-weight: 500;   
+    border-radius: 40px;
+}
+.inputContainer span{
+    padding: 4px;
+    background-color: #b0b0b0;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+}
+.inputContainer input{
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+    font-size: var(--font-size-xs);
+}
+.inputContainer input:focus{
+    outline: none;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

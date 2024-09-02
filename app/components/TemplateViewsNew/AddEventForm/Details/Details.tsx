@@ -24,6 +24,7 @@ import DescriptionModal from './description/DescriptionModal'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
+import HashtagContainer from './Hashtags/HashtagContainer'
 
 interface SpeakerProfileType {
   id: string;
@@ -208,7 +209,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       bannerUrl,
       latitude,
       longitude,
-      venue
+      venue,
+      hashtags : hashtags.join(",")
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -404,17 +406,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           </div>
           <div className={styles.participationContainer}><ParticipationContainer size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
           <div className={styles.hashtagsContainer}>
-            {loadingState ? <div className={styles.tagsLoader}><div className={styles.tagSpinner}></div></div> :
-              hashtags.length === 0 ? "Enter Event name and description to auto generate the hashtags" :
-                hashtags.map((tag, key) => (
-                  <div key={key} className={styles.hashtag}>
-                    {tag}
-                  </div>
-                ))
-            }
-            <div onClick={handleTagsGenerate} data-name="Generate Your Banner" className={styles.hashtagButton}>
-              <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon} width={15} height={15}></Image>
-            </div>
+              <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate}/>
           </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
