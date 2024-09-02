@@ -20,6 +20,7 @@ import { AllEventsType } from "@/types/alleventtype";
 
 interface YourEventCardProps {
   eventId?: string;
+  isDateSame?:boolean;
   enquiryId?: string;
   eventName?: string;
   eventCtas?: string[];
@@ -65,7 +66,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handleModal,
   handleShortlistModal,
   geniEvent,
-  handlePrefillEvent
+  handlePrefillEvent,
+  isDateSame
 }) => {
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
@@ -216,8 +218,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
   return (
   
-     <div className={styles.outerDiv}>
-    <div className={`${styles.card} card`} onClick={handleModalOpen}>
+     <div className={styles.outerDiv} >
+    <div className={`${styles.card} card`} onClick={handleModalOpen} style={{marginTop: (!isDateSame && !geniEvent) ?"0px":"25px"}}>
     {/* <div className={styles.cardBefore}></div> */}
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
