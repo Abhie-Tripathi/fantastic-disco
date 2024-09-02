@@ -261,17 +261,28 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             </div>}
           </div>
           <div className={styles.locationAndDateContainer}>
-            {(eventLocation || geniEvent) && (
-              <div className={styles.eventLocation}>
-                <div className={styles.circle1}>
-                  <Image src={place} alt="locationIcon" width={24} height={24} style={{ marginRight: "3px" }} className="icons" />
-                </div>
-                <div style={{ marginLeft: "-4px" }}>
-                  {eventLocation ? `${eventLocation}, ${eventCountry}` : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
-                </div>
-                <div style={{marginLeft:"-4px"}}>{eventLocation===eventCountry? eventCountry :`${eventLocation}, ${eventCountry}`}</div>
-              </div>
-            )}
+          {(eventLocation || geniEvent) && (
+  <div className={styles.eventLocation}>
+    <div className={styles.circle1}>
+      <Image
+        src={place}
+        alt="locationIcon"
+        width={24}
+        height={24}
+        style={{ marginRight: "3px" }}
+        className="icons"
+      />
+    </div>
+    <div style={{ marginLeft: "-4px" }}>
+      {eventLocation 
+        ? eventLocation === eventCountry
+          ? eventCountry
+          : `${eventLocation}, ${eventCountry}`
+        : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
+    </div>
+  </div>
+)}
+
             <div className={styles.eventDate}>
               <Image
                 src={calendarIcon}
