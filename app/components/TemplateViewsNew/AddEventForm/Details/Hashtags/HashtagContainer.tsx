@@ -24,7 +24,6 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
         setHashtags(updatedHashtags);
     };
 
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTag(e.target.value);
     };
@@ -32,7 +31,7 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (newTag.trim() !== "") {
-            setHashtags([...hashtags, newTag.trim()]);
+            setHashtags([...hashtags, "#"+newTag.trim()]);
             setNewTag(""); // Clear the input field
             setShowInput(false); // Hide the input field
         }
@@ -53,13 +52,7 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
                 {(showInput && hashtags.length < 5) && (
                     <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
                         <span>#</span>
-                        <input
-                        maxLength={30}
-                            type="text"
-                            value={newTag}
-                            onChange={handleInputChange}
-                            autoFocus
-                            className={styles.tagInput}
+                        <input maxLength={30} type="text" value={newTag} onChange={handleInputChange} className={styles.tagInput}
                         />
                     </form>
                 )}

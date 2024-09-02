@@ -10,7 +10,7 @@
     color: grey;
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
+    gap: 5px;
 }
 .hashtagButton{
     border: 2px solid white;
