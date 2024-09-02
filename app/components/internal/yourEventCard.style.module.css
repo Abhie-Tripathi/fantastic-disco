@@ -35,8 +35,15 @@
 .eventNameComp {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
 }
-
+.deleteBtn{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    padding: 5px 9px;
+    color: white;
+}
 .company {
     /* color: #8C8EA4; */
     color: var(--tertiary-text-color);
@@ -97,7 +104,49 @@
 .eventDate img {
     margin-right: 7px;
 }
+.eventTime{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: var(--font-size-small);
+    border-radius: var(--border-radius-sm); 
+}
 
+.tags_deleteContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tags{
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.tags div{
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.tags .tag1{
+    color: #0062D1;
+    border: 1px solid #CCE6FF;
+    background-color: #EBF5FF;
+}
+.tags .tag2{
+    color: #12A594;
+    border: 1px solid #BEF4EB;
+    background-color: #E5FAF6;
+}
+.description{
+    margin-top: 5px;
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
 .cardImg {
     border-radius: var(--border-radius-lg);
 }

@@ -54,7 +54,7 @@ const DescriptionModal = ({
                 <span>Add your description</span>
                 <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
             </div>
-            <Editor
+            {/* <Editor
                 editorState={editorState}
                 toolbar={{
                     options: ["inline", "colorPicker"],
@@ -70,8 +70,7 @@ const DescriptionModal = ({
                 editorClassName={styles.editor}
                 toolbarClassName={styles.toolbar}
                 wrapperClassName={styles.wrapper}
-            />
-
+            /> */}
             <button className={styles.saveBtn} onClick={handleDescClick}>Save</button>
         </div>
     );

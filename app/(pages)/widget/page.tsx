@@ -6,7 +6,7 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/widget/list");
+    router.replace("/widget/dashboard");
   }, [router]);
 
   return null; // Optionally return a loader or a blank div

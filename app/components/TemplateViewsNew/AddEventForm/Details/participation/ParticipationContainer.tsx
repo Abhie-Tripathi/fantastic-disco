@@ -12,10 +12,10 @@ interface Props {
   participationType: string;
   setParticipationMessage: (value: string) => void
   participationMessage: string
-  width : string;
+  size : string;
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage,width }: Props) => {
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage,size }: Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false)
   const dropdownRef = useOutsideClick(() => setDropdown(false))
   return (
@@ -29,8 +29,8 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
       </div>
 
       <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn} />
-      {dropdown && <div className={styles.dropdown} style={{width : width === "large" ? "150%" : "100%"}}>
-        <ParticipationDropdown width={width} participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
+      {dropdown && <div className={styles.dropdown} style={{width : size === "large" ? "150%" : "100%"}}>
+        <ParticipationDropdown size={size} participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
       </div>}
     </div>
   )

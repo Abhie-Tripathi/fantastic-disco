@@ -12,8 +12,8 @@ interface Props {
     eventDate: string | null;
 }
 const TimelineItem: React.FC<Props> = ({ eventDate }) => {
-    const {theme} = useTheme();
-    
+    const { theme } = useTheme();
+
     let formattedDate = "";
     if (eventDate !== null) {
         formattedDate = formatDate(eventDate);

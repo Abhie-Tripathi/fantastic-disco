@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './dropdown.style.module.css'
-import { Editor } from "react-draft-wysiwyg";
-import { ContentState, EditorState, convertFromHTML, convertToRaw } from "draft-js";
+import { Editor, EditorState } from "react-draft-wysiwyg";
+import { convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; // Import editor styles
 import draftToHtml from "draftjs-to-html";
 
@@ -10,17 +10,12 @@ interface Props {
     inputMessage: string;
     setParticipationType: (value: string) => void
     participationType: string;
-    width : string;
+    size : string;
 }
 
-const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType,width }: Props) => {
+const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipationType, participationType,size }: Props) => {
 
-    // const [editorState, setEditorState] = useState(() => {
-    //     const contentBlock = htmlToDraft(inputMessage);
-    //     const contentState = contentBlock ? convertFromRaw(contentBlock) : null;
-    //     return EditorState.createWithContent(contentState || convertToRaw(editorState.getCurrentContent()));
-    // });
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [editorState, setEditorState] = useState<any>();
     const onEditorStateChange = (state: EditorState) => {
         setEditorState(state);
         // Convert editor content to HTML and set text value
@@ -72,9 +67,9 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
                     <span className={styles.checkboxLabel}>Organiser</span>
                 </label>
             </div>
-            {width === "large" &&<div className={styles.messageContainer}>
+           <div className={styles.messageContainer}>
                 <div className={styles.heading}>Customize your message</div>
-                <Editor
+                {/* <Editor
                     editorState={editorState}
                     toolbar={{
                         options: ["inline", "colorPicker"],
@@ -89,10 +84,9 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
                     onEditorStateChange={onEditorStateChange}
                     editorClassName={styles.editor}
                     toolbarClassName={styles.toolbar}
-                    wrapperClassName={styles.wrapper}
-                />
-                {/* <textarea className={styles.textarea} onChange={(e) => setInputMessage(e.target.value)}>{inputMessage}</textarea> */}
-            </div>}
+                    wrapperClassName={styles.wrapper}   
+                /> */}
+            </div>
         </div>
     )
 }

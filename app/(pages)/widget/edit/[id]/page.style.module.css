@@ -4,7 +4,9 @@
     padding: 30px 30px 100px 30px;
     height: 88vh;
 }
-
+.errorPage{
+    height: 88vh;
+}
 .modalOpen {
     overflow-y: hidden;
 }

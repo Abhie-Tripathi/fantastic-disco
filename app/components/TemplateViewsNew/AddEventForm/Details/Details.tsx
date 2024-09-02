@@ -387,7 +387,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               </div>
             </div>
           </div>
-          <div className={styles.participationContainer}><ParticipationContainer width="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.participationContainer}><ParticipationContainer size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
             <ShareButtons shareUrl='www.10times.com' />
