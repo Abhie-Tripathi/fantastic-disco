@@ -1,15 +1,11 @@
 .timelineItem{
-    color: white;
+    color: var(--primary-text-color);
     position: absolute;
     left: 20px;
     top: -10px;
     /* right: 0; */
     width: 150px;
     font-size: 18px;
-}
-
-.timelineItem_light{
-    color: var(--primary-color-light);
 }
 
 .timelineItem.showCircle::before {
@@ -20,7 +16,7 @@
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background-color: #6750A4;
+    background-color: var(--primary-color);
 }
 /* .timelineItem::after {
     content: "";

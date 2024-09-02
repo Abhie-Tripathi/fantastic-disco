@@ -23,7 +23,7 @@ const TimelineItem: React.FC<Props> = ({ eventDate }) => {
 
     return (
         <div style={{width:"85%",position:"relative"}}>
-        <div className={`${styles.timelineItem} ${showCircle ? styles.showCircle : ""} ${theme === 'light' ? styles.timelineItem_light: ""}`}>
+        <div className={`${styles.timelineItem} ${showCircle ? styles.showCircle : ""}`}>
             {formattedDate}
         </div>
         </div>
