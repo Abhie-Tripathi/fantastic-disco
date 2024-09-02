@@ -3,6 +3,9 @@
     font-family: var(--font-inter);
     position: relative;
 }
+.errorPage{
+    height: 88vh;
+}
 .nav{
     display: flex;
     align-items: center;
@@ -64,7 +67,6 @@
     height: 520px;
     align-content: start; /* Align items at the start to avoid stretching */
 }
-
 
 .widgetsList .widgetCard{
     height: 178px;

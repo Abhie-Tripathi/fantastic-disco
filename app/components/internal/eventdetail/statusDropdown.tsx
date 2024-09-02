@@ -11,10 +11,10 @@ import upArrowLight from '/public/internal/up_arrow_light.svg'
 import upArrow from '/public/internal/up_arrow.svg'
 interface PropType {
   label: string;
-  eventId: string;
-  enquiryId: string;
-  currentEnquiryStatus: string;
-  handleShortlistModal: (eventId: string, enquiryId: string) => void;
+  eventId?: string;
+  enquiryId?: string;
+  currentEnquiryStatus?: string;
+  handleShortlistModal?: (eventId: string, enquiryId: string) => void;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,10 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     const target = event.target as HTMLDivElement;
     setIsOpen(false);
     // setValue(target.innerText);
-    props.handleShortlistModal(props.eventId, props.enquiryId);
+    if(props.handleShortlistModal && props.eventId && props.enquiryId){
+      props.handleShortlistModal(props.eventId, props.enquiryId);
+    }
+
   };
 
   const handleRejectClick = async() => {

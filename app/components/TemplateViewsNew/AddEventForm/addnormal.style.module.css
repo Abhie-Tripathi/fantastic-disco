@@ -50,7 +50,7 @@
 .eventName:focus {
     outline: none;
 }
-.descriptionModal {
+.descriptionModalFill{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -58,16 +58,6 @@
     width: 50%;
     filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
 }
-
-.descriptionModal{
-    background-color: white;
-    border-radius: 2px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
 .descriptionModal textarea {
     resize: none;
     border: 1px solid #EBEBEB;

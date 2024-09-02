@@ -1,0 +1,60 @@
+.card{
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+}
+.eventName {
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
+.eventDataField{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    line-height: 18px;
+}
+.eventDateTimeContainer{
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    gap: 10px;
+}
+.tags_deleteContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tags{
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.tags div{
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.tags .tag1{
+    color: #0062D1;
+    border: 1px solid #CCE6FF;
+    background-color: #EBF5FF;
+}
+.tags .tag2{
+    color: #12A594;
+    border: 1px solid #BEF4EB;
+    background-color: #E5FAF6;
+}
+.deleteBtn{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    padding: 5px 9px;
+    color: white;
+}
