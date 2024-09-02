@@ -123,22 +123,6 @@ const CommonTrackerCard = () => {
     const eventZone = item?.tracker?.filterValue?.eventRegion?.split(",") || [];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
-  const fetchData = async () => {
-    const url = `${baseUrl}/auth/users?limit=100`;
-    try {
-        const { data, error } = await myFetch(url, {
-            method: 'GET'
-        });
-        if (error) {
-            console.error('Error fetching data:', error);
-        } else {
-            console.log('Data fetched:', data);
-            setData(data?.users);
-        }
-    } catch (err) {
-        console.error('Fetch failed:', err);
-    }
-};
 useEffect(() => {
         const handlePopState = (event: any) => {
             if (event.state && event.state.shareOpen) {
@@ -154,9 +138,6 @@ useEffect(() => {
             window.removeEventListener('popstate', handlePopState);
         };
     }, [share, sendInvite]);
-useEffect(() => {
-  fetchData();
-}, []);
   const closeShareModal = () => {
     if(share===true)
       setShare(false);
@@ -272,7 +253,7 @@ console.log(share);
         <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
         {share && 
         <div className={styles.shareModal} onClick={closeModal}>
-          <ShareModal data={data} id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+          <ShareModal id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
         </div>
         }
         </div>
