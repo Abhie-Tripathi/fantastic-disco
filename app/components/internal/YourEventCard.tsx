@@ -428,7 +428,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             />
           </div>
         </div>
-      </div>
+      </div>}
     </div>
     </div>
   );
