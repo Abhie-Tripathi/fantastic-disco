@@ -6,6 +6,14 @@
     align-items: center;
     padding: 12px;
 }
+.smallCard{
+    width: 600px;
+    height:280px;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    padding: 12px;
+}
 .bannerContainer{
     height: 100%;
     width: 400px;

@@ -7,12 +7,24 @@
     padding-left: 10px;
     /* padding: 0px 12px 12px 10px; */
 }
+.smallCard{
+    width: 600px;
+    height:300px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding-left: 10px;
+}
 .banner{
-    width: 380px;
-    height: 385px;
+    /* width: 380px;
+    height: 385px; */
     border-bottom-left-radius: 100px;
     border-bottom-right-radius: 100px;
     filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+}
+.smallBanner{
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
 }
 .detailsContainer{  
     height: 100%;
