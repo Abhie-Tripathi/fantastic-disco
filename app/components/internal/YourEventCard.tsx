@@ -197,7 +197,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     }
   }
   return (
+  
+     <div className={styles.outerDiv}>
     <div className={`${styles.card} card`} onClick={handleModalOpen}>
+    {/* <div className={styles.cardBefore}></div> */}
       <div className={styles.topContainer} style={{ display: "flex" }}>
         {eventImage &&
           <div className={styles.leftContainer}>
@@ -249,7 +252,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className={styles.circle1}>
                   <Image src={place} alt="locationIcon" width={24} height={24} style={{marginRight:"3px"}}className="icons" />
                 </div>
-                <div style={{marginLeft:"-4px"}}>{eventLocation}{", "}{eventCountry}</div>
+                <div style={{marginLeft:"-4px"}}>{eventLocation===eventCountry? eventCountry :`${eventLocation}, ${eventCountry}`}</div>
               </div>
             }
             <div className={styles.eventDate}>
@@ -387,6 +390,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 .card {
-    /* width: 100%; */
+    width: 99%;
     /* height: 240px; */
     /* border: 1px solid #6650a465; */
     /* background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
@@ -219,7 +219,7 @@
       height: unset;
       /* padding: 15px 10px; */
       margin-top: 15px;
-      width: 100%;
+      /* width: 100%; */
       z-index: 1;
       min-width: unset;
       padding: 15px;

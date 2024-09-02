@@ -22,7 +22,7 @@
     border-radius: 50%;
     background-color: #6750A4;
 }
-.timelineItem::after {
+/* .timelineItem::after {
     content: "";
     position: absolute;
     top: 7px;
@@ -30,7 +30,7 @@
     width: 1px;
     height: 100%;
     border-left: 1px dashed #6750A4;
-} 
+}  */
 
 @media screen and (max-width:768px) {
     /* .timelineItem{
