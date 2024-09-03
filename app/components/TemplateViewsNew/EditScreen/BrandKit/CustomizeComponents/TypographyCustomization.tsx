@@ -85,7 +85,9 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
             let maxFontSize;
             if (selectedType === "heading") {
                 maxFontSize = 24;
-            } else {
+            } else if(selectedType === "subheading") {
+                maxFontSize = 16;
+            }else{
                 maxFontSize = 12;
             }
             return {
@@ -98,16 +100,20 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
         });
     };
 
+   
     const handleDecreaseFontSize = () => {
-        setFontSettings((prevSettings) => ({
-            ...prevSettings,
-            [selectedType]: {
-                ...prevSettings[selectedType],
-                fontSize: prevSettings[selectedType].fontSize > 0 ? prevSettings[selectedType].fontSize - 1 : 0,
-            }
-        }));
-    };
-
+        setFontSettings((prevSettings) => {
+            const newFontSize = prevSettings[selectedType].fontSize - 1;
+            const minFontSize = selectedType === "heading" ? 20 : selectedType === "subheading"? 14 : 10;             
+            return {
+                ...prevSettings,
+                [selectedType]: {
+                    ...prevSettings[selectedType],
+                    fontSize: newFontSize < minFontSize ? minFontSize : newFontSize,
+                }
+            };
+        });
+    }
     const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value)
 
