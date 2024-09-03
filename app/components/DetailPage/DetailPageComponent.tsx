@@ -3,7 +3,6 @@ import React, { Suspense, useEffect, useState } from 'react'
 import styles from './detailpage.style.module.css'
 import Image from 'next/image'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
-import { generateHashtags } from '@/hooks/usHashtagsGenerator'
 import { generateEmailContent } from '@/hooks/useEmailBody'
 import ParticipationContainer from '@/app/components/DetailPage/ParticipationContainer'
 import DateTimeContainer from '@/app/components/DetailPage/DateTimeContainer'
@@ -36,11 +35,12 @@ interface EventProps {
     location_country: string;
     widgetId: string;
     eventId: string;
+    hashtags: string;
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -67,6 +67,12 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                             style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>
                     <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
+
+                    <div className={styles.hashtagsContainer}>
+                        {hashtags.split(",").map((tag, key)=>(
+                            <div className={styles.hashtag} key={key}>{tag}</div>
+                        ))}
+                    </div>
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
                         <ShareButtons shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />

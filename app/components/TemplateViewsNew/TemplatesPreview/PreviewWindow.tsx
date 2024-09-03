@@ -57,7 +57,7 @@ interface DraftWidgetsType {
     templateId: string;
     widgetId: string;
     status: string;
-    widgetStatus : string;
+    widgetStatus: string;
 }
 
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
@@ -204,8 +204,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     </div>
                 </div>
             </div>
-            <div className={styles.preview_btnContainer}>
-                <div className={styles.preview} style={{ height: draftWidget ? "70%" : "100%" }} >
+            <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen)  ? styles.bigpreview_btnContainer : ""}`}>
+                <div className={`${styles.preview} ${(!draftWidget || isFullScreen) ? styles.bigPreview : ""}`} >
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
                             selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
@@ -221,9 +221,10 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                                     selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup
                                                                             smallCard={smallCard}
-                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
+                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup 
+                                                                            smallCard={smallCard}fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
-                {draftWidget && <div className={styles.previewBtnContainer}>
+                {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>
                     <button onClick={() => handleDraftWidgets(true)} className={styles.previewBtn}> Continue with this template</button>
                 </div>}
