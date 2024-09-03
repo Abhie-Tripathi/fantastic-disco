@@ -51,28 +51,6 @@ const Page = () => {
             setCurrentUrl(`${baseUrl}/trackedEvents?`);
         }
     }, []);
-    useEffect(()=>{
-
-    },[])
-    useEffect(() => {
-       fetchData();
-    }, []);
-    const fetchData = async () => {
-        const url = `${baseUrl}/auth/users?limit=100`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'GET'
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                console.log('Data fetched:', data);
-                setData(data?.users);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
-        }
-    };
     
     const [share, setShare] = useState(false);
     const path = usePathname().split('/');
@@ -198,7 +176,7 @@ const Page = () => {
                 <div className={styles.shareModal} onClick={closeModal}>
                     {share && 
         <div className={styles.shareModal} onClick={closeModal}>
-          <ShareModal fetchAccess={fetchAccess} data={data} id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+          <ShareModal fetchAccess={fetchAccess} id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
         </div>
         }
                 </div>

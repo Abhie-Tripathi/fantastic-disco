@@ -5,6 +5,7 @@ import Image from "next/image";
 import OrganiserIcon from "/public/organiser.svg";
 import ClockIcon from "/public/clock.svg";
 import LocationIcon from "/public/location.svg";
+import {Location} from 'geist-icons';
 import Placehodler from "/public/placeholder.png";
 import { useTheme } from "@/context";
 import downArrowIcon from "/public/arrow_down.svg";
@@ -27,7 +28,7 @@ const Organiser = ({ open, organizerData }: Props) => {
         className={styles.header}
         onClick={() => setAccordianToggle(!accordianToggle)}
       >
-        <Image src={OrganiserIcon} alt="page" className={iconClass} />
+        <Image src={OrganiserIcon} width={24} height={24} alt="page" className={iconClass} />
         <div className={styles.eventDetail_header}>
           Organiser
           <span className={styles.image_container}>
@@ -54,7 +55,7 @@ const Organiser = ({ open, organizerData }: Props) => {
             <div className={styles.locationContainer_location}>
               {organizerData?.countryName &&
                 <>
-                  <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} />
+                  <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}} />
                   <div className={styles.location}>{organizerData.countryName}</div>
                 </>
               }

@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react'
-import styles from './page.style.module.css'
+import React from 'react'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { notFound } from 'next/navigation';
@@ -30,12 +29,14 @@ interface EventProps {
     location_country: string;
     widgetId: string;
     eventId: string;
+    hashtags: string;
 }
 
 const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
     return (
         <DetailPageComponent
+            hashtags={hashtags}
             venue={venue}
             latitude={latitude}
             bannerUrl={bannerUrl}

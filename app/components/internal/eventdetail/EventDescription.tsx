@@ -46,7 +46,7 @@ const EventDescription = ({
         className={styles.header}
         onClick={() => setAccordianToggle(!accordianToggle)}
       >
-        <Image src={PageIcon} alt="page" className={iconClass} />
+        <Image src={PageIcon} width={24} height={24} alt="page" className={iconClass} />
         <div className={styles.eventDetail_header}>
           Event Details
           <span className={styles.image_container}>
@@ -76,10 +76,10 @@ const EventDescription = ({
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
               {/* <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} /> */}
-              <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" />
+              <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
               <div className={styles.location}>
                 {(eventDetail.location?.cityName && eventDetail.location?.countryName) ?
-                  (eventDetail.location.cityName +', '+eventDetail.location?.countryName) :
+                  (eventDetail.location.cityName!==eventDetail.location?.countryName ?eventDetail.location.cityName +', '+eventDetail.location?.countryName: eventDetail.location.countryName) :
                   eventDetail.location.countryName
                 }
               </div>

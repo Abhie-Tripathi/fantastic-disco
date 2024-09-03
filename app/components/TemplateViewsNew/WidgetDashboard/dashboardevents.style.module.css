@@ -1,0 +1,113 @@
+.body{
+    height: 100%;
+    padding: 16px;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.btnContainer{
+    padding: 6px;
+    background-color: var(--neutral-light-color);
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+}
+.btn{
+    padding: 5px 30px;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.selectedBtn{
+    background-color: var(--primary-foreground);
+}
+.btn .count{
+    background-color: var(--primary-light-color);
+    font-size: var(--font-size-xs);
+    color: var(--bold-border-color);
+    line-height: 14px;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+.btn .selectedCount{
+    background-color: var(--primary-color);
+    color: white;
+}
+.emptyScreen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 13px;
+    height: 80%;
+}
+.emptyScreen div{
+    color: #7D7D7D;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.emptyScreen span{
+    color: #8F8F8F;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+}
+.addEvent{
+    margin-top: 25px;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+.addEvent span{
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+    color: var(--secondary-text-color);
+}
+.addEvent a{
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.fetchedEventsContainer{
+    margin-top: 12px;
+    height: 100%;
+    width: 100%;
+}
+.eventsList{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+.eventsList .eventCard{
+    width: 100%;
+}
+.addedEventsContainer{
+    margin-top: 12px;
+    height: 100%;
+    width: 100%;
+}
+.allEventBtn{
+    margin-top: 12px;
+    width: 100%;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+    line-height: 18px;
+    padding: 9px;
+    text-align: center;
+}
+.allEventBtn:hover{
+    background-color: var(--primary-light-color);
+}

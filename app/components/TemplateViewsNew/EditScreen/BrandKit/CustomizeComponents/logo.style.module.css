@@ -6,7 +6,7 @@
 .columnbody{
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 20px;
 }
 .headingContainer{
     display: flex;
@@ -45,8 +45,8 @@
     padding: 5px 8px;
     cursor: pointer;
 }
-@media screen and (max-width: 1406px) {
+/* @media screen and (max-width: 1406px) {
     .body{
         gap: 50px;
     }
-}
+} */

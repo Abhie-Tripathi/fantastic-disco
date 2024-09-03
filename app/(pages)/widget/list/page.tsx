@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import WidgetCard from '@/app/components/TemplateViews/draftwidgets/WidgetCard'
 import styles from './page.style.module.css'
-import { useTheme } from '@/context'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
@@ -49,7 +48,6 @@ const Widget = () => {
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [selectedKey, setSelectedKey] = useState<number>(0)
-
 
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -117,9 +115,9 @@ const Widget = () => {
   }, [])
 
   // Need to do this to display the data on the load of the page
-  useEffect(()=>{
+  useEffect(() => {
     handleWidgetClick(selectedWidgetId)
-  },[selectedWidgetId])
+  }, [selectedWidgetId])
 
   const handleAddWidget = () => {
     router.push("/widget/add")
@@ -147,7 +145,7 @@ const Widget = () => {
     return <div>Loading...</div>; // Show a loading state
   }
   if (!isValid) {
-    return <Errorpage type='list' />; // Render the 404 component if the data is invalid
+    return <div className={styles.errorPage}><Errorpage type='list' /></div>; // Render the 404 component if the data is invalid
   }
   return (
     <div className={styles.body}>

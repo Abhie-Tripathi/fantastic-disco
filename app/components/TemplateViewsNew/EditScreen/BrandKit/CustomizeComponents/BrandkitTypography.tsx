@@ -76,10 +76,10 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings }: 
                         </div>}
                     </div>
                 </div>
-                <div className={styles.warning}>
+                {/* <div className={styles.warning}>
                     <Image src={WarningIcon} alt='warning' />
                     <span>Failed to fetch your site&apos;s Typography styles</span>
-                </div>
+                </div> */}
             </div>
         </div>
     )

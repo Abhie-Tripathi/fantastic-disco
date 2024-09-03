@@ -22,7 +22,8 @@ interface Props {
   };
   buttonSettings?: ButtonSettingsState,
   selectedBtn?: "primary" | "secondary"
-  fetchedAddedEvents?: PrefilledAddedEventsType[]
+  fetchedAddedEvents?: PrefilledAddedEventsType[];
+  smallCard : boolean;
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -35,7 +36,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents, smallCard }: Props) => {
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -59,8 +60,8 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
 
   return (
-    <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={380} height={385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+    <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
+      <Image width={smallCard ? 280 : 380} height={ smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={smallCard ? styles.smallBanner : styles.banner} />
       <div className={styles.detailsContainer}>
         <div className={styles.valuesContainer}>
           <div className={styles.date_location_nameContainer}>

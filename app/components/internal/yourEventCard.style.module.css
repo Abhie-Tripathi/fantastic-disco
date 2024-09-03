@@ -1,5 +1,5 @@
 .card {
-    width: 80%;
+    width: 99%;
     /* height: 240px; */
     /* border: 1px solid #6650a465; */
     /* background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%); */
@@ -10,17 +10,38 @@
     background: var(--card-background);
     justify-content: space-between;
     margin-bottom: 25px;
-    margin-top: 40px;
     /* padding: 25px; */
 }
+.outerDiv{
+    border-left: 1px dashed var(--primary-color);
+    width: 85%;
+    display: flex;
+    justify-content: flex-end;
+}
+/* .cardBefore{
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: -14px;
+    width: 1px;
+    height: 100%;
+    border-left: 1px dashed #6750A4;
+} */
 .topContainer:not(:only-child) {
     gap:30px;
   }
 .eventNameComp {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
 }
-
+.deleteBtn{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    padding: 5px 9px;
+    color: white;
+}
 .company {
     /* color: #8C8EA4; */
     color: var(--tertiary-text-color);
@@ -81,7 +102,49 @@
 .eventDate img {
     margin-right: 7px;
 }
+.eventTime{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: var(--font-size-small);
+    border-radius: var(--border-radius-sm); 
+}
 
+.tags_deleteContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tags{
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.tags div{
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.tags .tag1{
+    color: #0062D1;
+    border: 1px solid #CCE6FF;
+    background-color: #EBF5FF;
+}
+.tags .tag2{
+    color: #12A594;
+    border: 1px solid #BEF4EB;
+    background-color: #E5FAF6;
+}
+.description{
+    margin-top: 5px;
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
 .cardImg {
     border-radius: var(--border-radius-lg);
 }
@@ -134,8 +197,8 @@
 @media screen and (max-width:1400px) {
     .card {
         /* padding: 15px 10px; */
-        margin-top: 15px;
-        width: 85%;
+        margin-top: 25px;
+        width: 98%;
     }
     .cardImg{
         width: 200px;
@@ -145,7 +208,7 @@
 
 @media screen and (max-width:1200px) {
     .card {
-        min-width: 800px;
+        /* min-width: 800px; */
         z-index: 1;
     }
     .cardImg{
@@ -203,7 +266,7 @@
       height: unset;
       /* padding: 15px 10px; */
       margin-top: 15px;
-      width: 100%;
+      /* width: 100%; */
       z-index: 1;
       min-width: unset;
       padding: 15px;

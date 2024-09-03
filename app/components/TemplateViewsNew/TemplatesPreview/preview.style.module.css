@@ -13,9 +13,23 @@
     font-weight: 500;
 }
 .preview_btnContainer{
-    margin-top: 20px;
-    height:95%;
+    margin-top: 10px;
+    height:80%;
     width: 100%;
+}
+.bigpreview_btnContainer{
+    height:95%;
+}
+.preview{
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    height: 85%;
+}
+.bigPreview{
+    height: 100%;
 }
 .styleBtns{
     display: flex;
@@ -44,14 +58,8 @@
     border: 1px solid #6750a4
 }
 
-.preview{
-    overflow-y: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
-}
-.previewBtnContainer{
+
+.previewButtons{
     width: 100%;
     display: flex;
     justify-content: center;

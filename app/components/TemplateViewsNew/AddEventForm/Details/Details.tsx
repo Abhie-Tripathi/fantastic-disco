@@ -23,6 +23,8 @@ import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
+import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
+import HashtagContainer from './Hashtags/HashtagContainer'
 
 interface SpeakerProfileType {
   id: string;
@@ -87,7 +89,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
   // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const [hashtags, setHashtags] = useState<string[]>([])
+  const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -164,7 +167,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
-    
+
     if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
       if (banner.file) {
         formData.append("file", banner.file); // Use the file field if uploaded by the user
@@ -206,7 +209,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       bannerUrl,
       latitude,
       longitude,
-      venue
+      venue,
+      hashtags : hashtags.join(",")
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -338,14 +342,27 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       }
     }
   }
-  // useEffect(() => {
-  //   if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
-  //     if (description && eventName && countryName) {
-  //       generatePrompt(countryName, description, eventName, 1024, 1024)
-  //     }
-  //   }
-  // }, [description, eventName, countryName])
+  const handleTagsGenerate = ()=>{
+    if (!loadingState) {
+      if (description && eventName) {
+        generateHashtags(eventName, description)
+      }
+    }
+  }
+  useEffect(() => {
+    // if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
+    //   if (description && eventName && countryName) {
+    //     generatePrompt(countryName, description, eventName, 1024, 1024)
+    //   }
+    // }
+    if (description && eventName) {
+      generateHashtags(eventName, description)
+    }
 
+  }, [description, eventName, countryName])
+  useEffect(() => {
+    setHashtags(generatedHashtags)
+  }, [generatedHashtags])
   useEffect(() => {
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
@@ -387,7 +404,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               </div>
             </div>
           </div>
-          <div className={styles.participationContainer}><ParticipationContainer width="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.participationContainer}><ParticipationContainer size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.hashtagsContainer}>
+              <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate}/>
+          </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
             <ShareButtons shareUrl='www.10times.com' />
@@ -405,12 +425,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
           {cityName &&
             // <div className={styles.map} ref={mapDivRef}>
-              <Suspense fallback={<div>Loading...</div>}>
-                <Mapview latitude={latitude}
-                  longitude={longitude}
-                  venue={cityName}
-                  zoom={6} />
-              </Suspense>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Mapview latitude={latitude}
+                longitude={longitude}
+                venue={cityName}
+                zoom={6} />
+            </Suspense>
             // </div>
           }
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>

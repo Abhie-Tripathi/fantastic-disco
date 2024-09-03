@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from "./eventdesc.style.module.css";
+import tooltip from '@/app/components/trackers/sideNav/sideNav.style.module.css'
 import Image from "next/image";
 import PeopleIcon from "/public/user.svg";
 // import Placehodler from "/public/placeholder.png";
@@ -9,6 +10,7 @@ import downArrowIcon from '/public/arrow_down.svg'
 import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { Envelope, Phone } from "geist-icons";
 // import { showToast } from "@/utils/showToast";
 import { formatEventDates } from "@/utils/dateFormat";
 
@@ -73,8 +75,8 @@ const EventPoc = ({ open, eventId }: Props) => {
                   <Image
                     src={ poc?.profilePicture === null ? PlaceHolder : poc?.profilePicture }
                     alt="banner"
-                    width={80}
-                    height={80}
+                    width={60}
+                    height={60}
                     className={styles.followerProfilePhoto}
                   />
                   <div className={styles.followerDetails}>
@@ -83,6 +85,16 @@ const EventPoc = ({ open, eventId }: Props) => {
                       {/* <span className={styles.username}>{item.username}</span> */}
                     </div>
                     <div className={styles.followerPosition}>{poc?.designation}</div>
+                    <div className={styles.lockedCta}>
+                      <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
+                      <Phone height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+                      <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
+                      </div>
+                      <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
+                      <Envelope height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+                      <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
+                      </div>
+                    </div>
                     {/* {poc?.emailActive &&
                       <div className={styles.emailActiveStatus}>Last Active: {formatEventDates(poc?.emailActive, poc?.emailActive)}</div>
                     } */}
