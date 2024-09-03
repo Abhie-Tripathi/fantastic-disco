@@ -3,7 +3,7 @@ import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
     fontFamily: string;
@@ -44,7 +44,7 @@ const EventCard1 = ({
         const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
     };
-        
+
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
@@ -54,7 +54,8 @@ const EventCard1 = ({
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
-                        <Image src={locationIcon} alt='location' />
+                        {/* <Image src={locationIcon} alt='location' /> */}
+                        <LocationIcon color={fontSettings.subheading.fontColor}/>
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
                     </div>
                     <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
@@ -71,3 +72,13 @@ const EventCard1 = ({
 }
 
 export default EventCard1
+
+interface IconProps {
+    color: string;
+}
+
+function LocationIcon({ color }: IconProps) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" fill={color} /></svg>
+    )
+}
