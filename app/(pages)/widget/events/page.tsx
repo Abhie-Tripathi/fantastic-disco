@@ -9,6 +9,7 @@ import { baseUrl } from '@/constants'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image'
+import { useTheme } from '@/context'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
@@ -16,6 +17,7 @@ const Page = () => {
     const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [selectedEventId, setSelectedEventId] = useState<string>("")
+    const {theme} = useTheme()
 
     let prevDate: any = null;
     useEffect(() => {
@@ -102,7 +104,7 @@ const Page = () => {
             })}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addNormalEventModal}>
-                <AddNormalEvent setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />
+                <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

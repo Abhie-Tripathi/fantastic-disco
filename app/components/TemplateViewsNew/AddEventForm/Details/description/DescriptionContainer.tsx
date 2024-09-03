@@ -6,12 +6,13 @@ import Image from 'next/image'
 interface Props{
     setDescriptionModal: (value : boolean)=>void
     description : string;
+    theme? : string;
 }
 
-const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
+const DescriptionContainer = ({setDescriptionModal,description, theme} : Props) => {
 
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />

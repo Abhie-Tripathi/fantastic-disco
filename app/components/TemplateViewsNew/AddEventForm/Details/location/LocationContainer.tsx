@@ -15,6 +15,7 @@ interface Props{
     eventFormat : string;
     setLongitude : (value : number)=>void;
     setLatitude : (value : number)=> void;
+    theme? : string;
 }
 
 const LocationContainer = ({
@@ -25,12 +26,13 @@ const LocationContainer = ({
     setEventFormat,
     eventFormat,
     setLongitude,
-    setLatitude
+    setLatitude,
+    theme
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationContainer}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>

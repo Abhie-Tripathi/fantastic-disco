@@ -23,6 +23,7 @@ interface TimeSettingsProps {
     setStartTime: React.Dispatch<React.SetStateAction<string>>;
     endTime: string;
     setEndTime: React.Dispatch<React.SetStateAction<string>>;
+    theme?: string;
 }
 
 const DateTimeContainer = ({
@@ -37,7 +38,8 @@ const DateTimeContainer = ({
     startTime,
     setStartTime,
     endTime,
-    setEndTime
+    setEndTime,
+    theme
 }: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
@@ -46,14 +48,14 @@ const DateTimeContainer = ({
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
     const [todaysDate, setTodaysDate] = useState<any>()
-    
+
 
     const startCalDropdownRef = useOutsideClick(() => setStartCalendarDropdown(false))
     const endCalDropdownRef = useOutsideClick(() => setEndCalendarDropdown(false))
     const startTimeDropdownRef = useOutsideClick(() => setStartTimeDropdown(false))
     const endTimeDropdownRef = useOutsideClick(() => setEndTimeDropdown(false))
     const timezoneDropdownRef = useOutsideClick(() => setTimezoneDropdown(false))
-    
+
     const times = [
         "12:00 A.M", "12:30 A.M", "1:00 A.M", "1:30 A.M", "2:00 A.M", "2:30 A.M", "3:00 A.M", "3:30 A.M",
         "4:00 A.M", "4:30 A.M", "5:00 A.M", "5:30 A.M", "6:00 A.M", "6:30 A.M", "7:00 A.M", "7:30 A.M",
@@ -137,8 +139,8 @@ const DateTimeContainer = ({
     }
 
     return (
-        <div className={styles.body}>
-            <div className={styles.dateAndTimeContainer}>
+        <div className={`${styles.body}`}>
+            <div className={`${styles.dateAndTimeContainer} ${theme && theme === "dark" ? styles.darkdateAndTimeContainer : ""}`}>
                 <div className={styles.startEndStyle}>
                     <div className={styles.start}>Start</div>
                     <div className={styles.end}>End</div>
@@ -173,12 +175,12 @@ const DateTimeContainer = ({
                 </div>
 
             </div>
-            <div ref={timezoneDropdownRef} className={styles.timeZonesContainer} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
+            <div ref={timezoneDropdownRef} className={`${styles.timeZonesContainer} ${theme && theme === "dark" ? styles.darktimeZonesContainer : ""}`} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
                 <div className={styles.header}>
                     <TimeZoneIcon />
                     <div className={styles.dropdownIcon}><DownIcon /></div>
                 </div>
-                <div className={styles.timeZone}>
+                <div className={`${styles.timeZone} ${theme && styles.themeTimeZone}`}>
                     {timeZone}
                 </div>
                 {timezoneDropdown && <div className={styles.timezoneDropdown}>

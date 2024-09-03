@@ -16,9 +16,10 @@ interface Props {
     fetchEvents: () => Promise<void>;
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
+    theme : string;
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent,theme }: Props) => {
     // const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
@@ -125,7 +126,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         setTextValue(description)
     },[description])
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme ==="dark" ? styles.darkBody : ""}`}>
             <div className={styles.header}>
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
@@ -137,12 +138,12 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             <div className={styles.form}>
                 <textarea className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
 
-                <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
+                <div className={styles.dateTimeContainer}><DateTimeContainer theme={theme} setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                 <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                 <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
-                <div className={styles.participationContainer}><ParticipationContainer size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
-                <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div> 
+                <div className={styles.participationContainer}><ParticipationContainer theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+                <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} /></div> 
             </div>
             {
                 descriptionModal && <div className={styles.descriptionModalFill}>

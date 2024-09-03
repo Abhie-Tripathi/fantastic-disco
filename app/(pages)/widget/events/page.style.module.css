@@ -1,7 +1,7 @@
 .body {
     overflow-y: hidden;
     position: relative;
-    padding: 70px;
+    padding: 50px;
 }
 .nav{
     display: flex;
