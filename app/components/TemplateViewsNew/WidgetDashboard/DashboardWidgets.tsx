@@ -113,7 +113,7 @@ const DashboardWidgets = () => {
         <div className={styles.draftWidgetsContainer}>
           {draftWidgets.length > 0 ?
             <div className={styles.widgetList}>
-              {draftWidgets.map((card, key) => (
+              {draftWidgets.slice(0,2).map((card, key) => (
                 <div className={styles.widgetCard} key={key}>
                   <WidgetCard
                     widgetStatus={card.widgetStatus}

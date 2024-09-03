@@ -673,6 +673,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           setType={setType}
           setInterestType={setInterestType}
           productId={productId}
+          allUsers={userArr}
           notes={addNote}
           setNote={setNote}
           note={note}

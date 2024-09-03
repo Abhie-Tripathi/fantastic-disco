@@ -365,8 +365,10 @@ const [val,setVal]=useState(1);
   }, [ currPage, itemsPerPage]);
 
   useEffect(() => {
+    if(queryString){
     if(currPage == 1) fetchEventsData();
     else setCurrPage(1);
+    }
   }, [queryString]);
 
 // useEffect(()=>{
@@ -375,6 +377,7 @@ const [val,setVal]=useState(1);
 //   fetchData(secondLast);
 // },[currPage])
   useEffect(() => {
+   
     if(path[2] === "search") setInitialRender(true);
     const fetchBookmarkData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
@@ -389,7 +392,9 @@ const [val,setVal]=useState(1);
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
+  if(path[2]!=='trackers'){
     fetchBookmarkData();
+  }
   }, []);
 
   const handleModalOpen = (eventId: string, eventGroupId: string) => {
