@@ -91,7 +91,7 @@ const Widget = () => {
       eventSize: widget.otherdata.event.length,
       widgetStatus: "Active"
     })) : [];
-    const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
+    const deactivateWidgets =deactivateData&& deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
@@ -100,12 +100,12 @@ const Widget = () => {
       widgetStatus: "Inactive"
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
-    setWidgetId(combinedWidgets[0].id)
     setSelectedKey(0)
     if (combinedWidgets.length === 0) {
       setIsValid(false)
     } else {
       setAllWidgets(combinedWidgets);
+      setWidgetId(combinedWidgets[0].id)
     }
     setLoading(false)
   }
