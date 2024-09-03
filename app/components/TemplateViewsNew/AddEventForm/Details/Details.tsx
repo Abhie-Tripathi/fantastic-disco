@@ -90,7 +90,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
   // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [hashtags, setHashtags] = useState<string[]>([])
+  const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -178,7 +178,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
 
     formData.append("interest", participationType.toUpperCase())
-    formData.append("source", "eventgeni/widget/event")
+    // formData.append("source", "eventgeni/widget/event")
     formData.append("sourceId", widgetId)
 
     const { data, error } = await myFetch(`${baseUrl}/event`, {
@@ -211,7 +211,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       latitude,
       longitude,
       venue,
-      hashtags : hashtags.join(",")
+      hashtags: hashtags.join(",")
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -343,7 +343,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       }
     }
   }
-  const handleTagsGenerate = ()=>{
+  const handleTagsGenerate = () => {
     if (!loadingState) {
       if (description && eventName) {
         generateHashtags(eventName, description)
@@ -356,14 +356,19 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     //     generatePrompt(countryName, description, eventName, 1024, 1024)
     //   }
     // }
-    if (description && eventName) {
-      generateHashtags(eventName, description)
+    if (!prefilledAddedEvent) {
+      if (description && eventName) {
+        generateHashtags(eventName, description)
+      }
     }
-
   }, [description, eventName, countryName])
+
   useEffect(() => {
-    setHashtags(generatedHashtags)
+    if(!prefilledAddedEvent){
+      setHashtags(generatedHashtags)
+    }   
   }, [generatedHashtags])
+  
   useEffect(() => {
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
@@ -407,7 +412,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           </div>
           <div className={styles.participationContainer}><ParticipationContainer size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
           <div className={styles.hashtagsContainer}>
-              <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate}/>
+            <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate} />
           </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
@@ -427,10 +432,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           {cityName &&
             // <div className={styles.map} ref={mapDivRef}>
             // <Suspense fallback={<div>Loading...</div>}>
-              <MapView latitude={latitude}
-                longitude={longitude}
-                venue={cityName}
-                zoom={6} />
+            <MapView latitude={latitude}
+              longitude={longitude}
+              venue={cityName}
+              zoom={6} />
             // </Suspense>
             // </div>
           }

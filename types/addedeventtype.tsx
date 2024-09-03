@@ -1,6 +1,7 @@
 export interface AddedEventsType {
     id:string
     pageBgColor :string,
+    hashtags : string;
     eventFont : string,
     registerBtnColor : string,
     registerBtnText : string,

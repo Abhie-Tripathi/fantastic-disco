@@ -64,7 +64,7 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
                     </form>
                 )}
             </div>
-            {hashtags.length > 0 && <div onClick={handleGenerateClick} data-name="Generate Your Banner" className={styles.hashtagButton}>
+            {hashtags.length > 0 && <div onClick={handleGenerateClick} className={styles.hashtagButton}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon} width={15} height={15}></Image>
             </div>}
         </div>

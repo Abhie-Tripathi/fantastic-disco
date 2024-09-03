@@ -123,6 +123,9 @@ const Page = () => {
     fetchAddedEvents();
   }, [])
 
+  useEffect(()=>{
+    console.log("event : ", prefilledAddedEvent)
+  },[prefilledAddedEvent])
 
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
