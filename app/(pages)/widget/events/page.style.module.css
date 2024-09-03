@@ -1,8 +1,29 @@
 .body {
     overflow-y: hidden;
     position: relative;
+    padding: 70px;
 }
-
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+    padding: 7px;
+    background-color: var(--heading-background-color);
+    margin-bottom: 20px;
+}
+.nav div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.nav button{
+    background-color: var(--primary-color);
+    font-size: var(--font-size-default);
+    border-radius: 4px;
+    padding: 7px 9px;
+    color: white;
+}
 .modalOpen {
     overflow-y: hidden;
     height: 90vh;
@@ -22,8 +43,9 @@
     transform: translate(-50%, -50%);
     height: 100%;
     width: 100%;
-    background-color: black;
+    background-color: var(--background-color);
     opacity: .3;
+    z-index: 1;
 }
 
 .addNormalEventModal {
@@ -31,6 +53,47 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 2;
     width: 50%;
+}
+.deleteModal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+.deleteModal .deleteHeading{
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.deleteModal .btns{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.deleteModal .btns button{
+    font-size: var(--font-size-default);
+    border-radius: 4px;
+    padding: 5px 9px;
+    color: white;
+}
+.deleteModal .deleteBtn{
+    background-color: var(--danger-text-color);
+}
+.deleteModal .cancelBtn{
+    background-color: var(--primary-color);
+}
+.deleteModal .deleteBtn:hover{
+    background-color: #eb6368;
+}
+.deleteModal .cancelBtn:hover{
+    background-color: #7d62c7;
 }

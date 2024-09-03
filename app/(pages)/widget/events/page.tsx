@@ -7,16 +7,43 @@ import { myFetch } from '@/utils/myFetch'
 import { AllEventsType } from '@/types/alleventtype'
 import { baseUrl } from '@/constants'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
+import CalendarIcon from '/public/calendar.svg'
+import Image from 'next/image'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
     const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false)
     const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
+    const [deleteModal, setDeleteModal] = useState<boolean>(false)
+    const [selectedEventId, setSelectedEventId] = useState<string>("")
 
     let prevDate: any = null;
     useEffect(() => {
         fetchEvents()
     }, [])
+
+    const handleDeleteModal = (eventId: string) => {
+        setSelectedEventId(eventId)
+        setDeleteModal(true)
+    }
+    const handleDelete = async () => {
+        const customizeData = new FormData();
+        customizeData.append("id", selectedEventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+                method: 'PATCH',
+                body: customizeData,
+            }
+        );
+        if (data) {
+            fetchEvents()
+        }
+        if (error) {
+            console.log(error);
+        }
+    }
 
     const fetchEvents = async () => {
         const { data, error } = await myFetch(`${baseUrl}/event`)
@@ -42,12 +69,23 @@ const Page = () => {
             console.error('Error fetching events:', error);
         }
     }
+    const handleFormModal = () => {
+        setPrefilledNormalEvent(undefined)
+        setIsEventFormModal(true)
+    }
     const handlePrefillEvent = (event: AllEventsType) => {
         setPrefilledNormalEvent(event)
         setIsEventFormModal(true)
     }
     return (
-        <div className={`${styles.body} ${isEventFormModal ? styles.modalOpen : ""}`}>
+        <div className={`${styles.body} ${isEventFormModal || deleteModal ? styles.modalOpen : ""}`}>
+            <nav className={styles.nav}>
+                <div>
+                    <Image src={CalendarIcon} alt='cal' width={14} height={14} className='icons' />
+                    <span>Upcoming Events</span>
+                </div>
+                <button onClick={handleFormModal}>+ Add Event</button>
+            </nav>
             {fetchedEvents.map((event, index) => {
                 const showDate = event.startDate !== prevDate;
                 prevDate = event.startDate;
@@ -55,15 +93,23 @@ const Page = () => {
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.startDate : null} />
                         <YourEventCard
+                            handleDeleteModal={handleDeleteModal}
                             handlePrefillEvent={handlePrefillEvent}
                             geniEvent={event}
                         />
                     </div>
                 );
             })}
-            {isEventFormModal && <div className={styles.blackScreen}></div>}
+            {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addNormalEventModal}>
                 <AddNormalEvent setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />
+            </div>}
+            {deleteModal && <div className={styles.deleteModal}>
+                <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
+                <div className={styles.btns}>
+                    <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
+                    <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
+                </div>
             </div>}
         </div>
     )
