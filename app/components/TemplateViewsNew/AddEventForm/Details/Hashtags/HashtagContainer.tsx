@@ -48,7 +48,7 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
                             </div>
                         ))
                 }
-                {(hashtags.length < 5) && (hashtags.length > 0) && (!showInput) && <button onClick={() => setShowInput(true)} className={styles.addBtn}>+</button>}
+                {((hashtags.length < 5) && (hashtags.length > 0) && (!showInput) && (!loadingState)) && <button onClick={() => setShowInput(true)} className={styles.addBtn}>+</button>}
                 {(showInput && hashtags.length < 5) && (
                     <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
                         <span>#</span>

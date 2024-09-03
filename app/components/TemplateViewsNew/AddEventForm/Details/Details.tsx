@@ -410,7 +410,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
-            <ShareButtons shareUrl='www.10times.com' />
+            <ShareButtons disabled={true} shareUrl='www.10times.com' />
           </div>
         </div>
         <div className={styles.rightSection}>
