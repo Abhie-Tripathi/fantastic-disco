@@ -25,6 +25,7 @@ import { AddedEventsType } from '@/types/addedeventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
+import MapView from '@/app/components/DetailPage/Mapview'
 
 interface SpeakerProfileType {
   id: string;
@@ -53,7 +54,7 @@ interface Props {
 }
 const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent, prefilledGlobalEvent }: Props) => {
 
-  const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
+  // const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
@@ -425,12 +426,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
           {cityName &&
             // <div className={styles.map} ref={mapDivRef}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Mapview latitude={latitude}
+            // <Suspense fallback={<div>Loading...</div>}>
+              <MapView latitude={latitude}
                 longitude={longitude}
                 venue={cityName}
                 zoom={6} />
-            </Suspense>
+            // </Suspense>
             // </div>
           }
           <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
