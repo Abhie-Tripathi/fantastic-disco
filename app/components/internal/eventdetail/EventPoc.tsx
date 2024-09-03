@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from "./eventdesc.style.module.css";
+import tooltip from '@/app/components/trackers/sideNav/sideNav.style.module.css'
 import Image from "next/image";
 import PeopleIcon from "/public/user.svg";
 // import Placehodler from "/public/placeholder.png";
@@ -85,13 +86,13 @@ const EventPoc = ({ open, eventId }: Props) => {
                     </div>
                     <div className={styles.followerPosition}>{poc?.designation}</div>
                     <div className={styles.lockedCta}>
-                      <div style={{cursor:"pointer"}} className={styles.tooltipContainer}>
+                      <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
                       <Phone height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
-                      <span className={styles.tooltipText}>Locked</span>
+                      <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
                       </div>
-                      <div style={{cursor:"pointer"}} className={styles.tooltipContainer}>
+                      <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
                       <Envelope height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
-                      <span className={styles.tooltipText}>Locked</span>
+                      <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
                       </div>
                     </div>
                     {/* {poc?.emailActive &&

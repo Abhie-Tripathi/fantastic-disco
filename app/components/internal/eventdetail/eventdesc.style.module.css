@@ -452,54 +452,6 @@
   gap:var(--spacing-xs);
 }
 
-.tooltipContainer {
-  position: relative;
-  display: inline-block;
-  
-}
-
-.tooltipContainer .tooltipText {
-  visibility: hidden;
-  /* width: 120px; */
-  font-size: var(--font-size-small);
-  background-color: #333;
-  text-wrap: nowrap;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  /* z-index: 1; */
-  bottom: 100%; 
-  left: 50%;
-  z-index: 1;
-  margin-left: -30px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltipContainer .tooltipText::after {
-  content: attr(data-name);
-    position: absolute;
-    top: 120%;
-    left: 60%;
-    white-space: nowrap;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-}
-
-.tooltipContainer:hover .tooltipText {
-  visibility: visible;
-  opacity: 1;
-}
-
 @media screen and (max-width: 576px) {
   .container {
     padding: 17px 26px;
