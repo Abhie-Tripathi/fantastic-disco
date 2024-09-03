@@ -33,9 +33,9 @@ const LogoComponent = ({flex}: Props) => {
                     <Image src={imageSrc} alt='logo' width={48} height={48}/>
                 </div>
                 <input type="file" id="fileInput" className={styles.fileInput} onChange={handleFileChange}/>
-                <label htmlFor="fileInput" className={styles.customFileButton}>
+                {/* <label htmlFor="fileInput" className={styles.customFileButton}>
                     Upload
-                </label>
+                </label> */}
             </div>
         </div>
     )
