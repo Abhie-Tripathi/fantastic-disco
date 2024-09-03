@@ -41,7 +41,7 @@ const LocationContainer = ({
                 </div>
             </div>
             <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
 }

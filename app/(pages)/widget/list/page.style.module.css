@@ -77,10 +77,11 @@
     overflow-y: auto;
 }
 .yourWidgetModal {
-    filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
+    /* filter: drop-shadow(1px 1px 5px rgb(180, 180, 180)); */
+    border: 1px solid var(--border-color);
     height: 89%;
     width: 600px;
-    background-color: #FFFFFF;
+    background-color: var(--primary-foreground);
     position:fixed;
     z-index: 999;
     top: 70px;

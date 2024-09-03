@@ -2,7 +2,9 @@
     width: 100%;
     padding: 12px;
 }
-
+/* .darkBody{
+    background-color: #1a1a1a;
+} */
 .locationTypes {
     display: flex;
     align-items: center;

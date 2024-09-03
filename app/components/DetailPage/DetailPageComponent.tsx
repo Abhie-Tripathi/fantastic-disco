@@ -69,7 +69,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
 
                     {hashtags && <div className={styles.hashtagsContainer}>
-                        {hashtags.split(",").map((tag, key)=>(
+                        {hashtags?.split(",").map((tag, key)=>(
                             <div className={styles.hashtag} key={key}>{tag}</div>
                         ))}
                     </div>}

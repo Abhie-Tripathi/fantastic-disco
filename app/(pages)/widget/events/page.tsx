@@ -17,6 +17,7 @@ const Page = () => {
     const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [selectedEventId, setSelectedEventId] = useState<string>("")
+    const [selectedEventName, setSelectedEventName] = useState<string>("")
     const {theme} = useTheme()
 
     let prevDate: any = null;
@@ -24,7 +25,8 @@ const Page = () => {
         fetchEvents()
     }, [])
 
-    const handleDeleteModal = (eventId: string) => {
+    const handleDeleteModal = (eventId: string, eventName : string) => {
+        setSelectedEventName(eventName)
         setSelectedEventId(eventId)
         setDeleteModal(true)
     }
@@ -108,6 +110,7 @@ const Page = () => {
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
+                <span>{selectedEventName}</span>
                 <div className={styles.btns}>
                     <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
                     <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>

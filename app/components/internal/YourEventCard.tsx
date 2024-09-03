@@ -39,7 +39,7 @@ interface YourEventCardProps {
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
-  handleDeleteModal? : (value : string)=>void
+  handleDeleteModal? : (id : string, name : string)=>void
 }
 
 const formatDate = (dateString: string): string => {
@@ -221,7 +221,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const handleDeleteEvent = (e: React.MouseEvent<HTMLButtonElement>)=>{
     e.stopPropagation()
     if(handleDeleteModal && geniEvent){
-      handleDeleteModal(geniEvent?.eventId)
+      handleDeleteModal(geniEvent.eventId, geniEvent.name)
     }
   }
   return (

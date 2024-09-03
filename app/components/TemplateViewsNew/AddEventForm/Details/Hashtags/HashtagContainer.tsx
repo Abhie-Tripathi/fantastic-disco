@@ -31,11 +31,17 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (newTag.trim() !== "") {
-            setHashtags([...hashtags, "#"+newTag.trim()]);
+            setHashtags([...hashtags, "#" + newTag.trim()]);
             setNewTag(""); // Clear the input field
             setShowInput(false); // Hide the input field
         }
     };
+
+    const handleInputShow = () => {
+        if (hashtags.length < 5) {
+            setShowInput(true)
+        }
+    }
 
     return (
         <div className={styles.body}>
@@ -48,12 +54,13 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
                             </div>
                         ))
                 }
-                {((hashtags.length < 5) && (hashtags.length > 0) && (!showInput) && (!loadingState)) && <button onClick={() => setShowInput(true)} className={styles.addBtn}>+</button>}
-                {(showInput && hashtags.length < 5) && (
+                {((hashtags.length > 0) && (!showInput) && (!loadingState)) && <div data-name="Can add upto 5 hashtags only" onClick={handleInputShow} className={`${styles.addBtn} ${hashtags.length === 5 ? styles.addBtnDisable : ""}`}>+</div>}
+                {(showInput) && (
                     <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
-                        <span>#</span>
+                        <span className={styles.hash}>#</span>
                         <input maxLength={30} type="text" value={newTag} onChange={handleInputChange} className={styles.tagInput}
                         />
+                        <span className={styles.deleteIcon} onClick={()=>setShowInput(false)}>x</span>
                     </form>
                 )}
             </div>
