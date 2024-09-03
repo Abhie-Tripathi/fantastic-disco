@@ -27,7 +27,7 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventRequest_header}>
-          Event Request
+          Team Request
           <span className={styles.image_container}>
             <Image src={downArrowIcon} alt="dropdown" width={15} height={15} />
           </span>

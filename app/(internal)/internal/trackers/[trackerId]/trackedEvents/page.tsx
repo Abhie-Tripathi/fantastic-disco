@@ -1,3 +1,4 @@
+
 "use client";
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import Expand from "/public/expand_more.svg";
@@ -82,31 +83,11 @@ const Page = ({ params }: { params: any }) => {
     ],
   };
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(false);
-      const url = `${baseUrl}/tracker/${trackerId}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-        });
-        if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          setData(data);
-          setLoading(true);
-        }
-      } catch (err) {
-        console.error("Fetch failed:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-  useEffect(() => {
     const fetchTrackerDetail = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
       if (data) {
         setTrackerDetail(data.tracker);
+        setLoading(true);
       }
       if (error) {
         console.log(error);
@@ -391,7 +372,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.active
                       )
                     ) : (
@@ -414,7 +395,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.new
                       )
                     ) : (
@@ -442,7 +423,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.expired
                       )
                     ) : (

@@ -105,24 +105,6 @@ const Page = () => {
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
     else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
   },[])
-  
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      if (data) {
-        console.log(data);
-        setCatgeoryData(data);
-      }
-    };
-    fetchData();
-  }, []);
-  console.log(categoryData);
   const [editData, setEditData] = useState<EditData | null>(null);
   const [arr, setArr] = useState<any>();
 

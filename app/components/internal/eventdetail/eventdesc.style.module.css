@@ -241,6 +241,7 @@
 
 .followerContainer {
   display: flex;
+  align-items: center;
   gap: 23px;
   margin-bottom: 10px;
 }
@@ -445,6 +446,10 @@
 
 .dropdown_content:hover {
   background-color: var(--background-color-hover);
+}
+.lockedCta{
+  display: flex;
+  gap:var(--spacing-xs);
 }
 
 @media screen and (max-width: 576px) {
