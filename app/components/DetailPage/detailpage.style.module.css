@@ -51,6 +51,7 @@
     gap: 9px;
 }
 .hashtag{
+    border: 1px solid #b6b6b6;
     background-color: #EBEBEB;
     color: #666666;
     font-size: var(--font-size-xs);

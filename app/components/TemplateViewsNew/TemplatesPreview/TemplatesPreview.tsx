@@ -17,6 +17,7 @@ interface Props {
     fetchDraftWidgets: () => Promise<void>; 
     isFullScreen : boolean;
     setIsFullScreen :  (value : boolean) => void;
+    setIsDraftSaved : (value : boolean) => void;
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -28,7 +29,7 @@ interface DraftWidgetsType {
   }
 
 
-const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchDraftWidgets,isFullScreen,setIsFullScreen}: Props) => {
+const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchDraftWidgets,isFullScreen,setIsFullScreen,setIsDraftSaved}: Props) => {
     // const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>(""); // THIS IS TEMPLATE CODE
 
@@ -64,7 +65,7 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchD
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
-                <PreviewWindow smallCard={isFullScreen ? false : true} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
+                <PreviewWindow setIsDraftSaved={setIsDraftSaved} smallCard={isFullScreen ? false : true} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
             </div>
         </div>
     )
