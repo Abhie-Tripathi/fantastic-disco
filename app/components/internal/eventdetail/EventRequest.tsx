@@ -11,6 +11,8 @@ interface DetailsProps {
   participentData: {
     attendee: string[];
     speakers: string[];
+    sponsors: string[];
+    exhibitors: string[];
   };
 }
 
@@ -36,8 +38,10 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.main_section}>
-            <AttendeeCard cardType={"Attendee"} userList={participentData.attendee} />
-            <AttendeeCard cardType={"Speaker"} userList={participentData.speakers} />
+            {participentData.attendee.length>0 && <AttendeeCard cardType={"Attend"} userList={participentData.attendee} />}
+            {participentData.speakers.length>0 && <AttendeeCard cardType={"Speak"} userList={participentData.speakers} />}
+            {participentData.sponsors.length>0 && <AttendeeCard cardType={"Sponsor"} userList={participentData.sponsors} />}
+            {participentData.exhibitors.length>0 && <AttendeeCard cardType={"Exhibit"} userList={participentData.exhibitors} />}
           </div>
         </div>
       )}

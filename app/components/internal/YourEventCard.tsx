@@ -39,9 +39,11 @@ interface YourEventCardProps {
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
-  handleDeleteModal? : (id : string, name : string)=>void
+  handleDeleteModal?: (id: string, name: string) => void
 }
-
+interface enquiry {
+  for: string;
+}
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   const options: {} = { day: "numeric", month: "short", year: "numeric" };
@@ -78,10 +80,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [voteStatus, setVoteStatus] = useState({
-    Attending: false,
-    Speaking: false,
-    Sponsoring: false,
-    Exhibiting: false,
+    Attending: enquiryActivity?.some((item: enquiry) => item.for === 'ATTENDING') ? true : false,
+    Speaking: enquiryActivity?.some((item: enquiry) => item.for === 'SPEAKING') ? true : false,
+    Sponsoring: enquiryActivity?.some((item: enquiry) => item.for === 'SPONSORING') ? true : false,
+    Exhibiting: enquiryActivity?.some((item: enquiry) => item.for === 'EXHIBITING') ? true : false,
   });
 
   const [interestedUsers, setInterestedUsers] = useState<any>({
@@ -90,7 +92,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     sponsors: [],
     exhibitors: [],
   });
-
   const handleVoteClick = async (item: keyof typeof voteStatus) => {
     let payloadData = {
       source: "GTM",
@@ -108,11 +109,18 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
         ...prevState,
         [item]: !prevState[item],
       }));
+      setVotesCount(apiData?.data?.upvote?.like);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
+  const handleDeleteEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    if (handleDeleteModal && geniEvent) {
+      handleDeleteModal(geniEvent.eventId, geniEvent.name)
+    }
+  }
   const handleModalOpen = () => {
     if (enquiryId && eventId && handleModal) {
       handleModal(eventId, enquiryId);
@@ -129,12 +137,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
   useEffect(() => {
     if (upvote) {
-      setVoteStatus({
-        Attending: upvote[1]["ATTENDING"] == 1 ? true : false,
-        Speaking: upvote[1]["SPEAKING"] == 1 ? true : false,
-        Sponsoring: upvote[1]["SPONSORING"] == 1 ? true : false,
-        Exhibiting: upvote[1]["EXHIBITING"] == 1 ? true : false,
-      });
+      // setVoteStatus({
+      //   Attending: upvote[1]["ATTENDING"] == 1 ? true : false,
+      //   Speaking: upvote[1]["SPEAKING"] == 1 ? true : false,
+      //   Sponsoring: upvote[1]["SPONSORING"] == 1 ? true : false,
+      //   Exhibiting: upvote[1]["EXHIBITING"] == 1 ? true : false,
+      // });
     }
 
     const fetchInterestedUsers = async () => {
@@ -217,13 +225,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       );
     }
   }
-
-  const handleDeleteEvent = (e: React.MouseEvent<HTMLButtonElement>)=>{
-    e.stopPropagation()
-    if(handleDeleteModal && geniEvent){
-      handleDeleteModal(geniEvent.eventId, geniEvent.name)
-    }
-  }
+  const [votesCount, setVotesCount] = useState(upvote && upvote[0].like);
   return (
 
     <div className={styles.outerDiv} >
@@ -325,7 +327,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className={styles.tag1}>Tradeshow</div>
                 <div className={styles.tag2}>In-Person</div>
               </div>
-              <button className={styles.deleteBtn} onClick={(e)=>handleDeleteEvent(e)}>Delete</button>
+              <button className={styles.deleteBtn} onClick={(e) => handleDeleteEvent(e)}>Delete</button>
             </div>}
 
             {!geniEvent && <div className="tablet_view mobile_view">
@@ -351,7 +353,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               >
                 <div className={styles.allTags}>
                   <div className={styles.total_upvotes}>
-                    {upvote && upvote[0].like}
+                    {upvote && votesCount}
                     <div style={{ display: "flex", paddingTop: "10px" }}>
                       <Image
                         src={theme === "light" ? upArrowLight : upArrow}
@@ -456,3 +458,4 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 };
 
 export default YourEventCard;
+

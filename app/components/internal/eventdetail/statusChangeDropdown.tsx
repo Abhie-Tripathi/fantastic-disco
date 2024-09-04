@@ -57,7 +57,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
                   : cancelledIcon
               }
               alt="downarrow"
-              className={iconClass}
+              className={value !== "CONFIRMED" && value !== "CANCELLED" ? iconClass : ''}
             />
             {value}
           </div>
@@ -87,6 +87,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
                   height={14}
                   src={shortlistedIcon}
                   alt="downarrow"
+                  className={iconClass}
                 />
                 SHORTLISTED
               </div>
@@ -100,6 +101,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
                   height={14}
                   src={negotiationIcon}
                   alt="downarrow"
+                  className={iconClass}
                 />
                 IN NEGOTIATION
               </div>

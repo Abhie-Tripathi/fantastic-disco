@@ -46,6 +46,7 @@
     justify-content: center;
     flex-direction: column;
     padding: 10px 25px;
+    width: 150px;
     border-radius:calc(4 * var(--border-radius-sm));
     color: var(--coordinate-primary-color);
 }
@@ -91,6 +92,7 @@
     }
     .exhibitorCount{
         border-radius: calc(2* var(--border-radius-sm));
+        width: auto;
     }
     .container{
         padding-left: 15px;
