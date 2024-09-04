@@ -14,7 +14,7 @@ const DashboardEvents = () => {
     const [siteFetchedEvents, setSiteFetchedEvents] = useState([])
 
     const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event`)
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc`)
         if (data) {
             const events: AllEventsType[] = data.data.map((event: any) => ({
                 eventId: event.id,

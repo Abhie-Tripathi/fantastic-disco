@@ -52,7 +52,7 @@ const Page = () => {
     }
 
     const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event`)
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc`)
         if (data) {
             const transformedEvents = data.data.map((event: any) => ({
                 eventId: event.id,

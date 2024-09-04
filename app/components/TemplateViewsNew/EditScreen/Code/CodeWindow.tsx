@@ -118,8 +118,8 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                     </div>
                 ))}
                 {domains.slice(1, 3).map((domain, key) => (
-                    <div className={styles.input_deleteContainer}>
-                        <div className={styles.inputContainer} key={key}>
+                    <div className={styles.input_deleteContainer} key={key}>
+                        <div className={styles.inputContainer} >
                             <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
                             <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain} />
                         </div>
