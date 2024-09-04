@@ -368,11 +368,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   }, [description, eventName, countryName])
 
   useEffect(() => {
-    if(!prefilledAddedEvent){
+    if (!prefilledAddedEvent) {
       setHashtags(generatedHashtags)
-    }   
+    }
   }, [generatedHashtags])
-  
+
   useEffect(() => {
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
@@ -432,7 +432,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
-
+          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
           {cityName &&
             // <div className={styles.map} ref={mapDivRef}>
             // <Suspense fallback={<div>Loading...</div>}>
@@ -443,7 +443,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             // </Suspense>
             // </div>
           }
-          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+
         </div>
       </div>
       {
