@@ -36,7 +36,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
         </div>
         <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"var(--spacing-sm)"}}>
             <div className={styles.heading}>{name}</div>
-            <div className={styles.comapnyName}>{eventCompany}</div>
+            <div className={styles.companyName}>{eventCompany}</div>
             <div className={styles.date}>
                 <Image src={CalendarIcon} alt='cal' height={15} width={15} className='icons'/>
                 <div>{formatEventDates(eventStartDate,eventEndDate)}</div>
