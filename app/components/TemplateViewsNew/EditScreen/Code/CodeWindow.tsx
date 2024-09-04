@@ -53,12 +53,20 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
     };
     const { theme } = useTheme();
 
-    const handleSave = async () => {
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+        // Check if the entered domain is valid
+        if (!urlPattern.test(enteredDomain)) {
+            alert("Please enter a valid domain.");
+            return;
+        }
+        // Check if the entered domain is already in the domains list
         if (domains.includes(enteredDomain)) {
             alert("This domain is already whitelisted.");
             return;
         }
-    
+
         const updatedDomains = [...domains, enteredDomain];
         const formData = new FormData()
         formData.append("widgetId", widgetId)
@@ -115,22 +123,22 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                             <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
                             <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain} />
                         </div>
-                       <div className={styles.deleteBtn} onClick={() => handleDelete(domain)}><DeleteIcon/></div>
+                        <div className={styles.deleteBtn} onClick={() => handleDelete(domain)}><DeleteIcon /></div>
                     </div>
                 ))}
                 {addClicked &&
-                    <div className={styles.save_inputContainer}>
+                    <form className={styles.save_inputContainer} onSubmit={handleSave}>
                         <div className={styles.inputContainer}>
                             <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
                             <input placeholder='Your Company' onChange={(e) => setEnteredDomain(e.target.value)} required maxLength={40} style={{ color: theme === "light" ? "black" : "white" }} />
                         </div>
                         <div className={styles.btnContainer}>
-                            <button className={styles.saveBtn} onClick={handleSave}>Save</button>
-                            <button className={styles.cancelBtn} onClick={() => setAddClicked(false)}>Cancel</button>
+                            <button className={styles.saveBtn} type='submit'>Save</button>
+                            <button className={styles.cancelBtn} type='button' onClick={() => setAddClicked(false)}>Cancel</button>
                         </div>
 
-                    </div>}
-                {(!addClicked && domains.length <3) && <div className={styles.addBtn} onClick={() => setAddClicked(true)}>+ Add Domain</div>}
+                    </form>}
+                {(!addClicked && domains.length < 3) && <div className={styles.addBtn} onClick={() => setAddClicked(true)}>+ Add Domain</div>}
             </div>
             <div className={styles.line}></div>
             <div className={styles.codeHeader}>
