@@ -158,7 +158,7 @@ const Widget = () => {
       </div>
       <div className={styles.line}></div>
       <div className={styles.widgetsAndPreview}>
-        <div className={styles.widgetsList}>
+        <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""}`}>
           {allWidgets.map((card, key) => (
             <div className={styles.widgetCard} onClick={() => setSelectedKey(key)} key={key}>
               <WidgetCard
@@ -177,8 +177,8 @@ const Widget = () => {
             </div>
           ))}
         </div>
-        <div className={styles.preview}>
-          <PreviewWindow fontSettings={fontSettings} buttonSettings={buttonSettings} cardBorderRadius={cardBorderRadius} cardBgColor={cardBgColor} selectedBtn={selectedBtn} selectedCard={cardStyle} selectedTemplate={selectedTemplate} isFullScreen={false} setIsFullScreen={setIsFullScreen} smallCard={false} fetchedAddedEvents={fetchedAddedEvents} widgetId={selectedWidgetId} />
+        <div className={`${styles.preview} ${isFullScreen ? styles.fullPreview : ""}`}>
+          <PreviewWindow fontSettings={fontSettings} buttonSettings={buttonSettings} cardBorderRadius={cardBorderRadius} cardBgColor={cardBgColor} selectedBtn={selectedBtn} selectedCard={cardStyle} selectedTemplate={selectedTemplate} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} smallCard={false} fetchedAddedEvents={fetchedAddedEvents} widgetId={selectedWidgetId} />
         </div>
       </div>
       <div className={`${styles.yourWidgetModal} ${draftWidgetModal ? styles.open : ''}`} ref={dropdownRef}>

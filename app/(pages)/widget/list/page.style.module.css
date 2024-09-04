@@ -67,7 +67,9 @@
     height: 520px;
     align-content: start; /* Align items at the start to avoid stretching */
 }
-
+.hideWidgetList{
+    display: none;
+}
 .widgetsList .widgetCard{
     height: 178px;
 }
@@ -75,6 +77,9 @@
     width: 45%;
     height: 520px;
     overflow-y: auto;
+}
+.fullPreview{
+    width: 100%;
 }
 .yourWidgetModal {
     /* filter: drop-shadow(1px 1px 5px rgb(180, 180, 180)); */
