@@ -80,6 +80,8 @@ const Page = () => {
         startTime: event.data.startTime,
         endTime: event.data.endTime,
         gmtZone: event.data.gmt_time,
+        latitude : event.data.latitude,
+        longitude : event.data.longitude
       }))
       setFetchedAllEvents(events)
     } if (error) {

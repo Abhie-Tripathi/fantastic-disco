@@ -86,8 +86,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   });
   // const [mapWidth, setMapWidth] = useState(0);
   const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
-  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
+  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude ||prefilledNormalEvent?.latitude ||  prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude ||prefilledNormalEvent?.longitude|| prefilledGlobalEvent?.longitude) || -122.4194)
   // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
