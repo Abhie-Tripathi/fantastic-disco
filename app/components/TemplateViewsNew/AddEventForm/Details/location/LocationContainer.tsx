@@ -33,14 +33,14 @@ const LocationContainer = ({
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
         <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
-            <div className={styles.locationContainer}>
+            <div className={styles.locationContainer} onClick={()=>setDropdown(!dropdown)}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
                     <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>{cityName ? cityName : "Add Event Location"}</div>
                     <div className={styles.eventLocationTwo}>{countryName ? countryName : "Offline location or Virtual Link"}</div>
                 </div>
             </div>
-            <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
+            {/* <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/> */}
             {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
