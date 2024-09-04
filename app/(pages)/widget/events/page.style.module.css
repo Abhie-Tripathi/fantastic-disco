@@ -99,3 +99,21 @@
 .deleteModal .cancelBtn:hover{
     background-color: #7d62c7;
 }
+.emptyScreen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 13px;
+    height: 50vh;
+}
+.emptyScreen div{
+    color: #7D7D7D;
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+}
+.emptyScreen span{
+    color: #8F8F8F;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+}

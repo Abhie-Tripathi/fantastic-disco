@@ -9,6 +9,7 @@ import { baseUrl } from '@/constants'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image'
+import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import { useTheme } from '@/context'
 
 const Page = () => {
@@ -18,14 +19,14 @@ const Page = () => {
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
-    const {theme} = useTheme()
+    const { theme } = useTheme()
 
     let prevDate: any = null;
     useEffect(() => {
         fetchEvents()
     }, [])
 
-    const handleDeleteModal = (eventId: string, eventName : string) => {
+    const handleDeleteModal = (eventId: string, eventName: string) => {
         setSelectedEventName(eventName)
         setSelectedEventId(eventId)
         setDeleteModal(true)
@@ -43,6 +44,7 @@ const Page = () => {
         );
         if (data) {
             fetchEvents()
+            setDeleteModal(false)
         }
         if (error) {
             console.log(error);
@@ -90,7 +92,7 @@ const Page = () => {
                 </div>
                 <button onClick={handleFormModal}>+ Add Event</button>
             </nav>
-            {fetchedEvents.map((event, index) => {
+            {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
                 const showDate = event.startDate !== prevDate;
                 prevDate = event.startDate;
                 return (
@@ -103,7 +105,13 @@ const Page = () => {
                         />
                     </div>
                 );
-            })}
+            }) : 
+            <div className={styles.emptyScreen}>
+                <Image src={EmptyImage} alt='empty' />
+                <div>Search or Add your Events</div>
+                <span>Start by searching for existing events to add to your widgets</span>
+                <span>or feel free to create your own event from scratch</span>
+            </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addNormalEventModal}>
                 <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />

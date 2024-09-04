@@ -164,6 +164,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       location_city: cityName,
       location_country: countryName,
       gmt_time: timeZone,
+      latitude,
+      longitude,
+      participationType,
+      event_type: "Tradeshow"
     };
     const formData = new FormData()
     formData.append("name", eventName)
