@@ -58,9 +58,9 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                 <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
                     <BrandkitTypography setFontSettings={setFontSettings} flex={flex} setEventFont={setEventFont} eventFont={eventFont}/>
                 </div>
-                <div className={styles.btnContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
+                {/* <div className={styles.btnContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
                     <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>
-                </div>
+                </div> */}
             </div>}
         </div>
     )

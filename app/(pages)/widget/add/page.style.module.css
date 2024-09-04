@@ -51,10 +51,10 @@
     cursor: pointer;
 }
 
-.line {
+/* .line {
     height: 20px;
     border-right: 1px solid #D8D8D8;
-}
+} */
 
 .myWidgetBtnContainer {
     display: flex;
@@ -108,13 +108,12 @@
     color: white;
     background-color: #6750A4;
 }
-
-.templates_preview {
+.line{
     border-top: 1px solid var(--card-border-color);
     margin-top: 20px;
     padding-top: 20px;
-    /* height: 600px; */
 }
+
 .yourWidgetModal {
     filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
     height: 89%;

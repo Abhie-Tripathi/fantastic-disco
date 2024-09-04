@@ -1,5 +1,5 @@
 'use client'
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
 import RightArrow from '/public/rightArrow.svg'
@@ -10,13 +10,13 @@ import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import useOutsideClick from '@/hooks/useOutsideClick'
 
-interface DraftWidgetsType{
-    widgetType : string;
-    templateId : string;
-    widgetId : string;
+interface DraftWidgetsType {
+    widgetType: string;
+    templateId: string;
+    widgetId: string;
     status: string;
-    eventSize : number;
-    widgetStatus : string;
+    eventSize: number;
+    widgetStatus: string;
 }
 
 const Page = () => {
@@ -25,7 +25,8 @@ const Page = () => {
     const [widgetOptionsWindow, setWidgetOptionsWindow] = useState<boolean>(true)
     const [yourWidgetModal, setYourWidgetModal] = useState<boolean>(false)
     const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
-    const dropdownRef = useOutsideClick(()=>setYourWidgetModal(false))
+    const dropdownRef = useOutsideClick(() => setYourWidgetModal(false))
+    const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -57,18 +58,18 @@ const Page = () => {
                     templateId: asciiToString(widget.templatePublicId),
                     widgetType: widget.type,
                     widgetId: widget.id,
-                    eventSize : widget.otherdata.event.length,
-                    widgetStatus : "Draft"
+                    eventSize: widget.otherdata.event.length,
+                    widgetStatus: "Draft"
                 }));
             setDraftWidgets(filteredWidgets);
         }
-        if (error) { 
+        if (error) {
             console.log(error);
         }
     };
-    useEffect(()=>{
+    useEffect(() => {
         fetchDraftWidgets()
-    },[])
+    }, [])
     return (
         <div className={`${styles.body}`}>
             <div className={styles.navRightBtns}>
@@ -76,12 +77,12 @@ const Page = () => {
                     {!widgetOptionsWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
                 </div> */}
                 {/* <div className={styles.line}></div> */}
-                <div className={styles.myWidgetBtnContainer} onClick={()=>setYourWidgetModal(true)}>
+                {!isFullScreen && <div className={styles.myWidgetBtnContainer} onClick={() => setYourWidgetModal(true)}>
                     <div className={styles.myWidgetBtn}>Draft Widgets <span>{draftWidgets.length}</span></div>
                     <Image src={RightArrow} alt='arrow' />
-                </div>
+                </div>}
             </div>
-            {!widgetOptionsWindow && <div className={styles.leftNav}>
+            {(!widgetOptionsWindow && !isFullScreen) && <div className={styles.leftNav}>
                 <div className={`${styles.navItem} ${widgetSelected === "Page" ? styles.activeNavItem : ""}`} onClick={() => setWidgetSelected("Page")}>Page Widgets
                     {widgetSelected === "Page" && <div className={styles.activeLine}></div>}
                 </div>
@@ -101,13 +102,14 @@ const Page = () => {
             {/* {!exploreWindow && <div className={styles.exploreBtnContainer}>
                 <div onClick={handleExplore} className={`${styles.explporeBtn} ${widgetSelected ? styles.activeExploreBtn : ""}`} style={!widgetSelected ? { cursor: "not-allowed" } : { cursor: "pointer" }}>Explore Styles</div>
             </div>} */}
+            {(!widgetOptionsWindow && !isFullScreen) && <div className={styles.line}></div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets}/>
+                    <TemplatesPreview setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets} />
                 </div>
             }
             <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`} ref={dropdownRef}>
-                <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} fetchDraftWidgets={fetchDraftWidgets}/>
+                <DraftWidgets draftWidgets={draftWidgets} setDraftWidgets={setDraftWidgets} setYourWidgetModal={setYourWidgetModal} fetchDraftWidgets={fetchDraftWidgets} />
             </div>
         </div>
     )
