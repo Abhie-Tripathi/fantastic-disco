@@ -140,10 +140,10 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
             </div>
             {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
-                <div className={styles.recentHeading}>Recent Locations</div>
+                {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
                     <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>
-                </div>
+                </div> */}
                 {isDropdownVisible && (
                     <div className={styles.locationDropdown}>
                         {suggestions.map(suggestion => (

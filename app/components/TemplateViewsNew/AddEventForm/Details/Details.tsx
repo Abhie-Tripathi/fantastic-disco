@@ -378,9 +378,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setBanner({ placeHolder: imageUrl, file: null });
     }
   }, [imageUrl]);
-  // useEffect(() => {
-  //   console.log("latiude :", latitude)
-  // }, [latitude,longitude]);
+
 
   return (
     <div className={styles.body}>
@@ -405,7 +403,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 <div className={styles.spinner}></div>
               </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
             <div className={styles.posterIcons}>
-              <div onClick={handleGeneratePoster} data-name="Generate Your Banner">
+              <div onClick={handleGeneratePoster} data-name={eventName && description && location ? "Generate your Banner" : "Add Event name, Location and Description to generate a banner"}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
               <div data-name="Upload Your Banner">
