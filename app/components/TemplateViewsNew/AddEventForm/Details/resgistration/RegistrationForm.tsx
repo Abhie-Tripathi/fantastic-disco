@@ -38,8 +38,8 @@ const RegistrationForm = ({ setRegisterModal, registerMessage, registerBtnText, 
             </div>
             <div className={styles.formSubHeading}>{registerMessage}
             </div>
-            <input className={styles.inputField} type="text" placeholder='Name' />
-            <input className={styles.inputField} type="text" placeholder='Email' />
+            <input className={styles.inputField} type="text" placeholder='Name' disabled/>
+            <input className={styles.inputField} type="text" placeholder='Email' disabled/>
             <button
                 style={{ backgroundColor: registerBtnColor, color: fontColor }}
                 className={styles.submitBtn}>

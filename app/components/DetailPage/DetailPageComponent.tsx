@@ -83,6 +83,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
+                    <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
@@ -102,7 +103,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                                 zoom={6} />
                         </Suspense>
                     </div>
-                    <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
+   
                 </div>
             </div>
             <div className={styles.line}></div>
