@@ -406,8 +406,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               <div onClick={handleGeneratePoster} data-name={eventName && description && location ? "Generate your Banner" : "Add Event name, Location and Description to generate a banner"}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
-              <div data-name="Upload Your Banner">
-                <Image src={UploadIcon} alt='upload' onClick={() => fileInputRef.current?.click()}></Image>
+              <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
+                <Image src={UploadIcon} alt='upload'></Image>
                 <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
               </div>
             </div>
