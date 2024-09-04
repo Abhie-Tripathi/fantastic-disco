@@ -87,11 +87,11 @@ const EventPoc = ({ open, eventId }: Props) => {
                     <div className={styles.followerPosition}>{poc?.designation}</div>
                     <div className={styles.lockedCta}>
                       <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
-                      <Phone height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+                      <Phone height={'16px'} width={'16px'} color="var(--secondary-text-color)" style={{display:"flex"}}/>
                       <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
                       </div>
                       <div style={{cursor:"pointer"}} className={tooltip.tooltipContainer}>
-                      <Envelope height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+                      <Envelope height={'16px'} width={'16px'} color="var(--secondary-text-color)" style={{display:"flex"}}/>
                       <span className={tooltip.tooltipText} style={{marginLeft:"-30px",fontSize:"var(--font-size-small)", bottom:"100%", left:"50%"}}>Locked</span>
                       </div>
                     </div>
