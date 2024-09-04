@@ -4,13 +4,7 @@ import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image';
 import addEventIcon from '/public/addEvent.svg'
 import { useTheme } from '@/context';
-
-const formatDate = (dateString: string | null): string => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
-    return date.toLocaleDateString('en-GB', options);
-};
+import { formatEventDates } from '@/utils/dateFormat';
 
 interface CardTaskProps {
     name: string;
@@ -30,8 +24,8 @@ interface CardTaskProps {
 const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick }) => {
     const {theme} = useTheme();
     const iconClass = theme === 'light' ? 'icons_light' : 'icon';
-    const startDate = formatDate(eventStartDate);
-    const endDate = formatDate(eventEndDate);
+    // const startDate = formatDate(eventStartDate);
+    // const endDate = formatDate(eventEndDate);
     return (
         <>
         <div className={styles.eventAdd_container}>
@@ -40,12 +34,12 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
         </div>
-        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)}>
+        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"var(--spacing-sm)"}}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.comapnyName}>{eventCompany}</div>
             <div className={styles.date}>
-                <Image src={CalendarIcon} alt='cal' height={15} width={15} className={iconClass} />
-                <div>{startDate} - {endDate}</div>
+                <Image src={CalendarIcon} alt='cal' height={15} width={15} className='icons'/>
+                <div>{formatEventDates(eventStartDate,eventEndDate)}</div>
             </div>
             <div className={styles.typeOfEventContainer}>
                 <div className={styles.typeOfEvent}>Exhibting</div>

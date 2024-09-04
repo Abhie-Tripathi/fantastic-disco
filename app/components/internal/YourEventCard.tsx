@@ -40,7 +40,9 @@ interface YourEventCardProps {
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
 }
-
+interface enquiry{
+  for: string;
+}
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   const options: {} = { day: "numeric", month: "short", year: "numeric" };
@@ -76,19 +78,18 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const iconClass = theme === "light" ? "icons_light" : "icon";
 
   const [voteStatus, setVoteStatus] = useState({
-    Attending: false,
-    Speaking: false,
-    Sponsoring: false,
-    Exhibiting: false,
+    Attending: enquiryActivity?.some((item:enquiry) => item.for === 'ATTENDING')?true:false,
+    Speaking: enquiryActivity?.some((item:enquiry) => item.for === 'SPEAKING')?true:false,
+    Sponsoring: enquiryActivity?.some((item:enquiry) => item.for === 'SPONSORING')?true:false,
+    Exhibiting: enquiryActivity?.some((item:enquiry) => item.for === 'EXHIBITING')?true:false,
   });
-
+  
   const [interestedUsers, setInterestedUsers] = useState<any>({
     attendee: [],
     speakers: [],
     sponsors: [],
     exhibitors: [],
   });
-
   const handleVoteClick = async (item: keyof typeof voteStatus) => {
     let payloadData = {
       source: "GTM",
@@ -106,6 +107,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
         ...prevState,
         [item]: !prevState[item],
       }));
+      setVotesCount(apiData?.data?.upvote?.like);
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -127,12 +130,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
   useEffect(() => {
     if (upvote) {
-      setVoteStatus({
-        Attending: upvote[1]["ATTENDING"] == 1 ? true : false,
-        Speaking: upvote[1]["SPEAKING"] == 1 ? true : false,
-        Sponsoring: upvote[1]["SPONSORING"] == 1 ? true : false,
-        Exhibiting: upvote[1]["EXHIBITING"] == 1 ? true : false,
-      });
+      // setVoteStatus({
+      //   Attending: upvote[1]["ATTENDING"] == 1 ? true : false,
+      //   Speaking: upvote[1]["SPEAKING"] == 1 ? true : false,
+      //   Sponsoring: upvote[1]["SPONSORING"] == 1 ? true : false,
+      //   Exhibiting: upvote[1]["EXHIBITING"] == 1 ? true : false,
+      // });
     }
 
     const fetchInterestedUsers = async () => {
@@ -215,6 +218,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       );
     }
   }
+const [votesCount,setVotesCount]=useState(upvote[0].like);
+
 
   return (
   
@@ -343,7 +348,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             >
               <div className={styles.allTags}>
                 <div className={styles.total_upvotes}>
-                  {upvote && upvote[0].like}
+                  {upvote && votesCount}
                   <div style={{ display: "flex", paddingTop: "10px" }}>
                     <Image
                       src={theme === "light" ? upArrowLight : upArrow}
