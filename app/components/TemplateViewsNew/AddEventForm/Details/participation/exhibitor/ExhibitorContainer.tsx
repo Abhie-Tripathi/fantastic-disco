@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState ,useRef,useEffect} from 'react'
 import styles from './exhibitor.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
@@ -13,7 +13,20 @@ interface Props{
 const ExhibitorContainer = ({setBoothNumber, boothNumber} : Props) => {
 
     const [dropdown, setDropdown] = useState<boolean>(false)
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setDropdown(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     return (
         <div className={styles.body}>
             <div className={styles.container}>
@@ -28,7 +41,7 @@ const ExhibitorContainer = ({setBoothNumber, boothNumber} : Props) => {
                 <Image src={EditIcon} className={styles.editBtn} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
             </div>
             {dropdown && 
-            <div className={styles.dropdown}>
+            <div className={styles.dropdown} ref={dropdownRef}>
                 <input placeholder='Stall/booth number' value={boothNumber} onChange={(e)=>setBoothNumber(e.target.value)} maxLength={40}/>
             </div>}
         </div>
