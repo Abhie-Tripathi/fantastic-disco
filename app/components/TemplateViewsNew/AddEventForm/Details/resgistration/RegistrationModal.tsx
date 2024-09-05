@@ -40,7 +40,7 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
         </div>
         <div className={styles.container}>
             <span>Customize your message</span>
-            <input type="text" value={customMessage} onChange={(e)=>setCustomMessage(e.target.value)} max={100}/>
+            <input type="text" value={customMessage} onChange={(e)=>setCustomMessage(e.target.value)} maxLength={150}/>
         </div>
         <div className={styles.container}>
             <span>Button Text</span>

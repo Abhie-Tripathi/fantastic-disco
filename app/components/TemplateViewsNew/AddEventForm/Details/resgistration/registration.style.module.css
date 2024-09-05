@@ -45,6 +45,7 @@
     color: #8F8F8F;
     font-size: 12px;
     line-height: 24px;
+    word-wrap: break-word;
 }
 .inputField{
     border: 1px solid #E6E6E6;

@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
+import Loading from '../../UI/Loading'
 
 const DashboardBrandkit = () => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -18,43 +19,43 @@ const DashboardBrandkit = () => {
     const [loadingState, setLoadingState] = useState<boolean>(true)
     const [polling, setPolling] = useState<boolean>(true);
 
-    const fetchBrandkit = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/kit`)
-        if (error) {
-            console.error('Error fetching brand kit:', error);
-            return;
-        }
-        const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
-        setFetchedColors(data.color)
-        setFetchedFonts(cleanedFonts)
-        setFetchedLogos(data.logo)
-    }
-    useEffect(() => {
-        // Initial fetch
-        fetchBrandkit();
+    // const fetchBrandkit = async () => {
+    //     const { data, error } = await myFetch(`${baseUrl}/kit`)
+    //     if (error) {
+    //         console.error('Error fetching brand kit:', error);
+    //         return;
+    //     }
+    //     const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
+    //     setFetchedColors(data.color)
+    //     setFetchedFonts(cleanedFonts)
+    //     setFetchedLogos(data.logo)
+    // }
+    // useEffect(() => {
+    //     // Initial fetch
+    //     fetchBrandkit();
 
-        // Set up polling
-        const intervalId = setInterval(() => {
-            if (polling) {
-                fetchBrandkit();
-            }
-        }, 800); // Poll every 800 ms
+    //     // Set up polling
+    //     const intervalId = setInterval(() => {
+    //         if (polling) {
+    //             fetchBrandkit();
+    //         }
+    //     }, 800); // Poll every 800 ms
 
-        // Clear interval on component unmount
-        return () => clearInterval(intervalId);
-    }, [polling]);
+    //     // Clear interval on component unmount
+    //     return () => clearInterval(intervalId);
+    // }, [polling]);
 
-    useEffect(() => {
-        if (fetchedLogos.length > 0) {
-            setLoadingState(false)
-            setPolling(false);
-        }
-    }, [fetchedLogos])
+    // useEffect(() => {
+    //     if (fetchedLogos.length > 0) {
+    //         setLoadingState(false)
+    //         setPolling(false);
+    //     }
+    // }, [fetchedLogos])
 
     return (
         <div className={styles.body}>
             {loadingState ? <div className={styles.loader}>
-                <div className={styles.spinner}></div>
+                <Loading/>
                 <div className={styles.loadingHeading}>Fetching your Brandkit</div>
             </div> :
                 <>

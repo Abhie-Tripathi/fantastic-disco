@@ -9,6 +9,9 @@ import DateTimeContainer from '@/app/components/DetailPage/DateTimeContainer'
 import RegisterForm from '@/app/components/DetailPage/RegisterForm'
 import LocationContainer from '@/app/components/DetailPage/LocationContainer'
 import DescriptionContainer from '@/app/components/DetailPage/DescriptionContainer'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface EventProps {
     venue: string;
@@ -42,6 +45,7 @@ const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
+    const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -55,10 +59,16 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+    
+    useEffect(()=>{
+        toast.success("Succesfully Registered for the event. Check your mail for more info")
+    },[registerSuccess])
+
     return (
         <div className={styles.body}
             style={{ backgroundColor: pageBgColor }}
         >
+            <ToastContainer/>
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
@@ -93,7 +103,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                             </div>
                         </div>
                     }
-                    <div className={styles.resgitrationContainer}><RegisterForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} widgetId={widgetId} eventId={eventId} /></div>
+                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} widgetId={widgetId} eventId={eventId} /></div>
 
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
