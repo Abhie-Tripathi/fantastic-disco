@@ -1,51 +1,53 @@
-'use client'
-import React, { useState ,useRef,useEffect} from 'react'
-import styles from './exhibitor.style.module.css'
-import EditIcon from '/public/EditIcon.svg'
-import Image from 'next/image'
-import ExhibitorIcon from '/public/exhibitoricon.svg'
-
-interface Props{
-    setBoothNumber : (value : string)=>void;
-    boothNumber : string;
+"use client";
+import React, { useState } from "react";
+import styles from "./exhibitor.style.module.css";
+import EditIcon from "/public/EditIcon.svg";
+import Image from "next/image";
+import ExhibitorIcon from "/public/exhibitoricon.svg";
+import useOutsideClick from "@/hooks/useOutsideClick";
+interface Props {
+  setBoothNumber: (value: string) => void;
+  boothNumber: string;
 }
 
-const ExhibitorContainer = ({setBoothNumber, boothNumber} : Props) => {
+const ExhibitorContainer = ({ setBoothNumber, boothNumber }: Props) => {
+  const dropdownRef = useOutsideClick(() => setDropdown(false));
+  const [dropdown, setDropdown] = useState<boolean>(false);
+  // const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const [dropdown, setDropdown] = useState<boolean>(false)
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-            setDropdown(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-    return (
-        <div className={styles.body}>
-            <div className={styles.container}>
-                {!boothNumber ? <div className={styles.header}>
-                    <Image src={ExhibitorIcon} alt='icon' />
-                    <span>Add Booth / Stall details</span>
-                </div> : 
-                <div className={styles.boothContainer}>
-                    <div>Booth Number</div>
-                    <div>{boothNumber}</div>
-                </div>}
-                <Image src={EditIcon} className={styles.editBtn} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            </div>
-            {dropdown && 
-            <div className={styles.dropdown} ref={dropdownRef}>
-                <input placeholder='Stall/booth number' value={boothNumber} onChange={(e)=>setBoothNumber(e.target.value)} maxLength={40}/>
-            </div>}
+  return (
+    <div className={styles.body}>
+      <div className={styles.container}>
+        {!boothNumber ? (
+          <div className={styles.header}>
+            <Image src={ExhibitorIcon} alt="icon" />
+            <span>Add Booth / Stall details</span>
+          </div>
+        ) : (
+          <div className={styles.boothContainer}>
+            <div>Booth Number</div>
+            <div>{boothNumber}</div>
+          </div>
+        )}
+        <Image
+          src={EditIcon}
+          className={styles.editBtn}
+          alt="edit"
+          onClick={() => setDropdown(!dropdown)}
+        />
+      </div>
+      {dropdown && (
+        <div className={styles.dropdown} ref={dropdownRef}>
+          <input
+            placeholder="Stall/booth number"
+            value={boothNumber}
+            onChange={(e) => setBoothNumber(e.target.value)}
+            maxLength={40}
+          />
         </div>
-    )
-}
+      )}
+    </div>
+  );
+};
 
-export default ExhibitorContainer
+export default ExhibitorContainer;
