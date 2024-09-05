@@ -61,7 +61,7 @@ const Page = () => {
               <DetailSection fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} />
             </div>
             <div className={styles.rightSection}>
-              <BrandKit setFetchedColors={setFetchedColors} handleColorModal={handleColorModal} fetchedFonts={fetchedFonts} fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} preview={preview} />
+              <BrandKit setFetchedFonts={setFetchedFonts} setFetchedColors={setFetchedColors} handleColorModal={handleColorModal} fetchedFonts={fetchedFonts} fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} preview={preview} />
             </div>
           </>)}
       </div>
