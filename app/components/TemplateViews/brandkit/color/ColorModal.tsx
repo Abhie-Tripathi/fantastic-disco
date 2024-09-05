@@ -9,9 +9,10 @@ import { ChromePicker } from 'react-color';
 interface Props {
     colorCode: string
     setColorCode: (value: string) => void
+    fetchedColors :  string[]
 }
 
-const ColorModal = ({ colorCode, setColorCode }: Props) => {
+const ColorModal = ({ colorCode, setColorCode,fetchedColors }: Props) => {
 
     const handleColorChange = (color: any) => {
         setColorCode(color.hex);

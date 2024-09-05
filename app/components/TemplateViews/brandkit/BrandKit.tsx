@@ -30,15 +30,19 @@ interface Props {
     preview: string;
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
+    fetchedColors : string[]
+    fetchedFonts:string[]; 
+    fetchedLogos: string[];
+    fetchedDomain: string 
 }
 
-const BrandKit = ({ preview, setPreview,setColorCode }: Props) => {
+const BrandKit = ({ preview, setPreview,setColorCode,fetchedColors, fetchedFonts,fetchedLogos,fetchedDomain }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.container}>
-                <LogoContainer setPreview={setPreview} />
-                <ColorContainer setColorCode={setColorCode} setPreview={setPreview} />
-                <TypoContainer setPreview={setPreview} />
+                <LogoContainer fetchedLogos={fetchedLogos} setPreview={setPreview} />
+                <ColorContainer fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} />
+                <TypoContainer fetchedFonts={fetchedFonts} setPreview={setPreview} />
             </div>
         </div>
     )

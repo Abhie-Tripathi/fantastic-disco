@@ -1,7 +1,9 @@
 .body {
     position: relative;
 }
-
+.loadingMessage{
+    width: 90%;
+}
 .fixBody {
     position: relative;
     height: 90vh;

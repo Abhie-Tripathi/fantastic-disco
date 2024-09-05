@@ -4,9 +4,10 @@ import styles from './typocontainer.style.module.css'
 
 interface Props {
     setPreview: (value: string) => void
+    fetchedFonts : string[]
 }
 
-const TypoContainer = ({ setPreview }: Props) => {
+const TypoContainer = ({ setPreview, fetchedFonts }: Props) => {
     // const scrollRef = useRef<HTMLDivElement>(null);
 
     // useEffect(() => {
@@ -33,7 +34,7 @@ const TypoContainer = ({ setPreview }: Props) => {
         <div className={styles.body} >
             <div className={styles.heading}>Brand Typography</div>
             <div className={styles.fontFamily}>
-                {fonts.map((font, key) => (
+                {fetchedFonts.map((font, key) => (
                     <div className={styles.font} key={key}>
                         <span>{font}</span>
                         <div className={styles.deleteBtn}><DeleteIcon /></div>

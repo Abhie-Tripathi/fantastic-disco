@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import InputComponent from '@/app/components/TemplateViewsNew/WidgetDashboard/InputComponent'
 import DashboardBrandkit from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardBrandkit'
@@ -8,12 +8,23 @@ import DashboardEvents from '@/app/components/TemplateViewsNew/WidgetDashboard/D
 
 const Page = () => {
 
-  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(true)
+  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedBrandkit = localStorage.getItem('brandkit');
+
+    if (storedBrandkit === null) {
+      // If 'brandkit' is not in localStorage, set it to false
+      localStorage.setItem('brandkit', "false");
+    }else if(storedBrandkit === "true"){
+      setFetchedBoolean(true)
+    }
+  }, []);
 
   return (
     <div className={styles.body}>
       <div className={fetchedBoolean ? styles.fetchedInputScreen : styles.inputScreen}>
-        <InputComponent fetched={fetchedBoolean} />
+        <InputComponent setFetchedBoolean={setFetchedBoolean} fetched={fetchedBoolean} />
       </div>
       {fetchedBoolean && <div className={styles.container}>
         <div className={styles.brandKitContainer}><DashboardBrandkit /></div>

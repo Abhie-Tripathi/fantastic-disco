@@ -5,8 +5,9 @@ import styles from './colorcontainer.style.module.css'
 interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
+    fetchedColors : string[];
 }
-const ColorContainer = ({ setPreview, setColorCode }: Props) => {
+const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
     const colors = ['#eb6809', '#f7f6f4', '#d29168', '#fcb676', '#d4ac94']
 
     const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -77,7 +78,7 @@ const ColorContainer = ({ setPreview, setColorCode }: Props) => {
         <div className={styles.body}>
             <div className={styles.heading}>Brand Colors</div>
             <div className={styles.colorPallete}>
-                {colors.map((color, key) => (
+                {fetchedColors.map((color, key) => (
                     <div className={styles.color} key={key} style={{ backgroundColor: color }} onClick={() => handleColorClick(color)} onMouseLeave={handleMouseLeave}>
                         <span style={{ color: isColorDark(color) ? '#ffffff' : '#000000' }}>{color}</span>
                         <div className={styles.btnContainer}>
