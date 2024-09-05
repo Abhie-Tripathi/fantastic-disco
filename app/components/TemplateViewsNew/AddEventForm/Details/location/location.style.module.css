@@ -7,6 +7,9 @@
     justify-content: space-between;
     position: relative;
 }
+.darkBody{
+    background-color: #4d4d4d53;
+}
 .editIcon{
     cursor: pointer;
 }

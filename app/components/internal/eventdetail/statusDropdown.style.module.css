@@ -235,7 +235,9 @@
 
 .main_section {
     margin-top: 20px;
-    display: flex;
+    /* display: flex; */
+    grid-template-columns: repeat(2, 1fr);
+    display: grid;
     gap: 15px;
 }
 

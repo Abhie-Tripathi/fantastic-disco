@@ -68,14 +68,14 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     </div>
                     <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
 
-                    <div className={styles.hashtagsContainer}>
-                        {hashtags.split(",").map((tag, key)=>(
+                    {hashtags && <div className={styles.hashtagsContainer}>
+                        {hashtags?.split(",").map((tag, key)=>(
                             <div className={styles.hashtag} key={key}>{tag}</div>
                         ))}
-                    </div>
+                    </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
+                        <ShareButtons disabled={false} shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -88,7 +88,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                             <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
                             <div className={styles.mobile_shareContainer}>
                                 <div className={styles.heading}>Share</div>
-                                <ShareButtons shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
+                                <ShareButtons disabled={true} shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
                             </div>
                         </div>
                     }

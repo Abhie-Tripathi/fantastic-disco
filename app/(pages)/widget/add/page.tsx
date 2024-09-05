@@ -9,6 +9,9 @@ import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidge
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import useOutsideClick from '@/hooks/useOutsideClick'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface DraftWidgetsType {
     widgetType: string;
@@ -27,6 +30,7 @@ const Page = () => {
     const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
     const dropdownRef = useOutsideClick(() => setYourWidgetModal(false))
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+    const [isDraftSaved, setIsDraftSaved]= useState<boolean>(false)
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -70,8 +74,16 @@ const Page = () => {
     useEffect(() => {
         fetchDraftWidgets()
     }, [])
+    useEffect(()=>{
+        // This is to trigger the toast container when widget is saved to draft
+        if(isDraftSaved){
+            toast.success("Widget Added to draft")
+        }
+        setIsDraftSaved(false)
+    },[isDraftSaved])
     return (
         <div className={`${styles.body}`}>
+            <ToastContainer />
             <div className={styles.navRightBtns}>
                 {/* <div className={styles.hide_showBtn} onClick={handleWidgetOptionsWindow}>
                     {!widgetOptionsWindow ? <EyeIconOff fillColor='#6750a4' /> : <EyeIconOn fillColor='#6750a4' />}
@@ -105,7 +117,7 @@ const Page = () => {
             {(!widgetOptionsWindow && !isFullScreen) && <div className={styles.line}></div>}
             {exploreWindow &&
                 <div className={styles.templates_preview}>
-                    <TemplatesPreview setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets} />
+                    <TemplatesPreview setIsDraftSaved={setIsDraftSaved} setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} setDraftWidgets={setDraftWidgets} draftWidgets={draftWidgets} widgetSelected={widgetSelected} fetchDraftWidgets={fetchDraftWidgets} />
                 </div>
             }
             <div className={`${styles.yourWidgetModal} ${yourWidgetModal ? styles.open : ''}`} ref={dropdownRef}>

@@ -18,10 +18,11 @@ interface Props {
     eventFormat: string;
     setLongitude: (value: number) => void;
     setLatitude: (value: number) => void;
+    theme? : string;
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude }: Props) => {
+const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude,theme }: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
@@ -104,7 +105,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
     }, [query, debouncedFetchSuggestions]);
     // if (!isLoaded) return <div>Loading...</div>;
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationTypes}>
                 <label className={styles.checkboxContainer}>
                     <input

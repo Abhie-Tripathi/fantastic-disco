@@ -34,7 +34,6 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
     Sponsoring: false,
     Exhibiting: false,
   });
-
   const handleVoteClick = (item: keyof typeof voteStatus) => {
     setVoteStatus((prevState) => ({
       ...prevState,
@@ -62,7 +61,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           headers: headers,
           body: JSON.stringify(payloadData),
         });
-        handleRefresh();
+        // handleRefresh();
         closeModal();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -202,10 +201,16 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           </div>
           <div className={styles.main_section}>
             {shortlistModalData.participent.attendee?.length > 0 &&
-              <AttendeeCard cardType={"Attendee"} userList={shortlistModalData.participent.attendee} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+              <AttendeeCard cardType={"Attend"} userList={shortlistModalData.participent.attendee} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors}/>
             }
             {shortlistModalData.participent.speakers?.length > 0 &&
-              <AttendeeCard cardType={"Speaker"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
+              <AttendeeCard cardType={"Speak"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
+            }
+            {shortlistModalData.participent.sponsors?.length > 0 &&
+              <AttendeeCard cardType={"Sponsor"} userList={shortlistModalData.participent.sponsors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+            }
+            {shortlistModalData.participent.exhibitors?.length > 0 &&
+              <AttendeeCard cardType={"Exhibit"} userList={shortlistModalData.participent.exhibitors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
             }
           </div>
         </main>

@@ -4,7 +4,9 @@
     border-radius: 10px;
     position: relative;
 }
-
+.darkBody{
+    background-color: #4d4d4d53;
+}
 .descHeader {
     padding: 9px 19px;
     display: flex;
