@@ -57,3 +57,13 @@
     transform: scale(1.05);
     z-index: 1;
 }
+.addColor {
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}

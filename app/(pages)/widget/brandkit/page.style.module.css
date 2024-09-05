@@ -57,3 +57,28 @@
     background-color: rgba(177, 177, 177, 0.553);   
     transition-duration: .2s;
 }
+
+
+@media (max-width: 780px) {
+    .container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .leftSection {
+        width: 100%;
+    }
+
+    .rightSection {
+        width: 100%;
+    }
+
+    .modalContainer {
+        width: 90%;
+    }
+
+    .modal {
+        width: 100%;
+    }
+}

@@ -64,9 +64,9 @@ interface DraftWidgetsType {
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
-        heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-        subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
-        body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+        heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
+        subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
+        body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
     },
     buttonSettings = {
         primary: { buttonColor: "#6750a4", fontColor: "#ffffff", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" },
