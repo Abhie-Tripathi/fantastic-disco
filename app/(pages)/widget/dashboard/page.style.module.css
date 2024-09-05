@@ -32,6 +32,7 @@
     min-width: 430px;
 
 }
+
 .eventContainer {
     width: 60%;
 }
@@ -46,6 +47,7 @@
         height: 500px;
     }
 }
+
 @media screen and (max-width: 990px) {
     .widgetEventsContainer {
         flex-direction: column;
@@ -53,6 +55,7 @@
         height: 500px;
 
     }
+
     .eventContainer {
         width: 100%;
     }
