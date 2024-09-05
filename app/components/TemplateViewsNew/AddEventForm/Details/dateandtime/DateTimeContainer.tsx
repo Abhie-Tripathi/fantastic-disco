@@ -50,7 +50,7 @@ const DateTimeContainer = ({
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
     const [todaysDate, setTodaysDate] = useState<any>()
-    const [maxEndDate, setMaxEndDate] = useState<string>("")
+    const [maxEndDate, setMaxEndDate] = useState<string>("") // To find a max end date according to startDate. i:e 28 days later of startDate
 
     const startCalDropdownRef = useOutsideClick(() => setStartCalendarDropdown(false))
     const endCalDropdownRef = useOutsideClick(() => setEndCalendarDropdown(false))
