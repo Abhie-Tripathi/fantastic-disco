@@ -1,15 +1,19 @@
 'use client'
 import React, { useState } from 'react'
 import styles from './colorcontainer.style.module.css'
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
+
 
 interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
     fetchedColors : string[];
     handleColorModal : (type: string, index : number) => void
+    setFetchedColors : (value : string[])=> void
     
 }
-const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModal }: Props) => {
+const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModal ,setFetchedColors}: Props) => {
     const colors = ['#eb6809', '#f7f6f4', '#d29168', '#fcb676', '#d4ac94']
 
     const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -54,6 +58,23 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModa
         setPreview("color")
         handleColorModal(type, index)
     }
+    const handleDelete = async(e: React.MouseEvent<HTMLDivElement>,indexToRemove : number)=>{
+        e.stopPropagation();
+        const updatedColorArray = fetchedColors.filter((_, index) => index !== indexToRemove);
+        console.log("updated colors : ", updatedColorArray)
+        setFetchedColors(updatedColorArray)
+        const {data,error} = await myFetch(`${baseUrl}/kit`,{
+            method : "PATCH",
+            body: JSON.stringify({color : updatedColorArray.join()}),
+            headers: {
+                'Content-Type': 'application/json'
+            }       
+        })
+        if(error){
+            console.log(error)
+            return
+        }        
+    }
 
     return (
         <div className={styles.body}>
@@ -63,7 +84,7 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModa
                     <div className={styles.color} key={key} style={{ backgroundColor: color }} onClick={() => handleColorClick(color, "update", key)} onMouseLeave={handleMouseLeave}>
                         <span style={{ color: isColorDark(color) ? '#ffffff' : '#000000' }}>{color}</span>
                         <div className={styles.btnContainer}>
-                            <div className={styles.deleteBtn}><DeleteIcon /></div>
+                            <div className={styles.deleteBtn} onClick={(e) => handleDelete(e,key)}><DeleteIcon /></div>
                             <div
                                 className={styles.copyBtn}
                                 data-name={color}
@@ -91,17 +112,17 @@ function AddIcon() {
 }
 function DeleteIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" fill="black" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" fill="white" /></svg>
     )
 }
 function CopyIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" fill="black" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" fill="white" /></svg>
     )
 }
 function TickIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="black" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="white" /></svg>
     )
 }
 export default ColorContainer

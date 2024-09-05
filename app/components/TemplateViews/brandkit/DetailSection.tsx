@@ -31,7 +31,7 @@ const DetailSection = ({ fetchedLogos, fetchedDomain }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.logo}>
-                <Image src={fetchedLogos ?  fetchedLogos[0] : Logo} width={150} height={150} alt='logo' />
+                <Image src={fetchedLogos ?  fetchedLogos[0] : Logo} width={140} height={140} alt='logo' />
             </div>
             <div className={styles.companyName}>{extractCompanyName(fetchedDomain? fetchedDomain : "" )}</div>
             <div className={styles.companyLink}>
