@@ -44,39 +44,6 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
     const [loadingState, setLoadingState] = useState<boolean>(true)
     const [polling, setPolling] = useState<boolean>(true);
 
-    // const fetchBrandkit = async () => {
-    //     const { data, error } = await myFetch(`${baseUrl}/kit`)
-    //     if (error) {
-    //         console.error('Error fetching brand kit:', error);
-    //         return;
-    //     }
-
-    //     const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
-    //     setFetchedColors(data.color)
-    //     setFetchedFonts(cleanedFonts)
-    //     setFetchedLogos(data.logo)
-    // }
-    // useEffect(() => {
-    //     // Initial fetch
-    //     fetchBrandkit();
-
-    //     // Set up polling
-    //     const intervalId = setInterval(() => {
-    //         if (polling) {
-    //             fetchBrandkit();
-    //         }
-    //     }, 800); // Poll every 800 ms
-
-    //     // Clear interval on component unmount
-    //     return () => clearInterval(intervalId);
-    // }, [polling]);
-
-    // useEffect(() => {
-    //     if (fetchedLogos.length > 0) {
-    //         setLoadingState(false)
-    //         setPolling(false);
-    //     }
-    // }, [fetchedLogos])
 
     return (
         <div className={theme === "dark" ? styles.darkBody : styles.lightBody} style={{ padding: flex ? "12px 36px 17px 23px" : 0 }}>

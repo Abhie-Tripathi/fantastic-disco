@@ -12,7 +12,7 @@ const DescriptionModal = ({setDescriptionModal,handleDescClick,setTextValue,text
     return (
         <div className={styles.descriptionModal}>
             <div><span>Add your description</span><span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span></div>
-            <textarea onChange={(e) => setTextValue(e.target.value)} value={textValue} />
+            <textarea onChange={(e) => setTextValue(e.target.value)} value={textValue} maxLength={1500}/>
             <button onClick={handleDescClick}>Save</button>
         </div>
     )

@@ -128,6 +128,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
+    setTextValue(textValue.trim())
   }
   const deleteSpeaker = (id: string) => {
     setSpeakerProfilesData((prevData) =>
@@ -446,7 +447,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       </div>
       {
         descriptionModal && <div className={styles.descriptionModal}>
-          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick} />
+          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
         </div>
       }
       {
