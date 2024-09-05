@@ -17,6 +17,8 @@ const Page = () => {
   const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
   const [fetchedDomain, setFetchedDomain] = useState<string>("")
   const [loadingState, setLoadingState] = useState<boolean>(true)
+  const [colorModalType, setColorModalType] = useState<string>("")
+  const [colorModalIndex, setColorModalIndex] = useState<number>(0)
 
   const fetchBrandkit = async () => {
     const { data, error } = await myFetch(`${baseUrl}/kit`)
@@ -32,6 +34,10 @@ const Page = () => {
     setFetchedDomain(data.domain.domain)
   }
 
+  const handleColorModal = (type : string, index : number)=>{
+    setColorModalType(type)
+    setColorModalIndex(index)
+  }
   useEffect(() => {
     fetchBrandkit()
   }, [])
@@ -55,7 +61,7 @@ const Page = () => {
               <DetailSection fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} />
             </div>
             <div className={styles.rightSection}>
-              <BrandKit fetchedFonts={fetchedFonts} fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} preview={preview} />
+              <BrandKit handleColorModal={handleColorModal} fetchedFonts={fetchedFonts} fetchedLogos={fetchedLogos} fetchedDomain={fetchedDomain} fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} preview={preview} />
             </div>
           </>)}
       </div>
@@ -63,7 +69,7 @@ const Page = () => {
       <div className={styles.modalContainer}>
         {preview.length > 0 && <div className={styles.closBtn} onClick={() => setPreview("")}>X</div>}
         <div className={styles.modal}>
-          {preview === "logo" ? <LogoModal /> : preview === "color" ? <ColorModal fetchedColors={fetchedColors} setColorCode={setColorCode} colorCode={colorCode} /> : <></>}
+          {preview === "logo" ? <LogoModal /> : preview === "color" ? <ColorModal setPreview={setPreview} setFetchedColors={setFetchedColors} fetchedColors={fetchedColors} setColorCode={setColorCode} colorCode={colorCode} colorModalType = {colorModalType} colorModalIndex={colorModalIndex}/> : <></>}
         </div>
       </div>
     </div>

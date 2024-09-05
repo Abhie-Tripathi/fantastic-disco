@@ -6,8 +6,10 @@ interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
     fetchedColors : string[];
+    handleColorModal : (type: string, index : number) => void
+    
 }
-const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
+const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModal }: Props) => {
     const colors = ['#eb6809', '#f7f6f4', '#d29168', '#fcb676', '#d4ac94']
 
     const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -23,7 +25,6 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
         }, 100)
         // Revert back to the copy icon on mouse leave
     };
-
 
     const isColorDark = (color: string) => {
         // Convert hex color to RGB
@@ -48,30 +49,10 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
         return luminance < 0.5;
     };
 
-    // const scrollRef = useRef<HTMLDivElement>(null);
-    // useEffect(() => {
-    //     const handleScroll = (event: WheelEvent) => {
-    //         if (scrollRef.current) {
-    //             event.preventDefault();
-    //             scrollRef.current.scrollLeft += event.deltaY;
-    //         }
-    //     };
-
-    //     const refCurrent = scrollRef.current;
-    //     if (refCurrent) {
-    //         refCurrent.addEventListener('wheel', handleScroll);
-    //     }
-
-    //     return () => {
-    //         if (refCurrent) {
-    //             refCurrent.removeEventListener('wheel', handleScroll);
-    //         }
-    //     };
-    // }, []);
-
-    const handleColorClick = (color: string) => {
+    const handleColorClick = (color: string, type : string, index : number) => {
         setColorCode(color)
         setPreview("color")
+        handleColorModal(type, index)
     }
 
     return (
@@ -79,7 +60,7 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
             <div className={styles.heading}>Brand Colors</div>
             <div className={styles.colorPallete}>
                 {fetchedColors.map((color, key) => (
-                    <div className={styles.color} key={key} style={{ backgroundColor: color }} onClick={() => handleColorClick(color)} onMouseLeave={handleMouseLeave}>
+                    <div className={styles.color} key={key} style={{ backgroundColor: color }} onClick={() => handleColorClick(color, "update", key)} onMouseLeave={handleMouseLeave}>
                         <span style={{ color: isColorDark(color) ? '#ffffff' : '#000000' }}>{color}</span>
                         <div className={styles.btnContainer}>
                             <div className={styles.deleteBtn}><DeleteIcon /></div>
@@ -92,7 +73,7 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors }: Props) => {
 
                     </div>
                 ))}
-                <div className={styles.addColor}>
+                <div className={styles.addColor} onClick={() => handleColorClick(fetchedColors[0], "add",0)}>
                     <AddIcon />
                 </div>
             </div>

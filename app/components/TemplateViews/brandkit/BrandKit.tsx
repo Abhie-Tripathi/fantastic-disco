@@ -16,14 +16,15 @@ interface Props {
     fetchedFonts:string[]; 
     fetchedLogos: string[];
     fetchedDomain: string 
+    handleColorModal : (type: string, index : number) => void
 }
 
-const BrandKit = ({ preview, setPreview,setColorCode,fetchedColors, fetchedFonts,fetchedLogos,fetchedDomain }: Props) => {
+const BrandKit = ({ preview, setPreview,setColorCode,fetchedColors, fetchedFonts,fetchedLogos,fetchedDomain,handleColorModal }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.container}>
                 <LogoContainer fetchedLogos={fetchedLogos} setPreview={setPreview} />
-                <ColorContainer fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} />
+                <ColorContainer handleColorModal={handleColorModal} fetchedColors={fetchedColors} setColorCode={setColorCode} setPreview={setPreview} />
                 <TypoContainer fetchedFonts={fetchedFonts} setPreview={setPreview} />
             </div>
         </div>
