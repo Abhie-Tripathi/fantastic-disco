@@ -206,6 +206,7 @@
     width: 100%;
     align-items: center;
     gap: 10px;
+    line-break: anywhere;
     /* border-bottom: 1px solid var(--border-color); */
   }
   /* .allInputBox > .singleUrl:last-child{
