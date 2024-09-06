@@ -65,26 +65,46 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
     )
 }
 const fetchData = async (widgetId: string, eventId: string) => {
-    const { data, error } = await myFetch(`${baseUrl}/public/widget/${widgetId}`);
-    if (error || !data || !data.widgetData || !data.widgetData.id) {
-        console.log("Invalid widgetId or error encountered");
-        notFound();
+    try {
+        // Manually fetching data instead of using the myFetch hook
+        const response = await fetch(`${baseUrl}/public/widget/${widgetId}`);
+        
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        
+        const data = await response.json();
+
+        // Check if data is valid
+        if (!data || !data.data.widgetData || !data.data.widgetData.id) {
+            console.log("Invalid widgetId or error encountered");
+            notFound();
+        }
+
+        console.log("data is: ", data);
+        console.log("event id is: ", eventId);
+
+        // Find the event in otherdata or eventData
+        const eventFromOtherData = data.data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
+        const eventFromEventData = data.data.eventData?.find((event: any) => event.id === eventId);
+
+        // If the event is not found in either dataset, return 404
+        if (!eventFromOtherData && !eventFromEventData) {
+            console.log("Invalid eventId");
+            notFound();
+        }
+
+        // Merge event data from both sources
+        const mergedEventData = {
+            ...eventFromOtherData,
+            ...eventFromEventData,
+        };
+
+        return mergedEventData;
+    } catch (error) {
+        console.log("Error fetching data:", error);
+        notFound(); // Handle the error by redirecting to a not found page or similar
     }
-    console.log("data is : ", JSON.stringify(data))
-    console.log("event id is :", eventId)
-    const eventFromOtherData = data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
-    const eventFromEventData = data.eventData?.find((event: any) => event.id === eventId);
-    console.log("eventFromOtherData", eventFromOtherData)
-    console.log("eventFromEventData", eventFromEventData)
-    if (!eventFromOtherData && !eventFromEventData) {
-        console.log("Invalid eventId");
-        notFound();
-    }
-    const mergedEventData = {
-        ...eventFromOtherData,
-        ...eventFromEventData,
-    };
-    return mergedEventData;
 };
 const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
     const { widgetId, eventId } = searchParams;
