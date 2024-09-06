@@ -1583,7 +1583,9 @@ useEffect(()=>{
     {!valid && (
                 <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
               )}
+              <div className={styles.allCompetitors}>
               {customData.map((item: any, index: number) => (
+                
                 <div key={index} className={styles.customDataOuterDiv}>
                   <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
                   <div className={styles.allCustomData}>
@@ -1592,7 +1594,9 @@ useEffect(()=>{
                       .join(' - ')}
                   </div>
                 </div>
+               
               ))}
+               </div>
             </div>
           }
         </div>
