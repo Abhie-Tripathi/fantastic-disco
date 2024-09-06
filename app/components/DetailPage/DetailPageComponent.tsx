@@ -59,16 +59,18 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-    
-    useEffect(()=>{
-        toast.success("Succesfully Registered for the event. Check your mail for more info")
-    },[registerSuccess])
+
+    useEffect(() => {
+        if (registerSuccess) {
+            toast.success("Succesfully Registered for the event. Check your mail for more info")
+        }
+    }, [registerSuccess])
 
     return (
         <div className={styles.body}
             style={{ backgroundColor: pageBgColor }}
         >
-            <ToastContainer/>
+            <ToastContainer />
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
@@ -79,7 +81,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
 
                     {hashtags && <div className={styles.hashtagsContainer}>
-                        {hashtags?.split(",").map((tag, key)=>(
+                        {hashtags?.split(",").map((tag, key) => (
                             <div className={styles.hashtag} key={key}>{tag}</div>
                         ))}
                     </div>}
@@ -113,7 +115,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                                 zoom={6} />
                         </Suspense>
                     </div>
-   
+
                 </div>
             </div>
             <div className={styles.line}></div>

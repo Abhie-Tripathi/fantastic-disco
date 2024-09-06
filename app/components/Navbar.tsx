@@ -242,7 +242,7 @@ const Navbar = () => {
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
                   style={{ width: "fit-content", padding: '8px' }}
                 >
-                  <Link href="/widget/dashboard" className="">
+                  {/* <Link href="/internal" className=""> */}
                     <div
                       className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                     >
@@ -255,7 +255,7 @@ const Navbar = () => {
                       />
                       Promote
                     </div>
-                  </Link>
+                  {/* </Link> */}
                   <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                   >

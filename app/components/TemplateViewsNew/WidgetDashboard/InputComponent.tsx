@@ -9,23 +9,25 @@ import { myFetch } from '@/utils/myFetch'
 interface Props {
     fetched: boolean;
     setFetchedBoolean : (value : boolean)=>void
+    setBrandkitLoadingState : (value : boolean)=>void
 }
 
-const InputComponent = ({ fetched,setFetchedBoolean }: Props) => {
+const InputComponent = ({ fetched,setFetchedBoolean,setBrandkitLoadingState }: Props) => {
 
     const [domain, setDomain] = useState<string>("");
 
     const handleSubmit = (e : React.FormEvent)=>{
         e.preventDefault();
+        setBrandkitLoadingState(true)
         const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
         // Check if the entered domain is valid
         if (!urlPattern.test(domain)) {
             alert("Please enter a valid domain.");
             return;
         }
-        fetchBrandkit()
+        postBrandkit()
     }
-    const fetchBrandkit = async()=>{
+    const postBrandkit = async()=>{
         const postDomain = {
             url: `https://${domain}`    
         };
@@ -42,7 +44,6 @@ const InputComponent = ({ fetched,setFetchedBoolean }: Props) => {
             return;
         }
         setFetchedBoolean(true)
-        localStorage.setItem('brandkit', "true");
     }
 
     return (
