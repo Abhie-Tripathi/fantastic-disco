@@ -4,8 +4,9 @@
     font-family: var(--font-inter);
     position:relative;
     width: 100vw;
-    max-height: 88vh;
-    overflow: hidden;
+    height: fit-content;
+    /* max-height: 88vh; */
+    /* overflow: hidden; */
 }
 .widgetOptions {
     display: flex;

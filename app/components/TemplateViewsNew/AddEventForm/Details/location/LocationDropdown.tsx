@@ -18,10 +18,11 @@ interface Props {
     eventFormat: string;
     setLongitude: (value: number) => void;
     setLatitude: (value: number) => void;
+    theme?: string;
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude }: Props) => {
+const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme }: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
@@ -39,15 +40,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
 
         setIsDropdownVisible(false);
 
-        // Fetch latitude and longitude
-        const locationName = suggestion.state ? `${suggestion.name}, ${suggestion.state}` : suggestion.name;
-        // const latLong = await getLatLong(locationName);
-
-        // if (latLong) {
-        //   
-        // }
     }
-
 
     const shortenName = (name: string) => {
         return name.substring(0, 40);
@@ -64,7 +57,6 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                 const { country: countryName, state } = location.address || {};
 
                 const shortName = shortenName(name)
-
                 return {
                     id,
                     name: shortName,
@@ -104,7 +96,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
     }, [query, debouncedFetchSuggestions]);
     // if (!isLoaded) return <div>Loading...</div>;
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationTypes}>
                 <label className={styles.checkboxContainer}>
                     <input
@@ -139,10 +131,10 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
             </div>
             {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
-                <div className={styles.recentHeading}>Recent Locations</div>
+                {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
                     <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>
-                </div>
+                </div> */}
                 {isDropdownVisible && (
                     <div className={styles.locationDropdown}>
                         {suggestions.map(suggestion => (

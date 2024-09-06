@@ -70,8 +70,12 @@ const fetchData = async (widgetId: string, eventId: string) => {
         console.log("Invalid widgetId or error encountered");
         notFound();
     }
+    console.log("data is : ", JSON.stringify(data))
+    console.log("event id is :", eventId)
     const eventFromOtherData = data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
     const eventFromEventData = data.eventData?.find((event: any) => event.id === eventId);
+    console.log("eventFromOtherData", eventFromOtherData)
+    console.log("eventFromEventData", eventFromEventData)
     if (!eventFromOtherData && !eventFromEventData) {
         console.log("Invalid eventId");
         notFound();

@@ -68,7 +68,7 @@ const ParticipationDropdown = ({ setInputMessage, inputMessage, setParticipation
                 </label>
             </div>
            <div className={styles.messageContainer}>
-                <div className={styles.heading}>Customize your message</div>
+                {/* <div className={styles.heading}>Customize your message</div> */}
                 {/* <Editor
                     editorState={editorState}
                     toolbar={{

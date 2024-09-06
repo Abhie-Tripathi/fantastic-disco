@@ -6,6 +6,11 @@
     flex-direction: column;
     gap: 6px;
 }
+.descriptionModal div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .descriptionModal .header{
     font-size: 12px;
     color: #7D7D7D;

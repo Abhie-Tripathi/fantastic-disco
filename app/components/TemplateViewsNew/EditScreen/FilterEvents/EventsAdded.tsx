@@ -63,9 +63,8 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         bannerUrl: event.bannerUrl,
                         latitude: event.latitude,
                         longitude: event.longitude,
-                        venue: event.venue
-
-
+                        venue: event.venue,
+                        hashtags : event.hashtags
                     } as PrefilledAddedEventsType;
                 })
             );

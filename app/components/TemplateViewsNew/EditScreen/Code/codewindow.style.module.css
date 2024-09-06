@@ -13,7 +13,7 @@
 }
 .domainContainer{
     padding: 16px 25px 18px 23px;
-    max-height: 180px;
+    max-height: 230px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -51,8 +51,14 @@
 }
 .save_inputContainer{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 5px;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 .save_inputContainer .saveBtn{
     border-radius: 4px;
@@ -60,6 +66,30 @@
     font-size: var(--font-size-default);
     background-color: var(--primary-color);
     color: white;
+}
+.save_inputContainer .cancelBtn{
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: var(--font-size-default);
+    border:1px solid var(--primary-color);
+    color: var(--primary-text-color);
+}
+.input_deleteContainer{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.input_deleteContainer .deleteBtn{
+    border: 1px solid #DA2F35;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.input_deleteContainer .deleteBtn:hover{
+    background-color:rgb(246, 175, 175);
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 .inputContainer span{
     padding: 8px 12px;

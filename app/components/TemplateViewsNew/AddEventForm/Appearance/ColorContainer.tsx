@@ -18,32 +18,57 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
 
     const handleChange = (color: any) => {
         // Convert hex to rgba with 10% opacity
-        const rgbaColor = hexToRgba(color.hex, 0.1);
-        setPageBgColor(rgbaColor);
+        // const rgbaColor = hexToRgba(color.hex, 0.1);
+        // setPageBgColor(rgbaColor);
+
+        setPageBgColor(color.hex);
     }
     const handleColorClick = (color : any)=>{
-        const rgbaColor = hexToRgba(color, 0.1);
-        setPageBgColor(rgbaColor);
+        // const rgbaColor = hexToRgba(color, 0.1);
+        // setPageBgColor(rgbaColor);
+
+        setPageBgColor(color);
     }
 
-    const hexToRgba = (hex: string, opacity: number) => {
-        let r = 0, g = 0, b = 0;
+    // const hexToRgba = (hex: string, opacity: number) => {
+    //     let r = 0, g = 0, b = 0;
 
-        // 3 digits
-        if (hex.length === 4) {
-            r = parseInt(hex[1] + hex[1], 16);
-            g = parseInt(hex[2] + hex[2], 16);
-            b = parseInt(hex[3] + hex[3], 16);
+    //     // 3 digits
+    //     if (hex.length === 4) {
+    //         r = parseInt(hex[1] + hex[1], 16);
+    //         g = parseInt(hex[2] + hex[2], 16);
+    //         b = parseInt(hex[3] + hex[3], 16);
 
-            // 6 digits
-        } else if (hex.length === 7) {
-            r = parseInt(hex[1] + hex[2], 16);
-            g = parseInt(hex[3] + hex[4], 16);
-            b = parseInt(hex[5] + hex[6], 16);
+    //         // 6 digits
+    //     } else if (hex.length === 7) {
+    //         r = parseInt(hex[1] + hex[2], 16);
+    //         g = parseInt(hex[3] + hex[4], 16);
+    //         b = parseInt(hex[5] + hex[6], 16);
+    //     }
+
+    //     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    // }
+
+    const rgbToHex = (r: number, g: number, b: number) => {
+        const componentToHex = (c: number) => {
+            const hex = c.toString(16);
+            return hex.length === 1 ? `0${hex}` : hex;
+        };
+    
+        return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+    };
+
+    const formatColor = (color: string) => {
+        if (color.startsWith("rgb")) {
+            const rgb = color.match(/\d+/g);
+            if (rgb) {
+                return rgbToHex(parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2]));
+            }
         }
+        return color; 
+    };
 
-        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-    }
+    const formattedPageBgColor = formatColor(pageBgColor);
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -53,7 +78,8 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
             <div className={styles.editContainer} >
                 <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`}><PaintIcon /> <span>Background Fill</span></div>
                 <div className={styles.colorPickerContainer} style={{backgroundColor : theme === "light" ? "#f2f2f2" : "#1a1a1a"}}>
-                    <span>{pageBgColor}</span>
+                    {/* <span>{pageBgColor}</span> */}
+                    <span>{formattedPageBgColor}</span> 
                     <div className={styles.colorPickerOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
                         <div className={styles.colorPickerInner} style={{ backgroundColor: pageBgColor }}>
                         </div>

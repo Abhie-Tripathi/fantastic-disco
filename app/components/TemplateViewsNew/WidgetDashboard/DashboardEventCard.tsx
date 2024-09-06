@@ -5,16 +5,18 @@ import calendarIcon from "/public/calendar.svg";
 import PlaceIcon from "/public/location.svg";
 import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface Props {
     event: AllEventsType;
+    fetchEvents: (value: void) => void
 }
 
-const DashboardEventCard = ({ event }: Props) => {
+const DashboardEventCard = ({ event, fetchEvents }: Props) => {
     function formatEventDates(startDate: string, endDate: string) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-
         if (start.getFullYear() === end.getFullYear()) {
             if (start.getMonth() === end.getMonth()) {
                 if (start.getDate() === end.getDate()) {
@@ -69,6 +71,26 @@ const DashboardEventCard = ({ event }: Props) => {
             );
         }
     }
+
+    const handleDelete = async (eventId: string) => {
+        const customizeData = new FormData();
+        customizeData.append("id", eventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+                method: 'PATCH',
+                body: customizeData,
+            }
+        );
+        if (data) {
+            fetchEvents()
+        }
+        if (error) {
+            console.log(error);
+        }
+
+    }
     return (
         <div className={styles.card}>
             <div className={styles.eventName}>{event.name}</div>
@@ -93,7 +115,7 @@ const DashboardEventCard = ({ event }: Props) => {
                     <div className={styles.tag1}>Tradeshow</div>
                     <div className={styles.tag2}>In-Person</div>
                 </div>
-                <button className={styles.deleteBtn}>Delete</button>
+                <button className={styles.deleteBtn} onClick={()=>handleDelete(event.eventId)}>Delete</button>
             </div>
         </div>
     )

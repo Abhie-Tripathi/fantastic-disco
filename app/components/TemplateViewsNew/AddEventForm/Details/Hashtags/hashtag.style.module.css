@@ -32,7 +32,7 @@
 .tagSpinner{
     border: 5px solid #EAF0F6;
     border-radius: 50%;
-    border-top: 5px solid #FF7A59;
+    border-top: 5px solid #6750a4;
     width: 30px;
     height: 30px;
     animation: spinner 2s linear infinite;
@@ -43,13 +43,13 @@
     font-size: var(--font-size-xs);
     font-weight: 500;    
     line-height: 18px;
-    padding: 3px 12px;
+    padding: 3px 6px;
     border-radius: 40px;
     display: flex;
     align-items: center;
     gap: 4px;
 }
-.hashtag .deleteIcon{
+.deleteIcon{
     cursor: pointer;
     color: white;
     width: 15px;
@@ -72,6 +72,30 @@
     align-items: center;
     justify-content:center;
     color: white;
+    cursor: pointer;
+}
+.addBtnDisable{
+    cursor: not-allowed;
+    position: relative;
+}
+.addBtnDisable::before{
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.addBtnDisable:hover::before{
+    opacity: 1;
 }
 .inputContainer{
     display: flex;
@@ -82,9 +106,9 @@
     font-weight: 500;   
     border-radius: 40px;
 }
-.inputContainer span{
+.inputContainer .hash{
     padding: 4px;
-    background-color: #b0b0b0;
+    background-color: #cdcdcd;
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
 }

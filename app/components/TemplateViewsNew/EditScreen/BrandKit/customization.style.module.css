@@ -1,6 +1,7 @@
 .body{
     border: 1px solid var(--border-color);
     border-radius: 10px;
+    width: 100%;
 }
 .line{
     border-top: 1px solid var(--border-color);
@@ -15,7 +16,9 @@
     font-size: 14px;
     font-weight: 600;
 }
-
+.brandkit{
+    width: 100%;
+}
 .headerContainer button{
     color: white;
     background-color: #6750a4;

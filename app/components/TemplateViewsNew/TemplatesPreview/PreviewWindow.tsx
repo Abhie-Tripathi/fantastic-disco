@@ -51,6 +51,7 @@ interface PreviewProps {
     fetchedAddedEvents?: AddedEventsType[];
     widgetId?: string;
     smallCard: boolean;
+    setIsDraftSaved? : (value : boolean)=>void
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -63,15 +64,16 @@ interface DraftWidgetsType {
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
-        heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-        subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
-        body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
+        heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
+        subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
+        body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
     },
     buttonSettings = {
         primary: { buttonColor: "#6750a4", fontColor: "#ffffff", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
-    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard }: PreviewProps) => {
+    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard,setIsDraftSaved }: PreviewProps) => {
+
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
     const { theme } = useTheme()
     const router = useRouter();
@@ -160,8 +162,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         );
         if (data) {
             console.log(data);
-            if (fetchDraftWidgets) {
+            if (fetchDraftWidgets && setIsDraftSaved) {
                 fetchDraftWidgets();
+                setIsDraftSaved(true)
             }
             if (navigate && data.id) {
                 router.push(`/widget/edit/${data.id}`);
@@ -225,7 +228,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                                             smallCard={smallCard}fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
                 </div>
                 {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
-                    <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to my widgets</button>
+                    <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to Draft widgets</button>
                     <button onClick={() => handleDraftWidgets(true)} className={styles.previewBtn}> Continue with this template</button>
                 </div>}
             </div>

@@ -16,13 +16,15 @@ import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import { GolbalEventType } from '@/types/globaleventtype'
 import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
+import { useTheme } from '@/context'
 
 const Page = () => {
+  const {theme} = useTheme()
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
-    heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
+    heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
     subheading: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
@@ -78,6 +80,8 @@ const Page = () => {
         startTime: event.data.startTime,
         endTime: event.data.endTime,
         gmtZone: event.data.gmt_time,
+        latitude : event.data.latitude,
+        longitude : event.data.longitude
       }))
       setFetchedAllEvents(events)
     } if (error) {
@@ -121,6 +125,9 @@ const Page = () => {
     fetchAddedEvents();
   }, [])
 
+  useEffect(()=>{
+    console.log("event : ", prefilledAddedEvent)
+  },[prefilledAddedEvent])
 
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
@@ -241,7 +248,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
+        <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
       </div>}
     </div>
   )
