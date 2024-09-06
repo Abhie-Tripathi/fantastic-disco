@@ -8,17 +8,19 @@ import { myFetch } from '@/utils/myFetch'
 
 interface Props {
     fetched: boolean;
-    setFetchedBoolean : (value : boolean)=>void
-    setBrandkitLoadingState : (value : boolean)=>void
+    setFetchedBoolean: (value: boolean) => void
+    setBrandkitLoadingState: (value: boolean) => void
+    setPolling: (value: boolean) => void
 }
 
-const InputComponent = ({ fetched,setFetchedBoolean,setBrandkitLoadingState }: Props) => {
+const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling }: Props) => {
 
     const [domain, setDomain] = useState<string>("");
 
-    const handleSubmit = (e : React.FormEvent)=>{
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setBrandkitLoadingState(true)
+        setPolling(true)
         const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
         // Check if the entered domain is valid
         if (!urlPattern.test(domain)) {
@@ -27,19 +29,19 @@ const InputComponent = ({ fetched,setFetchedBoolean,setBrandkitLoadingState }: P
         }
         postBrandkit()
     }
-    const postBrandkit = async()=>{
+    const postBrandkit = async () => {
+
         const postDomain = {
-            url: `https://${domain}`    
+            url: `https://${domain}`
         };
-        
-        const {data, error}= await myFetch(`${baseUrl}/kit`,{
-            method : "POST",
+        const { data, error } = await myFetch(`${baseUrl}/kit`, {
+            method: "POST",
             body: JSON.stringify(postDomain),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        if(error){
+        if (error) {
             console.log(error)
             return;
         }
@@ -55,7 +57,7 @@ const InputComponent = ({ fetched,setFetchedBoolean,setBrandkitLoadingState }: P
             <form onSubmit={handleSubmit} className={`${styles.input_btnContainer} ${fetched ? styles.fetchedInputBtnContainer : ""}`}>
                 <div className={styles.inputContainer}>
                     <span>https://</span>
-                    <input placeholder='Enter your company domain' onChange={(e)=>setDomain(e.target.value)} value={domain}/>
+                    <input placeholder='Enter your company domain' onChange={(e) => setDomain(e.target.value)} value={domain} />
                 </div>
                 <button>Fetch</button>
             </form>

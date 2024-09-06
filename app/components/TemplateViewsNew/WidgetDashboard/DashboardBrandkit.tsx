@@ -13,15 +13,17 @@ import Loading from '../../UI/Loading'
 interface Props{
     setBrandkitLoadingState : (value : boolean)=>void;
     brandkitLoadingState : boolean;
+    polling : boolean;
+    setPolling : (value : boolean)=>void;
 }
 
-const DashboardBrandkit = ({setBrandkitLoadingState,brandkitLoadingState} : Props) => {
+const DashboardBrandkit = ({setBrandkitLoadingState,brandkitLoadingState,setPolling, polling} : Props) => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
     const [fetchedFonts, setFetchedFonts] = useState<string[]>([])
     const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
-    const [polling, setPolling] = useState<boolean>(true);
+
 
     const fetchBrandkit = async () => {
         const { data, error } = await myFetch(`${baseUrl}/kit`)
@@ -37,7 +39,6 @@ const DashboardBrandkit = ({setBrandkitLoadingState,brandkitLoadingState} : Prop
     useEffect(() => {
         // Initial fetch
         fetchBrandkit();
-
         // Set up polling
         const intervalId = setInterval(() => {
             if (polling) {
@@ -55,7 +56,6 @@ const DashboardBrandkit = ({setBrandkitLoadingState,brandkitLoadingState} : Prop
             setPolling(false);
         }
     }, [fetchedLogos])
-
     return (
         <div className={styles.body}>
             {brandkitLoadingState ? <div className={styles.loader}>

@@ -12,6 +12,7 @@ const Page = () => {
 
   const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false);
   const [brandkitLoadingState ,setBrandkitLoadingState] = useState<boolean>(true)
+  const [polling, setPolling] = useState<boolean>(true);
 
   // This is to see if the brandkit was used atleast once by user
   const checkBrandkit = async()=>{
@@ -24,9 +25,7 @@ const Page = () => {
     if(data.domain.domain){
       setFetchedBoolean(true)
     }
-    
   }
-
   useEffect(()=>{
     checkBrandkit()
   },[])
@@ -34,10 +33,10 @@ const Page = () => {
   return (
     <div className={styles.body}>
       <div className={fetchedBoolean ? styles.fetchedInputScreen : styles.inputScreen}>
-        <InputComponent setBrandkitLoadingState={setBrandkitLoadingState} setFetchedBoolean={setFetchedBoolean} fetched={fetchedBoolean} />
+        <InputComponent setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} setFetchedBoolean={setFetchedBoolean} fetched={fetchedBoolean} />
       </div>
       {fetchedBoolean && <div className={styles.container}>
-        <div className={styles.brandKitContainer}><DashboardBrandkit setBrandkitLoadingState={setBrandkitLoadingState} brandkitLoadingState={brandkitLoadingState}/></div>
+        <div className={styles.brandKitContainer}><DashboardBrandkit polling={polling} setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} brandkitLoadingState={brandkitLoadingState}/></div>
         <div className={styles.widgetEventsContainer}>
           <div className={styles.widgetContainer}><DashboardWidgets /></div>
           <div className={styles.eventContainer}><DashboardEvents /></div>
