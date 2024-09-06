@@ -8,11 +8,13 @@ import { myFetch} from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import Table from '@/app/components/Table';
 import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
-const Page = () => {
+import { showToast } from '@/utils/showToast';
+import router from 'next/router';
+const Page = ({ params }: { params: any }) => {
   const urlPath=usePathname().split('/');
   const lastParam=urlPath[urlPath.length-1];
   console.log(lastParam);
-  
+  const { trackerId } = params;
   const eventPerPage = [
     {
       "Event": "Music Concert",
@@ -138,14 +140,30 @@ const Page = () => {
   
  
   const { theme } = useTheme();
-  const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [currPage, setCurrPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const handlePageItems = (event:React.ChangeEvent<HTMLSelectElement>) => {
-    event.preventDefault();
-    setItemsPerPage(parseInt(event.target.value));
-  }
+  // const iconClass = theme === "light" ? "icons_light" : "icon";
+  // const [currPage, setCurrPage] = useState(1);
+  // const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  // const [totalPages, setTotalPages] = useState<number>(1);
+  // const [trackerDetail, setTrackerDetail] = useState<any>([]);
+  // const [loading, setLoading] = useState(false);
+  const [showInsights,setShowInsights] = useState({
+    eventSize: true,
+    eventKeywords: true,
+    global: false,
+    reptSent: false,
+    eventRank: false,
+    matchScore: false,
+    estExhibit: false,
+    growth: false,
+    repeatSent: false,
+    trackerKeywords: true,
+    eventRating:false, 
+    keywords:[]
+  });
+  // const handlePageItems = (event:React.ChangeEvent<HTMLSelectElement>) => {
+  //   event.preventDefault();
+  //   setItemsPerPage(parseInt(event.target.value));
+  // }
   const [data,setData]=useState<any>();
   // const fetchData = async (secondLast:string) => {
   //   const { data, error } = await myFetch(`${baseUrl}/tracker/${secondLast}/events`);
@@ -203,6 +221,23 @@ const Page = () => {
     
     return formattedDate;
 }
+// useEffect(() => {
+//   const fetchTrackerDetail = async () => {
+//     const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
+//     if (data) {
+//       setTrackerDetail(data.tracker);
+//       setLoading(true);
+//     }
+//     if (error) {
+//       console.log(error);
+//       showToast("error", error.message);
+//       if (typeof window !== 'undefined') {
+//         router.push('/internal/trackers');
+//       } 
+//     }
+//   };
+//   fetchTrackerDetail();
+// }, [trackerId]);
  const saveEvent=async()=>{
   console.log(1);
   
@@ -229,17 +264,27 @@ const Page = () => {
  const handleCheckboxChange=()=>{
   setChecked(!isChecked);
  }
- const showInsights = {
-  eventSize: true,
-  eventKeywords: true,
-  global: true,
-  reptSent: true,
-  eventRank: true,
-  matchScore: true,
-  estExhibit: true,
-  growth: true,
-  repeatSent: true,
-};
+// useEffect(()=>{
+//   if(trackerDetail?.filterValue?.internationalScore){
+//     setShowInsights(prev=>({...prev, global:true}));
+//   }
+//   if(trackerDetail?.filterValue?.reputationScore){
+//     setShowInsights(prev=>({...prev, reptSent:true}));
+//   }
+//   if(trackerDetail?.filterValue?.trustScore){
+//     setShowInsights(prev=>({...prev, repeatSent:true}));
+//   }
+//   if(trackerDetail?.filterValue?.estimatedExhibitScore){
+//     setShowInsights(prev=>({...prev, estExhibit:true}));
+//   }
+//   if(trackerDetail?.filterValue?.eventRating){
+//     setShowInsights(prev=>({...prev, eventRating:true}));
+//   }
+//   if(trackerDetail?.filterValue?.eventKeywords?.length>0){
+//     const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
+//     setShowInsights(prev=>({...prev, keywords:keywords}));
+//   }
+// },[trackerDetail])
   return (
    
     <div className={styles.container}>
@@ -256,7 +301,7 @@ const Page = () => {
       {/* <div className={styles.innerLeft}><Trackers /></div>  */}
       <div className={styles.innerRight}>
         <div className='dummyDiv' style={{height:"120px"}}></div>
-   <Table showInsights={showInsights}/>
+   <Table  showInsights={showInsights}/>
    </div>
    </div>
     </div>
