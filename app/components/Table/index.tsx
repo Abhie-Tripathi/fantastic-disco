@@ -600,12 +600,12 @@ const Table = ({
       // setCatgeoryData(data);
     }
   };
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {
-    if (isSaving) return;
+    // if (isSaving) return;
 
-    setIsSaving(true);
+    // setIsSaving(true);
 
     const secondLast = path[path.length - 2];
     const dataToSend = {
@@ -644,16 +644,17 @@ const Table = ({
     } catch (err) {
       console.error("Error saving event:", err);
       showToast('error', "Please try again later.");
-    } finally {
-      setIsSaving(false);
-    }
+    } 
+    // finally {
+    //   setIsSaving(false);
+    // }
   };
 
-  const [isDelete, setIsDelete] = useState(false);
+  // const [isDelete, setIsDelete] = useState(false);
 
   const deleteEvent = async (groupId: string) => {
-    if (isDelete) return;
-    setIsDelete(true);
+    // if (isDelete) return;
+    // setIsDelete(true);
 
     const url = `${baseUrl}/tracker/saved-events`;
     let dataToSend = {};
@@ -706,9 +707,10 @@ const Table = ({
     } catch (err) {
       console.error("Error deleting event:", err);
       // showToast('error',err?.message);
-    } finally {
-      setIsDelete(false);
-    }
+    } 
+    // finally {
+    //   setIsDelete(false);
+    // }
   };
 
   if (!isLoaded) {
@@ -1046,16 +1048,6 @@ const Table = ({
                         {getEventRating(event.stats.rating)}
                         &nbsp;
                         <Image src={StarIcon} alt="star" width={14} />
-                        {/* {event.reputationSentiment > 10 &&
-                          <div style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
-                            <div className={`${styles.hybridTag}`} style={{color:"var(--success-text-color)", backgroundColor: "var(--success-background-color)"}}>Improved</div>
-                            </div>
-                        }
-                        {event.reputationSentiment < -10 &&
-                        <div style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
-                            <div className={`${styles.hybridTag}`} style={{color:"var(--danger-text-color)", backgroundColor: "var(--danger-background-color)"}}>Declined</div>
-                          </div>
-                        } */}
                         
                       </>
                     ) : (
@@ -1098,7 +1090,7 @@ const Table = ({
                 )}
                 {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& (
                   <>
-                    <td style={{ textAlign: "center" }}>
+                    <td>
                       {event.matchedKeywords.length == 0 ? (
                         <>-</>
                       ) : event.matchedKeywords.length == 1 ? (
