@@ -1,16 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './brandkit.style.module.css'
 import LogoComponent from './LogoComponent'
 import BrandColor from './BrandColor'
 import BrandkitTypography from './BrandkitTypography';
 import { useTheme } from '@/context';
+import { baseUrl } from '@/constants'
+import { myFetch } from '@/utils/myFetch'
+import Loading from '@/app/components/UI/Loading';
 
 interface Props {
     extractedColors: string[];
     setExtractedColors: (value: string[]) => void
     flex: boolean
     setPageBgColor?: (value: string) => void
-    setCardBgColor? :(value: string) => void
+    setCardBgColor?: (value: string) => void
     pageBgColor?: string;
     eventFont?: string;
     setEventFont?: (value: string) => void
@@ -29,12 +32,51 @@ interface FontSettingsState {
     body: FontSettings;
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont,setCardBgColor,setFontSettings }: Props) => {
+const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont, setCardBgColor, setFontSettings }: Props) => {
 
     const { theme } = useTheme()
     const [accordian, setAccordian] = useState<boolean>(false)
 
-    const [valueUpdate, setValueUpdated] = useState<boolean>(false) // To activate the save kit button
+    const [valueUpdate, setValueUpdated] = useState<boolean>(false)
+    const [fetchedColors, setFetchedColors] = useState<string[]>([])
+    const [fetchedFonts, setFetchedFonts] = useState<string[]>([])
+    const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
+    const [loadingState, setLoadingState] = useState<boolean>(true)
+    const [polling, setPolling] = useState<boolean>(true);
+
+    const fetchBrandkit = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/kit`)
+        if (error) {
+            console.error('Error fetching brand kit:', error);
+            return;
+        }
+
+        const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
+        setFetchedColors(data.color)
+        setFetchedFonts(cleanedFonts)
+        setFetchedLogos(data.logo)
+    }
+
+    useEffect(() => {
+        // Initial fetch
+        fetchBrandkit();
+        // Set up polling
+        const intervalId = setInterval(() => {
+            if (polling) {
+                fetchBrandkit();
+            }
+        }, 800); // Poll every 800 ms
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [polling]);
+
+    
+    useEffect(() => {
+        if (fetchedLogos.length > 0) {
+            setLoadingState(false)
+            setPolling(false);
+        }
+    }, [fetchedLogos])
 
     return (
         <div className={theme === "dark" ? styles.darkBody : styles.lightBody} style={{ padding: flex ? "12px 36px 17px 23px" : 0 }}>
@@ -46,22 +88,49 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                 {accordian ?
                     <div className={styles.btn} onClick={() => setAccordian(false)}><UpArrow color={theme === "light" ? "black" : "white"} /></div> : <div className={styles.btn} onClick={() => setAccordian(true)}><DownArrow color={theme === "light" ? "black" : "white"} /></div>}
             </div>
-            {accordian && <div className={styles.accordian} style={{ marginTop: flex ? 24 : 0 }}>
-                <div className={styles.logoContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
-                    <LogoComponent flex={flex} />
+            {loadingState ? (
+                <div className={styles.loader}>
+                    <Loading />
+                    <div className={styles.loadingHeading}>Fetching your Brandkit</div>
                 </div>
-                {!flex && <div className={styles.line}></div>}
-                <div className={styles.brandColorContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
-                    <BrandColor setCardBgColor={setCardBgColor} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} flex={flex} setValueUpdated={setValueUpdated} setExtractedColors={setExtractedColors} extractedColors={extractedColors} />
-                </div>
-                {!flex && <div className={styles.line}></div>}
-                <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
-                    <BrandkitTypography setFontSettings={setFontSettings} flex={flex} setEventFont={setEventFont} eventFont={eventFont}/>
-                </div>
-                {/* <div className={styles.btnContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
-                    <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>Save Kit</button>
-                </div> */}
-            </div>}
+            ) : (
+                accordian && (
+                    <div className={styles.accordian} style={{ marginTop: flex ? 24 : 0 }}>
+                        <div className={styles.logoContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
+                            <LogoComponent fetchedLogos={fetchedLogos} flex={flex} />
+                        </div>
+                        {!flex && <div className={styles.line}></div>}
+                        <div className={styles.brandColorContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
+                            <BrandColor
+                                setCardBgColor={setCardBgColor}
+                                setPageBgColor={setPageBgColor}
+                                pageBgColor={pageBgColor}
+                                flex={flex}
+                                setValueUpdated={setValueUpdated}
+                                setExtractedColors={setExtractedColors}
+                                extractedColors={fetchedColors}
+                            />
+                        </div>
+                        {!flex && <div className={styles.line}></div>}
+                        <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
+                            <BrandkitTypography
+                                fetchedFonts={fetchedFonts}
+                                setFontSettings={setFontSettings}
+                                flex={flex}
+                                setEventFont={setEventFont}
+                                eventFont={eventFont}
+                            />
+                        </div>
+                        {/* Uncomment this block if you need the button */}
+                        {/* <div className={styles.btnContainer} style={{ padding: flex ? 0 : "12px 19px" }}>
+                <button className={`${styles.kitBtn} ${valueUpdate ? styles.activeBtn : styles.deactiveBtn}`}>
+                    Save Kit
+                </button>
+            </div> */}
+                    </div>
+                )
+            )}
+
         </div>
     )
 }

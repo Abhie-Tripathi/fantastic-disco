@@ -34,8 +34,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>("")
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-    const [latitude, setLatitude] = useState(37.7749)
-    const [longitude, setLongitude] = useState(-122.4194)
+    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) ||37.7749)
+    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) ||-122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
     const [participationType, setParticipationType] = useState<string>("Attendee")
 

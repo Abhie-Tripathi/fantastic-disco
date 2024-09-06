@@ -1,6 +1,8 @@
 export interface AllEventsType {
   eventId: string;
   name: string;
+  latitude : number;
+  longitude: number;
   cityName: string;
   countryName: string;
   startDate: string;

@@ -4,16 +4,39 @@ import Logo from '/public/10timeslogotwo.png'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const DetailSection = () => {
+interface Props {
+    fetchedLogos?: string[]
+    fetchedDomain?: string
+}
+
+const DetailSection = ({ fetchedLogos, fetchedDomain }: Props) => {
+    function extractCompanyName(url: string) {
+        try {
+            const parsedUrl = new URL(url);
+            let hostname = parsedUrl.hostname;
+
+            // Remove 'www.' if it exists
+            if (hostname.startsWith('www.')) {
+                hostname = hostname.slice(4);
+            }
+
+            // Extract the name part (before the first dot)
+            const companyName = hostname.split('.')[0];
+            return companyName.charAt(0).toUpperCase() + companyName.slice(1);  // Capitalize the first letter
+        } catch (error) {
+            console.error("Invalid URL", error);
+            return null;
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={styles.logo}>
-                <Image src={Logo} width={150} height={150} alt='logo' />
+                <Image src={fetchedLogos ?  fetchedLogos[0] : Logo} width={140} height={140} alt='logo' />
             </div>
-            <div className={styles.companyName}>10 Times</div>
+            <div className={styles.companyName}>{extractCompanyName(fetchedDomain? fetchedDomain : "" )}</div>
             <div className={styles.companyLink}>
                 <GlobeIcon />
-                <Link href={"//www.10times.com"}>10times.com</Link>
+                <Link href={fetchedDomain? fetchedDomain : "//10times.com"}>{fetchedDomain}</Link>
             </div>
             {/* <div className={styles.description}>
                 World largest business event platform, find all upcoming events, business conferences, trade shows, global seminars, networking meets and workshops. Browse and connect with visitors attending, participating exhibitors and view profiles of speakers and organizers. Manage, sell event tickets and promote your event on 10times.com

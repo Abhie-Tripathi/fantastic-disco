@@ -6,6 +6,27 @@
     flex-direction: column;
     gap: 18px;
 }
+.info{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.info .iBtn{
+    color: white;
+    font-weight: 600;
+    font-size: 8px;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background-color: #52A8FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.info .heading{
+    color:#52A8FF;
+    font-size: var(--font-size-small);
+}
 .header{
     display: flex;
     align-items: center;
@@ -24,6 +45,7 @@
     color: #8F8F8F;
     font-size: 12px;
     line-height: 24px;
+    word-wrap: break-word;
 }
 .inputField{
     border: 1px solid #E6E6E6;
@@ -41,4 +63,5 @@
     width: 100%;
     padding: 8px;
     line-height: 20px;
+    cursor: not-allowed;
 }

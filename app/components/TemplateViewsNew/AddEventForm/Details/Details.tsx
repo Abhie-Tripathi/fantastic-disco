@@ -86,8 +86,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   });
   // const [mapWidth, setMapWidth] = useState(0);
   const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
-  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
+  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude ||prefilledNormalEvent?.latitude ||  prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude ||prefilledNormalEvent?.longitude|| prefilledGlobalEvent?.longitude) || -122.4194)
   // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
@@ -128,6 +128,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
+    setTextValue(textValue.trim())
   }
   const deleteSpeaker = (id: string) => {
     setSpeakerProfilesData((prevData) =>
@@ -378,9 +379,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setBanner({ placeHolder: imageUrl, file: null });
     }
   }, [imageUrl]);
-  // useEffect(() => {
-  //   console.log("latiude :", latitude)
-  // }, [latitude,longitude]);
+
 
   return (
     <div className={styles.body}>
@@ -405,11 +404,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 <div className={styles.spinner}></div>
               </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
             <div className={styles.posterIcons}>
-              <div onClick={handleGeneratePoster} data-name="Generate Your Banner">
+              <div onClick={handleGeneratePoster} data-name={eventName && description && location ? "Generate your Banner" : "Add Event name, Location and Description to generate a banner"}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
-              <div data-name="Upload Your Banner">
-                <Image src={UploadIcon} alt='upload' onClick={() => fileInputRef.current?.click()}></Image>
+              <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
+                <Image src={UploadIcon} alt='upload'></Image>
                 <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
               </div>
             </div>
@@ -428,11 +427,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
           <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
           <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
-
+          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
           <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
-          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+
           {cityName &&
             // <div className={styles.map} ref={mapDivRef}>
             // <Suspense fallback={<div>Loading...</div>}>
@@ -448,7 +447,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       </div>
       {
         descriptionModal && <div className={styles.descriptionModal}>
-          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick} />
+          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
         </div>
       }
       {
