@@ -13,13 +13,14 @@ interface Props {
   setParticipationMessage: (value: string) => void
   participationMessage: string
   size : string;
+  theme? : string;
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage,size }: Props) => {
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage,size, theme }: Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false)
   const dropdownRef = useOutsideClick(() => setDropdown(false))
   return (
-    <div className={styles.body} ref={dropdownRef}>
+    <div className={`${styles.body} ${theme && theme === "dark"?styles.darkBody : ""}`} ref={dropdownRef}>
       <div className={styles.participationContainer}>
         <div className={styles.header}>
           <Image src={ParticipationIcon} alt='svg' />

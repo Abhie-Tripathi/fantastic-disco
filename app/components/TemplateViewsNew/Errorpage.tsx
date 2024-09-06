@@ -15,7 +15,7 @@ const Errorpage = ({ type,size }: Props) => {
   const router = useRouter()
   const handleRouting = () => {
     if (type === "id") {
-      router.push("/widget/list")
+      router.push("/widget/dashboard")
     }
     else router.push("/widget/add")
   }

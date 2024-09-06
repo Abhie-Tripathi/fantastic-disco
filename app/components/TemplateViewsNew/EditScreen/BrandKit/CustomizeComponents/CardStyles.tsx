@@ -16,7 +16,7 @@ interface Props {
 
 const CardStyles = ({ cardStyle, setCardStyle }: Props) => {
     const { theme } = useTheme()
-    const [accordian, setAccordian] = useState<boolean>(false)
+    const [accordian, setAccordian] = useState<boolean>(true)
 
     return (
         <div className={styles.body}>

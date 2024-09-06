@@ -551,3 +551,8 @@ width: calc(100vw - 134px);
   margin-left: 5px;
   font-size: var(--font-size-sm);
 }
+.allCompetitors{
+  display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}

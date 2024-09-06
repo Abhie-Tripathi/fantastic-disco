@@ -130,19 +130,19 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     <div className={styles.countsContainer}>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[1]?.count}</div>
-            <div className={styles.countTitle}>Exhibitors</div>
+            <div className={styles.countTitle}>Exhibit</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[2]?.count}</div>
-            <div className={styles.countTitle}>Sponsors</div>
+            <div className={styles.countTitle}>Sponsor</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[3]?.count}</div>
-            <div className={styles.countTitle}>Speakers</div>
+            <div className={styles.countTitle}>Speak</div>
         </div>
         <div className={styles.exhibitorCount}>
             <div className={styles.count}>{coordinateCount && coordinateCount[4]?.count}</div>
-            <div className={styles.countTitle}>Attendee</div>
+            <div className={styles.countTitle}>Attend</div>
         </div>
     </div>
     {/* <div className={styles.filters}>

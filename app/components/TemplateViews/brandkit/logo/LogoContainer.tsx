@@ -5,15 +5,16 @@ import Image from 'next/image'
 
 interface Props {
   setPreview: (value: string) => void
+  fetchedLogos : string[]
 }
 
-const LogoContainer = ({ setPreview }: Props) => {
+const LogoContainer = ({ setPreview,fetchedLogos }: Props) => {
   return (
     <div className={styles.body} >
       <div className={styles.heading}>Brand Logo</div>
       <div className={styles.container}>
         <div className={styles.logoContainer}>
-          <Image src={Logo} alt='logo' height={40} width={40} />
+          <Image src={fetchedLogos[0]} alt='logo' height={40} width={40} />
           <div className={styles.uploadBtn}>
             <input type="file" id='upload' />
             <label htmlFor="upload"><UploadIcon /></label>

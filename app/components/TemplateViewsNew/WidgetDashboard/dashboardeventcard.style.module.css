@@ -58,3 +58,6 @@
     padding: 5px 9px;
     color: white;
 }
+.deleteBtn:hover{
+    background-color:red;
+}

@@ -53,7 +53,12 @@
   opacity: 0;
   transition: opacity 0.4s ease;
 }
-
+.companyName{
+  color: var(--tertiary-text-color);
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-default);
+}
 .line {
   width: 100%;
 }

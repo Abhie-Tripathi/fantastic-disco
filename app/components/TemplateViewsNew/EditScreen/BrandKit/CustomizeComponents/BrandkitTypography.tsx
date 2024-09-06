@@ -10,6 +10,7 @@ interface Props {
     eventFont?: string;
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+    fetchedFonts : string[]
 }
 interface FontSettings {
     fontFamily: string;
@@ -24,7 +25,7 @@ interface FontSettingsState {
     body: FontSettings;
 }
 
-const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings }: Props) => {
+const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fetchedFonts }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
@@ -70,7 +71,7 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings }: 
                         <div className={styles.display}>{selectedFont}</div>
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
-                            {fontsList.map((font, key) => (
+                            {fetchedFonts.map((font, key) => (
                                 <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
                             ))}
                         </div>}

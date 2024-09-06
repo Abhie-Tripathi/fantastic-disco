@@ -1,11 +1,12 @@
 .body{
     display: flex;
-    height: 650px;
+    height:550px;
+    /* overflow-y: auto; */
     gap: 30px;
 }
 .templatesContainer{
     width: 40%;
-    height: 80%;
+    height:100%;
     overflow-y: auto;
 }
 .templates{
@@ -13,7 +14,7 @@
     width: 100%;
 }
 .previewContainer{
-    height: 90%;
+    height: 100%;
     width: 60%;
 }
 .fullPreview{
@@ -106,9 +107,10 @@
     font-size: 18px;
     font-weight: 500;
 }
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 1200px) {
     .body {
         flex-direction: column;
+        overflow-y: scroll;
         height: fit-content;
     }
     .templatesContainer{

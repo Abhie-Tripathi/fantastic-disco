@@ -1,6 +1,7 @@
 export interface PrefilledAddedEventsType {
     id:string
     name: string,
+    hashtags : string;
     pageBgColor :string,
     description : string,
     eventFont : string,

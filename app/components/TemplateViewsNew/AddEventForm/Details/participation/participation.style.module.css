@@ -9,6 +9,9 @@
     height: fit-content;
     flex-shrink: 0;
 }
+.darkBody{
+    background-color: #4d4d4d53;
+}
 .participationContainer{
     display: flex;
     flex-direction: column;

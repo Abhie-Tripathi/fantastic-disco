@@ -78,7 +78,7 @@
 .posterContainer .loader .spinner {
     border: 5px solid #EAF0F6;
     border-radius: 50%;
-    border-top: 5px solid #FF7A59;
+    border-top: 5px solid #6750a4;
     width: 30px;
     height: 30px;
     animation: spinner 2s linear infinite;

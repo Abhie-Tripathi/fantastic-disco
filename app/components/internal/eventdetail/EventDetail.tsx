@@ -65,6 +65,8 @@ const EventDetail = ({
   const [participentData, setParticipentData] = useState({
     attendee: [],
     speakers: [],
+    sponsors: [],
+    exhibitors: [],
   });
 
   useEffect(() => {
@@ -148,6 +150,8 @@ const EventDetail = ({
         setParticipentData({
           attendee: data.participent.attendee,
           speakers: data.participent.speakers,
+          sponsors: data.participent.sponsors,
+          exhibitors: data.participent.exhibitors,
         });
       }
       if (error) {

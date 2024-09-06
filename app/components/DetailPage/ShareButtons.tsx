@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import styles from './sharebtns.style.module.css'
 import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, EmailShareButton } from 'react-share';
-import Image from 'next/image'
 
 interface Props {
     shareUrl: string;
@@ -10,29 +9,32 @@ interface Props {
     hashtags?: string[];
     emailSubject?: string;
     emailBody?: string;
+    disabled : boolean;
 }
 
-const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody }: Props) => {
+const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disabled }: Props) => {
     console.log("share url is : ", shareUrl)
     const [copyClick, setCopyClick] = useState(false)
     const handleCopy = () => {
-        setCopyClick(true)
-        const textToCopy = shareUrl
-        navigator.clipboard.writeText(textToCopy);
+        if(!disabled){
+            setCopyClick(true)
+            const textToCopy = shareUrl
+            navigator.clipboard.writeText(textToCopy);
+        }
     };
 
     return (
         <div className={styles.shareIconContainer}>
-            <FacebookShareButton url={shareUrl} title={title} hashtag={hashtags ? hashtags[0] : "#sometag"}>
+            <FacebookShareButton disabled={disabled} url={shareUrl} title={title} hashtag={hashtags ? hashtags[0] : "#sometag"}>
                 <FaceBookIcon/>
             </FacebookShareButton>
-            <TwitterShareButton url={shareUrl} title={title} hashtags={hashtags}>
+            <TwitterShareButton disabled={disabled} url={shareUrl} title={title} hashtags={hashtags}>
                 <TwitterIcon/>
             </TwitterShareButton>
-            <LinkedinShareButton url={shareUrl} title={title} source='Eventgeni'>
+            <LinkedinShareButton disabled={disabled} url={shareUrl} title={title} source='Eventgeni'>
                 <LinkedinIcon/>
             </LinkedinShareButton>
-            <EmailShareButton url={shareUrl} title={title} body={emailBody} subject={emailSubject}>
+            <EmailShareButton disabled={disabled} url={shareUrl} title={title} body={emailBody} subject={emailSubject}>
                 <EmailIcon/>
             </EmailShareButton>
             {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
