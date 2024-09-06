@@ -314,7 +314,7 @@ const RankInput = ({
 
         {/* <div className={styles.line}></div> */}
 
-        <div className={styles.slider_container}>
+        {/* <div className={styles.slider_container}>
           <div className={styles.checkbox_title}>Reputation Score</div>
           <>
             <ReactSlider
@@ -356,7 +356,7 @@ const RankInput = ({
               />
             </div>
           </>
-        </div>
+        </div> */}
 
       </div>
     </div>
