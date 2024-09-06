@@ -107,6 +107,14 @@
     align-items: center;
     gap: 20px;
 }
+.delete_editBtn div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    color: #6750a4;
+    cursor: pointer;
+}
 .checkboxInput {
     display: none;
 }

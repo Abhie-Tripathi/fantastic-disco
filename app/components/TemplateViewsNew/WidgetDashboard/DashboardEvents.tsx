@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 import { baseUrl } from '@/constants';
-import YourEventCard from '@/app/components/internal/YourEventCard'
 import DashboardEventCard from './DashboardEventCard';
 
 const DashboardEvents = () => {
@@ -15,7 +14,7 @@ const DashboardEvents = () => {
     const [siteFetchedEvents, setSiteFetchedEvents] = useState([])
 
     const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event`)
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc`)
         if (data) {
             const events: AllEventsType[] = data.data.map((event: any) => ({
                 eventId: event.id,
@@ -68,7 +67,7 @@ const DashboardEvents = () => {
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
                             {fetchedAddedEvents.slice(0, 2).map((event,key)=>(
-                                <div className={styles.eventCard} key={key}><DashboardEventCard event={event}/></div>
+                                <div className={styles.eventCard} key={key}><DashboardEventCard fetchEvents={fetchEvents} event={event}/></div>
                             ))}
                         </div>
 

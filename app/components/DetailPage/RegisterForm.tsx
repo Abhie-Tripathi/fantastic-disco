@@ -11,10 +11,12 @@ interface Props {
     registerBtnColor: string
     widgetId: string;
     eventId: string;
+    setRegisterSuccess : (value : boolean)=>void
 }
 
-const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widgetId, eventId }: Props) => {
+const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widgetId, eventId,setRegisterSuccess }: Props) => {
     const [formData, setFormData] = useState({ firstname: '', lastname: '', email: '' });
+    const [emailError, setEmailError] = useState<string | null>(null);
     // Function to convert hex to RGB
     const hexToRgb = (hex: string) => {
         const cleanHex = hex.replace('#', '');
@@ -67,6 +69,7 @@ const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widg
             if (response.ok) {
                 const data = await response.json();
                 console.log('Success:', data);
+                setRegisterSuccess(true)
                 // toast.success("successfully registred for the event !");
             } else {
                 console.error('Error:', response.statusText);

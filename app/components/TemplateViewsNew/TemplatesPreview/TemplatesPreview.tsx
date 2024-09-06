@@ -14,28 +14,30 @@ interface Props {
     widgetSelected: string;
     draftWidgets: DraftWidgetsType[]
     setDraftWidgets: React.Dispatch<React.SetStateAction<DraftWidgetsType[]>>;
-    fetchDraftWidgets: () => Promise<void>; 
-    isFullScreen : boolean;
-    setIsFullScreen :  (value : boolean) => void;
+    fetchDraftWidgets: () => Promise<void>;
+    isFullScreen: boolean;
+    setIsFullScreen: (value: boolean) => void;
+    setIsDraftSaved: (value: boolean) => void;
 }
 interface DraftWidgetsType {
     widgetType: string;
     templateId: string;
     widgetId: string;
     status: string;
-    eventSize : number;
-    widgetStatus : string;
-  }
+    eventSize: number;
+    widgetStatus: string;
+}
 
 
-const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchDraftWidgets,isFullScreen,setIsFullScreen}: Props) => {
+const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets, fetchDraftWidgets, isFullScreen, setIsFullScreen, setIsDraftSaved }: Props) => {
     // const { theme } = useTheme()
     const [selectedTemplate, setSelectedTemplate] = useState<string>(""); // THIS IS TEMPLATE CODE
 
     const [selectedCard, setSelectedCard] = useState<string>("style1");
     const [templateName, setTemplateName] = useState<string>("") // THIS IS TEMPLATE NAME
     const [selectedImage, setSelectedImage] = useState<StaticImageData>(CarouselGridImage); // THIS IS FOR DRAFT WIDGETS TO SHOW THE TEMPLATE POSTER
-    
+    const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted") //This is for page widget
+
     useEffect(() => {
         if (widgetSelected === "Page") {
             setSelectedTemplate("LS");
@@ -57,14 +59,14 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets,setDraftWidgets ,fetchD
             {!isFullScreen && <div className={styles.templatesContainer}>
                 <div className={styles.heading}>Choose your {widgetSelected} widget style</div>
                 <div className={styles.templates}>
-                    {widgetSelected === "Page" ? <PageTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
+                    {widgetSelected === "Page" ? <PageTemplates setActiveBtn={setActiveBtn} activeBtn={activeBtn} setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
                         widgetSelected === "Section" ? <SectionTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
                             widgetSelected === "Sticky" ? <StickyTemplates setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> :
                                 widgetSelected === "Pop" ? <PopupTemplate setSelectedImage={setSelectedImage} selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} setTempelateName={setTemplateName} /> : <></>}
                 </div>
             </div>}
             <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
-                <PreviewWindow smallCard={isFullScreen ? false : true} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets}/>
+                <PreviewWindow setIsDraftSaved={setIsDraftSaved} smallCard={isFullScreen ? false : true} draftWidgets={draftWidgets} draftWidget={true} selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectedTemplate={selectedTemplate} selectedImage={selectedImage} widgetSelected={widgetSelected} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} fetchDraftWidgets={fetchDraftWidgets} />
             </div>
         </div>
     )

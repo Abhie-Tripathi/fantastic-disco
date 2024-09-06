@@ -5,8 +5,9 @@ import PlaceHolder from '/public/placeholder.png'
 
 interface Props{
     flex : boolean;
+    fetchedLogos? : string[]
 }
-const LogoComponent = ({flex}: Props) => {
+const LogoComponent = ({flex,fetchedLogos}: Props) => {
     const [imageSrc, setImageSrc] = useState<string | StaticImageData>(PlaceHolder);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -30,7 +31,7 @@ const LogoComponent = ({flex}: Props) => {
             </div>
             <div className={styles.editContainer} >
                 <div className={styles.logoContainer}>
-                    <Image src={imageSrc} alt='logo' width={48} height={48}/>
+                    <Image src={fetchedLogos ? fetchedLogos[0] : imageSrc} alt='logo' width={48} height={48}/>
                 </div>
                 <input type="file" id="fileInput" className={styles.fileInput} onChange={handleFileChange}/>
                 {/* <label htmlFor="fileInput" className={styles.customFileButton}>

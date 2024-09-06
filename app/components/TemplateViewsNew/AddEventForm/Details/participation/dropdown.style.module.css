@@ -1,6 +1,6 @@
 .body{
     width: 100%;
-    background-color: white;
+    background-color: var(--background-secondary-color);
     border-radius: 3px;
     padding: 24px 18px;
 }

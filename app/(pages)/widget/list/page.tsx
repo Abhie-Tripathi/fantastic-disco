@@ -91,7 +91,7 @@ const Widget = () => {
       eventSize: widget.otherdata.event.length,
       widgetStatus: "Active"
     })) : [];
-    const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
+    const deactivateWidgets =deactivateData&& deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
       widgetType: widget.type,
@@ -100,12 +100,12 @@ const Widget = () => {
       widgetStatus: "Inactive"
     })) : [];
     const combinedWidgets = [...activeWidgets, ...deactivateWidgets];
-    setWidgetId(combinedWidgets[0].id)
     setSelectedKey(0)
     if (combinedWidgets.length === 0) {
       setIsValid(false)
     } else {
       setAllWidgets(combinedWidgets);
+      setWidgetId(combinedWidgets[0].id)
     }
     setLoading(false)
   }
@@ -158,7 +158,7 @@ const Widget = () => {
       </div>
       <div className={styles.line}></div>
       <div className={styles.widgetsAndPreview}>
-        <div className={styles.widgetsList}>
+        <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""}`}>
           {allWidgets.map((card, key) => (
             <div className={styles.widgetCard} onClick={() => setSelectedKey(key)} key={key}>
               <WidgetCard
@@ -177,8 +177,8 @@ const Widget = () => {
             </div>
           ))}
         </div>
-        <div className={styles.preview}>
-          <PreviewWindow fontSettings={fontSettings} buttonSettings={buttonSettings} cardBorderRadius={cardBorderRadius} cardBgColor={cardBgColor} selectedBtn={selectedBtn} selectedCard={cardStyle} selectedTemplate={selectedTemplate} isFullScreen={false} setIsFullScreen={setIsFullScreen} smallCard={false} fetchedAddedEvents={fetchedAddedEvents} widgetId={selectedWidgetId} />
+        <div className={`${styles.preview} ${isFullScreen ? styles.fullPreview : ""}`}>
+          <PreviewWindow fontSettings={fontSettings} buttonSettings={buttonSettings} cardBorderRadius={cardBorderRadius} cardBgColor={cardBgColor} selectedBtn={selectedBtn} selectedCard={cardStyle} selectedTemplate={selectedTemplate} isFullScreen={isFullScreen} setIsFullScreen={setIsFullScreen} smallCard={false} fetchedAddedEvents={fetchedAddedEvents} widgetId={selectedWidgetId} />
         </div>
       </div>
       <div className={`${styles.yourWidgetModal} ${draftWidgetModal ? styles.open : ''}`} ref={dropdownRef}>

@@ -1,53 +1,63 @@
 'use client'
 import React from 'react'
 import styles from './typocontainer.style.module.css'
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 
 interface Props {
     setPreview: (value: string) => void
+    fetchedFonts : string[];
+    setFetchedFonts: (value : string[])=>void;
 }
 
-const TypoContainer = ({ setPreview }: Props) => {
-    // const scrollRef = useRef<HTMLDivElement>(null);
-
-    // useEffect(() => {
-    //     const handleScroll = (event: WheelEvent) => {
-    //         if (scrollRef.current) {
-    //             event.preventDefault();
-    //             scrollRef.current.scrollLeft += event.deltaY;
-    //         }
-    //     };
-
-    //     const refCurrent = scrollRef.current;
-    //     if (refCurrent) {
-    //         refCurrent.addEventListener('wheel', handleScroll);
-    //     }
-
-    //     return () => {
-    //         if (refCurrent) {
-    //             refCurrent.removeEventListener('wheel', handleScroll);
-    //         }
-    //     };
-    // }, []);
+const TypoContainer = ({ setPreview, fetchedFonts ,setFetchedFonts}: Props) => {
     const fonts = ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Arial", "sans-serif", "Times New Roman"]
+
+    const handleDelete = async(e: React.MouseEvent<HTMLDivElement>,indexToRemove : number)=>{
+        e.stopPropagation();
+        const updatedFontsArray = fetchedFonts.filter((_, index) => index !== indexToRemove);
+        setFetchedFonts(updatedFontsArray)
+        const {data,error} = await myFetch(`${baseUrl}/kit`,{
+            method : "PATCH",
+            body: JSON.stringify({fontFamily : updatedFontsArray.join()}),
+            headers: {
+                'Content-Type': 'application/json'
+            }       
+        })
+        if(error){
+            console.log(error)
+            return
+        }        
+    }
+
     return (
         <div className={styles.body} >
             <div className={styles.heading}>Brand Typography</div>
             <div className={styles.fontFamily}>
-                {fonts.map((font, key) => (
+                {fetchedFonts.map((font, key) => (
                     <div className={styles.font} key={key}>
                         <span>{font}</span>
-                        <div className={styles.deleteBtn}><DeleteIcon /></div>
+                        <div className={styles.deleteBtn} onClick={(e) => handleDelete(e,key)}><DeleteIcon /></div>
                     </div>
                 ))}
-                {/* <div className={styles.addColor}>
+                <div className={styles.addFont}>
                     <AddIcon />
-                </div> */}
+                </div>
             </div>
         </div>
     )
 }
 
 export default TypoContainer
+
+function AddIcon() {
+    return (
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="18.8984" width="8.1" height="45" fill="#EADDFF" />
+            <rect y="27" width="8.1" height="45" transform="rotate(-90 0 27)" fill="#EADDFF" />
+        </svg>
+    )
+}
 
 function DeleteIcon() {
     return (

@@ -46,7 +46,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
         <div className={styles.listView}>
             {fetchedAddedOtherData && widgetId && fetchedAddedOtherData?.length > 0 ? (
                 fetchedAddedOtherData.map((event, key) => (
-                    <div onClick={() => handleCardClick(event.id, widgetId)} key={key}>
+                    <div onClick={() => handleCardClick(event.id, widgetId)} key={key} className={styles.listcard}>
                         <EventListCard
                             fetchedAddedEvents={fetchedAddedOtherData}
                             cardBgColor={cardBgColor}

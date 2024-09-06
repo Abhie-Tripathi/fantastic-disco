@@ -1,21 +1,61 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './colormodal.style.module.css'
-import PrimaryColorConfig from './PrimaryColorConfig'
-import SecondaryColorConfig from './SecondaryColorConfig'
-import GeneratePalette from '../palette/Palette'
 import { ChromePicker } from 'react-color';
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 
 
 interface Props {
     colorCode: string
     setColorCode: (value: string) => void
+    fetchedColors :  string[]
+    colorModalType : string;
+    colorModalIndex : number;
+    setFetchedColors : (value : string[]) => void
+    setPreview : (value : string)=> void
 }
 
-const ColorModal = ({ colorCode, setColorCode }: Props) => {
+const ColorModal = ({ colorCode, setColorCode,fetchedColors,colorModalType,setFetchedColors,setPreview,colorModalIndex }: Props) => {
 
     const handleColorChange = (color: any) => {
         setColorCode(color.hex);
     };
+    const handleColorSave = async()=>{
+        // This will be done if we are ADDING a color
+        if(colorModalType === "add"){
+            setFetchedColors([...fetchedColors,colorCode])
+            const newColors = [...fetchedColors,colorCode]
+            const {data,error} = await myFetch(`${baseUrl}/kit`,{
+                method : "PATCH",
+                body: JSON.stringify({color : newColors.join()}),
+                headers: {
+                    'Content-Type': 'application/json'
+                }       
+            })
+            if(error){
+                console.log(error)
+                return
+            }
+            setPreview("")
+        }else{
+            const updatedColorArray = [...fetchedColors]
+            updatedColorArray[colorModalIndex] = colorCode; 
+            setFetchedColors(updatedColorArray)
+            const {data,error} = await myFetch(`${baseUrl}/kit`,{
+                method : "PATCH",
+                body: JSON.stringify({color : updatedColorArray.join()}),
+                headers: {
+                    'Content-Type': 'application/json'
+                }       
+            })
+            if(error){
+                console.log(error)
+                return
+            }
+            setPreview("")
+        }
+    }
+
     const isColorDark = (color: string) => {
         // Convert hex color to RGB
         const r = parseInt(color.slice(1, 3), 16);
@@ -51,7 +91,7 @@ const ColorModal = ({ colorCode, setColorCode }: Props) => {
                     />
                 </div>
                 <div className={styles.line}></div>
-                <button style={{backgroundColor : colorCode,color: isColorDark(colorCode) ? '#ffffff' : '#000000'}}>Save</button>
+                <button style={{backgroundColor : colorCode,color: isColorDark(colorCode) ? '#ffffff' : '#000000'}} onClick={handleColorSave}>{colorModalType ==="update" ?"Update Color" : "Add Color"}</button>
             </div>
         </div>
     )
