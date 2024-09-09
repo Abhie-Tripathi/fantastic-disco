@@ -60,61 +60,97 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
                 cardBgColor={cardBgColor}
                 cardBorderRadius={cardBorderRadius}
                 fontSettings={fontSettings}
-                fetchedEvent = {event}  
+                fetchedEvent={event}
             // Pass additional event-specific props here if needed
             />
         ))
         : demoBanners;
 
-    useEffect(() => {
-        const handleResize = () => {
-            if (carouselRef.current) {
-                const containerWidth = carouselRef.current.offsetWidth;
-                const cardWidth = 300; // Adjust based on your card's width
-                const newBannersPerPage = Math.floor(containerWidth / cardWidth);
-                setBannersPerPage(newBannersPerPage > 0 ? newBannersPerPage : 1);
-            }
-        };
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         if (carouselRef.current) {
+    //             const containerWidth = carouselRef.current.offsetWidth;
+    //             const cardWidth = 300; // Adjust based on your card's width
+    //             const newBannersPerPage = Math.floor(containerWidth / cardWidth);
+    //             setBannersPerPage(newBannersPerPage > 0 ? newBannersPerPage : 1);
+    //         }
+    //     };
 
-        handleResize();
-        window.addEventListener('resize', handleResize);
+    //     handleResize();
+    //     window.addEventListener('resize', handleResize);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [isFullScreen]);
+    //     return () => {
+    //         window.removeEventListener('resize', handleResize);
+    //     };
+    // }, [isFullScreen]);
 
-    const maxIndex = Math.max(0, banners.length - bannersPerPage);
+    // const maxIndex = Math.max(0, banners.length - bannersPerPage);
 
+    // const handleNext = () => {
+    //     if (currentIndex < maxIndex) {
+    //         setCurrentIndex(currentIndex + 1);
+    //     }
+    // };
+
+    // const handlePrev = () => {
+    //     if (currentIndex > 0) {
+    //         setCurrentIndex(currentIndex - 1);
+    //     }
+    // };
     const handleNext = () => {
-        if (currentIndex < maxIndex) {
-            setCurrentIndex(currentIndex + 1);
+        if (currentIndex < banners.length - 1) {
+            setCurrentIndex((prevIndex) => prevIndex + 1);
         }
     };
 
     const handlePrev = () => {
         if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
+            setCurrentIndex((prevIndex) => prevIndex - 1);
         }
     };
 
+    // return (
+    //     <div className={styles.carousel} ref={carouselRef}>
+    //         <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
+    //             <LeftArrowIcon />
+    //         </button>
+    //         <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
+    //             {banners.map((banner, index) => (
+    //                 <div className={styles.banner} key={index}>
+    //                     {banner}
+    //                 </div>
+    //             ))}
+    //         </div>
+    //         <button
+    //             className={styles.navButton}
+    //             onClick={handleNext}
+    //             disabled={currentIndex === maxIndex}
+    //         >
+    //             <RightArrowIcon />
+    //         </button>   
+    //     </div>
+    // );
     return (
-        <div className={styles.carousel} ref={carouselRef}>
+        <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
                 <LeftArrowIcon />
             </button>
-            <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
-                {banners.map((banner, index) => (
-                    <div className={styles.banner} key={index}>
-                        {banner}
-                    </div>
-                ))}
+            <div className={styles.cards}>
+                {banners.map((banner, index) => {
+                    const isActive = currentIndex === index;
+                    const isLeft = currentIndex - 1 === index;
+                    const isRight = currentIndex + 1 === index;
+                    return (
+                        <div
+                            key={index}
+                            className={`${styles.card} ${isActive ? styles.active : ''} ${isLeft ? styles.left : ''} ${isRight ? styles.right : ''}`}
+                        >
+                            {banner}
+                        </div>
+                    );
+                })}
             </div>
-            <button
-                className={styles.navButton}
-                onClick={handleNext}
-                disabled={currentIndex === maxIndex}
-            >
+            <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
         </div>
