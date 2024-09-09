@@ -85,6 +85,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   const [height, setHeight] = useState<number | null>(null);
   const [notes, setNotes] = useState<any[]>([]);
   const isInitialMount = useRef(true);
+  const [scrollPosition, setScrollPosition] = useState<number>();
   const scrollToBottom = () => {
     if (containerRef.current) {
       (containerRef.current as HTMLElement).scrollTop = (
@@ -103,7 +104,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         // setNotes(data.comments.reverse());
         if (data.comments?.length > 0){
           setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-          setNotesLoaded(true);
         }
       }
     }else{
@@ -118,14 +118,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       // setNotes(data.comments.reverse());
       if (data?.comments?.length > 0){
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-        setNotesLoaded(true);
         }
     // else setNotes(CommentsData );
   }
   }
   
-  const [notesLoaded, setNotesLoaded] = useState<boolean>(false);
-
   const generateFbPath = (): string => {
     if(urlPath === "trackers")
       return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
@@ -135,12 +132,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       return `eventgeniStage/accountId/notes/general`;
   }
 
-  useEffect(() => {
-   if(notesLoaded){
-    onNoteAdded(generateFbPath(), handleRealtimeAction);
-  }
-  }, [notesLoaded]);
-
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();
   const [scrolling, setScrolling] = useState(false);
@@ -148,6 +139,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     const container = containerRef.current;
     if (container) {
       container.addEventListener('scroll', handleInfiniteScroll);
+      onNoteAdded(generateFbPath(), handleRealtimeAction);
 
       return () => {
         container.removeEventListener('scroll', handleInfiniteScroll);
@@ -160,14 +152,16 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     if (containerRef.current) {
       const container = containerRef.current;
       const isAtTop = container.scrollTop === 0;
+      const scrollBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
       console.log('Client Height:', container.clientHeight);
       console.log('Scroll Height:', container.scrollHeight);
       console.log('Scroll Top:', container.scrollTop);
 
       // Your infinite scroll logic here
       if (isAtTop) {
-        setPage(page + 10);
+        setPage(prev => prev+10);
         setScrolling(true);
+        setScrollPosition(scrollBottom);
         // Trigger data fetch or any action you want to perform on scroll end
       }
     }
@@ -187,6 +181,8 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           console.log(111111111);
 
           // scrollToBottom();
+          if(scrollPosition)
+            containerRef.current.scrollTop = containerRef.current.scrollHeight - containerRef.current.clientHeight - scrollPosition;
         }
         // scrollToBottom();
       }
@@ -357,7 +353,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notes]);
+  }, [notes?.length]);
 
   console.log(filePreviews);
   const [files, setFiles] = useState<any | null>(null);
@@ -442,11 +438,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   // }, [files]);
 
   // console.log("drop is "+ drop);
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(height);
-    }, 1000);
-  });
 
   // comments = [...notes];
   let arr = Array.from(
@@ -593,7 +584,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   useEffect(() => {
     const url = `${baseUrl}/auth/users?limit=100`
     getAllUser(url);
-    // deleteNoteFB(`eventgeniStage/eventgeni`);
   }, [])
 
   const createRealtimeAction = (action: string, commentId: string) => {
@@ -617,23 +607,24 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         }
       }
       else if(fbData.action === 'delete'){
-        const updatedNotes = notes.filter((comment: any) => comment.id !== fbData.id);
-        setNotes(updatedNotes);
+        setNotes(prevNotes => prevNotes.filter((comment: any) => comment.id !== fbData.id));
       }
       else if(fbData.action === 'like' || fbData.action === 'unlike'){
-        const updatedComments = notes.map((c: any) => {
-          if (c.id === fbData.id) {
-            let isLiked = (fbData.action === 'like');
-            return {
-              ...c, _count: {
-                ...c._count,
-                Commentlikes: c._count?.Commentlikes + (isLiked ? 1 : -1),
-              }
-            };
-          }
-          return c;
-        });
-        setNotes(updatedComments);
+        setNotes(prevNotes =>
+          prevNotes.map((c: any) => {
+            if (c.id === fbData.id) {
+              let isLiked = (fbData.action === 'like');
+              return {
+                ...c,
+                _count: {
+                  ...c._count,
+                  Commentlikes: (c._count?.Commentlikes || 0) + (isLiked ? 1 : -1),
+                }
+              };
+            }
+            return c;
+          })
+        );
       }
     }
   }
@@ -845,16 +836,14 @@ const Comment = ({
     setIsReply(true);
   };
   const [isLiked, setIsLiked] = useState(false);
-  useEffect(() => { }, [isLiked]);
+  // useEffect(() => { }, [isLiked]);
   const handleLiked = (id: string, isLiked: boolean,) => {
     handleLike(id, isLiked)
   };
   // useEffect(()=>{
   //   setIsLiked(!isLiked)
   // },[isLiked])
-  setTimeout(() => {
-    console.log(isLiked);
-  }, 5000);
+
   // useEffect(()=>{
   //   setIsLiked(!isLiked);
   // },[isLiked])
