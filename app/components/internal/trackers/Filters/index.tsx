@@ -67,6 +67,7 @@ import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import Suggestion from "../suggestion";
+import CsvUploader from "./csvUploader";
 interface FilterValue {
   labels: string;
   name: string;
@@ -1368,6 +1369,10 @@ useEffect(()=>{
   if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
 }, [type])
 
+  const handleCustomData = (data: any) => {
+    setCustomData(data);
+  }
+
   return (
     <>
     <div>{isLoading?<Loading/>:
@@ -1490,7 +1495,10 @@ useEffect(()=>{
           <div className={styles.bar}></div>
           <div>
           <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template.description}</div>
-          <div className={`${styles.toggleDiv}`}>
+          {
+            <CsvUploader templateData={template} customData={customData} handleCustomData={handleCustomData} />
+          }
+          {/* <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Add data manually
@@ -1533,7 +1541,7 @@ useEffect(()=>{
 
               </div>
             </div>
-          </div>
+          </div> */}
           </div>
           {template?.inputAreas &&
             <div className={`${styles.competitor}`}>
