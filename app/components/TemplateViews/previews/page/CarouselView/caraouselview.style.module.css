@@ -1,11 +1,12 @@
 .sliderContainer {
   display: flex;
+  gap: 10px;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   width: 95%;
   height: 100%;
-  border: 1px solid red;
   z-index: 1;
 }
 
@@ -59,9 +60,38 @@
   filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
 }
 .navButton:first-of-type {
-  left: -25px;
+  left: 1px;
 }
 
 .navButton:last-of-type {
-  right: -25px;
+  right: 1px;
+}
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dotButton {
+  height: 10px;
+  width: 10px;
+  margin: 0 5px;
+  border-radius: 10px;
+  border: none;
+  background-color: gray;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dotButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.activeDot {
+  background-color: #7D7D7D;
+  width: 33px;
+}
+
+.fadedDot {
+  background-color: lightgray;
 }

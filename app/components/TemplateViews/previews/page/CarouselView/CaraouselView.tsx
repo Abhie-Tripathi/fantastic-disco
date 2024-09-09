@@ -27,8 +27,6 @@ interface Props {
 
 const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [bannersPerPage, setBannersPerPage] = useState(1);
-    const carouselRef = useRef<HTMLDivElement>(null);
 
     let EventCard: ElementType;
 
@@ -65,38 +63,6 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             />
         ))
         : demoBanners;
-
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         if (carouselRef.current) {
-    //             const containerWidth = carouselRef.current.offsetWidth;
-    //             const cardWidth = 300; // Adjust based on your card's width
-    //             const newBannersPerPage = Math.floor(containerWidth / cardWidth);
-    //             setBannersPerPage(newBannersPerPage > 0 ? newBannersPerPage : 1);
-    //         }
-    //     };
-
-    //     handleResize();
-    //     window.addEventListener('resize', handleResize);
-
-    //     return () => {
-    //         window.removeEventListener('resize', handleResize);
-    //     };
-    // }, [isFullScreen]);
-
-    // const maxIndex = Math.max(0, banners.length - bannersPerPage);
-
-    // const handleNext = () => {
-    //     if (currentIndex < maxIndex) {
-    //         setCurrentIndex(currentIndex + 1);
-    //     }
-    // };
-
-    // const handlePrev = () => {
-    //     if (currentIndex > 0) {
-    //         setCurrentIndex(currentIndex - 1);
-    //     }
-    // };
     const handleNext = () => {
         if (currentIndex < banners.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
@@ -108,28 +74,9 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             setCurrentIndex((prevIndex) => prevIndex - 1);
         }
     };
-
-    // return (
-    //     <div className={styles.carousel} ref={carouselRef}>
-    //         <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
-    //             <LeftArrowIcon />
-    //         </button>
-    //         <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
-    //             {banners.map((banner, index) => (
-    //                 <div className={styles.banner} key={index}>
-    //                     {banner}
-    //                 </div>
-    //             ))}
-    //         </div>
-    //         <button
-    //             className={styles.navButton}
-    //             onClick={handleNext}
-    //             disabled={currentIndex === maxIndex}
-    //         >
-    //             <RightArrowIcon />
-    //         </button>   
-    //     </div>
-    // );
+    const handleDotClick = (index: number) => {
+        setCurrentIndex(index);
+    };
     return (
         <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
@@ -153,6 +100,16 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
+            <div className={styles.dotsContainer}>
+                {[currentIndex - 1, currentIndex, currentIndex + 1].map((index, dotIdx) => (
+                    <button
+                        key={dotIdx}
+                        className={`${styles.dotButton} ${dotIdx === 1 ? styles.activeDot : styles.fadedDot}`}
+                        onClick={() => handleDotClick(index)}
+                        disabled={index < 0 || index >= banners.length} // Disable dots if out of bounds
+                    />
+                ))}
+            </div>
         </div>
     );
 };
