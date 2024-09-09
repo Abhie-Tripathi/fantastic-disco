@@ -245,13 +245,8 @@ const InsightsPage = () => {
                   {eventDetail?.location?.venueName}
                 </div>
                 <div className={styles.time}>
-                  {eventDetail?.location?.venueAddress}
-                  {eventDetail?.location?.cityName &&
-                  eventDetail?.location?.countryName
-                    ? ", " + eventDetail.location.cityName +
-                      ", " +
-                      eventDetail.location?.countryName
-                    : eventDetail?.location?.countryName}
+                    {eventDetail?.location?.venueAddress && `${eventDetail?.location?.venueAddress}, `}
+                    {eventDetail?.location?.countryName === eventDetail?.location?.cityName ? eventDetail?.location?.countryName : `${eventDetail?.location?.cityName}, ${eventDetail?.location?.countryName }` }
                 </div>
               </div>
             </div>
@@ -267,13 +262,7 @@ const InsightsPage = () => {
                   {/* San Antonio Space Center, Texas, Florida */}
                 </div>
                 <div className={styles.time}>
-                  {eventDetail?.organizer?.cityName &&
-                    eventDetail?.organizer?.countryName
-                      ? eventDetail.organizer.cityName +
-                        ", " +
-                        eventDetail.organizer?.countryName
-                      : eventDetail?.organizer?.countryName
-                  }
+                  {eventDetail?.organizer?.countryName === eventDetail?.organizer?.cityName ? eventDetail?.organizer?.countryName : `${eventDetail?.organizer?.cityName}, ${eventDetail?.organizer?.countryName }` }
                 </div>
               </div>
             </div>
