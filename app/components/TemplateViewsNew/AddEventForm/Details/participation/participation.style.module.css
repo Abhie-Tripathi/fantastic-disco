@@ -4,6 +4,8 @@
     background-color: #ffffff55;
     border-radius: 10px;
     display: flex;
+    flex-direction: column ;
+    gap: 10px;
     justify-content: space-between;
     position: relative;
     height: fit-content;
@@ -12,22 +14,15 @@
 .darkBody{
     background-color: #4d4d4d53;
 }
-.participationContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-    width: 100%;
-}
-.participationContainer .header {
+.header {
     display: flex;
     gap: 5px;
     align-items: center;
     font-size: 12px;
     color: #7D7D7D;
     font-weight: 500;
-    width: 100%; /* Ensure it spans the full width */
-    flex-shrink: 0; /* Prevents the header from shrinking */
+    width: 100%; 
+    flex-shrink: 0; 
 }
 
 .inputMessage {
@@ -46,4 +41,50 @@
     top: 100%;
     z-index: 1;
     filter: drop-shadow(1px 1px 2px rgb(207, 207, 207));
+}
+.participationTypes{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox {
+    display: none;
+}
+
+.customCheckbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(194, 194, 194, 0.529);
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.checkboxContainer .checkboxLabel{
+    margin-left: 8px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.customCheckbox::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.1s;
+}
+
+.checkbox:checked+.customCheckbox {
+    border-color: #6750a4;
+}
+
+.checkbox:checked+.customCheckbox::before {
+    background-color:#6750a4;
 }

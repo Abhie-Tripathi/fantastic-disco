@@ -74,9 +74,9 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             setCurrentIndex((prevIndex) => prevIndex - 1);
         }
     };
-    const handleDotClick = (index: number) => {
-        setCurrentIndex(index);
-    };
+    // const handleDotClick = (index: number) => {
+    //     setCurrentIndex(index);
+    // };
     return (
         <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
@@ -100,7 +100,7 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
-            <div className={styles.dotsContainer}>
+            {/* <div className={styles.dotsContainer}>
                 {[currentIndex - 1, currentIndex, currentIndex + 1].map((index, dotIdx) => (
                     <button
                         key={dotIdx}
@@ -109,7 +109,7 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
                         disabled={index < 0 || index >= banners.length} // Disable dots if out of bounds
                     />
                 ))}
-            </div>
+            </div> */}
         </div>
     );
 };
