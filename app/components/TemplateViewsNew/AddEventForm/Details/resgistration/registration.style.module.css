@@ -6,6 +6,12 @@
     flex-direction: column;
     gap: 18px;
 }
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
 .info{
     display: flex;
     align-items: center;
@@ -26,6 +32,12 @@
 .info .heading{
     color:#52A8FF;
     font-size: var(--font-size-small);
+}
+
+.accordian{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 .header{
     display: flex;
