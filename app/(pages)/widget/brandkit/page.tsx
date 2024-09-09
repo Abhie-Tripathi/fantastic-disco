@@ -53,7 +53,7 @@ const Page = () => {
       <div className={styles.container}>
         {loadingState ? (
           <div className={styles.loadingMessage}>
-            <Errorpage type='id'/>
+            <Errorpage type='brandkit'/>
           </div>
         ) : (
           <>

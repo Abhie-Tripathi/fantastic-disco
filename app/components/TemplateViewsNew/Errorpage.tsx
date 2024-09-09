@@ -23,16 +23,21 @@ const Errorpage = ({ type,size }: Props) => {
     <div className={styles.body}>
       {(type === "id" || type === "detail") && <Image src={WidgetIdEmptyIcon} alt="empty" />}
       {type === "list" && <Image src={WidgetListEmptyIcon} alt="empty" />}
+      {(type === "id" || type === "brandkit") && <Image src={WidgetListEmptyIcon} alt="empty" />}
 
       {type === "id" && <div className={styles.heading}>Page not found</div>}
       {type === "list" && <div className={size === "short" ? styles.smallHeading : styles.heading}>No Widgets Added</div>}
       {type === "detail" && <div className={styles.heading}>Page not found</div>}
 
+      {type === "brandkit" && <div className={styles.heading}>Brandkit not fetched</div>}
+
       {type === "id" ? (
         <span className={styles.subheading}>We can&apos;t find the widget you&apos;re looking for. It seems the ID might be invalid</span>
       ) : type === "list" ? (
         <span className={size === "short" ? styles.smallSubHeading : styles.subheading}>Start by building your first widget—it&apos;s as easy as drag, drop, and customize.</span>
-      ) : (
+      ) : type === "brandkit"? (
+        <span className={styles.subheading}>We can&apos;t find the brandkit page you&apos;re looking for. It seems the ID might be invalid</span>
+      ):(
         <span className={styles.subheading}>We can&apos;t find the page you&apos;re looking for. It seems the ID might be invalid</span>
       )}
 
@@ -47,6 +52,11 @@ const Errorpage = ({ type,size }: Props) => {
       {(type === "id" || type === "list") && (
         <button onClick={handleRouting}>
           {type === "id" ? "Dashboard" : "Create Widget"}
+        </button>
+      )}
+       {(type === "id" || type === "brandkit") && (
+        <button onClick={handleRouting}>
+          {type === "brandkit" ? "Dashboard" : "Create Widget"}
         </button>
       )}
     </div>
