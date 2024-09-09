@@ -75,7 +75,7 @@ import { saveTracker } from "@/utils/saveTracker";
 import { baseUrl } from "@/constants";
 import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { GAEvent } from "@/utils/GAEvent";
 import { Step } from "react-joyride";
 import { Cross } from "geist-icons";
@@ -2552,7 +2552,6 @@ const Search = () => {
           <Map queryString={urlQueryString} />
         </Suspense>
       )} */}
-      <ToastContainer />
       <Dialog10x open={trackerModalOpen} >
         <DialogContent10x>
           <DialogTitle10x style={{width:'35vw'}}><span>Create Tracker</span>

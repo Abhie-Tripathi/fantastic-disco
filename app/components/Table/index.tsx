@@ -1206,6 +1206,7 @@ const Table = ({
                   ) : (
                     <span
                       className={styles.save_image_container}
+                      style={{cursor:"pointer"}}
                       onClick={() => handleModalOpen(event.id, event.eventGroupId)}
                     >
                       {bookmarkedEvent?.includes(event.id) ? (
