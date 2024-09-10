@@ -327,7 +327,6 @@ const Page = ({ params }: { params: any }) => {
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
   };
- console.log(trackerDetail.filterValue);
  useEffect(()=>{
   let toggleOpend:Toggle ={};
   if(trackerDetail?.filterValue?.userType)

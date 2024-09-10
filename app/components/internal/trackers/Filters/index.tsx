@@ -301,7 +301,6 @@ const Pages = () => {
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  console.log(type);
 
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
@@ -528,11 +527,8 @@ const Pages = () => {
       const speakerOrg = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setUserNames(userName);
       setOrgs(speakerOrg);
-      console.log(speakerName, speakerCompany);
       }
   }, [type, customData])
-  console.log(websites);
-  console.log(selectedEventType);
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -553,7 +549,6 @@ const Pages = () => {
       ...(rankToggles.isTrustScore && {trust:true}),
     }
     if (last === "editTracker") {
-      console.log(1);
 
       const secondLast = pathName[pathName.length - 2];
       const formData = {
