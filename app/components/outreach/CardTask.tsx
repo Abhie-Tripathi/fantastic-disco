@@ -34,17 +34,17 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
         </div>
-        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"var(--spacing-sm)"}}>
+        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"4px"}}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.companyName}>{eventCompany}</div>
             <div className={styles.date}>
-                <Image src={CalendarIcon} alt='cal' height={15} width={15} className='icons'/>
+                <Image src={CalendarIcon} alt='cal' height={14} width={14} className='icons'/>
                 <div>{formatEventDates(eventStartDate,eventEndDate)}</div>
             </div>
-            <div className={styles.typeOfEventContainer}>
+            {/* <div className={styles.typeOfEventContainer}>
                 <div className={styles.typeOfEvent}>Exhibting</div>
                 <div className={styles.typeOfEvent}>Attendee</div>
-            </div>
+            </div> */}
 
         </div>
         </>
