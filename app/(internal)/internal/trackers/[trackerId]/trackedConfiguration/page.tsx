@@ -286,7 +286,7 @@ const userRating=
                 {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Name} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
           </div>
@@ -298,7 +298,7 @@ const userRating=
                 {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Company} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
           </div>
