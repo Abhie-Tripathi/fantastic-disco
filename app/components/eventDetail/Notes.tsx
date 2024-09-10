@@ -18,6 +18,7 @@ import { number, undefined } from "zod";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { transcode } from "buffer";
+import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
 
 interface UserDetail {
   firstname: string;
@@ -100,8 +101,10 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         // setNotes([]);
         console.log(data);
         // setNotes(data.comments.reverse());
-        if (data.comments?.length > 0)
+        if (data.comments?.length > 0){
           setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+          setNotesLoaded(true);
+        }
       }
     }else{
     const url =
@@ -113,11 +116,31 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
       console.log(data);
       // setNotes(data.comments.reverse());
-      if (data?.comments?.length > 0)
+      if (data?.comments?.length > 0){
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+        setNotesLoaded(true);
+        }
     // else setNotes(CommentsData );
   }
   }
+  
+  const [notesLoaded, setNotesLoaded] = useState<boolean>(false);
+
+  const generateFbPath = (): string => {
+    if(urlPath === "trackers")
+      return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
+    else if(urlPath === "coordinate" || urlPath === "outreach")
+      return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${eventId}`;
+    else
+      return `eventgeniStage/accountId/notes/general`;
+  }
+
+  useEffect(() => {
+   if(notesLoaded){
+    onNoteAdded(generateFbPath(), handleRealtimeAction);
+  }
+  }, [notesLoaded]);
+
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();
   const [scrolling, setScrolling] = useState(false);
@@ -307,6 +330,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       const newData = transformData(data.data);
 
       setNotes(prevNotes => [...prevNotes, data.data]);
+      createRealtimeAction('add', data.data.id);
     }
     if (!error) {
       console.log(data);
@@ -474,21 +498,28 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     const { data, error } = await myFetch(url, {
       method: "POST"
     })
+    if(data) {
+      createRealtimeAction(isLiked? 'unlike' : 'like', id);
+    }
   }
   // 22b0588a-7207-4e25-a0e7-1134c05fdf52
   // up
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     console.log(id);
 
     const updatedNotes = notes.filter((comment: any) => comment.id !== id);
     deleteComment(id);
     setNotes(updatedNotes);
   };
-  const deleteComment = async (id: number) => {
+
+  const deleteComment = async (id: string) => {
     const url = `${baseUrl}/comment/${id}`;
     const { data, error } = await myFetch(url, {
       method: "DELETE"
     })
+    if(data) {
+      createRealtimeAction('delete', id);
+    }
   }
   const [class1, setClass1] = useState(false);
   const [chedkedId, setCheckedId] = useState<number | null>(null);
@@ -562,7 +593,51 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   useEffect(() => {
     const url = `${baseUrl}/auth/users?limit=100`
     getAllUser(url);
+    // deleteNoteFB(`eventgeniStage/eventgeni`);
   }, [])
+
+  const createRealtimeAction = (action: string, commentId: string) => {
+    const fbData = {
+      id: commentId,
+      action: action,
+      userId: user?.id,
+    }
+    createNoteFB(generateFbPath(), fbData);
+  }
+
+  const currentTimeStamp: number = Date.now();
+
+  const handleRealtimeAction = async (fbData: any) => {
+    if(fbData.timestamp >= currentTimeStamp && fbData.userId != user?.id){
+      if(fbData.action === 'add'){
+        const url = `${baseUrl}/comment/${fbData.id}`;
+        const { data, error } = await myFetch(url);
+        if(data) {
+          setNotes(prevNotes => [...prevNotes, ...data.comments]);
+        }
+      }
+      else if(fbData.action === 'delete'){
+        const updatedNotes = notes.filter((comment: any) => comment.id !== fbData.id);
+        setNotes(updatedNotes);
+      }
+      else if(fbData.action === 'like' || fbData.action === 'unlike'){
+        const updatedComments = notes.map((c: any) => {
+          if (c.id === fbData.id) {
+            let isLiked = (fbData.action === 'like');
+            return {
+              ...c, _count: {
+                ...c._count,
+                Commentlikes: c._count?.Commentlikes + (isLiked ? 1 : -1),
+              }
+            };
+          }
+          return c;
+        });
+        setNotes(updatedComments);
+      }
+    }
+  }
+
   const [userArr, setUserArr] = useState<string[]>([]);
 
   const getAllUser = async (url: string) => {

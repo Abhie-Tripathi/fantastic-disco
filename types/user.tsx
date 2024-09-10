@@ -4,5 +4,6 @@ export interface UserResponse {
     lastname: string;
     email: string;
     token?: string;
-    profilePicture:string | null
+    profilePicture:string | null;
+    companyId?: string | null;
   }

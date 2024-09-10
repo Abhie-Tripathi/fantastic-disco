@@ -11,7 +11,7 @@ import { baseUrl } from '@/constants';
 import useOutsideClick from '@/hooks/useOutsideClick'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useRouter } from 'next/navigation'
 
 interface DraftWidgetsType {
     widgetType: string;
@@ -31,6 +31,7 @@ const Page = () => {
     const dropdownRef = useOutsideClick(() => setYourWidgetModal(false))
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
     const [isDraftSaved, setIsDraftSaved]= useState<boolean>(false)
+    const router = useRouter();
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -81,6 +82,22 @@ const Page = () => {
         }
         setIsDraftSaved(false)
     },[isDraftSaved])
+
+    const checkBrandkit = async()=>{
+    const {data,error} = await myFetch(`${baseUrl}/kit`)
+
+    if(error){
+      console.log(error);
+      return;
+    }
+    if(!data.domain.domain){
+    router.push('/widget/dashboard')
+    }
+    }
+    useEffect(()=>{
+        checkBrandkit()
+    },[])
+
     return (
         <div className={`${styles.body}`}>
             <ToastContainer />
