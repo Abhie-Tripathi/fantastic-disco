@@ -1,47 +1,128 @@
-import React, { useEffect, useState } from 'react'
-import styles from './typography.style.module.css'
-import FontPreviewSelect from './FontPreviewSelect';
-import HeadingSizeConfig from './HeadingSizeConfig';
+import React, { useState, useEffect } from "react";
+import styles from "./typographyModal.module.css";
 
-const TypographyModal = () => {
-  const [selectedFont, setSelectedFont] = useState<string>('Times New Roman');
-  const [activeBtn, setActiveBtn] = useState<string>("fonttype")
-  const [primaryFontSize, setPrimaryFontSize] = useState<string>("24px")
-  const [secondaryFontSize, setSecondaryFontSize] = useState<string>("20px")
-  const [descFontSize, setDescFontSize] = useState<string>("16px")
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
+
+const TypographyModal = ({
+  setPreview,
+  setFetchedFonts,
+  fetchedFonts,
+}: any) => {
+  const [selectedFont, setSelectedFont] = useState("");
+  const [importSource, setImportSource] = useState("Google");
+  const [googleFonts, setGoogleFonts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (importSource === "Google") {
+      const fetchFonts = async () => {
+        try {
+          const fonts = await fetchGoogleFonts(API_KEY);
+          setGoogleFonts(fonts);
+        } catch (error) {
+          console.error("Error fetching Google Fonts:", error);
+        }
+      };
+      fetchFonts();
+    }
+  }, [importSource]);
+
+  const handleFontChange = (font: any) => {
+    setSelectedFont(font.family);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSave = () => {
+    const updatedFonts = [...fetchedFonts, selectedFont];
+    setFetchedFonts(updatedFonts);
+    setPreview("");
+  };
+
+  const filteredFonts = googleFonts.filter((font) =>
+    font.family.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (importSource === "Google" && selectedFont) {
+      const link = document.createElement("link");
+      link.href = `https://fonts.googleapis.com/css2?family=${selectedFont.replace(
+        /\s+/g,
+        "+"
+      )}&display=swap`;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+
+      return () => {
+        document.head.removeChild(link);
+      };
+    }
+  }, [selectedFont, importSource]);
 
   return (
-    <div className={styles.body}>
-      <div className={styles.fontTypes}>
-        <div className={styles.defaultFontContainer}>
-          <div className={styles.fontTypesHeading}>Default Font</div>
-          <div className={`${styles.selectedFont} ${activeBtn === "fonttype" ? styles.activeBtn : ""}`} onClick={() => (setActiveBtn("fonttype"))} style={{ fontFamily: selectedFont }}>
-            {selectedFont}
-          </div>
-        </div>
-        <div className={styles.variousFontContainer}>
-          <div className={styles.fontTypesHeading}>
-            Different Fonts
-          </div>
-          <div className={`${styles.fontsizeContainer} ${activeBtn === "Primary" ? styles.activeBtn : ""}`} onClick={() => (setActiveBtn("Primary"))}>
-            <div className={styles.primaryHeading} style={{ fontFamily: selectedFont }}>Primary Heading</div>
-            <div className={styles.fontSize}>Font size : {primaryFontSize}</div>
-          </div>
-          <div className={`${styles.fontsizeContainer} ${activeBtn === "Secondary" ? styles.activeBtn : ""}`} onClick={() => (setActiveBtn("Secondary"))}>
-            <div className={styles.secondaryHeading} style={{ fontFamily: selectedFont }}>Secondary Heading</div>
-            <div className={styles.fontSize}>Font size : {secondaryFontSize}</div>
-          </div>
-          <div className={`${styles.fontsizeContainer} ${activeBtn === "Description" ? styles.activeBtn : ""}`} onClick={() => (setActiveBtn("Description"))}>
-            <div className={styles.desc} style={{ fontFamily: selectedFont }}>Description</div>
-            <div className={styles.fontSize}>Font size : {descFontSize}</div>
-          </div>
+    <div className={styles.modalContainer}>
+      <div className={styles.leftPanel}>
+        <h4>Preview</h4>
+        <div className={styles.preview_screen}>
+          {selectedFont ? (
+            <div
+              className={styles.previewText}
+              style={{ fontFamily: selectedFont }}
+            >
+              The quick brown fox jumps over the lazy dog.
+            </div>
+          ) : (
+            <p>Select a font to preview</p>
+          )}
         </div>
       </div>
-      <div className={styles.fontConfigContainer}>
-        {activeBtn === "fonttype" ? <FontPreviewSelect setSelectedFont={setSelectedFont} /> : <HeadingSizeConfig selectedFont={selectedFont} type={activeBtn} setPrimaryFontSize = {setPrimaryFontSize} setSecondaryFontSize = {setSecondaryFontSize} setDescFontSize = {setDescFontSize} />}
+
+      <div className={styles.rightPanel}>
+        <h4>Select a Typography</h4>
+        <div className={styles.fonts_container}>
+          {importSource === "Google" && (
+            <>
+              <input
+                type="text"
+                placeholder="Search fonts..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className={styles.searchInput}
+              />
+              <div className={styles.fontList}>
+                {filteredFonts.map((font, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.fontItem} ${
+                      selectedFont === font.family ? styles.selected : ""
+                    }`}
+                    onClick={() => handleFontChange(font)}
+                  >
+                    {font.family}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className={styles.modalActions}>
+          <button onClick={handleSave}>Save</button>
+          <button onClick={() => setPreview("")}>Cancel</button>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default TypographyModal
+const fetchGoogleFonts = async (apiKey: string) => {
+  const response = await fetch(
+    `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`
+  );
+  const data = await response.json();
+  return data.items;
+};
+
+export default TypographyModal;
