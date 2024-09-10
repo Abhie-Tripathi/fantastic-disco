@@ -47,8 +47,8 @@
 .options {
   position: relative;
   /* padding: 0 0.5rem; */
-  margin: 0.5rem 3.6rem;
-  gap: var(--spacing-md);
+  margin: 0 3.6rem;
+  gap: var(--spacing-sm);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -96,7 +96,13 @@
   gap:var(--spacing-xxs);
   /* margin: 1rem 3.6rem 0; */
   margin-left: 58px;
-  margin-top: 6px;
+  margin-top: 0;
+}
+
+.likeCount {
+  font-weight: var(--font-weight-medium);
+  color: var(--tertiary-text-color);
+  font-size: var(--font-size-default);
 }
 
 .text.active {
@@ -552,7 +558,15 @@
   /* background-color: #1A1A1A; */
   padding: 5px 10px;
   border-radius: 20px;
+  align-items: center;
+  margin-left: -10px;
 }
+
+.likeSection:hover {
+  border-radius: 20px;
+  background-color: var(--background-color-hover);
+}
+
 .likeSectionLight{
   display: flex;
   cursor: pointer;

@@ -1162,7 +1162,7 @@ const Comment = ({
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div>{comment._count && comment?._count.Commentlikes}</div>
+              <div className={styles.likeCount} >{comment._count && comment?._count.Commentlikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
@@ -1184,11 +1184,11 @@ const Comment = ({
             )}
             {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname &&
               <button
-                className={styles.replyBtn}
+                className={styles.deleteBtn}
                 onClick={() => handleDelete(comment.id)}
               >
                 {/* Delete */}
-                <Trash color="var(--tertiary-text-color)" height="16px" />
+                <Trash style={{marginBottom: '4px'}} color="var(--tertiary-text-color)" height="15px" />
               </button>
             }
 
