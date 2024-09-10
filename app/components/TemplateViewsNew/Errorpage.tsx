@@ -37,7 +37,7 @@ const Errorpage = ({ type,size }: Props) => {
         <span className={size === "short" ? styles.smallSubHeading : styles.subheading}>Start by building your first widget—it&apos;s as easy as drag, drop, and customize.</span>
       ) : type === "brandkit"? (
         <span className={styles.subheading}>
-         It seems like you haven't fetched your Brandkit yet. Please start by fetching the Brandkit to get things rolling.
+         It seems like you haven&apos;t fetched your Brandkit yet. Please start by fetching the Brandkit to get things rolling.
         </span>
       ):(
         <span className={styles.subheading}>We can&apos;t find the page you&apos;re looking for. It seems the ID might be invalid</span>

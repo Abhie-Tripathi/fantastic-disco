@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "./typographyModal.module.css";
 
-const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
+const API_KEY: string | undefined = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
+interface Font {
+  family: string;
+  // Add other properties if needed
+}
+
+
 
 const TypographyModal = ({
   setPreview,
@@ -10,15 +16,19 @@ const TypographyModal = ({
 }: any) => {
   const [selectedFont, setSelectedFont] = useState("");
   const [importSource, setImportSource] = useState("Google");
-  const [googleFonts, setGoogleFonts] = useState([]);
+  const [googleFonts, setGoogleFonts] = useState<Font[] >([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (importSource === "Google") {
       const fetchFonts = async () => {
         try {
-          const fonts = await fetchGoogleFonts(API_KEY);
-          setGoogleFonts(fonts);
+          if (API_KEY) {
+            const fonts = await fetchGoogleFonts(API_KEY);
+            setGoogleFonts(fonts);
+          } else {
+            throw new Error("API_KEY is not defined");
+          }
         } catch (error) {
           console.error("Error fetching Google Fonts:", error);
         }
@@ -31,7 +41,7 @@ const TypographyModal = ({
     setSelectedFont(font.family);
   };
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
