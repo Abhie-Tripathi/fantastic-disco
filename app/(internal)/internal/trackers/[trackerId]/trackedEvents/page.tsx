@@ -21,7 +21,11 @@ const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
 const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
-
+interface Toggle{
+  rating?:boolean;
+  exhibit?:boolean;
+  trust?:boolean;
+}
 const Page = ({ params }: { params: any }) => {
   const [active, setActive] = useState("Active Events");
   const [type, setType] = useState<string | undefined>();
@@ -325,19 +329,23 @@ const Page = ({ params }: { params: any }) => {
   };
  console.log(trackerDetail.filterValue);
  useEffect(()=>{
+  let toggleOpend:Toggle ={};
+  if(trackerDetail?.filterValue?.userType)
+  toggleOpend=JSON.parse(trackerDetail?.filterValue?.userType);
+  
     if(trackerDetail?.filterValue?.internationalScore){
       setShowInsights(prev=>({...prev, global:true}));
     }
     if(trackerDetail?.filterValue?.reputationScore){
       setShowInsights(prev=>({...prev, reptSent:true}));
     }
-    if(trackerDetail?.filterValue?.trustScore){
+    if(toggleOpend?.trust===true){
       setShowInsights(prev=>({...prev, repeatSent:true}));
     }
-    if(trackerDetail?.filterValue?.estimatedExhibitScore){
+    if(toggleOpend?.exhibit===true){
       setShowInsights(prev=>({...prev, estExhibit:true}));
     }
-    if(trackerDetail?.filterValue?.eventRating){
+    if(toggleOpend?.rating===true){
       setShowInsights(prev=>({...prev, eventRating:true}));
     }
     if(trackerDetail?.filterValue?.eventKeywords?.length>0){

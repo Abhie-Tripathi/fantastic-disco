@@ -48,7 +48,11 @@ interface Tracker {
   name: string;
   filterValue: any;
 }
-
+interface Toggle{
+  rating?:boolean;
+  exhibit?:boolean;
+  trust?:boolean;
+}
 interface EditData {
   tracker: Tracker;
 }
@@ -173,6 +177,9 @@ const userRating=
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+   let toggleOpend: Toggle={};
+  if(data?.tracker?.filterValue?.userType)
+  toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
   return (
     <>
     {loading ? <Loading/> :
@@ -248,6 +255,52 @@ const userRating=
                        )
                    ))}
                </div>
+          </div>
+        </div>
+        <div className={styles.line}></div>
+      </>
+    }
+     {data.tracker && (data.tracker.type ==="T_PEOPLE_FINDER") &&
+      <>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>People Finder</div>
+            <div className={styles.customContent}>
+              {/* <div className={styles.urlDiv}>
+                <Image src={Url} alt="url" className="icons" />
+                URL
+                </div> */}
+               Track experts, influencers and where they might be participating in various events.
+            </div>
+          </div>
+          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Name</div>
+          </div>
+                {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
+                  </div>
+                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
           </div>
         </div>
         <div className={styles.line}></div>
@@ -463,7 +516,22 @@ const userRating=
                     </div>
                 </div>
                 <div className={styles.format}>
-                    <div className={styles.formatHead}>User Ratings</div>
+                    <div className={styles.formatHead} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
+                    <div className={keyStyles.toggle_container}>
+            <span>
+              <label className={keyStyles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+                    </div>
                     <div className={styles.allCat}>
                         {userRating?.map((item: string, id: number) => (
                             <>
@@ -546,7 +614,9 @@ const userRating=
               ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
               : []
           }
+          isExhibitOpen={toggleOpend?.exhibit===true}
           internationalScore={data?.tracker?.filterValue?.internationalScore}
+          isTrustOpen={toggleOpend?.trust===true}
           trustScore={data?.tracker?.filterValue?.trustScore}
          reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
