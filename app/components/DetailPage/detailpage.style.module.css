@@ -7,7 +7,7 @@
     flex-direction: column;
     align-items: center;
     gap: 40px;
-    padding-top: 70px;
+    padding-top: 50px;
     padding-bottom: 20px;
     position: relative;
 }
@@ -34,11 +34,10 @@
 .posterContainer {
     position: relative;
 }
-
 .participationContainer {
     margin-top: 16px;
     height: fit-content;
-    width: 100%;
+    width: 930px;
 }
 .hashtagsContainer{
     width: 100%;

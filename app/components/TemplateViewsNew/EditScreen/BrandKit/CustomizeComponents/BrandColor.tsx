@@ -92,9 +92,9 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
                         </div>
                     ))}
                 </div>
-                <div className={styles.pickColorContainer}>
+                {/* <div className={styles.pickColorContainer}>
                     <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} handleChange={handleChange} handleHexInputChange={handleHexInputChange} />
-                </div>
+                </div> */}
             </div>
         </div>
     )

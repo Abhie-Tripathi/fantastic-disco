@@ -6,6 +6,10 @@ import Image from 'next/image'
 import ParticipationIcon from '/public/ParticipationIcon.svg'
 import ParticipationDropdown from './ParticipationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import AttendeeIcon from '/public/widgetimages/attendeeIcon.svg'
+import SpeakerIcon from '/public/widgetimages/speakerIcon.svg'
+import ExhibitorIcon from '/public/widgetimages/exhibitorIcon.svg'
+import OrganiserIcon from '/public/widgetimages/organiserIcon.svg'
 
 interface Props {
   setParticipationType: (value: string) => void
@@ -17,56 +21,94 @@ interface Props {
 }
 
 const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme }: Props) => {
-  // const [dropdown, setDropdown] = useState<boolean>(false)
+  const [dropdown, setDropdown] = useState<boolean>(false)
   // const dropdownRef = useOutsideClick(() => setDropdown(false))
+
+  const handleSelection = (type: string) => {
+    setParticipationType(type)
+    setDropdown(true)
+  }
+  const handleCloseSelection = () => {
+    setDropdown(false)
+    setParticipationType("")
+  }
+
   return (
     <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`} >
-      <div className={styles.header}>
-        <Image src={ParticipationIcon} alt='svg' />
-        <span>Mode of Participation</span>
-      </div>
-      <div className={styles.participationTypes}>
-        <label className={styles.checkboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={participationType === "Attendee"}
-            onChange={() => setParticipationType("Attendee")}
-          />
-          <span className={styles.customCheckbox}></span>
-          <span className={styles.checkboxLabel}>Attendee</span>
-        </label>
-        <label className={styles.checkboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={participationType === "Speaker"}
-            onChange={() => setParticipationType("Speaker")}
-          />
-          <span className={styles.customCheckbox}></span>
-          <span className={styles.checkboxLabel}>Speaker</span>
-        </label>
-        <label className={styles.checkboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={participationType === "Exhibitor"}
-            onChange={() => setParticipationType("Exhibitor")}
-          />
-          <span className={styles.customCheckbox}></span>
-          <span className={styles.checkboxLabel}>Exhibitor</span>
-        </label>
-        <label className={styles.checkboxContainer}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={participationType === "Organiser"}
-            onChange={() => setParticipationType("Organiser")}
-          />
-          <span className={styles.customCheckbox}></span>
-          <span className={styles.checkboxLabel}>Organiser</span>
-        </label>
-      </div>
+      {!dropdown ?
+        <><div className={styles.header}>
+          <Image src={ParticipationIcon} alt='svg' />
+          <span>Choose Your Mode of Participation</span>
+        </div>
+          <div className={styles.options}>
+            <div className={styles.option} onClick={() => handleSelection("Attendee")}>
+              <Image src={AttendeeIcon} alt='icon' />
+              <span>Attendee</span>
+            </div>
+            <div className={styles.option} onClick={() => handleSelection("Speaker")}>
+              <Image src={SpeakerIcon} alt='icon' />
+              <span>Speaker</span>
+            </div>
+            <div className={styles.option} onClick={() => handleSelection("Exhibitor")}>
+              <Image src={ExhibitorIcon} alt='icon' />
+              <span>Exhibitor</span>
+            </div>
+            <div className={styles.option} onClick={() => handleSelection("Organiser")}>
+              <Image src={OrganiserIcon} alt='icon' />
+              <span>Organiser</span>
+            </div>
+          </div>
+        </>
+        :
+        <>
+          {participationType === "Attendee" ? (
+            <div className={styles.selectedOption}>
+              <div className={styles.option}>
+                <Image src={AttendeeIcon} alt="icon" />
+                <span>Attendee</span>
+              </div>
+              <div className={styles.inputContainer}>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <span onClick={handleCloseSelection}>x</span>
+              </div>
+            </div>
+          ) : participationType === "Speaker" ? (
+            <div className={styles.selectedOption}>
+              <div className={styles.option}>
+                <Image src={SpeakerIcon} alt="icon" />
+                <span>Speaker</span>
+              </div>
+              <div className={styles.inputContainer}>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <span onClick={handleCloseSelection}>x</span>
+              </div>
+            </div>
+          ) : participationType === "Exhibitor" ? (
+            <div className={styles.selectedOption}>
+              <div className={styles.option}>
+                <Image src={ExhibitorIcon} alt="icon" />
+                <span>Exhibitor</span>
+              </div>
+              <div className={styles.inputContainer}>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <span onClick={handleCloseSelection}>x</span>
+              </div>
+            </div>
+          ) : participationType === "Organiser" ? (
+            <div className={styles.selectedOption}>
+              <div className={styles.option}>
+                <Image src={OrganiserIcon} alt="icon" />
+                <span>Organiser</span>
+              </div>
+              <div className={styles.inputContainer}>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <span onClick={handleCloseSelection}>x</span>
+              </div>
+            </div>
+          ) : null}
+        </>
+
+      }
       {/* <div className={styles.participationContainer}>
 
         <div className={styles.inputMessage} dangerouslySetInnerHTML={{ __html: participationMessage }}></div>
@@ -76,7 +118,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
       {dropdown && <div className={styles.dropdown} style={{width : size === "large" ? "150%" : "100%"}}>
         <ParticipationDropdown size={size} participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
       </div>} */}
-    </div>
+    </div >
   )
 }
 

@@ -30,10 +30,11 @@ interface EventProps {
     widgetId: string;
     eventId: string;
     hashtags: string;
+    participationType : string;
 }
 
 const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags,participationType }: EventProps) => {
     return (
         <DetailPageComponent
             hashtags={hashtags}
@@ -61,20 +62,24 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
             location_country={location_country}
             widgetId={widgetId}
             eventId={eventId}
+            participationType={participationType}
         />
     )
 }
 const fetchData = async (widgetId: string, eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
-        const response = await fetch(`${baseUrl}/public/widget/${widgetId}`);
-        
+        const response = await fetch(`${baseUrl}/public/widget/${widgetId}`, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            },
+        });
+
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
-        
-        const data = await response.json();
 
+        const data = await response.json();
         // Check if data is valid
         if (!data || !data.data.widgetData || !data.data.widgetData.id) {
             console.log("Invalid widgetId or error encountered");
@@ -113,7 +118,6 @@ const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; 
     return <Page {...data} widgetId={widgetId} eventId={eventId} />;
 };
 export default DetailPage;
-
 
 export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) {
     const { widgetId, eventId } = searchParams
