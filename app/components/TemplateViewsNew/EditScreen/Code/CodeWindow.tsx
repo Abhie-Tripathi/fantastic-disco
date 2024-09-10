@@ -47,7 +47,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         const widgetTag = getWidgetTag(widgetType);
         const textToCopy = `
             <script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>
-            <${widgetTag} id="${widgetId}"></${widgetTag}>
+            <${widgetTag} ${widgetTag.replace("-widget", "")}-id="${widgetId}"></${widgetTag}>
         `;
         navigator.clipboard.writeText(textToCopy.trim());
     };
@@ -153,7 +153,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                 <div className={styles.codewindow} style={{ backgroundColor: theme == "light" ? "#FAFAFA" : "#1A1A1A" }}>
                     {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
                     <br />
-                    {`<${widgetTag} id= "${widgetId}"></${widgetTag}>`}
+                    {`<${widgetTag} ${widgetTag.replace("-widget", "")}-id= "${widgetId}"></${widgetTag}>`}
                 </div>
             </div>
 
