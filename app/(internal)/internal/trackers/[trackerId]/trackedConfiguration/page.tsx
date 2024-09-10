@@ -328,13 +328,13 @@ const userRating=
           {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
                 {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
               </div>
