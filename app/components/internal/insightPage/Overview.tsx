@@ -69,7 +69,8 @@ const Overview = ({ eventDetail }: OverviewProps) => {
             <div className={styles.categoryBadges}>
             {eventDetail?.categories &&
               eventDetail.categories.map((cat: any, index: number) => (
-                <div key={index} className={styles.catItem}>{cat.name}</div>
+                cat?.isGroup &&
+                  <div key={index} className={styles.catItem}>{cat.name}</div>
               ))}
             </div>
           </div>

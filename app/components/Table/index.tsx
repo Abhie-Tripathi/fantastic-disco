@@ -932,15 +932,15 @@ const Table = ({
                 <td>
                   {/* Finance & Banking */}
                   {event.categories !== undefined &&
-                    event.categories.length == 1 ?
-                    event.categories[0].name :
-                    event.categories.length > 0 ? (
+                    event.categories.filter(item => item.isGroup === true).length == 1 ?
+                    event.categories.find(item => item.isGroup === true)?.name :
+                    event.categories.filter(item => item.isGroup === true).length > 0 ? (
                       <span style={{ textTransform: "capitalize" }}>
-                        {event.categories[0].name}&nbsp;
+                        {event.categories.find(item => item.isGroup === true)?.name}&nbsp;
                         <TooltipTrigger>
-                          <Button className={styles["products-list"]} >+{event.categories.length - 1}</Button>
+                          <Button className={styles["products-list"]} >+{event.categories.filter(item => item.isGroup === true).length - 1}</Button>
                           <Tooltip className={styles['react-aria-Tooltip']}>
-                            {event.categories.map((item) => item.name).join(" | ")}
+                            {event.categories.filter(item => item.isGroup === true).map((item) => item.name).join(" | ")}
                           </Tooltip>
                         </TooltipTrigger>
                       </span>
