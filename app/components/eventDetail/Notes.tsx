@@ -19,6 +19,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { transcode } from "buffer";
 import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
+import { Trash } from "geist-icons";
 
 interface UserDetail {
   firstname: string;
@@ -1151,9 +1152,7 @@ const Comment = ({
           <div className={styles.options}>
             {/* <ButtonView view={"upvoteBtn"} /> */}
             <div
-              className={
-                theme === "light" ? styles.likeSectionLight : styles.likeSection
-              }
+              className={styles.likeSection}
               onClick={() => handleLiked(comment.id, comment?.userLiked)}
             >
               <div className={styles.like}>
@@ -1188,7 +1187,8 @@ const Comment = ({
                 className={styles.replyBtn}
                 onClick={() => handleDelete(comment.id)}
               >
-                Delete
+                {/* Delete */}
+                <Trash color="var(--tertiary-text-color)" height="16px" />
               </button>
             }
 
