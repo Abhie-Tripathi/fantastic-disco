@@ -110,7 +110,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
-                                venue={venue}
+                                venue={location_city}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>

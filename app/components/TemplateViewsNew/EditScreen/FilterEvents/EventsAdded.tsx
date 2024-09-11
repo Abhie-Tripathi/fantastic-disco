@@ -29,50 +29,57 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
 
     useEffect(() => {
         const handleOtherDataFetch = async () => {
-            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
-                fetchedAddedEvents.map(async (event) => {
-                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
-                    if (error) {
-                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
-                        return null;
-                    }
-                    if (data) {
-                        console.log("data of fetched event : ",)
-                    }
-                    return {
-                        id: event.id,
-                        name: data.data[0].name,
-                        pageBgColor: event.pageBgColor,
-                        description: data.data[0].data.description,
-                        eventFont: event.eventFont,
-                        startDate: data.data[0].data.start_date,
-                        endDate: data.data[0].data.end_date,
-                        startTime: data.data[0].data.start_time,
-                        endTime: data.data[0].data.end_time,
-                        timeZone: data.data[0].data.gmt_time,
-                        cityName: data.data[0].data.location_city,
-                        countryName: data.data[0].data.location_country,
-                        // participationType: data.data[0].data.participationType,
-                        eventFormat: data.data[0].data.format,
-                        registerBtnColor: event.registerBtnColor,
-                        registerBtnText: event.registerBtnText,
-                        registerMessage: event.registerMessage,
-                        boothNumber: event.boothNumber,
-                        speakerProfilesData: event.speakerProfilesData,
-                        participationMessage: event.participationMessage,
-                        bannerUrl: event.bannerUrl,
-                        latitude: event.latitude,
-                        longitude: event.longitude,
-                        venue: event.venue,
-                        hashtags : event.hashtags
-                    } as PrefilledAddedEventsType;
-                })
-            );
-            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            try {
+                const newFetchedAddedOtherData = await Promise.all(
+                    fetchedAddedEvents.map(async (event) => {
+                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        if (error) {
+                            console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                            return null;
+                        }
+    
+                        const eventData = data?.data?.[0]?.data;
+                        if (!eventData) return null;
+    
+                        return {
+                            id: event.id,
+                            name: data?.data?.[0]?.name,
+                            pageBgColor: event.pageBgColor,
+                            description: eventData.description,
+                            eventFont: event.eventFont,
+                            startDate: eventData.start_date,
+                            endDate: eventData.end_date,
+                            startTime: eventData.start_time,
+                            endTime: eventData.end_time,
+                            timeZone: eventData.gmt_time,
+                            cityName: eventData.location_city,
+                            countryName: eventData.location_country,
+                            participationType: eventData.participationType,
+                            eventFormat: eventData.format,
+                            registerBtnColor: event.registerBtnColor,
+                            registerBtnText: event.registerBtnText,
+                            registerMessage: event.registerMessage,
+                            boothNumber: event.boothNumber,
+                            speakerProfilesData: event.speakerProfilesData,
+                            participationMessage: event.participationMessage,
+                            bannerUrl: event.bannerUrl,
+                            latitude: event.latitude,
+                            longitude: event.longitude,
+                            venue: event.venue,
+                            hashtags: event.hashtags,
+                        } as PrefilledAddedEventsType;
+                    })
+                );
+    
+                setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            } catch (err) {
+                console.error("Error in handleOtherDataFetch:", err);
+            }
         };
-
+    
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
+    
 
 
     // This function is to trigger the delete event function from added events

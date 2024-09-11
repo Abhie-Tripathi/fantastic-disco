@@ -3,6 +3,7 @@ import styles from './registration.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 
+
 interface Props {
     setRegisterModal: (value: boolean) => void
     registerMessage: string
@@ -33,14 +34,19 @@ const RegistrationForm = ({ setRegisterModal, registerMessage, registerBtnText, 
     const fontColor = brightness > 155 ? '#000000' : '#FFFFFF';
     return (
         <div className={styles.registerContainer} >
-            <div className={styles.headerContainer} onClick={()=>setAccordian(!accordian)}>
+            <div className={styles.headerContainer} onClick={() => setAccordian(!accordian)}>
+                <div className={styles.heading_iconContainer}>
+                    <PageIcon />
+                    <div className={styles.heading}>Your Registration Form</div>
+                </div>
+
+                <div className={styles.accordianBtn}><DownIcon /></div>
+            </div>
+            {accordian && <div className={styles.accordian}>
                 <div className={styles.info}>
                     <div className={styles.iBtn}>i</div>
                     <div className={styles.heading}>Customize your event registration form</div>
                 </div>
-                <div className={styles.accordianBtn}><DownIcon/></div>
-            </div>
-            {accordian && <div className={styles.accordian}>
                 <div className={styles.header}>
                     <div>Join us at the event</div>
                     <Image src={EditIcon} alt='edit' onClick={() => setRegisterModal(true)} />
@@ -66,5 +72,10 @@ function DownIcon() {
         <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.35341 3.85361C4.25965 3.94734 4.13249 4 3.99991 4C3.86733 4 3.74017 3.94734 3.64641 3.85361L0.817909 1.02511C0.72683 0.930806 0.676433 0.804505 0.677572 0.673406C0.678711 0.542308 0.731296 0.416902 0.824 0.324198C0.916704 0.231493 1.04211 0.178909 1.17321 0.17777C1.30431 0.176631 1.43061 0.227028 1.52491 0.318107L3.99991 2.79311L6.47491 0.318107C6.56921 0.227028 6.69551 0.176631 6.82661 0.17777C6.95771 0.178909 7.08312 0.231493 7.17582 0.324198C7.26852 0.416902 7.32111 0.542308 7.32225 0.673406C7.32339 0.804505 7.27299 0.930806 7.18191 1.02511L4.35341 3.85361Z" fill="black" />
         </svg>
+    )
+}
+function PageIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" fill="#7D7D7D" /></svg>
     )
 }

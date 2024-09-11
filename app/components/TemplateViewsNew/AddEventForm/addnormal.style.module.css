@@ -1,12 +1,16 @@
 .body{
     background-color: rgb(228, 228, 228);
     border-radius: 10px;
-    height: 80vh;
+    max-height: 75vh;
+    display: flex;
+    flex-direction: column;
 }
 .darkBody{
     background-color: #1a1a1a;
 }
 .header{
+    position: sticky;  
+    top: 0;  
     padding: 20px;
     display: flex;
     align-items: center;
@@ -34,8 +38,9 @@
     width: 100%;
     border-top: 1px solid var(--border-color);
 }
-
 .form{
+    height: 100%;
+    overflow-y: auto; 
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -49,9 +54,10 @@
     font-size: 40px;
     width: 100%;
     resize: none;
-    overflow: hidden;
+    overflow: auto;
     color: var(--primary-text-color);
     font-weight: bolder;
+    min-height: 50px;
 }
 
 .eventName:focus {
@@ -65,17 +71,8 @@
     width: 50%;
     filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
 }
-.descriptionModal textarea {
-    resize: none;
-    border: 1px solid #EBEBEB;
-    width: 100%;
-    padding: 8px;
-    height: 130px;
-}
 
-.descriptionModal textarea:focus {
-    outline: none;
-}
+
 
 .descriptionModal div {
     font-size: 12px;

@@ -20,7 +20,7 @@ const DescriptionContainer = ({setDescriptionModal,description, theme} : Props) 
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>
-            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description }}></div>}
+            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description.substring(0,400)+"..." }}></div>}
         </div>
     )
 }
