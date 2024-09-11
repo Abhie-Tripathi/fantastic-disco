@@ -256,26 +256,26 @@ const Widget = () => {
                 </div>
               ))}
             </div>
-          </div>
-          <div
-            className={`${styles.preview} ${
-              isFullScreen ? styles.fullPreview : ""
-            }`}
-          >
-            <PreviewWindow
-              fontSettings={fontSettings}
-              buttonSettings={buttonSettings}
-              cardBorderRadius={cardBorderRadius}
-              cardBgColor={cardBgColor}
-              selectedBtn={selectedBtn}
-              selectedCard={cardStyle}
-              selectedTemplate={selectedTemplate}
-              isFullScreen={isFullScreen}
-              setIsFullScreen={setIsFullScreen}
-              smallCard={false}
-              fetchedAddedEvents={fetchedAddedEvents}
-              widgetId={selectedWidgetId}
-            />
+            <div
+              className={`${styles.preview} ${
+                isFullScreen ? styles.fullPreview : ""
+              }`}
+            >
+              <PreviewWindow
+                fontSettings={fontSettings}
+                buttonSettings={buttonSettings}
+                cardBorderRadius={cardBorderRadius}
+                cardBgColor={cardBgColor}
+                selectedBtn={selectedBtn}
+                selectedCard={cardStyle}
+                selectedTemplate={selectedTemplate}
+                isFullScreen={isFullScreen}
+                setIsFullScreen={setIsFullScreen}
+                smallCard={false}
+                fetchedAddedEvents={fetchedAddedEvents}
+                widgetId={selectedWidgetId}
+              />
+            </div>
           </div>
         </>
       )}
