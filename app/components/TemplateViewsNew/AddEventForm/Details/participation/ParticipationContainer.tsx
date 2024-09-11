@@ -18,14 +18,13 @@ interface Props {
   participationMessage: string
   size: string;
   theme?: string;
+  type : string;
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme }: Props) => {
-  // const [dropdown, setDropdown] = useState<boolean>(false)
-  // const dropdownRef = useOutsideClick(() => setDropdown(false))
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type }: Props) => {
 
   const handleSelection = (type: string) => {
-    setParticipationType(type)
+    setParticipationType(type);
     // setDropdown(true)
   }
   const handleCloseSelection = () => {
@@ -35,25 +34,25 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
 
   return (
     <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`} >
-      {!participationType ?
+      {(type === "normal" ? true : !participationType) ?
         <><div className={styles.header}>
           <Image src={ParticipationIcon} alt='svg' />
           <span>Choose Your Mode of Participation</span>
         </div>
           <div className={styles.options}>
-            <div className={styles.option} onClick={() => handleSelection("Attendee")}>
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""}`} onClick={() => handleSelection("Attendee")}>
               <Image src={AttendeeIcon} alt='icon' />
               <span>Attendee</span>
             </div>
-            <div className={styles.option} onClick={() => handleSelection("Speaker")}>
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Speaker") ?styles.activeOption : ""}`} onClick={() => handleSelection("Speaker")}>
               <Image src={SpeakerIcon} alt='icon' />
               <span>Speaker</span>
             </div>
-            <div className={styles.option} onClick={() => handleSelection("Exhibitor")}>
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Exhibitor") ?styles.activeOption : ""}`} onClick={() => handleSelection("Exhibitor")}>
               <Image src={ExhibitorIcon} alt='icon' />
               <span>Exhibitor</span>
             </div>
-            <div className={styles.option} onClick={() => handleSelection("Organiser")}>
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Organiser") ?styles.activeOption : ""}`} onClick={() => handleSelection("Organiser")}>
               <Image src={OrganiserIcon} alt='icon' />
               <span>Organiser</span>
             </div>
@@ -61,7 +60,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
         </>
         :
         <>
-          {participationType === "Attendee" ? (
+          {(participationType === "Attendee" && type === "widget") ? (
             <div className={styles.selectedOption}>
               <div className={styles.option}>
                 <Image src={AttendeeIcon} alt="icon" />
@@ -72,7 +71,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
-          ) : participationType === "Speaker" ? (
+          ) : (participationType === "Speaker" && type === "widget") ? (
             <div className={styles.selectedOption}>
               <div className={styles.option}>
                 <Image src={SpeakerIcon} alt="icon" />
@@ -83,7 +82,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
-          ) : participationType === "Exhibitor" ? (
+          ) : (participationType === "Exhibitor" && type === "widget") ? (
             <div className={styles.selectedOption}>
               <div className={styles.option}>
                 <Image src={ExhibitorIcon} alt="icon" />
@@ -94,7 +93,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
-          ) : participationType === "Organiser" ? (
+          ) : (participationType === "Organiser" && type === "widget") ? (
             <div className={styles.selectedOption}>
               <div className={styles.option}>
                 <Image src={OrganiserIcon} alt="icon" />
