@@ -6,6 +6,7 @@ import PlaceHolder from '/public/placeholder.png'
 import Exhibitors from "./overviewSections/Exhibitors";
 import Speakers from "./overviewSections/Speakers";
 import Sponsors from "./overviewSections/Sponsors";
+import { Button, Tooltip, TooltipTrigger } from "react-aria-components";
 
 interface OverviewProps {
   eventDetail: any;
@@ -82,7 +83,14 @@ const Overview = ({ eventDetail }: OverviewProps) => {
                   <div key={index} className={styles.catItem}>{cat}</div>
                 ))}
                 {eventDetail.eventKeywords.length > 4 &&
-                  <span className={styles.moreItems}>+{eventDetail.eventKeywords.length - 4} more</span>
+                <>
+                  <TooltipTrigger>
+                    <Button className={styles.moreItems} >+{eventDetail.eventKeywords.length - 4} more</Button>
+                    <Tooltip className={styles['react-aria-Tooltip']}>
+                      {eventDetail.eventKeywords.join(" | ")}
+                    </Tooltip>
+                  </TooltipTrigger>
+                </>
                 }
               </div>
             </div>
