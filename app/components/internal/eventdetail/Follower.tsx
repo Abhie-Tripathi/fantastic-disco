@@ -115,7 +115,7 @@ const Follower = ({
                       {follower.name}
                       {/* <span className={styles.username}>{item.username}</span> */}
                     </div>
-                    {/* <div className={styles.followerPosition}>Software Developer</div> */}
+                    <div className={styles.followerPosition}>{follower?.designation}</div>
                   </div>
                 </div>
               ))

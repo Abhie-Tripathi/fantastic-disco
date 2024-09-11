@@ -262,7 +262,7 @@
 }
 .followerPosition {
   font-size: var(--font-size-small);
-  color: var(--secondary-text-color);
+  color: var(--tertiary-text-color);
   margin: 5px 0;
 }
 

@@ -122,7 +122,10 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                             }
                         />
                         <span className={styles.imgContainer}>
-                        <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>
+                        {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}}/>:
+                         <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>
+                        }
+                       
                         </span>
                         <div className={styles.comment_name}>
                             <span>
