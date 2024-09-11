@@ -287,9 +287,9 @@
   font-weight: 500;
 }
 
-.modal_header-title {
+/* .modal_header-title {
   text-align: center;
-}
+} */
 
 .modal_content {
   padding: 0 20px;
@@ -320,6 +320,12 @@
 .form-check input[type="radio"] {
   margin-right: 6px;
   transform: scale(1.2);
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.form-check label {
+  cursor: pointer;
 }
 
 .submitBtn {
@@ -376,4 +382,15 @@
   font-size: 14px;
   line-height: var(--line-height-default);
   letter-spacing: 0.3px;
+}
+
+.interestPopover {
+  background: var(--heading-background-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.dialogBorder {
+  border: none;
+  outline: none;
 }
