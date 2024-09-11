@@ -25,13 +25,16 @@ import {
   Button,
   Tooltip,
   OverlayArrow,
+  MenuTrigger,
+  Popover,
+  Dialog,
 } from "react-aria-components";
 import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
-  eventGroupId: string;
+  // eventGroupId: string;
 }
 
 interface ProductsType {
@@ -242,7 +245,7 @@ const Table = ({
   const [formData, setFormData] = useState<FormDataType>({
     entityId_id: "",
     markedInterest: null,
-    eventGroupId: "",
+    // eventGroupId: "",
   });
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -259,13 +262,17 @@ const Table = ({
       setCurrPage(1)
     }
   }, [eventType]);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, callback: any) => {
     e.preventDefault();
     if (
       formData.entityId_id &&
       formData.markedInterest
     ) {
       if (formData.markedInterest == "bookmark") {
+        if(path[path.length - 1] !== 'events') {
+          saveEvent(formData.entityId_id);
+          callback();return;
+        }
         let payloadData = {
           eventId: formData.entityId_id,
         };
@@ -297,8 +304,13 @@ const Table = ({
           console.error("Error saving data:", error);
         } finally {
           setIsOpen(null);
+          callback();
         }
       } else if (formData.markedInterest == "unbookmark") {
+        if(path[path.length - 1] !== 'events') {
+          deleteEvent(formData.entityId_id);
+          callback();return;
+        }
         try {
           let payloadData = {
             eventIds: [formData.entityId_id],
@@ -325,6 +337,7 @@ const Table = ({
           console.error("Error:", error);
         } finally {
           setIsOpen(null);
+          callback();
         }
       } else {
         let payloadData = {
@@ -351,6 +364,8 @@ const Table = ({
           }
         } catch (error) {
           console.error("Error fetching data:", error);
+        } finally {
+          callback();
         }
       }
     }
@@ -403,20 +418,20 @@ const Table = ({
     }
   }, []);
 
-  const handleModalOpen = (eventId: string, eventGroupId: string) => {
+  const handleModalOpen = (eventId: string) => {
     GAEvent("research", "Filters", "Saved Event | Viewed", "Saved Event");
     setIsOpen((prev) => (prev == eventId ? null : eventId));
     if (isOpen != eventId) {
       setFormData({
         ...formData,
         entityId_id: eventId,
-        eventGroupId: eventGroupId,
+        // eventGroupId: eventGroupId,
       });
     } else {
       setFormData({
         entityId_id: "",
         markedInterest: null,
-        eventGroupId: "",
+        // eventGroupId: "",
       });
     }
   };
@@ -1176,7 +1191,7 @@ const Table = ({
                     )}
                 </>}
                 <td className={`${styles.table_actionColumn}`} style={{width:"84px"}}>
-                  {path[path.length - 1] === "trackedEvents" ||
+                  {/* {path[path.length - 1] === "trackedEvents" ||
                     path[path.length - 1] === "savedEvents" ||
                     path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
@@ -1215,10 +1230,10 @@ const Table = ({
                         <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
                       )}
                     </span>
-                  )}
+                  )} */}
 
                   {/* Optional Pin Section */}
-                  {isOpen == event.id && (
+                  {/* {isOpen == event.id && (
                     <div className={styles.modal}>
                       <header className={styles["modal_header"]}>
                         <div className={styles["modal_header-title"]}>
@@ -1310,7 +1325,146 @@ const Table = ({
                         </form>
                       </main>
                     </div>
-                  )}
+                  )} */}
+
+                  <MenuTrigger onOpenChange={()=>handleModalOpen(event.id)}>
+                    <Button className={styles.dropdown_button}>
+                    {path[path.length - 1] === "trackedEvents" || path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" ? (
+                      path[path.length - 1] === "trackedEvents" ? (
+                        <>
+                          {event?.isSaved ? (
+                            <button
+                              onClick={() => handleModalOpen(event?.id)}
+                            >
+                              <BookmarkFilled fillColor={"var(--primary-color)"} />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleModalOpen(event?.id)}
+                            >
+                              <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
+                            </button>
+                          )}
+                        </>
+                        ) : (
+                          <button
+                            onClick={() => handleModalOpen(event?.id)}
+                          >
+                            <BookmarkFilled fillColor={"var(--primary-color)"} />
+                          </button>
+                        )
+                        ) : (
+                          <span
+                            className={styles.save_image_container}
+                            style={{cursor:"pointer"}}
+                            onClick={() => handleModalOpen(event.id)}
+                          >
+                            {bookmarkedEvent?.includes(event.id) ? (
+                              <BookmarkFilled fillColor={"var(--primary-color)"} />
+                            ) : (
+                              <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
+                            )}
+                          </span>
+                        )}
+                    </Button>
+                    <Popover className={styles.interestPopover} placement='left' >
+                      <Dialog className={styles.dialogBorder}>
+                        {({ close }) => (
+                          <div style={{maxWidth: '500px'}}>
+                            <header className={styles["modal_header"]}>
+                              <div className={styles["modal_header-title"]}>
+                                Do you want to participate in &quot;{event.name}&quot;?
+                              </div>
+                              <button
+                                className={styles["close"]}
+                                onClick={() => {handleModalOpen(event.id); close()}}
+                              >
+                                <Image src={closeIcon} alt="clock" width={16} height={16} />
+                              </button>
+                            </header>
+                            <main className={styles["modal_content"]}>
+                              <form onSubmit={(e)=>handleSubmit(e, close)}>
+                                <div id="field-1">
+                                  <div className={styles["form-check"]}>
+                                    {path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" || event?.isSaved || bookmarkedEvent?.includes(event.id) ? (
+                                      <>
+                                        <input
+                                          className={styles["form-check-input"]}
+                                          type="radio"
+                                          defaultValue="unbookmark"
+                                          name={"interest"}
+                                          id="customradio1"
+                                          onChange={handleChangeIntent}
+                                        />
+                                        <label htmlFor="customradio1">Un-Bookmark</label>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <input
+                                          className={styles["form-check-input"]}
+                                          type="radio"
+                                          defaultValue="bookmark"
+                                          name={"interest"}
+                                          id="customradio1"
+                                          onChange={handleChangeIntent}
+                                        />
+                                        <label htmlFor="customradio1">Bookmark</label>
+                                      </>
+                                    )}
+                                  </div>
+                                  <div className={styles["form-check"]}>
+                                    <input
+                                      className={styles["form-check-input"]}
+                                      type="radio"
+                                      defaultValue="ATTENDEE"
+                                      name={"interest"}
+                                      id="customradio2"
+                                      onChange={handleChangeIntent}
+                                    />
+                                    <label htmlFor="customradio2">Attending</label>
+                                  </div>
+                                  <div className={styles["form-check"]}>
+                                    <input
+                                      className={styles["form-check-input"]}
+                                      type="radio"
+                                      defaultValue="SPEAKER"
+                                      name={"interest"}
+                                      id="customradio3"
+                                      onChange={handleChangeIntent}
+                                    />
+                                    <label htmlFor="customradio3">Speaking</label>
+                                  </div>
+                                  <div className={styles["form-check"]}>
+                                    <input
+                                      className={styles["form-check-input"]}
+                                      type="radio"
+                                      defaultValue="EXHIBITOR"
+                                      name={"interest"}
+                                      id="customradio4"
+                                      onChange={handleChangeIntent}
+                                    />
+                                    <label htmlFor="customradio4">Exhibiting</label>
+                                  </div>
+                                  <div className={styles["form-check"]}>
+                                    <input
+                                      className={styles["form-check-input"]}
+                                      type="radio"
+                                      defaultValue="SPONSOR"
+                                      name={"interest"}
+                                      id="customradio5"
+                                      onChange={handleChangeIntent}
+                                    />
+                                    <label htmlFor="customradio5">Sponsoring</label>
+                                  </div>
+                                </div>
+                                <button className={styles["submitBtn"]}>Submit</button>
+                              </form>
+                            </main>
+                          </div>
+                        )}
+                      </Dialog>
+                    </Popover>
+                  </MenuTrigger>
                 </td>
 
               </tr>
