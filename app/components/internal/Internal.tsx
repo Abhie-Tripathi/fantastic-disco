@@ -51,18 +51,18 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         if(page > 0) {
             setIsLoaded(false);
             try {
-            const apiUrl = baseUrl + "/userInterest?status=PENDING&limit=10&offset=" + (page-1)*10;
+            const apiUrl = baseUrl + "/userInterest/enquiry?status=IN_DISCUSSION&limit=10&offset=" + (page-1)*10+"&source=internal";
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
             });
             if(apiData.data) {
                 if(page==1){
-                    setEventData1(apiData.data.enquiry);
+                    setEventData1(apiData.data.enquiryData);
                 }else if(page>1){
-                    setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
+                    setEventData1(prevData => [...prevData, ...apiData.data.enquiryData]);
                 }
-                if(apiData.data.enquiry.length < 10){
+                if(apiData.data.enquiryData.length < 10){
                     setNoMoreData(true);}
             }
             } catch (error) {
@@ -175,7 +175,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
                     eventId={item.id}
                     isDateSame={showDate}
                     enquiryId={item.enquiryId}
-                    eventName={item.name}
+                    eventName={item.eventName}
                     eventLocation={item.city}
                     eventCountry={item.country}
                     eventImage={item?.logo}
