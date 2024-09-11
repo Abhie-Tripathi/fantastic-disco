@@ -20,6 +20,7 @@ import { baseUrl } from "@/constants";
 import { transcode } from "buffer";
 import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
 import { Trash } from "geist-icons";
+import UserProfile from "../userProfile/UserProfile";
 
 interface UserDetail {
   firstname: string;
@@ -870,13 +871,14 @@ const Comment = ({
           <div className={styles.comment__user}>
             <header>
               <span className={styles.imgContainer}>
-                <Image
+                {/* <Image
                   width={50}
                   height={50}
                   className={styles.userImage}
                   src={person1}
                   alt=""
-                />
+                /> */}
+                <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={50} width={50} />
               </span>
               <div
                 className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
@@ -1256,7 +1258,8 @@ const Comment = ({
           />
           <div className={styles.text1}>
             <span className={styles.imgContainer}>
-              <Image width={30} height={30} src={person1} alt="" />
+              {/* <Image width={30} height={30} src={person1} alt="" /> */}
+              <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={30} width={30} />
             </span>
             <div className={styles.commentText1}>
               <span>{userName}</span>{" "}
