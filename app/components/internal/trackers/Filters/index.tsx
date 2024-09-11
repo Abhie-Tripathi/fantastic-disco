@@ -106,7 +106,7 @@ interface FilterValue {
   speakerOrg: string;
   speakerName: string;
   orgWebsite: string;
-  orgName:string;
+  orgName: string;
   eventAttendanceRange: any;
 }
 interface InputArea {
@@ -128,7 +128,7 @@ interface CategoryData {
 }
 interface Tracker {
   name: string;
-  accessLevel?:string;
+  accessLevel?: string;
   filterValue: FilterValue;
 }
 interface Cat {
@@ -165,7 +165,7 @@ const templates = [
         img: Url,
         type: "text",
         placeholder: "Add Competitor Name or Website",
-        required:true,
+        required: true,
       }
     ]
   },
@@ -252,13 +252,13 @@ const templates = [
         img: Name,
         type: "text",
         placeholder: "Speaker's Name",
-        required:true,
+        required: true,
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
-        required:true,
+        required: true,
       }
     ]
   },
@@ -298,7 +298,7 @@ const Pages = () => {
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
-  const [opend,setOpend]=useState(false);
+  const [opend, setOpend] = useState(false);
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const router = useRouter();
@@ -307,7 +307,7 @@ const Pages = () => {
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
-  const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
+  const [websiteSuggestion, setWebsiteSuggestion] = useState(null);
   // const [categorySlug, setCategorySlug] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
@@ -476,7 +476,7 @@ const Pages = () => {
     }
   }, [selectedINScore]);
   const [websites, setWebsites] = useState("");
-  const [org,setOrg]=useState("");
+  const [org, setOrg] = useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -486,17 +486,17 @@ const Pages = () => {
     if (type === "T_COMPETITOR") {
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
-      .map((item: {}) => Object.values(item)[0] as string)
-      .filter(value => regex.test(value))
-      .join(',');
-  
-    const orgNames = customData
-      .map((item: {}) => Object.values(item)[0] as string)
-      .filter(value => !regex.test(value))
-      .join(',');
-  
-    setWebsites(urls);
-    setOrg(orgNames);
+        .map((item: {}) => Object.values(item)[0] as string)
+        .filter(value => regex.test(value))
+        .join(',');
+
+      const orgNames = customData
+        .map((item: {}) => Object.values(item)[0] as string)
+        .filter(value => !regex.test(value))
+        .join(',');
+
+      setWebsites(urls);
+      setOrg(orgNames);
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
@@ -515,7 +515,7 @@ const Pages = () => {
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
-    if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
+    if (type === "T_COMPETITOR" && (websites.length === 0 || org.length === 0)) {
       setIsMandatory(true);
     }
     GAEvent(
@@ -548,7 +548,7 @@ const Pages = () => {
             orgWebsite: websites,
           }),
           ...(org.length > 0 && {
-            orgName : org,
+            orgName: org,
           }),
           ...(designations.length > 0 && {
             userDesignation: designations,
@@ -576,11 +576,11 @@ const Pages = () => {
           ...(selectedCategories?.length > 0 && {
             eventCategory: selectedCategories.join(","),
           }),
-          ...(selectedVisitors?.length>0 && {
+          ...(selectedVisitors?.length > 0 && {
             eventSize: selectedVisitors.join(",")
-           }),
-           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-           ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
+          }),
+          ...(selectedExhibitScore?.length > 0 && { estimatedExhibitScore: selectedExhibitScore.join(',') }),
+          ...(selectedRegularity[0] > 0 && { editionRange: selectedRegularity[0].toString() }),
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
           }),
@@ -677,12 +677,12 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
+      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || selectedEventKeywords.length == 0)) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== "CUSTOM" && type !== "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || customData.length === 0)) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -742,7 +742,7 @@ const Pages = () => {
             orgWebsite: websites,
           }),
           ...(org.length > 0 && {
-            orgName : org,
+            orgName: org,
           }),
           ...(Object.entries(selectedCity).length > 0 && {
             eventCity: Object.keys(selectedCity).join(","),
@@ -765,11 +765,11 @@ const Pages = () => {
           ...(selectedCategories?.length > 0 && {
             eventCategory: selectedCategories.join(","),
           }),
-          ...(selectedVisitors?.length>0 && {
+          ...(selectedVisitors?.length > 0 && {
             eventSize: selectedVisitors.join(",")
-           }),
-           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-           ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
+          }),
+          ...(selectedExhibitScore?.length > 0 && { estimatedExhibitScore: selectedExhibitScore.join(',') }),
+          ...(selectedRegularity[0] > 0 && { editionRange: selectedRegularity[0].toString() }),
           brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
@@ -852,12 +852,12 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
+      if (type === "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || selectedEventKeywords.length == 0)) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== "CUSTOM" && type !== "T_PRODUCT_KEYWORDS" && (trackerName.length === 0 || customData.length === 0)) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1136,12 +1136,12 @@ const Pages = () => {
       const updatedRegularity = [...selectedRegularity];
       updatedRegularity[0] = editData.tracker.filterValue?.editionRange > 0 ? editData.tracker.filterValue?.editionRange : 0;
       setSelectedRegularity(updatedRegularity);
-      const updatedTrustScore=[...selectedTrustScore]
-      updatedTrustScore[0]=
+      const updatedTrustScore = [...selectedTrustScore]
+      updatedTrustScore[0] =
         editData.tracker.filterValue?.trustScore > 0
           ? editData.tracker.filterValue?.trustScore
           : 0;
-        setSelectedTrustScore(updatedTrustScore)
+      setSelectedTrustScore(updatedTrustScore)
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
       setSelectedEventAttendanceRange((prevArray) => {
@@ -1193,16 +1193,16 @@ const Pages = () => {
     }
   }
   console.log(customData);
-  const [isLoading,setIsLoading]=useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [template, setTemplate] = useState<Template | null | undefined>(null);
   const [inputValues, setInputValues] = useState<{ [key: number]: string }>({});
   useEffect(() => {
     const foundTemplate = templates.find(t => t.name === type);
     setTemplate(foundTemplate);
   }, [type])
-  useEffect(()=>{
+  useEffect(() => {
     setIsLoading(false);
-  },[template])
+  }, [template])
   const handleInput = (index: number, value: string) => {
     console.log(value);
     setInputValues(prevValues => ({
@@ -1210,7 +1210,7 @@ const Pages = () => {
       [index]: value
     }));
   };
-  const [valid,setValid]=useState(true);
+  const [valid, setValid] = useState(true);
   const addNew = () => {
     if (!template) {
       console.error('Template is not found');
@@ -1219,45 +1219,45 @@ const Pages = () => {
     const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     let isValid = true;
     let isPresent = false;
-    if(template.type==="enabled"){
-    if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
-      const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
-        const value = inputValues[index];
-        if (inputArea.placeholder === 'Add Competitor Name or Website') {
-          //if (regex.test(value.trim())) {
+    if (template.type === "enabled") {
+      if (template && template.inputAreas && template.inputAreas.length === Object.keys(inputValues).length) {
+        const newEntry = template.inputAreas.reduce<{ [key: string]: string }>((acc, inputArea, index) => {
+          const value = inputValues[index];
+          if (inputArea.placeholder === 'Add Competitor Name or Website') {
+            //if (regex.test(value.trim())) {
             acc[inputArea.placeholder] = value;
-            isPresent=customData.some((item) => {
-              return Object.values(item).includes(value.trim()); 
+            isPresent = customData.some((item) => {
+              return Object.values(item).includes(value.trim());
             });
-          // } 
-          // else {
-          //   isValid = false;
-          // }
-        } else {
-          if (value !== null && value.trim() !== '') {
-            acc[inputArea.placeholder] = value;
-          } else {   
-            isValid = false;
-            setValid(false);
+            // } 
+            // else {
+            //   isValid = false;
+            // }
+          } else {
+            if (value !== null && value.trim() !== '') {
+              acc[inputArea.placeholder] = value;
+            } else {
+              isValid = false;
+              setValid(false);
+            }
           }
+          return acc;
+        }, {});
+
+        if (isValid && template?.type === "enabled" && !isPresent) {
+          setCustomData((prevData: any) => [
+            ...prevData,
+            newEntry
+          ]);
+          setInputValues({});
+        } else {
+          setValid(false);
+          setInputValues({});
+          console.error('Invalid input or URL');
         }
-        return acc;
-      }, {});
 
-      if (isValid && template?.type === "enabled" && !isPresent) {
-        setCustomData((prevData: any) => [
-          ...prevData,
-          newEntry
-        ]);
-        setInputValues({});
-      } else {
-        setValid(false);
-        setInputValues({});
-        console.error('Invalid input or URL');
-      }
-
-    }else setValid(false);
-  }
+      } else setValid(false);
+    }
   }
   console.log(valid);
   const truncate = (val: string) => {
@@ -1285,27 +1285,27 @@ const Pages = () => {
     if (intScore === "medium") setSelectedINScore(50);
     if (intScore === "high") setSelectedINScore(100);
   }, [intScore])
-useEffect(()=>{
-  if(valid===false) setValid(true);
-  if(isMandatory) setIsMandatory(false);
-},[inputValues])
-const dateShowFormatter = (selectedDateRange: string[]) => {
-  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
-    selectedDateRange[0]
-  ).split(" ");
-  const [edDay, edMonth, edYear] = convertToCustomFormat(
-    selectedDateRange[1]
-  ).split(" ");
+  useEffect(() => {
+    if (valid === false) setValid(true);
+    if (isMandatory) setIsMandatory(false);
+  }, [inputValues])
+  const dateShowFormatter = (selectedDateRange: string[]) => {
+    const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+      selectedDateRange[0]
+    ).split(" ");
+    const [edDay, edMonth, edYear] = convertToCustomFormat(
+      selectedDateRange[1]
+    ).split(" ");
 
-  if (sdMonth === edMonth && sdYear === edYear) {
-    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
-  }
-  if (sdYear === edYear) {
-    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
-  }
-  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
-};
-const abortControllerRef = useRef<AbortController | null>(null);
+    if (sdMonth === edMonth && sdYear === edYear) {
+      return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+    }
+    if (sdYear === edYear) {
+      return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+    }
+    return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
+  };
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const fetchSuggestionData = async () => {
     let url = "";
@@ -1315,7 +1315,7 @@ const abortControllerRef = useRef<AbortController | null>(null);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
-      
+
       const controller = new AbortController();
       abortControllerRef.current = controller;
 
@@ -1348,228 +1348,229 @@ const abortControllerRef = useRef<AbortController | null>(null);
 
       return () => clearTimeout(debounceTimeout);
     }
-  }, [inputValues, type]); 
-const [selected,setSelected]=useState(false);
-const addCompany=(val:string)=>{
-  setSelected(true);
-  setInputValues(prevValues => ({
-    ...prevValues,
-    [0]: val
-  }));
-}
-useEffect(()=>{
-  if(selected) {
-    addNew();
-    setSelected(false);
+  }, [inputValues, type]);
+  const [selected, setSelected] = useState(false);
+  const addCompany = (val: string) => {
+    setSelected(true);
+    setInputValues(prevValues => ({
+      ...prevValues,
+      [0]: val
+    }));
   }
-},[selected])
-const [isDiv,setIsDiv]=useState(false);
-useEffect(()=>{
-  if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
-}, [type])
+  useEffect(() => {
+    if (selected) {
+      addNew();
+      setSelected(false);
+    }
+  }, [selected])
+  const [isDiv, setIsDiv] = useState(false);
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS") setIsDiv(true);
+  }, [type])
+  console.log(selectedDateRange);
 
   return (
     <>
-    <div>{isLoading?<Loading/>:
-    <>
-    <div
-      className={`fixedNav ${styles.topContainer}`}
-      style={{ top: pathName[pathName.length - 1] === "create" ? "auto" : "" }}
-    >
-      <div className={styles.topInnerContainerLeft}>
-        <div>
-          <Image src={userOne} alt="userOne" />
-        </div>
-        <div>
-          <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
-          <div className={styles.createContent}>
-            Select from the available data filters to create a tracker
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.topInnerContainerRight}>
-        <Link
-          href={
-            last === "create"
-              ? "/internal/trackers"
-              : `/internal/trackers/${pathName[pathName.length - 2]
-              }/trackedConfiguration?type=${type}`
-          }
-          style={{ display: "flex" }}
-        >
-          <button className={styles.cancel}>Cancel</button>
-        </Link>
-        <button className={styles.save} onClick={saveTrackerHandler}>
-          Save Tracker
-        </button>
-      </div>
-    </div>
-    <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
-      <div className="dummyDiv" style={{ height: pathName[pathName.length - 1] === "create" ? "120px" : "250px" }}></div>
-      <div
-        className={styles.searchContainer}
-        style={{
-          border:
-            isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
-        }}
-      >
-        <input
-          className={styles.textArea}
-          type="text"
-          placeholder="Enter Tracker Name"
-          value={trackerName}
-          onChange={(event) => setTrackerName(event.target.value)}
-        />
-      </div>
-      {type==="T_PRODUCT_KEYWORDS" &&
-      <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
-        <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}</div>
-        <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+      <div>{isLoading ? <Loading /> :
+        <>
+          <div
+            className={`fixedNav ${styles.topContainer}`}
+            style={{ top: pathName[pathName.length - 1] === "create" ? "auto" : "" }}
+          >
+            <div className={styles.topInnerContainerLeft}>
               <div>
-                <div className={styles.manualHeading}>Add data manually
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+                <Image src={userOne} alt="userOne" />
               </div>
               <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={true}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
+                <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
+                <div className={styles.createContent}>
+                  Select from the available data filters to create a tracker
+                </div>
               </div>
             </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  <div className={styles.badgeSuccess}>Coming Soon</div>
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
 
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
+            <div className={styles.topInnerContainerRight}>
+              <Link
+                href={
+                  last === "create"
+                    ? "/internal/trackers"
+                    : `/internal/trackers/${pathName[pathName.length - 2]
+                    }/trackedConfiguration?type=${type}`
+                }
+                style={{ display: "flex" }}
+              >
+                <button className={styles.cancel}>Cancel</button>
+              </Link>
+              <button className={styles.save} onClick={saveTrackerHandler}>
+                Save Tracker
+              </button>
             </div>
           </div>
-        </div>
-      <div style={{width:"calc(50% - 5px)"}}>
-      <EventKeyword state={selectedEventKeywords}
-      setState={setSelectedEventKeywords}
-      onClose={close} type={isDiv}
-      isMandatory={isMandatory}
-      setIsMandatory={setIsMandatory}
-      />
-      </div>
-      </div>
-      }
-      
-      {template && template.inputAreas &&
-        <div className={`card ${styles.competitor}`}>
-          {/* <div className={styles.competitorHead}>
+          <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
+            <div className="dummyDiv" style={{ height: pathName[pathName.length - 1] === "create" ? "120px" : "250px" }}></div>
+            <div
+              className={styles.searchContainer}
+              style={{
+                border:
+                  isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
+              }}
+            >
+              <input
+                className={styles.textArea}
+                type="text"
+                placeholder="Enter Tracker Name"
+                value={trackerName}
+                onChange={(event) => setTrackerName(event.target.value)}
+              />
+            </div>
+            {type === "T_PRODUCT_KEYWORDS" &&
+              <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{ gap: "var(--spacing-lg)" }}>
+                <div className={styles.hiddenFilterHeading}>
+                  <div className={styles.subHeading} style={{ color: "var(--primary-text-color)", marginBottom: "16px" }}>{template?.description}</div>
+                  <div className={`${styles.toggleDiv}`}>
+                    <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                      <div>
+                        <div className={styles.manualHeading}>Add data manually
+                        </div>
+                        <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+                      </div>
+                      <div>
+
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              checked={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+
+                      </div>
+                    </div>
+                    <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                      <div>
+                        <div className={styles.manualHeading}>Import CSV Data
+                          <div className={styles.badgeSuccess}>Coming Soon</div>
+                        </div>
+                        <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+                      </div>
+                      <div>
+
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              checked={selectedExhibitScore.length !== 0}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ width: "calc(50% - 5px)" }}>
+                  <EventKeyword state={selectedEventKeywords}
+                    setState={setSelectedEventKeywords}
+                    onClose={close} type={isDiv}
+                    isMandatory={isMandatory}
+                    setIsMandatory={setIsMandatory}
+                  />
+                </div>
+              </div>
+            }
+
+            {template && template.inputAreas &&
+              <div className={`card ${styles.competitor}`}>
+                {/* <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
             {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div> */}
-          <div className={styles.bar}></div>
-          <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template.description}</div>
-          <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                  {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={template.type === "enabled"}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-          </div>
-          </div>
-          {template?.inputAreas &&
-            <div className={`${styles.competitor}`}>
-              <div className={styles.allInputArea}>
-                {template?.inputAreas?.map((inputArea: any, index: number) => (
-                  <>
-                  <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
-                    {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
-                    <input
-                      className={styles.textArea}
-                      type="text"
-                      placeholder={inputArea.placeholder}
-                      value={inputValues[index] || ''}
-                      onChange={(e) => handleInput(index, e.target.value)}
-                      onKeyPress={handleKeyDown}
-                    />
-                    {type==="T_COMPETITOR" && inputValues[0]?.length > 0  && websiteSuggestion &&
-                    <div className={styles.suggestionBox}>
-                      <Suggestion 
-                      websiteData={websiteSuggestion}
-                      addCompany={addCompany}
-                      />
+                <div className={styles.bar}></div>
+                <div>
+                  <div className={styles.subHeading} style={{ color: "var(--primary-text-color)", marginBottom: "16px" }}>{template.description}</div>
+                  <div className={`${styles.toggleDiv}`}>
+                    <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                      <div>
+                        <div className={styles.manualHeading}>Add data manually
+                          {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+                        </div>
+                        <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
                       </div>
-                  } 
+                      <div>
+
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              checked={template.type === "enabled"}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+
+                      </div>
+                    </div>
+                    <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+                      <div>
+                        <div className={styles.manualHeading}>Import CSV Data
+                          {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
+                        </div>
+                        <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+                      </div>
+                      <div>
+
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              checked={selectedExhibitScore.length !== 0}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+
+                      </div>
+                    </div>
                   </div>
-                  
-                  </>
-                ))}
-                <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
-                  style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                >
-                  <Image src={Add} alt="add_Icon" />
                 </div>
-                
-              </div>
-              {/* {customData.map((item:any, index:number) => (
+                {template?.inputAreas &&
+                  <div className={`${styles.competitor}`}>
+                    <div className={styles.allInputArea}>
+                      {template?.inputAreas?.map((inputArea: any, index: number) => (
+                        <>
+                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                            {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                            <input
+                              className={styles.textArea}
+                              type="text"
+                              placeholder={inputArea.placeholder}
+                              value={inputValues[index] || ''}
+                              onChange={(e) => handleInput(index, e.target.value)}
+                              onKeyPress={handleKeyDown}
+                            />
+                            {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                              <div className={styles.suggestionBox}>
+                                <Suggestion
+                                  websiteData={websiteSuggestion}
+                                  addCompany={addCompany}
+                                />
+                              </div>
+                            }
+                          </div>
+
+                        </>
+                      ))}
+                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                        style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                      >
+                        <Image src={Add} alt="add_Icon" />
+                      </div>
+
+                    </div>
+                    {/* {customData.map((item:any, index:number) => (
       // <div key={index} className={styles.customDataOuterDiv}>
       // <div className={styles.singleInputBox}>{item.name}</div>
       // <div className={styles.singleInputBox}>{item.companyName}</div>
@@ -1580,247 +1581,247 @@ useEffect(()=>{
         </div>
       ))}
     ))} */}
-    {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
-              )}
-              <div className={styles.allCompetitors}>
-              {customData.map((item: any, index: number) => (
-                
-                <div key={index} className={styles.customDataOuterDiv}>
-                  <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                  <div className={styles.allCustomData}>
-                    {Object.entries(item)
-                      .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                      .join(' - ')}
-                  </div>
-                </div>
-               
-              ))}
-               </div>
-            </div>
-          }
-        </div>
-      }
-     {
-     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
-      {type !== "CUSTOM" &&
-      <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
-      <div className={styles.hiddenFiltersInnerDiv}>
-      <Plus style={{width:"16px", height:"16px"}} className="icons"/>
-      <div className={styles.hiddenFilterHeading}>Additional filters</div>
-      </div>
-      <div><ChevronDown className="icons"/></div>
-      </div>
-      }
-      {(type==="CUSTOM" || opend )&&
-      <Suspense fallback={<Loading />}>
-      <div className={styles.container}>
-        <div className={styles.sub_container}>
-          <div className={styles.inputdropdowns_container}>
+                    {!valid && (
+                      <div style={{ color: "#f15050", fontSize: "12px", marginTop: "-8px" }}>Enter valid input</div>
+                    )}
+                    <div className={styles.allCompetitors}>
+                      {customData.map((item: any, index: number) => (
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Event Type
-                      {
-                        selectedEventType?.length == 1 ? (
-                          <span className={styles.input_selected_title}>
-                            {selectedEventType[0]}
-                          </span>
-                        ) : (
-                          selectedEventType?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventType.length}
-                            </span>
-                          ) : <></>
-                        )
-                      }
+                        <div key={index} className={styles.customDataOuterDiv}>
+                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                          <div className={styles.allCustomData}>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
+                              .join(' - ')}
+                          </div>
+                        </div>
+
+                      ))}
                     </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
                   </div>
-                </div>
-              </Button>
-              <Popover className={styles.filterPopover}>
-                <EventType
-                  state={selectedEventType}
-                  setState={setSelectedEventType}
-                  selectedEventTypeName={selectedEventTypeName}
-                  setSelectedEventTypeName={setSelectedEventTypeName}
-                />
-              </Popover>
-            </MenuTrigger>
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Category
-                      {categorySlug?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {categorySlug.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {categorySlug[0]}
-                        </span>
-                      )}
+                }
+              </div>
+            }
+            {
+              <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
+                {type !== "CUSTOM" &&
+                  <div className={`${styles.hiddenFilters}`} onClick={() => setOpend(!opend)} style={{ cursor: "pointer" }}>
+                    <div className={styles.hiddenFiltersInnerDiv}>
+                      <Plus style={{ width: "16px", height: "16px" }} className="icons" />
+                      <div className={styles.hiddenFilterHeading}>Additional filters</div>
                     </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
+                    <div><ChevronDown className="icons" /></div>
                   </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  <CategoryDropdown
-                    state={selectedCategories}
-                    categoryData={categoryData}
-                    setState={setSelectedCategories}
-                    categorySlug={categorySlug}
-                    setCategorySlug={setCategorySlug}
-                  />
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                }
+                {(type === "CUSTOM" || opend) &&
+                  <Suspense fallback={<Loading />}>
+                    <div className={styles.container}>
+                      <div className={styles.sub_container}>
+                        <div className={styles.inputdropdowns_container}>
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Event Format
-                      {selectedEventFormat?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedEventFormat.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedEventFormat && selectedEventFormat[0]}
-                        </span>
-                      )}
-                    </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  <EventAdvFilter
-                    state={selectedEventFormat}
-                    setState={setSelectedEventFormat}
-                    data={eventFormatData}
-                  />
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button className={styles.dropdown_button}>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Event Type
+                                    {
+                                      selectedEventType?.length == 1 ? (
+                                        <span className={styles.input_selected_title}>
+                                          {selectedEventType[0]}
+                                        </span>
+                                      ) : (
+                                        selectedEventType?.length > 1 ? (
+                                          <span className={styles.input_selected_no}>
+                                            {selectedEventType.length}
+                                          </span>
+                                        ) : <></>
+                                      )
+                                    }
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover className={styles.filterPopover}>
+                              <EventType
+                                state={selectedEventType}
+                                setState={setSelectedEventType}
+                                selectedEventTypeName={selectedEventTypeName}
+                                setSelectedEventTypeName={setSelectedEventTypeName}
+                              />
+                            </Popover>
+                          </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}
-                  style={{
-                    border:
-                      isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid var(--danger-text-color)" : "",
-                  }}
-                >
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Location
-                      {selectedLocations?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedLocations.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedLocations[0]}
-                        </span>
-                      )}
-                    </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover className={styles.filterPopover}>
-                <Dialog className={styles.noBorder}>
-                  {({ close }) => (
-                    <LocationDropdown
-                      state={selectedLocations}
-                      setState={setSelectedLocations}
-                      onClose={close}
-                      selectedCity={selectedCity}
-                      setSelectedCity={setSelectedCity}
-                      selectedCountry={selectedCountry}
-                      setSelectedCountry={setSelectedCountry}
-                      selectedZone={selectedZone}
-                      setSelectedZone={setSelectedZone}
-                    />
-                  )}
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Category
+                                    {categorySlug?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {categorySlug.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {categorySlug[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover>
+                              <Dialog className={styles.noBorder}>
+                                <CategoryDropdown
+                                  state={selectedCategories}
+                                  categoryData={categoryData}
+                                  setState={setSelectedCategories}
+                                  categorySlug={categorySlug}
+                                  setCategorySlug={setCategorySlug}
+                                />
+                              </Dialog>
+                            </Popover>
+                          </MenuTrigger>
+
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Event Format
+                                    {selectedEventFormat?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {selectedEventFormat.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {selectedEventFormat && selectedEventFormat[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover>
+                              <Dialog className={styles.noBorder}>
+                                <EventAdvFilter
+                                  state={selectedEventFormat}
+                                  setState={setSelectedEventFormat}
+                                  data={eventFormatData}
+                                />
+                              </Dialog>
+                            </Popover>
+                          </MenuTrigger>
+
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button className={styles.dropdown_button}>
+                              <div className={styles.input_container}
+                                style={{
+                                  border:
+                                    isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid var(--danger-text-color)" : "",
+                                }}
+                              >
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Location
+                                    {selectedLocations?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {selectedLocations.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {selectedLocations[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover className={styles.filterPopover}>
+                              <Dialog className={styles.noBorder}>
+                                {({ close }) => (
+                                  <LocationDropdown
+                                    state={selectedLocations}
+                                    setState={setSelectedLocations}
+                                    onClose={close}
+                                    selectedCity={selectedCity}
+                                    setSelectedCity={setSelectedCity}
+                                    selectedCountry={selectedCountry}
+                                    setSelectedCountry={setSelectedCountry}
+                                    selectedZone={selectedZone}
+                                    setSelectedZone={setSelectedZone}
+                                  />
+                                )}
+                              </Dialog>
+                            </Popover>
+                          </MenuTrigger>
 
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Dates
-                      {selectedDateRange.length > 0 &&
-                        selectedDateRange[0] !== null ? (
-                        <span className={styles.input_selected_title}>
-                          {dateShowFormatter(selectedDateRange)}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover className={styles.filterPopover}>
-                {/* <Dialog> */}
-                <DateRange
-                  state={selectedDateRange}
-                  setState={setSelectedDateRange}
-                />
-                {/* </Dialog> */}
-              </Popover>
-            </MenuTrigger>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button className={styles.dropdown_button}>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Dates
+                                    {selectedDateRange.length > 0 &&
+                                      selectedDateRange[0] !== null ? (
+                                      <span className={styles.input_selected_title}>
+                                        {dateShowFormatter(selectedDateRange)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover className={styles.filterPopover}>
+                              {/* <Dialog> */}
+                              <DateRange
+                                state={selectedDateRange}
+                                setState={setSelectedDateRange}
+                              />
+                              {/* </Dialog> */}
+                            </Popover>
+                          </MenuTrigger>
 
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                          {/* <MenuTrigger onOpenChange={setMenuOpen}>
             <Button>
               <div className={styles.input_container}>
                 <div className={styles.input}>
@@ -1854,7 +1855,7 @@ useEffect(()=>{
               </Dialog>
             </Popover>
           </MenuTrigger> */}
-            {/* <MenuTrigger>
+                          {/* <MenuTrigger>
           <Button>
             <div className={styles.input_container}>
               <div className={styles.input}>
@@ -1890,79 +1891,79 @@ useEffect(()=>{
         </MenuTrigger> */}
 
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Event Status
-                      {selectedEventStatus?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedEventStatus.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedEventStatus[0]}
-                        </span>
-                      )}
-                    </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  <EventStatus
-                    state={selectedEventStatus}
-                    setState={setSelectedEventStatus}
-                  />
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Event Status
+                                    {selectedEventStatus?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {selectedEventStatus.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {selectedEventStatus[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover>
+                              <Dialog className={styles.noBorder}>
+                                <EventStatus
+                                  state={selectedEventStatus}
+                                  setState={setSelectedEventStatus}
+                                />
+                              </Dialog>
+                            </Popover>
+                          </MenuTrigger>
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Entry
-                          {selectedEntry?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEntry.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEntry[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={12}
-                          height={12}
-                          className={iconClass}
-                        />
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover} >
-                    <EventAdvFilter
-                      state={selectedEntry}
-                      setState={setSelectedEntry}
-                      data={eventEntryData}
-                    />
-                  </Popover>
-                </MenuTrigger>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button className={`${styles.dropdown_button}`}>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Event Entry
+                                    {selectedEntry?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {selectedEntry.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {selectedEntry[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Image
+                                    src={DropIcon}
+                                    alt="dropicon"
+                                    width={12}
+                                    height={12}
+                                    className={iconClass}
+                                  />
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover className={styles.filterPopover} >
+                              <EventAdvFilter
+                                state={selectedEntry}
+                                setState={setSelectedEntry}
+                                data={eventEntryData}
+                              />
+                            </Popover>
+                          </MenuTrigger>
 
-            {/* Disabled */}
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                          {/* Disabled */}
+                          {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -1999,52 +2000,52 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger> */}
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      User Ratings
-                      {selectedUserRatings?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedUserRatings.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedUserRatings[0]}
-                        </span>
-                      )}
-                    </div>
+                          <MenuTrigger onOpenChange={setMenuOpen}>
+                            <Button>
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    User Ratings
+                                    {selectedUserRatings?.length > 1 ? (
+                                      <span className={styles.input_selected_no}>
+                                        {selectedUserRatings.length}
+                                      </span>
+                                    ) : (
+                                      <span className={styles.input_selected_title}>
+                                        {selectedUserRatings[0]}
+                                      </span>
+                                    )}
+                                  </div>
 
-                    <div className={styles.toggle_container}>
-                      <span>
-                        <label className={styles.switch}>
-                          <input
-                            type="checkbox"
-                            onChange={() => { }}
-                            checked={selectedUserRatings.length !== 0}
-                          />
-                          <span className={styles.slider}></span>
-                        </label>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  {({ close }) => (
-                    <UserRatings
-                      state={selectedUserRatings}
-                      setState={setSelectedUserRatings}
-                    />
-                  )}
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
-          </div>
+                                  <div className={styles.toggle_container}>
+                                    <span>
+                                      <label className={styles.switch}>
+                                        <input
+                                          type="checkbox"
+                                          onChange={() => { }}
+                                          checked={selectedUserRatings.length !== 0}
+                                        />
+                                        <span className={styles.slider}></span>
+                                      </label>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </Button>
+                            <Popover>
+                              <Dialog className={styles.noBorder}>
+                                {({ close }) => (
+                                  <UserRatings
+                                    state={selectedUserRatings}
+                                    setState={setSelectedUserRatings}
+                                  />
+                                )}
+                              </Dialog>
+                            </Popover>
+                          </MenuTrigger>
+                        </div>
 
-          {/* <div className={styles.buttons_container}>
+                        {/* <div className={styles.buttons_container}>
       <button
         className={styles.createtracker_button}
         onClick={createTrackerHandler}
@@ -2060,120 +2061,120 @@ useEffect(()=>{
         Advance Filters
       </button>
     </div> */}
-        </div>
-        {showRecentSearches && (
-          <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-        )}
-
-        {/*   ADVANCE FILTER SECTION */}
-
-        <div>
-          <div
-            className={`${styles.viewContainer}`}
-          >
-            <div className={styles.viewTypeButtons_container}>
-              <div className={styles.advanceFilterBtns}>
-                <button
-                  onClick={() => setSelectedAdvFilter("AP")}
-                  className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                    }`}
-                >
-                  Advance Intel
-                </button>
-                <button
-                  onClick={() => setSelectedAdvFilter("IS")}
-                  className={`${styles.listBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                    }`}
-                >
-                  Insights &#x26; Score
-                </button>
-                <button
-                  onClick={() => setSelectedAdvFilter("AI")}
-                  className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                    }`}
-                >
-                  Audience Intel
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* ADVANCE DETAILS SECTION */}
-          {showAdvanceFilter && selectedAdvFilter === "AP" && (
-            <div className={styles.inputdropdowns_container}>
-
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Regularity & Edition
-                          {selectedRegularity[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedRegularity[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={12}
-                          height={12}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        />
                       </div>
-                    </div>
-                  </Button>
-                  {/* <Popover className={styles.filterPopover}>
+                      {showRecentSearches && (
+                        <RecentSearches setShowRecentSearches={setShowRecentSearches} />
+                      )}
+
+                      {/*   ADVANCE FILTER SECTION */}
+
+                      <div>
+                        <div
+                          className={`${styles.viewContainer}`}
+                        >
+                          <div className={styles.viewTypeButtons_container}>
+                            <div className={styles.advanceFilterBtns}>
+                              <button
+                                onClick={() => setSelectedAdvFilter("AP")}
+                                className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
+                                  }`}
+                              >
+                                Advance Intel
+                              </button>
+                              <button
+                                onClick={() => setSelectedAdvFilter("IS")}
+                                className={`${styles.listBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
+                                  }`}
+                              >
+                                Insights &#x26; Score
+                              </button>
+                              <button
+                                onClick={() => setSelectedAdvFilter("AI")}
+                                className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
+                                  }`}
+                              >
+                                Audience Intel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* ADVANCE DETAILS SECTION */}
+                        {showAdvanceFilter && selectedAdvFilter === "AP" && (
+                          <div className={styles.inputdropdowns_container}>
+
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={styles.dropdown_button}>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Regularity & Edition
+                                      {selectedRegularity[0] !== 0 && (
+                                        <span className={styles.input_selected_title}>
+                                          &gt;{'='} {selectedRegularity[0]}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <Image
+                                      src={DropIcon}
+                                      alt="dropicon"
+                                      width={12}
+                                      height={12}
+                                      className={`${iconClass} ${styles.dropIcon}`}
+                                    />
+                                  </div>
+                                </div>
+                              </Button>
+                              {/* <Popover className={styles.filterPopover}>
                     <RangeSlider
                       state={selectedEventEdition}
                       setState={setSelectedEventEdition}
                       sliderType="reverse"
                     />
                   </Popover> */}
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <RegularityEdition
-                          selectedRegularity={selectedRegularity}
-                          setSelectedRegularity={setSelectedRegularity}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                              <Popover className={styles.filterPopover}>
+                                <Dialog className={styles.dialogBorder}>
+                                  {({ close }) => (
+                                    <RegularityEdition
+                                      selectedRegularity={selectedRegularity}
+                                      setSelectedRegularity={setSelectedRegularity}
+                                      onClose={close}
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Global & Touring
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={`${styles.dropdown_button}`}>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Global & Touring
+                                    </div>
+                                    <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                    {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover} >
-                    <GlobalTouring
-                      state={selectedEntry}
-                      setState={setSelectedEntry}
-                      data={eventEntryData}
-                      selectedBrandedEvent={selectedBrandedEvent}
-                      setSelectedBrandedEvent={setSelectedBrandedEvent}
-                    />
-                  </Popover>
-                </MenuTrigger>
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover} >
+                                <GlobalTouring
+                                  state={selectedEntry}
+                                  setState={setSelectedEntry}
+                                  data={eventEntryData}
+                                  selectedBrandedEvent={selectedBrandedEvent}
+                                  setSelectedBrandedEvent={setSelectedBrandedEvent}
+                                />
+                              </Popover>
+                            </MenuTrigger>
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <div className={styles.disabledBtn}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -2199,17 +2200,17 @@ useEffect(()=>{
               </div>
             </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <div>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Forecasted Status
-                        </div>
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <div>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Forecasted Status
+                                    </div>
 
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                    <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
 
-                        {/* <div className={styles.toggle_container}>
+                                    {/* <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
@@ -2224,92 +2225,92 @@ useEffect(()=>{
                             </label>
                           </span>
                         </div> */}
-                      </div>
-                    </div>
-                  </div>
-                </MenuTrigger>
+                                  </div>
+                                </div>
+                              </div>
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Frequency
-                          {selectedEventFrequency?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedEventFrequency.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedEventFrequency[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={12}
-                          height={12}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        />
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
-                    <EventAdvFilter
-                      state={selectedEventFrequency}
-                      setState={setSelectedEventFrequency}
-                      data={eventFrequencyData}
-                    />
-                    {/* </Dialog> */}
-                  </Popover>
-                </MenuTrigger>
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={styles.dropdown_button}>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Event Frequency
+                                      {selectedEventFrequency?.length > 1 ? (
+                                        <span className={styles.input_selected_no}>
+                                          {selectedEventFrequency.length}
+                                        </span>
+                                      ) : (
+                                        <span className={styles.input_selected_title}>
+                                          {selectedEventFrequency[0]}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <Image
+                                      src={DropIcon}
+                                      alt="dropicon"
+                                      width={12}
+                                      height={12}
+                                      className={`${iconClass} ${styles.dropIcon}`}
+                                    />
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover}>
+                                {/* <Dialog> */}
+                                <EventAdvFilter
+                                  state={selectedEventFrequency}
+                                  setState={setSelectedEventFrequency}
+                                  data={eventFrequencyData}
+                                />
+                                {/* </Dialog> */}
+                              </Popover>
+                            </MenuTrigger>
 
-              {type!=="T_PRODUCT_KEYWORDS" &&
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Product / Topics
-                        {selectedEventKeywords?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedEventKeywords.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedEventKeywords[0]?.charAt(0)==="-"?selectedEventKeywords[0]?.replaceAll("_", " ").substring(1):selectedEventKeywords[0]?.replaceAll("_", " ")}
-                          </span>
-                        )}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={12}
-                        height={12}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  <Dialog className={`${styles.dialogBorder} ${styles.noBorder}`}>
-                    {({ close }) => (
-                      <EventKeyword
-                        state={selectedEventKeywords}
-                        setState={setSelectedEventKeywords}
-                        onClose={close}
-                      />
-                    )}
-                  </Dialog>
-                </Popover>
-              </MenuTrigger>
-                }
+                            {type !== "T_PRODUCT_KEYWORDS" &&
+                              <MenuTrigger onOpenChange={setMenuOpen}>
+                                <Button>
+                                  <div className={styles.input_container}>
+                                    <div className={styles.input}>
+                                      <div className={styles.input_title}>
+                                        Product / Topics
+                                        {selectedEventKeywords?.length > 1 ? (
+                                          <span className={styles.input_selected_no}>
+                                            {selectedEventKeywords.length}
+                                          </span>
+                                        ) : (
+                                          <span className={styles.input_selected_title}>
+                                            {selectedEventKeywords[0]?.charAt(0) === "-" ? selectedEventKeywords[0]?.replaceAll("_", " ").substring(1) : selectedEventKeywords[0]?.replaceAll("_", " ")}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <Image
+                                        src={DropIcon}
+                                        alt="dropicon"
+                                        width={12}
+                                        height={12}
+                                        className={iconClass}
+                                      />
+                                    </div>
+                                  </div>
+                                </Button>
+                                <Popover className={styles.filterPopover}>
+                                  <Dialog className={`${styles.dialogBorder} ${styles.noBorder}`}>
+                                    {({ close }) => (
+                                      <EventKeyword
+                                        state={selectedEventKeywords}
+                                        setState={setSelectedEventKeywords}
+                                        onClose={close}
+                                      />
+                                    )}
+                                  </Dialog>
+                                </Popover>
+                              </MenuTrigger>
+                            }
 
 
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -2344,7 +2345,7 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger> */}
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -2379,13 +2380,13 @@ useEffect(()=>{
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-            </div>
-          )}
+                          </div>
+                        )}
 
-          {/* INSIGHTS AND SCORES */}
-          {showAdvanceFilter && selectedAdvFilter === "IS" && (
-            <div className={styles.inputdropdowns_container}>
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                        {/* INSIGHTS AND SCORES */}
+                        {showAdvanceFilter && selectedAdvFilter === "IS" && (
+                          <div className={styles.inputdropdowns_container}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -2423,88 +2424,88 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={styles.dropdown_button}>
-                      <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Visitors
-                          {selectedVisitors?.length > 1 ? (
-                            <span className={styles.input_selected_no}>
-                              {selectedVisitors.length}
-                            </span>
-                          ) : (
-                            <span className={styles.input_selected_title}>
-                              {selectedVisitors[0]}
-                            </span>
-                          )}
-                        </div>
-                        <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={12}
-                          height={12}
-                          className={iconClass}
-                        />
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      <EventAdvFilter
-                        state={selectedVisitors}
-                        setState={setSelectedVisitors}
-                        data={eventVisitorsData}
-                      />
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={styles.dropdown_button}>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Event Visitors
+                                      {selectedVisitors?.length > 1 ? (
+                                        <span className={styles.input_selected_no}>
+                                          {selectedVisitors.length}
+                                        </span>
+                                      ) : (
+                                        <span className={styles.input_selected_title}>
+                                          {selectedVisitors[0]}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <Image
+                                      src={DropIcon}
+                                      alt="dropicon"
+                                      width={12}
+                                      height={12}
+                                      className={iconClass}
+                                    />
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover}>
+                                <Dialog className={styles.dialogBorder}>
+                                  <EventAdvFilter
+                                    state={selectedVisitors}
+                                    setState={setSelectedVisitors}
+                                    data={eventVisitorsData}
+                                  />
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                      Estimated Exhibitor
-                        {selectedExhibitScore?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedExhibitScore.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedExhibitScore[0]}
-                          </span>
-                        )}
-                      </div>
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button>
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Estimated Exhibitor
+                                      {selectedExhibitScore?.length > 1 ? (
+                                        <span className={styles.input_selected_no}>
+                                          {selectedExhibitScore.length}
+                                        </span>
+                                      ) : (
+                                        <span className={styles.input_selected_title}>
+                                          {selectedExhibitScore[0]}
+                                        </span>
+                                      )}
+                                    </div>
 
-                      <div className={styles.toggle_container}>
-                        <span>
-                          <label className={styles.switch}>
-                            <input
-                              type="checkbox"
-                              checked={selectedExhibitScore?.length !== 0}
-                            />
-                            <span className={styles.slider}></span>
-                          </label>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-                <Popover>
-                  <Dialog className={styles.noBorder}>
-                    {({ close }) => (
-                      <EventAdvFilter
-                        state={selectedExhibitScore}
-                        setState={setSelectedExhibitScore}
-                        data={eventExhibitScoreData}
-                      />
-                    )}
-                  </Dialog>
-                </Popover>
-              </MenuTrigger>
+                                    <div className={styles.toggle_container}>
+                                      <span>
+                                        <label className={styles.switch}>
+                                          <input
+                                            type="checkbox"
+                                            checked={selectedExhibitScore?.length !== 0}
+                                          />
+                                          <span className={styles.slider}></span>
+                                        </label>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover>
+                                <Dialog className={styles.noBorder}>
+                                  {({ close }) => (
+                                    <EventAdvFilter
+                                      state={selectedExhibitScore}
+                                      setState={setSelectedExhibitScore}
+                                      data={eventExhibitScoreData}
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
@@ -2544,7 +2545,7 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger> */}
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -2579,13 +2580,13 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Analytics
-                          {/* {rankToggles.isEventRank && (
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={`${styles.dropdown_button}`} >
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Event Analytics
+                                      {/* {rankToggles.isEventRank && (
                             <span className={styles.input_selected_title}>
                               [{selectedEventRank[0]} , {selectedEventRank[1]}]
                             </span>
@@ -2600,102 +2601,102 @@ useEffect(()=>{
                               [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
                             </span>
                           )} */}
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                                    </div>
+                                    <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                    {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <AnalyticsDropdown
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover}>
+                                <Dialog className={styles.dialogBorder}>
+                                  {({ close }) => (
+                                    <AnalyticsDropdown
+                                      selectedEventRank={selectedEventRank}
+                                      setSelectedEventRank={setSelectedEventRank}
+                                      selectedLocalRank={selectedLocalRank}
+                                      setSelectedLocalRank={setSelectedLocalRank}
+                                      selectedAviationRank={selectedAviationRank}
+                                      setSelectedAviationRank={setSelectedAviationRank}
+                                      rankToggles={rankToggles}
+                                      setRankToggles={setRankToggles}
+                                      onClose={close}
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Economic Impact
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              {/* <Button className={`${styles.dropdown_button}`} > */}
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Economic Impact
+                                  </div>
+                                  <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                  {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                      </div>
-                    </div>
-                  {/* </Button> */}
-                </MenuTrigger>
+                                </div>
+                              </div>
+                              {/* </Button> */}
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Event Ranking
-                          {selectedTrustScore[0] > 0 &&
-                            <span className={styles.selected_no_filters}>1</span>
-                          }
-                        </div>
-                        {/* <Image
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={`${styles.dropdown_button}`} >
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Event Ranking
+                                      {selectedTrustScore[0] > 0 &&
+                                        <span className={styles.selected_no_filters}>1</span>
+                                      }
+                                    </div>
+                                    {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover} placement="top" shouldFlip={false}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <RankInput
-                          selectedReputationScore={selectedReputationScore}
-                          setSelectedReputationScore={setSelectedReputationScore}
-                          selectedTrustScore={selectedTrustScore}
-                          setSelectedTrustScore={setSelectedTrustScore}
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                                    {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover} placement="top" shouldFlip={false}>
+                                <Dialog className={styles.dialogBorder}>
+                                  {({ close }) => (
+                                    <RankInput
+                                      selectedReputationScore={selectedReputationScore}
+                                      setSelectedReputationScore={setSelectedReputationScore}
+                                      selectedTrustScore={selectedTrustScore}
+                                      setSelectedTrustScore={setSelectedTrustScore}
+                                      selectedEventRank={selectedEventRank}
+                                      setSelectedEventRank={setSelectedEventRank}
+                                      selectedLocalRank={selectedLocalRank}
+                                      setSelectedLocalRank={setSelectedLocalRank}
+                                      selectedAviationRank={selectedAviationRank}
+                                      setSelectedAviationRank={setSelectedAviationRank}
+                                      rankToggles={rankToggles}
+                                      setRankToggles={setRankToggles}
+                                      onClose={close}
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -2732,7 +2733,7 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger> */}
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={`${styles.dropdown_button}`}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -2770,20 +2771,20 @@ useEffect(()=>{
               </MenuTrigger> */}
 
 
-            </div>
-          )}
+                          </div>
+                        )}
 
-          {/* AUDIENCE INTEL */}
-          {showAdvanceFilter && selectedAdvFilter === "AI" && (
-            <div className={styles.inputdropdowns_container_AI}>
+                        {/* AUDIENCE INTEL */}
+                        {showAdvanceFilter && selectedAdvFilter === "AI" && (
+                          <div className={styles.inputdropdowns_container_AI}>
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                        Audience Quality Score
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={`${styles.dropdown_button}`} >
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Audience Quality Score
+                                      {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
@@ -2791,85 +2792,85 @@ useEffect(()=>{
                           ) : (
                             ""
                           )} */}
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                                    </div>
+                                    <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                    {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={12}
                           height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <AudienceQuality
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          onClose={close}
-                          type="Audience"
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover}>
+                                <Dialog className={styles.dialogBorder}>
+                                  {({ close }) => (
+                                    <AudienceQuality
+                                      selectedEventRank={selectedEventRank}
+                                      setSelectedEventRank={setSelectedEventRank}
+                                      onClose={close}
+                                      type="Audience"
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Exhibitor Quality Score
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              <Button className={`${styles.dropdown_button}`} >
+                                <div className={styles.input_container}>
+                                  <div className={styles.input}>
+                                    <div className={styles.input_title}>
+                                      Exhibitor Quality Score
+                                    </div>
+                                    <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                    {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <AudienceQuality
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          onClose={close}
-                          type="Exhibitor"
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+                                  </div>
+                                </div>
+                              </Button>
+                              <Popover className={styles.filterPopover}>
+                                <Dialog className={styles.dialogBorder}>
+                                  {({ close }) => (
+                                    <AudienceQuality
+                                      selectedEventRank={selectedEventRank}
+                                      setSelectedEventRank={setSelectedEventRank}
+                                      onClose={close}
+                                      type="Exhibitor"
+                                    />
+                                  )}
+                                </Dialog>
+                              </Popover>
+                            </MenuTrigger>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                          Audience Des &amp; Dept
-                        </div>
-                        {/* <Image
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              {/* <Button className={`${styles.dropdown_button}`} > */}
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Audience Des &amp; Dept
+                                  </div>
+                                  {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                      </div>
-                    </div>
-                  {/* </Button> */}
-                </MenuTrigger>
+                                  <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                </div>
+                              </div>
+                              {/* </Button> */}
+                            </MenuTrigger>
 
-              {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.disabledBtn}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -2907,13 +2908,13 @@ useEffect(()=>{
               </Popover>
               </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
-                        Audience Spread
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
+                            <MenuTrigger onOpenChange={setMenuOpen}>
+                              {/* <Button className={`${styles.dropdown_button}`} > */}
+                              <div className={styles.input_container}>
+                                <div className={styles.input}>
+                                  <div className={styles.input_title}>
+                                    Audience Spread
+                                    {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
                                 }`}
@@ -2921,19 +2922,19 @@ useEffect(()=>{
                           ) : (
                             ""
                           )} */}
-                        </div>
-                        {/* <Image
+                                  </div>
+                                  {/* <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                      </div>
-                    </div>
-                  {/* </Button> */}
-                  {/* <Popover>
+                                  <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                                </div>
+                              </div>
+                              {/* </Button> */}
+                              {/* <Popover>
                     <Dialog className={styles.noBorder}>
                       {({ close }) => (
                         <EventAttendance
@@ -2944,21 +2945,21 @@ useEffect(()=>{
                       )}
                     </Dialog>
                   </Popover> */}
-                </MenuTrigger>
-           
-            </div>
-          )}
-        </div>
-      </div>
-    </Suspense>
-      }
-     
-    </div>
-      }
-    </div>
-    </>
-    }</div>
-    
+                            </MenuTrigger>
+
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Suspense>
+                }
+
+              </div>
+            }
+          </div>
+        </>
+      }</div>
+
     </>
   );
 };

@@ -79,6 +79,27 @@
     align-items: center;
     padding:  0px 12px;
 }
+.filters{
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(5, minmax(0px, 18vw));
+    grid-gap: 15px 15px;
+    gap: 15px 15px;
+}
+.input_container{
+        width: 100%;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius-sm);
+    white-space: nowrap;
+    padding: 8px 16px;
+    color: inherit;
+    background-color: inherit;
+}
+.input{
+        display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 @media screen and (max-width:1200px) {
     .container{
         padding-left: 60px;
