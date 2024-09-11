@@ -251,7 +251,7 @@
   /* justify-content: space-evenly; */
 }
 .followerProfilePhoto {
-  border-radius: 12px;
+  border-radius: 50%;
 }
 .followerName {
 }
