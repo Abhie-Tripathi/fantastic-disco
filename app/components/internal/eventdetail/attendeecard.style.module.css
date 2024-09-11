@@ -22,7 +22,7 @@
 }
 
 .selected_users {
-    color: #B8B7EA;
+    color: var(--tertiary-text-color);
     font-weight: 300;
 }
 
@@ -93,5 +93,5 @@
 .designationText {
     font-size: 12px;
     font-weight: 500;
-    color: #D9D9D9;
+    color: var(--tertiary-text-color);
 }

@@ -150,7 +150,7 @@
     font-weight: var(--font-weight-semibold);
 }
 .cardImg {
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-sm);
 }
 
 .circles {

@@ -18,6 +18,11 @@
   /* padding: 10px; */
 }
 
+.cardImg {
+  /* width: 40%; */
+  border-radius: var(--border-radius-lg);
+}
+
 .cardDetails {
   width: 100%;
   display: flex;
