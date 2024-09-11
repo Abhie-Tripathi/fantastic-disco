@@ -19,6 +19,8 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { transcode } from "buffer";
 import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
+import { Trash } from "geist-icons";
+import UserProfile from "../userProfile/UserProfile";
 
 interface UserDetail {
   firstname: string;
@@ -85,6 +87,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   const [height, setHeight] = useState<number | null>(null);
   const [notes, setNotes] = useState<any[]>([]);
   const isInitialMount = useRef(true);
+  const [scrollPosition, setScrollPosition] = useState<number>();
   const scrollToBottom = () => {
     if (containerRef.current) {
       (containerRef.current as HTMLElement).scrollTop = (
@@ -103,7 +106,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         // setNotes(data.comments.reverse());
         if (data.comments?.length > 0){
           setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-          setNotesLoaded(true);
         }
       }
     }else{
@@ -118,14 +120,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       // setNotes(data.comments.reverse());
       if (data?.comments?.length > 0){
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-        setNotesLoaded(true);
         }
     // else setNotes(CommentsData );
   }
   }
   
-  const [notesLoaded, setNotesLoaded] = useState<boolean>(false);
-
   const generateFbPath = (): string => {
     if(urlPath === "trackers")
       return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
@@ -135,12 +134,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       return `eventgeniStage/accountId/notes/general`;
   }
 
-  useEffect(() => {
-   if(notesLoaded){
-    onNoteAdded(generateFbPath(), handleRealtimeAction);
-  }
-  }, [notesLoaded]);
-
   // const isInitialMount = useRef(true);
   // const commentRef=useRef();
   const [scrolling, setScrolling] = useState(false);
@@ -148,6 +141,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     const container = containerRef.current;
     if (container) {
       container.addEventListener('scroll', handleInfiniteScroll);
+      onNoteAdded(generateFbPath(), handleRealtimeAction);
 
       return () => {
         container.removeEventListener('scroll', handleInfiniteScroll);
@@ -160,14 +154,16 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     if (containerRef.current) {
       const container = containerRef.current;
       const isAtTop = container.scrollTop === 0;
+      const scrollBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
       console.log('Client Height:', container.clientHeight);
       console.log('Scroll Height:', container.scrollHeight);
       console.log('Scroll Top:', container.scrollTop);
 
       // Your infinite scroll logic here
       if (isAtTop) {
-        setPage(page + 10);
+        setPage(prev => prev+10);
         setScrolling(true);
+        setScrollPosition(scrollBottom);
         // Trigger data fetch or any action you want to perform on scroll end
       }
     }
@@ -187,6 +183,8 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           console.log(111111111);
 
           // scrollToBottom();
+          if(scrollPosition)
+            containerRef.current.scrollTop = containerRef.current.scrollHeight - containerRef.current.clientHeight - scrollPosition;
         }
         // scrollToBottom();
       }
@@ -357,7 +355,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notes]);
+  }, [notes?.length]);
 
   console.log(filePreviews);
   const [files, setFiles] = useState<any | null>(null);
@@ -442,11 +440,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   // }, [files]);
 
   // console.log("drop is "+ drop);
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(height);
-    }, 1000);
-  });
 
   // comments = [...notes];
   let arr = Array.from(
@@ -593,7 +586,6 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   useEffect(() => {
     const url = `${baseUrl}/auth/users?limit=100`
     getAllUser(url);
-    // deleteNoteFB(`eventgeniStage/eventgeni`);
   }, [])
 
   const createRealtimeAction = (action: string, commentId: string) => {
@@ -617,23 +609,24 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         }
       }
       else if(fbData.action === 'delete'){
-        const updatedNotes = notes.filter((comment: any) => comment.id !== fbData.id);
-        setNotes(updatedNotes);
+        setNotes(prevNotes => prevNotes.filter((comment: any) => comment.id !== fbData.id));
       }
       else if(fbData.action === 'like' || fbData.action === 'unlike'){
-        const updatedComments = notes.map((c: any) => {
-          if (c.id === fbData.id) {
-            let isLiked = (fbData.action === 'like');
-            return {
-              ...c, _count: {
-                ...c._count,
-                Commentlikes: c._count?.Commentlikes + (isLiked ? 1 : -1),
-              }
-            };
-          }
-          return c;
-        });
-        setNotes(updatedComments);
+        setNotes(prevNotes =>
+          prevNotes.map((c: any) => {
+            if (c.id === fbData.id) {
+              let isLiked = (fbData.action === 'like');
+              return {
+                ...c,
+                _count: {
+                  ...c._count,
+                  Commentlikes: (c._count?.Commentlikes || 0) + (isLiked ? 1 : -1),
+                }
+              };
+            }
+            return c;
+          })
+        );
       }
     }
   }
@@ -845,16 +838,14 @@ const Comment = ({
     setIsReply(true);
   };
   const [isLiked, setIsLiked] = useState(false);
-  useEffect(() => { }, [isLiked]);
+  // useEffect(() => { }, [isLiked]);
   const handleLiked = (id: string, isLiked: boolean,) => {
     handleLike(id, isLiked)
   };
   // useEffect(()=>{
   //   setIsLiked(!isLiked)
   // },[isLiked])
-  setTimeout(() => {
-    console.log(isLiked);
-  }, 5000);
+
   // useEffect(()=>{
   //   setIsLiked(!isLiked);
   // },[isLiked])
@@ -880,13 +871,14 @@ const Comment = ({
           <div className={styles.comment__user}>
             <header>
               <span className={styles.imgContainer}>
-                <Image
+                {/* <Image
                   width={50}
                   height={50}
                   className={styles.userImage}
                   src={person1}
                   alt=""
-                />
+                /> */}
+                <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={50} width={50} />
               </span>
               <div
                 className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
@@ -1162,9 +1154,7 @@ const Comment = ({
           <div className={styles.options}>
             {/* <ButtonView view={"upvoteBtn"} /> */}
             <div
-              className={
-                theme === "light" ? styles.likeSectionLight : styles.likeSection
-              }
+              className={styles.likeSection}
               onClick={() => handleLiked(comment.id, comment?.userLiked)}
             >
               <div className={styles.like}>
@@ -1174,7 +1164,7 @@ const Comment = ({
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div>{comment._count && comment?._count.Commentlikes}</div>
+              <div className={styles.likeCount} >{comment._count && comment?._count.Commentlikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
@@ -1196,10 +1186,11 @@ const Comment = ({
             )}
             {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname &&
               <button
-                className={styles.replyBtn}
+                className={styles.deleteBtn}
                 onClick={() => handleDelete(comment.id)}
               >
-                Delete
+                {/* Delete */}
+                <Trash style={{marginBottom: '4px'}} color="var(--tertiary-text-color)" height="15px" />
               </button>
             }
 
@@ -1267,7 +1258,8 @@ const Comment = ({
           />
           <div className={styles.text1}>
             <span className={styles.imgContainer}>
-              <Image width={30} height={30} src={person1} alt="" />
+              {/* <Image width={30} height={30} src={person1} alt="" /> */}
+              <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={30} width={30} />
             </span>
             <div className={styles.commentText1}>
               <span>{userName}</span>{" "}
