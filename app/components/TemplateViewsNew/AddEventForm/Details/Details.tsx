@@ -62,7 +62,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerModal, setRegisterModal] = useState<boolean>(false)
   const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || prefilledGlobalEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
-  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType||prefilledNormalEvent?.participationType||"")
+  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType || prefilledNormalEvent?.participationType || "")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
@@ -156,6 +156,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
+    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+      showToast("error", "Please fill in all the fields");
+      return; // Exit the function if any field is missing
+    }
+    if(!banner?.file || imageUrl){
+      showToast("error", "Please upload or generate a Poster");
+      return; // Exit the function if any field is missing
+    }
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -348,8 +356,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (description && eventName && countryName) {
         generatePrompt(countryName, description, eventName, 1024, 1024)
-      }else {
-        showToast("error","Please provide Event name, Description, and Location to generate the Banner");
+      } else {
+        showToast("error", "Please provide Event name, Description, and Location to generate the Banner");
       }
     }
   }

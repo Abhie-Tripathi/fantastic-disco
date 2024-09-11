@@ -10,6 +10,7 @@ import { baseUrl } from '@/constants';
 import { GolbalEventType } from '@/types/globaleventtype';
 import ParticipationContainer from './Details/participation/ParticipationContainer'
 import { AllEventsType } from '@/types/alleventtype';
+import { showToast } from "@/utils/showToast";
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
@@ -52,6 +53,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleSaveEvent = async () => {
+        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+            showToast("error","Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
         const eventData = {
             format: eventFormat,
             start_time: startTime,
@@ -85,6 +90,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleAddEvent = async () => {
+        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+            showToast("error","Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
         const eventData = {
             format: eventFormat,
             start_time: startTime,
