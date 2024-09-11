@@ -34,7 +34,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   };
 
   const fetchData = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/auth/users`);
+    const { data, error } = await myFetch(`${baseUrl}/auth/users?limit=100`);
 
     if (data) {
       setUserList(data.users);

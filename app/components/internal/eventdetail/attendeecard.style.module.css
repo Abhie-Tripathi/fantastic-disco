@@ -1,6 +1,6 @@
 .card_container {
     border: 0.9px solid var(--border-color);
-    padding: 25px;
+    padding: 16px;
     border-radius: 16px;
     width: 100%;
 }
@@ -8,7 +8,7 @@
 .card_title {
     /* border-bottom: 0.7px solid var(--border-color); */
     font-size: 12px;
-    font-weight: 700;
+    /* font-weight: 700; */
     padding-bottom: 5px;
     display: flex;
     justify-content: space-between;
@@ -27,8 +27,8 @@
 }
 
 .search_container {
-    margin-top: 25px;
-    margin-bottom: 25px;
+    margin-top: 12px;
+    margin-bottom: 12px;
     padding: 0 16px;
     border: 0.7px solid var(--border-color);
     display: flex;
@@ -82,7 +82,7 @@
     font-family: var(--font-inter);
     display: flex;
     flex-direction: column;
-    font-weight: 500;
+    /* font-weight: 500; */
 }
 
 .comment_name span span {

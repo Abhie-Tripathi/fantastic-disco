@@ -14,6 +14,7 @@ import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDr
 import upArrow from "/public/internal/up_arrow.svg";
 import { useTheme } from "@/context";
 import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
+import { Calendar, Location } from "geist-icons";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { AllEventsType } from "@/types/alleventtype";
@@ -275,17 +276,18 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             <div className={styles.locationAndDateContainer}>
               {(eventLocation || geniEvent) && (
                 <div className={styles.eventLocation}>
-                  <div className={styles.circle1}>
-                    <Image
+                  <div>
+                    {/* <Image
                       src={place}
                       alt="locationIcon"
                       width={24}
                       height={24}
                       style={{ marginRight: "3px" }}
                       className="icons"
-                    />
+                    /> */}
+                    <Location height={'12px'} width={'12px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
                   </div>
-                  <div style={{ marginLeft: "-4px" }}>
+                  <div style={{marginTop:"3px"}}>
                     {eventLocation
                       ? eventLocation === eventCountry
                         ? eventCountry
@@ -296,14 +298,15 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               )}
 
               <div className={styles.eventDate}>
-                <Image
+                {/* <Image
                   src={calendarIcon}
                   alt="calendarIcon"
                   width={14}
                   height={14}
                   className='icons'
-                />
-                <div>
+                /> */}
+                <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)" className='icons'/>
+                <div style={{marginTop:"3px"}}>
                   {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
                   {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)}
                 </div>
@@ -458,4 +461,3 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 };
 
 export default YourEventCard;
-

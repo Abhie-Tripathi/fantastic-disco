@@ -126,9 +126,8 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                         <div className={styles.comment_name}>
                             <span>
                                 {user.name}
-                                <span> @{user.name}</span>
                             </span>
-                            <p className={styles.designationText}>Development / Engineering</p>
+                            <p className={styles.designationText}>{user?.designation}</p>
                         </div>
                     </div>
                 ))}

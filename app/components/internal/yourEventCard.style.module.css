@@ -55,8 +55,9 @@
     width: 100%;
     position: relative;
     display: flex;
+    gap: var(--spacing-xxs);
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     /* color: white; */
     z-index: 1;
 }
@@ -67,8 +68,9 @@
 
 .locationAndDateContainer {
     display: flex;
+    height: 20px;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-xs);
 }
 
 .circle1 {
@@ -95,6 +97,8 @@
 
 .eventDate {
     display: flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
     font-size: var(--font-size-small);
     border-radius: var(--border-radius-sm);
 }
@@ -190,6 +194,7 @@
 }
 .leftContainer {
     display: inline-flex;
+    justify-content: center;
     flex-direction: column;
     gap: var(--spacing-sm);
 }
