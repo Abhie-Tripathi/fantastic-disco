@@ -52,7 +52,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         timeZone: data.data[0].data.gmt_time,
                         cityName: data.data[0].data.location_city,
                         countryName: data.data[0].data.location_country,
-                        // participationType: data.data[0].data.participationType,
+                        participationType: data.data[0].data.participationType,
                         eventFormat: data.data[0].data.format,
                         registerBtnColor: event.registerBtnColor,
                         registerBtnText: event.registerBtnText,

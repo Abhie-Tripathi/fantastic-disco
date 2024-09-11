@@ -21,21 +21,21 @@ interface Props {
 }
 
 const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme }: Props) => {
-  const [dropdown, setDropdown] = useState<boolean>(false)
+  // const [dropdown, setDropdown] = useState<boolean>(false)
   // const dropdownRef = useOutsideClick(() => setDropdown(false))
 
   const handleSelection = (type: string) => {
     setParticipationType(type)
-    setDropdown(true)
+    // setDropdown(true)
   }
   const handleCloseSelection = () => {
-    setDropdown(false)
+    // setDropdown(false)
     setParticipationType("")
   }
 
   return (
     <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`} >
-      {!dropdown ?
+      {!participationType ?
         <><div className={styles.header}>
           <Image src={ParticipationIcon} alt='svg' />
           <span>Choose Your Mode of Participation</span>
@@ -68,7 +68,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Attendee</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -79,7 +79,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Speaker</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -90,7 +90,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Exhibitor</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -101,7 +101,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Organiser</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>

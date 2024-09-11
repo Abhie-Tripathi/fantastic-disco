@@ -26,6 +26,7 @@ import { GolbalEventType } from '@/types/globaleventtype'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
 import MapView from '@/app/components/DetailPage/Mapview'
+import { showToast } from "@/utils/showToast";
 
 interface SpeakerProfileType {
   id: string;
@@ -61,7 +62,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [registerModal, setRegisterModal] = useState<boolean>(false)
   const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || prefilledGlobalEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
-  const [participationType, setParticipationType] = useState<string>("Attendee")
+  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType||"")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
@@ -259,6 +260,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       logoUrl: banner.placeHolder,
       location_city: cityName,
       location_country: countryName,
+      participationType,
       gmt_time: timeZone
     };
     const formData = new FormData();
@@ -307,7 +309,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       bannerUrl: updatedBannerUrl,
       latitude,
       longitude,
-      venue
+      venue,
+      hashtags: hashtags.join(",")
     };
 
     // Find and update the existing event
@@ -345,6 +348,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (description && eventName && countryName) {
         generatePrompt(countryName, description, eventName, 1024, 1024)
+      }else {
+        showToast("error","Please provide Event name, Description, and Location to generate the Banner");
       }
     }
   }

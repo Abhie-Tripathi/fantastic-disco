@@ -39,24 +39,73 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
     }
     return (
         <div className={styles.body}>
-               {fetchedAddedOtherData && fetchedAddedOtherData?.length>0 ? (
-                fetchedAddedOtherData.map((event, key) => (
-                    <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody} key={key}>
-                        <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
-                        <EventCard fetchedEvent = {event} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                        </div>
-                    </div>))) : (
-                <div className={type === "top" ? styles.topBody : type === "left" ? styles.leftBody : styles.rightBody}>
-                    <div className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}>
-                        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+            {fetchedAddedOtherData && fetchedAddedOtherData.length > 0 ? (
+                <div
+                    className={
+                        type === "top"
+                            ? styles.topBody
+                            : type === "left"
+                                ? styles.leftBody
+                                : styles.rightBody
+                    }
+                >
+                    <div
+                        className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}
+                    >
+                        {fetchedAddedOtherData.map((event, key) => (
+                            <EventCard
+                                key={key}
+                                fetchedEvent={event}
+                                cardBgColor={cardBgColor}
+                                cardBorderRadius={cardBorderRadius}
+                                fontSettings={fontSettings}
+                            />
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <div
+                    className={
+                        type === "top"
+                            ? styles.topBody
+                            : type === "left"
+                                ? styles.leftBody
+                                : styles.rightBody
+                    }
+                >
+                    <div
+                        className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}
+                    >
+                        <EventCard
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                        />
+                        <EventCard
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                        />
+                        <EventCard
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                        />
+                        <EventCard
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                        />
+                        <EventCard
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                        />
                     </div>
                 </div>
             )}
         </div>
+
     )
 }
 
