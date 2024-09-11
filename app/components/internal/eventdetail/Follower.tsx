@@ -9,6 +9,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
 import downArrowIcon from "/public/arrow_down.svg";
+import UserProfile from "../../userProfile/UserProfile";
 
 const Follower = ({
   eventId,
@@ -23,7 +24,6 @@ const Follower = ({
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [followStatus, setFollowStatus] = useState(false);
-
   const fetchData = async () => {
     const { data, error } = await myFetch(
       `${baseUrl}/event-follow/${enquiryId}`
@@ -97,23 +97,25 @@ const Follower = ({
             {followerData.length > 0 ? (
               followerData.map((follower: any) => (
                 <div className={styles.followerContainer} key={follower.id}>
+                  
+                  {follower.profilePicture === null ?
+                  <UserProfile name={follower.name} width={60} height={60} borderRadius="50%"/>:
                   <Image
-                    src={
-                      follower.profilePicture === null
-                        ? PlaceHolder
-                        : follower.profilePicture
-                    }
-                    alt="banner"
-                    width={60}
-                    height={60}
-                    className={styles.followerProfilePhoto}
-                  />
+                  src={
+                     follower.profilePicture
+                  }
+                  alt="banner"
+                  width={60}
+                  height={60}
+                  className={styles.followerProfilePhoto}
+                />
+                  }
                   <div className={styles.followerDetails}>
                     <div className={styles.followerName}>
                       {follower.name}
                       {/* <span className={styles.username}>{item.username}</span> */}
                     </div>
-                    <div className={styles.followerPosition}>Software Developer</div>
+                    {/* <div className={styles.followerPosition}>Software Developer</div> */}
                   </div>
                 </div>
               ))

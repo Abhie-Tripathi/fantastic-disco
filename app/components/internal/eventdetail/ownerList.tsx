@@ -8,6 +8,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
 import { useTheme } from "@/context";
+import UserProfile from "../../userProfile/UserProfile";
 
 interface PropType {
   label: string;
@@ -91,6 +92,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   useEffect(() => {
     getOwnerDetails();
   }, [enquiryId]);
+console.log(owner);
 
   return (
     <div className={styles.filter_container}>
@@ -103,14 +105,32 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
             className={styles.dropdown_value}
             style={{ display: "flex", marginRight: "1rem" }}
           >
-            <Image
-              src={ProfileIcon}
-              alt="user"
-              className={styles["owner_img"]}
-              width={48}
-              height={48}
-              referrerPolicy="no-referrer"
-            />
+  {owner && owner?.id === null ? (
+    <Image
+        src={ProfileIcon}
+        alt="user"
+        className={styles["owner_img"]}
+        width={48}
+        height={48}
+        referrerPolicy="no-referrer"
+    />
+) : owner?.profilePicture === null ? (
+    <UserProfile 
+        name={owner.aliasName} 
+        width={48} 
+        height={48}
+        borderRadius="50%" 
+    />
+) : (
+    <Image
+        src={owner?.profilePicture}
+        alt="banner"
+        width={48}
+        height={48}
+        className={styles.followerProfilePhoto}
+    />
+)}
+            
             <div>
               <span
                 style={{
@@ -144,11 +164,11 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                 onClick={() => handleChangeOwner(user.id)}
                 key={user.id}
               >
+                { user.profilePicture === null ? 
+                <UserProfile name={`${user.firstname} ${user.lastname}`} width={48} height={48} borderRadius="50%"/>:
                 <Image
                   src={
-                    user.profilePicture === null
-                      ? ProfileIcon
-                      : user.profilePicture
+                   user.profilePicture
                   }
                   alt="user"
                   className={styles["owner_img"]}
@@ -156,6 +176,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                   height={48}
                   referrerPolicy="no-referrer"
                 />
+                }
                 &nbsp;
                 <span
                   style={{

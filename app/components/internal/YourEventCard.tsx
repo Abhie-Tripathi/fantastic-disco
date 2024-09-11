@@ -8,6 +8,7 @@ import place from "@/public/internal/place.svg";
 import person2 from "@/public/person2.svg";
 import Image from "next/image";
 import upArrowLight from '/public/internal/up_arrow_light.svg'
+import { formatEventDates } from "@/utils/dateFormat";
 import Link from "next/link";
 import ClockIcon from "/public/clock.svg";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
@@ -168,64 +169,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     fetchInterestedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  function formatEventDates(startDate: string, endDate: string) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (start.getFullYear() === end.getFullYear()) {
-      if (start.getMonth() === end.getMonth()) {
-        if (start.getDate() === end.getDate()) {
-          return new Date(startDate).toLocaleDateString("en-GB", {
-            weekday: 'long',
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          });
-        } else {
-          return (
-            new Date(startDate).toLocaleDateString("en-GB", {
-              weekday: 'long',
-            }) + ', ' +
-            new Date(startDate).toLocaleDateString("en-GB", {
-              day: "2-digit",
-            }) + ' - ' +
-            new Date(endDate).toLocaleDateString("en-GB", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })
-          );
-        }
-      } else {
-        return (
-          new Date(startDate).toLocaleDateString("en-GB", {
-            weekday: 'long',
-            month: "short",
-            day: "2-digit",
-          }) + ' - ' +
-          new Date(endDate).toLocaleDateString("en-GB", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })
-        );
-      }
-    } else {
-      return (
-        new Date(startDate).toLocaleDateString("en-GB", {
-          weekday: 'long',
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }) + ' - ' +
-        new Date(endDate).toLocaleDateString("en-GB", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        })
-      );
-    }
-  }
+ 
   const [votesCount, setVotesCount] = useState(upvote && upvote[0].like);
   return (
 
@@ -305,7 +249,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   height={14}
                   className='icons'
                 /> */}
-                <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)" className='icons'/>
+                <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
                 <div style={{marginTop:"3px"}}>
                   {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
                   {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)}

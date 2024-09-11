@@ -4,6 +4,7 @@ import styles from './attendeecard.style.module.css'
 import Image from 'next/image'
 import searchIcon from '/public/internal/SearchInput.svg'
 import UserList from '../../../../public/data/employeeData.json'
+import UserProfile from '../../userProfile/UserProfile'
 import userImageIcon from '/public/person2.svg'
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { useTheme } from '@/context'
@@ -121,7 +122,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                             }
                         />
                         <span className={styles.imgContainer}>
-                            <Image className={styles.userImage} src={userImageIcon} alt="user" />
+                        <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>
                         </span>
                         <div className={styles.comment_name}>
                             <span>
