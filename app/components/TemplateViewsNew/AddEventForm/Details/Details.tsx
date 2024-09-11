@@ -26,6 +26,7 @@ import { GolbalEventType } from '@/types/globaleventtype'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
 import MapView from '@/app/components/DetailPage/Mapview'
+import { showToast } from "@/utils/showToast";
 
 interface SpeakerProfileType {
   id: string;
@@ -345,6 +346,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (description && eventName && countryName) {
         generatePrompt(countryName, description, eventName, 1024, 1024)
+      }else {
+        showToast("error","Please provide Event name, Description, and Location to generate the Banner");
       }
     }
   }
