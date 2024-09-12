@@ -83,44 +83,57 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
 
     useEffect(() => {
         const handleOtherDataFetch = async () => {
-            if (!fetchedAddedEvents) return;
-            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
-                fetchedAddedEvents.map(async (event) => {
-                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
-                    if (error) {
-                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
-                        return null;
-                    }
-                    if (data) {
-                        console.log("data : ", data)
-                    }
-                    return {
-                        id: event.id,
-                        name: data.data[0].name,
-                        pageBgColor: event.pageBgColor,
-                        description: data.data[0].data.description,
-                        eventFont: event.eventFont,
-                        startDate: data.data[0].data.start_date,
-                        endDate: data.data[0].data.end_date,
-                        startTime: data.data[0].data.start_time,
-                        endTime: data.data[0].data.end_time,
-                        timeZone: data.data[0].data.gmt_time,
-                        cityName: data.data[0].data.location_city,
-                        countryName: data.data[0].data.location_country,
-                        participationType: data.data[0].data.participationType,
-                        eventFormat: data.data[0].data.format,
-                        registerBtnColor: event.registerBtnColor,
-                        registerBtnText: event.registerBtnText,
-                        registerMessage: event.registerMessage,
-                        boothNumber: event.boothNumber,
-                        speakerProfilesData: event.speakerProfilesData,
-                        participationMessage: event.participationMessage,
-                        bannerUrl: event.bannerUrl
-                    } as PrefilledAddedEventsType;
-                })
-            );
-            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            if(!fetchedAddedEvents){
+                return
+            }
+            try {
+                const newFetchedAddedOtherData = await Promise.all(
+                    fetchedAddedEvents.map(async (event) => {
+                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        if (error) {
+                            console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                            return null;
+                        }
+    
+                        const eventData = data?.data?.[0]?.data;
+                        if (!eventData) return null;
+    
+                        return {
+                            id: event.id,
+                            name: data?.data?.[0]?.name,
+                            pageBgColor: event.pageBgColor,
+                            description: eventData.description,
+                            eventFont: event.eventFont,
+                            startDate: eventData.start_date,
+                            endDate: eventData.end_date,
+                            startTime: eventData.start_time,
+                            endTime: eventData.end_time,
+                            timeZone: eventData.gmt_time,
+                            cityName: eventData.location_city,
+                            countryName: eventData.location_country,
+                            participationType: eventData.participationType,
+                            eventFormat: eventData.format,
+                            registerBtnColor: event.registerBtnColor,
+                            registerBtnText: event.registerBtnText,
+                            registerMessage: event.registerMessage,
+                            boothNumber: event.boothNumber,
+                            speakerProfilesData: event.speakerProfilesData,
+                            participationMessage: event.participationMessage,
+                            bannerUrl: event.bannerUrl,
+                            latitude: event.latitude,
+                            longitude: event.longitude,
+                            venue: event.venue,
+                            hashtags: event.hashtags,
+                        } as PrefilledAddedEventsType;
+                    })
+                );
+    
+                setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            } catch (err) {
+                console.error("Error in handleOtherDataFetch:", err);
+            }
         };
+    
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
@@ -267,3 +280,52 @@ function CloseFullScreenIcon({ color }: IconProps) {
         <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill={color}></path></svg>
     )
 }
+
+
+
+// useEffect(() => {
+//     const handleOtherDataFetch = async () => {
+//         const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
+//             fetchedAddedEvents.map(async (event) => {
+//                 const { data, error } = await myFetch(${baseUrl}/event?id=${event.id});
+//                 if (error) {
+//                     console.error(Error fetching event data for event ID ${event.id}:, error);
+//                     return null;
+//                 }
+//                 if (data) {
+//                     console.log("data of fetched event : ",)
+//                 }
+//                 return {
+//                     id: event.id,
+//                     name: data.data[0].name,
+//                     pageBgColor: event.pageBgColor,
+//                     description: data.data[0].data.description,
+//                     eventFont: event.eventFont,
+//                     startDate: data.data[0].data.start_date,
+//                     endDate: data.data[0].data.end_date,
+//                     startTime: data.data[0].data.start_time,
+//                     endTime: data.data[0].data.end_time,
+//                     timeZone: data.data[0].data.gmt_time,
+//                     cityName: data.data[0].data.location_city,
+//                     countryName: data.data[0].data.location_country,
+//                     participationType: data.data[0].data.participationType,
+//                     eventFormat: data.data[0].data.format,
+//                     registerBtnColor: event.registerBtnColor,
+//                     registerBtnText: event.registerBtnText,
+//                     registerMessage: event.registerMessage,
+//                     boothNumber: event.boothNumber,
+//                     speakerProfilesData: event.speakerProfilesData,
+//                     participationMessage: event.participationMessage,
+//                     bannerUrl: event.bannerUrl,
+//                     latitude: event.latitude,
+//                     longitude: event.longitude,
+//                     venue: event.venue,
+//                     hashtags : event.hashtags
+//                 } as PrefilledAddedEventsType;
+//             })
+//         );
+//         setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+//     };
+
+//     handleOtherDataFetch();
+// }, [fetchedAddedEvents])

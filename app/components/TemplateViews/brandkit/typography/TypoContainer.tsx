@@ -8,9 +8,12 @@ interface Props {
     setPreview: (value: string) => void
     fetchedFonts : string[];
     setFetchedFonts: (value : string[])=>void;
+    setTypography: (value: string) => void;
+    handleColorModal : (type: string, index : number) => void
 }
 
-const TypoContainer = ({ setPreview, fetchedFonts ,setFetchedFonts}: Props) => {
+const TypoContainer = ({ setPreview, setTypography, fetchedFonts ,setFetchedFonts, handleColorModal}: Props) => {
+    console.log("fetched_fonts", fetchedFonts)
     const fonts = ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Arial", "sans-serif", "Times New Roman"]
 
     const handleDelete = async(e: React.MouseEvent<HTMLDivElement>,indexToRemove : number)=>{
@@ -30,6 +33,12 @@ const TypoContainer = ({ setPreview, fetchedFonts ,setFetchedFonts}: Props) => {
         }        
     }
 
+    const handleTypographyClick = (typography: string, type : string, index : number) => {
+        setTypography(typography)
+        setPreview("typography")
+        handleColorModal(type, index)
+    }
+
     return (
         <div className={styles.body} >
             <div className={styles.heading}>Brand Typography</div>
@@ -40,7 +49,7 @@ const TypoContainer = ({ setPreview, fetchedFonts ,setFetchedFonts}: Props) => {
                         <div className={styles.deleteBtn} onClick={(e) => handleDelete(e,key)}><DeleteIcon /></div>
                     </div>
                 ))}
-                <div className={styles.addFont}>
+                <div className={styles.addFont} onClick={() => handleTypographyClick(fetchedFonts[0], "add",0)}>
                     <AddIcon />
                 </div>
             </div>

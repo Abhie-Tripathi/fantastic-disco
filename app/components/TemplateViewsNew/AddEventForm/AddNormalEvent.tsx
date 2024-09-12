@@ -10,16 +10,17 @@ import { baseUrl } from '@/constants';
 import { GolbalEventType } from '@/types/globaleventtype';
 import ParticipationContainer from './Details/participation/ParticipationContainer'
 import { AllEventsType } from '@/types/alleventtype';
+import { showToast } from "@/utils/showToast";
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
     fetchEvents: () => Promise<void>;
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
-    theme : string;
+    theme: string;
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent,theme }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme }: Props) => {
     // const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
@@ -34,10 +35,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>("")
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) ||37.7749)
-    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) ||-122.4194)
+    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) || 37.7749)
+    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) || -122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
-    const [participationType, setParticipationType] = useState<string>("Attendee")
+    const [participationType, setParticipationType] = useState<string>(prefilledNormalEvent?.participationType || "")
 
     const handleDescClick = () => {
         setDescription(textValue)
@@ -52,6 +53,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleSaveEvent = async () => {
+        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+            showToast("error","Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
         const eventData = {
             format: eventFormat,
             start_time: startTime,
@@ -85,6 +90,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleAddEvent = async () => {
+        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+            showToast("error","Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
         const eventData = {
             format: eventFormat,
             start_time: startTime,
@@ -122,11 +131,11 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(error)
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         setTextValue(description)
-    },[description])
+    }, [description])
     return (
-        <div className={`${styles.body} ${theme && theme ==="dark" ? styles.darkBody : ""}`}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.header}>
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
@@ -136,14 +145,14 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             </div>
             <div className={styles.line}></div>
             <div className={styles.form}>
+                <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
                 <textarea className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
 
                 <div className={styles.dateTimeContainer}><DateTimeContainer theme={theme} setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                 <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
 
-                <div className={styles.participationContainer}><ParticipationContainer theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
-                <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} /></div> 
+                <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} /></div>
             </div>
             {
                 descriptionModal && <div className={styles.descriptionModalFill}>

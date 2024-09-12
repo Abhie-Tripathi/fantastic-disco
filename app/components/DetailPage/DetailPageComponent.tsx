@@ -25,6 +25,7 @@ interface EventProps {
     registerBtnColor: string;
     speakerProfilesData: any[];
     participationMessage: string;
+    participationType? : string;
     name: string;
     format: string;
     logoUrl: string;
@@ -43,7 +44,7 @@ interface EventProps {
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags,participationType }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
 
@@ -71,6 +72,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
             style={{ backgroundColor: pageBgColor }}
         >
             <ToastContainer />
+            <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType? participationType : "Speaker"} /></div>
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
@@ -78,8 +80,6 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                             width={296} height={290}
                             style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>
-                    <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType='Atendee' /></div>
-
                     {hashtags && <div className={styles.hashtagsContainer}>
                         {hashtags?.split(",").map((tag, key) => (
                             <div className={styles.hashtag} key={key}>{tag}</div>
@@ -110,7 +110,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
-                                venue={venue}
+                                venue={location_city}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>
