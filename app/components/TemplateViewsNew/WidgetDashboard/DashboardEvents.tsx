@@ -44,11 +44,11 @@ const DashboardEvents = () => {
         <div className={styles.body}>
             <div className={styles.btnContainer}>
                 <button className={`${styles.btn} ${selectedBtn === "Fetched" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Fetched")}>
-                    <span>Fetched</span>
+                    <span>Discovered Events</span>
                     <span className={`${styles.count} ${selectedBtn === "Fetched" ? styles.selectedCount : ""}`}>0</span>
                 </button>
                 <button className={`${styles.btn} ${selectedBtn === "Added" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Added")}>
-                    <span>Added</span>
+                    <span>Your Events</span>
                     <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{addedEventsLength}</span>
                 </button>
             </div>
