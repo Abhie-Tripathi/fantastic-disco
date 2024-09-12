@@ -67,7 +67,14 @@
 .btnContainer .addBtn:hover {
     background-color: #7962b8;
 }
-
+.btnContainer .addBtnDisable{
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+.btnContainer .addBtnDisable:hover{
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
 .posterContainer {
     position: relative;
 }
