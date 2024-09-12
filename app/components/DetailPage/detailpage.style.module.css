@@ -112,6 +112,9 @@
     .rightSection {
         width: 60%;
     }
+    .participationContainer {
+        width: 780px;
+    }
 }
 @media screen and (max-width: 875px) {
     .rightSection {

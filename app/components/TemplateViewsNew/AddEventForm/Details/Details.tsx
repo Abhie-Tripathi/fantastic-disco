@@ -45,7 +45,7 @@ interface Props {
   pageBgColor: string;
   eventFont: string;
   widgetId: string;
-  fetchEvents: () => Promise<void>;
+  fetchEvents: (page : number, type?: string) => Promise<void>;
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
@@ -160,10 +160,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }
-    if(!banner?.file || imageUrl){
+
+    if (!banner?.file || imageUrl) {
       showToast("error", "Please upload or generate a Poster");
       return; // Exit the function if any field is missing
     }
+
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -247,7 +249,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       console.log("widget event data", data)
       setIsAddEventModalOpen(false)
-      fetchEvents();
+      fetchEvents(0, "update");
       fetchAddedEvents();
     }
     if (error) {
@@ -257,6 +259,16 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
+    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+      showToast("error", "Please fill in all the fields");
+      return; // Exit the function if any field is missing
+    }
+    if (!prefilledAddedEvent?.bannerUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
+      if (!banner?.file || imageUrl) {
+        showToast("error", "Please upload or generate a Poster");
+        return; // Exit the function if any field is missing
+      }
+    }
     const eventData = {
       id: eventId,
       format: eventFormat,
@@ -269,7 +281,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       location_city: cityName,
       location_country: countryName,
       participationType,
-      gmt_time: timeZone
+      gmt_time: timeZone,
+      latitude,
+      longitude,
+      event_type: "Tradeshow"
     };
     const formData = new FormData();
     formData.append("id", eventId);
@@ -343,7 +358,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       console.log("widget event data", data);
       setIsAddEventModalOpen(false);
-      fetchEvents();
+      fetchEvents(0, "update");
       fetchAddedEvents();
     }
     if (error) {
@@ -398,7 +413,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     <div className={styles.body}>
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
         <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-        <button className={styles.addBtn}
+        <button className={`${styles.addBtn} ${loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
+          disabled={loadingState}
           onClick={
             prefilledAddedEvent
               ? () => handleSaveEvent(prefilledAddedEvent.id)

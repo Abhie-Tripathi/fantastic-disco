@@ -10,7 +10,7 @@ import { GolbalEventType } from '@/types/globaleventtype'
 interface Props{
     setIsAddEventModalOpen : (value : boolean)=>void
     widgetId : string;
-    fetchEvents : () => Promise<void>; 
+    fetchEvents : (page : number) => Promise<void>; 
     fetchAddedEvents : ()=> Promise<void>;
     addedEventIds : string[]
     fetchedAddedEvents : AddedEventsType[]

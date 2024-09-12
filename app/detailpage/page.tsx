@@ -87,6 +87,7 @@ const fetchData = async (widgetId: string, eventId: string) => {
         }
 
         console.log("data is: ", data);
+        console.log("Event data is :", data.data.eventData)
         console.log("event id is: ", eventId);
 
         // Find the event in otherdata or eventData
