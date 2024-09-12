@@ -3,6 +3,7 @@ import Image from 'next/image'
 import YourEventCard from './YourEventCard'
 import DropDown from './commondropdown/DropDown'
 import Search from '/public/search.svg'
+
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
@@ -14,7 +15,7 @@ import {
     MenuTrigger,
     Popover,
   } from "react-aria-components";
-import DropIcon from "/public/downArrow.svg";
+import DropIcon from "/public/internal/drop_down_angle.svg";
 import eventData from '@/public/data/demoEvent.json'
 import { useTheme } from '@/context'
 import { eventDataType } from "../../../types/coordinateEventType";
@@ -22,6 +23,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
+import SearchBar from './searchBar/SearchBar'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -29,6 +31,7 @@ interface Props{
     cardUpdated: boolean;
 }
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
+ 
     let prevDate: any = null;
     const { theme } = useTheme();
     const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -54,7 +57,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     }>({});
     const [searchInput, setSearchInput] = useState("");
     const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
-    const [eventSuggestion,setEventSuggestion]=useState([]);
+    const [eventId,setEventId]=useState();
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
     const handleScrollEnd = () => {
         setTimeout(() => {
@@ -68,31 +71,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         }else
           setPopoverState(!popoverState);
       };
-         const fetchSearchSuggestion = async () => {
-      let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}`;
-
-    
-    
-      try {
-        const { data, error } = await myFetch(url, {
-          method: 'GET',
-        })
-          if (data) {
-            setEventSuggestion(data.events); 
-          } else {
-            console.error('Fetch error:', error); 
-          }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    };
-    
-    useEffect(() => {
-     
-        fetchSearchSuggestion();
-    }, [searchInput]);
+       
       useEffect(()=>{
         if(selectedParticipantType.length>0) {
             setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
@@ -179,7 +158,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
             (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
             (selectedDateRange.length === 2 ? `&duration=${duration}` : '') +
-            `&source=internal`;
+            `&source=internal`+(eventId ? `&eventId=${eventId}` : '');
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
@@ -238,7 +217,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
 useEffect(()=>{
   if(page>0)
     fetchData();
-},[statusType, participant, page, duration])
+},[statusType, participant, page, duration, eventId])
 if (!isLoaded && page <= 1) {
     return <div style={{padding: "50px"}}><Loading /></div>;
 } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
@@ -248,8 +227,10 @@ if (!isLoaded && page <= 1) {
         </div>
     );
 }
-  console.log(eventSuggestion);
-  
+ const handleSelect=(id, name)=>{
+    setSearchInput(name);
+    setEventId(id);
+ } 
     // const abortControllerRef = useRef<AbortController | null>(null);
   return (
     <div className={styles.scrollContainer} ref={divRef} >
@@ -305,13 +286,15 @@ if (!isLoaded && page <= 1) {
           onChange={handleSearchChange}
           value={searchInput}
             />
-
+            <span className={styles.search_logo}>
+              {eventSearchLoader ?
+                <div className={styles.loader}></div> : 
+                <Image src={SearchIcon} alt="search" className={iconClass} />
+              }
+              
+            </span>
           </div>
-          <div>
-            {/* {eventSuggestion && eventSuggestion.map((item)=>{
-              <div>{}</div>
-            })} */}
-          </div>
+          <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect}/>
 
           {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
             <div className={styles.eventName_container2}>
@@ -335,6 +318,7 @@ if (!isLoaded && page <= 1) {
             </div>
           )} */}
         </div>
+        <div style={{width:"20%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
@@ -369,6 +353,8 @@ if (!isLoaded && page <= 1) {
                 {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
+            </div>
+          <div style={{width:"20%"}} className={styles.outerDiv}>
          <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
@@ -392,8 +378,8 @@ if (!isLoaded && page <= 1) {
                       <Image
                         src={DropIcon}
                         alt="dropicon"
-                        width={20}
-                        height={20}
+                        width={12}
+                        height={12}
                         className={iconClass}
                       />
                     </div>
@@ -409,13 +395,14 @@ if (!isLoaded && page <= 1) {
                   />
                 </Popover>
               </MenuTrigger>
-        <div className={styles.participantDropdown}>
+          </div>
+        <div style={{width:"20%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
                       <div className={styles.input_title}>
-                       Participant Type
+                       Type
                         {/* {
                           selectedParticipantType?.length == 1 ? (
                             <span className={styles.input_selected_title}>
@@ -433,8 +420,8 @@ if (!isLoaded && page <= 1) {
                       <Image
                         src={DropIcon}
                         alt="dropicon"
-                        width={20}
-                        height={20}
+                        width={12}
+                        height={12}
                         className={iconClass}
                       />
                     </div>
@@ -451,7 +438,6 @@ if (!isLoaded && page <= 1) {
                 </Popover>
               </MenuTrigger>
         </div>
-        <div className={styles.dateFilter}></div>
     </div>
     <div className={styles.timelineContainer} >
     {eventData1.map((item, index) => {

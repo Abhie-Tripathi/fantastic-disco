@@ -1,0 +1,28 @@
+.eventName_container2 {
+    flex-direction: column;
+    /* overflow-x: unset; */
+    position: absolute;
+    left: -5px;
+    top: 40px;
+    background-color: var(--background-secondary-color);
+    flex-wrap: nowrap;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    /* padding: 10px; */
+    z-index: 2;
+    /* flex-direction: row; */
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .resultData_list{
+    padding: 5px 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+  }
+  .resultData_list:hover {
+    background-color: var(--heading-background-color);
+  }
