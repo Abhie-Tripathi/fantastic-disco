@@ -6,6 +6,8 @@ import Search from '/public/search.svg'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
+import CloseIcon from "/public/internal/cross.svg";
+import SearchIcon from "/public/search.svg";
 import DateRange from "@/app/components/dropdown/DateRange";
 import {
     Button,
@@ -47,6 +49,13 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [participant,setParticipant]=useState("");
     const [statusType,setStatusType]=useState("IN_DISCUSSION");
     const [duration,setDuration]=useState<string>('');
+    const [selectedEvents, setSelectedEvents] = useState<{
+      [key: string]: string;
+    }>({});
+    const [searchInput, setSearchInput] = useState("");
+    const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
+    const [eventSuggestion,setEventSuggestion]=useState([]);
+    const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
     const handleScrollEnd = () => {
         setTimeout(() => {
             if(!noMoreData) setPage(prevPage => prevPage + 1);
@@ -59,6 +68,31 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         }else
           setPopoverState(!popoverState);
       };
+         const fetchSearchSuggestion = async () => {
+      let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}`;
+
+    
+    
+      try {
+        const { data, error } = await myFetch(url, {
+          method: 'GET',
+        })
+          if (data) {
+            setEventSuggestion(data.events); 
+          } else {
+            console.error('Fetch error:', error); 
+          }
+      } catch (error: any) {
+        if (error.name !== 'AbortError') {
+          console.error('Error fetching suggestion data:', error);
+        }
+      }
+    };
+    
+    useEffect(() => {
+     
+        fetchSearchSuggestion();
+    }, [searchInput]);
       useEffect(()=>{
         if(selectedParticipantType.length>0) {
             setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
@@ -68,6 +102,34 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         } 
         setPage(1);
       },[selectedParticipantType])
+      const handleSearchChange = (event: any) => {
+        const inputValue = event.target.value;
+        setSearchInput(event.target.value);
+        // setText(inputValue);
+        // setSearchResultOpen(true);
+      };
+      useEffect(() => {
+        if (selectedDateRange.length === 2) {
+            setDuration([
+                new Date(selectedDateRange[0]).toISOString().split("T")[0],
+                new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","));
+            setPage(1); 
+        } else {
+            setDuration("");
+            setPage(1); 
+        }
+    }, [selectedDateRange]);
+    const removeSelectionHandler = (eventId: string) => {
+      setSelectedEvents((prev) => {
+        if (Object.keys(prev).length - 1 <= 4) {
+          setShowAllEvents(false);
+        }
+        const updatedEvents = { ...prev };
+        delete updatedEvents[eventId];
+        return updatedEvents;
+      });
+    };
       useEffect(()=>{
         if(selectedStatusType.length>0) {
             setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
@@ -109,11 +171,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
       }, []);
     const fetchData = async () => {
         console.log('fetching data... page=', page);
-        if(selectedDateRange.length===2)
-         setDuration([
-          new Date(selectedDateRange[0]).toISOString().split("T")[0],
-          new Date(selectedDateRange[1]).toISOString().split("T")[0],
-        ].join(","));
         if(page > 0) {
             setIsLoaded(false);
             let apiUrl="";
@@ -181,7 +238,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
 useEffect(()=>{
   if(page>0)
     fetchData();
-},[statusType, participant, page, selectedDateRange])
+},[statusType, participant, page, duration])
 if (!isLoaded && page <= 1) {
     return <div style={{padding: "50px"}}><Loading /></div>;
 } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
@@ -191,8 +248,9 @@ if (!isLoaded && page <= 1) {
         </div>
     );
 }
-    console.log(selectedDateRange[0]);
-    
+  console.log(eventSuggestion);
+  
+    // const abortControllerRef = useRef<AbortController | null>(null);
   return (
     <div className={styles.scrollContainer} ref={divRef} >
     <div className={styles.container} >
@@ -215,9 +273,68 @@ if (!isLoaded && page <= 1) {
         </div>
     </div>
     <div className={styles.filters}>
-        {/* <div className={styles.searchBar}>
-            <input className={styles.textArea} type='text' placeholder='Search Event'/>
-        </div> */}
+    <div className={styles.searchContainer}>
+          <div className={styles.searchbar}>
+            {/* {Object.keys(selectedEvents).length > 0 && !showAllEvents && (
+              <div className={styles.eventName_container}>
+                {Object.entries(selectedEvents).map(
+                  ([eventId, eventName], index) =>
+                    index < 4 ? (
+                      <div className={styles.eventName_chip} key={index}>
+                        <span className={styles.eventName_chip_text}>
+                          {eventName}
+                        </span>
+                        <Image
+                          src={CloseIcon}
+                          width={14}
+                          height={14}
+                          alt="close"
+                          className={styles.closeChip}
+                          onClick={() => removeSelectionHandler(eventId)}
+                        />
+                      </div>
+                    ) : (
+                      <></>
+                    )
+                )}
+              </div>
+            )} */}
+            <input
+            type="text"
+          placeholder="Search Events"
+          onChange={handleSearchChange}
+          value={searchInput}
+            />
+
+          </div>
+          <div>
+            {/* {eventSuggestion && eventSuggestion.map((item)=>{
+              <div>{}</div>
+            })} */}
+          </div>
+
+          {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
+            <div className={styles.eventName_container2}>
+              {Object.entries(selectedEvents).map(
+                ([eventId, eventName], index) => (
+                  <div className={styles.eventName_chip} key={0}>
+                    <span className={styles.eventName_chip_text}>
+                      {eventName}
+                    </span>
+                    <Image
+                      src={CloseIcon}
+                      width={14}
+                      height={14}
+                      alt="close"
+                      className={styles.closeChip}
+                      onClick={() => removeSelectionHandler(eventId)}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+          )} */}
+        </div>
         <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={styles.input_container}>
