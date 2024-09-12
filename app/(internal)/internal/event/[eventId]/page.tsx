@@ -242,16 +242,35 @@ const InsightsPage = () => {
               </div>
               <div className={styles.dateDetails}>
                 <div className={styles.date}>
-                  {eventDetail?.location?.venueName}
+                  {/* {eventDetail?.location?.venueName?eventDetail?.location?.venueName: "Venue to be announced" } */}
+                  {eventDetail.location.cityId !== "1" &&
+                    eventDetail.format === "ONLINE" ? (
+                      eventDetail.location.venueName !== undefined &&
+                      eventDetail.location.venueName !== null ? (
+                        
+                        <div>{eventDetail.location.venueName}</div>
+                    ) : (
+                      <div>
+                        Online
+                      </div>
+                    )
+                  ) : eventDetail.location.venueName !== undefined &&
+                  eventDetail.location.venueName !== null ? (
+                      <div>{eventDetail.location.venueName}</div>
+                  ) : eventDetail.location.cityId === "1" &&
+                    (eventDetail.format === "ONLINE" ||
+                    eventDetail.location.venueName !== undefined) ? (
+                    "Online"
+                  ) : eventDetail.location.cityId !== "1" &&
+                  eventDetail.location.venueName !== undefined ? (
+                    <div >
+                     Venue to be announced
+                    </div>
+                  ) : null}
                 </div>
                 <div className={styles.time}>
-                  {eventDetail?.location?.venueAddress}
-                  {eventDetail?.location?.cityName &&
-                  eventDetail?.location?.countryName
-                    ? ", " + eventDetail.location.cityName +
-                      ", " +
-                      eventDetail.location?.countryName
-                    : eventDetail?.location?.countryName}
+                {eventDetail?.location?.venueAddress && `${eventDetail?.location?.venueAddress}, `}
+                    {eventDetail?.location?.countryName === eventDetail?.location?.cityName ? eventDetail?.location?.countryName : `${eventDetail?.location?.cityName}, ${eventDetail?.location?.countryName }` }
                 </div>
               </div>
             </div>
@@ -267,13 +286,7 @@ const InsightsPage = () => {
                   {/* San Antonio Space Center, Texas, Florida */}
                 </div>
                 <div className={styles.time}>
-                  {eventDetail?.organizer?.cityName &&
-                    eventDetail?.organizer?.countryName
-                      ? eventDetail.organizer.cityName +
-                        ", " +
-                        eventDetail.organizer?.countryName
-                      : eventDetail?.organizer?.countryName
-                  }
+                {eventDetail?.organizer?.countryName === eventDetail?.organizer?.cityName ? eventDetail?.organizer?.countryName : `${eventDetail?.organizer?.cityName}, ${eventDetail?.organizer?.countryName }` }
                 </div>
               </div>
             </div>
