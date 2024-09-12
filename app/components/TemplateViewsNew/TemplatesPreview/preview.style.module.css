@@ -79,11 +79,20 @@
     justify-content: center;
     position: relative;
 }
-.viewBtnContainer{
-    display: flex;
-    align-items: center;
+
+.viewBtnContainer {
+    position: fixed; 
+    top: 0;
+    right: 0; 
+    left: 0; 
     gap: 8px;
+    background-color: #f9f9f9;
+    width: auto; 
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end; 
+    box-sizing: border-box; 
 }
-.viewBtnContainer div{
+.viewBtnContainer div {
     cursor: pointer;
 }
