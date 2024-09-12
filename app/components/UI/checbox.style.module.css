@@ -32,6 +32,17 @@
     font-weight: 600;
     border-radius: 2px;
   }
+  .reqCheck{
+    position: absolute;
+    top: 2px;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    border: 1px solid grey;
+    transition: border-color 0.15s linear;
+    font-weight: 600;
+    border-radius: 2px;
+  }
   
   /* On mouse-over, add a grey background color */
   .container:hover input ~ .checkmark {
@@ -60,6 +71,17 @@
   .container .checkmark:after {
     left: 7px;
     top: 3px;
+    width: 3px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  .container .reqCheck:after {
+    left: 4px;
+    top: 0px;
     width: 3px;
     height: 9px;
     border: solid white;
