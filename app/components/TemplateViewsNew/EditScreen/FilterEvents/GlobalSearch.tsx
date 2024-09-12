@@ -160,7 +160,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
 
 export default GlobalSearch;
 
-function Addevent() {
+function AddeventToWidget() {
   return (
     <svg
       width="12"
@@ -177,11 +177,11 @@ function Addevent() {
   );
 }
 
-function AddeventToWidget() {
+function  Addevent() {
   return (
     <svg
-      width="12"
-      height="12"
+      width="13"
+      height="13"
       viewBox="0 0 21 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

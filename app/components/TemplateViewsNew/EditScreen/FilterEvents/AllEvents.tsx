@@ -54,10 +54,12 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>All Events <span>{fetchedAllEvents.length}</span></div>
+                <div>All Events</div>
                 <div className={styles.addBtnContainer}>
-                    <button onClick={() => handleNormalEventModal()}>Add event</button>
-                    <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
+                    <button onClick={() => handleNormalEventModal()}><Addevent/> Add event</button>
+                    <button onClick={() => handleAddEventModal()}>
+                        <AddeventToWidget/>Add Event to widget
+                    </button>
                 </div>
             </div>
             <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
@@ -134,3 +136,39 @@ function EditIcon() {
         </svg>
     )
 }
+
+
+function AddeventToWidget() {
+    return (
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
+          fill="white"
+        />
+      </svg>
+    );
+  }
+  
+  function Addevent() {
+    return (
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 21 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M18 0H0V2.25H18V0ZM18 4.5H0V6.75H18V4.5ZM0 9H9V11.25H0V9ZM9 13.5H0V15.75H9V13.5ZM16.875 12.375H20.25V14.625H16.875V18H14.625V14.625H11.25V12.375H14.625V9H16.875V12.375Z"
+          fill="white"
+        />
+      </svg>
+    );
+  }
+  
