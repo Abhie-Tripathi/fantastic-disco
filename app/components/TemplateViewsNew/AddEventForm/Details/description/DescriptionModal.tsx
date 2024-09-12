@@ -14,7 +14,7 @@ const DescriptionModal = ({ setDescriptionModal, handleDescClick, setTextValue, 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         let value = e.target.value;
         
-        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/g;
+        const specialCharRegex = /[@#$%^&*"|<>]/g;
 
         if (specialCharRegex.test(value)) {
             showToast("error","Please check, input should not contain any special character");

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./typographyModal.module.css";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 const API_KEY: string | undefined = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
 interface Font {
@@ -18,6 +20,8 @@ const TypographyModal = ({
   const [importSource, setImportSource] = useState("Google");
   const [googleFonts, setGoogleFonts] = useState<Font[] >([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+
 
   useEffect(() => {
     if (importSource === "Google") {
@@ -45,10 +49,23 @@ const TypographyModal = ({
     setSearchQuery(e.target.value);
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
     const updatedFonts = [...fetchedFonts, selectedFont];
+    const newFonts = [...fetchedFonts,selectedFont]
     setFetchedFonts(updatedFonts);
+    const {data,error} = await myFetch(`${baseUrl}/kit`,{
+      method : "PATCH",
+      body: JSON.stringify({fontFamily : newFonts.join()}),
+      headers: {
+          'Content-Type': 'application/json'
+      }       
+  })
+  if(error){
+      console.log(error)
+      return
+  }
     setPreview("");
+
   };
 
   const filteredFonts = googleFonts.filter((font) =>
@@ -120,7 +137,7 @@ const TypographyModal = ({
 
         <div className={styles.modalActions}>
           <button onClick={handleSave}>Save</button>
-          <button onClick={() => setPreview("")}>Cancel</button>
+          {/* <button onClick={() => setPreview("")}>Cancel</button> */}
         </div>
       </div>
     </div>

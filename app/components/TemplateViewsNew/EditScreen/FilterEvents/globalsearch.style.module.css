@@ -56,13 +56,13 @@
     align-items: center;
     gap: 5px;
     position: relative;
-  }
-  
-  .button:hover::before {
+}
+
+.button:hover::before {
     content: attr(data-name);
     position: absolute;
-    bottom: 120%;  
-    left: 50%;
+    top: 100%;
+    left: 30%;
     white-space: nowrap;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -74,11 +74,11 @@
     pointer-events: none;
     transition: opacity 0.2s ease;
     z-index: 10;
-  }
-  
-  .button::before {
+}
+
+.button::before {
     opacity: 1;
-  }
+}
 
 
 .posterContainer .posterIcons div::before {

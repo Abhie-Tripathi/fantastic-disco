@@ -28,8 +28,8 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
     return (
         <div className={styles.body}>
             <div className={styles.navbar}>
-                <li onClick={() => setSelectedBtn("allevents")} className={selectedBtn === "allevents" ? styles.activeItem : ""}>All Events</li>
-                <li onClick={() => setSelectedBtn("addedevents")} className={selectedBtn === "addedevents" ? styles.activeItem : ""}>Events Added</li>
+                <li onClick={() => setSelectedBtn("allevents")} className={selectedBtn === "allevents" ? styles.activeItem : ""}>All Events <span className={styles.count}>{allEventsCount}</span></li>
+                <li onClick={() => setSelectedBtn("addedevents")} className={selectedBtn === "addedevents" ? styles.activeItem : ""}>Events Added <span className={styles.count}>{fetchedAddedEvents?.length || 0}</span></li>
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>

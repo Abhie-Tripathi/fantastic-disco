@@ -155,7 +155,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
+                <div>Events Added</div>
                 <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
             </div>
             <div className={styles.line}></div>

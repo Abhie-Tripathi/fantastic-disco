@@ -25,25 +25,65 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disa
 
     return (
         <div className={styles.shareIconContainer}>
-            <FacebookShareButton disabled={disabled} url={shareUrl} title={title} hashtag={hashtags ? hashtags[0] : "#sometag"}>
-                <FaceBookIcon/>
-            </FacebookShareButton>
-            <TwitterShareButton disabled={disabled} url={shareUrl} title={title} hashtags={hashtags}>
-                <TwitterIcon/>
-            </TwitterShareButton>
-            <LinkedinShareButton disabled={disabled} url={shareUrl} title={title} source='Eventgeni'>
-                <LinkedinIcon/>
-            </LinkedinShareButton>
-            <EmailShareButton disabled={disabled} url={shareUrl} title={title} body={emailBody} subject={emailSubject}>
-                <EmailIcon/>
-            </EmailShareButton>
-            {!copyClick && <div className={styles.copyContainer} data-name="Copy" onClick={handleCopy}>
-                <CopyIcon/>
-            </div>}
-            {copyClick && <div className={styles.copyContainer} data-name="Copied">
-                <TickIcon/>
-            </div>}
+        <div className={styles.iconWrapper} data-name="Share on Facebook">
+          <FacebookShareButton
+            disabled={disabled}
+            url={shareUrl}
+            title={title}
+            hashtag={hashtags ? hashtags[0] : "#sometag"}
+          >
+            <FaceBookIcon />
+          </FacebookShareButton>
         </div>
+        <div className={styles.iconWrapper} data-name="Share on Twitter">
+          <TwitterShareButton
+            disabled={disabled}
+            url={shareUrl}
+            title={title}
+            hashtags={hashtags}
+          >
+            <TwitterIcon />
+          </TwitterShareButton>
+        </div>
+        <div className={styles.iconWrapper} data-name="Share on LinkedIn">
+          <LinkedinShareButton
+            disabled={disabled}
+            url={shareUrl}
+            title={title}
+            source="Eventgeni"
+          >
+            <LinkedinIcon />
+          </LinkedinShareButton>
+        </div>
+        <div className={styles.iconWrapper} data-name="Share via Email">
+          <EmailShareButton
+            disabled={disabled}
+            url={shareUrl}
+            title={title}
+            body={emailBody}
+            subject={emailSubject}
+          >
+            <EmailIcon />
+          </EmailShareButton>
+        </div>
+        {!copyClick && (
+          <div
+            className={`${styles.iconWrapper} ${styles.copyContainer} `}
+            data-name="Copy URL"
+            onClick={handleCopy}
+          >
+            <CopyIcon />
+          </div>
+        )}
+        {copyClick && (
+          <div
+            className={`${styles.iconWrapper} ${styles.copyContainer} `}
+            data-name="Copied"
+          >
+            <TickIcon />
+          </div>
+        )}
+      </div>
     )
 }
 

@@ -9,13 +9,19 @@ interface EventData {
     imageUrl: string;
     name: string;
     description: string;
+    logoUrl?:string;
 }
 const SingleEvent = (props: EventData) => {
     const {theme} = useTheme();
+    
     const iconClass = theme === 'light' ? 'icons_light' : 'icon'
     return (
         <div className={styles.container}>
-            {/* <Image src={props.imageUrl} alt='pic' width={200} height={180} className={styles.image} /> */}
+            {props?.logoUrl && 
+            <div className={styles.image_container}>
+            <Image src={props?.logoUrl} alt='pic' className={styles.image} width={230} height={230}/>
+            </div>
+            }
             <div className={styles.detailContainer}>
                 <div className={styles.eventName}>{props.name}</div>
                 {/* <div className={styles.organiser}>
