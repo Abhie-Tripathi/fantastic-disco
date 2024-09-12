@@ -119,10 +119,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             let apiUrl="";
             try {
             // const apiUrl = baseUrl + "/userInterest/enquiry?status=IN_DISCUSSION&limit=10&offset=" + (page-1)*10+"&source=internal";
-            apiUrl=`${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page-1)*10}${
-              participant.length > 0 ? `&interest=${participant.toUpperCase()}${
-                selectedDateRange.length===2 ? `&duration=${duration}` : ''
-          }&source=internal`;
+            apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
+            (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
+            (selectedDateRange.length === 2 ? `&duration=${duration}` : '') +
+            `&source=internal`;
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
