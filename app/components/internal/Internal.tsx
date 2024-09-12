@@ -46,6 +46,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const participants=["Attendee", "Exhibitor", "Speaker", "Sponsor"];
     const [participant,setParticipant]=useState("");
     const [statusType,setStatusType]=useState("IN_DISCUSSION");
+    const [duration,setDuration]=useState<string>('');
     const handleScrollEnd = () => {
         setTimeout(() => {
             if(!noMoreData) setPage(prevPage => prevPage + 1);
@@ -108,13 +109,19 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
       }, []);
     const fetchData = async () => {
         console.log('fetching data... page=', page);
+        if(selectedDateRange.length===2)
+         setDuration([
+          new Date(selectedDateRange[0]).toISOString().split("T")[0],
+          new Date(selectedDateRange[1]).toISOString().split("T")[0],
+        ].join(","));
         if(page > 0) {
             setIsLoaded(false);
             let apiUrl="";
             try {
             // const apiUrl = baseUrl + "/userInterest/enquiry?status=IN_DISCUSSION&limit=10&offset=" + (page-1)*10+"&source=internal";
             apiUrl=`${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page-1)*10}${
-              participant.length > 0 ? `&interest=${participant.toUpperCase()}` : ''
+              participant.length > 0 ? `&interest=${participant.toUpperCase()}${
+                selectedDateRange.length===2 ? `&duration=${duration}` : ''
           }&source=internal`;
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
@@ -174,7 +181,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
 useEffect(()=>{
   if(page>0)
     fetchData();
-},[statusType, participant, page])
+},[statusType, participant, page, selectedDateRange])
 if (!isLoaded && page <= 1) {
     return <div style={{padding: "50px"}}><Loading /></div>;
 } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
