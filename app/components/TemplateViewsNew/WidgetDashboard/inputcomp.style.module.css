@@ -63,6 +63,9 @@
     border-bottom-right-radius: 4px;
     color: var(--primary-text-color);
 }
+.inputContainer .disableInput{
+    cursor: not-allowed;
+}
 .inputContainer input:focus{
     outline: none;
 }

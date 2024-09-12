@@ -83,7 +83,7 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
             <form onSubmit={handleSubmit} className={`${styles.input_btnContainer} ${fetched ? styles.fetchedInputBtnContainer : ""}`}>
                 <div className={styles.inputContainer}>
                     <span>https://</span>
-                    <input placeholder='Enter your company domain' onChange={(e) => setDomain(e.target.value)} value={domain} disabled={disableBtn ? true : false} />
+                    <input placeholder='Enter your company domain' onChange={(e) => setDomain(e.target.value)} value={domain} disabled={disableBtn ? true : false} className={disableBtn ? styles.disableInput : ""}/>
                 </div>
                 <button className={disableBtn ? styles.disableBtn : ""} data-name="Delete existing widgets to fetch again">Fetch</button>
             </form>
