@@ -9,7 +9,7 @@ import { GolbalEventType } from '@/types/globaleventtype';
 
 interface Props{
     fetchedAllEvents : AllEventsType[]
-    fetchEvents : () => Promise<void>;
+    fetchEvents : (page : number) => Promise<void>;
     fetchedAddedEvents : AddedEventsType[]
     fetchAddedEvents : ()=>Promise<void>;
     handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
@@ -18,10 +18,11 @@ interface Props{
     handleAddEventModal : (value : void)=>void
     widgetId : string;
     addedEventIds : string[]
-    handleNormalEventModal : (value : void)=> void
+    handleNormalEventModal : (value : void)=> void;
+    allEventsCount : number;
 }
 
-const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent,handleNormalEventModal,handlePrefillGlobalEvent} : Props) => {
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent,handleNormalEventModal,handlePrefillGlobalEvent, allEventsCount} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     return (
@@ -32,7 +33,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents handlePrefillGlobalEvent={handlePrefillGlobalEvent} handleNormalEventModal={handleNormalEventModal} widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents allEventsCount={allEventsCount} handlePrefillGlobalEvent={handlePrefillGlobalEvent} handleNormalEventModal={handleNormalEventModal} widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
             </div>
         </div>
     )

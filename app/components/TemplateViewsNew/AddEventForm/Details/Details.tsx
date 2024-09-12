@@ -45,7 +45,7 @@ interface Props {
   pageBgColor: string;
   eventFont: string;
   widgetId: string;
-  fetchEvents: () => Promise<void>;
+  fetchEvents: (page : number, type?: string) => Promise<void>;
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
@@ -249,7 +249,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       console.log("widget event data", data)
       setIsAddEventModalOpen(false)
-      fetchEvents();
+      fetchEvents(0, "update");
       fetchAddedEvents();
     }
     if (error) {
@@ -281,7 +281,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       location_city: cityName,
       location_country: countryName,
       participationType,
-      gmt_time: timeZone
+      gmt_time: timeZone,
+      latitude,
+      longitude,
+      event_type: "Tradeshow"
     };
     const formData = new FormData();
     formData.append("id", eventId);
@@ -355,7 +358,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       console.log("widget event data", data);
       setIsAddEventModalOpen(false);
-      fetchEvents();
+      fetchEvents(0, "update");
       fetchAddedEvents();
     }
     if (error) {

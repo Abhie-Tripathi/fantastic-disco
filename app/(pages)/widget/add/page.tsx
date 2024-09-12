@@ -30,7 +30,7 @@ const Page = () => {
     const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
     const dropdownRef = useOutsideClick(() => setYourWidgetModal(false))
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-    const [isDraftSaved, setIsDraftSaved]= useState<boolean>(false)
+    const [isDraftSaved, setIsDraftSaved] = useState<boolean>(false)
     const router = useRouter();
 
     const handleExplore = () => {
@@ -73,30 +73,28 @@ const Page = () => {
         }
     };
     useEffect(() => {
+        checkBrandkit()
         fetchDraftWidgets()
     }, [])
-    useEffect(()=>{
+    useEffect(() => {
         // This is to trigger the toast container when widget is saved to draft
-        if(isDraftSaved){
+        if (isDraftSaved) {
             toast.success("Widget Added to draft")
         }
         setIsDraftSaved(false)
-    },[isDraftSaved])
+    }, [isDraftSaved])
 
-    const checkBrandkit = async()=>{
-    const {data,error} = await myFetch(`${baseUrl}/kit`)
+    const checkBrandkit = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/kit`)
 
-    if(error){
-      console.log(error);
-      return;
+        if (error) {
+            console.log(error);
+            return;
+        }
+        if (!data.domain.domain) {
+            router.push('/widget/dashboard')
+        }
     }
-    if(!data.domain.domain){
-    router.push('/widget/dashboard')
-    }
-    }
-    useEffect(()=>{
-        checkBrandkit()
-    },[])
 
     return (
         <div className={`${styles.body}`}>

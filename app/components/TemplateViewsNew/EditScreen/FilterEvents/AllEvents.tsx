@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styles from './allevents.style.module.css'
 import GlobalSearch from './GlobalSearch';
 import { baseUrl } from '@/constants';
@@ -10,16 +10,67 @@ import Image from 'next/image';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
-    fetchEvents: () => Promise<void>;
+    fetchEvents: (page: number, type? : string) => Promise<void>;
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
-    handlePrefillNormalEvent: (event: AllEventsType, type : string) => void
+    handlePrefillNormalEvent: (event: AllEventsType, type: string) => void
     handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void
     widgetId: string;
-    handleNormalEventModal: (value : void) => void
+    handleNormalEventModal: (value: void) => void;
+    allEventsCount: number;
 }
 
-const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, handleNormalEventModal, handlePrefillGlobalEvent }: Props) => {
+const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, handleNormalEventModal, handlePrefillGlobalEvent, allEventsCount }: Props) => {
+
+    const [page, setPage] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true); // To check if there are more events
+    const scrollableDivRef = useRef(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollableDiv = scrollableDivRef.current;
+            if (scrollableDiv) {
+                const { scrollTop, clientHeight, scrollHeight } = scrollableDiv;
+                // Check if the user has scrolled near the bottom of the div
+                if (scrollTop + clientHeight >= scrollHeight - 50 && !isLoading && hasMore) {
+                    setPage(prevPage => prevPage + 1);
+                }
+            }
+        };
+        const scrollableDiv: any = scrollableDivRef.current;
+
+        if (scrollableDiv) {
+            scrollableDiv.addEventListener("scroll", handleScroll);
+        }
+
+        return () => {
+            if (scrollableDiv) {
+                scrollableDiv.removeEventListener("scroll", handleScroll);
+            }
+        };
+    }, [isLoading, hasMore]);
+
+    useEffect(() => {
+        if(allEventsCount !== fetchedAllEvents.length){
+            if (page > 0) {
+                const fetchMoreEvents = async () => {
+                    setIsLoading(true);
+                    const prevLength = fetchedAllEvents.length;
+                    await fetchEvents(page*8);
+                    const newLength = fetchedAllEvents.length;
+                    setIsLoading(false);
+    
+                    // If no more events are fetched, stop further fetching
+                    if (newLength === prevLength) {
+                        setHasMore(false);
+                    }
+                };
+                fetchMoreEvents();
+            }
+        }
+ 
+    }, [page]);
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -37,7 +88,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             }
         );
         if (data) {
-            fetchEvents()
+            fetchEvents(0,"update")
             fetchAddedEvents()
         }
         if (error) {
@@ -45,16 +96,16 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
         }
 
     }
-    const handlePrefillingNormalEvent = (event : AllEventsType, type : string, checked : boolean)=>{
+    const handlePrefillingNormalEvent = (event: AllEventsType, type: string, checked: boolean) => {
         // we need to make a check here that if the event is already added to the widget, we dont want to open the detail page form again by clicking on the checkbox
-        if(!checked){
-            handlePrefillNormalEvent(event,type)
-        }   
+        if (!checked) {
+            handlePrefillNormalEvent(event, type)
+        }
     }
     return (
-        <div className={styles.body}>
+        <div className={styles.body} ref={scrollableDivRef}>
             <div className={styles.headerContainer}>
-                <div>All Events <span>{fetchedAllEvents.length}</span></div>
+                <div>All Events <span>{allEventsCount}</span></div>
                 <div className={styles.addBtnContainer}>
                     <button onClick={() => handleNormalEventModal()}>Add event</button>
                     <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
@@ -92,7 +143,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                             </div>
                             <div className={styles.delete_editBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
-                                <div onClick={() => handlePrefillNormalEvent(event,"edit")}><EditIcon /><span>Edit</span></div>
+                                <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div>
                                 <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
                             </div>
                         </div>
