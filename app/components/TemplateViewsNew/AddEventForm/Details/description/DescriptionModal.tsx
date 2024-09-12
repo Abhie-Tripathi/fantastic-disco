@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './modal.style.module.css'
+import { showToast } from "@/utils/showToast";
 
 interface Props {
     setDescriptionModal: (value: boolean) => void
@@ -9,13 +10,26 @@ interface Props {
 }
 
 const DescriptionModal = ({ setDescriptionModal, handleDescClick, setTextValue, textValue }: Props) => {
+   
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        let value = e.target.value;
+        
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/g;
+
+        if (specialCharRegex.test(value)) {
+            showToast("error","Please check, input should not contain any special character");
+        } else {
+            setTextValue(value);  
+        }
+    };
+
     return (
         <div className={styles.descriptionModal}>
             <div>
                 <span>Add your description</span>
                 <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
             </div>
-            <textarea onChange={(e) => setTextValue(e.target.value)} value={textValue} maxLength={1500} />
+            <textarea onChange={(e) => {handleInputChange(e)}} value={textValue} maxLength={1500} />
             <button onClick={handleDescClick}>Save</button>
         </div>
     )
