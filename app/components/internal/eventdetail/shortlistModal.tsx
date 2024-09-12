@@ -158,7 +158,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
               }
             </span>
           </div>
-          <div className={styles["total_attendee"]}>
+          {/* <div className={styles["total_attendee"]}>
 
             <div style={{ fontSize: "12px" }}>
               <div className={styles.circles}>
@@ -198,7 +198,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
               {shortlistModalData.stats.uniqueUser} People have shown interest
             </div>
             <div className={styles.markListBtn} onClick={handleSubmit}>Mark as Shortlisted</div>
-          </div>
+          </div> */}
           <div className={styles.main_section}>
             {shortlistModalData.participent.attendee?.length > 0 &&
               <AttendeeCard cardType={"Attend"} userList={shortlistModalData.participent.attendee} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors}/>
