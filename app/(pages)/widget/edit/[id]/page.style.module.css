@@ -8,6 +8,7 @@
     height: 88vh;
 }
 .modalOpen {
+    max-height: 88vh;
     overflow-y: hidden;
 }
 
