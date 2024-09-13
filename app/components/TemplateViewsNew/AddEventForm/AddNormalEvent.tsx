@@ -14,7 +14,7 @@ import { showToast } from "@/utils/showToast";
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
-    fetchEvents: () => Promise<void>;
+    fetchEvents: (page : number, type? : string) => Promise<void>;
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
     theme: string;
@@ -83,7 +83,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         if (data) {
             console.log(data)
             setIsNormalEventModalOpen(false)
-            fetchEvents()
+            fetchEvents(0,"update")
         }
         if (error) {
             console.log(error)
@@ -125,7 +125,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         if (data) {
             console.log(data)
             setIsNormalEventModalOpen(false)
-            fetchEvents()
+            fetchEvents(0, "update")
         }
         if (error) {
             console.log(error)

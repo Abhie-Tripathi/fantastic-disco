@@ -3,7 +3,7 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { notFound } from 'next/navigation';
 import DetailPageComponent from '../components/DetailPage/DetailPageComponent'
-
+// export const revalidate = 0;
 interface EventProps {
     venue: string;
     latitude: number;
@@ -69,7 +69,7 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
 const fetchData = async (widgetId: string, eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
-        const response = await fetch(`${baseUrl}/public/widget/${widgetId}`, {
+        const response = await fetch(`${baseUrl}/public/widget/${widgetId}?ts=${Date.now()}`, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             },
@@ -87,6 +87,7 @@ const fetchData = async (widgetId: string, eventId: string) => {
         }
 
         console.log("data is: ", data);
+        console.log("Event data is :", data.data.eventData)
         console.log("event id is: ", eventId);
 
         // Find the event in otherdata or eventData

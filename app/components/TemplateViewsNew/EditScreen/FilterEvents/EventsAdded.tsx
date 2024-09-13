@@ -14,7 +14,7 @@ interface Props {
     handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
-    fetchEvents: () => Promise<void>;
+    fetchEvents: (page : number, type? : string) => Promise<void>;
 }
 
 const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents }: Props) => {
@@ -130,7 +130,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         if (data) {
             handleEventIdDelete(eventId)
             fetchAddedEvents()
-            fetchEvents()
+            fetchEvents(0,"update")
         }
         if (error) {
             console.log(error)
