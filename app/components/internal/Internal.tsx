@@ -24,6 +24,7 @@ import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import SearchBar from './searchBar/SearchBar'
+import DropdownRef from '../employee/listView/DropdownRef'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -33,6 +34,7 @@ interface Props{
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
  
     let prevDate: any = null;
+    const { setIsOpen, isOpen } = DropdownRef();
     const { theme } = useTheme();
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
@@ -41,14 +43,14 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [coordinateCount,setCoordinateCount]=useState<any>();
-    const [selectedStatusType, setSelectedStatusType] = useState<string[]>([]);
+    const [selectedStatusType, setSelectedStatusType] = useState<string[]>(["Pending"]);
     const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
     const [selectedParticipantType, setSelectedParticipantType] = useState<string[]>([]);
     const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
     const [popoverState, setPopoverState] = useState<boolean | null>(null);
     const [selectedParticipantTypeName,setSelectedParticipantTypeName]=useState<string>('');
-    const status=["Shortlisted", "Pending"];
-    const participants=["Attendee", "Exhibitor", "Speaker", "Sponsor"];
+    const status=["Pending", "Shortlisted" ];
+    const participants=["Exhibitor", "Sponsor", "Speaker", "Attendee"];
     const [participant,setParticipant]=useState("");
     const [statusType,setStatusType]=useState("IN_DISCUSSION");
     const [duration,setDuration]=useState<string>('');
@@ -57,7 +59,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     }>({});
     const [searchInput, setSearchInput] = useState("");
     const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
-    const [eventId,setEventId]=useState();
+    const [eventId,setEventId]=useState("");
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
     const handleScrollEnd = () => {
         setTimeout(() => {
@@ -71,8 +73,22 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         }else
           setPopoverState(!popoverState);
       };
-       
+      useEffect(() => {
+        const modalStatus = document.body.getAttribute("popover-status");
+    
+        if (modalStatus && modalStatus == "close") {
+          document.body.setAttribute("popover-status", "open");
+          document.documentElement.style.overflow = "";
+          document.documentElement.style.paddingRight = "";
+        } else {
+          document.body.setAttribute("popover-status", "close");
+        }
+        return () => {
+          document.body.removeAttribute("your-attribute");
+        };
+      }, [popoverState]); 
       useEffect(()=>{
+        console.log(selectedParticipantType);
         if(selectedParticipantType.length>0) {
             setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
         }else{
@@ -99,19 +115,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             setPage(1); 
         }
     }, [selectedDateRange]);
-    const removeSelectionHandler = (eventId: string) => {
-      setSelectedEvents((prev) => {
-        if (Object.keys(prev).length - 1 <= 4) {
-          setShowAllEvents(false);
-        }
-        const updatedEvents = { ...prev };
-        delete updatedEvents[eventId];
-        return updatedEvents;
-      });
-    };
       useEffect(()=>{
         if(selectedStatusType.length>0) {
-            setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
+          if(selectedStatusType[0]==="Pending") setStatusType("IN_DISCUSSION");
+           else  setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
             // console.log(selectedStatusType[selectedStatusType.length-1].toUpperCase());
             
         }else{
@@ -150,8 +157,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
       }, []);
     const fetchData = async () => {
         console.log('fetching data... page=', page);
+        
         if(page > 0) {
-            setIsLoaded(false);
+            // setIsLoaded(false);
             let apiUrl="";
             try {
             // const apiUrl = baseUrl + "/userInterest/enquiry?status=IN_DISCUSSION&limit=10&offset=" + (page-1)*10+"&source=internal";
@@ -179,32 +187,30 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             }
         }
     };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         const currentDiv = divRef.current;
+    //         if (currentDiv) {
+    //             const { scrollTop, scrollHeight, clientHeight } = currentDiv;
+    //             if (scrollTop + clientHeight >= (scrollHeight - 2)) {
+    //                 handleScrollEnd();
+    //             }
+    //         }
+    //     };
 
-    /*
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentDiv = divRef.current;
-            if (currentDiv) {
-                const { scrollTop, scrollHeight, clientHeight } = currentDiv;
-                if (scrollTop + clientHeight >= (scrollHeight - 2)) {
-                    handleScrollEnd();
-                }
-            }
-        };
+    //     const currentDiv = divRef.current;
+    //     if (currentDiv) {
+    //         currentDiv.addEventListener('scroll', handleScroll);
+    //     }
 
-        const currentDiv = divRef.current;
-        if (currentDiv) {
-            currentDiv.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            const currentDiv = divRef.current;
-            if (currentDiv) {
-                currentDiv.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, [handleScrollEnd]);
-    */
+    //     return () => {
+    //         const currentDiv = divRef.current;
+    //         if (currentDiv) {
+    //             currentDiv.removeEventListener('scroll', handleScroll);
+    //         }
+    //     };
+    // }, [handleScrollEnd]);
+  
    const scroller = useInfiniteScroll(divRef, handleScrollEnd);
 
    useEffect(() => {
@@ -215,11 +221,17 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
 useEffect(()=>{
-  if(page>0)
+  if(page>0){
+    setNoMoreData(false);
     fetchData();
+    
+  }
 },[statusType, participant, page, duration, eventId])
-if (!isLoaded && page <= 1) {
-    return <div style={{padding: "50px"}}><Loading /></div>;
+// if (!inetialLoading ) {
+//     return <div style={{padding: "50px"}}><Loading /></div>;
+// }else
+ if(!isLoaded){
+  return <div style={{padding: "50px"}}><Loading /></div>;
 } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
     return (
         <div className={styles.noData}>
@@ -231,6 +243,7 @@ if (!isLoaded && page <= 1) {
     setSearchInput(name);
     setEventId(id);
  } 
+ 
     // const abortControllerRef = useRef<AbortController | null>(null);
   return (
     <div className={styles.scrollContainer} ref={divRef} >
@@ -280,6 +293,7 @@ if (!isLoaded && page <= 1) {
                 )}
               </div>
             )} */}
+             <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
             <input
             type="text"
           placeholder="Search Events"
@@ -287,14 +301,22 @@ if (!isLoaded && page <= 1) {
           value={searchInput}
             />
             <span className={styles.search_logo}>
-              {eventSearchLoader ?
-                <div className={styles.loader}></div> : 
-                <Image src={SearchIcon} alt="search" className={iconClass} />
-              }
+            {eventSearchLoader ? (
+  <div className={styles.loader}></div>
+) : (
+  searchInput.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setSearchInput(""); setEventId("")}} />
+  ) : (
+    ""
+  )
+)}
               
             </span>
           </div>
-          <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect}/>
+          {!eventId &&
+           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect}/>
+          }
+         
 
           {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
             <div className={styles.eventName_container2}>
@@ -361,6 +383,9 @@ if (!isLoaded && page <= 1) {
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                         Status
+                        <span className={styles.input_selected_title}>
+                       { selectedStatusType[0]}
+                            </span>
                         {/* {
                           selectedStatusType?.length == 1 ? (
                             <span className={styles.input_selected_title}>
@@ -403,6 +428,9 @@ if (!isLoaded && page <= 1) {
                     <div className={styles.input}>
                       <div className={styles.input_title}>
                        Type
+                       <span className={styles.input_selected_title}>
+                       {selectedParticipantType[0]==='Attendee'?"Attend":selectedParticipantType[0]==='Exhibitor'?"Exhibit":selectedParticipantType[0]==="Speaker"? "Speak": selectedParticipantType[0]==='Sponsor'?"Sponsor":""}
+                       </span>
                         {/* {
                           selectedParticipantType?.length == 1 ? (
                             <span className={styles.input_selected_title}>
@@ -439,6 +467,7 @@ if (!isLoaded && page <= 1) {
               </MenuTrigger>
         </div>
     </div>
+    
     <div className={styles.timelineContainer} >
     {eventData1.map((item, index) => {
         // Check if current event's date is different from previous event's date

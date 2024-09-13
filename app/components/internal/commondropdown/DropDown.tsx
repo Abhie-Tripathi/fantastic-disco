@@ -3,7 +3,7 @@ import styles from "./commondropdown.style.module.css";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { useTheme } from "@/context";
 import EventStatusData from "@/public/data/eventType.json";
-
+import DropdownRef from '../../employee/listView/DropdownRef';
 interface EventStatusProps {
   state: string[];
   status:string[];
@@ -31,20 +31,23 @@ const EventType = ({ state, setState, setSelectedEventTypeName, status }: EventS
     else return tag;
   }
   return (
+    <>
     <div className={styles.container}>
-      <div className={styles.sub_container}>
-        {status.map((item,ind) => (
-          <div key={ind} className={styles.checkbox_container}>
-            <CheckboxInput
-              id={ind.toString()}
-              onChange={() => onClickHandler(item)}
-              checked={state.includes(item)}
-            />
-            <label htmlFor={ind.toString()}>{formatTag(item)}</label>
-          </div>
-        ))}
-      </div>
+    <div className={styles.sub_container}>
+      {status.map((item,ind) => (
+        <div key={ind} className={styles.checkbox_container}>
+          <CheckboxInput
+            id={ind.toString()}
+            onChange={() => onClickHandler(item)}
+            checked={state.includes(item)}
+          />
+          <label htmlFor={ind.toString()}>{formatTag(item)}</label>
+        </div>
+      ))}
     </div>
+  </div>
+    
+    </>
   );
 };
 

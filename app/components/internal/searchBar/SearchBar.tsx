@@ -1,19 +1,23 @@
-import { baseUrl } from '@/context';
+import { baseUrl, useTheme } from '@/context';
 import { myFetch } from '@/utils/myFetch';
 import React,{useState, useEffect, useRef} from 'react'
 import styles from './searchBar.style.module.css'
+import Image from 'next/image';
+import SearchIcon from "/public/search.svg";
 import DropdownRef from '../../employee/listView/DropdownRef';
 interface RestructuredData {
     key: string; 
     value: string; 
   }
 const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
+    const { theme } = useTheme();
+    const iconClass = theme === "light" ? "icons_light" : "icon";
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<RestructuredData[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState([]);
     const fetchSearchSuggestion = async () => {
-        let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}`;
+        let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -68,14 +72,26 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
         setIsOpen(false);
       }
   return (
-         <>
-         {searchInput.length>0 && isOpen &&
-          <div ref={dropdownRef} className={styles.eventName_container2}>
-          {eventSuggestion && eventSuggestion.map((item) => (
-  <div key={item.id} className={styles.resultData_list} onClick={()=>selectedEventId(item.id, item.name)}>
-    {item.name}
+        <>
+         {searchInput.length > 0 && isOpen && (
+  <div ref={dropdownRef} className={styles.eventName_container2}>
+    {eventSuggestion && eventSuggestion.length > 0 ? (
+      eventSuggestion.map((item) => (
+        <div key={item.id} className={styles.resultData_list}>
+          <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
+          <div className={styles.event} onClick={() => selectedEventId(item.id, item.name)}>
+            {item.name}
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className={styles.resultData_list}>
+        <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
+        No results
+      </div>
+    )}
   </div>
-))}
+)}
       
 
           {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
@@ -99,8 +115,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
               )}
             </div>
           )} */}
-        </div>
-         }
          </> 
          
   )
