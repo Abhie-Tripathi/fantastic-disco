@@ -35,7 +35,7 @@ const Page = () => {
 
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
-  const [selectedTemplate, setSelectedTemplate] = useState<string>()
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("")
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
   const [isNormalEventModalOpen, setIsNormalEventModalOpen] = useState<boolean>(false)
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
@@ -206,6 +206,7 @@ const Page = () => {
       <ToastContainer />
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
+          selectedTemplate={selectedTemplate}
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}

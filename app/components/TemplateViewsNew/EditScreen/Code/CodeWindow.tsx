@@ -24,11 +24,9 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
     }, [])
     const fetchDomain = async () => {
         const { data: allDomains, error: allDomainError } = await myFetch(`${baseUrl}/widget/${widgetId}`)
-        const { data: inputDomain, error: inputDomainError } = await myFetch(`${baseUrl}/kit`)
-        if (allDomains && inputDomain) {
+        if (allDomains ) {
             // Split the domains and set inputDomain.domain.domain as the first element
             const domainArray = allDomains.domain.split(",");
-            domainArray[0] = inputDomain.domain.domain;
             console.log("domains : ", domainArray)
             // Set the domains with the updated first element
             setDomains(domainArray);
