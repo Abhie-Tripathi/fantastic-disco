@@ -75,12 +75,21 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard,setIsDraftSaved }: PreviewProps) => {
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+    const [storedDomain, setStoredDomain] = useState<string>("")
     const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
 
+    useEffect(()=>{
+        const fetchDomain = async()=>{
+            const {data, error} = await myFetch(`${baseUrl}/kit`)
+            setStoredDomain(data.domain.domain)
+        }
+        fetchDomain()
+    },[])
+    
     useEffect(() => {
         const handleOtherDataFetch = async () => {
             if(!fetchedAddedEvents){
@@ -155,7 +164,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         }
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
-        customizeData.append('domain', 'http://example.com'); // replace with actual domain
+        customizeData.append('domain', storedDomain); // replace with actual domain
         customizeData.append('otherdata', JSON.stringify(otherdata))
         const customizationData = {
             fontSettings,

@@ -92,6 +92,18 @@
     display: flex;
     justify-content: space-between;
 }
+.editBtnContainer{
+    display: flex;
+    justify-content: flex-end;
+}
+.editBtnContainer div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    color: #6750a4;
+    cursor: pointer;
+}
 .promotEditBtnContainer div{
     display: flex;
     align-items: center;

@@ -14,13 +14,17 @@ interface Props {
     handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
-    fetchEvents: (page : number, type? : string) => Promise<void>;
+    fetchEvents: (page: number, type?: string) => Promise<void>;
+    selectedTemplate: string;
 }
 
-const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents }: Props) => {
+const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+
+    const showPromote = (selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG")
+
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -37,10 +41,10 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
                         }
-    
+
                         const eventData = data?.data?.[0]?.data;
                         if (!eventData) return null;
-    
+
                         return {
                             id: event.id,
                             name: data?.data?.[0]?.name,
@@ -70,16 +74,16 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         } as PrefilledAddedEventsType;
                     })
                 );
-    
+
                 setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
             } catch (err) {
                 console.error("Error in handleOtherDataFetch:", err);
             }
         };
-    
+
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
-    
+
 
 
     // This function is to trigger the delete event function from added events
@@ -88,7 +92,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         if (!updatedEvents) {
             return;
         }
-        if(updatedEvents.length === 0){
+        if (updatedEvents.length === 0) {
             handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
         }
         try {
@@ -130,7 +134,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         if (data) {
             handleEventIdDelete(eventId)
             fetchAddedEvents()
-            fetchEvents(0,"update")
+            fetchEvents(0, "update")
         }
         if (error) {
             console.log(error)
@@ -187,9 +191,10 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={styles.promotEditBtnContainer}>
-                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span></div>
-                                <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>
+                            <div className={showPromote ? styles.promotEditBtnContainer :styles.editBtnContainer}>
+                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
+                                </div>
+                                {showPromote && <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>}
                             </div>
                         </div>
                     </div>

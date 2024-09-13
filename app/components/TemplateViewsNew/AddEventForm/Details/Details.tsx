@@ -227,7 +227,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       latitude,
       longitude,
       venue,
-      hashtags: hashtags.join(",")
+      hashtags: hashtags.join(","),
+      promoted : "true"
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -333,7 +334,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       latitude,
       longitude,
       venue,
-      hashtags: hashtags.join(",")
+      hashtags: hashtags.join(","),
+      promote:"true"
     };
 
     // Find and update the existing event
