@@ -81,7 +81,7 @@
     position: relative;
 }
 
-.viewBtnContainer {
+/* .viewBtnContainer {
     position: fixed; 
     top: 0;
     right: 0; 
@@ -96,4 +96,27 @@
 }
 .viewBtnContainer div {
     cursor: pointer;
+} */
+
+.viewBtnContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    gap: 8px;
+    background-color: #f9f9f9;
+    width: auto;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+.viewBtnContainer div {
+    cursor: pointer;
+    width: 20px; 
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
