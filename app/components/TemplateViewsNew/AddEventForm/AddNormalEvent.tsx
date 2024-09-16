@@ -160,6 +160,18 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     useEffect(() => {
         setTextValue(description)
     }, [description])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        let value = e.target.value;
+        
+        const specialCharRegex = /[@#$%^&*"|<>]/g;
+    
+        if (specialCharRegex.test(value)) {
+            showToast("error","Please check, input should not contain any special character");
+        } else {
+            setEventName(value);  
+        }
+      };
     return (
         <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.header}>
@@ -174,7 +186,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
                 <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} /></div>
 
                 <div>
-                    <textarea className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+                    <textarea className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => {handleInputChange(e)}} value={eventName} />
                     {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required</p>}
                 </div>
                 <div className={styles.dateTimeContainer}><DateTimeContainer theme={theme} setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>

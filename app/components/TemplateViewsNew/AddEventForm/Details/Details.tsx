@@ -436,7 +436,17 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }, [imageUrl]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    let value = e.target.value;
+    
+    const specialCharRegex = /[@#$%^&*"|<>]/g;
 
+    if (specialCharRegex.test(value)) {
+        showToast("error","Please check, input should not contain any special character");
+    } else {
+        setEventName(value);  
+    }
+  };
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -489,7 +499,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               maxLength={80}
               placeholder='Event Name'
               style={{ fontFamily: eventFont }}
-              onChange={(e) => setEventName(e.target.value)}
+              onChange={(e) => {handleInputChange(e)}}
               value={eventName}
             />
               {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required</p>}
