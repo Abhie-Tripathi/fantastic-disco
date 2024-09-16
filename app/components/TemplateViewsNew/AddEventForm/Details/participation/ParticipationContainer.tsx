@@ -10,6 +10,7 @@ import AttendeeIcon from '/public/widgetimages/attendeeIcon.svg'
 import SpeakerIcon from '/public/widgetimages/speakerIcon.svg'
 import ExhibitorIcon from '/public/widgetimages/exhibitorIcon.svg'
 import OrganiserIcon from '/public/widgetimages/organiserIcon.svg'
+import { showToast } from "@/utils/showToast";
 
 interface Props {
   setParticipationType: (value: string) => void
@@ -32,7 +33,17 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
     // setDropdown(false)
     setParticipationType("")
   }
+  const handleInputChange = (e: any) => {
+    let value = e.target.value;
+    
+    const specialCharRegex = /[@#$%^&*"|<>]/g;
 
+    if (specialCharRegex.test(value)) {
+        showToast("error","Please check, input should not contain any special character");
+    } else {
+        setParticipationMessage(value);  
+    }
+  };
   return (
     <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`} >
       {(type === "normal" ? true : !participationType) ?
@@ -68,7 +79,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Attendee</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e) => {handleInputChange(e)}} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -79,7 +90,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Speaker</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e) => {handleInputChange(e)}} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -90,7 +101,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Exhibitor</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e) => {handleInputChange(e)}} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
@@ -101,7 +112,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <span>Organiser</span>
               </div>
               <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e)=>setParticipationMessage(e.target.value)} value={participationMessage}/>
+                <input type="text" placeholder='Add your message here!' onChange={(e) => {handleInputChange(e)}} value={participationMessage}/>
                 <span onClick={handleCloseSelection}>x</span>
               </div>
             </div>
