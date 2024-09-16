@@ -4,6 +4,7 @@ import Image from 'next/image'
 import person1 from '@/public/person1.svg'
 import person2 from '@/public/person2.svg'
 import upArrow from '/public/internal/up_arrow.svg';
+import upArrowLight from '/public/internal/up_arrow_light.svg'
 import { useTheme } from '@/context';
 
 interface voteProps {
@@ -30,7 +31,12 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
   const upVote = () =>{
     handleVoteClick(type);
   }
-
+  const formatTag=(tag:string)=>{
+    if(tag==="Exhibiting") return "Exhibit";
+    else if(tag==="Attending") return "Attend";
+    else if(tag==="Speaking") return "Speak";
+    else if(tag==="Sponsoring") return "Sponsor";
+  }
   return(
     <div className={styles.main} >
       <div className='desktop_view'>
@@ -51,8 +57,11 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
         </div>
       </div>
       <div className={`${styles.vote_tags} ${status=='voted'?styles.upVoted:''}`} onClick={upVote}>
-        <Image src={upArrow} alt="up" width={16} height={16} className={'icons_light'} />
-        {type}
+        {theme === 'light'? <Image src={upArrowLight} alt="up" width={16} height={16}/>:
+        <Image src={upArrow} alt="up" width={16} height={16} className='icons_light'/>
+        }
+        
+        {formatTag(type)}
       </div>
     </div>
   )

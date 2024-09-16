@@ -1,10 +1,16 @@
 .body {
     display: flex;
+    flex-direction: column;
     align-content: center;
     position: relative;
     gap: 30px;
 }
-
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
 .headingContainer {
     display: flex;
     flex-direction: column;

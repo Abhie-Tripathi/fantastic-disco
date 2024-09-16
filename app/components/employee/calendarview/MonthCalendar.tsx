@@ -255,6 +255,8 @@ function getDurationInDays(startDate: Date | string | number, endDate: Date | st
 
 interface MonthCalendarProps {
   queryString: string;
+  setRequestExhausted?: any;
+  handleButtonLoading?: (v: boolean) => void;
 }
 
 const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
@@ -280,22 +282,30 @@ const MonthCalendar: React.FC<MonthCalendarProps> = (props) => {
           apiMonth = month.toString();
       }
       const apiUrl = `${baseUrl}/event/search?groupBy=${year}-${apiMonth}-01,${year}-${apiMonth}-31&${props.queryString}`;
-      const apiData = await myFetch(apiUrl, {
+      const {data, error} = await myFetch(apiUrl, {
         method: "GET",
         headers: headers,
       });
-      if (apiData.data) {
-        setMonthEvents(apiData.data);
+      if (data) {
+        setMonthEvents(data);
         // setupCalendar();
+      }
+      if(error) {
+        if(props.setRequestExhausted && error.status === 429){
+          props.setRequestExhausted(true);
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
       setMonthEvents({});
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
-    }else
+    }else{
       setMonthEvents({});
+      setIsLoaded(true);
+    }
   }
 
   const setupCalendar = () => {

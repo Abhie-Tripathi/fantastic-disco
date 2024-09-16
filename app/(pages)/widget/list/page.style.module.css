@@ -1,0 +1,114 @@
+.body{
+    padding: 25px;
+    font-family: var(--font-inter);
+    position: relative;
+}
+.errorPage{
+    height: 88vh;
+}
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.navHeading{
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
+}
+.nav .navBtns{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.navBtns button{
+    background-color: var(--primary-color);
+    color: white;
+    font-size: var(--font-size-small);
+    padding: 7px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.navBtns button:hover{
+    transform: scale(1.02);
+}
+.navBtns .draftBtn span{
+    color: var(--primary-color);
+    background-color: #E6E6F9;
+    height: 16px;
+    width: 15px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+.line{
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+.widgetsAndPreview{
+    display: flex;
+    margin-top: 25px;
+    gap: 10px;
+}
+.widgetsList {
+    display: grid;
+    width: 55%;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 9px;
+    row-gap: 12px;
+    padding-right: 3px;
+    overflow-y: auto;
+    margin: 0;
+    height: 520px;
+    align-content: start; /* Align items at the start to avoid stretching */
+}
+.hideWidgetList{
+    display: none;
+}
+.widgetsList .widgetCard{
+    height: 178px;
+}
+.preview{
+    width: 45%;
+    height: 520px;
+    overflow-y: auto;
+}
+.fullPreview{
+    width: 100%;
+}
+.yourWidgetModal {
+    /* filter: drop-shadow(1px 1px 5px rgb(180, 180, 180)); */
+    border: 1px solid var(--border-color);
+    height: 89%;
+    width: 600px;
+    background-color: var(--primary-foreground);
+    position:fixed;
+    z-index: 999;
+    top: 70px;
+    right: -610px;
+    padding: 25px 30px;
+    transition: right 0.3s ease; 
+    border-radius: 20px;
+}
+
+.yourWidgetModal.open {
+    right: 0;
+    
+}
+@media screen and (max-width: 1404px) {
+    .widgetsList{
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 40%;
+    }
+    .preview{
+        width: 60%;
+    }
+  }
+  

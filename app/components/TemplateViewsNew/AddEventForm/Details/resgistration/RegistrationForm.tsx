@@ -32,14 +32,18 @@ const RegistrationForm = ({ setRegisterModal, registerMessage, registerBtnText, 
     const fontColor = brightness > 155 ? '#000000' : '#FFFFFF';
     return (
         <div className={styles.registerContainer} >
+            <div className={styles.info}>
+                <div className={styles.iBtn}>i</div>
+                <div className={styles.heading}>Customize your event registration form</div>
+            </div>
             <div className={styles.header}>
                 <div>Join us at the event</div>
                 <Image src={EditIcon} alt='edit' onClick={() => setRegisterModal(true)} />
             </div>
             <div className={styles.formSubHeading}>{registerMessage}
             </div>
-            <input className={styles.inputField} type="text" placeholder='Name' />
-            <input className={styles.inputField} type="text" placeholder='Email' />
+            <input className={styles.inputField} type="text" placeholder='Name' disabled />
+            <input className={styles.inputField} type="text" placeholder='Email' disabled />
             <button
                 style={{ backgroundColor: registerBtnColor, color: fontColor }}
                 className={styles.submitBtn}>

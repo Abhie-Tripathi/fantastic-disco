@@ -2,7 +2,9 @@
     width: 100%;
     padding: 12px;
 }
-
+/* .darkBody{
+    background-color: #1a1a1a;
+} */
 .locationTypes {
     display: flex;
     align-items: center;
@@ -60,6 +62,7 @@
     flex-direction: column;
     gap: 6px;
     position: relative;
+
 }
 .locationDropdown{
     position: absolute;
@@ -84,6 +87,7 @@
     background-color: #F2F2F2;
 }
 .locationInputContainer input {
+    width: 100%;
     border: 1px solid #EBEBEB;
     border-radius: 2px;
     padding: 8px;

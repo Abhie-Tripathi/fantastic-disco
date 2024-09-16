@@ -7,7 +7,7 @@ import { useState } from "react";
 // import MapPointer from "/public/Marker.svg";
 import {Map as Map2, Marker, Popup, Source, Layer, useMap } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { formatDateRange } from "@/utils/dateFormat";
+import { formatEventDates } from "@/utils/dateFormat";
 import FilterIcon from "/public/filterIcon.svg";
 // import FestivalIcon from "/public/festivalIcon.svg";
 import { useTheme } from "@/context";
@@ -35,7 +35,7 @@ const EventListCard = (event: any) => {
         {event.event?.location?.cityName}
       </div>
       <div className={styles.eventListCard_date}>
-        {formatDateRange(event?.event?.startDate, event?.event?.endDate)}
+        {formatEventDates(event?.event?.startDate, event?.event?.endDate)}
       </div>
       <div className={styles.eventListCard_footer}>
         <div className={styles.eventListCard_footer_info}>
@@ -152,6 +152,8 @@ const cityMarker = (count: number) => {
 
 interface MapProps {
   queryString?: string;
+  setRequestExhausted?: any;
+  handleButtonLoading?: (val: boolean) => void;
 }
 
 const zones = {
@@ -252,7 +254,7 @@ const Map = (props: MapProps) => {
   };
 
   const fetchEventsData = async() => {
-    let mapViewType = 'world';
+    let mapViewType = 'country';
     if(props.queryString){
       const params = new URLSearchParams(props.queryString);
       const obj:any = {};
@@ -269,25 +271,25 @@ const Map = (props: MapProps) => {
       if(mapViewType == 'country')
         apiUrl = `${baseUrl}/event/search?groupBy=country&${props.queryString}`;
 
-      const apiData = await myFetch(apiUrl, {
+        const {data, error} = await myFetch(apiUrl, {
           method: "GET",
           headers: headers,
       });
-      if(apiData.data) {
+      if(data) {
         // setZonePerPage(apiData.data);
         if(mapViewType == 'country'){
-          setCountryPerPage(apiData.data);
+          setCountryPerPage(data);
           setEventPerPage([]);
           // const totalCount = apiData.data.reduce((acc: any, current: any) => acc + current.eventCount, 0);
           const countryEventCountsObj: any = {};
           // countryEventCountsObj['totalEventCount'] = totalCount;
-          apiData.data.forEach((country: any) => {
+          data.forEach((country: any) => {
             countryEventCountsObj[country.countryCode] = country.eventCount;
           });
           setCountryEventCounts(countryEventCountsObj);
         }
         else{
-          setEventPerPage(apiData.data.events);
+          setEventPerPage(data.events);
           setCountryPerPage([]);
         }
         const cityData = await myFetch(`${baseUrl}/event/search?groupBy=city&${props.queryString}`, {
@@ -296,10 +298,16 @@ const Map = (props: MapProps) => {
         });
         setCityPerPage(cityData.data);
       }
+      if(error) {
+        if(props.setRequestExhausted && error.status === 429){
+          props.setRequestExhausted(true);
+        }
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
   }
 
@@ -444,7 +452,7 @@ const Map = (props: MapProps) => {
       {/* <Suspense fallback={<div><Image src={Preloader} alt="preloader" height="50"/></div>}> */}
       <Map2
         style={{
-          width: "calc(100vw - 137px)",
+          width: "calc(100vw - 120px)",
           height: "90vh",
         }}
         mapStyle={
@@ -456,7 +464,7 @@ const Map = (props: MapProps) => {
         initialViewState={{
           longitude: -0.076132,
           latitude: 51.50853,
-          zoom: 2,
+          zoom: 1,
         }}
         maxZoom={20}
         projection={{"name": "mercator"}}
@@ -582,7 +590,7 @@ const Map = (props: MapProps) => {
             <Source id="country-source" type="vector" url="mapbox://mapbox.country-boundaries-v1" >
               {layers}
             </Source>
-            {countryPerPage.map((event) => (
+            {countryPerPage.length < 20 && countryPerPage.map((event) => (
               <div key={event.countryId} >
                 <Marker
                   key={event.countryId}

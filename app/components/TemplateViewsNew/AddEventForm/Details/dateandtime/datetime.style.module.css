@@ -12,7 +12,9 @@
   justify-content: space-between;
   width: 75%;
 }
-
+.darkdateAndTimeContainer{
+  background-color: #4d4d4d53;
+}
 .startEndStyle {
   color: #7D7D7D;
   font-size: 12px;
@@ -75,11 +77,11 @@
 .dateBoxes .dateBox {
   padding: 2px 15px;
   background-color: #ffffffa8;
+  width: 100px;
   border-radius: 4px;
   position: relative;
   cursor: pointer;
 }
-
 .timeBoxes {
   display: flex;
   flex-direction: column;
@@ -104,7 +106,9 @@
   height:78px;
   cursor: pointer;
 }
-
+.darktimeZonesContainer{
+  background-color: #4d4d4d53;
+}
 .timeZonesContainer .header {
   display: flex;
   align-items: center;
@@ -115,6 +119,9 @@
   color: black;
   font-size: 10px;
   margin-top: 11px;
+}
+.timeZonesContainer .themeTimeZone{
+  color: var(--primary-text-color);
 }
 .dropdownIcon{
   cursor: pointer;

@@ -1,9 +1,12 @@
+'use client'
 import React, { useEffect, useState } from 'react'
 import styles from './datetime.style.module.css'
 import TimezoneDropdown from './TimezoneDropdown'
 import CalendarDropdown from './CalendarDropdown'
 import TimeDropdown from './TimeDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import { CalendarDate, parseDate, today } from "@internationalized/date"; 
+
 
 const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -22,13 +25,13 @@ interface TimeSettingsProps {
     setStartTime: React.Dispatch<React.SetStateAction<string>>;
     endTime: string;
     setEndTime: React.Dispatch<React.SetStateAction<string>>;
+    theme?: string;
 }
-
 
 const DateTimeContainer = ({
     timeZone,
     setTimeZone,
-    timeZoneKey,
+    timeZoneKey = 1,
     setTimeZoneKey,
     startDate,
     setStartDate,
@@ -36,28 +39,86 @@ const DateTimeContainer = ({
     setEndDate,
     startTime,
     setStartTime,
-    endTime, setEndTime }: TimeSettingsProps) => {
+    endTime,
+    setEndTime,
+    theme
+}: TimeSettingsProps) => {
 
     const [timezoneDropdown, setTimezoneDropdown] = useState<boolean>(false)
     const [startCalendarDropdown, setStartCalendarDropdown] = useState<boolean>(false)
     const [endCalendarDropdown, setEndCalendarDropdown] = useState<boolean>(false)
     const [startTimeDropdown, setStartTimeDropdown] = useState<boolean>(false)
     const [endTimeDropdown, setEndTimeDropdown] = useState<boolean>(false)
+    const [todaysDate, setTodaysDate] = useState<any>()
+    const [maxEndDate, setMaxEndDate] = useState<string>("") // To find a max end date according to startDate. i:e 28 days later of startDate
 
-    const startCalDropdownRef = useOutsideClick(()=>setStartCalendarDropdown(false))
-    const endCalDropdownRef = useOutsideClick(()=>setEndCalendarDropdown(false))
-    const startTimeDropdownRef = useOutsideClick(()=>setStartTimeDropdown(false))
-    const endTimeDropdownRef = useOutsideClick(()=>setEndTimeDropdown(false))
-    const timezoneDropdownRef = useOutsideClick(()=>setTimezoneDropdown(false))
+    const startCalDropdownRef = useOutsideClick(() => setStartCalendarDropdown(false))
+    const endCalDropdownRef = useOutsideClick(() => setEndCalendarDropdown(false))
+    const startTimeDropdownRef = useOutsideClick(() => setStartTimeDropdown(false))
+    const endTimeDropdownRef = useOutsideClick(() => setEndTimeDropdown(false))
+    const timezoneDropdownRef = useOutsideClick(() => setTimezoneDropdown(false))
 
+    const times = [
+        "12:00 A.M", "12:30 A.M", "1:00 A.M", "1:30 A.M", "2:00 A.M", "2:30 A.M", "3:00 A.M", "3:30 A.M",
+        "4:00 A.M", "4:30 A.M", "5:00 A.M", "5:30 A.M", "6:00 A.M", "6:30 A.M", "7:00 A.M", "7:30 A.M",
+        "8:00 A.M", "8:30 A.M", "9:00 A.M", "9:30 A.M", "10:00 A.M", "10:30 A.M", "11:00 A.M", "11:30 A.M",
+        "12:00 P.M", "12:30 P.M", "1:00 P.M", "1:30 P.M", "2:00 P.M", "2:30 P.M", "3:00 P.M", "3:30 P.M",
+        "4:00 P.M", "4:30 P.M", "5:00 P.M", "5:30 P.M", "6:00 P.M", "6:30 P.M", "7:00 P.M", "7:30 P.M",
+        "8:00 P.M", "8:30 P.M", "9:00 P.M", "9:30 P.M", "10:00 P.M", "10:30 P.M", "11:00 P.M", "11:30 P.M"
+    ];
 
     useEffect(() => {
         if (!startDate) {
-            const currentDate = new Date().toISOString().split('T')[0]; // Format the date as "yyyy-mm-dd"
-            setStartDate(currentDate);
-            setEndDate(currentDate);
+            const currentDate = new Date();
+            const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
+            setStartDate(formattedStartDate);
+            setEndDate(formattedStartDate)
+            setTodaysDate(formattedStartDate);
         }
+        const closestTime = findClosestTime();
+        setStartTime(closestTime);
+        setEndTime(closestTime)
     }, []);
+
+    const addDays = (date: string, days: number) => {
+        const initialDate = new Date(date);
+        initialDate.setDate(initialDate.getDate() + days);
+        const resultDate = initialDate.toISOString().split('T')[0];
+        return resultDate;
+    };
+
+    useEffect(() => {
+        if (new Date(endDate) < new Date(startDate)) {
+            setEndDate(startDate);
+        }
+        if(startDate){
+            const maxDate = addDays(startDate, 28)
+            setMaxEndDate(maxDate)
+        }
+    }, [startDate, endDate]);
+
+    const timeToMinutes = (t: string) => {
+        const [hour, minute] = t.split(/:|\s/);
+        const isPM = t.includes("P.M");
+        return (parseInt(hour) % 12 + (isPM ? 12 : 0)) * 60 + parseInt(minute);
+    };
+    const findClosestTime = () => {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        let closestTime = times[0];
+        let smallestDiff = Infinity;
+
+        for (const t of times) {
+            const tMinutes = timeToMinutes(t);
+            const diff = tMinutes - currentMinutes;
+            if (diff >= 0 && diff < smallestDiff) {
+                smallestDiff = diff;
+                closestTime = t;
+            }
+        }
+        return closestTime;
+    };
+
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
         setTimeZoneKey(key)
@@ -91,8 +152,8 @@ const DateTimeContainer = ({
     }
 
     return (
-        <div className={styles.body}>
-            <div className={styles.dateAndTimeContainer}>
+        <div className={`${styles.body}`}>
+            <div className={`${styles.dateAndTimeContainer} ${theme && theme === "dark" ? styles.darkdateAndTimeContainer : ""}`}>
                 <div className={styles.startEndStyle}>
                     <div className={styles.start}>Start</div>
                     <div className={styles.end}>End</div>
@@ -102,13 +163,13 @@ const DateTimeContainer = ({
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
                             {formatDate(startDate)}
                             {startCalendarDropdown && <div ref={startCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown setDate={setStartDate} dateValue={startDate} />
+                                <CalendarDropdown minDate={todaysDate} setDate={setStartDate} dateValue={startDate} />
                             </div>}
                         </div>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
                             {formatDate(endDate)}
                             {endCalendarDropdown && <div ref={endCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown setDate={setEndDate} dateValue={endDate} />
+                                <CalendarDropdown  maxDate={maxEndDate} minDate={startDate} setDate={setEndDate} dateValue={endDate} />
                             </div>}
                         </div>
                     </div>
@@ -120,19 +181,19 @@ const DateTimeContainer = ({
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
                             {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setEndTime} time={endTime} />
+                                <TimeDropdown setTime={setEndTime} time={endTime} minTime={startTime} />
                             </div>}
                         </div>
                     </div>
                 </div>
 
             </div>
-            <div ref={timezoneDropdownRef} className={styles.timeZonesContainer} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
+            <div ref={timezoneDropdownRef} className={`${styles.timeZonesContainer} ${theme && theme === "dark" ? styles.darktimeZonesContainer : ""}`} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
                 <div className={styles.header}>
                     <TimeZoneIcon />
                     <div className={styles.dropdownIcon}><DownIcon /></div>
                 </div>
-                <div className={styles.timeZone}>
+                <div className={`${styles.timeZone} ${theme && styles.themeTimeZone}`}>
                     {timeZone}
                 </div>
                 {timezoneDropdown && <div className={styles.timezoneDropdown}>

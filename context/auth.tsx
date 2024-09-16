@@ -194,7 +194,9 @@ export const AuthContextProvider = ({ children }: any) => {
   const signOut = () => {
     setUser(null);
     deleteLocalStorage();
-    router.push("/signin");
+    myFetch(`${baseUrl}/auth/customer/logout`, { method: "POST" }).then(() =>
+      router.push("/signin")
+    );
   };
 
   const setLocalStorage = (user?: UserResponse | newUserResponse) => {

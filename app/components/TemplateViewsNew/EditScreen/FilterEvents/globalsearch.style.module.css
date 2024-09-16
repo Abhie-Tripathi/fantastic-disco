@@ -14,7 +14,7 @@
 }
 .dropdownContainer{
     position:absolute;
-    width: 95%;
+    width: 93%;
     border-radius: 2px;
     z-index: 1;
     max-height: 200px;
@@ -42,6 +42,18 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.buttons{
+    display: flex;
+    align-items: center;
+    gap:3px;
+}
+.buttons button{
+    font-size: var(--font-size-small);
+    border-radius: 4px;
+    background-color: #6750a4;
+    color: white;
+    padding: 5px;
+}
 .darkDropdown .dropdownEvent:hover{
     background-color: #292929;
 }
@@ -54,7 +66,7 @@
     background-color: #F2F2F2;
 }
 .dropdownEvent .dropeventName{
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-default);
     font-weight: var(--font-weight-medium);
 }
 .dropdownEvent .dropeventLocation{

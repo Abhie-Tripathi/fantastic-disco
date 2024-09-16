@@ -1,12 +1,12 @@
 .body {
-    padding-right: 30px;
+    padding-right: 90px;
     padding-left: 30px;
     font-family: var(--font-inter);
     position:relative;
     width: 100vw;
-    min-height: 88vh;
-    /* height: 100vh; */
-    /* overflow-y: hidden; */
+    height: fit-content;
+    /* max-height: 88vh; */
+    /* overflow: hidden; */
 }
 .widgetOptions {
     display: flex;
@@ -41,7 +41,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    right: 30px;
+    right: 90px;
     top: 20px;
 }
 
@@ -52,10 +52,10 @@
     cursor: pointer;
 }
 
-.line {
+/* .line {
     height: 20px;
     border-right: 1px solid #D8D8D8;
-}
+} */
 
 .myWidgetBtnContainer {
     display: flex;
@@ -109,21 +109,20 @@
     color: white;
     background-color: #6750A4;
 }
-
-.templates_preview {
+.line{
     border-top: 1px solid var(--card-border-color);
     margin-top: 20px;
     padding-top: 20px;
-    /* height: 600px; */
 }
+
 .yourWidgetModal {
     filter: drop-shadow(1px 1px 5px rgb(180, 180, 180));
-    height: 88%;
+    height: 89%;
     width: 600px;
     background-color: #FFFFFF;
     position:fixed;
     z-index: 999;
-    top: 80px;
+    top: 70px;
     right: -610px;
     padding: 25px 30px;
     transition: right 0.3s ease; 

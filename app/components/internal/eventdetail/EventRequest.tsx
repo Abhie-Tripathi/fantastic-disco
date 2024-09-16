@@ -11,6 +11,8 @@ interface DetailsProps {
   participentData: {
     attendee: string[];
     speakers: string[];
+    sponsors: string[];
+    exhibitors: string[];
   };
 }
 
@@ -27,7 +29,7 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventRequest_header}>
-          Event Request
+          Team Request
           <span className={styles.image_container}>
             <Image src={downArrowIcon} alt="dropdown" width={15} height={15} />
           </span>
@@ -36,8 +38,10 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.main_section}>
-            <AttendeeCard cardType={"Attendee"} userList={participentData.attendee} />
-            <AttendeeCard cardType={"Speaker"} userList={participentData.speakers} />
+            {participentData.attendee.length>0 && <AttendeeCard cardType={"Attend"} userList={participentData.attendee} />}
+            {participentData.speakers.length>0 && <AttendeeCard cardType={"Speak"} userList={participentData.speakers} />}
+            {participentData.sponsors.length>0 && <AttendeeCard cardType={"Sponsor"} userList={participentData.sponsors} />}
+            {participentData.exhibitors.length>0 && <AttendeeCard cardType={"Exhibit"} userList={participentData.exhibitors} />}
           </div>
         </div>
       )}

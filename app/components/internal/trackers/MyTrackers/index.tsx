@@ -144,6 +144,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
     // setIsLoading(false);
   }
   },[totalPage])
+  console.log(page, totalPage);
   
   return (
     <div className={styles.container} ref={endOfListRef}>
@@ -194,7 +195,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
         {totalPage > 1 &&
           (trackerType === "All Trackers" ||
             trackerType === "Custom Trackers") &&
-          !loading && (
+          !loading && page<(totalPage-1) &&(
             <div
               style={{
                 display: "flex",

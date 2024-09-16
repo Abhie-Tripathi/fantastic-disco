@@ -6,4 +6,48 @@
     flex-direction: column;
     gap: 6px;
 }
+.descriptionModal div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.descriptionModal .header{
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.descriptionModal .wrapper{
+    border: none;
+    display: flex;
+    flex-direction: column;
+}
+.descriptionModal .toolbar {
+    display: flex;   
+    /* flex-direction: column; */
+}
+.descriptionModal textarea {
+    resize: none;
+    border: 1px solid #EBEBEB;
+    width: 100%;
+    padding: 8px;
+    height: 130px;
+}
+.descriptionModal textarea:focus {
+    outline: none;
+}
 
+.close {
+    cursor: pointer;
+}
+
+.saveBtn{
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #6750a4;
+    padding: 5px 8px;
+    color: white;
+}

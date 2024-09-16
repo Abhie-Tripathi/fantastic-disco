@@ -99,7 +99,7 @@
 .event_list_button {
     cursor: pointer;
     position: absolute;
-    left: -130px;
+    left: -128px;
     top: 25px;
     background-color: var(--primary-color);
     border-radius: 12px 0px 0px 12px;

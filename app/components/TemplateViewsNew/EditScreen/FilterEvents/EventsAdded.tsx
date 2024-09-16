@@ -2,38 +2,109 @@ import React, { useEffect, useState } from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AddedEventsType } from '@/types/addedeventtype';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 
 interface Props {
     handleAddEventModal: (value: void) => void
     fetchedAddedEvents: AddedEventsType[]
-    handlePrefilledAddedEvent: (event: AddedEventsType) => void
+    handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
-    fetchEvents : () => Promise<void>;
+    fetchEvents: () => Promise<void>;
 }
 
-const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId,fetchEvents }: Props) => {
+const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
+    const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
     };
 
+    useEffect(() => {
+        const handleOtherDataFetch = async () => {
+            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
+                fetchedAddedEvents.map(async (event) => {
+                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                    if (error) {
+                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                        return null;
+                    }
+                    if (data) {
+                        console.log("data of fetched event : ",)
+                    }
+                    return {
+                        id: event.id,
+                        name: data.data[0].name,
+                        pageBgColor: event.pageBgColor,
+                        description: data.data[0].data.description,
+                        eventFont: event.eventFont,
+                        startDate: data.data[0].data.start_date,
+                        endDate: data.data[0].data.end_date,
+                        startTime: data.data[0].data.start_time,
+                        endTime: data.data[0].data.end_time,
+                        timeZone: data.data[0].data.gmt_time,
+                        cityName: data.data[0].data.location_city,
+                        countryName: data.data[0].data.location_country,
+                        // participationType: data.data[0].data.participationType,
+                        eventFormat: data.data[0].data.format,
+                        registerBtnColor: event.registerBtnColor,
+                        registerBtnText: event.registerBtnText,
+                        registerMessage: event.registerMessage,
+                        boothNumber: event.boothNumber,
+                        speakerProfilesData: event.speakerProfilesData,
+                        participationMessage: event.participationMessage,
+                        bannerUrl: event.bannerUrl,
+                        latitude: event.latitude,
+                        longitude: event.longitude,
+                        venue: event.venue,
+                        hashtags : event.hashtags
+                    } as PrefilledAddedEventsType;
+                })
+            );
+            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+        };
+
+        handleOtherDataFetch();
+    }, [fetchedAddedEvents]);
+
+
     // This function is to trigger the delete event function from added events
     const handleCheckboxChange = async (eventId: string) => {
         const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
-        if (!updatedEvents) return;
+        if (!updatedEvents) {
+            return;
+        }
+        if(updatedEvents.length === 0){
+            handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
+        }
         try {
             await updateWidget(widgetId, updatedEvents, eventId);
         } catch (error) {
             console.error('Failed to update events:', error);
         }
+
     };
+
+    // To move the widget to draft if all events are deleted
+    const handleDraftWidget = async () => {
+        const formData = new FormData();
+        formData.append("widgetId", widgetId)
+        formData.append("status", "draft")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: "POST",
+            body: formData
+        })
+        if (data) {
+            console.log("widget moved to draft widgets")
+        }
+    }
     const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventId: string) => {
         const customizedFormData = new FormData();
 
@@ -67,10 +138,10 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         const { data, error } = await myFetch(`${baseUrl}/widget`, {
             method: 'POST',
             body: customizedFormData
-        }) 
-        if(data){
+        })
+        if (data) {
             console.log(data)
-        }if(error){
+        } if (error) {
             console.log(error)
         }
     }
@@ -78,11 +149,11 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
-                <button onClick={() => handleAddEventModal()}>Add Event</button>
+                <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
             </div>
             <div className={styles.line}></div>
-            <div className={styles.allEventsContainer}>
-                {fetchedAddedEvents?.map((event, key) => (
+            {fetchedAddedOtherData.length > 0 ? <div className={styles.allEventsContainer}>
+                {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
                             <div className={styles.eventName}>{event.name}</div>
@@ -116,7 +187,12 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                         </div>
                     </div>
                 ))}
-            </div>
+            </div> : <div className={styles.emptyScreen}>
+                <Image src={EmptyImage} alt='empty' />
+                <div>Search or Add your Events</div>
+                <span>Start by searching for existing events to add to your widgets</span>
+                <span>or feel free to create your own event from scratch</span>
+            </div>}
         </div>
     )
 }

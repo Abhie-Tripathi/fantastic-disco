@@ -1,6 +1,5 @@
 .container {
   height: 100vh;
-  background-color: #fafaff;
   width: 100vw;
   position: relative;
   display: flex;
@@ -116,11 +115,11 @@
   top: 70px;
   left: 5px;
   font-size: 12px;
-  color: #f15050;
+  color: var(--danger-text-color);
 }
 
 .error_boundary {
-  border-color: #f15050 !important;
+  border-color: var(--danger-text-color) !important;
 }
 .form_heading {
   color: #242424;

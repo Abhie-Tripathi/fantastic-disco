@@ -3,7 +3,8 @@ import styles from './listview.style.module.css'
 import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { useRouter } from "next/navigation";
 
 interface FontSettings {
     fontFamily: string;
@@ -21,11 +22,10 @@ interface EditProps {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedEvents?: AddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    widgetId?: string;
 }
-
-
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedEvents }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId }: EditProps) => {
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -38,27 +38,32 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
         default:
             EventListCard = EventListCard3; // Or some default component or message
     }
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+    }
     return (
         <div className={styles.listView}>
-            {fetchedAddedEvents && fetchedAddedEvents?.length>0 ? (
-                fetchedAddedEvents.map((event, key) => (
-                    <EventListCard
-                        key={key}
-                        fetchedAddedEvents={fetchedAddedEvents}
-                        cardBgColor={cardBgColor}
-                        cardBorderRadius={cardBorderRadius}
-                        fontSettings={fontSettings}
-                        fetchedEvent = {event}
-                    />
+            {fetchedAddedOtherData && widgetId && fetchedAddedOtherData?.length > 0 ? (
+                fetchedAddedOtherData.map((event, key) => (
+                    <div onClick={() => handleCardClick(event.id, widgetId)} key={key} className={styles.listcard}>
+                        <EventListCard
+                            fetchedAddedEvents={fetchedAddedOtherData}
+                            cardBgColor={cardBgColor}
+                            cardBorderRadius={cardBorderRadius}
+                            fontSettings={fontSettings}
+                            fetchedEvent={event}
+                        />
+                    </div>
                 ))
             ) : (
-                <div>
+                <div className={styles.listView}>
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
                     />
-                     <EventListCard
+                    <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
@@ -72,7 +77,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
             )}
         </div>
     );
-    
+
 }
 
 export default ListView

@@ -7,10 +7,11 @@ interface Props {
     widgetSelected: string;
     exploreWindow: boolean;
     widgetOptionsWindow: boolean;
+    handleExplore : (value : void)=>void
 }
 type TextAlign = 'left' | 'right' | 'center' | 'justify' | 'initial' | 'inherit';
 
-const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow, exploreWindow }: Props) => {
+const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow, exploreWindow,handleExplore }: Props) => {
 
     const [textAlign, setTextAlign] = useState<TextAlign>("center");
     const [headingSize, setHeadingSize] = useState<string>("40px")
@@ -28,6 +29,10 @@ const WidgetOptions = ({ setWidgetSelected, widgetSelected, widgetOptionsWindow,
         }
     }, [widgetOptionsWindow, exploreWindow])
 
+   useEffect(()=>{
+    handleExplore()
+   },[widgetSelected])
+    
     return (
         <div className={`${styles.body}`}>
             <div className={`${styles.headingContainer}`} style={{ textAlign }}>

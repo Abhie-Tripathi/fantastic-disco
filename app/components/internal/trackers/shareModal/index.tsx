@@ -10,7 +10,7 @@ import { GAEvent } from '@/utils/GAEvent';
 interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal: () => void;
-  data: any;
+ 
   id: string;
   setId: any;
   shareFunction: () => void;
@@ -21,7 +21,6 @@ interface ShareModalProps {
 const ShareModal: React.FC<ShareModalProps> = ({
     fetchAccess,
     closeShareModal,
-    data,
     id,
     setId,
     shareFunction,
@@ -33,10 +32,30 @@ const ShareModal: React.FC<ShareModalProps> = ({
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
+    const [data, setData] = useState<any>([]);
     const path = usePathname().split('/');
     const searchParams = useSearchParams();
     const type  = searchParams.get('type');
     const [isClicked,setIsClicked]=useState(false);
+    const fetchData = async () => {
+            const url = `${baseUrl}/auth/users?limit=100`;
+            try {
+                const { data, error } = await myFetch(url, {
+                    method: 'GET'
+                });
+                if (error) {
+                    console.error('Error fetching data:', error);
+                } else {
+                    console.log('Data fetched:', data);
+                    setData(data?.users);
+                }
+            } catch (err) {
+                console.error('Fetch failed:', err);
+            }
+        };
+        useEffect(() => {
+              fetchData();
+            }, []);
     useEffect(() => {
         if(!id)
           setDrop(true);
@@ -137,6 +156,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             });
             if (error) {
                 console.error('Error fetching data:', error);
+                showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
+                setFilter("");
             } else {
                 console.log(data.user.id);
                 setId(data.user.id);
@@ -147,6 +168,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }
         } else {
             showToast("error", "Enter Valid Name or Email");
+            setFilter('');
             setIsClicked(false);
             
         }

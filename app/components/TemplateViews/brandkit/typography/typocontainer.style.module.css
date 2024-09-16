@@ -1,0 +1,69 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.heading {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+}
+
+.fontFamily {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    /* Enables horizontal scrolling */
+    white-space: nowrap;
+    /* Prevents the items from wrapping to the next line */
+    padding-bottom: 3px;
+}
+
+.font {
+    width: 200px;
+    height: 150px;
+    font-size: var(--font-size-small);
+    border-radius: 4px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    color: var(--primary-text-color);
+    position: relative;
+}
+
+.deleteBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    filter: drop-shadow(1px 1px 2px rgb(90, 90, 90));
+    border-radius: 30px;
+    opacity: 0;
+    transition: opacity 0.1s ease, transform 0.1s ease;
+    /* Prevents interaction when invisible */
+    display: flex;
+    padding: 2px 8px;
+    gap: 4px;
+    cursor: pointer;
+}
+.font:hover .deleteBtn {
+    opacity: 1;
+}
+.deleteBtn:hover {
+    background-color: rgba(255, 255, 255, 0.899);
+    transform: scale(1.05);
+    z-index: 1;
+}
+.addFont {
+    width: 200px;
+    height: 150px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}

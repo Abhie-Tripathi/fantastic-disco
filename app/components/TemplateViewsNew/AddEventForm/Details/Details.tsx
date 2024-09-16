@@ -17,11 +17,15 @@ import RegistrationModal from './resgistration/RegistrationModal'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AddedEventsType } from '@/types/addedwidgetevents'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
-import useFetch from '@/hooks/useFetch'
+import { AddedEventsType } from '@/types/addedeventtype'
+import { GolbalEventType } from '@/types/globaleventtype'
+import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
+import HashtagContainer from './Hashtags/HashtagContainer'
+import MapView from '@/app/components/DetailPage/Mapview'
 
 interface SpeakerProfileType {
   id: string;
@@ -44,34 +48,35 @@ interface Props {
   fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
   fetchedAddedEvents: AddedEventsType[]
-  prefilledAddedEvent?: AddedEventsType
+  prefilledAddedEvent?: PrefilledAddedEventsType
   prefilledNormalEvent?: AllEventsType
+  prefilledGlobalEvent?: GolbalEventType
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent, prefilledGlobalEvent }: Props) => {
 
-  const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
+  // const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
   const [speakerModal, setSpeakerModal] = useState<boolean>(false)
   const [registerModal, setRegisterModal] = useState<boolean>(false)
-  const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || "")
+  const [description, setDescription] = useState<string>(prefilledAddedEvent?.description || prefilledNormalEvent?.description || prefilledGlobalEvent?.description || "")
   const [textValue, setTextValue] = useState<string>(description)
-  const [participationType, setParticipationType] = useState<string>(prefilledAddedEvent?.participationType || "Attendee")
+  const [participationType, setParticipationType] = useState<string>("Attendee")
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
-  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || "")
-  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || "")
+  const [cityName, setCityName] = useState<string>(prefilledAddedEvent?.cityName || prefilledNormalEvent?.cityName || prefilledGlobalEvent?.cityName || "")
+  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || prefilledGlobalEvent?.countryName || "")
   const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || "")
-  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || "")
+  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || prefilledGlobalEvent?.startDate || "")
+  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || prefilledGlobalEvent?.endDate || "")
   const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || prefilledNormalEvent?.startTime || "12:00 A.M")
   const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || prefilledNormalEvent?.endTime || "12:00 A.M")
-  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || "In-person")
-  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || prefilledNormalEvent?.name || "");
+  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || prefilledGlobalEvent?.format || "In-person")
+  const [eventName, setEventName] = useState<string>(prefilledAddedEvent?.name || prefilledNormalEvent?.name || prefilledGlobalEvent?.name || "");
   const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
   const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -79,9 +84,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
     file: null
   });
-  const [mapWidth, setMapWidth] = useState(0);
-  const mapDivRef = useRef<HTMLDivElement>(null);
-
+  // const [mapWidth, setMapWidth] = useState(0);
+  const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
+  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude ||prefilledNormalEvent?.latitude ||  prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude ||prefilledNormalEvent?.longitude|| prefilledGlobalEvent?.longitude) || -122.4194)
+  // const mapDivRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
+  const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -110,14 +120,15 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     };
   }, []);
 
-  useEffect(()=>{
-    if (mapDivRef.current) {
-      setMapWidth(mapDivRef.current.getBoundingClientRect().width);
-    }
-  },[cityName])
+  // useEffect(() => {
+  //   if (mapDivRef.current) {
+  //     setMapWidth(mapDivRef.current.getBoundingClientRect().width);
+  //   }
+  // }, [cityName])
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
+    setTextValue(textValue.trim())
   }
   const deleteSpeaker = (id: string) => {
     setSpeakerProfilesData((prevData) =>
@@ -135,6 +146,14 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     setPrefilledProfile(undefined);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setBanner({ placeHolder: fileUrl, file });
+    }
+  };
+
   const handleAddEvent = async () => {
     const eventData = {
       format: eventFormat,
@@ -145,11 +164,27 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       description,
       location_city: cityName,
       location_country: countryName,
+      gmt_time: timeZone,
+      latitude,
+      longitude,
+      participationType,
+      event_type: "Tradeshow"
     };
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
-    formData.append("logoUrl", imageUrl)
+
+    if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
+      if (banner.file) {
+        formData.append("file", banner.file); // Use the file field if uploaded by the user
+      } else {
+        formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+      }
+    }
+
+    formData.append("interest", participationType.toUpperCase())
+    // formData.append("source", "eventgeni/widget/event")
+    formData.append("sourceId", widgetId)
 
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'POST',
@@ -170,26 +205,18 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const existingEvents = fetchedAddedEvents || [];
     const newEvent = {
       id: eventId,
-      name: eventName,
       pageBgColor,
-      description,
       eventFont,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      timeZone,
-      cityName,
-      countryName,
-      participationType,
-      eventFormat,
       registerBtnColor,
       registerBtnText,
       registerMessage,
-      boothNumber,
       speakerProfilesData,
       participationMessage,
-      bannerUrl
+      bannerUrl,
+      latitude,
+      longitude,
+      venue,
+      hashtags: hashtags.join(",")
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -202,6 +229,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     customizedFormData.append('widgetId', widgetId);
     customizedFormData.append('otherdata', JSON.stringify(otherData))
     customizedFormData.append('eventId', eventIds)
+    customizedFormData.append('status', 'active');
 
     const { data, error } = await myFetch(`${baseUrl}/widget`, {
       method: 'POST',
@@ -209,9 +237,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     })
     if (data) {
       console.log("widget event data", data)
+      setIsAddEventModalOpen(false)
       fetchEvents();
       fetchAddedEvents();
-      setIsAddEventModalOpen(false)
     }
     if (error) {
       console.log("error in adding event to widget ", error)
@@ -228,16 +256,23 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       end_date: endDate,
       start_date: startDate,
       description,
+      logoUrl: banner.placeHolder,
       location_city: cityName,
       location_country: countryName,
-      logoUrl: banner.placeHolder
+      gmt_time: timeZone
     };
     const formData = new FormData();
     formData.append("id", eventId);
     formData.append("name", eventName);
     formData.append("data", JSON.stringify(eventData));
-    if (banner.placeHolder.includes("eventgeni") == false) {
-      formData.append("logoUrl", imageUrl)
+    formData.append("interest", participationType.toUpperCase())
+    formData.append("sourceId", widgetId)
+    if (banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
+      if (banner.file) {
+        formData.append("file", banner.file); // Use the file field if uploaded by the user
+      } else {
+        formData.append("logoUrl", imageUrl); // Use logoUrl if the banner is AI-generated
+      }
     }
     const { data, error } = await myFetch(`${baseUrl}/event`, {
       method: 'PATCH',
@@ -245,10 +280,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     });
     if (data) {
       const updatedEventId = data.data.id;
-      let updatedBannerUrl = data.data.data.logoUrl;
-      if(prefilledAddedEvent){
-        updateEventInWidget(updatedEventId,updatedBannerUrl)
-      }else{
+      const updatedBannerUrl = data.data.data.logoUrl;
+      if (prefilledAddedEvent) {
+        updateEventInWidget(updatedEventId, updatedBannerUrl)
+      } else {
         addEventToWidget(updatedEventId, updatedBannerUrl);
       }
 
@@ -262,26 +297,17 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const existingEvents = fetchedAddedEvents || [];
     const updatedEvent = {
       id: eventId,
-      name: eventName,
       pageBgColor,
-      description,
-      eventFont,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      timeZone,
-      cityName,
-      countryName,
-      participationType,
-      eventFormat,
       registerBtnColor,
       registerBtnText,
       registerMessage,
       boothNumber,
       speakerProfilesData,
       participationMessage,
-      bannerUrl: updatedBannerUrl
+      bannerUrl: updatedBannerUrl,
+      latitude,
+      longitude,
+      venue
     };
 
     // Find and update the existing event
@@ -305,9 +331,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     });
     if (data) {
       console.log("widget event data", data);
+      setIsAddEventModalOpen(false);
       fetchEvents();
       fetchAddedEvents();
-      setIsAddEventModalOpen(false);
     }
     if (error) {
       console.log("error in updating event in widget ", error);
@@ -316,15 +342,44 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
 
   const handleGeneratePoster = () => {
-    if (description && eventName && countryName) {
-      generatePrompt(countryName, description, eventName, 1024, 1024)
+    if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
+      if (description && eventName && countryName) {
+        generatePrompt(countryName, description, eventName, 1024, 1024)
+      }
     }
   }
+  const handleTagsGenerate = () => {
+    if (!loadingState) {
+      if (description && eventName) {
+        generateHashtags(eventName, description)
+      }
+    }
+  }
+  useEffect(() => {
+    // if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
+    //   if (description && eventName && countryName) {
+    //     generatePrompt(countryName, description, eventName, 1024, 1024)
+    //   }
+    // }
+    if (!prefilledAddedEvent) {
+      if (description && eventName) {
+        generateHashtags(eventName, description)
+      }
+    }
+  }, [description, eventName, countryName])
+
+  useEffect(() => {
+    if (!prefilledAddedEvent) {
+      setHashtags(generatedHashtags)
+    }
+  }, [generatedHashtags])
+
   useEffect(() => {
     if (imageUrl) {
       setBanner({ placeHolder: imageUrl, file: null });
     }
   }, [imageUrl]);
+
 
   return (
     <div className={styles.body}>
@@ -347,48 +402,52 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             {isLoading ?
               <div className={styles.loader}>
                 <div className={styles.spinner}></div>
-              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20 }} />}
+              </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
             <div className={styles.posterIcons}>
-              <div onClick={handleGeneratePoster}>
+              <div onClick={handleGeneratePoster} data-name={eventName && description && location ? "Generate your Banner" : "Add Event name, Location and Description to generate a banner"}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
               </div>
-              <div>
+              <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
                 <Image src={UploadIcon} alt='upload'></Image>
+                <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
               </div>
             </div>
           </div>
-          <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.participationContainer}><ParticipationContainer size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+          <div className={styles.hashtagsContainer}>
+            <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate} />
+          </div>
           <div className={styles.shareContainer}>
             <div className={styles.heading}>Share</div>
-            <ShareButtons shareUrl='www.10times.com' />
+            <ShareButtons disabled={true} shareUrl='www.10times.com' />
           </div>
         </div>
         <div className={styles.rightSection}>
           <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
           <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-          <div className={styles.locationContainer}><LocationContainer eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
-
+          <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
           <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
 
           {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
           {cityName &&
-            <div className={styles.map} ref={mapDivRef}>
-              <Suspense fallback={<div>Loading...</div>}>
-                <Mapview latitude={37.7749}
-                  width={mapWidth}
-                  longitude={-122.4194}
-                  zoom={6} />
-              </Suspense>
-            </div>
+            // <div className={styles.map} ref={mapDivRef}>
+            // <Suspense fallback={<div>Loading...</div>}>
+            <MapView latitude={latitude}
+              longitude={longitude}
+              venue={cityName}
+              zoom={6} />
+            // </Suspense>
+            // </div>
           }
-          <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+
         </div>
       </div>
       {
         descriptionModal && <div className={styles.descriptionModal}>
-            <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
+          <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick}/>
         </div>
       }
       {

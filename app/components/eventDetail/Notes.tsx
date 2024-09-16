@@ -673,6 +673,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           setType={setType}
           setInterestType={setInterestType}
           productId={productId}
+          allUsers={userArr}
           notes={addNote}
           setNote={setNote}
           note={note}
@@ -828,7 +829,7 @@ const Comment = ({
                 </span>
 
                 <p className={styles.designationText}>
-                  Founder and leadership at Nityo Infotech
+                {comment?.user?.UserDetail?.designation}
                 </p>
               </div>
             </header>
@@ -1223,9 +1224,9 @@ const Comment = ({
                                 </span>
                               </span>
 
-                              <p className={styles.designationText}>
+                              {/* <p className={styles.designationText}>
                                 Founder and leadership at Nityo Infotech
-                              </p>
+                              </p> */}
                             </div>
                           </header>;
                           if (userArr?.includes("@" + username) || d === "@" + username) {

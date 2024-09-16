@@ -241,13 +241,14 @@
 
 .followerContainer {
   display: flex;
+  align-items: center;
   gap: 23px;
   margin-bottom: 10px;
 }
 .followerDetails {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
 }
 .followerProfilePhoto {
   border-radius: 12px;
@@ -259,7 +260,19 @@
   color: #8c8ea4;
 }
 .followerPosition {
-  font-size: 12px;
+  font-size: var(--font-size-small);
+  color: var(--secondary-text-color);
+  margin: 5px 0;
+}
+
+.emailActiveStatus {
+  font-size: var(--font-size-small);
+  color: var(--tertiary-text-color);
+}
+
+.allFollowerContainer {
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .statusCard {
@@ -311,7 +324,7 @@
   /* width: 22vw; */
   font-size: 0.9rem;
   cursor: pointer;
-  color: #ffffff;
+  /* color: #ffffff; */
   background-color: #6750a480;
   border-radius: 12px;
   padding: 8px 24px;
@@ -433,6 +446,10 @@
 
 .dropdown_content:hover {
   background-color: var(--background-color-hover);
+}
+.lockedCta{
+  display: flex;
+  gap:var(--spacing-xs);
 }
 
 @media screen and (max-width: 576px) {

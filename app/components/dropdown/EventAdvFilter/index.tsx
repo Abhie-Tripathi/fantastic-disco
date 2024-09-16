@@ -27,7 +27,7 @@ const EventAdvFilter = ({ state, setState, data }: LabelDropdownProps) => {
               checked={state.includes(item.slug)}
               onChange={() => onClickHandler(item.slug)}
             />
-            <label>{item.name}</label>
+            <label htmlFor={item.slug}>{item.name}</label>
           </li>
         ))}
       </ul>

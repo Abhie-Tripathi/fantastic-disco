@@ -68,6 +68,7 @@ const initialMonthCounts: number[] = new Array(12).fill(0);
 
 interface YearCalendarProps {
   queryString: string;
+  handleButtonLoading?: (v: boolean) => void;
 }
 
 const YearCalendar: React.FC<YearCalendarProps> = (props) => {
@@ -121,9 +122,12 @@ const YearCalendar: React.FC<YearCalendarProps> = (props) => {
       setEventCountArr({});
     } finally {
       setIsLoaded(true);
+      props?.handleButtonLoading?.(false);
     }
-    }else
+    }else{
       setEventCountArr({});
+      setIsLoaded(true);
+    }
   }
 
   const prevButtonHandler = () => {

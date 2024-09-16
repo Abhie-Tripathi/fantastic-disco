@@ -8,6 +8,8 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GeistSans } from 'geist/font/sans';
+import Sidebar from "../components/sidebar";
+import styles from './layout.style.module.css'
 
 const sora = Sora({
   subsets: ["latin"],
@@ -27,13 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.className} ${inter.variable} ${GeistSans.className}`}>
+    <html lang="en" className={`${GeistSans.className}`}>
       <body>
-      <ToastContainer />
+        <ToastContainer />
         <AuthContextProvider>
           <ThemeProvider>
+            <div className="desktop_view tablet_view">
+              <Sidebar />
+            </div>
             <Navbar />
-            <div style={{ paddingTop: "80px" }}>{children}</div>
+            <div className={styles.container}>{children}</div>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>

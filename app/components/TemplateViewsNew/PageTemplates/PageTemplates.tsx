@@ -22,11 +22,13 @@ interface Props{
     selectedTemplate : string;
     setTempelateName : (value : string) => void
     setSelectedImage : (value : StaticImageData) => void
+    activeBtn : string;
+    setActiveBtn : (value : string)=>void
 }
 
-const PageTemplates = ({setSelectedTemplate,selectedTemplate, setTempelateName, setSelectedImage} : Props) => {
+const PageTemplates = ({setSelectedTemplate,selectedTemplate, setTempelateName, setSelectedImage, activeBtn, setActiveBtn} : Props) => {
     const { theme } = useTheme();
-    const [activeBtn, setActiveBtn] = useState<string>("NonHighlighted")
+
     const NonHighlightedTemplates =
         [
         { key: "GS", name: "Grid Style", desc: "Display Multiple Events as a Grid View for a clear and organized presentation .", tag: "Multiple Events", image1 : GridViewImage, image2 : GridViewImageDark },

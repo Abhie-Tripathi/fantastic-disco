@@ -1,38 +1,128 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './registerform.style.module.css'
+import { baseUrl } from '@/constants'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const RegisterForm = () => {
-    return (
-        <form className={styles.registerContainer} >
-            <div className={styles.heading}>Registraion</div>
-            <div className={styles.container}>
-                <div className={styles.approvalContainer}>
-                    <div className={styles.iconContainer}><PersonIcon /></div>
-                    <div className={styles.approvalDetails}>
-                        <div className={styles.approvalDetailsHeading}>Approval Required</div>
-                        <div className={styles.approvalDetailsDesc}>Your registration is subject to approval by the host.</div>
-                    </div>
-                </div>
-                <div className={styles.line}></div>
-                <div className={styles.formHeading}>Welcome! To join the event, please register below.
-                </div>
-                <div className={styles.inputContainer}>
-                    <input type="text" placeholder='Name'/>
-                    <input type="text" placeholder='Email'/>
-                </div>
-                <button className={styles.submitBtn}>Register</button>
-            </div>
-        </form>
-    )
+interface Props {
+    registerMessage: string
+    registerBtnText: string
+    registerBtnColor: string
+    widgetId: string;
+    eventId: string;
+    setRegisterSuccess : (value : boolean)=>void
 }
 
-function PersonIcon() {
-    return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.75 0C3.95507 0 2.5 1.45507 2.5 3.25V3.75C2.5 5.54493 3.95507 7 5.75 7H6.25C8.04493 7 9.5 5.54493 9.5 3.75V3.25C9.5 1.45507 8.04493 0 6.25 0H5.75ZM4 3.25C4 2.2835 4.7835 1.5 5.75 1.5H6.25C7.2165 1.5 8 2.2835 8 3.25V3.75C8 4.7165 7.2165 5.5 6.25 5.5H5.75C4.7835 5.5 4 4.7165 4 3.75V3.25ZM15.8107 5.75L15.2803 6.28033L12.5303 9.03033C12.2374 9.32322 11.7626 9.32322 11.4697 9.03033L10.4697 8.03033L9.93934 7.5L11 6.43934L11.5303 6.96967L12 7.43934L14.2197 5.21967L14.75 4.68934L15.8107 5.75ZM1.5 13.1709V14.5H10.5V13.1709C9.68042 11.5377 8.00692 10.5 6.17055 10.5H5.82945C3.99308 10.5 2.31958 11.5377 1.5 13.1709ZM0.0690305 12.6857C1.10604 10.4388 3.35483 9 5.82945 9H6.17055C8.64517 9 10.894 10.4388 11.931 12.6857L12 12.8353V13V15.25V16H11.25H0.75H0V15.25V13V12.8353L0.0690305 12.6857Z" fill="#A1A1A1" />
-        </svg>
+const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widgetId, eventId,setRegisterSuccess }: Props) => {
+    const [formData, setFormData] = useState({ firstname: '', lastname: '', email: '' });
+    const [emailError, setEmailError] = useState<string | null>(null);
+    // Function to convert hex to RGB
+    const hexToRgb = (hex: string) => {
+        const cleanHex = hex.replace('#', '');
+        const bigint = parseInt(cleanHex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return { r, g, b };
+    };
 
+    // Function to calculate brightness
+    const calculateBrightness = ({ r, g, b }: { r: number, g: number, b: number }) => {
+        return (r * 299 + g * 587 + b * 114) / 1000;
+    };
+
+    // Determine if the button color is dark or light
+    const rgb = hexToRgb(registerBtnColor);
+    const brightness = calculateBrightness(rgb);
+    const fontColor = brightness > 155 ? '#000000' : '#FFFFFF';
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const payload = {
+            email: formData.email,
+            firstname: formData.firstname,
+            lastname: formData.lastname,
+            eventId: eventId,
+            interest: "ATTENDEE",
+            note: "intend",
+            source: "eventgeni",
+            sorceId: widgetId,
+        };
+
+        try {
+            const response = await fetch(`${baseUrl}/intend`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Success:', data);
+                setRegisterSuccess(true)
+                // toast.success("successfully registred for the event !");
+            } else {
+                console.error('Error:', response.statusText);
+                // toast.error("Error in registration");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    return (
+        <div className={styles.registerContainer} >
+            {/* <ToastContainer /> */}
+            <div className={styles.header}>
+                <div>Join us at the event</div>
+            </div>
+            <form onSubmit={handleSubmit}>
+                <div className={styles.formSubHeading}>{registerMessage}</div>
+                <input
+                    className={styles.inputField}
+                    type="text"
+                    name="firstname"
+                    placeholder="First Name"
+                    value={formData.firstname}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    className={styles.inputField}
+                    type="text"
+                    name="lastname"
+                    placeholder="Last Name"
+                    value={formData.lastname}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    className={styles.inputField}
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
+                <button
+                    type="submit"
+                    style={{ backgroundColor: registerBtnColor, color: fontColor }}
+                    className={styles.submitBtn}
+                >
+                    {registerBtnText}
+                </button>
+            </form>
+        </div>
     )
 }
 

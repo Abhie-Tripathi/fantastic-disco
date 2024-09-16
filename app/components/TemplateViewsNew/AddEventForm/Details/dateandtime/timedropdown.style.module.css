@@ -9,6 +9,10 @@
     padding: 2px;
     border-radius: 2px;
 }
+.disabledTime{
+    color: rgb(166, 166, 166);
+    cursor: not-allowed;
+}
 .time:hover{
     background-color: #F2F2F2;
 }

@@ -1,0 +1,37 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.logo{
+    width: 140px;
+    height: 140px;
+    border-radius: 10px;
+    overflow: hidden;
+    filter: drop-shadow(0px 4px 4px rgb(199, 199, 199));
+}
+.logo img{
+    object-fit:contain;
+}
+.companyName{
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-semibold);
+}
+.companyLink{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.companyLink a{
+    color: rgb(69, 120, 239);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-large);
+}
+.description{
+    color: rgb(84, 84, 84);
+    font-size: var(--font-size-default);
+    line-height: 21px;
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    border-radius: 4px;
+}

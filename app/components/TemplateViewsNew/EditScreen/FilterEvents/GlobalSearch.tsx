@@ -6,16 +6,20 @@ import { myFetch } from '@/utils/myFetch';
 import { useTheme } from '@/context'
 import Image from 'next/image';
 import logo from '/public/10timeslogo.png'
+import { GolbalEventType } from '@/types/globaleventtype';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     widgetId: string;
+    handlePrefillGlobalEvent: (event: GolbalEventType,type : string) => void
 }
 
-const GlobalSearch = ({ widgetId }: Props) => {
+const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
 
     const [searchValue, setSearchValue] = useState<string>("")
     const [dataDropdown, setDatadropdown] = useState<boolean>(false)
     const [searchData, setSearchData] = useState<any[]>([])
+    const dropdownRef = useOutsideClick(() => setDatadropdown(false))
 
     const { theme } = useTheme();
 
@@ -26,9 +30,30 @@ const GlobalSearch = ({ widgetId }: Props) => {
         return () => clearTimeout(debounceTimeout);
     }, [searchValue]);
 
-    const handleClickEvent = (event: any) => {
-        console.log(event)
+    const handleClickEvent = (event: any, type : string) => {
+        const newEvent: GolbalEventType = {
+            name: event.name,
+            cityName: event.data.location_city,
+            countryName: event.data.location_country,
+            startDate: formatDate(event.data.start_date),
+            endDate: formatDate(event.data.end_date),
+            description: event.data.description,
+            format: event.data.format,
+            latitude: event.data.latitude,
+            longitude: event.data.longitude,
+            venue: event.data.venue_address
+        }
+        setDatadropdown(false)
+        handlePrefillGlobalEvent(newEvent, type)
     }
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
 
     const handleSearchInput = async (text: string) => {
         if (text) {
@@ -51,19 +76,31 @@ const GlobalSearch = ({ widgetId }: Props) => {
         }
     };
 
+    const truncateName = (name: string) => {
+        const length = name.length
+        let newName = name.substring(0, 30)
+        if (length <= 30) {
+            return newName;
+        } else return newName + "...";
+    }
 
     return (
-        <div className={styles.searchContainer} style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }}>
-            <input type="text" placeholder='Search for events' onChange={(e) => setSearchValue(e.target.value)} style={{ color: theme === "light" ? "black" : "white", backgroundColor : theme === "light" ? "white" : "#131313" }} />
+        <div className={styles.searchContainer} style={{ backgroundColor: theme === "dark" ? "#1a1a1a" : "#F9F9F9" }} ref={dropdownRef}>
+            <input type="text" placeholder='Search for events' onChange={(e) => setSearchValue(e.target.value)} style={{ color: theme === "light" ? "black" : "white", backgroundColor: theme === "light" ? "white" : "#131313" }} />
             {dataDropdown &&
                 <div className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown}`}>
                     {searchData.length > 0 ? searchData.map((event) => (
-                        <div className={styles.dropdownEvent} key={event.id} onClick={() => handleClickEvent(event)}>
+                        <div className={styles.dropdownEvent} key={event.id} >
                             <div className={styles.eventNameContaier}>
-                                <span className={styles.dropeventName}>{event.name},</span>
+                                <span className={styles.dropeventName}>{truncateName(event.name)},</span>
                                 <span className={styles.dropeventLocation}>{event.data.location_city}</span>
                             </div>
-                            {event.data.isMicroServiceData && <Image src={logo} alt="logo" width={15} height={15}/>}
+                            {event.data.isMicroServiceData &&
+                                <div className={styles.buttons}>
+                                    <button onClick={() => handleClickEvent(event, "normal")}>Add</button>
+                                    <button onClick={() => handleClickEvent(event, "widget")}>Add to widget</button>
+                                    <Image src={logo} alt="logo" width={15} height={15} />
+                                </div>}
                             {event.isUsed && <div className={styles.checkBoxContainer}>
                                 <input
                                     type="checkbox"

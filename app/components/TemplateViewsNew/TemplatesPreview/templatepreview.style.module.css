@@ -1,11 +1,12 @@
 .body{
     display: flex;
-    height: 650px;
+    height:550px;
+    /* overflow-y: auto; */
     gap: 30px;
 }
 .templatesContainer{
     width: 40%;
-    height: 80%;
+    height:100%;
     overflow-y: auto;
 }
 .templates{
@@ -13,16 +14,26 @@
     width: 100%;
 }
 .previewContainer{
-    height: 90%;
+    height: 100%;
     width: 60%;
 }
 .fullPreview{
     width: 100%;
 }
-.preview_btnContainer{
-    margin-top: 20px;
-    height:95%;
+.previewBtnContainer{
     width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 10px;
+}
+.previewBtn{
+    background-color: #6750A4;
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    width: 300px;
+    height: 41px;
 }
 .styleBtns{
     display: flex;
@@ -96,9 +107,10 @@
     font-size: 18px;
     font-weight: 500;
 }
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 1200px) {
     .body {
         flex-direction: column;
+        overflow-y: scroll;
         height: fit-content;
     }
     .templatesContainer{

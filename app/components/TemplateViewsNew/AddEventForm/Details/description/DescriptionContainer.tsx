@@ -1,21 +1,22 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './description.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 
 interface Props{
-    setDescriptionModal : (value : boolean)=>void
+    setDescriptionModal: (value : boolean)=>void
     description : string;
+    theme? : string;
 }
 
-const DescriptionContainer = ({setDescriptionModal,description} : Props) => {
+const DescriptionContainer = ({setDescriptionModal,description, theme} : Props) => {
 
     return (
-        <div className={styles.body}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />
-                    <div className={styles.descriptionHeading}>Add Event Description</div>
+                    <div className={styles.descriptionHeading} onClick={()=>setDescriptionModal(true)}>Add Event Description</div>
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>

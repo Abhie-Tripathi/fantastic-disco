@@ -1,0 +1,31 @@
+.outerContainer{
+    top: 100%;
+    padding: 10px 0px;
+    max-height: 250px;
+    display: flex;
+    overflow-y: auto;
+    gap: var(--spacing-xs);
+    flex-direction: column;
+    bottom: 100%;
+    background-color: var(--background-secondary-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-large);
+}
+.content{
+    padding: 0px 10px;;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-h6);
+    letter-spacing: 0.5px;
+}
+.content:hover{
+    background-color:var(--heading-background-color);
+}
+.subHeading{
+    font-size: var(--font-size-small);
+    margin-left: 10px;
+    color: var(--secondary-text-color);
+}

@@ -9,6 +9,7 @@ import StarIcon from "/public/internal/rating_star.svg";
 import DownArrow from "/public/internal/arrow_down.svg";
 import PinIcon from "@/app/components/Table/icons/pin";
 import BookmarkIcon from "@/app/components/Table/icons/bookmark";
+import BookmarkFilled from "@/app/components/Table/icons/bookmarkFilled"
 import closeIcon from "/public/close.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,7 +26,8 @@ import {
   Tooltip,
   OverlayArrow,
 } from "react-aria-components";
-
+import { useSearchParams } from "next/navigation";
+import { ArrowDown, ArrowUp } from "geist-icons";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -202,13 +204,20 @@ const Table = ({
   queryString,
   eventType,
   setActiveValue,
+  setRequestExhausted,
+  handleButtonLoading,
 }: {
   eventData?: any;
   showInsights: any;
   queryString?: string;
-  eventType?:string;
-  setActiveValue?:any;
+  eventType?: string;
+  setActiveValue?: any;
+  setRequestExhausted?: any;
+  handleButtonLoading?: (val: boolean) => void;
 }) => {
+  const searchParams = useSearchParams();
+  const type = searchParams.get('type');
+
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
@@ -216,12 +225,15 @@ const Table = ({
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [initialRender, setInitialRender] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const userMaxLimit = 100;
   const [pinEvent, setPinEvent] = useState<string>(
     "1b27ff90-1a46-4f49-85eb-607b4d510eb1"
   );
+  const [totalEvents, setTotalEvents] = useState(0);
+  const [saved, setSaved] = useState("")
   const [bookmarkedEvent, setBookmarkedEvent] = useState<string[]>([]);
   const [appliedKeywords, setAppliedKeywords] = useState<String[]>([]);
   const { theme } = useTheme();
@@ -242,9 +254,9 @@ const Table = ({
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-    }else{
-    if(currPage===1) fetchEventsData();
-    setCurrPage(1)
+    } else {
+      if (currPage === 1) fetchEventsData();
+      setCurrPage(1)
     }
   }, [eventType]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -289,7 +301,7 @@ const Table = ({
       } else if (formData.markedInterest == "unbookmark") {
         try {
           let payloadData = {
-            eventId: formData.entityId_id,
+            eventIds: [formData.entityId_id],
           };
           const response = await myFetch(`${baseUrl}/tracker/saved-events`, {
             method: "DELETE",
@@ -343,7 +355,7 @@ const Table = ({
       }
     }
   };
-const [val,setVal]=useState(1);
+  const [val, setVal] = useState(1);
   useEffect(() => {
     // setCurrPage(val);
     const startInd = (currPage - 1) * itemsPerPage;
@@ -355,14 +367,24 @@ const [val,setVal]=useState(1);
     // }
     // if(currPage!==1)
     fetchEventsData();
- 
-  }, [ currPage, itemsPerPage, queryString]);
-// useEffect(()=>{
-//   const secondLast = path[path.length - 2];
-//   if(currPage!==1)
-//   fetchData(secondLast);
-// },[currPage])
+
+  }, [currPage, itemsPerPage]);
+
   useEffect(() => {
+    if (queryString) {
+      if (currPage == 1) fetchEventsData();
+      else setCurrPage(1);
+    }
+  }, [queryString]);
+
+  // useEffect(()=>{
+  //   const secondLast = path[path.length - 2];
+  //   if(currPage!==1)
+  //   fetchData(secondLast);
+  // },[currPage])
+  useEffect(() => {
+
+    if (path[2] === "search") setInitialRender(true);
     const fetchBookmarkData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
       if (error) {
@@ -376,7 +398,9 @@ const [val,setVal]=useState(1);
         setBookmarkedEvent(bookmarkGroupIds);
       }
     };
-    fetchBookmarkData();
+    if (path[2] !== 'trackers') {
+      fetchBookmarkData();
+    }
   }, []);
 
   const handleModalOpen = (eventId: string, eventGroupId: string) => {
@@ -417,8 +441,7 @@ const [val,setVal]=useState(1);
 
     const secondLast = path[path.length - 2];
     const { data, error } = await myFetch(
-      `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+      `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
       }`
     );
     if (error) {
@@ -437,6 +460,7 @@ const [val,setVal]=useState(1);
       )
       // if (data?.events?.length > 0) {
       setEventPerPage(data.result);
+      setTotalEvents(data.count);
       if (currPage === 1) {
         setTotalPages(Math.ceil(data.count / itemsPerPage));
         setEventPerPage(data.result);
@@ -449,8 +473,7 @@ const [val,setVal]=useState(1);
   };
   const fetchAllSavedEvent = async () => {
     const { data, error } = await myFetch(
-      `${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${
-        (currPage - 1) * 10
+      `${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
       }`
     );
     if (error) {
@@ -463,7 +486,7 @@ const [val,setVal]=useState(1);
       setIsLoaded(true);
 
       setEventPerPage(data.result);
-
+      setTotalEvents(data.count);
       if (currPage === 1) {
         setTotalPages(Math.ceil(data.count / itemsPerPage));
         setEventPerPage(data.result);
@@ -477,6 +500,9 @@ const [val,setVal]=useState(1);
   // const fetchAllSavedEvent=aync()=>{
 
   // }
+  useEffect(() => {
+    setAppliedKeywords(showInsights.keywords);
+  }, [showInsights.keywords])
   const fetchEventsData = async () => {
     if (path[path.length - 1] === "trackedEvents") {
       const secondLast = path[path.length - 2];
@@ -495,7 +521,7 @@ const [val,setVal]=useState(1);
       if (queryString) {
         try {
           setIsLoaded(false);
-
+          setInitialRender(false);
           const params = new URLSearchParams(queryString);
           const obj: any = {};
           params.forEach((value, key) => {
@@ -505,24 +531,30 @@ const [val,setVal]=useState(1);
             setAppliedKeywords(obj["eventKeywords"].split("+"));
           } else setAppliedKeywords([]);
 
-          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
-            (currPage - 1) * itemsPerPage
-          }&${queryString}`;
+          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
+            }&${queryString}`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
-          const apiData = await myFetch(apiUrl, {
+          const { data, error } = await myFetch(apiUrl, {
             method: "GET",
             headers: headers,
           });
-          if (apiData.data) {
+          if (data) {
             setTotalPages(
-              Math.ceil(apiData.data.stats.totalEvents / itemsPerPage)
+              Math.ceil(data.stats.totalEvents / itemsPerPage)
             );
-            setEventPerPage(apiData.data.events);
+            setTotalEvents(data.stats.totalEvents);
+            setEventPerPage(data.events);
+          }
+          if (error) {
+            if (error.status === 429) {
+              setRequestExhausted(true);
+            }
           }
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
           setIsLoaded(true);
+          handleButtonLoading?.(false);
         }
       } else {
         setIsLoaded(true);
@@ -530,19 +562,16 @@ const [val,setVal]=useState(1);
       }
     }
   };
-  
+
   const fetchData = async (secondLast: string) => {
-    var url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
-      (currPage - 1) * itemsPerPage
-    }&type=active`;
+    var url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
+      }&type=active`;
     if (eventType === "New Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
-        (currPage - 1) * itemsPerPage
-      }`;
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
+        }`;
     else if (eventType === "Expired Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${
-        (currPage - 1) * itemsPerPage
-      }&type=expired`;
+      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
+        }&type=expired`;
     const { data, error } = await myFetch(url);
     if (error) {
       console.log(error);
@@ -566,16 +595,17 @@ const [val,setVal]=useState(1);
           `${eventType} | ${currPage}`
         );
         setEventPerPage(data.events);
+        setTotalEvents(data.totalEvents);
       }
       // setCatgeoryData(data);
     }
   };
-  const [isSaving, setIsSaving] = useState(false);
+  // const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {
-    if (isSaving) return;
+    // if (isSaving) return;
 
-    setIsSaving(true);
+    // setIsSaving(true);
 
     const secondLast = path[path.length - 2];
     const dataToSend = {
@@ -595,24 +625,36 @@ const [val,setVal]=useState(1);
       });
 
       if (data) {
-        console.log(data);
-        showToast('success',"Event saved");
+        showToast('success', "Event saved");
+        let updatedData = eventPerPage?.find((event) => event.id === Id);
+
+        if (updatedData) {
+          const newUpdatedData = { ...updatedData, isSaved: true };
+          const updatedEventPerPage = eventPerPage.map((event) =>
+            event.id === Id ? newUpdatedData : event
+          );
+          setEventPerPage(updatedEventPerPage);
+        }
+
+        setSaved(Id);
       } else {
         console.log(error);
-        showToast('error',error.message);
+        showToast('error', error.message);
       }
     } catch (err) {
       console.error("Error saving event:", err);
-    } finally {
-      setIsSaving(false);
-    }
+      showToast('error', "Please try again later.");
+    } 
+    // finally {
+    //   setIsSaving(false);
+    // }
   };
 
-  const [isDelete, setIsDelete] = useState(false);
+  // const [isDelete, setIsDelete] = useState(false);
 
   const deleteEvent = async (groupId: string) => {
-    if (isDelete) return;
-    setIsDelete(true);
+    // if (isDelete) return;
+    // setIsDelete(true);
 
     const url = `${baseUrl}/tracker/saved-events`;
     let dataToSend = {};
@@ -639,36 +681,54 @@ const [val,setVal]=useState(1);
         body: JSON.stringify(dataToSend),
       });
 
-    if (data) {
-      console.log(data);
-      showToast('default',"Saved event deleted");
-      const newData = eventPerPage.filter(event => event?.id !== groupId);
-      setEventPerPage(newData);
-    } else {
-      console.log(error);
-      showToast('error',error.message);
-    }
-  } catch (err) {
-    console.error("Error deleting event:", err);
-    // showToast('error',err?.message);
-  } finally {
-    setIsDelete(false);
-  }
-};
+      if (data) {
+        if(path[path.length-1]==="savedEvents"){
+        console.log(data);
+        showToast('error', "Saved event deleted");
+        const newData = eventPerPage.filter(event => event?.id !== groupId);
+        setEventPerPage(newData);
+        }else{
+          let updatedData = eventPerPage?.find((event) => event.id === groupId);
+
+        if (updatedData) {
+          const newUpdatedData = { ...updatedData, isSaved: false };
+          const updatedEventPerPage = eventPerPage.map((event) =>
+            event.id === groupId ? newUpdatedData : event
+          );
+          setEventPerPage(updatedEventPerPage);
+        }
+        showToast('error', "Saved event deleted");
+        }
+      }
+       else {
+        console.log(error);
+        showToast('error', error.message);
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
+      // showToast('error',err?.message);
+    } 
+    // finally {
+    //   setIsDelete(false);
+    // }
+  };
 
   if (!isLoaded) {
     return <Loading />;
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        No results containing all your search terms were found.
+        {initialRender ?
+          <>Discover insights on business trends filtered by geography and category, all in one glance.</> :
+          <>No results containing all your search terms were found.</>
+        }
       </div>
     );
   }
 
   const loadMoreHandler = () => {
-    if((((currPage+1) * itemsPerPage) - userMaxLimit ) >= itemsPerPage) {
-      showToast('error', 'Please contact us to increase the limit.');return;
+    if ((((currPage + 1) * itemsPerPage) - userMaxLimit) >= itemsPerPage) {
+      showToast('error', 'Please contact us to increase the limit.'); return;
     }
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
@@ -686,28 +746,42 @@ const [val,setVal]=useState(1);
             className={`${styles.table_head}`}
           >
             <tr className={styles.table_head_row}>
-              <th className={styles.table_firstColumn}>Event</th>
+              <th className={`${styles.table_firstColumn} ${styles.table_actionColumn}`} style={{left:"0", boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)"}}>Event</th>
               <th>Date</th>
               <th>Venue</th>
               <th>City</th>
               <th>Country</th>
               {showInsights.eventKeywords && <th>Keywords</th>}
-              {appliedKeywords.length > 0 || showInsights?.trackerKeywords && <th>Matched Keywords</th>}
-              {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && <th>Match Score</th>}
               <th>Category</th>
+              {showInsights.eventSize && <th>Event Size</th>}
               {showInsights.eventSeries ||
                 (eventPerPage[0]?.series && <th>Event Series</th>)}
               {showInsights.eventRank && <th>Rank</th>}
-              {showInsights.growth && <th>Growth</th>}
+              {/* {showInsights.growth && <th>Growth</th>} */}
               {showInsights.reptSent && <th>Reputation</th>}
+              {showInsights.eventRating && <th style={{textAlign:"center"}}>Rating</th>}
               {showInsights.repeatSent && <th>Trust</th>}
-              {showInsights.eventSize && <th>Event Size</th>}
+              {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>International</th>}
+              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& <th>Matched</th>}
+              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5 )&& <th>Score</th>}
+              {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
+              <>
               <th
-                className={`${styles.table_actionColumn} ${
-                  styles.table_actionColumn_header
-                }`}
+                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                  }`} style={{ right:appliedKeywords?.length >= 5?"184px":"84px", minWidth:"60px"  }}
+              >
+                Matched
+              </th>
+              {appliedKeywords?.length >= 5 && <th className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                  }`} style={{right:"84px", minWidth:"100px" }}>Score</th>}
+              </>
+              }
+              <th
+                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                  }`}
+                  style={{display:"flex",width:'84px'}}
               >
                 Actions
               </th>
@@ -717,7 +791,7 @@ const [val,setVal]=useState(1);
           <tbody className={styles.table_body}>
             {eventPerPage.map((event: EventTableType) => (
               <tr key={event.id}>
-                <td>
+                <td className={`${styles.table_actionColumn}`} style={{left:"0", textAlign:"left", boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)"}}>
                   <div
                     className={styles.truncateText_1}
                   >
@@ -728,67 +802,91 @@ const [val,setVal]=useState(1);
                   </div>
                 </td>
                 <td>
-                  <span
-                    {...(event.status && event.status === "CANCELED"
-                      ? { "data-toggle": "tooltip", title: "Cancelled" }
-                      : null)}
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    {new Date(event.startDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    })}
-                    <br />
-                    {new Date(event.startDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    }) !==
-                    new Date(event.endDate).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "2-digit",
-                    })
-                      ? new Date(event.endDate).toLocaleDateString("en-GB", {
+                  {event.status && (event.status === "CANCELLED" || event.status === "POSTPONED") ?
+                    <del data-toggle="tooltip" title={event.status} style={{ whiteSpace: "nowrap" }} >
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })}
+                      <br />
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      }) !==
+                        new Date(event.endDate).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
                           year: "2-digit",
                         })
-                      : null}
-                  </span>
+                        ? new Date(event.endDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "2-digit",
+                        })
+                        : null}
+                    </del> :
+                    <span style={{ whiteSpace: "nowrap" }} >
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      })}
+                      <br />
+                      {new Date(event.startDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "2-digit",
+                      }) !==
+                        new Date(event.endDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "2-digit",
+                        })
+                        ? new Date(event.endDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "2-digit",
+                        })
+                        : null}
+                    </span>
+                  }
                 </td>
                 <td>
+                  {event.format === "HYBRID" &&
+                    <div className={styles.hybridTag} data-toggle="tooltip" title="Happening virtually and offline at given venue" >Hybrid</div>
+                  }
                   {event.location.cityId !== "1" &&
-                  event.format === "ONLINE" ? (
+                    event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
-                    event.location.venueName !== null ? (
+                      event.location.venueName !== null ? (
                       event.location.venueName.length > 15 ? (
-                        <span
+                        <div
                           data-toggle="tooltip"
                           title={`${event.location.venueName}`}
                         >
                           {event.location.venueName.slice(0, 15) + "…"}
-                        </span>
+                        </div>
                       ) : (
-                        event.location.venueName
+                        <div>{event.location.venueName}</div>
                       )
                     ) : (
-                      <span data-toggle="tooltip" title="To be announced">
+                      <div data-toggle="tooltip" title="To be announced">
                         Online
-                      </span>
+                      </div>
                     )
                   ) : event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
                     event.location.venueName.length > 25 ? (
-                      <span
+                      <div
                         data-toggle="tooltip"
                         title={event.location.venueName}
                       >
                         {event.location.venueName.slice(0, 15) + "…"}
-                      </span>
+                      </div>
                     ) : (
-                      event.location.venueName
+                      <div>{event.location.venueName}</div>
                     )
                   ) : event.location.cityId === "1" &&
                     (event.format === "ONLINE" ||
@@ -796,9 +894,9 @@ const [val,setVal]=useState(1);
                     "Online"
                   ) : event.location.cityId !== "1" &&
                     event.location.venueName !== undefined ? (
-                    <span data-toggle="tooltip" title="To be announced">
+                    <div data-toggle="tooltip" title="To be announced">
                       TBA
-                    </span>
+                    </div>
                   ) : null}
                 </td>
                 <td>{event.location.cityName}</td>
@@ -831,69 +929,31 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {appliedKeywords.length > 0 || showInsights?.trackerKeywords && (
-                  <>
-                    <td style={{textAlign: "center"}}>
-                      {event.matchedKeywords.length == 0 ? (
-                        <>-</>
-                      ) : event.matchedKeywords.length == 1 ? (
-                        event.matchedKeywords[0]
-                      ) : (
-                        <>
-                          {event.matchedKeywords[0]}&nbsp;
-                          {/* <a
-                            className={styles["products-list"]}
-                            href="javascript:void(0)"
-                            data-toggle="tooltip"
-                            title={listProducts(event.matchedKeywords)}
-                          >
-                            +{event.matchedKeywords.length - 1}
-                          </a> */}
-                          <TooltipTrigger>
-                            <Button className={styles["products-list"]} >+{event.matchedKeywords.length - 1}</Button>
-                            <Tooltip className={styles['react-aria-Tooltip']}>
-                              {listProducts(event.matchedKeywords)}
-                            </Tooltip>
-                          </TooltipTrigger>
-                        </>
-                      )}
-                    </td>
-                    {appliedKeywords.length >= 5 || showInsights?.trackerKeywords && (
-                      <td>
-                        {event.keywordsMatchedScore > 20 ? (
-                          <span className={styles.badge_success}>High</span>
-                        ) : event.keywordsMatchedScore >= 10 &&
-                          event.keywordsMatchedScore <= 20 ? (
-                          <span className={styles.badge_primary}>Medium</span>
-                        ) : event.keywordsMatchedScore > 0 &&
-                          event.keywordsMatchedScore < 10 ? (
-                          <span className={styles.badge_danger}>Low</span>
-                        ) : (
-                          "-"
-                        )}
-                      </td>
-                    )}
-                  </>
-                )}
                 <td>
                   {/* Finance & Banking */}
                   {event.categories !== undefined &&
-                  event.categories.length == 1 ?
+                    event.categories.length == 1 ?
                     event.categories[0].name :
-                  event.categories.length > 0 ? (
-                    <span style={{ textTransform: "capitalize" }}>
-                      {event.categories[0].name}&nbsp;
-                      <TooltipTrigger>
-                        <Button className={styles["products-list"]} >+{event.categories.length - 1}</Button>
-                        <Tooltip className={styles['react-aria-Tooltip']}>
-                          {event.categories.map((item) => item.name).join(" | ")}
-                        </Tooltip>
-                      </TooltipTrigger>
-                    </span>
-                  ) : (
-                    "-"
-                  )}
+                    event.categories.length > 0 ? (
+                      <span style={{ textTransform: "capitalize" }}>
+                        {event.categories[0].name}&nbsp;
+                        <TooltipTrigger>
+                          <Button className={styles["products-list"]} >+{event.categories.length - 1}</Button>
+                          <Tooltip className={styles['react-aria-Tooltip']}>
+                            {event.categories.map((item) => item.name).join(" | ")}
+                          </Tooltip>
+                        </TooltipTrigger>
+                      </span>
+                    ) : (
+                      "-"
+                    )}
                 </td>
+                {showInsights.eventSize && (
+                  <td>
+                    {/* {getEventSize(event)} */}
+                    {event.eventSize ? event.eventSize : "-"}
+                  </td>
+                )}
                 {showInsights.eventSeries ||
                   (event?.series && (
                     <td>{event.series ? event.series : "-"}</td>
@@ -910,7 +970,7 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                {showInsights.growth && (
+                {/* {showInsights.growth && (
                   <td>
                     {event.interestsGrowth && event.interestsGrowth != 0 ? (
                       event.interestsGrowth > 0 ? (
@@ -936,10 +996,10 @@ const [val,setVal]=useState(1);
                         event.interestsGrowthRange == 0) &&
                       "-"}
                   </td>
-                )}
+                )} */}
                 {showInsights.reptSent && (
                   <td>
-                    {event.stats.rating !== undefined &&
+                    {/* {event.stats.rating !== undefined &&
                       event.stats.rating !== null &&
                       event.stats.rating > "0" && (
                         <>
@@ -947,11 +1007,11 @@ const [val,setVal]=useState(1);
                           &nbsp;
                           <Image src={StarIcon} alt="star" width={14} />
                         </>
-                      )}
+                      )} */}
                     {event.reputationSentiment !== undefined &&
-                    event.reputationSentiment !== null &&
-                    (event.reputationSentiment > 1 ||
-                      event.reputationSentiment < -1) ? (
+                      event.reputationSentiment !== null &&
+                      (event.reputationSentiment > 1 ||
+                        event.reputationSentiment < -1) ? (
                       event.reputationSentiment > 0 ? (
                         <div className={styles.text_green}>
                           {event.reputationSentiment}%{" "}
@@ -963,13 +1023,39 @@ const [val,setVal]=useState(1);
                           <Image src={DownArrow} alt="down" width={10} />{" "}
                         </div>
                       )
-                    ) : event.stats.rating == undefined ? (
-                      <>-</>
                     ) : (
-                      <></>
+                      <>-</>
                     )}
                   </td>
                 )}
+                {showInsights.eventRating &&
+                  <td style={{textAlign:"center"}}>
+                    {(event.stats.rating !== undefined &&
+                      event.stats.rating !== null &&
+                      event.stats.rating > "0") ? (
+                      <>
+                      {event.reputationSentiment > 10 &&
+                      <span style={{borderRadius:"50%", backgroundColor: "var(--success-background-color)", padding:"4px"}}>
+                        <ArrowUp style={{width:"14px", height:"14px", color:"var(--success-text-color)", marginBottom:"5px"}}/>
+                        </span>
+                      }
+                      {event.reputationSentiment < -10 &&
+                      <span style={{borderRadius:"50%", backgroundColor: "var(--danger-background-color)", padding:"4px"}}>
+                          <ArrowDown style={{width:"14px", height:"14px", color:"var(--danger-text-color)", marginBottom:"5px"}}/>
+                          </span>
+                      }
+                      &nbsp;
+                        {getEventRating(event.stats.rating)}
+                        &nbsp;
+                        <Image src={StarIcon} alt="star" width={14} />
+                        
+                      </>
+                    ) : (
+                      <>-</>
+                    )
+                    }
+                  </td>
+                }
                 {showInsights.repeatSent && (
                   <td>
                     {event.repeatSentiment && event.repeatSentiment != 0
@@ -977,25 +1063,22 @@ const [val,setVal]=useState(1);
                       : "-"}
                   </td>
                 )}
-                {showInsights.eventSize && (
-                  <td>
-                    {/* {getEventSize(event)} */}
-                    {event.eventSize ? event.eventSize : "-"}
-                  </td>
-                )}
                 {showInsights.estExhibit && (
                   <td>
-                    {getEstimatedExhibitors(event)}
+                    {/* {getEstimatedExhibitors(event)} */}
+                    {(event.stats?.estimatedExhibitor && event.stats?.estimatedExhibitor !== '' && event.stats?.estimatedExhibitor !== 'null') ?
+                      event.stats?.estimatedExhibitor : '-'
+                    }
                   </td>
                 )}
                 {showInsights.global && (
                   <td>
                     {event["internationalAudience%"] !== undefined ? (
-                      event["internationalAudience%"] == "High" ? (
+                      event["internationalAudience%"] == "high" ? (
                         <span className={styles.badge_success}>High</span>
-                      ) : event["internationalAudience%"] == "Medium" ? (
+                      ) : event["internationalAudience%"] == "medium" ? (
                         <span className={styles.badge_primary}>Medium</span>
-                      ) : event["internationalAudience%"] == "Low" ? (
+                      ) : event["internationalAudience%"] == "low" ? (
                         <span className={styles.badge_danger}>Low</span>
                       ) : (
                         <></>
@@ -1005,83 +1088,154 @@ const [val,setVal]=useState(1);
                     )}
                   </td>
                 )}
-                <td
-                  className={`${styles.table_actionColumn}`}
-                >
+                {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& (
+                  <>
+                    <td>
+                      {event.matchedKeywords.length == 0 ? (
+                        <>-</>
+                      ) : event.matchedKeywords.length == 1 ? (
+                        event.matchedKeywords[0]
+                      ) : (
+                        <>
+                          {event.matchedKeywords[0]}&nbsp;
+                          {/* <a
+                            className={styles["products-list"]}
+                            href="javascript:void(0)"
+                            data-toggle="tooltip"
+                            title={listProducts(event.matchedKeywords)}
+                          >
+                            +{event.matchedKeywords.length - 1}
+                          </a> */}
+                          <TooltipTrigger>
+                            <Button className={styles["products-list"]} >+{event.matchedKeywords.length - 1}</Button>
+                            <Tooltip className={styles['react-aria-Tooltip']}>
+                              {listProducts(event.matchedKeywords)}
+                            </Tooltip>
+                          </TooltipTrigger>
+                        </>
+                      )}
+                    </td>
+                    {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5)&& (
+                      <td>
+                        {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    )}
+                  </>
+                )}
+                {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
+                <>
+                <td style={{ textAlign: "center",  right:appliedKeywords?.length >= 5?"184px":"84px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {event.matchedKeywords.length == 0 ? (
+                        <>-</>
+                      ) : event.matchedKeywords.length == 1 ? (
+                        event.matchedKeywords[0]
+                      ) : (
+                        <>
+                          {event.matchedKeywords[0]}&nbsp;
+                          {/* <a
+                            className={styles["products-list"]}
+                            href="javascript:void(0)"
+                            data-toggle="tooltip"
+                            title={listProducts(event.matchedKeywords)}
+                          >
+                            +{event.matchedKeywords.length - 1}
+                          </a> */}
+                          <TooltipTrigger>
+                            <Button className={styles["products-list"]} >+{event.matchedKeywords.length - 1}</Button>
+                            <Tooltip className={styles['react-aria-Tooltip']}>
+                              {listProducts(event.matchedKeywords)}
+                            </Tooltip>
+                          </TooltipTrigger>
+                        </>
+                      )}
+                    </td>
+                    {appliedKeywords?.length >= 5 && (
+                      <td style={{ textAlign: "center", right:"84px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                        {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    )}
+                </>}
+                <td className={`${styles.table_actionColumn}`} style={{width:"84px"}}>
                   {path[path.length - 1] === "trackedEvents" ||
-                  path[path.length - 1] === "savedEvents" ||
-                  path[path.length - 1] === "trackers" ? (
+                    path[path.length - 1] === "savedEvents" ||
+                    path[path.length - 1] === "trackers" ? (
                     path[path.length - 1] === "trackedEvents" ? (
-                      <button
-                        onClick={() => saveEvent(event?.id)}
-                        className={`${styles.table_saveBtn} ${
-                          theme === "light" ? styles.table_saveBtn_light : ""
-                        }`}
-                      >
-                        Save
-                      </button>
+                      <>
+                        {event?.isSaved ? (
+                          <button
+                          onClick={() => deleteEvent(event?.id)}
+                          >
+                           <BookmarkFilled fillColor={"var(--primary-color)"} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => saveEvent(event?.id)}
+                            
+                          >
+                             <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
+                          </button>
+                        )}
+                      </>
                     ) : (
                       <button
                         onClick={() => deleteEvent(event?.id)}
-                        className={`${styles.table_saveBtn} ${
-                          theme === "light" ? styles.table_saveBtn_light : ""
-                        }`}
                       >
-                        Delete
+                        <BookmarkFilled fillColor={"var(--primary-color)"} />
                       </button>
                     )
                   ) : (
                     <span
                       className={styles.save_image_container}
-                      onClick={() =>
-                        handleModalOpen(event.id, event.eventGroupId)
-                      }
+                      style={{cursor:"pointer"}}
+                      onClick={() => handleModalOpen(event.id, event.eventGroupId)}
                     >
-                      {bookmarkedEvent?.includes(event.eventGroupId) ? (
-                        <BookmarkIcon fillColor={"#ff851b"} />
+                      {bookmarkedEvent?.includes(event.id) ? (
+                        <BookmarkFilled fillColor={"var(--primary-color)"} />
                       ) : (
-                        <BookmarkIcon
-                          fillColor={theme === "light" ? "#000000" : "#ffffff"}
-                        />
+                        <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
                       )}
                     </span>
                   )}
 
-                  {/* <span onClick={() => handlePinEvent(event.id)}>
-                    {event.id == pinEvent ? (
-                      <PinIcon fillColor={"#ff851b"} />
-                    ) : (
-                      <PinIcon
-                        fillColor={theme === "light" ? "#000000" : "#ffffff"}
-                      />
-                    )}
-                  </span> */}
+                  {/* Optional Pin Section */}
                   {isOpen == event.id && (
                     <div className={styles.modal}>
                       <header className={styles["modal_header"]}>
                         <div className={styles["modal_header-title"]}>
-                          Do you want to participate in &quot;{event.name}&quot;
-                          ?
+                          Do you want to participate in &quot;{event.name}&quot;?
                         </div>
                         <button
                           className={styles["close"]}
-                          onClick={() =>
-                            handleModalOpen(event.id, event.eventGroupId)
-                          }
+                          onClick={() => handleModalOpen(event.id, event.eventGroupId)}
                         >
-                          <Image
-                            src={closeIcon}
-                            alt="clock"
-                            width={16}
-                            height={16}
-                          />
+                          <Image src={closeIcon} alt="clock" width={16} height={16} />
                         </button>
                       </header>
                       <main className={styles["modal_content"]}>
                         <form onSubmit={handleSubmit}>
                           <div id="field-1">
                             <div className={styles["form-check"]}>
-                              {bookmarkedEvent?.includes(event.eventGroupId) ? (
+                              {bookmarkedEvent?.includes(event.id) ? (
                                 <>
                                   <input
                                     className={styles["form-check-input"]}
@@ -1091,9 +1245,7 @@ const [val,setVal]=useState(1);
                                     id="customradio1"
                                     onChange={handleChangeIntent}
                                   />
-                                  <label htmlFor="customradio1">
-                                    Un-Bookmark
-                                  </label>
+                                  <label htmlFor="customradio1">Un-Bookmark</label>
                                 </>
                               ) : (
                                 <>
@@ -1154,14 +1306,13 @@ const [val,setVal]=useState(1);
                               <label htmlFor="customradio5">Sponsoring</label>
                             </div>
                           </div>
-                          <button className={styles["submitBtn"]}>
-                            Submit
-                          </button>
+                          <button className={styles["submitBtn"]}>Submit</button>
                         </form>
                       </main>
                     </div>
                   )}
                 </td>
+
               </tr>
             ))}
           </tbody>
@@ -1169,22 +1320,14 @@ const [val,setVal]=useState(1);
       </div>
 
       <div
-        className={`${styles.pagination_container} ${
-          theme === "light" ? styles.pagination_container_light : ""
-        }`}
-      >
-        <div
-          className={`${styles.pagination_control_button} ${
-            currPage === 1 ? styles.disabled : ""
+        className={`${styles.pagination_container} ${theme === "light" ? styles.pagination_container_light : ""
           }`}
-          onClick={() => setCurrPage((page) => page - 1)}
-        >
-          Previous
-        </div>
+      >
+        
 
         <div className={styles.pagination_info_container}>
           <div>Showing</div>
-          <Image src={ExpandAll} alt="expandall" className={iconClass} />
+          {/* <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
             <select
               onChange={handlePageItems}
@@ -1196,23 +1339,33 @@ const [val,setVal]=useState(1);
               <option value="15" selected={itemsPerPage==15?true:false}>15</option>
               <option value="20" selected={itemsPerPage==20?true:false}>20</option>
             </select>
-          </div>
-          <div>results/Page</div>
+          </div> */}
+          {/* <span className={styles.itemsPerPage} >10</span>
+          <div>results/Page</div> */}
+          <div>{((currPage - 1) * 10) + 1} to {Math.min(totalEvents, ((currPage) * 10))} of {totalEvents} entries</div>
+          <div></div>
         </div>
 
-        <div className={styles.pagination_page_control_container}>
+        {/* <div className={styles.pagination_page_control_container}>
           <div>Page</div>
           <div className={styles.pagination_current_page}>{currPage}</div>
           <div>of {totalPages}</div>
-        </div>
-
+        </div> */}
+        <div style={{display:"flex", gap:'10px'}}>
         <div
-          className={`${styles.pagination_control_button} ${
-            currPage === totalPages ? styles.disabled : ""
-          }`}
+          className={`${styles.pagination_control_button} ${currPage === 1 ? styles.disabled : ""
+            }`}
+          onClick={() => setCurrPage((page) => page - 1)}
+        >
+          Previous
+        </div>
+        <div
+          className={`${styles.pagination_control_button} ${currPage === totalPages ? styles.disabled : ""
+            }`}
           onClick={loadMoreHandler}
         >
           Next
+        </div>
         </div>
       </div>
     </div>

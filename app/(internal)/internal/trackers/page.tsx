@@ -98,10 +98,24 @@ import { GAEvent } from "@/utils/GAEvent";
 import { useTheme } from "@/context";
 import { Step } from "react-joyride";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-
-const Trackers = () => {
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+interface Search {
+  searchParams: {
+    tab:string;
+  }
+}
+const Trackers = ({ searchParams }: Search) => {
+  const {tab}=searchParams;
+  
+  const router=useRouter();
+  const [type, setType] = useState("");
+  useEffect(()=>{
+    if(tab==="savedEvents") setType("Saved Events")
+    else if(tab==="customTrackers") setType("Custom Trackers")
+    else setType("All Trackers")
+  },[tab])
   const [trackers, setTrackers] = useState<any[]>([]);
-  const [type, setType] = useState("All Trackers");
+ 
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -169,7 +183,7 @@ const Trackers = () => {
       domain: "Sales",
       img: Keywords,
       url:"T_PRODUCT_KEYWORDS",
-      trackerName: "Product Keywords",
+      trackerName: "Product and Topics",
       content:
         "List all the events which belongs to given industry or associated with keywords.",
     },
@@ -289,6 +303,18 @@ const Trackers = () => {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    if(type){
+    if(type==="All Trackers")
+    router.push(`/internal/trackers?tab=allTrackers`);
+    else if(type==="Custom Trackers")
+      router.push(`/internal/trackers?tab=customTrackers`);
+    else if(type==="Saved Events")
+      router.push(`/internal/trackers?tab=savedEvents`)
+    }
+  }, [type]);
+  
+  
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
   //   if (allTrackerRef && allTrackerRef.current) {

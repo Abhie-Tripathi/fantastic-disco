@@ -4,9 +4,11 @@ import FilterEvents from './FilterEvents/FilterEvents'
 import CodeWindow from './Code/CodeWindow';
 import Customization from './BrandKit/Customization';
 import { useTheme } from '@/context';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { AddedEventsType } from '@/types/addedeventtype';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 import { AllEventsType } from '@/types/alleventtype';
+import { GolbalEventType } from '@/types/globaleventtype';
 
 interface FontSettings {
     fontFamily: string;
@@ -34,20 +36,22 @@ interface EditScreenProps {
     setCardStyle: React.Dispatch<React.SetStateAction<string>>;
     setSelectedBtn: (value: "primary" | "secondary") => void
     selectedBtn: "primary" | "secondary"
-    handleAddEventModal : (value : void)=>void;
-    handleUpdateCustomization : () => Promise<void>; 
-    fetchedAllEvents :  AllEventsType[]
-    fetchEvents : () => Promise<void>; 
-    fetchAddedEvents : ()=>Promise<void>;
-    widgetId : string;
-    widgetType : string;
-    fetchedAddedEvents : AddedEventsType[]
-    handlePrefilledAddedEvent : (event : AddedEventsType)=>void
-    handlePrefillNormalEvent : (event :  AllEventsType)=>void
-    addedEventIds : string[]
+    handleAddEventModal: (value: void) => void;
+    handleUpdateCustomization: () => Promise<void>;
+    fetchedAllEvents: AllEventsType[]
+    fetchEvents: () => Promise<void>;
+    fetchAddedEvents: () => Promise<void>;
+    widgetId: string;
+    widgetType: string;
+    fetchedAddedEvents: AddedEventsType[]
+    handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
+    handlePrefillNormalEvent: (event: AllEventsType , type : string) => void
+    handlePrefillGlobalEvent : (event : GolbalEventType, type : string)=>void
+    addedEventIds: string[]
+    handleNormalEventModal : (value : void)=>void
 }
-  
-const   EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn,handleUpdateCustomization,fetchedAllEvents, fetchEvents,widgetId, widgetType,    fetchedAddedEvents,fetchAddedEvents, handlePrefilledAddedEvent,handleAddEventModal,addedEventIds,handlePrefillNormalEvent  }: EditScreenProps) => {
+
+const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization, fetchedAllEvents, fetchEvents, widgetId, widgetType, fetchedAddedEvents, fetchAddedEvents, handlePrefilledAddedEvent, handleAddEventModal, addedEventIds, handlePrefillNormalEvent,handleNormalEventModal,handlePrefillGlobalEvent }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const { theme } = useTheme()
@@ -75,7 +79,7 @@ const   EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fo
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents handlePrefillNormalEvent={handlePrefillNormalEvent} addedEventIds={addedEventIds} widgetId={widgetId} handleAddEventModal={handleAddEventModal} handlePrefilledAddedEvent={handlePrefilledAddedEvent} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId}/>}
+                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents handlePrefillGlobalEvent={handlePrefillGlobalEvent} handleNormalEventModal={handleNormalEventModal} handlePrefillNormalEvent={handlePrefillNormalEvent} addedEventIds={addedEventIds} widgetId={widgetId} handleAddEventModal={handleAddEventModal} handlePrefilledAddedEvent={handlePrefilledAddedEvent} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId} />}
             </div>
         </div>
     )

@@ -32,7 +32,26 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
         </div>
         <div className={styles.branded}>
           <div className={styles.formatHead}>
-          Designation &amp; Department
+          Exhibitor Quality Score
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>
+          Audience Des & Dept
           </div>
           <div className={styles.toggle_container}>
             <span>

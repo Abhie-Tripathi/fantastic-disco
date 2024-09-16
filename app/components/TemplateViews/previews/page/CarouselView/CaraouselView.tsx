@@ -3,7 +3,7 @@ import styles from './caraouselview.style.module.css';
 import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
     fontFamily: string;
@@ -22,10 +22,10 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedEvents?: AddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[]
 }
 
-const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedEvents }: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [bannersPerPage, setBannersPerPage] = useState(1);
     const carouselRef = useRef<HTMLDivElement>(null);
@@ -53,8 +53,8 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
         <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
     ];
 
-    const banners = fetchedAddedEvents && fetchedAddedEvents.length > 0
-        ? fetchedAddedEvents.map((event, index) => (
+    const banners = fetchedAddedOtherData && fetchedAddedOtherData.length > 0
+        ? fetchedAddedOtherData.map((event, index) => (
             <EventCard
                 key={event.id}
                 cardBgColor={cardBgColor}

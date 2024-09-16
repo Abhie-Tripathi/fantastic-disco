@@ -1,0 +1,101 @@
+.body{
+    background-color: rgb(228, 228, 228);
+    border-radius: 10px;
+}
+.darkBody{
+    background-color: #1a1a1a;
+}
+.header{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--font-size-small);
+}
+.btnContainer .saveBtn{
+    color: white;
+    background-color: #6750a4;
+    border-radius: 4px;
+    font-weight: 500;
+    line-height: 18px;
+    padding: 5px 8px;
+}
+.btnContainer .closeBtn{
+    font-weight: 500;
+    color: var(--primary-text-color);
+}
+.line {
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.form{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.eventName {
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    resize: none;
+    overflow: hidden;
+    color: var(--primary-text-color);
+    font-weight: bolder;
+}
+
+.eventName:focus {
+    outline: none;
+}
+.descriptionModalFill{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+.descriptionModal textarea {
+    resize: none;
+    border: 1px solid #EBEBEB;
+    width: 100%;
+    padding: 8px;
+    height: 130px;
+}
+
+.descriptionModal textarea:focus {
+    outline: none;
+}
+
+.descriptionModal div {
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.descriptionModal div .close {
+    cursor: pointer;
+}
+
+.descriptionModal button {
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #6750a4;
+    padding: 5px 8px;
+    color: white;
+}
+.participationContainer {   
+    height: fit-content;
+    width: 100%;
+}

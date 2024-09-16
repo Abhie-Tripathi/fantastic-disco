@@ -115,6 +115,24 @@ const Navbar = () => {
     if (routeMap.hasOwnProperty(currPath)) {
       setTitle(routeMap[currPath]);
     }
+    if (currPath.startsWith("/widget/list")) {
+      setTitle("Widgets");
+    }
+    if (currPath.startsWith("/widget/edit")) {
+      setTitle("Edit Widget");
+    }
+    if (currPath.startsWith("/widget/add")) {
+      setTitle("Add Widget");
+    }
+    if (currPath.startsWith("/widget/brandkit")) {
+      setTitle("Brandkit");
+    }
+    if (currPath.startsWith("/widget/events")) {
+      setTitle("Events");
+    }
+    if (currPath.startsWith("/widget/dashboard")) {
+      setTitle("Dashboard");
+    }
   }, [currPath]);
   console.log(userDetail)
 
@@ -136,10 +154,12 @@ const Navbar = () => {
             onClick={handelSideShow}
           />
         )}
-        {pathName === "internal" ? (
-          <div className={styles.page_title}>{title.length !== 0 && title}</div>
-        ) : (
-          <Link href="/">
+        {/* {pathName === "internal" ? ( */}
+          <div className={styles.page_title}>
+            {currPath.startsWith("/widget/edit") && <Link href={"/widget/add"} className={styles.backBtn}>{`<-`}</Link>}
+            {title.length !== 0 && title}</div>
+        {/* ) : ( */}
+          {/* <Link href="/">
             <Image
               className={styles.logo}
               src={logo}
@@ -148,7 +168,7 @@ const Navbar = () => {
               alt="logo"
             />
           </Link>
-        )}
+        )} */}
       </div>
 
       <div className={styles.settings}>
@@ -222,7 +242,7 @@ const Navbar = () => {
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
                   style={{ width: "fit-content", padding: '8px' }}
                 >
-                  <Link href="#" className="">
+                  {/* <Link href="/internal" className=""> */}
                     <div
                       className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                     >
@@ -235,7 +255,7 @@ const Navbar = () => {
                       />
                       Promote
                     </div>
-                  </Link>
+                  {/* </Link> */}
                   <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                   >
@@ -287,7 +307,7 @@ const Navbar = () => {
           </>
         )}
 
-        {pathName !== "internal" && (
+        {/* {pathName !== "internal" && (
           <>
             <Link
               className={`${styles.circle}`}
@@ -307,7 +327,7 @@ const Navbar = () => {
               <Image src={settingsIcon} alt="settings" className={iconClass} />
             </Link>
           </>
-        )}
+        )} */}
         {userDetail && (
           <div
             className={`${
@@ -343,7 +363,7 @@ const Navbar = () => {
               )}
 
               {profilectas.isOpen && (
-                <div className={`${styles.userDropdown} card`} style={{padding: '8px' }} >
+                <div className={`${styles.userDropdown} card`} style={{padding: '8px', borderRadius: 'var(--border-radius-sm)' }} >
                   <Link
                     href={
                       pathName === "internal" ? "/internal/profile" : "/profile"

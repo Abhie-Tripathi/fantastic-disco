@@ -4,19 +4,21 @@
     padding: 30px 30px 100px 30px;
     height: 88vh;
 }
-
+.errorPage{
+    height: 88vh;
+}
 .modalOpen {
     overflow-y: hidden;
 }
 
 .editContainer {
-    width: 50%;
+    width: 40%;
     height: 120%;
     margin-right: 10px;
 }
 
 .previewContainer {
-    width: 50%;
+    width:60%;
     height: 120%
 }
 .fullPreview{
@@ -40,8 +42,15 @@
     transform: translate(-50%, -50%);
     height: 100%;
     width: 90%;
-    filter: drop-shadow(1px 1px 2px rgb(209, 209, 209));
     z-index: 1;
+}
+.addNormalEventModal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 50%;
 }
 
 @media screen and (max-width: 1406px) {

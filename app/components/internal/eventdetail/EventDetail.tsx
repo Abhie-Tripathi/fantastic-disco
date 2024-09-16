@@ -12,6 +12,7 @@ import OwnerList from "./ownerList";
 import StatusChangeDropdown from "./statusChangeDropdown";
 import { usePathname } from "next/navigation";
 import closeIcon from "/public/close.svg";
+import backIcon from "/public/back.svg"
 import Image from "next/image";
 import EventRequest from "./EventRequest";
 import { myFetch } from "@/utils/myFetch";
@@ -52,7 +53,7 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
-  handleRefresh,
+  handleRefresh
 }: Props) => {
   const [meet, setMeet] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
@@ -64,6 +65,8 @@ const EventDetail = ({
   const [participentData, setParticipentData] = useState({
     attendee: [],
     speakers: [],
+    sponsors: [],
+    exhibitors: [],
   });
 
   useEffect(() => {
@@ -147,6 +150,8 @@ const EventDetail = ({
         setParticipentData({
           attendee: data.participent.attendee,
           speakers: data.participent.speakers,
+          sponsors: data.participent.sponsors,
+          exhibitors: data.participent.exhibitors,
         });
       }
       if (error) {
@@ -164,7 +169,8 @@ const EventDetail = ({
       }
     >
       <div className={styles.closeIcon} onClick={handleCloseModal}>
-        <Image src={closeIcon} alt="close" height={22} width={22} />
+        <Image src={backIcon} alt="close" height={22} width={22} />
+        Back
       </div>
 
       <div className={styles.modalContainer}>

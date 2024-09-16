@@ -71,6 +71,8 @@ const LocationDropdown = ({
   const [inputText, setInputText] = useState("");
   const [selectedLocation, setSelectedLocations] = useState<string[]>(state);
 
+  const [locationSearchLoader, setLocationSearchLoader] = useState<boolean>(false);
+
   const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     if(newValue.trim() != '') setInputText(newValue.trim());
@@ -78,6 +80,7 @@ const LocationDropdown = ({
 
   const fetchSuggestions = async(text: string) => {
     try {
+      setLocationSearchLoader(true);
       const [suggestionResponse, countryResponse] = await Promise.all([
         myFetch(`${baseUrl}/location/suggestion?q=${text}`),
         myFetch(`${baseUrl}/location/country?name=${text}`),
@@ -89,11 +92,22 @@ const LocationDropdown = ({
       setZoneData(suggestionResponse.data.zone);
     } catch (error) {
       console.error("Error fetching location data:", error);
+    } finally {
+      setLocationSearchLoader(false);
     }
   }
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   useEffect(() => {
     if(inputText != ''){
+      setLocationSearchLoader(true);
       const debounceTimeout = setTimeout(() => {
         fetchSuggestions(inputText);
       }, 500);
@@ -116,8 +130,15 @@ const LocationDropdown = ({
   };
 
   useEffect(() => {
-    setState(selectedLocation)
-  }, [selectedLocation]);
+    const countryNames = selectedCountry 
+    ? Object.entries(selectedCountry).map(([id, name]) => name)
+    : [];
+    const cityNames = selectedCity ? Object.entries(selectedCity).map(([id, name]) => name):[];
+    const zoneNames = selectedZone ? Object.entries(selectedZone).map(([id, name]) => name):[];
+    console.log(countryNames);
+    
+    setState([...countryNames, ...cityNames, ...zoneNames])
+  }, [selectedCity, selectedCountry, selectedZone]);
 
   const handleSaveData = () => {
     // setState(selectedLocation)
@@ -160,6 +181,7 @@ const LocationDropdown = ({
   };
 console.log(selectedCity);
 console.log(selectedCountry);
+console.log(state);
 
   return (
     <div>
@@ -321,10 +343,14 @@ console.log(selectedCountry);
           <div className={styles.input_container} >
             <Image src={SearchIcon} alt="searchicon" />
             <input
+              ref={inputRef}
               placeholder="Search For a Location"
               className={styles.location_input}
               onChange={inputChangeHandler}
             />
+            {locationSearchLoader &&
+              <div className={styles.loader}></div>
+            }
           </div>
         </div>
 

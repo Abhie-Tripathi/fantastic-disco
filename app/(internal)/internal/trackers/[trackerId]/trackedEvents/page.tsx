@@ -1,3 +1,4 @@
+
 "use client";
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import Expand from "/public/expand_more.svg";
@@ -40,18 +41,20 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState("list");
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
-  const showInsights = {
+  const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
-    global: true,
-    reptSent: true,
-    eventRank: true,
-    matchScore: true,
-    estExhibit: true,
-    growth: true,
-    repeatSent: true,
+    global: false,
+    reptSent: false,
+    eventRank: false,
+    matchScore: false,
+    estExhibit: false,
+    growth: false,
+    repeatSent: false,
     trackerKeywords: true,
-  };
+    eventRating:false, 
+    keywords:[]
+  });
   const lineData = {
     labels: [
       "01",
@@ -80,31 +83,11 @@ const Page = ({ params }: { params: any }) => {
     ],
   };
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(false);
-      const url = `${baseUrl}/tracker/${trackerId}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-        });
-        if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          setData(data);
-          setLoading(true);
-        }
-      } catch (err) {
-        console.error("Fetch failed:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-  useEffect(() => {
     const fetchTrackerDetail = async () => {
       const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
       if (data) {
         setTrackerDetail(data.tracker);
+        setLoading(true);
       }
       if (error) {
         console.log(error);
@@ -206,7 +189,9 @@ const Page = ({ params }: { params: any }) => {
   }, [active]);
   const formatCount = (count: number) => {
     if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`;
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+        return `${Math.floor(value)}k`;
     }
     console.log(count);
     return count;
@@ -338,7 +323,29 @@ const Page = ({ params }: { params: any }) => {
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
   };
-
+ console.log(trackerDetail.filterValue);
+ useEffect(()=>{
+    if(trackerDetail?.filterValue?.internationalScore){
+      setShowInsights(prev=>({...prev, global:true}));
+    }
+    if(trackerDetail?.filterValue?.reputationScore){
+      setShowInsights(prev=>({...prev, reptSent:true}));
+    }
+    if(trackerDetail?.filterValue?.trustScore){
+      setShowInsights(prev=>({...prev, repeatSent:true}));
+    }
+    if(trackerDetail?.filterValue?.estimatedExhibitScore){
+      setShowInsights(prev=>({...prev, estExhibit:true}));
+    }
+    if(trackerDetail?.filterValue?.eventRating){
+      setShowInsights(prev=>({...prev, eventRating:true}));
+    }
+    if(trackerDetail?.filterValue?.eventKeywords?.length>0){
+      const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
+      setShowInsights(prev=>({...prev, keywords:keywords}));
+    }
+ },[trackerDetail])
+ 
   return (
     <div className={styles.container}>
       <Suspense fallback={<p>Loading feed...</p>}>
@@ -365,7 +372,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.active
                       )
                     ) : (
@@ -388,7 +395,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.new
                       )
                     ) : (
@@ -416,7 +423,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        data?.tracker?.groupedEventsCountByStatus
+                        trackerDetail?.groupedEventsCountByStatus
                           ?.groupedEventsByStatus?.expired
                       )
                     ) : (

@@ -38,6 +38,7 @@ export interface EventTableType {
     interestsGrowthRange: any,
     repeatSentiment: number;
     eventSize: number;
+    isSaved?:boolean;
     "internationalAudience%": string;
     price: any;
     matchedKeywords: any;
@@ -49,8 +50,8 @@ export interface EventTableType {
         sponsoringLeads: number;
         speakingLeads: number;
         eventFollower: number;
-        estimatedExhibitor: number;
-        estimatedVisitor: number;
+        estimatedExhibitor: string | null;
+        estimatedVisitor: string | null;
     };
     internationalAudience: string;
     type: string[]

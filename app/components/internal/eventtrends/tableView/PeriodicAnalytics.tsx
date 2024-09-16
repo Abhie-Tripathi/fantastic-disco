@@ -16,9 +16,16 @@ const calculateTotal = (data: any) => {
   for (const key in data) {
     total += data[key];
   }
-  return total;
+  return formatCount(total);
 };
-
+const formatCount = (count: number) => {
+  if (count >= 1000) {
+    const value = count / 1000;
+    const decimalPart = value - Math.floor(value);
+      return `${Math.floor(value)}k`;
+  }
+  return count;
+};
 function capitalizeEachWord(str: string) {
   const words = str.split("-");
 
@@ -66,7 +73,7 @@ const PeriodicAnalytics = ({ predictedData, activeChip }: any) => {
                 </td>
                 <td>{total}</td>
                 {filteredData.map(([key, value]: [string, any]) => (
-                  <td key={key}>{value}</td>
+                  <td key={key}>{formatCount(value)}</td>
                 ))}
                 <td></td>
               </tr>

@@ -3,8 +3,13 @@
     height: 480px;
     padding: 12px 14px 24px 12px;
 }
+.smallCard{
+    width: 380px;
+    height: 370px;
+    padding: 12px 14px 24px 12px;
+}
 .banner{
-    height: 220px;
+    /* height: 220px; */
     width: 100%;
     border-radius: 8px;
 }
@@ -41,4 +46,7 @@
 .btn{
     padding: 10px 20px;
     border: 1px solid;
+}
+.smallBtn{
+    padding: 5px 10px;
 }

@@ -1,32 +1,34 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({ freq, keywords, isBranded, eventEdition }: any) => {
+const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
     // const rank=["Country Rank","Category Rank"];
     const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
-    
+  
     return (
         <div className={styles.container}>
-             <div className={styles.formatFreq1}>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Product / Topics</div>
-                    <div className={styles.allCat1}>
-                        {keywords?.map((item: string, id: number) => (
-                            item?.charAt(0) !== '-' ? (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item.replaceAll("_"," ")}
-                                <span className={styles.tooltipText}>Include Keyword</span>
-                                </div>
-                            ) : (
-                                <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
-                                <span className={styles.tooltipText}>Exclude Keyword</span>
-                                </div>
-                            )
-                        ))}
-                    </div>
-                </div>
-            </div>
+          {type!=="Product and Topics" &&
+           <div className={styles.formatFreq1}>
+           <div className={styles.format}>
+               <div className={styles.formatHead}>Product / Topics</div>
+               <div className={styles.allCat1}>
+                   {keywords?.map((item: string, id: number) => (
+                       item?.charAt(0) !== '-' ? (
+                           <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item.replaceAll("_"," ")}
+                           <span className={styles.tooltipText}>Included Keyword</span>
+                           </div>
+                       ) : (
+                           <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
+                           <span className={styles.tooltipText}>Excluded Keyword</span>
+                           </div>
+                       )
+                   ))}
+               </div>
+           </div>
+       </div>
+          }
             <div className={styles.formatFreq}>
             <div className={styles.branded}>
           <div className={styles.formatHead}>Event Edition</div>

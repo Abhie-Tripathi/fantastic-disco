@@ -2,8 +2,8 @@ import React, { ElementType } from 'react'
 import HeroBanner1 from './HeroBanner1';
 import HeroBanner2 from './HeroBanner2';
 import HeroBanner3 from './HeroBanner3';
-import { AddedEventsType } from '@/types/addedwidgetevents';
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 
 interface FontSettings {
     fontFamily: string;
@@ -22,10 +22,10 @@ interface Props {
     };
     buttonSettings?: ButtonSettingsState
     selectedBtn? : "primary" | "secondary"
-    fetchedAddedEvents?: AddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[]
 }
 
-const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn,fetchedAddedEvents}: Props) => {
+const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn,fetchedAddedOtherData}: Props) => {
 
     let EventCard: ElementType;
 

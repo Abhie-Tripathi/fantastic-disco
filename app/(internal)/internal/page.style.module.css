@@ -4,6 +4,7 @@
 }
 
 .header_container {
+  padding: 12px;
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
@@ -169,7 +170,6 @@
 
 .notification_defaultText {
   font-size: var(--font-size-default);
-  cursor: pointer;
   display: flex;
   height: 100%;
   color: var(--secondary-text-color);
@@ -218,7 +218,11 @@
   align-items: center;
   gap: var(--spacing-lg);
 }
-
+.tracker_container_header_innerContainer{
+  display: flex;
+  gap:var(--spacing-lg);
+  align-items: center;
+}
 .tracker_card {
   display: flex;
   flex-direction: column;
@@ -254,6 +258,7 @@
 }
 
 .eventCard {
+  padding: 12px;
   width: 110px;
   display: flex;
   flex-direction: column;
@@ -422,12 +427,10 @@
 }
 
 .savedEvent {
-  border-bottom: 1px solid var(--border-color);
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .savedEvent:hover {
@@ -437,7 +440,17 @@
 .savedEvent_light:hover {
   background-color: var(--neutral-light-color);
 }
-
+.savedEvent:not(:last-child){
+  border-bottom: 1px solid var(--border-color);
+}
+.savedEvent_light:hover:first-child, .savedEvent:hover:first-child{
+     border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+}
+.savedEvent_light:last-child, .savedEvent:hover:last-child{
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
 .coordinateCard {
   display: flex;
   flex-direction: column;
@@ -462,6 +475,17 @@
 .mobile_trackerCard_container {
   display: none;
   gap: var(--spacing-sm);
+}
+.event_organizer {
+  /* color: #696b83; */
+  color: var(--tertiary-text-color);
+  font-size: var(--font-size-default);
+  margin-top: 5px;
+}
+.eventDate{
+  color: var(--tertiary-text-color);
+    font-size: var(--font-size-small);
+    margin-left: 5px;
 }
 
 @media screen and (max-width: 1250px) {

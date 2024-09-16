@@ -13,11 +13,17 @@
 }
 .domainContainer{
     padding: 16px 25px 18px 23px;
+    max-height: 230px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .domainHeadingContainer{
     display: flex;
     align-items: center;
     gap: 7px;
+    margin-bottom: 18px;
 }
 .domainHeadingContainer .iBtn{
     color: white;
@@ -36,13 +42,54 @@
     font-size: 12px;
 }
 .domainContainer .inputContainer{
-    margin-top: 18px;
     display: flex;
     align-items: center;
     width: 100%;
     border:1px solid var(--border-color);
     border-radius: 4px;
     height: fit-content;
+}
+.save_inputContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.save_inputContainer .saveBtn{
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: var(--font-size-default);
+    background-color: var(--primary-color);
+    color: white;
+}
+.save_inputContainer .cancelBtn{
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: var(--font-size-default);
+    border:1px solid var(--primary-color);
+    color: var(--primary-text-color);
+}
+.input_deleteContainer{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.input_deleteContainer .deleteBtn{
+    border: 1px solid #DA2F35;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.input_deleteContainer .deleteBtn:hover{
+    background-color:rgb(246, 175, 175);
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 .inputContainer span{
     padding: 8px 12px;
@@ -62,6 +109,16 @@
 }
 .inputContainer input:focus{
     outline: none;
+}
+.addBtn{
+    font-size: var(--font-size-default);
+    color: var(--primary-color);
+    margin-top: 20px;
+    cursor: pointer;
+    width: fit-content;
+}
+.addBtn:hover{
+    transform: scale(1.02);
 }
 .codeHeader{
     padding: 18px 25px 18px 23px;

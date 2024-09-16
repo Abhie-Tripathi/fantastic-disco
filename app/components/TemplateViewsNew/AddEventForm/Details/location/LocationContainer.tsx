@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import styles from './location.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
@@ -6,28 +7,41 @@ import LocationDropdown from './LocationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
 
 interface Props{
-    setCityName : (value : string)=>void;
+    setCityName: (value : string)=>void;
     cityName : string;
-    setCountryName :(value : string)=>void;
+    setCountryName:(value : string)=>void;
     countryName : string;
-    setEventFormat : (value : string)=>void;
+    setEventFormat: (value : string)=>void;
     eventFormat : string;
+    setLongitude : (value : number)=>void;
+    setLatitude : (value : number)=> void;
+    theme? : string;
 }
 
-const LocationContainer = ({setCityName, cityName, setCountryName, countryName, setEventFormat, eventFormat}: Props) => {
+const LocationContainer = ({
+    setCityName,
+    cityName,
+    setCountryName, 
+    countryName,
+    setEventFormat,
+    eventFormat,
+    setLongitude,
+    setLatitude,
+    theme
+  }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
-        <div className={styles.body}>
-            <div className={styles.locationContainer}>
+        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
+            <div className={styles.locationContainer} onClick={()=>setDropdown(!dropdown)}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
                     <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>{cityName ? cityName : "Add Event Location"}</div>
                     <div className={styles.eventLocationTwo}>{countryName ? countryName : "Offline location or Virtual Link"}</div>
                 </div>
             </div>
-            <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/>
-            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
+            {/* <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/> */}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
         </div>
     )
 }

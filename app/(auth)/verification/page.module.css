@@ -4,7 +4,6 @@
   width: 100vw;
   position: relative;
   display: flex;
-  gap: 80px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -33,6 +32,7 @@
     height: 100%;
     justify-content: center;
     padding: 20px;
+    background-color:var(--accent-foreground);
 }
 .leftContainer{
   width: 50%;
@@ -45,7 +45,7 @@
 .error {
   font-size: 12px;
   margin-top: -25px;
-  color: #f15050;
+  color: var(--danger-text-color);
   margin-left: 10px;
 }
 
@@ -61,8 +61,9 @@
 
 .error {
   font-size: 12px;
+  text-align: center;
   margin-top: -25px;
-  color: #f15050;
+  color: var(--danger-text-color);
   margin-left: 10px;
 }
 
@@ -96,7 +97,6 @@
 .heading {
   font-weight: 500;
   /* color: #242424; */
-  font-size: 24px;
   text-align: center;
 }
 
@@ -107,8 +107,7 @@
 .input_container {
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
-  gap: 14px;
+  justify-content: center;
 }
 
 .input {
@@ -134,12 +133,13 @@
 }
 
 .button {
-  background-color: #6750a4;
-  border-radius: 12px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-sm);
   color: white;
   text-align: center;
   padding: 10px;
   cursor: pointer;
+  width: 300px;
 }
 
 .resend_button {
@@ -156,7 +156,10 @@
   -webkit-appearance: none;
   margin: 0;
 }
-
+.actions_container{
+  display: flex;
+  justify-content: center;
+}
 @media screen and (max-width: 575px) {
   .container {
     min-height: 100vh;
