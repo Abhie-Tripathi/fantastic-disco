@@ -27,17 +27,24 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-  const [noMoreData,setNoMoreData]=useState(false);
-  const divRef: RefObject<HTMLDivElement> = useRef(null);
-  const [page,setPage]=useState(1);
+  const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
+  const [shortlistPage,setShortlistPage]=useState(1);
+  const [noMoreShortlistData,setNoMoreShortlistData]=useState(false);
   const inProgressRef: RefObject<HTMLDivElement> = useRef(null);
-  const [page1,setPage1]=useState(1);
+  const [inProgressPage,setInProgressPage]=useState(1);
+  const [noMoreProgressData,setNoMoreProgressData]=useState(false);
   const handleScrollEnd = () => {
     setTimeout(() => {
-        if(!noMoreData) setPage(prevPage => prevPage + 1);
+        if(!noMoreShortlistData) setShortlistPage(prevPage => prevPage + 1);
     }, 1000);
 };
-  useInfiniteScroll(divRef, handleScrollEnd); 
+const handleScrollProgressEnd = () => {
+  setTimeout(() => {
+      if(!noMoreProgressData) setInProgressPage(prevPage => prevPage + 1);
+  }, 1000);
+};
+useInfiniteScroll(inProgressRef, handleScrollProgressEnd); 
+  useInfiniteScroll(shortlistRef, handleScrollEnd); 
   const handleRefresh = () => {
     setStatusChanged(!statusChanged);
   };
@@ -157,10 +164,10 @@ const Page: React.FC = () => {
     }
   };
   useEffect(() => {
-    if (page) {
+    if (shortlistPage || inProgressPage) {
         fetchData();
     }
-}, [page]);
+}, [shortlistPage, inProgressPage]);
   useEffect(() => {
     if (window.innerWidth > 576) {
       setTabsVisible("all");
@@ -169,14 +176,14 @@ const Page: React.FC = () => {
   }, [statusChanged]);
   const fetchData = async () => {
     const shortlistApiData = await myFetch(
-      `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(page-1)*10}`,
+      `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(shortlistPage-1)*10}`,
       {
         method: "GET",
         headers: headers,
       }
     );
     const negoApiData = await myFetch(
-      baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=10&offset=0",
+      `${baseUrl}/userInterest/enquiry?status=IN_NEGO&limit=10&offset=${(inProgressPage-1)*10}`,
       {
         method: "GET",
         headers: headers,
@@ -194,11 +201,14 @@ const Page: React.FC = () => {
       setShortlistedCount(shortlistApiData.data.totalCount);
     }
     if(shortlistApiData.data.enquiryData<10){
-      setNoMoreData(true);
+      setNoMoreShortlistData(true);
     }
     if (negoApiData.data) {
-      setOutreachTasks(negoApiData.data.enquiryData);
+      setOutreachTasks(prev => [...prev, ...negoApiData.data.enquiryData]);
       setInProgressCount(negoApiData.data.totalCount);
+    }
+    if(negoApiData.data.enquiryData.length<10){
+     setNoMoreProgressData(true);
     }
     if (confirmApiData.data){
       setPreFinalisedTasks(confirmApiData.data.enquiryData);
@@ -265,7 +275,7 @@ const Page: React.FC = () => {
                   handleDragContainerStart(event, "shortlisted")
                 }
                 onDrop={(event) => handleDrop(event, "shortlisted")}
-                ref={divRef}
+                ref={shortlistRef}
               >
                 {shortlistedTasks.map((task, index) => (
                   <div className={styles.cards} key={index}>
@@ -287,7 +297,7 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
-                {noMoreData ? 
+                {noMoreShortlistData ? 
         <></> : <Loading />
     }
                 {/* <div
@@ -322,6 +332,7 @@ const Page: React.FC = () => {
                   handleDragContainerStart(event, "outreach")
                 }
                 onDrop={(event) => handleDrop(event, "outreach")}
+                ref={inProgressRef}
               >
                 {outreachTasks.map((task, index) => (
                   <div className={styles.cards} key={index}>
@@ -343,6 +354,9 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
+                {noMoreProgressData ? 
+        <></> : <Loading />
+    }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -449,7 +463,6 @@ const Page: React.FC = () => {
           {/* <AddEventForm /> */}
         </div>
       )}
-      <ToastContainer />
     </div>
   );
 };
