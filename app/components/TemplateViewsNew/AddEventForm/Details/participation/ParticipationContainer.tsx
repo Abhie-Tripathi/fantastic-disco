@@ -19,9 +19,10 @@ interface Props {
   size: string;
   theme?: string;
   type : string;
+  isEventParticipationEmpty:boolean
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type }: Props) => {
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type,isEventParticipationEmpty }: Props) => {
 
   const handleSelection = (type: string) => {
     setParticipationType(type);
@@ -39,8 +40,8 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
           <Image src={ParticipationIcon} alt='svg' />
           <span>Choose Your Mode of Participation</span>
         </div>
-          <div className={styles.options}>
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""}`} onClick={() => handleSelection("Attendee")}>
+          <div className={styles.options} >
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""} ${isEventParticipationEmpty? styles.errorHighlight : ""}`} onClick={() => handleSelection("Attendee")}>
               <Image src={AttendeeIcon} alt='icon' />
               <span>Attendee</span>
             </div>

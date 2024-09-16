@@ -19,16 +19,18 @@ interface Props {
     setLongitude: (value: number) => void;
     setLatitude: (value: number) => void;
     theme?: string;
+    setQuery:(value: string) => void;
+    query:string
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme }: Props) => {
+const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery }: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
     // });
 
-    const [query, setQuery] = useState<string>("");
+    // const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 

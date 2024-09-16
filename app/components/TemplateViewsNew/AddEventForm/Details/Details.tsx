@@ -93,6 +93,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
+  const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
+  const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
+  const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
+  const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
+  const [query, setQuery] = useState("")
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -156,6 +161,27 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
+    if(!eventName){
+      setIsEventNameEmpty(true)
+    }else{
+      setIsEventNameEmpty(false)
+    }
+    if(!query){
+      setIsEventFormatEmpty(true)
+    }else{
+      setIsEventFormatEmpty(false)
+    }
+    if(!description){
+      setIsEventDescriptionEmpty(true)
+    }else{
+      setIsEventDescriptionEmpty(false)
+    }
+    if(!participationType ){
+      setIsEventParticipationEmpty(true)
+    }else{
+      setIsEventParticipationEmpty(false)
+    }
+
     if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
@@ -428,7 +454,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       </div>
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
-        <div className={styles.participationContainer}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
+        <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty}/></div>
         <div className={styles.sections}>
           <div className={styles.leftSection}>
             <div className={styles.posterContainer}>
@@ -455,12 +481,24 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             </div>
           </div>
           <div className={styles.rightSection}>
-            <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+            {/* <textarea ref={textAreaRef} className={`${styles.eventName} ${isEventNameEmpty ? styles.errorHighlight : ""} `} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} /> */}
+            <div>
+            <textarea
+              ref={textAreaRef}
+              className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`}
+              maxLength={80}
+              placeholder='Event Name'
+              style={{ fontFamily: eventFont }}
+              onChange={(e) => setEventName(e.target.value)}
+              value={eventName}
+            />
+              {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required</p>}
+            </div>
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-            <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+            <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery}/></div>
             <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
-            <div className={styles.descriptionContainer} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+            <div className={`${styles.descriptionContainer} ${isEventDescriptionEmpty? styles.errorHighlight:""}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
             {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
             {cityName &&

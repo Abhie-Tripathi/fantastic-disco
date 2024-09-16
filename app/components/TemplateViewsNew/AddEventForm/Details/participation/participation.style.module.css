@@ -23,12 +23,16 @@
     width: 200px;
     padding: 6px 9px;
     border-radius: 6px;
-    border: 1px solid #d5d5d5;
+    /* border: 1px solid #d5d5d5; */
     display: flex;
     align-items: center;
     gap: 9px;
     cursor: pointer;
 }
+.option:not(.errorHighlight) {
+    border: 1px solid #d5d5d5;
+  }
+  
 .options .option:hover{
     background-color: rgba(255, 255, 255, 0.36);
 }
@@ -86,4 +90,9 @@
     color: white;
     padding-bottom: 1px;
     cursor: pointer;
+}
+
+.errorHighlight {
+    border: .5px solid red;
+    transition: border-color 0.3s ease; 
 }
