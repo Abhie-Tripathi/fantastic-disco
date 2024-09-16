@@ -39,7 +39,11 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) || -122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
     const [participationType, setParticipationType] = useState<string>(prefilledNormalEvent?.participationType || "")
-
+    const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
+    const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
+    const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
+    const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
+    const [query, setQuery] = useState("")
     const handleDescClick = () => {
         setDescription(textValue)
         setDescriptionModal(false)
@@ -90,6 +94,28 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleAddEvent = async () => {
+        if(!eventName){
+            setIsEventNameEmpty(true)
+        }else{
+            setIsEventNameEmpty(false)
+        }
+
+        if(!participationType){
+            setIsEventParticipationEmpty(true)
+        }else{
+            setIsEventParticipationEmpty(false)
+        }
+        if(!description){
+            setIsEventDescriptionEmpty(true)
+        }else{
+            setIsEventDescriptionEmpty(false)
+        }
+        if(!query){
+            setIsEventFormatEmpty(true)
+        }else{
+            setIsEventFormatEmpty(false)
+        }
+        
         if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
             showToast("error","Please fill in all the fields");
             return; // Exit the function if any field is missing
@@ -145,14 +171,17 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             </div>
             <div className={styles.line}></div>
             <div className={styles.form}>
-                <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} /></div>
-                <textarea className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+                <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} /></div>
 
+                <div>
+                    <textarea className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`} maxLength={80} placeholder='Event Name' style={{ fontFamily: "arial" }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+                    {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required</p>}
+                </div>
                 <div className={styles.dateTimeContainer}><DateTimeContainer theme={theme} setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
-                <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
+                <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} /></div>
 
-                <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} /></div>
+                <div className={`${styles.descriptionContainer}  ${isEventDescriptionEmpty? styles.errorHighlight:""}`} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} /></div>
             </div>
             {
                 descriptionModal && <div className={styles.descriptionModalFill}>
