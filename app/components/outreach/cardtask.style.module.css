@@ -27,7 +27,8 @@
 }
 .typeOfEventContainer {
   display: flex;
-  gap: 5px;
+  gap: var(--spacing-xs);
+  padding-top: 5px;
 }
 .typeOfEvent {
   /* border: 1px solid #313131; */

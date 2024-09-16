@@ -9,6 +9,7 @@ import { Calendar } from 'geist-icons';
 
 interface CardTaskProps {
     name: string;
+    interests: any;
     draggable: boolean;
     eventLocation: string;
     eventCompany: string;
@@ -22,7 +23,7 @@ interface CardTaskProps {
     onClick:() => void
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick }) => {
+const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick, interests }) => {
     const {theme} = useTheme();
     const iconClass = theme === 'light' ? 'icons_light' : 'icon';
     // const startDate = formatDate(eventStartDate);
@@ -30,7 +31,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
     return (
         <>
         <div className={styles.eventAdd_container}>
-            <div className={styles.addMore_event} onClick={onClick}>
+            <div className={styles.addMore_event} >
                 <Image src={addEventIcon} alt="add" className={styles.addIcon} width={18} height={18} />
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
@@ -42,10 +43,12 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
             <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
                 <div style={{marginTop:'3px'}}>{formatEventDates(eventStartDate,eventEndDate)}</div>
             </div>
-            {/* <div className={styles.typeOfEventContainer}>
-                <div className={styles.typeOfEvent}>Exhibting</div>
-                <div className={styles.typeOfEvent}>Attendee</div>
-            </div> */}
+            <div className={styles.typeOfEventContainer}>
+               {interests?.EXHIBITOR>0 && <div className={styles.typeOfEvent}>Exhibit</div>}
+               {interests?.SPONSOR>0 && <div className={styles.typeOfEvent}>Sponsor</div>}
+               {interests?.SPEAKER>0 && <div className={styles.typeOfEvent}>Speak</div>}
+                {interests?.ATTENDING>0 &&<div className={styles.typeOfEvent}>Attend</div>}
+            </div>
 
         </div>
         </>

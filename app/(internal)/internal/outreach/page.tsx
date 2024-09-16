@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./page.style.module.css";
 import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -9,11 +9,15 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import useInfiniteScroll from '@/utils/useInfiniteScroll'
+import Loading from "@/app/components/UI/Loading";
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
   const [preFinalisedTasks, setPreFinalisedTasks] = useState<enquiryType[]>([]);
+  const [shortlistedCount,setShortlistedCount]=useState(0);
+  const [inProgressCount,setInProgressCount]=useState(0);
+  const [confirmedCount,setConfirmedCount]=useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
@@ -23,7 +27,17 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-
+  const [noMoreData,setNoMoreData]=useState(false);
+  const divRef: RefObject<HTMLDivElement> = useRef(null);
+  const [page,setPage]=useState(1);
+  const inProgressRef: RefObject<HTMLDivElement> = useRef(null);
+  const [page1,setPage1]=useState(1);
+  const handleScrollEnd = () => {
+    setTimeout(() => {
+        if(!noMoreData) setPage(prevPage => prevPage + 1);
+    }, 1000);
+};
+  useInfiniteScroll(divRef, handleScrollEnd); 
   const handleRefresh = () => {
     setStatusChanged(!statusChanged);
   };
@@ -67,24 +81,30 @@ const Page: React.FC = () => {
         setShortlistedTasks(
           shortlistedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
+        setShortlistedCount(prev=>prev-1)
       } else if (source === "outreach") {
         setOutreachTasks(
           outreachTasks.filter((task) => task.eventId !== taskName.eventId)
         );
+        setInProgressCount(prev=>prev-1);
       } else if (source === "prefinalised") {
         setPreFinalisedTasks(
           preFinalisedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
+        setConfirmedCount(prev=>prev-1);
       }
 
       if (target === "shortlisted") {
         setShortlistedTasks([...shortlistedTasks, taskName]);
+        setShortlistedCount(prev=>prev+1);
         changeEnquiryStatus("SHORTLISTED", taskName.enquiryId);
       } else if (target === "outreach") {
         setOutreachTasks([...outreachTasks, taskName]);
+        setInProgressCount(prev=>prev+1);
         changeEnquiryStatus("IN_NEGO", taskName.enquiryId);
       } else if (target === "prefinalised") {
         setPreFinalisedTasks([...preFinalisedTasks, taskName]);
+        setConfirmedCount(prev=>prev+1)
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId);
       }
     }
@@ -136,42 +156,55 @@ const Page: React.FC = () => {
       }
     }
   };
-
+  useEffect(() => {
+    if (page) {
+        fetchData();
+    }
+}, [page]);
   useEffect(() => {
     if (window.innerWidth > 576) {
       setTabsVisible("all");
     }
-    const fetchData = async () => {
-      const shortlistApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=0",
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
-      const negoApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=10&offset=0",
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
-      const confirmApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=10&offset=0",
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
-      if (shortlistApiData.data)
-        setShortlistedTasks(shortlistApiData.data.enquiryData);
-      if (negoApiData.data) setOutreachTasks(negoApiData.data.enquiryData);
-      if (confirmApiData.data)
-        setPreFinalisedTasks(confirmApiData.data.enquiryData);
-    };
-    fetchData();
+    // fetchData();
   }, [statusChanged]);
-
+  const fetchData = async () => {
+    const shortlistApiData = await myFetch(
+      `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(page-1)*10}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
+    const negoApiData = await myFetch(
+      baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=10&offset=0",
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
+    const confirmApiData = await myFetch(
+      baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=10&offset=0",
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
+    if (shortlistApiData.data){
+      setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
+      setShortlistedCount(shortlistApiData.data.totalCount);
+    }
+    if(shortlistApiData.data.enquiryData<10){
+      setNoMoreData(true);
+    }
+    if (negoApiData.data) {
+      setOutreachTasks(negoApiData.data.enquiryData);
+      setInProgressCount(negoApiData.data.totalCount);
+    }
+    if (confirmApiData.data){
+      setPreFinalisedTasks(confirmApiData.data.enquiryData);
+      setConfirmedCount(confirmApiData.data.totalCount);
+    }
+  };
   return (
     <div
       className={`${styles.bodyContainer} ${
@@ -187,7 +220,7 @@ const Page: React.FC = () => {
             >
               Shortlisted{" "}
               <span className={styles.eventSize}>
-                {shortlistedTasks.length}
+                {shortlistedCount}
               </span>
             </div>
             <span className={styles.seprator}></span>
@@ -219,7 +252,7 @@ const Page: React.FC = () => {
                 >
                   Shortlisted{" "}
                   <span className={styles.eventSize}>
-                    {shortlistedTasks.length}
+                    {shortlistedCount}
                   </span>
                 </div>
               </div>
@@ -232,12 +265,14 @@ const Page: React.FC = () => {
                   handleDragContainerStart(event, "shortlisted")
                 }
                 onDrop={(event) => handleDrop(event, "shortlisted")}
+                ref={divRef}
               >
                 {shortlistedTasks.map((task, index) => (
                   <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       name={task.eventName}
+                      interests={task.userCountPerInterest}
                       draggable={true}
                       eventLocation={""}
                       eventCompany={task.orgName}
@@ -252,6 +287,9 @@ const Page: React.FC = () => {
                     />
                   </div>
                 ))}
+                {noMoreData ? 
+        <></> : <Loading />
+    }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -271,7 +309,7 @@ const Page: React.FC = () => {
                 >
                   In Progress{" "}
                   <span className={styles.eventSize}>
-                    {outreachTasks.length}
+                    {inProgressCount}
                   </span>
                 </div>
               </div>
@@ -290,6 +328,7 @@ const Page: React.FC = () => {
                     <CardTask
                       key={index}
                       name={task.eventName}
+                      interests={task.userCountPerInterest}
                       draggable={true}
                       eventLocation={""}
                       eventCompany={task.orgName}
@@ -323,7 +362,7 @@ const Page: React.FC = () => {
                 >
                   Confirmed{" "}
                   <span className={styles.eventSize}>
-                    {preFinalisedTasks.length}
+                    {confirmedCount}
                   </span>
                 </div>
               </div>
@@ -342,6 +381,7 @@ const Page: React.FC = () => {
                     <CardTask
                       key={index}
                       name={task.eventName}
+                      interests={task.userCountPerInterest}
                       draggable={true}
                       eventLocation={""}
                       eventCompany={task.orgName}
