@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
+import StarIconFilled from '/public/stariconfilled.svg'
 import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { myFetch } from '@/utils/myFetch';
@@ -41,7 +42,6 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
                         }
-
                         const eventData = data?.data?.[0]?.data;
                         if (!eventData) return null;
 
@@ -71,20 +71,63 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                             longitude: event.longitude,
                             venue: event.venue,
                             hashtags: event.hashtags,
+                            promoted : event.promoted
                         } as PrefilledAddedEventsType;
                     })
                 );
-
                 setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
             } catch (err) {
                 console.error("Error in handleOtherDataFetch:", err);
             }
         };
-
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
+    const handlePromoteEvent = async (newEvent: AddedEventsType) => {
+        const customizedFormData = new FormData();
+        const existingEvents = fetchedAddedEvents || [];
+        const updatedEvent = {
+            id: newEvent.id,
+            pageBgColor: newEvent.pageBgColor,
+            registerBtnColor: newEvent.registerBtnColor,
+            registerBtnText: newEvent.registerBtnColor,
+            registerMessage: newEvent.registerMessage,
+            boothNumber: newEvent.boothNumber,
+            speakerProfilesData: newEvent.speakerProfilesData,
+            participationMessage: newEvent.participationMessage,
+            bannerUrl: newEvent.bannerUrl,
+            eventFont : newEvent.eventFont,
+            latitude: newEvent.latitude,
+            longitude: newEvent.longitude,
+            venue: newEvent.venue,
+            hashtags: newEvent.hashtags,
+            promoted: newEvent.promoted === "true" ? "false" : "true"
+        };
+        // Find and update the existing event
+        const updatedEvents = existingEvents.map(event =>
+            event.id === newEvent.id ? updatedEvent : event
+        );
 
+        const otherData = {
+            event: updatedEvents,
+        };
+        const eventIds = updatedEvents.map(event => event.id).join(',');
+
+        customizedFormData.append('widgetId', widgetId);
+        customizedFormData.append('otherdata', JSON.stringify(otherData));
+        customizedFormData.append('eventId', eventIds);
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData,
+        });
+        if (data) {
+            console.log("widget event promote data", data);
+            fetchAddedEvents();
+        }
+        if (error) {
+            console.log("error in updating event in widget ", error);
+        }
+    }
 
     // This function is to trigger the delete event function from added events
     const handleCheckboxChange = async (eventId: string) => {
@@ -191,10 +234,10 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={showPromote ? styles.promotEditBtnContainer :styles.editBtnContainer}>
+                            <div className={showPromote ? styles.promotEditBtnContainer : styles.editBtnContainer}>
+                                {showPromote && <div onClick={() => handlePromoteEvent(event)}><Image src={event.promoted === "true" ? StarIconFilled: StarIcon} alt='promote' /><span>{event.promoted === "true" ? "Promoted":"Promote"}</span></div>}
                                 <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
                                 </div>
-                                {showPromote && <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>}
                             </div>
                         </div>
                     </div>

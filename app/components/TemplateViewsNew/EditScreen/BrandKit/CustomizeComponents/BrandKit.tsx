@@ -35,7 +35,7 @@ interface FontSettingsState {
 const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont, setCardBgColor, setFontSettings }: Props) => {
 
     const { theme } = useTheme()
-    const [accordian, setAccordian] = useState<boolean>(false)
+    const [accordian, setAccordian] = useState<boolean>(true)
 
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])

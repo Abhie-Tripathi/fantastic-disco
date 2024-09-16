@@ -92,6 +92,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   // const mapDivRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
+  const eventPromoted = prefilledAddedEvent?.promoted || "false"
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -228,7 +229,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       longitude,
       venue,
       hashtags: hashtags.join(","),
-      promoted : "true"
+      promoted : eventPromoted
     };
     const mergedEvents = [...existingEvents, newEvent];
 
@@ -328,6 +329,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       registerBtnText,
       registerMessage,
       boothNumber,
+      eventFont,
       speakerProfilesData,
       participationMessage,
       bannerUrl: updatedBannerUrl,
@@ -335,7 +337,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       longitude,
       venue,
       hashtags: hashtags.join(","),
-      promote:"true"
+      promoted :eventPromoted
     };
 
     // Find and update the existing event
@@ -455,7 +457,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             </div>
           </div>
           <div className={styles.rightSection}>
-            <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily: eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
+            <textarea ref={textAreaRef} className={styles.eventName} maxLength={80} placeholder='Event Name' style={{ fontFamily:prefilledAddedEvent?.eventFont || eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} />
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
 
             <div className={styles.locationContainer}><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} /></div>
