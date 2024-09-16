@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -18,7 +18,7 @@ const Page = () => {
   const { theme } = useTheme();
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [enquiryId, setEnquiryId] = useState("");
-
+  const [scrollPosition, setScrollPosition] = useState(0);
   const [cardUpdated, setCardUpdated] = useState<boolean>(false);
   const handleRefresh = () => {
     setCardUpdated(!cardUpdated);
@@ -57,27 +57,25 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
+  const modalRef = useRef(null); // Ref to target the modal container
+
+//   useEffect(() => {
+//     if (modalOpen && modalRef.current) {
+//         // Set the modal height to 100vh - 80px
+//         modalRef.current.style.height = `calc(100vh - 80px)`;
+//         // Set the modal's top position based on the stored scroll position
+//         modalRef.current.style.transform = `translateY(-$0px)`;
+//     }else{
+//       setScrollPosition(document.documentElement.scrollTop);
+//     }
+    
+// }, [modalOpen, scrollPosition]);
 
   return (
-    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`}>
-      {totalCount >= 9 && (
-        <div className={styles.innerContainer}>
-          {TypeOfEventsCount.map((item, key) => (
-            <div className={styles.container1} key={key}>
-              <div className={styles.number}>{item.count}</div>
-              <div className={styles.heading}>{item.name}</div>
-            </div>
-          ))}
-        </div>
-      )}
-        <Internal
-          handleModal={handleModal}
-          handleShortlistModal={handleShortlistModal}
-          cardUpdated={cardUpdated}
-        />
-      {modalOpen && (
+    <>
+    {modalOpen && (
         <div
-          className={`${styles.modal}`}
+          className={`${styles.modal} ${modalOpen ? styles.modalOpen : ""}`}
         >
           <EventDetail
             openEventDetails={true}
@@ -91,6 +89,23 @@ const Page = () => {
           />
         </div>
       )}
+    <div className={`${styles.container}`} >
+      {totalCount >= 9 && (
+        <div className={styles.innerContainer}>
+          {TypeOfEventsCount.map((item, key) => (
+            <div className={styles.container1} key={key}>
+              <div className={styles.number}>{item.count}</div>
+              <div className={styles.heading}>{item.name}</div>
+            </div>
+          ))}
+        </div>
+      )}
+        <Internal
+        modalOpen={modalOpen}
+          handleModal={handleModal}
+          handleShortlistModal={handleShortlistModal}
+          cardUpdated={cardUpdated}
+        />
 
       {shortlistModalOpen && (
         <div>
@@ -103,6 +118,7 @@ const Page = () => {
       )}
       <ToastContainer />
     </div>
+    </>
   );
 };
 

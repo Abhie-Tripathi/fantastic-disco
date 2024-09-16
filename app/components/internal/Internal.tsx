@@ -30,9 +30,12 @@ interface Props{
     handleModal : (id: string,enquiryId:string) => void,
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
     cardUpdated: boolean;
+    modalOpen:boolean;
 }
-const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
- 
+const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } : Props) => {
+   const buttonRef = useRef(null);
+   const lastItemRef = useRef();
+ const observer = useRef();
     let prevDate: any = null;
     const { setIsOpen, isOpen } = DropdownRef();
     const { theme } = useTheme();
@@ -62,17 +65,17 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     const [eventId,setEventId]=useState("");
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
     const handleScrollEnd = () => {
-        setTimeout(() => {
-            if(!noMoreData) setPage(prevPage => prevPage + 1);
-        }, 1000);
-    };
+      setTimeout(() => {
+          if(!noMoreData) setPage(prevPage => prevPage + 1);
+      }, 1000);
+  };
     
     const setMenuOpen = () => {
-        if(popoverState === null) {
-          setPopoverState(false);
-        }else
-          setPopoverState(!popoverState);
-      };
+      if(popoverState === null) {
+        setPopoverState(false);
+      }else
+        setPopoverState(!popoverState);
+    };
       useEffect(() => {
         const modalStatus = document.body.getAttribute("popover-status");
     
@@ -117,6 +120,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     }, [selectedDateRange]);
       useEffect(()=>{
         if(selectedStatusType.length>0) {
+          
           if(selectedStatusType[0]==="Pending") setStatusType("IN_DISCUSSION");
            else  setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
             // console.log(selectedStatusType[selectedStatusType.length-1].toUpperCase());
@@ -210,8 +214,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
     //         }
     //     };
     // }, [handleScrollEnd]);
+      // useInfiniteScroll(divRef, handleScrollEnd);
   
-   const scroller = useInfiniteScroll(divRef, handleScrollEnd);
+   
 
    useEffect(() => {
     if(page == 1)
@@ -220,6 +225,24 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         setPage(1);
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
+console.log(modalOpen);
+
+const handleInfiniteScroll = async () => {
+  const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPosition = document.documentElement.scrollTop;
+  if (scrollPosition + 1 >= totalHeight && !noMoreData && modalOpen===false) {
+      setPage(prev => prev + 1); 
+  }
+};
+
+useEffect(() => {
+  if (!noMoreData) {
+      window.addEventListener('scroll', handleInfiniteScroll);
+  }
+  return () => {
+      window.removeEventListener('scroll', handleInfiniteScroll);
+  };
+}, [noMoreData]);
 useEffect(()=>{
   if(page>0){
     setNoMoreData(false);
@@ -239,13 +262,15 @@ useEffect(()=>{
         </div>
     );
 }
- const handleSelect=(id, name)=>{
+ const handleSelect=(id: string, name: string)=>{
     setSearchInput(name);
     setEventId(id);
  } 
- 
+
+
     // const abortControllerRef = useRef<AbortController | null>(null);
   return (
+    <>
     <div className={styles.scrollContainer} ref={divRef} >
     <div className={styles.container} >
     <div className={styles.countsContainer}>
@@ -342,7 +367,7 @@ useEffect(()=>{
         </div>
         <div style={{width:"20%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button className={styles.dropdown_button}>
+              <Button ref={buttonRef} className={styles.dropdown_button}>
                 <div className={styles.input_container}>
                   <div className={styles.input}>
                     <div className={styles.input_title}>
@@ -366,7 +391,9 @@ useEffect(()=>{
                   </div>
                 </div>
               </Button>
-              <Popover className={styles.filterPopover}>
+              <Popover
+              className={styles.filterPopover}
+              >
                 {/* <Dialog> */}
                 <DateRange
                   state={selectedDateRange}
@@ -475,7 +502,7 @@ useEffect(()=>{
         // Update previous date
         prevDate = item.startDate;
         return (
-            <div key={index} className={styles.timeline}>
+            <div key={index} className={styles.timeline} style={{zIndex: modalOpen? "-1" :"1"}}>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.eventId}
@@ -501,10 +528,11 @@ useEffect(()=>{
     })}
 </div>
 {noMoreData ? 
-        <></> : <Loading />
+        (eventData1.length===0?<div style={{textAlign:"center"}}>No results containing all your search terms were found.</div>:<></>) : <Loading />
     }
 </div>
 </div>
+</>
   )
 }
 

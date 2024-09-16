@@ -65,7 +65,10 @@
   color: var(--primary-text-color);
   width: calc(100vw - 70px);
 }
-
+.modalOpen{
+  /* height: calc(100vh - 80px); */
+  /* position: fixed; */
+}
 /* .modal_light {
   background-color: var(--primary-bg-light);
   color: var(--primary-color-light);

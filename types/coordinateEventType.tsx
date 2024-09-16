@@ -1,5 +1,7 @@
 export interface eventDataType {
     id: string;
+    eventId: string;
+    eventName: string;
     name: string;
     city: string;
     logo:string;
