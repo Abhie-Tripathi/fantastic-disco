@@ -42,15 +42,17 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
   };
 
   const [shortlistedVisitors, setShortlistedVisitors] = useState<string[]>([]);
+  const [shortlistedExhibitor, setShortlistedExhibitor] = useState<string[]>([]);
   const [shortlistedSpeaker, setShortlistedSpeaker] = useState<string[]>([]);
+  const [shortlistedSponsor, setShortlistedSponosor] = useState<string[]>([]);
 
   const handleSubmit = async() => {
     if(user){
-      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0){
+      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0 || shortlistedExhibitor.length > 0 || shortlistedSponsor.length>0){
       let payloadData = {
         entityId: shortlistModalData.eventId,
         status: "SHORTLISTED",
-        id: shortlistedVisitors.concat(shortlistedSpeaker).join(), // multiple userInterest id's
+        id: shortlistedVisitors.concat(shortlistedSpeaker, shortlistedExhibitor, shortlistedSponsor).join(), // multiple userInterest id's
         modifiedBy: user.id,
         enquiryStatus:"SHORTLISTED",
       };
@@ -203,10 +205,10 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           </div>
           <div className={styles.main_section}>
           {shortlistModalData.participent.exhibitors?.length > 0 &&
-              <AttendeeCard cardType={"Exhibit"} userList={shortlistModalData.participent.exhibitors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+              <AttendeeCard cardType={"Exhibit"} userList={shortlistModalData.participent.exhibitors} shortlistedUsers={shortlistedExhibitor} setShortlistedUsers={setShortlistedExhibitor} />
             }
              {shortlistModalData.participent.sponsors?.length > 0 &&
-              <AttendeeCard cardType={"Sponsor"} userList={shortlistModalData.participent.sponsors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
+              <AttendeeCard cardType={"Sponsor"} userList={shortlistModalData.participent.sponsors} shortlistedUsers={shortlistedSponsor} setShortlistedUsers={setShortlistedSponosor} />
             }
              {shortlistModalData.participent.speakers?.length > 0 &&
               <AttendeeCard cardType={"Speak"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
