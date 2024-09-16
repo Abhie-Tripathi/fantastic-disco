@@ -297,7 +297,7 @@ const Page: React.FC = () => {
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus="IN NEGOTIATION"
+                      enquiryStatus="IN PROGRESS"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
