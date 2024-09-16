@@ -1499,7 +1499,7 @@ useEffect(()=>{
             </div>
           </div> */}
         </div>
-        {uploadEnabled && 
+        {template && uploadEnabled && 
           <CsvUploader
             templateData={template}
             customData={customData}

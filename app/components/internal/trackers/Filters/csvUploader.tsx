@@ -182,7 +182,7 @@ const CsvUploader = ({
     } else {
       parsedData.map((data, index) => {
         let tempObj: any = {};
-        templateData.inputAreas.map((item, i) => {
+        templateData.inputAreas?.map((item, i) => {
           let t_name = item.placeholder;
           tempObj[t_name] = data[i];
         });
