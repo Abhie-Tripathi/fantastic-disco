@@ -464,7 +464,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       </div>
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
+       <div>
         <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty}/></div>
+        {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+       </div>
         <div className={styles.sections}>
           <div className={styles.leftSection}>
             <div className={styles.posterContainer}>
@@ -502,13 +505,18 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               onChange={(e) => {handleInputChange(e)}}
               value={eventName}
             />
-              {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required</p>}
+              {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required.</p>}
             </div>
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
-
-            <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery}/></div>
+            <div>
+              <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery}/></div>
+              {isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
+            </div>
             <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
-            <div className={`${styles.descriptionContainer} ${isEventDescriptionEmpty? styles.errorHighlight:""}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} /></div>
+            <div>
+            <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty}/></div>
+              {isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
+            </div>
             {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
             {cityName &&

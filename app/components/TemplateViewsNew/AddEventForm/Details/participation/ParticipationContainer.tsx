@@ -40,8 +40,8 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
           <Image src={ParticipationIcon} alt='svg' />
           <span>Choose Your Mode of Participation</span>
         </div>
-          <div className={styles.options} >
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""} ${isEventParticipationEmpty? styles.errorHighlight : ""}`} onClick={() => handleSelection("Attendee")}>
+          <div className={`${styles.options} ${isEventParticipationEmpty? styles.errorHighlight : ""}`} >
+            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""} `} onClick={() => handleSelection("Attendee")}>
               <Image src={AttendeeIcon} alt='icon' />
               <span>Attendee</span>
             </div>

@@ -93,6 +93,7 @@
 }
 
 .errorHighlight {
-    border: .5px solid red;
+    border: .5px solid #DA2F35;
     transition: border-color 0.3s ease; 
+    border-radius: 10px;
 }

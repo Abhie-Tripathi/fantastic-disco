@@ -224,8 +224,9 @@
 }
 
 .errorHighlight {
-    border: .5px solid red;
+    border: .5px solid #DA2F35;
     transition: border-color 0.3s ease; 
+    box-shadow: 0 0 5px red;
 }
 
 
@@ -236,6 +237,6 @@
   
   .errorMessage {
     color: #D92D20;
-    font-size: 14px;
+    font-size: 12px;
     margin-top: 4px;
   }
