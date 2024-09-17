@@ -8,12 +8,14 @@ import place from "@/public/internal/place.svg";
 import person2 from "@/public/person2.svg";
 import Image from "next/image";
 import upArrowLight from '/public/internal/up_arrow_light.svg'
+import { formatEventDates } from "@/utils/dateFormat";
 import Link from "next/link";
 import ClockIcon from "/public/clock.svg";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
 import upArrow from "/public/internal/up_arrow.svg";
 import { useTheme } from "@/context";
 import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
+import { Calendar, Location } from "geist-icons";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { AllEventsType } from "@/types/alleventtype";
@@ -167,64 +169,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     fetchInterestedUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  function formatEventDates(startDate: string, endDate: string) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (start.getFullYear() === end.getFullYear()) {
-      if (start.getMonth() === end.getMonth()) {
-        if (start.getDate() === end.getDate()) {
-          return new Date(startDate).toLocaleDateString("en-GB", {
-            weekday: 'long',
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          });
-        } else {
-          return (
-            new Date(startDate).toLocaleDateString("en-GB", {
-              weekday: 'long',
-            }) + ', ' +
-            new Date(startDate).toLocaleDateString("en-GB", {
-              day: "2-digit",
-            }) + ' - ' +
-            new Date(endDate).toLocaleDateString("en-GB", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })
-          );
-        }
-      } else {
-        return (
-          new Date(startDate).toLocaleDateString("en-GB", {
-            weekday: 'long',
-            month: "short",
-            day: "2-digit",
-          }) + ' - ' +
-          new Date(endDate).toLocaleDateString("en-GB", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })
-        );
-      }
-    } else {
-      return (
-        new Date(startDate).toLocaleDateString("en-GB", {
-          weekday: 'long',
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }) + ' - ' +
-        new Date(endDate).toLocaleDateString("en-GB", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        })
-      );
-    }
-  }
+ 
   const [votesCount, setVotesCount] = useState(upvote && upvote[0].like);
   return (
 
@@ -275,17 +220,18 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             <div className={styles.locationAndDateContainer}>
               {(eventLocation || geniEvent) && (
                 <div className={styles.eventLocation}>
-                  <div className={styles.circle1}>
-                    <Image
+                  <div>
+                    {/* <Image
                       src={place}
                       alt="locationIcon"
                       width={24}
                       height={24}
                       style={{ marginRight: "3px" }}
                       className="icons"
-                    />
+                    /> */}
+                    <Location height={'12px'} width={'12px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
                   </div>
-                  <div style={{ marginLeft: "-4px" }}>
+                  <div style={{marginTop:"3px"}}>
                     {eventLocation
                       ? eventLocation === eventCountry
                         ? eventCountry
@@ -296,14 +242,15 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               )}
 
               <div className={styles.eventDate}>
-                <Image
+                {/* <Image
                   src={calendarIcon}
                   alt="calendarIcon"
                   width={14}
                   height={14}
                   className='icons'
-                />
-                <div>
+                /> */}
+                <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
+                <div style={{marginTop:"3px"}}>
                   {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
                   {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)}
                 </div>
@@ -458,4 +405,3 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 };
 
 export default YourEventCard;
-

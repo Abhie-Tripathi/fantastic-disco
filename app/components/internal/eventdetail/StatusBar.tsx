@@ -46,7 +46,7 @@ const StatusBar = ({status}:Props) => {
                 }
                 <div className={styles.statusText} >
                     {status > 10 && <Image width={14} height={14} src={tickIcon} alt="check" />}
-                    Finalised
+                    Confirmed
                 </div>
             </div>
             <div className={styles.statusCard}>
@@ -57,7 +57,7 @@ const StatusBar = ({status}:Props) => {
                                 <StatusIcon2 fillColor={'#1C1728'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
-                    Cancelled
+                    Canceled
                 </div>
             </div>
         </div>
