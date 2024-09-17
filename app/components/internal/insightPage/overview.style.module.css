@@ -324,3 +324,19 @@
     width: 50%;
     /* background-color: var(--background-secondary-color); */
 }
+
+.react-aria-Tooltip {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 20px;
+    border-radius: var(--border-radius-sm);
+    outline: none;
+    padding: 8px 12px;
+    max-width: 40vw;
+    max-height: 30vh;
+    transform: translate3d(0px, 0px, 0px);
+    overflow-y: auto;
+    background: var(--background-secondary-color);
+    font-size: 14px;
+    line-height: var(--line-height-default);
+    letter-spacing: 0.3px;
+    border: 1px solid var(--border-color);
+}
