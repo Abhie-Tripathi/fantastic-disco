@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -18,7 +18,7 @@ const Page = () => {
   const { theme } = useTheme();
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [enquiryId, setEnquiryId] = useState("");
-  const [scrollPosition, setScrollPosition] = useState(0);
+
   const [cardUpdated, setCardUpdated] = useState<boolean>(false);
   const handleRefresh = () => {
     setCardUpdated(!cardUpdated);
@@ -57,39 +57,29 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
-  const modalRef = useRef(null); // Ref to target the modal container
+  const [scrollY, setScrollY] = useState(0);
 
-//   useEffect(() => {
-//     if (modalOpen && modalRef.current) {
-//         // Set the modal height to 100vh - 80px
-//         modalRef.current.style.height = `calc(100vh - 80px)`;
-//         // Set the modal's top position based on the stored scroll position
-//         modalRef.current.style.transform = `translateY(-$0px)`;
-//     }else{
-//       setScrollPosition(document.documentElement.scrollTop);
-//     }
+  const handleScroll = () => {
+      setScrollY(window.scrollY);
+  };
+
+  useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+      
+      // Cleanup the event listener on component unmount
+      return () => {
+          window.removeEventListener('scroll', handleScroll);
+      };
+  }, []);
+  useEffect(()=>{
+
+  },[modalOpen])
+  useEffect(()=>{
+    console.log(scrollY);
     
-// }, [modalOpen, scrollPosition]);
-
+  },[scrollY])
   return (
-    <>
-    {modalOpen && (
-        <div
-          className={`${styles.modal} ${modalOpen ? styles.modalOpen : ""}`}
-        >
-          <EventDetail
-            openEventDetails={true}
-            openEventRequest={false}
-            openOrganiserDetails={false}
-            openPocDetails={false}
-            closeBtn={true}
-            handleModal={handleModal}
-            eventId={singleEventId}
-            enquiryId={enquiryId}
-          />
-        </div>
-      )}
-    <div className={`${styles.container}`} >
+    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`}>
       {totalCount >= 9 && (
         <div className={styles.innerContainer}>
           {TypeOfEventsCount.map((item, key) => (
@@ -106,6 +96,22 @@ const Page = () => {
           handleShortlistModal={handleShortlistModal}
           cardUpdated={cardUpdated}
         />
+      {modalOpen && (
+        <div
+          className={`${styles.modal}`}
+        >
+          <EventDetail
+            openEventDetails={true}
+            openEventRequest={false}
+            openOrganiserDetails={false}
+            openPocDetails={false}
+            closeBtn={true}
+            handleModal={handleModal}
+            eventId={singleEventId}
+            enquiryId={enquiryId}
+          />
+        </div>
+      )}
 
       {shortlistModalOpen && (
         <div>
@@ -118,7 +124,6 @@ const Page = () => {
       )}
       <ToastContainer />
     </div>
-    </>
   );
 };
 
