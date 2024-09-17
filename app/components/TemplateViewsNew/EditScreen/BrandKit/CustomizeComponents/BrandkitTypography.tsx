@@ -73,7 +73,10 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fet
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
                             {fetchedFonts.map((font, key) => (
+                                clickable ? 
                                 <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
+                                :
+                                <div key={key} className={styles.disableddropdownFont}>{font}</div>
                             ))}
                         </div>}
                     </div>
