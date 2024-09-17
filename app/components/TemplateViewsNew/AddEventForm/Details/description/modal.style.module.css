@@ -45,7 +45,11 @@
 .descriptionModal textarea:focus {
     outline: none;
 }
-
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
 .close {
     cursor: pointer;
 }

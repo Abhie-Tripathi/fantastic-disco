@@ -220,10 +220,14 @@ const DescriptionModal: React.FC<Props> = ({
         <div className={styles.descriptionModal}>
             <div className={styles.header}>
                 <span>Add your description</span>
-                <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+                <div className={styles.btnContainer}>
+                    <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+                    <button className={styles.saveBtn} onClick={handleSave}>Save</button>
+                </div>
+
             </div>
             <div ref={editorRef} style={{ height: '300px' }}></div>
-            <button className={styles.saveBtn} onClick={handleSave}>Save</button>
+
         </div>
     );
 };
