@@ -18,7 +18,7 @@ interface Props {
     setFetchedDomain : (value : string) => void;
 }
 
-const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain }: Props) => {
+const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain }: Props) => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
@@ -74,10 +74,10 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />
                     </div>
                     <div className={styles.container}>
-                        <BrandColor setValueUpdated={setValueUpdated} flex={false} setExtractedColors={setExtractedColors} extractedColors={fetchedColors} />
+                        <BrandColor clickable={false} setValueUpdated={setValueUpdated} flex={false} setExtractedColors={setExtractedColors} extractedColors={fetchedColors} />
                     </div>
                     <div className={styles.container}>
-                        <BrandkitTypography fetchedFonts={fetchedFonts} flex={false} />
+                        <BrandkitTypography clickable={false} fetchedFonts={fetchedFonts} flex={false} />
                     </div>
                 </div>}
 

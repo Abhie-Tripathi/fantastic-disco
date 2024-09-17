@@ -11,6 +11,7 @@ import LocationContainer from '@/app/components/DetailPage/LocationContainer'
 import DescriptionContainer from '@/app/components/DetailPage/DescriptionContainer'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { baseUrl } from '@/constants'
 
 
 interface EventProps {
@@ -87,7 +88,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons disabled={false} shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
+                        <ShareButtons disabled={false} shareUrl={`${process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN}/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -106,7 +107,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>
                                 <div className={styles.heading}>Share</div>
-                                <ShareButtons disabled={true} shareUrl={`https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
+                                <ShareButtons hashtags={hashtags.split("")} disabled={true} shareUrl={`https://console.dev.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`} />
                             </div>
                         </div>
                     }

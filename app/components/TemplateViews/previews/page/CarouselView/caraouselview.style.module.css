@@ -19,7 +19,9 @@
   position: relative;
   height: 100%;
 }
-
+.listcard{
+  cursor: pointer;
+}
 .card {
   transition: transform 0.5s ease, opacity 0.2s ease;
   position: absolute;

@@ -35,7 +35,7 @@ interface FontSettingsState {
 const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont, setCardBgColor, setFontSettings }: Props) => {
 
     const { theme } = useTheme()
-    const [accordian, setAccordian] = useState<boolean>(false)
+    const [accordian, setAccordian] = useState<boolean>(true)
 
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
@@ -70,7 +70,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
         return () => clearInterval(intervalId);
     }, [polling]);
 
-    
+
     useEffect(() => {
         if (fetchedLogos.length > 0) {
             setLoadingState(false)
@@ -102,6 +102,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                         {!flex && <div className={styles.line}></div>}
                         <div className={styles.brandColorContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
                             <BrandColor
+                                clickable={true}
                                 setCardBgColor={setCardBgColor}
                                 setPageBgColor={setPageBgColor}
                                 pageBgColor={pageBgColor}
@@ -114,6 +115,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                         {!flex && <div className={styles.line}></div>}
                         <div className={styles.fontContainer} style={{ padding: flex ? 0 : "12px 19px", marginTop: flex ? 36 : 0 }}>
                             <BrandkitTypography
+                                clickable={true}
                                 fetchedFonts={fetchedFonts}
                                 setFontSettings={setFontSettings}
                                 flex={flex}

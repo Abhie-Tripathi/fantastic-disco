@@ -4,6 +4,7 @@ import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { useRouter } from 'next/navigation';
 
 interface FontSettings {
     fontFamily: string;
@@ -22,10 +23,11 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[];
+    widgetId?: string;
 }
 
-const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     let EventCard: ElementType;
@@ -51,16 +53,18 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
         <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
     ];
 
-    const banners = fetchedAddedOtherData && fetchedAddedOtherData.length > 0
+    const banners = fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
         ? fetchedAddedOtherData.map((event, index) => (
-            <EventCard
-                key={event.id}
-                cardBgColor={cardBgColor}
-                cardBorderRadius={cardBorderRadius}
-                fontSettings={fontSettings}
-                fetchedEvent={event}
-            // Pass additional event-specific props here if needed
-            />
+            <div onClick={() => handleCardClick(event.id, widgetId)} key={index} className={styles.listcard}>
+                <EventCard
+                    key={event.id}
+                    cardBgColor={cardBgColor}
+                    cardBorderRadius={cardBorderRadius}
+                    fontSettings={fontSettings}
+                    fetchedEvent={event}
+                // Pass additional event-specific props here if needed
+                />
+            </div >
         ))
         : demoBanners;
     const handleNext = () => {
@@ -77,6 +81,10 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     // const handleDotClick = (index: number) => {
     //     setCurrentIndex(index);
     // };
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+    }
     return (
         <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>

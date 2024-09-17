@@ -26,6 +26,8 @@ interface EditProps {
     widgetId?: string;
 }
 const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId }: EditProps) => {
+
+    console.log("normal events in list view :", fetchedAddedOtherData)
     let EventListCard: ElementType;
 
     switch (selectedCard) {

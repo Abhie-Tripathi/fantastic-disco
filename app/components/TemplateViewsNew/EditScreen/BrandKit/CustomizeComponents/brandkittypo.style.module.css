@@ -45,7 +45,6 @@
     justify-content: space-between;
     padding: 5px 10px;
     position: relative;
-    cursor: pointer;
 }
 
 .dropDownContainer .display {
@@ -74,9 +73,15 @@
 .dropDownContainer .dropDown .dropdownFont {
     padding: 3px 10px;
     font-size: 10px;
+    cursor: pointer;
     line-height: 17px;
 }
-
+.dropDownContainer .dropDown .disableddropdownFont {
+    cursor: default;
+    padding: 3px 10px;
+    font-size: 10px;
+    line-height: 17px;
+}
 .dropDownContainer .lightDropdown .dropdownFont:hover {
     background-color: #F2F2F2;
     border-radius: 2.5px;
