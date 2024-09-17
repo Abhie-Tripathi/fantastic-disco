@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styles from "./typographyModal.module.css";
-import { myFetch } from '@/utils/myFetch';
-import { baseUrl } from '@/constants';
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
 
 const API_KEY: string | undefined = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
 interface Font {
   family: string;
-  // Add other properties if needed
 }
-
-
 
 const TypographyModal = ({
   setPreview,
@@ -18,10 +15,8 @@ const TypographyModal = ({
 }: any) => {
   const [selectedFont, setSelectedFont] = useState("");
   const [importSource, setImportSource] = useState("Google");
-  const [googleFonts, setGoogleFonts] = useState<Font[] >([]);
+  const [googleFonts, setGoogleFonts] = useState<Font[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-
-
 
   useEffect(() => {
     if (importSource === "Google") {
@@ -49,23 +44,22 @@ const TypographyModal = ({
     setSearchQuery(e.target.value);
   };
 
-  const handleSave = async() => {
+  const handleSave = async () => {
     const updatedFonts = [...fetchedFonts, selectedFont];
-    const newFonts = [...fetchedFonts,selectedFont]
+    const newFonts = [...fetchedFonts, selectedFont];
     setFetchedFonts(updatedFonts);
-    const {data,error} = await myFetch(`${baseUrl}/kit`,{
-      method : "PATCH",
-      body: JSON.stringify({fontFamily : newFonts.join()}),
+    const { data, error } = await myFetch(`${baseUrl}/kit`, {
+      method: "PATCH",
+      body: JSON.stringify({ fontFamily: newFonts.join() }),
       headers: {
-          'Content-Type': 'application/json'
-      }       
-  })
-  if(error){
-      console.log(error)
-      return
-  }
+        "Content-Type": "application/json",
+      },
+    });
+    if (error) {
+      console.log(error);
+      return;
+    }
     setPreview("");
-
   };
 
   const filteredFonts = googleFonts.filter((font) =>
@@ -127,6 +121,11 @@ const TypographyModal = ({
                     }`}
                     onClick={() => handleFontChange(font)}
                   >
+                    {selectedFont === font.family && (
+                      <div className={styles.tickIcon}>
+                        <TickIcon />
+                      </div>
+                    )}
                     {font.family}
                   </div>
                 ))}
@@ -149,7 +148,25 @@ const fetchGoogleFonts = async (apiKey: string) => {
     `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`
   );
   const data = await response.json();
+  console.log("fetched_front", data.items)
   return data.items;
 };
 
 export default TypographyModal;
+
+function TickIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="14"
+      viewBox="0 -960 960 960"
+      width="14"
+    >
+      <path
+        d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"
+        fill="#0072F5"
+      />
+    </svg>
+  );
+}
+

@@ -16,6 +16,9 @@ interface Props{
     setLongitude : (value : number)=>void;
     setLatitude : (value : number)=> void;
     theme? : string;
+    isEventFormatEmpty:boolean
+    query:string;
+    setQuery:(value : string)=>void;
 }
 
 const LocationContainer = ({
@@ -27,12 +30,15 @@ const LocationContainer = ({
     eventFormat,
     setLongitude,
     setLatitude,
-    theme
+    theme,
+    isEventFormatEmpty,
+    query,
+    setQuery
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
-        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
+        <div className={`${styles.body} ${isEventFormatEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationContainer} onClick={()=>setDropdown(!dropdown)}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
@@ -41,7 +47,7 @@ const LocationContainer = ({
                 </div>
             </div>
             {/* <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/> */}
-            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName}/></div>}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName} query={query} setQuery={setQuery} /></div>}
         </div>
     )
 }

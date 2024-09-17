@@ -1,83 +1,3 @@
-/* .modalContainer {
-  display: flex;
-  width: 100%;
-  height: 400px;
-}
-
-.leftPanel {
-  flex: 1;
-  padding: 20px;
-  border-right: 1px solid #ddd;
-}
-
-.rightPanel {
-  flex: 1;
-  padding: 20px;
-}
-
-.importOptions {
-  margin-bottom: 20px;
-}
-
-.importOptions button {
-  margin-right: 10px;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.selectedOption {
-  background-color: #007bff;
-  color: white;
-}
-
-.fontList {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.fontItem {
-  cursor: pointer;
-}
-
-.selected {
-  background-color: #007bff;
-  color: white;
-}
-
-.modalActions {
-  text-align: right;
-  justify-content: flex-end;
-  display: flex;
-  align-items:end;
-}
-
-.modalActions button {
-  margin-right: 10px;
-  padding: 10px;
-  cursor: pointer;
-}
-
-
-.searchInput {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.preview_screen{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ccc;
-  padding: 20px;
-  height: 90%;
-} */
-
-
-
 .modalContainer {
   display: flex;
   width: 100%;
@@ -118,22 +38,11 @@
   overflow-y: auto;
 }
 
-.fontItem {
-  cursor: pointer;
-  padding: 10px;
-}
-
-.selected {
-  background-color: var(--primary-color);
-  color: white;
-}
 
 .modalActions {
   display: flex;
   justify-content: flex-end;
-  margin-top: auto; /* Ensures the buttons stay at the bottom */
-  /* padding: 16px 0; */
-  /* border-top: 1px solid #ddd; */
+  margin-top: auto;
 }
 
 .modalActions button {
@@ -148,7 +57,7 @@
 }
 
 .modalActions button:hover {
-  background-color: var(--primary-color); /* Darker shade on hover */
+  background-color: var(--primary-color);
 }
 
 .searchInput {
@@ -165,11 +74,40 @@
   margin-top: 16px;
   justify-content: center;
   align-items: center;
-  background-color: #ccc;
+  background-color: #F2F2F2;
   padding: 20px;
   height: 90%;
 }
 
-.fonts_container{
+.fonts_container {
   margin-top: 16px;
 }
+
+.fontItem {
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  border-radius: 6px;
+}
+
+.fontItem:hover {
+  background-color:#F2F2F2;
+}
+
+.selected {
+  background-color: #F2F2F2;
+  color: black;
+}
+
+.tickIcon {
+  margin-right: 10px;
+  visibility: hidden;
+}
+
+.selected .tickIcon {
+  visibility: visible;
+}
+

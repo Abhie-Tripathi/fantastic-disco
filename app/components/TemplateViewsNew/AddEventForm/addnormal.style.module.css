@@ -99,3 +99,21 @@
     height: fit-content;
     width: 100%;
 }
+
+
+.errorHighlight {
+    border: .5px solid #DA2F35;
+    transition: border-color 0.3s ease; 
+}
+
+
+.errorBackground {
+    background-color: #D92D2017;
+    border-bottom: .5px solid #D92D20;
+  }
+  
+  .errorMessage {
+    color: #D92D20;
+    font-size: 12px;
+    margin-top: 4px;
+  }

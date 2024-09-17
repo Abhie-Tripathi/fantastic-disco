@@ -35,4 +35,7 @@
     padding: 10px;
     word-wrap: break-word;
 }
+.errorHighlight {
+    border: 1px solid red;
+}
 
