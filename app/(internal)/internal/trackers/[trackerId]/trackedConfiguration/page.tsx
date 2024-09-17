@@ -48,7 +48,11 @@ interface Tracker {
   name: string;
   filterValue: any;
 }
-
+interface Toggle{
+  rating?:boolean;
+  exhibit?:boolean;
+  trust?:boolean;
+}
 interface EditData {
   tracker: Tracker;
 }
@@ -173,6 +177,9 @@ const userRating=
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+   let toggleOpend: Toggle={};
+  if(data?.tracker?.filterValue?.userType)
+  toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
   return (
     <>
     {loading ? <Loading/> :
@@ -274,13 +281,13 @@ const userRating=
           {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
                 {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
               </div>
@@ -463,7 +470,22 @@ const userRating=
                     </div>
                 </div>
                 <div className={styles.format}>
-                    <div className={styles.formatHead}>User Ratings</div>
+                    <div className={styles.formatHead} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
+                    <div className={keyStyles.toggle_container}>
+            <span>
+              <label className={keyStyles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+                    </div>
                     <div className={styles.allCat}>
                         {userRating?.map((item: string, id: number) => (
                             <>
@@ -546,7 +568,9 @@ const userRating=
               ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
               : []
           }
+          isExhibitOpen={toggleOpend?.exhibit===true}
           internationalScore={data?.tracker?.filterValue?.internationalScore}
+          isTrustOpen={toggleOpend?.trust===true}
           trustScore={data?.tracker?.filterValue?.trustScore}
          reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
