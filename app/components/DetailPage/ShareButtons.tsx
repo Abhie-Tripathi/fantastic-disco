@@ -25,7 +25,7 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disa
   const description  = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
   const twitterArr = [];
   twitterArr.push(description)
-  
+
   return (
     <div className={styles.shareIconContainer}>
       <div className={styles.iconWrapper} data-name="Share on Facebook">
