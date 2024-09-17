@@ -107,13 +107,19 @@ interface FilterValue {
   speakerName: string;
   orgWebsite: string;
   orgName:string;
+  userType?:Toggle
+  userName?:string;
   eventAttendanceRange: any;
 }
 interface InputArea {
   type: string;
   placeholder: string;
 }
-
+interface Toggle{
+  rating?:boolean;
+  exhibit?:boolean;
+  trust?:boolean;
+}
 interface Template {
   name: string;
   type?: string;
@@ -291,9 +297,10 @@ const Pages = () => {
   interface SelectedLocation {
     [id: string]: string;
   }
+  const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
+  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  console.log(type);
 
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
@@ -356,7 +363,12 @@ const Pages = () => {
     isEventRank: false,
     isLocalRank: false,
     isAviationRank: false,
+    isTrustScore: false,
   });
+  const [isPop,setIsPop]=useState({
+  rating:false,
+  exhibit:false
+});
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
@@ -510,8 +522,6 @@ const Pages = () => {
       setDesignations(designation);
     }
   }, [type, customData])
-  console.log(websites);
-  console.log(selectedEventType);
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -526,9 +536,12 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-
+    const userType = {
+      ...(isRatingOpen && { rating: true }),
+      ...(isExhibitOpen && { exhibit: true }),
+      ...(rankToggles.isTrustScore && {trust:true}),
+    }
     if (last === "editTracker") {
-      console.log(1);
 
       const secondLast = pathName[pathName.length - 2];
       const formData = {
@@ -538,6 +551,9 @@ const Pages = () => {
         // }),
         accessLevel: editData?.tracker?.accessLevel,
         filterValue: {
+            ...(userType &&{
+             userType:JSON.stringify(userType)
+            }),
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
           }),
@@ -719,7 +735,12 @@ const Pages = () => {
           type: type.toUpperCase()
         }),
         filterValue: {
-
+          
+          
+         ...(userType &&{
+          userType:JSON.stringify(userType)
+         }),
+          
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
@@ -970,6 +991,13 @@ const Pages = () => {
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
+      let toggleOpend: Toggle = {};
+      if (typeof editData?.tracker?.filterValue?.userType === 'string') {
+          toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
+      }
+      setRatingOpen(toggleOpend?.rating ? true : false);
+      setExhibitOpen(toggleOpend?.exhibit ?true:false)
+      setRankToggles({...rankToggles, isTrustScore:toggleOpend?.trust?true:false})
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
           ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
@@ -1999,49 +2027,51 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger> */}
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      User Ratings
-                      {selectedUserRatings?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedUserRatings.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedUserRatings[0]}
-                        </span>
-                      )}
-                    </div>
+<MenuTrigger onOpenChange={setMenuOpen}>
+                  {/* <Button className={styles.dropdown_button}> */}
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>{setIsPop(prev => ({ ...prev, rating: !prev.rating }))}}>
+                          User Ratings
+                          {selectedUserRatings?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedUserRatings.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedUserRatings[0]}
+                            </span>
+                          )}
+                        </div>
+                        </Button>
 
-                    <div className={styles.toggle_container}>
-                      <span>
-                        <label className={styles.switch}>
-                          <input
-                            type="checkbox"
-                            onChange={() => { }}
-                            checked={selectedUserRatings.length !== 0}
-                          />
-                          <span className={styles.slider}></span>
-                        </label>
-                      </span>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onClick={() => {
+                                  setRatingOpen(!isRatingOpen)
+                                  if(!isRatingOpen) setIsPop({...isPop, rating:true})
+                                }}
+                                onChange={() => {}}
+                                checked={selectedUserRatings.length !== 0 || isRatingOpen}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  {({ close }) => (
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isPop.rating} onOpenChange={() => setIsPop(prev => ({ ...prev, rating: !prev.rating }))}>
                     <UserRatings
                       state={selectedUserRatings}
                       setState={setSelectedUserRatings}
                     />
-                  )}
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                  </Popover>
+                </MenuTrigger>
           </div>
 
           {/* <div className={styles.buttons_container}>
@@ -2460,49 +2490,55 @@ useEffect(()=>{
                   </Popover>
                 </MenuTrigger>
 
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                      Estimated Exhibitor
-                        {selectedExhibitScore?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedExhibitScore.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedExhibitScore[0]}
-                          </span>
-                        )}
-                      </div>
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  {/* <Button className={styles.dropdown_button}> */}
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <Button className={styles.dropdown_button} style={{margin: '-16px'}}>
+                        <div className={styles.input_title}
+                        onClick={()=>{setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}} 
+                          style={{paddingLeft: '16px'}} >
+                          Estimated Exhibitor
+                          {selectedExhibitScore?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedExhibitScore.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedExhibitScore[0]}
+                            </span>
+                          )}
+                        </div>
+                        </Button>
 
-                      <div className={styles.toggle_container}>
-                        <span>
-                          <label className={styles.switch}>
-                            <input
-                              type="checkbox"
-                              checked={selectedExhibitScore?.length !== 0}
-                            />
-                            <span className={styles.slider}></span>
-                          </label>
-                        </span>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onClick={() => {
+                                  setExhibitOpen(!isExhibitOpen)
+                                  if(!isExhibitOpen) setIsPop({...isPop, exhibit:true})
+                                }}
+                                
+                                onChange={() => {}}
+                                checked={selectedExhibitScore.length !== 0 || isExhibitOpen}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Button>
-                <Popover>
-                  <Dialog className={styles.noBorder}>
-                    {({ close }) => (
+                  {/* </Button> */}
+                  <Popover isOpen={isPop.exhibit} onOpenChange={() => setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}>
                       <EventAdvFilter
                         state={selectedExhibitScore}
                         setState={setSelectedExhibitScore}
                         data={eventExhibitScoreData}
                       />
-                    )}
-                  </Dialog>
                 </Popover>
-              </MenuTrigger>
+                </MenuTrigger>
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>
