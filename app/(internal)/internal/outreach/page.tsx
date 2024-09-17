@@ -33,6 +33,10 @@ const Page: React.FC = () => {
   const inProgressRef: RefObject<HTMLDivElement> = useRef(null);
   const [inProgressPage,setInProgressPage]=useState(1);
   const [noMoreProgressData,setNoMoreProgressData]=useState(false);
+  const confirmedRef: RefObject<HTMLDivElement> = useRef(null);
+  const [confirmedPage,setConfirmedPage]=useState(1);
+  const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
+  const [isInetial,setIsInetial]=useState(true);
   const handleScrollEnd = () => {
     setTimeout(() => {
         if(!noMoreShortlistData) setShortlistPage(prevPage => prevPage + 1);
@@ -43,8 +47,14 @@ const handleScrollProgressEnd = () => {
       if(!noMoreProgressData) setInProgressPage(prevPage => prevPage + 1);
   }, 1000);
 };
+const handleScrollConfirmedEnd = () => {
+  setTimeout(() => {
+      if(!noMoreConfirmData) setConfirmedPage(prevPage => prevPage + 1);
+  }, 1000);
+};
 useInfiniteScroll(inProgressRef, handleScrollProgressEnd); 
   useInfiniteScroll(shortlistRef, handleScrollEnd); 
+  useInfiniteScroll(confirmedRef, handleScrollConfirmedEnd);
   const handleRefresh = () => {
     setStatusChanged(!statusChanged);
   };
@@ -164,10 +174,10 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     }
   };
   useEffect(() => {
-    if (shortlistPage || inProgressPage) {
+    if (shortlistPage>1 || inProgressPage>1 || confirmedPage>1 ) {
         fetchData();
     }
-}, [shortlistPage, inProgressPage]);
+}, [shortlistPage, inProgressPage, confirmedPage]);
   useEffect(() => {
     if (window.innerWidth > 576) {
       setTabsVisible("all");
@@ -175,34 +185,47 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     // fetchData();
   }, [statusChanged]);
   const fetchData = async () => {
-    const shortlistApiData = await myFetch(
-      `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(shortlistPage-1)*10}`,
-      {
-        method: "GET",
-        headers: headers,
-      }
-    );
-    const negoApiData = await myFetch(
+    let shortlistApiData: { data?: any; error?: any };
+    let negoApiData: { data?: any; error?: any };
+    let confirmApiData: { data?: any; error?: any };
+    console.log(isInetial);
+    
+    if(isInetial || shortlistPage>1 ){
+      shortlistApiData = await myFetch(
+        `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(shortlistPage-1)*10}`,
+        {
+          method: "GET",
+          headers: headers,
+        }
+      );
+    }
+    if(isInetial|| inProgressPage>1){
+    negoApiData = await myFetch(
       `${baseUrl}/userInterest/enquiry?status=IN_NEGO&limit=10&offset=${(inProgressPage-1)*10}`,
       {
         method: "GET",
         headers: headers,
       }
     );
-    const confirmApiData = await myFetch(
-      baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=10&offset=0",
+  }
+  if(isInetial|| confirmedPage>1){
+    confirmApiData = await myFetch(
+      `${baseUrl}/userInterest/enquiry?status=CONFIRMED&limit=10&offset=${(confirmedPage-1)*10}`,
       {
         method: "GET",
         headers: headers,
       }
     );
-    if (shortlistApiData.data){
+  }
+  if(shortlistApiData?.data) {
+    if (shortlistApiData.data) {
       setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
       setShortlistedCount(shortlistApiData.data.totalCount);
     }
-    if(shortlistApiData.data.enquiryData<10){
+    if(shortlistApiData.data.enquiryData.length < 10) {
       setNoMoreShortlistData(true);
     }
+  }
     if (negoApiData.data) {
       setOutreachTasks(prev => [...prev, ...negoApiData.data.enquiryData]);
       setInProgressCount(negoApiData.data.totalCount);
@@ -211,10 +234,17 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
      setNoMoreProgressData(true);
     }
     if (confirmApiData.data){
-      setPreFinalisedTasks(confirmApiData.data.enquiryData);
+      setPreFinalisedTasks(prev=>[...prev, ...confirmApiData.data.enquiryData])
       setConfirmedCount(confirmApiData.data.totalCount);
     }
+    if(confirmApiData.data.enquiryData.length<10){
+      setNoMoreConfirmData(true);
+     }
   };
+  useEffect(()=>{
+      fetchData();
+      setIsInetial(false);
+  },[])
   return (
     <div
       className={`${styles.bodyContainer} ${
@@ -389,6 +419,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
                   handleDragContainerStart(event, "prefinalised")
                 }
                 onDrop={(event) => handleDrop(event, "prefinalised")}
+                ref={confirmedRef}
               >
                 {preFinalisedTasks.map((task, index) => (
                   <div className={styles.cards} key={index}>
@@ -410,6 +441,9 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
                     />
                   </div>
                 ))}
+                {noMoreConfirmData ? 
+        <></> : <Loading />
+    }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
