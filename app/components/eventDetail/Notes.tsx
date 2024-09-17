@@ -127,11 +127,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   
   const generateFbPath = (): string => {
     if(urlPath === "trackers")
-      return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
+      return `eventgeni/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
     else if(urlPath === "coordinate" || urlPath === "outreach")
-      return `eventgeniStage/${user?.companyId}/notes/${urlPath}/${eventId}`;
+      return `eventgeni/${user?.companyId}/notes/${urlPath}/${eventId}`;
     else
-      return `eventgeniStage/accountId/notes/general`;
+      return `eventgeni/${user?.companyId}/notes/general`;
   }
 
   // const isInitialMount = useRef(true);
