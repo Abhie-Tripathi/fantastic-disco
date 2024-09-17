@@ -7,12 +7,13 @@ interface Props{
     setDescriptionModal: (value : boolean)=>void
     description : string;
     theme? : string;
+    isEventDescriptionEmpty:boolean
 }
 
-const DescriptionContainer = ({setDescriptionModal,description, theme} : Props) => {
+const DescriptionContainer = ({setDescriptionModal,description, theme,isEventDescriptionEmpty} : Props) => {
 
     return (
-        <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
+        <div className={`${styles.body} ${isEventDescriptionEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />

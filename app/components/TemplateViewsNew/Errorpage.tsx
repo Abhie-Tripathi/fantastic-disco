@@ -65,10 +65,11 @@ const Errorpage = ({ type, size }: Props) => {
           and customize.
         </span>
       ) : (
-        <span className={styles.subheading}>
-          We can&apos;t find the page you&apos;re looking for. It seems the ID
-          might be invalid
-        </span>
+        // <span className={styles.subheading}>
+        //   We can&apos;t find the page you&apos;re looking for. It seems the ID
+        //   might be invalid..
+        // </span>
+        ""
       )}
 
       {type === "id" ? (

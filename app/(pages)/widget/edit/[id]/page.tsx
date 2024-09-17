@@ -127,12 +127,13 @@ const Page = () => {
         setSelectedTemplate(asciiToString(data.templatePublicId));
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
+        setfetchedAddedEvents( data.otherdata?.event);
       }
       setLoading(false);
     }
     fetchWidgetData();
     fetchEvents(0);
-    fetchAddedEvents();
+    // fetchAddedEvents();
   }, [])
 
   const handleUpdateCustomization = async () => {

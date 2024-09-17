@@ -7,6 +7,9 @@
     height: 85%;
     overflow-y: auto;
 }
+.progressContainer{
+    padding: 14px;
+}
 .line{
     width: 100%;
     border-top: 1px solid var(--border-color);

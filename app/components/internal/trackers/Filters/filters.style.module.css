@@ -555,4 +555,13 @@ width: calc(100vw - 134px);
   display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+  margin-top: 16px;
+}
+
+.remove_all_custom {
+  cursor: pointer;
+  font-size: var(--font-size-default);
+  color: var(--danger-text-color);
+  font-weight: var(--font-weight-medium);
+  width: fit-content;
 }
