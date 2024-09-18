@@ -29,7 +29,7 @@ const EventListCard2 = ({
   cardBorderRadius = 20,
   fontSettings = {
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+    subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
   }, fetchedEvent }: CardProps) => {
 

@@ -37,7 +37,7 @@ const EventCard3 = ({
         const dateObj = new Date(date);
 
         const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
         const year = dateObj.getFullYear();
 
         // Function to get the appropriate suffix for the day
@@ -52,10 +52,10 @@ const EventCard3 = ({
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
-                <Image width={100} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
+                <Image width={100} height={180} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
                 <div className={styles.type}>Workshop</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : "Your Widget event"}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor} />
