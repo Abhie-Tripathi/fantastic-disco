@@ -1,41 +1,41 @@
-import React from 'react'
-import styles from './modal.style.module.css'
-import { showToast } from "@/utils/showToast";
+// import React from 'react'
+// import styles from './modal.style.module.css'
+// import { showToast } from "@/utils/showToast";
 
-interface Props {
-    setDescriptionModal: (value: boolean) => void
-    handleDescClick: () => void
-    setTextValue: (value: string) => void
-    textValue: string
-}
+// interface Props {
+//     setDescriptionModal: (value: boolean) => void
+//     handleDescClick: () => void
+//     setTextValue: (value: string) => void
+//     textValue: string
+// }
 
-const DescriptionModal = ({ setDescriptionModal, handleDescClick, setTextValue, textValue }: Props) => {
+// const DescriptionModal = ({ setDescriptionModal, handleDescClick, setTextValue, textValue }: Props) => {
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        let value = e.target.value;
+//     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+//         let value = e.target.value;
 
-        const specialCharRegex = /[@#$%^&*"|<>]/g;
+//         const specialCharRegex = /[@#$%^&*"|<>]/g;
 
-        if (specialCharRegex.test(value)) {
-            showToast("error", "Please check, input should not contain any special character");
-        } else {
-            setTextValue(value);
-        }
-    };
+//         if (specialCharRegex.test(value)) {
+//             showToast("error", "Please check, input should not contain any special character");
+//         } else {
+//             setTextValue(value);
+//         }
+//     };
 
-    return (
-        <div className={styles.descriptionModal}>
-            <div className={styles.header}>
-                <span>Add your description</span>
-                <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
-            </div>
-            <textarea onChange={(e) => { handleInputChange(e) }} value={textValue} maxLength={1500} />
-            <button className={styles.saveBtn} onClick={handleDescClick}>Save</button>
-        </div>
-    )
-}
+//     return (
+//         <div className={styles.descriptionModal}>
+//             <div className={styles.header}>
+//                 <span>Add your description</span>
+//                 <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+//             </div>
+//             <textarea onChange={(e) => { handleInputChange(e) }} value={textValue} maxLength={1500} />
+//             <button className={styles.saveBtn} onClick={handleDescClick}>Save</button>
+//         </div>
+//     )
+// }
 
-export default DescriptionModal
+// export default DescriptionModal
 
 // import React, { useState } from "react";
 // import { Editor, EditorState, RichUtils, ContentState, convertToRaw, convertFromHTML } from "draft-js";
@@ -137,109 +137,99 @@ export default DescriptionModal
 // export default DescriptionModal;
 
 // components/QuillEditor.tsx
-// 'use client'
-// import React, { useEffect, useRef, useState } from "react";
-// import { showToast } from "@/utils/showToast";
-// import styles from './modal.style.module.css'
-// import "quill/dist/quill.snow.css";
-// interface Props {
-//     setDescriptionModal: (value: boolean) => void;
-//     handleDescClick: () => void;
-//     setTextValue: (value: string) => void;
-//     textValue: string;
-// }
+'use client'
+import React, { useEffect, useRef, useState } from "react";
+import { showToast } from "@/utils/showToast";
+import styles from './modal.style.module.css'
+import "quill/dist/quill.snow.css";
+interface Props {
+    setDescriptionModal: (value: boolean) => void;
+    handleDescClick: () => void;
+    setTextValue: (value: string) => void;
+    textValue: string;
+}
 
-// const DescriptionModal: React.FC<Props> = ({
-//     setDescriptionModal,
-//     handleDescClick,
-//     setTextValue,
-//     textValue
-// }) => {
-//     const editorRef = useRef<HTMLDivElement>(null);
-//     const [editor, setEditor] = useState<any>(null);
+const DescriptionModal: React.FC<Props> = ({
+    setDescriptionModal,
+    handleDescClick,
+    setTextValue,
+    textValue
+}) => {
+    const editorRef = useRef<HTMLDivElement>(null);
+    const [editor, setEditor] = useState<any>(null);
+    const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
+    const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
 
-//     const specialCharRegex = /[@#$%^&*"|<>]/g;
-//     function hasSqlInjection(value : string) {
-//         const sqlMeta = new RegExp('(%27)|(\')|(--)|(%23)|(#)', 'i');
-//         if (sqlMeta.test(value)) {
-//             return true;
-//         }
-//         const sqlMeta2 = new RegExp('((%3D)|(=))[^\n]*((%27)|(\')|(--)|(%3B)|(;))', 'i');
-//         if (sqlMeta2.test(value)) {
-//             return true;
-//         }
-//         const sqlTypical = new RegExp('w*((%27)|(\'))((%6F)|o|(%4F))((%72)|r|(%52))', 'i');
-//         if (sqlTypical.test(value)) {
-//             return true;
-//         }
-//         const sqlUnion = new RegExp('((%27)|(\'))union', 'i');
-//         if (sqlUnion.test(value)) {
-//             return true;
-//         }
-//         return false;
-//     }
-//     const handleInputChange = (value: string) => {
-//         console.log("value is :", value)
-//         if (hasSqlInjection(value)) {
-//             showToast("error", "Please check, input should not contain any special character");
-//             // const cleanedValue = value.replace(specialCharRegex, "");
-//             // editor.root.innerHTML = cleanedValue;
-//             // setTextValue(cleanedValue);
-//         } else {
-//             setTextValue(value);
-//         }
-//     }
-//     useEffect(() => {
-//         const loadQuillEditor = async () => {
-//             // Dynamically import Quill on the client side
-//             const Quill = (await import('quill')).default;
+    const handleInputChange = (value: string) => {
+        setTextValue(value);
+    }
+    const handleSave = () => {
+        // Check for phone numbers and emails
+        if (phoneRegex.test(textValue)) {
+            showToast("error", "Please do not include phone numbers in the description.");
+            return; // Prevent save
+        }
+        if (emailRegex.test(textValue)) {
+            showToast("error", "Please do not include email addresses in the description.");
+            return; // Prevent save
+        }
 
-//             if (editorRef.current) {
-//                 const quillEditor = new Quill(editorRef.current, {
-//                     theme: 'snow',
-//                     modules: {
-//                         toolbar: [
-//                             [{ 'size': ['small', 'medium', 'large', 'huge'] }],
-//                             ['bold', 'italic', 'underline'],
-//                             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-//                             ['link'],
-//                             [{ 'color': [] }, { 'background': [] }],
-//                             [{ 'align': [] }],
-//                         ]
-//                     },
-//                     placeholder: 'Write something...'
-//                 });
+        // If no invalid content is found, proceed with saving
+        handleDescClick();
+    };
+    useEffect(() => {
+        const loadQuillEditor = async () => {
+            // Dynamically import Quill on the client side
+            const Quill = (await import('quill')).default;
 
-//                 setEditor(quillEditor);
+            if (editorRef.current) {
+                const quillEditor = new Quill(editorRef.current, {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'size': ['small', 'medium', 'large', 'huge'] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            ['link'],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'align': [] }],
+                        ]
+                    },
+                    placeholder: 'Write something...'
+                });
 
-//                 // Load initial content
-//                 if (textValue) {
-//                     quillEditor.root.innerHTML = textValue;
-//                 }
-//                 // Listen to text change
-//                 quillEditor.on('text-change', () => {
-//                     handleInputChange(quillEditor.root.innerHTML)
-//                     // setTextValue(quillEditor.root.innerHTML);
-//                 });
-//             }
-//         };
+                setEditor(quillEditor);
 
-//         if (typeof window !== "undefined") {
-//             loadQuillEditor();
-//         }
-//     }, []);
+                // Load initial content
+                if (textValue) {
+                    quillEditor.root.innerHTML = textValue;
+                }
+                // Listen to text change
+                quillEditor.on('text-change', () => {
+                    handleInputChange(quillEditor.root.innerHTML)
+                });
+            }
+        };
 
+        if (typeof window !== "undefined") {
+            loadQuillEditor();
+        }
+    }, []);
 
-//     return (
-//         <div className={styles.descriptionModal}>
-//             <div className={styles.header}>
-//                 <span>Add your description</span>
-//                 <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
-//             </div>
-//             <div ref={editorRef} style={{ height: '300px' }}></div>
-//             <button className={styles.saveBtn} onClick={handleDescClick}>Save</button>
-//         </div>
-//     );
-// };
+    return (
+        <div className={styles.descriptionModal}>
+            <div className={styles.header}>
+                <span>Add your description</span>
+                <div className={styles.btnContainer}>
+                    <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+                    <button className={styles.saveBtn} onClick={handleSave}>Save</button>
+                </div>
 
-// export default DescriptionModal;
+            </div>
+            <div ref={editorRef} style={{ height: '300px' }}></div>
+
+        </div>
+    );
+};
+
+export default DescriptionModal;

@@ -24,7 +24,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
 
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true); // To check if there are more events
+    const [hasMore, setHasMore] = useState(true); // To heck if there are more events
     const scrollableDivRef = useRef(null);
 
     useEffect(() => {
