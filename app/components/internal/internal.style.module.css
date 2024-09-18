@@ -12,7 +12,7 @@
 }
 
 .scrollContainer {
-    /* height: calc(100vh - 80px); */
+    height: calc(100vh - 80px);
     overflow-y: auto;
     /* position: absolute; */
     position: relative;
@@ -89,7 +89,7 @@
 }
 .filters{
     display: flex;
-    margin: 0 80px;
+    margin: 0 85px;
     align-items: center;
     /* grid-template-columns: repeat(4, minmax(0px, 20vw)); */
     grid-gap: 15px 15px;

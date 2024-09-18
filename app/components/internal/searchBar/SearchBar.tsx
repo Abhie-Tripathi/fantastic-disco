@@ -16,6 +16,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<RestructuredData[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState([]);
+    const [previousInput, setPreviousInput] = useState<string>(searchInput); 
     const fetchSearchSuggestion = async () => {
         let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}&limit=5&offset=0`;
         
@@ -70,15 +71,16 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
       const selectedEventId=(id, name)=>{
         handleSelect(id,name);
         setIsOpen(false);
+        setPreviousInput(searchInput); 
       }
   return (
         <>
          {searchInput.length > 0 && isOpen && (
   <div ref={dropdownRef} className={styles.eventName_container2}>
-    {eventSuggestion && eventSuggestion.length > 0 ? (
+    {eventSuggestion && eventSuggestion.length > 0  ? (
       eventSuggestion.map((item) => (
         <div key={item.id} className={styles.resultData_list}>
-          <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
+          {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
           <div className={styles.event} onClick={() => selectedEventId(item.id, item.name)}>
             {item.name}
           </div>
@@ -86,7 +88,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
       ))
     ) : (
       <div className={styles.resultData_list}>
-        <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
+        {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
         No results
       </div>
     )}

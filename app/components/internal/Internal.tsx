@@ -12,6 +12,8 @@ import SearchIcon from "/public/search.svg";
 import DateRange from "@/app/components/dropdown/DateRange";
 import {
     Button,
+    Dialog,
+    DialogTrigger,
     MenuTrigger,
     Popover,
   } from "react-aria-components";
@@ -39,6 +41,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     let prevDate: any = null;
     const { setIsOpen, isOpen } = DropdownRef();
     const { theme } = useTheme();
+    const [isOpen1, setIsOpen1] = useState(false);
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
@@ -50,7 +53,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
     const [selectedParticipantType, setSelectedParticipantType] = useState<string[]>([]);
     const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
-    const [popoverState, setPopoverState] = useState<boolean | null>(null);
+    const [popoverState, setPopoverState] = useState<boolean | null>(false);
     const [selectedParticipantTypeName,setSelectedParticipantTypeName]=useState<string>('');
     const status=["Pending", "Shortlisted" ];
     const participants=["Exhibitor", "Sponsor", "Speaker", "Attendee"];
@@ -60,9 +63,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const [selectedEvents, setSelectedEvents] = useState<{
       [key: string]: string;
     }>({});
+    const [scrollY, setScrollY] = useState(0);
     const [searchInput, setSearchInput] = useState("");
     const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
     const [eventId,setEventId]=useState("");
+    const [showSuggestion,setShowSuggestion]=useState(false);
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
     const handleScrollEnd = () => {
       setTimeout(() => {
@@ -71,9 +76,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
   };
     
     const setMenuOpen = () => {
-      if(popoverState === null) {
-        setPopoverState(false);
-      }else
         setPopoverState(!popoverState);
     };
       useEffect(() => {
@@ -176,6 +178,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
                 headers: headers,
             });
             if(apiData.data) {
+                if(apiData.data.enquiryData.length===0){
+                    setEventData1([]);
+                }
                 if(page==1){
                     setEventData1(apiData.data.enquiryData);
                 }else if(page>1){
@@ -226,23 +231,23 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
 console.log(modalOpen);
+useInfiniteScroll(divRef, handleScrollEnd);
+// const handleInfiniteScroll = async () => {
+//   const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+//   const scrollPosition = document.documentElement.scrollTop;
+//   if (scrollPosition + 1 >= totalHeight && !noMoreData && modalOpen===false) {
+//       setPage(prev => prev + 1); 
+//   }
+// };
 
-const handleInfiniteScroll = async () => {
-  const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollPosition = document.documentElement.scrollTop;
-  if (scrollPosition + 1 >= totalHeight && !noMoreData && modalOpen===false) {
-      setPage(prev => prev + 1); 
-  }
-};
-
-useEffect(() => {
-  if (!noMoreData) {
-      window.addEventListener('scroll', handleInfiniteScroll);
-  }
-  return () => {
-      window.removeEventListener('scroll', handleInfiniteScroll);
-  };
-}, [noMoreData]);
+// useEffect(() => {
+//   if (!noMoreData) {
+//       window.addEventListener('scroll', handleInfiniteScroll);
+//   }
+//   return () => {
+//       window.removeEventListener('scroll', handleInfiniteScroll);
+//   };
+// }, [noMoreData]);
 useEffect(()=>{
   if(page>0){
     setNoMoreData(false);
@@ -265,13 +270,12 @@ useEffect(()=>{
  const handleSelect=(id: string, name: string)=>{
     setSearchInput(name);
     setEventId(id);
+    setShowSuggestion(true);
  } 
-
-
-    // const abortControllerRef = useRef<AbortController | null>(null);
   return (
     <>
-    <div className={styles.scrollContainer} ref={divRef} >
+    <div className={styles.scrollContainer} ref={divRef} style={{ overflow: popoverState?"hidden":"auto"}}>
+    {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
     <div className={styles.container} >
     <div className={styles.countsContainer}>
         <div className={styles.exhibitorCount}>
@@ -318,7 +322,7 @@ useEffect(()=>{
                 )}
               </div>
             )} */}
-             <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} />
+             {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
             <input
             type="text"
           placeholder="Search Events"
@@ -326,7 +330,7 @@ useEffect(()=>{
           value={searchInput}
             />
             <span className={styles.search_logo}>
-            {eventSearchLoader ? (
+            {(eventSearchLoader && searchInput.length>0 )? (
   <div className={styles.loader}></div>
 ) : (
   searchInput.length > 0 ? (
@@ -338,8 +342,8 @@ useEffect(()=>{
               
             </span>
           </div>
-          {!eventId &&
-           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect}/>
+          {
+           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect} />
           }
          
 
@@ -365,44 +369,6 @@ useEffect(()=>{
             </div>
           )} */}
         </div>
-        <div style={{width:"20%"}} className={styles.outerDiv}>
-        <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button ref={buttonRef} className={styles.dropdown_button}>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      Dates
-                      {selectedDateRange.length > 0 &&
-                        selectedDateRange[0] !== null ? (
-                        <span className={styles.input_selected_title}>
-                          {dateShowFormatter(selectedDateRange)}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <Image
-                      src={DropIcon}
-                      alt="dropicon"
-                      width={12}
-                      height={12}
-                      className={iconClass}
-                    />
-                  </div>
-                </div>
-              </Button>
-              <Popover
-              className={styles.filterPopover}
-              >
-                {/* <Dialog> */}
-                <DateRange
-                  state={selectedDateRange}
-                  setState={setSelectedDateRange}
-                />
-                {/* </Dialog> */}
-              </Popover>
-            </MenuTrigger>
-            </div>
           <div style={{width:"20%"}} className={styles.outerDiv}>
          <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
@@ -493,6 +459,46 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger>
         </div>
+        <div style={{width:"20%"}} className={styles.outerDiv}>
+        <MenuTrigger onOpenChange={setMenuOpen} >
+              <Button ref={buttonRef} className={styles.dropdown_button}>
+                <div className={styles.input_container}>
+                  <div className={styles.input}>
+                    <div className={styles.input_title}>
+                      Dates
+                      {selectedDateRange.length > 0 &&
+                        selectedDateRange[0] !== null ? (
+                        <span className={styles.input_selected_title}>
+                          {dateShowFormatter(selectedDateRange)}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={12}
+                      height={12}
+                      className={iconClass}
+                    />
+                  </div>
+                </div>
+              </Button>
+              <Popover
+              className={styles.filterPopover}
+              placement="left"
+              style={{marginTop:"70px"}}
+              >
+                {/* <Dialog> */}
+                <DateRange
+                  state={selectedDateRange}
+                  setState={setSelectedDateRange}
+                />
+                {/* </Dialog> */}
+              </Popover>
+            </MenuTrigger>
+            </div>
     </div>
     
     <div className={styles.timelineContainer} >

@@ -1,5 +1,7 @@
 .container {
     width: var(--trigger-width);
+    position: absolute;
+    z-index: 11;
     background-color: var(--primary-foreground);
     filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
     border-radius: var(--border-radius-sm);
