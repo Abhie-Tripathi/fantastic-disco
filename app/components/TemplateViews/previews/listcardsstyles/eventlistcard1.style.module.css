@@ -2,9 +2,10 @@
     width: 629px;
     height: 211px;
     display: flex;
-    gap: 25px;
+    gap: 15px;
     align-items: center;
     padding: 1px 12px 12px 15px;
+    overflow: hidden;
 }
 .banner{
     min-width: 260px;
@@ -18,6 +19,8 @@
     flex-direction: column;
     gap: 14px;
     max-height: 100%;
+    max-width: 53%;
+    word-wrap: break-word;
 }
 .date_location_nameContainer{
     height: 110px;
@@ -27,8 +30,8 @@
     justify-content: space-between;
 }
 .description{
-
     height: 50px;
+    overflow: hidden;
 }
 .dateContainer{
     background-color: #F6F6F6;

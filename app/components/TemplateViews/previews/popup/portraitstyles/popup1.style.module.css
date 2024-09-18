@@ -16,7 +16,6 @@
 }
 .banner{
     width: 95%;
-    /* height: 220px; */
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
     filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
@@ -28,6 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-height: 95px;
 }
 .smallDateContainer{
     background-color: #F6F6F6;
@@ -73,17 +73,20 @@
     gap: 8px;
 }
 .dividerLine{
-    margin-top: 12px;
+    margin-top: 8px;
     width: 100%;
     border-top: 1px solid #E8EAF1;
 }
 .dateRange_typeContainer{
+    margin-top: 8px;
     display: flex;
     align-items: center;
     width: 100%;
     /* justify-content: space-between; */
     gap: 8px;
-    padding: 10px;  
+    height: 20px;
+    padding-left: 10px;  
+    padding-right: 10px;
 }
 .pill{
     border-radius: 6px;
@@ -103,8 +106,12 @@
     color: #6750A4;
 }
 .desc{
+    min-height: 70px;
+    margin-top: 10px;
     width: 100%;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
 }
 .btnContainer{
     width: 100%;

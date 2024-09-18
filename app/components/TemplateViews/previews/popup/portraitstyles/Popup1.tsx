@@ -66,7 +66,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                         <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
                         <div className={styles.location} style={{ fontSize: fontSettings?.subheading.fontSize, color: fontSettings?.subheading.fontColor, fontFamily: fontSettings?.subheading.fontFamily, fontWeight: fontSettings?.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : "Corpus Christi, USA"}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].name : "Join Gifts World Expo 2024"}</div>
+                    <div className={styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : "Join Gifts World Expo 2024"}</div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>

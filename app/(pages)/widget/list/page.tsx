@@ -271,7 +271,7 @@ const Widget = () => {
                 selectedTemplate={selectedTemplate}
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
-                smallCard={false}
+                smallCard={true}
                 fetchedAddedEvents={fetchedAddedEvents}
                 widgetId={selectedWidgetId}
               />

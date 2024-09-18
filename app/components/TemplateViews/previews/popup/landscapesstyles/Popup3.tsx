@@ -60,7 +60,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     }
     return text.slice(0, maxLength) + '...';
   };
-  const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : "Some Description";
+  const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 450) : "Some Description";
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <div className={smallCard ? styles.smallBannerContainer : styles.bannerContainer}>

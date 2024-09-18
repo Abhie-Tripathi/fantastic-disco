@@ -19,9 +19,11 @@
     width: 100%;
     /* height:180px; */
 }
-
+.eventName{
+    min-height: 40px;
+}
 .location_dateContainer {
-    margin-top: 8px;
+    min-height: 40px;
     display: flex;
     flex-direction: column;
 }
@@ -121,11 +123,13 @@
 .circle:hover::before {
     opacity: 1;
 }
-
 .desc{
+    min-height: 55px;
     width: 100%;
-    padding: 10px;
-
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .btnContainer{
     width: 100%;

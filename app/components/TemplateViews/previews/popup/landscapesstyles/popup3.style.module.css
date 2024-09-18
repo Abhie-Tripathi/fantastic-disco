@@ -5,6 +5,7 @@
     gap: 22px;
     align-items: center;
     padding: 12px;
+    overflow: hidden;
 }
 .smallCard{
     width: 600px;
@@ -13,6 +14,7 @@
     gap: 22px;
     align-items: center;
     padding: 12px;
+
 }
 .smallBannerContainer{
     height: 100%;
@@ -49,6 +51,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 48%;
+    max-width: 48%;
+    word-wrap: break-word;
 }
 .eventDetails .values{
     display: flex;
@@ -68,6 +73,8 @@
 }
 .description{
     line-height: 20px;
+    height: 200px;
+    overflow: hidden;
 }
 .btn{
     padding: 10px 20px;

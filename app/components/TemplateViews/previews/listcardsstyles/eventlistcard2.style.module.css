@@ -11,6 +11,8 @@
     flex-direction: column;
     min-height: 100%;
     max-height: 100%;
+    max-width: 53%;
+    word-wrap: break-word;
     gap: 10px;
 }
 .eventName{
@@ -25,6 +27,7 @@
 }
 .description{
     height: 70px;
+    overflow: hidden;
 }
 .location_dateContainer {
     display: flex;

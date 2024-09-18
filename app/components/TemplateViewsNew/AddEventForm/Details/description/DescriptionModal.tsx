@@ -173,7 +173,10 @@ const DescriptionModal: React.FC<Props> = ({
             showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-
+        if(textValue.length > 1500){
+            showToast("error", "Description should not be more then 1500 characters");
+            return; // Prevent save
+        }
         // If no invalid content is found, proceed with saving
         handleDescClick();
     };
@@ -195,7 +198,7 @@ const DescriptionModal: React.FC<Props> = ({
                             [{ 'align': [] }],
                         ]
                     },
-                    placeholder: 'Write something...'
+                    placeholder: 'Write something...',
                 });
 
                 setEditor(quillEditor);
@@ -226,7 +229,7 @@ const DescriptionModal: React.FC<Props> = ({
                 </div>
 
             </div>
-            <div ref={editorRef} style={{ height: '300px' }}></div>
+            <div className={styles.quillEditor} ref={editorRef} style={{ height: '300px' }}></div>
 
         </div>
     );

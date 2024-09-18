@@ -14,10 +14,12 @@
     border-radius: 8px;
 }
 .eventName{
-    margin-top: 20px;
+    margin-top: 10px;
+    height: 30px;
 }
 .location_dateContainer{
-    margin-top: 12px;
+    margin-top: 10px;
+    height: 40px;
 }
 .locationContainer{
     display: flex;
@@ -34,8 +36,11 @@
     gap: 8px;
 }
 .desc{
+    word-wrap:break-word ;
     width: 100%;
-    margin-top: 20px;
+    overflow: hidden;
+    height: 70px;
+    margin-top: 10px;
 }
 .btnContainer{
     margin-top: 20px;
