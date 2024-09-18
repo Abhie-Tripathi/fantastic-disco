@@ -73,7 +73,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-  const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
+   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
 
@@ -219,7 +219,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
-
+    formData.append("type", "MAIN")
+    
     if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
       if (banner.file) {
         formData.append("file", banner.file); // Use the file field if uploaded by the user

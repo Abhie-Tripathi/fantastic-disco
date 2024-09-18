@@ -138,7 +138,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         const formData = new FormData()
         formData.append("name", eventName)
         formData.append("data", JSON.stringify(eventData))
-
+        formData.append("type", "MAIN")
         // Bottom 3 fields are for temporary purposes because there are mandatory in backend right now
         formData.append("interest", "SPEAKER")
         // formData.append("source", "eventgeni/widget/event")
