@@ -35,8 +35,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>("")
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) || 37.7749)
-    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) || -122.4194)
+    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) ||Number(prefilledNormalEvent?.latitude) ||  37.7749)
+    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) ||Number(prefilledNormalEvent?.longitude) || -122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
     const [participationType, setParticipationType] = useState<string>(prefilledNormalEvent?.participationType || "")
     const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
@@ -133,11 +133,12 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             latitude,
             longitude,
             participationType,
-            event_type: "Tradeshow"
+            event_type: "Tradeshow",
         };
         const formData = new FormData()
         formData.append("name", eventName)
         formData.append("data", JSON.stringify(eventData))
+        formData.append("type", "MAIN")
 
         // Bottom 3 fields are for temporary purposes because there are mandatory in backend right now
         formData.append("interest", "SPEAKER")

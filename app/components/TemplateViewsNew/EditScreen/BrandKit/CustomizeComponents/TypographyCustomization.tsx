@@ -86,7 +86,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
             if (selectedType === "heading") {
                 maxFontSize = 24;
             } else if(selectedType === "subheading") {
-                maxFontSize = 16;
+                maxFontSize = 14;
             }else{
                 maxFontSize = 12;
             }
@@ -104,7 +104,7 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
     const handleDecreaseFontSize = () => {
         setFontSettings((prevSettings) => {
             const newFontSize = prevSettings[selectedType].fontSize - 1;
-            const minFontSize = selectedType === "heading" ? 20 : selectedType === "subheading"? 14 : 10;             
+            const minFontSize = selectedType === "heading" ? 20 : selectedType === "subheading"? 12 : 10;             
             return {
                 ...prevSettings,
                 [selectedType]: {

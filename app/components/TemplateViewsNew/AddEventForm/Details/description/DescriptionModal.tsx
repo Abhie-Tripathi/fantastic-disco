@@ -166,11 +166,11 @@ const DescriptionModal: React.FC<Props> = ({
     const handleSave = () => {
         // Check for phone numbers and emails
         if (phoneRegex.test(textValue)) {
-            showToast("error", "Please do not include phone numbers in the description.");
+            showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
         if (emailRegex.test(textValue)) {
-            showToast("error", "Please do not include email addresses in the description.");
+            showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
 

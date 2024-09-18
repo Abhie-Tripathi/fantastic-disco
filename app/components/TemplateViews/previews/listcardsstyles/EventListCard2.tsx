@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './eventlistcard2.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder2.png'
+// import placeholder2 from '/public/placeholder2.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
@@ -58,7 +59,7 @@ const EventListCard2 = ({
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
      <Image width={275} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} />
       <div className={styles.details}>
-        <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
+        <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,25)} ${fetchedEvent.name.length > 25 ?"...":""}` : "Join Gifts World Expo 2024"}</div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>

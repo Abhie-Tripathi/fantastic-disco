@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './eventlistcard1.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder2.png'
+// import placeholder2 from '/public/placeholder2.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
 
@@ -31,7 +32,7 @@ const EventListCard1 = ({
   }, fetchedEvent }: CardProps) => {
 
   const formatDate = (date: string) => {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
     return new Date(date).toLocaleDateString('en-US', options);
   };
   const truncateText = (text: string, maxLength: number): string => {
@@ -66,7 +67,7 @@ const EventListCard1 = ({
               <LocationIcon color={fontSettings.subheading.fontColor}/>
               <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : "Join Gifts World Expo 2024"}</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : "Your Widget event"}</div>
           </div>
         </div>
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
