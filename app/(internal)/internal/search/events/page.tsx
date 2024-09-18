@@ -314,10 +314,18 @@ const Search = () => {
     }
   }, [selectedINScore]);
   const saveTrackerHandler = async() => {
+    const userType = {
+      ...(selectedInsights.eventRating && { rating: true }),
+      ...(selectedInsights.estExhibit && { exhibit: true }),
+      ...(selectedInsights.repeatSent&& {trust:true}),
+    }
     if(customTrackerName != '') {
       const formData = {
         name: customTrackerName,
         filterValue: {
+          ...(userType &&{
+            userType:JSON.stringify(userType)
+           }),
          ...(selectedEventRanking?.length>0 && {eventRanking:selectedEventRanking.join(',')}),
           ...(Object.entries(selectedCountry).length > 0&& {eventCountry:Object.keys(selectedCountry).join(',')}),
           ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),

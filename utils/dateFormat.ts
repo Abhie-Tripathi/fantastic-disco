@@ -153,6 +153,8 @@ export const formatEventDates = (startDate: string, endDate: string) => {
           if (start.getDate() === end.getDate()) {
               return new Date(startDate).toLocaleDateString("en-GB", {
                 weekday: 'long',
+              }) + ', ' +
+              new Date(endDate).toLocaleDateString("en-GB", {
                 month: "short",
                 day: "2-digit",
                 year: "numeric",
@@ -176,9 +178,12 @@ export const formatEventDates = (startDate: string, endDate: string) => {
           return (
             new Date(startDate).toLocaleDateString("en-GB", {
               weekday: 'long',
+            })+', '+
+            new Date(startDate).toLocaleDateString("en-GB", {
               month: "short",
               day: "2-digit",
-            }) + ' - ' +
+            })
+             + ' - ' +
             new Date(endDate).toLocaleDateString("en-GB", {
               month: "short",
               day: "2-digit",
@@ -190,10 +195,13 @@ export const formatEventDates = (startDate: string, endDate: string) => {
       return (
         new Date(startDate).toLocaleDateString("en-GB", {
           weekday: 'long',
+        })+', '+
+        new Date(startDate).toLocaleDateString("en-GB", {
           month: "short",
           day: "2-digit",
           year: "numeric",
-        }) + ' - ' +
+        })
+         + ' - ' +
         new Date(endDate).toLocaleDateString("en-GB", {
           month: "short",
           day: "2-digit",

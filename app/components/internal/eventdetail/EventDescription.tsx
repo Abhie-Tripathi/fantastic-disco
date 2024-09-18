@@ -98,7 +98,7 @@ const EventDescription = ({
           </div>
           {description &&
           <div className={`${styles.descContainer}`}>
-            <div className={styles.descHeading}>Description</div>
+            {/* <div className={styles.descHeading}>Description</div> */}
             <div className={styles.description}>{description}</div>
           </div>
           }

@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './insights.style.module.css'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize}: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
@@ -31,8 +31,22 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                     </div>
                 </div>
       <div className={styles.format}>
-                    <div className={styles.formatHead}>
+                    <div className={styles.formatHead} style={{display:"flex", justifyContent:"space-between"}}>
                     Estimated Exhibitor
+                    <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${isExhibitOpen ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
                     </div>
                     <div className={styles.allCat} style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
                         {exhibitScore?.map((item: string, id: number) => (
@@ -138,7 +152,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(trustScore) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${isTrustOpen ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>

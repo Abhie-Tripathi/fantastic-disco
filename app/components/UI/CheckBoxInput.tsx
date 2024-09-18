@@ -17,7 +17,7 @@ const CheckboxInput = ({ id, checked, onChange }: CheckboxInputProps) => {
         onChange={() => onChange()}
         checked={checked}
       />
-      <span className={styles.checkmark}></span>
+      <span className={`${styles.checkmark} ${id==='abc' ? styles.reqCheck : ''}`}></span>
     </label>
   );
 };

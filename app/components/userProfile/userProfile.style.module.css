@@ -1,0 +1,12 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--neutral-light-color);
+    background: var(--primary-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-weight: var(--font-weight-medium);
+}

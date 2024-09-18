@@ -23,7 +23,7 @@ export interface EventTableType {
             latitude: string
         }
     };
-    categories: [{ name: string }];
+    categories: [{ name: string, id: string, slug: string, isGroup: boolean }];
     eventKeywords : string[];
     organizer: { name: string };
     series: string;
