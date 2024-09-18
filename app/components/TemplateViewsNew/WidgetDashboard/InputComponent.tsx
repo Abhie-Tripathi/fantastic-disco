@@ -59,7 +59,9 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
             alert("Please enter a valid domain.");
             return;
         }
-        postBrandkit(cleanDomain)
+
+        const cleanDomainResult = cleanDomain.split('/')[0]; 
+        postBrandkit(cleanDomainResult)
     }
     const postBrandkit = async (cleanDomain : string) => {
         const postDomain = {
