@@ -7,57 +7,59 @@ import StatusIcon2 from './icons/status2'
 import tickIcon from "/public/internal/circle_tick.svg";
 
 interface Props {
-    status: number
+    status: number,
+    handleStatusChange: any
 }
 
-const StatusBar = ({status}:Props) => {
-
+const StatusBar = ({status, handleStatusChange}:Props) => {
+    console.log(status);
+    
     return (
         <div className={styles.outreachStatusContainer}>
-            <div className={styles.statusCard}>
+            <div className={styles.statusCard} onClick={()=>handleStatusChange(1)}>
                 {status < 1 ?
-                    <StatusIcon fillColor={''} borderColor={"#6750A4"} /> :
+                    <StatusIcon fillColor={'var(--primary-color)'} borderColor={'var(--primary-color)'} /> :
                         status === 1 ?
-                            <StatusIcon fillColor={'#2B233D'} borderColor={"#6750A4"} /> :
-                                <StatusIcon fillColor={'#1C1728'} borderColor={""} />
+                            <StatusIcon fillColor={'var(--primary-color)'} borderColor={'var(--primary-color)'} /> :
+                                <StatusIcon fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
                     {status > 1 && <Image width={14} height={14} src={tickIcon} alt="check" />}
                     Shortlisted </div>
             </div>
-            <div className={styles.statusCard}>
+            <div className={styles.statusCard} onClick={()=>handleStatusChange(2)}>
                 {status < 2 ?
-                    <StatusIcon2 fillColor={''} borderColor={"#6750A4"} /> :
+                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"#6750A4"} /> :
                         status === 2 ?
-                            <StatusIcon2 fillColor={'#2B233D'} borderColor={"#6750A4"} /> :
-                                <StatusIcon2 fillColor={'#1C1728'} borderColor={""} />
+                            <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
+                                <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
-                <div className={styles.statusText} >
+                <div className={styles.statusText}>
                     {status > 2 && <Image width={14} height={14} src={tickIcon} alt="check" />}
-                    In Progress
+                    <span style={{color:status>=2? "white" :"var(--primary-color)"}}>In Progress</span>
                 </div>
             </div>
-            <div className={styles.statusCard}>
+            <div className={styles.statusCard} onClick={()=>handleStatusChange(10)}>
                 {status < 10 ?
-                    <StatusIcon2 fillColor={''} borderColor={"#6750A4"} /> :
+                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"#6750A4"} /> :
                         status === 10 ?
-                            <StatusIcon2 fillColor={'#2B233D'} borderColor={"#6750A4"} /> :
-                                <StatusIcon2 fillColor={'#1C1728'} borderColor={""} />
+                            <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
+                                <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
                     {status > 10 && <Image width={14} height={14} src={tickIcon} alt="check" />}
-                    Finalised
+                    <span style={{color:status>=10? "white" :"var(--primary-color)"}}>Confirmed</span>
                 </div>
             </div>
-            <div className={styles.statusCard}>
+            <div className={styles.statusCard} onClick={()=>handleStatusChange(12)}>
                 {status < 12 ?
-                    <StatusIcon2 fillColor={''} borderColor={"#6750A4"} /> :
+                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"var(--primary-color)"}  /> :
                         status === 12 ?
-                            <StatusIcon2 fillColor={'#2B233D'} borderColor={"#6750A4"} /> :
-                                <StatusIcon2 fillColor={'#1C1728'} borderColor={""} />
+                            <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
+                                <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
-                    Cancelled
+                <span style={{color:status>=12? "white" :"var(--primary-color)"}}>Canceled</span>
                 </div>
             </div>
         </div>

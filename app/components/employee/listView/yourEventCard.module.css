@@ -20,7 +20,7 @@
 
 .cardImg {
   /* width: 40%; */
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
 }
 
 .cardDetails {

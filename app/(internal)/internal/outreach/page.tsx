@@ -195,7 +195,7 @@ const Page: React.FC = () => {
               onClick={() => handleVisibleTab("outreach")}
               className={`${styles.heading} ${tabsVisible == "outreach" ? styles.tabActive : ""}`}
             >
-              Out Reach{" "}
+              In Progress{" "}
               <span className={styles.eventSize}>{outreachTasks.length}</span>
             </div>
             <span className={styles.seprator}></span>
@@ -203,7 +203,7 @@ const Page: React.FC = () => {
               onClick={() => handleVisibleTab("preFinal")}
               className={`${styles.heading} ${tabsVisible == "preFinal" ? styles.tabActive : ""}`}
             >
-              Pre Finalised{" "}
+              Confirmed{" "}
               <span className={styles.eventSize}>
                 {preFinalisedTasks.length}
               </span>
@@ -269,7 +269,7 @@ const Page: React.FC = () => {
                 <div
                   className={`${styles.heading}`}
                 >
-                  Out Reach{" "}
+                  In Progress{" "}
                   <span className={styles.eventSize}>
                     {outreachTasks.length}
                   </span>
@@ -297,7 +297,7 @@ const Page: React.FC = () => {
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus="IN NEGOTIATION"
+                      enquiryStatus="IN PROGRESS"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
@@ -321,7 +321,7 @@ const Page: React.FC = () => {
                 <div
                   className={`${styles.heading}`}
                 >
-                  Pre Finalised{" "}
+                  Confirmed{" "}
                   <span className={styles.eventSize}>
                     {preFinalisedTasks.length}
                   </span>

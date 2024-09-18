@@ -16,13 +16,15 @@ interface PropType {
 
 const statusValues: { [key: string]: number } = {
   SHORTLISTED: 1,
-  "IN NEGOTIATION": 2,
+  "IN PROGRESS": 2,
   CONFIRMED: 10,
-  CANCELLED: 12,
+  CANCELED: 12,
 };
 
 const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
   const [isOpen, setIsOpen] = useState(false);
+  // console.log(props.currentValue);
+  
   const [value, setValue] = useState(props.currentValue);
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);
@@ -50,7 +52,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
               src={
                 value == "SHORTLISTED"
                   ? shortlistedIcon
-                  : value == "IN NEGOTIATION"
+                  : value == "IN PROGRESS"
                   ? negotiationIcon
                   : value == "CONFIRMED"
                   ? confirmedIcon
@@ -103,7 +105,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
                   alt="downarrow"
                   className={iconClass}
                 />
-                IN NEGOTIATION
+                IN PROGRESS
               </div>
               <div
                 className={`${styles.dropdown_menu_item} ${
@@ -129,7 +131,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
                   src={cancelledIcon}
                   alt="downarrow"
                 />
-                CANCELLED
+                CANCELED
               </div>
             </div>
           </div>

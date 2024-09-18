@@ -96,7 +96,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16}/>
+            <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
             {value}
             <Image
                     src={theme==="light"?upArrowLight:upArrow}

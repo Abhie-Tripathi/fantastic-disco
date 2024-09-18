@@ -5,6 +5,7 @@ import Image from 'next/image';
 import addEventIcon from '/public/addEvent.svg'
 import { useTheme } from '@/context';
 import { formatEventDates } from '@/utils/dateFormat';
+import { Calendar } from 'geist-icons';
 
 interface CardTaskProps {
     name: string;
@@ -38,8 +39,8 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
             <div className={styles.heading}>{name}</div>
             <div className={styles.companyName}>{eventCompany}</div>
             <div className={styles.date}>
-                <Image src={CalendarIcon} alt='cal' height={14} width={14} className='icons'/>
-                <div>{formatEventDates(eventStartDate,eventEndDate)}</div>
+            <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
+                <div style={{marginTop:'3px'}}>{formatEventDates(eventStartDate,eventEndDate)}</div>
             </div>
             {/* <div className={styles.typeOfEventContainer}>
                 <div className={styles.typeOfEvent}>Exhibting</div>

@@ -673,14 +673,14 @@ export const AddComment = ({
           >
             I want to Speak
           </button>
-          <button
+          {/* <button
             onClick={handleRecommend}
             className={`${styles.btn1} ${
               theme === "light" && styles.btn1_light
             }`}
           >
             I want to #Recommend
-          </button>
+          </button> */}
         </div>
         : <></>}
         <div style={{ display: "flex", gap: "10px" }}>
