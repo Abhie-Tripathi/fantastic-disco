@@ -19,7 +19,7 @@ interface Props {
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
     theme: string;
-    fetchAddedEvents : ()=> Promise<void>;
+    fetchAddedEvents?: ()=> Promise<void>;
 }
 
 const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme,fetchAddedEvents }: Props) => {
@@ -90,7 +90,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(data)
             setIsNormalEventModalOpen(false)
             fetchEvents(0,"update")
-            fetchAddedEvents()
+            if(fetchAddedEvents){
+                fetchAddedEvents()
+            }
+            
         }
         if (error) {
             console.log(error)
