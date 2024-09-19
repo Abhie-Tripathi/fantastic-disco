@@ -12,7 +12,6 @@ interface Props {
 }
 
 const StatusBar = ({status, handleStatusChange}:Props) => {
-    console.log(status);
     
     return (
         <div className={styles.outreachStatusContainer}>

@@ -17,7 +17,6 @@ interface PropType {
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
-  console.log(props.currentEnquiryStatus);
   
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("");

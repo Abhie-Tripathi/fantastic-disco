@@ -32,7 +32,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const [eventSuggestion,setEventSuggestion]=useState([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-      console.log(searchInput, previousInput);
       
       if(searchInput!==previousInput){
         let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
@@ -52,7 +51,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
           if (!controller.signal.aborted) {
             if (data) {
               if(type==="T_COMPETITOR"){
-                console.log(data.company);
                 
                 setEventSuggestion(data.company);
               }else
@@ -104,16 +102,13 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
-      console.log(restructureData);
       const selectedEventId=(id:any, name:string)=>{
-        console.log(id);
        
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
       }
-      console.log(restructureData);
       
   return (
         <>

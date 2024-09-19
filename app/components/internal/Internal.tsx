@@ -78,7 +78,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         };
       }, [popoverState]); 
       useEffect(()=>{
-        console.log(selectedParticipantType);
         if(selectedParticipantType.length>0) {
             setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
         }else{
@@ -186,7 +185,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         setPage(1);
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
-console.log(modalOpen);
 useInfiniteScroll(divRef, handleScrollEnd);
 useEffect(()=>{
   if(page>0){

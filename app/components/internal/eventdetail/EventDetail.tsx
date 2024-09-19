@@ -68,7 +68,6 @@ const EventDetail = ({
     sponsors: [],
     exhibitors: [],
   });
-console.log(currentEnquiryStatus);
 
   useEffect(() => {
     if (urlPath === "outreach") setStage("OUTREACH");
