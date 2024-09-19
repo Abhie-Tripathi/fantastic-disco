@@ -265,7 +265,7 @@ const Table = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, callback: any) => {
     e.preventDefault();
     if (
-      formData.entityId_id &&
+      formData?.entityId_id !== '' &&
       formData.markedInterest
     ) {
       if (formData.markedInterest == "bookmark") {
@@ -292,12 +292,7 @@ const Table = ({
             return;
           }
           if (data) {
-            toast.success("Event bookmarked successfully!", {
-              position: "bottom-right",
-              autoClose: 2000,
-              closeButton: false,
-              hideProgressBar: true,
-            });
+            showToast('success', "Event saved");
             setBookmarkedEvent((prev) => [...prev, formData.entityId_id]);
           }
         } catch (error) {
@@ -326,12 +321,7 @@ const Table = ({
             setBookmarkedEvent((prev) =>
               prev.filter((id) => id !== formData.entityId_id)
             );
-            toast.success("Bookmarked event removed!", {
-              position: "bottom-right",
-              autoClose: 2000,
-              closeButton: false,
-              hideProgressBar: true,
-            });
+            showToast('error', "Saved event deleted");
           }
         } catch (error) {
           console.error("Error:", error);
@@ -347,20 +337,19 @@ const Table = ({
         };
         try {
           const apiUrl = baseUrl + "/userInterest";
-          const apiData = await myFetch(apiUrl, {
+          const {data, error} = await myFetch(apiUrl, {
             method: "POST",
             headers: headers,
             body: JSON.stringify(payloadData),
           });
 
-          if (apiData.data.message == "Entry Created") {
-            toast.success("Interest marked successfully!", {
-              position: "bottom-right",
-              autoClose: 2000,
-              closeButton: false,
-              hideProgressBar: true,
-            });
+          if (data && data.message == "Entry Created") {
+            showToast('success', "Interest marked successfully!");
             setIsOpen(null);
+          }
+          if(error) {
+            if(error?.status === 300)
+              showToast('success', "Interest marked successfully!");
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -418,22 +407,14 @@ const Table = ({
     }
   }, []);
 
-  const handleModalOpen = (eventId: string) => {
+  const handleModalOpen = (eventId: string, bookmarkedStatus: boolean) => {
     GAEvent("research", "Filters", "Saved Event | Viewed", "Saved Event");
-    setIsOpen((prev) => (prev == eventId ? null : eventId));
-    if (isOpen != eventId) {
-      setFormData({
-        ...formData,
-        entityId_id: eventId,
-        // eventGroupId: eventGroupId,
-      });
-    } else {
-      setFormData({
-        entityId_id: "",
-        markedInterest: null,
-        // eventGroupId: "",
-      });
-    }
+    // setIsOpen((prev) => (prev == eventId ? null : eventId));
+    setFormData({
+      ...formData,
+      entityId_id: eventId,
+      markedInterest: (bookmarkedStatus ? null : 'bookmark')
+    });
   };
 
   const handlePinEvent = (eventId: string) => {
@@ -1327,44 +1308,26 @@ const Table = ({
                     </div>
                   )} */}
 
-                  <MenuTrigger onOpenChange={()=>handleModalOpen(event.id)}>
+                  <MenuTrigger onOpenChange={()=>handleModalOpen(event?.id, (event?.isSaved || bookmarkedEvent?.includes(event.id)) ? true : false)}>
                     <Button className={styles.dropdown_button}>
                     {path[path.length - 1] === "trackedEvents" || path[path.length - 1] === "savedEvents" || path[path.length - 1] === "trackers" ? (
                       path[path.length - 1] === "trackedEvents" ? (
                         <>
                           {event?.isSaved ? (
-                            <button
-                              onClick={() => handleModalOpen(event?.id)}
-                            >
-                              <BookmarkFilled fillColor={"var(--primary-color)"} />
-                            </button>
+                            <BookmarkFilled fillColor={"var(--primary-color)"} />
                           ) : (
-                            <button
-                              onClick={() => handleModalOpen(event?.id)}
-                            >
-                              <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
-                            </button>
+                            <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
                           )}
                         </>
                         ) : (
-                          <button
-                            onClick={() => handleModalOpen(event?.id)}
-                          >
-                            <BookmarkFilled fillColor={"var(--primary-color)"} />
-                          </button>
+                          <BookmarkFilled fillColor={"var(--primary-color)"} />
                         )
                         ) : (
-                          <span
-                            className={styles.save_image_container}
-                            style={{cursor:"pointer"}}
-                            onClick={() => handleModalOpen(event.id)}
-                          >
-                            {bookmarkedEvent?.includes(event.id) ? (
-                              <BookmarkFilled fillColor={"var(--primary-color)"} />
-                            ) : (
-                              <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
-                            )}
-                          </span>
+                          bookmarkedEvent?.includes(event.id) ? (
+                            <BookmarkFilled fillColor={"var(--primary-color)"} />
+                          ) : (
+                            <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
+                          )
                         )}
                     </Button>
                     <Popover className={styles.interestPopover} placement='left' >
@@ -1377,7 +1340,7 @@ const Table = ({
                               </div>
                               <button
                                 className={styles["close"]}
-                                onClick={() => {handleModalOpen(event.id); close()}}
+                                onClick={close}
                               >
                                 <Image src={closeIcon} alt="clock" width={16} height={16} />
                               </button>
@@ -1407,6 +1370,7 @@ const Table = ({
                                           name={"interest"}
                                           id="customradio1"
                                           onChange={handleChangeIntent}
+                                          checked={formData.markedInterest === "bookmark" || formData.markedInterest === null }
                                         />
                                         <label htmlFor="customradio1">Bookmark</label>
                                       </>
@@ -1421,7 +1385,7 @@ const Table = ({
                                       id="customradio2"
                                       onChange={handleChangeIntent}
                                     />
-                                    <label htmlFor="customradio2">Attending</label>
+                                    <label htmlFor="customradio2">Attend</label>
                                   </div>
                                   <div className={styles["form-check"]}>
                                     <input
@@ -1432,7 +1396,7 @@ const Table = ({
                                       id="customradio3"
                                       onChange={handleChangeIntent}
                                     />
-                                    <label htmlFor="customradio3">Speaking</label>
+                                    <label htmlFor="customradio3">Speak</label>
                                   </div>
                                   <div className={styles["form-check"]}>
                                     <input
@@ -1443,7 +1407,7 @@ const Table = ({
                                       id="customradio4"
                                       onChange={handleChangeIntent}
                                     />
-                                    <label htmlFor="customradio4">Exhibiting</label>
+                                    <label htmlFor="customradio4">Exhibit</label>
                                   </div>
                                   <div className={styles["form-check"]}>
                                     <input
@@ -1454,7 +1418,7 @@ const Table = ({
                                       id="customradio5"
                                       onChange={handleChangeIntent}
                                     />
-                                    <label htmlFor="customradio5">Sponsoring</label>
+                                    <label htmlFor="customradio5">Sponsor</label>
                                   </div>
                                 </div>
                                 <button className={styles["submitBtn"]}>Submit</button>

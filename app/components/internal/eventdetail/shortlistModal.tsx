@@ -42,15 +42,17 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
   };
 
   const [shortlistedVisitors, setShortlistedVisitors] = useState<string[]>([]);
+  const [shortlistedExhibitor, setShortlistedExhibitor] = useState<string[]>([]);
   const [shortlistedSpeaker, setShortlistedSpeaker] = useState<string[]>([]);
+  const [shortlistedSponsor, setShortlistedSponosor] = useState<string[]>([]);
 
   const handleSubmit = async() => {
     if(user){
-      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0){
+      if(shortlistedVisitors.length > 0 || shortlistedSpeaker.length > 0 || shortlistedExhibitor.length > 0 || shortlistedSponsor.length>0){
       let payloadData = {
         entityId: shortlistModalData.eventId,
         status: "SHORTLISTED",
-        id: shortlistedVisitors.concat(shortlistedSpeaker).join(), // multiple userInterest id's
+        id: shortlistedVisitors.concat(shortlistedSpeaker, shortlistedExhibitor, shortlistedSponsor).join(), // multiple userInterest id's
         modifiedBy: user.id,
         enquiryStatus:"SHORTLISTED",
       };
@@ -105,33 +107,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           style={{ padding: "0 1.8rem" }}
         >
           <div className={styles["tag_container"]}>
-            <span className={styles["tag_item"]}>
-              <Image
-                src={attendeeIcon}
-                alt=""
-                width={15}
-                height={15}
-                className={iconClass}
-              />
-              Attendee
-              {shortlistModalData.participent.attendee?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
-              }
-            </span>
-            <span className={styles["tag_item"]}>
-              <Image
-                src={speakerIcon}
-                alt=""
-                width={15}
-                height={15}
-                className={iconClass}
-              />
-              Speaker
-              {shortlistModalData.participent.speakers?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
-              }
-            </span>
-            <span className={styles["tag_item"]}>
+          <span className={styles["tag_item"]}>
               <Image
                 src={exhibitorIcon}
                 alt=""
@@ -139,11 +115,12 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 height={15}
                 className={iconClass}
               />
-              Exhibitors
+              Exhibit
               {shortlistModalData.participent.exhibitors?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
             </span>
+            
             <span className={styles["tag_item"]}>
               <Image
                 src={sponsorIcon}
@@ -152,15 +129,42 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                 height={15}
                 className={iconClass}
               />
-              Sponsors
+              Sponsor
               {shortlistModalData.participent.sponsors?.length > 0 &&
                 <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
               }
+            </span> 
+            <span className={styles["tag_item"]}>
+              <Image
+                src={speakerIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Speak
+              {shortlistModalData.participent.speakers?.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
             </span>
+            <span className={styles["tag_item"]}>
+              <Image
+                src={attendeeIcon}
+                alt=""
+                width={15}
+                height={15}
+                className={iconClass}
+              />
+              Attend
+              {shortlistModalData.participent.attendee?.length > 0 &&
+                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+              }
+            </span>
+           
           </div>
           <div className={styles["total_attendee"]}>
 
-            <div style={{ fontSize: "12px" }}>
+            {/* <div style={{ fontSize: "12px" }}>
               <div className={styles.circles}>
                 <div className={styles.circle} data-name="John Doe">
                   <Image
@@ -192,7 +196,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className={styles.moddleText}>
               {shortlistModalData.stats.uniqueUser} People have shown interest
@@ -200,18 +204,19 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
             <div className={styles.markListBtn} onClick={handleSubmit}>Mark as Shortlisted</div>
           </div>
           <div className={styles.main_section}>
+          {shortlistModalData.participent.exhibitors?.length > 0 &&
+              <AttendeeCard cardType={"Exhibit"} userList={shortlistModalData.participent.exhibitors} shortlistedUsers={shortlistedExhibitor} setShortlistedUsers={setShortlistedExhibitor} />
+            }
+             {shortlistModalData.participent.sponsors?.length > 0 &&
+              <AttendeeCard cardType={"Sponsor"} userList={shortlistModalData.participent.sponsors} shortlistedUsers={shortlistedSponsor} setShortlistedUsers={setShortlistedSponosor} />
+            }
+             {shortlistModalData.participent.speakers?.length > 0 &&
+              <AttendeeCard cardType={"Speak"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
+            }
             {shortlistModalData.participent.attendee?.length > 0 &&
               <AttendeeCard cardType={"Attend"} userList={shortlistModalData.participent.attendee} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors}/>
             }
-            {shortlistModalData.participent.speakers?.length > 0 &&
-              <AttendeeCard cardType={"Speak"} userList={shortlistModalData.participent.speakers} shortlistedUsers={shortlistedSpeaker} setShortlistedUsers={setShortlistedSpeaker} />
-            }
-            {shortlistModalData.participent.sponsors?.length > 0 &&
-              <AttendeeCard cardType={"Sponsor"} userList={shortlistModalData.participent.sponsors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
-            }
-            {shortlistModalData.participent.exhibitors?.length > 0 &&
-              <AttendeeCard cardType={"Exhibit"} userList={shortlistModalData.participent.exhibitors} shortlistedUsers={shortlistedVisitors} setShortlistedUsers={setShortlistedVisitors} />
-            }
+            
           </div>
         </main>
         {/* <footer className={styles.modal_footer}>

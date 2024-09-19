@@ -13,11 +13,23 @@
     width: 100%;
     border-radius: 8px;
 }
+.smallName{
+    margin-top: 10px;
+    min-height: 30px;
+    max-height: 30px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
 .eventName{
-    margin-top: 20px;
+    margin-top: 10px;
+    min-height: 55px;
+    max-height: 55px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .location_dateContainer{
-    margin-top: 12px;
+    margin-top: 10px;
+    height: 40px;
 }
 .locationContainer{
     display: flex;
@@ -34,11 +46,15 @@
     gap: 8px;
 }
 .desc{
+    word-wrap:break-word ;
     width: 100%;
-    margin-top: 20px;
+    overflow: hidden;
+    max-height: 50px;
+    min-height: 50px;
+    margin-top: 10px;
 }
 .btnContainer{
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     display: flex;
     justify-content: center;

@@ -21,7 +21,7 @@ const DescriptionContainer = ({setDescriptionModal,description, theme,isEventDes
                 </div>
                 <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
             </div>
-            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description.substring(0,400)+"..." }}></div>}
+            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description.substring(0,400) + (description.length > 400 ? "...":"") }}></div>}
         </div>
     )
 }

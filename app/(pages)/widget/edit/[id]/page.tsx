@@ -25,7 +25,7 @@ const Page = () => {
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
-    subheading: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" },
+    subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
   const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({
@@ -257,7 +257,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
+        <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} fetchAddedEvents={fetchAddedEvents}/>
       </div>}
     </div>
   )

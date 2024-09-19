@@ -68,7 +68,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
   const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : demoDescription;
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <div className={styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].name : demoEventName}</div>
+      <div className={smallCard ? styles.smallName : styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
       <div className={styles.location_dateContainer}>
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
@@ -109,7 +109,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
           </div>
         </div>
       </div>
-      <div className={styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
+      <div className={smallCard ? styles.smallDesc : styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
       <div className={styles.btnContainer}>
         <button
           className={smallCard ? styles.smallBtn : styles.btn}

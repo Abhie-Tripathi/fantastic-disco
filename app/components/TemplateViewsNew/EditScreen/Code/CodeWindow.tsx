@@ -76,7 +76,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
             return;
         }
 
-        const updatedDomains = [...domains, cleanDomain];
+        const updatedDomains = [...domains, `https://${cleanDomain}`];
         const formData = new FormData()
         formData.append("widgetId", widgetId)
         formData.append("domain", updatedDomains.join())
@@ -129,7 +129,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                     <div className={styles.input_deleteContainer} key={key}>
                         <div className={styles.inputContainer} >
                             <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
-                            <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain} />
+                            <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain.substring(8)} />
                         </div>
                         <div className={styles.deleteBtn} onClick={() => handleDelete(domain)}><DeleteIcon /></div>
                     </div>

@@ -44,7 +44,7 @@ const EventCard3 = ({
         const dateObj = new Date(date);
 
         const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
         const year = dateObj.getFullYear();
 
         // Function to get the appropriate suffix for the day

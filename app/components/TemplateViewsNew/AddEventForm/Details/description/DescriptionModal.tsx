@@ -160,20 +160,29 @@ const DescriptionModal: React.FC<Props> = ({
     const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
     const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
 
+    
+    const cleanUpEmptyLines = (content: string) => {
+        // Replace multiple consecutive empty <p> or <br> tags with a single one
+        return content.replace(/(<p><br><\/p>|\s)*<p><br><\/p>(<p><br><\/p>|\s)*/g, '<p><br></p>');
+    };
     const handleInputChange = (value: string) => {
-        setTextValue(value);
+        const cleanedValue = cleanUpEmptyLines(value);
+        setTextValue(cleanedValue);
     }
     const handleSave = () => {
         // Check for phone numbers and emails
         if (phoneRegex.test(textValue)) {
-            showToast("error", "Please do not include phone numbers in the description.");
+            showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
         if (emailRegex.test(textValue)) {
-            showToast("error", "Please do not include email addresses in the description.");
+            showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-
+        if(textValue.length > 1500){
+            showToast("error", "Description should not be more then 1500 characters");
+            return; // Prevent save
+        }
         // If no invalid content is found, proceed with saving
         handleDescClick();
     };
@@ -195,7 +204,7 @@ const DescriptionModal: React.FC<Props> = ({
                             [{ 'align': [] }],
                         ]
                     },
-                    placeholder: 'Write something...'
+                    placeholder: 'Write something...',
                 });
 
                 setEditor(quillEditor);
@@ -226,7 +235,7 @@ const DescriptionModal: React.FC<Props> = ({
                 </div>
 
             </div>
-            <div ref={editorRef} style={{ height: '300px' }}></div>
+            <div className={styles.quillEditor} ref={editorRef} style={{ height: '300px' }}></div>
 
         </div>
     );

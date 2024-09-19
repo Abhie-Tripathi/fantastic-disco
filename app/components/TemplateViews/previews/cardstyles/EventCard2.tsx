@@ -34,7 +34,7 @@ const EventCard2 = ({
     cardBorderRadius = 20,
     fontSettings = {
       heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-      subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+      subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "bolder" },
       body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
     },fetchedEvent,
     demoEventName,
@@ -47,7 +47,7 @@ const EventCard2 = ({
         const dateObj = new Date(date);
     
         const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
         const year = dateObj.getFullYear();
     
         // Function to get the appropriate suffix for the day

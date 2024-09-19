@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
-    fetchEvents: (page: number, type? : string) => Promise<void>;
+    fetchEvents: (page: number, type?: string) => Promise<void>;
     fetchAddedEvents: () => Promise<void>;
     handleAddEventModal: (value: void) => void
     handlePrefillNormalEvent: (event: AllEventsType, type: string) => void
@@ -52,15 +52,15 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
     }, [isLoading, hasMore]);
 
     useEffect(() => {
-        if(allEventsCount !== fetchedAllEvents.length){
+        if (allEventsCount !== fetchedAllEvents.length) {
             if (page > 0) {
                 const fetchMoreEvents = async () => {
                     setIsLoading(true);
                     const prevLength = fetchedAllEvents.length;
-                    await fetchEvents(page*8);
+                    await fetchEvents(page * 8);
                     const newLength = fetchedAllEvents.length;
                     setIsLoading(false);
-    
+
                     // If no more events are fetched, stop further fetching
                     if (newLength === prevLength) {
                         setHasMore(false);
@@ -69,7 +69,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                 fetchMoreEvents();
             }
         }
- 
+
     }, [page]);
 
     const formatDate = (date: string) => {
@@ -88,7 +88,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             }
         );
         if (data) {
-            fetchEvents(0,"update")
+            fetchEvents(0, "update")
             fetchAddedEvents()
         }
         if (error) {
@@ -107,9 +107,9 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             <div className={styles.headerContainer}>
                 <div>All Events</div>
                 <div className={styles.addBtnContainer}>
-                    <button onClick={() => handleNormalEventModal()}><Addevent/> Add event</button>
+                    <button onClick={() => handleNormalEventModal()}><Addevent /> Add event</button>
                     <button onClick={() => handleAddEventModal()}>
-                        <AddeventToWidget/>Add Event to widget
+                        <AddeventToWidget />Add Event to widget
                     </button>
                 </div>
             </div>
@@ -119,7 +119,7 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                 {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
-                            <div className={styles.eventName}>{event.name}</div>
+                            <div className={styles.eventName}>{`${event.name.substring(0, 30)} ${event.name.length > 30 ? "..." : ""}`}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
                                 <div>{event.cityName}</div>
@@ -191,35 +191,34 @@ function EditIcon() {
 
 function AddeventToWidget() {
     return (
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
-          fill="white"
-        />
-      </svg>
+        <svg
+            width="12"
+            height="12"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
+                fill="white"
+            />
+        </svg>
     );
-  }
-  
-  function Addevent() {
+}
+
+function Addevent() {
     return (
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 21 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M18 0H0V2.25H18V0ZM18 4.5H0V6.75H18V4.5ZM0 9H9V11.25H0V9ZM9 13.5H0V15.75H9V13.5ZM16.875 12.375H20.25V14.625H16.875V18H14.625V14.625H11.25V12.375H14.625V9H16.875V12.375Z"
-          fill="white"
-        />
-      </svg>
+        <svg
+            width="14"
+            height="14"
+            viewBox="0 0 21 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M18 0H0V2.25H18V0ZM18 4.5H0V6.75H18V4.5ZM0 9H9V11.25H0V9ZM9 13.5H0V15.75H9V13.5ZM16.875 12.375H20.25V14.625H16.875V18H14.625V14.625H11.25V12.375H14.625V9H16.875V12.375Z"
+                fill="white"
+            />
+        </svg>
     );
-  }
-  
+}

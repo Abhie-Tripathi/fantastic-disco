@@ -11,6 +11,7 @@ import { GolbalEventType } from '@/types/globaleventtype';
 import ParticipationContainer from './Details/participation/ParticipationContainer'
 import { AllEventsType } from '@/types/alleventtype';
 import { showToast } from "@/utils/showToast";
+import { AddedEventsType } from '@/types/addedeventtype';
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
@@ -18,9 +19,10 @@ interface Props {
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
     theme: string;
+    fetchAddedEvents?: ()=> Promise<void>;
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme,fetchAddedEvents }: Props) => {
     // const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
@@ -35,8 +37,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [eventFormat, setEventFormat] = useState<string>("In-person")
     const [textValue, setTextValue] = useState<string>("")
     const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) || 37.7749)
-    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) || -122.4194)
+    const [latitude, setLatitude] = useState(Number(prefilledGlobalEvent?.latitude) ||Number(prefilledNormalEvent?.latitude) ||  37.7749)
+    const [longitude, setLongitude] = useState(Number(prefilledGlobalEvent?.longitude) ||Number(prefilledNormalEvent?.longitude) || -122.4194)
     const [participationMessage, setParticipationMessage] = useState<string>("")
     const [participationType, setParticipationType] = useState<string>(prefilledNormalEvent?.participationType || "")
     const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
@@ -88,6 +90,10 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(data)
             setIsNormalEventModalOpen(false)
             fetchEvents(0,"update")
+            if(fetchAddedEvents){
+                fetchAddedEvents()
+            }
+            
         }
         if (error) {
             console.log(error)
@@ -133,7 +139,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             latitude,
             longitude,
             participationType,
-            event_type: "Tradeshow"
+            event_type: "Tradeshow",
         };
         const formData = new FormData()
         formData.append("name", eventName)

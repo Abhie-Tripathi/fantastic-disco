@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './eventlistcard2.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder2.png'
+// import placeholder2 from '/public/placeholder2.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
@@ -32,7 +33,7 @@ const EventListCard2 = ({
   cardBorderRadius = 20,
   fontSettings = {
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-    subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+    subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
   }, fetchedEvent, demoBanner, demoEventName, demoDescription,  demoLocation}: CardProps) => {
 
@@ -40,7 +41,7 @@ const EventListCard2 = ({
     const dateObj = new Date(date);
 
     const day = dateObj.getDate();
-    const month = dateObj.toLocaleString('en-US', { month: 'long' });
+    const month = dateObj.toLocaleString('en-US', { month: 'short' });
     const year = dateObj.getFullYear();
 
     const getDayWithSuffix = (day: number) => {
