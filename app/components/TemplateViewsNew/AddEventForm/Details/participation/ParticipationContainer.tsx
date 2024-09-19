@@ -21,13 +21,16 @@ interface Props {
   theme?: string;
   type: string;
   isEventParticipationEmpty: boolean
+  setIsEventParticipationEmpty:(value: boolean) => void
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type, isEventParticipationEmpty }: Props) => {
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type, isEventParticipationEmpty, setIsEventParticipationEmpty }: Props) => {
 
   const handleSelection = (type: string) => {
     setParticipationType(type);
     // setDropdown(true)
+    setIsEventParticipationEmpty(false)
+    
   }
   const handleCloseSelection = () => {
     // setDropdown(false)

@@ -27,6 +27,7 @@
     align-items: center;
     gap: 9px;
     cursor: pointer;
+    border: 1px solid #d5d5d5;
 }
 .option:not(.errorHighlight) {
     /* border: 1px solid #d5d5d5; */
