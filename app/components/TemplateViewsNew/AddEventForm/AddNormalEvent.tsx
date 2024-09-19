@@ -175,7 +175,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         if (specialCharRegex.test(value)) {
             showToast("error","Please check, input should not contain any special character");
         } else {
-            setEventName(value);  
+            setEventName(value); 
+            setIsEventNameEmpty(false) 
         }
       };
     return (
@@ -190,7 +191,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             <div className={styles.line}></div>
             <div className={styles.form}>
                 <div>
-                    <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} /></div>
+                    <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty}/></div>
                     {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
                 </div>
 
@@ -200,11 +201,11 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
                 </div>
                 <div className={styles.dateTimeContainer}><DateTimeContainer theme={theme} setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
                 <div>
-                <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} /></div>
+                <div className={styles.locationContainer}><LocationContainer theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty}/></div>
                     {isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                 </div>
                 <div>
-                    <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} /></div>
+                    <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}/></div>
                     {isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                 </div>
             </div>
