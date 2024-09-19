@@ -108,7 +108,6 @@ const Page = () => {
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
     else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
-      else if(typeVal === "T_PEOPLE_FINDER") setType("People Finder");
   },[])
   const [editData, setEditData] = useState<EditData | null>(null);
   const [arr, setArr] = useState<any>();
@@ -256,52 +255,6 @@ const userRating=
                        )
                    ))}
                </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-     {data.tracker && (data.tracker.type ==="T_PEOPLE_FINDER") &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>People Finder</div>
-            <div className={styles.customContent}>
-              {/* <div className={styles.urlDiv}>
-                <Image src={Url} alt="url" className="icons" />
-                URL
-                </div> */}
-               Track experts, influencers and where they might be participating in various events.
-            </div>
-          </div>
-          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Name</div>
-          </div>
-                {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
-                  </div>
-                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
           </div>
         </div>
         <div className={styles.line}></div>
