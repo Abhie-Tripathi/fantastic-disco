@@ -17,6 +17,7 @@
 
 .total_request {
     display: flex;
+    font-weight: var(--font-weight-medium);
     align-items: center;
     gap: 8px;
 }

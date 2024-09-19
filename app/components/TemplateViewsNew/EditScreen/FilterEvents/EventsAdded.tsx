@@ -210,7 +210,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                 {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
-                            <div className={styles.eventName}>{event.name}</div>
+                            <div className={styles.eventName}>{`${event.name.substring(0,30)} ${event.name.length>30 ? "...": ""}`}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
                                 <div>{event.cityName}</div>

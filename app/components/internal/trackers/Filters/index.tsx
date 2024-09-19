@@ -237,7 +237,7 @@ const templates = [
   {
     name: "T_PEOPLE_FINDER",
     templateName: "People Finder",
-    type: "enabled",
+    type: "disabled",
     description: "Track experts, influencers and where they might be participating in various events",
     inputAreas: [
       {
@@ -496,8 +496,6 @@ const Pages = () => {
   const [websites, setWebsites] = useState("");
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
-  const [userNames,setUserNames]=useState('');
-  const [orgs,setOrgs]=useState('');
   const [speakerCompany, setSpeakerCompany] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
@@ -528,12 +526,7 @@ const Pages = () => {
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
-    }else if (type==="T_PEOPLE_FINDER") {
-      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
-      const speakerOrg = customData.map((item: {}) => Object.values(item)[1]).join(',');
-      setUserNames(userName);
-      setOrgs(speakerOrg);
-      }
+    }
   }, [type, customData])
 
   const saveTrackerHandler = async () => {
@@ -578,12 +571,6 @@ const Pages = () => {
           }),
           ...(org.length > 0 && {
             orgName : org,
-          }),
-          ...(userNames.length>0 && {
-            userName:userNames
-          }),
-          ...(orgs.length>0 && {
-              speakerOrg: orgs
           }),
           ...(designations.length > 0 && {
             userDesignation: designations,
@@ -771,12 +758,6 @@ const Pages = () => {
           }),
           ...(speakerCompany.length > 0 && {
             speakerOrg: speakerCompany,
-          }),
-          ...(userNames.length>0 && {
-            userName:userNames
-          }),
-          ...(orgs.length>0 && {
-              speakerOrg: orgs
           }),
           ...(designations.length > 0 && {
             userDesignation: designations,
@@ -1001,17 +982,6 @@ const Pages = () => {
         //     { companyUrl: item.trim() }
         //   ))
         // ]);
-      }
-      if (type === "T_PEOPLE_FINDER") {
-        const userNames = editData?.tracker?.filterValue?.userName?.
-          split(',');
-        const speakerOrg = editData?.tracker?.filterValue?.speakerOrg?.
-          split(',');
-        const presentCustomData = userNames?.map((name: string, index: number) => ({
-          "Speaker's Name": name.trim(),
-          "Company Name": speakerOrg[index]?.trim()
-        })) || [];
-        setCustomData(presentCustomData);
       }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };

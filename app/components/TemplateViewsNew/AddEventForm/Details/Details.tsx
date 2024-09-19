@@ -219,6 +219,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     const formData = new FormData()
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
+    formData.append("type", "MAIN")
 
     if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
       if (banner.file) {

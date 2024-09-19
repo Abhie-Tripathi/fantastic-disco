@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './eventlistcard3.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder2.png'
+// import placeholder2 from '/public/placeholder2.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
 
@@ -52,7 +53,7 @@ const EventListCard3 = ({
     }
     return text.slice(0, maxLength) + '...';
   };
-  const description = fetchedEvent ? truncateText(fetchedEvent.description, 150) : "Some Description";
+  const description = fetchedEvent ? truncateText(fetchedEvent.description, 250) : "Some Description";
   return (
     <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
       <div className={styles.bannerContainer}>
@@ -60,7 +61,7 @@ const EventListCard3 = ({
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>
-        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
+        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? `${fetchedEvent.name.substring(0,25)} ${fetchedEvent.name.length > 25 ?"...":""}` : "Join Gifts World Expo 2024"}</div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>

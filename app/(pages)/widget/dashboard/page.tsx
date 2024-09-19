@@ -14,7 +14,7 @@ const Page = () => {
   const [brandkitLoadingState ,setBrandkitLoadingState] = useState<boolean>(true)
   const [polling, setPolling] = useState<boolean>(true);
   const [fetchedDomain, setFetchedDomain] = useState<string>("")
-
+  
 
   // This is to see if the brandkit was used atleast once by user
   const checkBrandkit = async()=>{

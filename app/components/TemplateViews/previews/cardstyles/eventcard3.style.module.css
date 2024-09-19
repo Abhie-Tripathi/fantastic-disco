@@ -4,9 +4,12 @@
     max-height: 340px;
     max-width: 300px;
     padding: 12px 14px 24px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .bannerContainer{
-    height: 192px;
+    height: 180px;
     width: 100%;
     position: relative;
 }
@@ -21,15 +24,15 @@
     right: 9px;
 }
 .banner{
-    height: 192px;
+    min-height: 180px;
+    max-height: 180px;
     width: 100%;
     border-radius: 8px;
 }
 .eventName{
-    margin-top: 22px;
-}
-.location_dateContainer{
-    margin-top: 12px;
+    height: 60px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .locationContainer{
     display: flex;
