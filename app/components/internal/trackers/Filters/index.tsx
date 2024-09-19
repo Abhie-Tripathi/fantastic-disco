@@ -175,7 +175,7 @@ const templates = [
         placeholder: "Competitor Name or Website",
         required:true,
       }
-    ],
+    ]
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
@@ -1530,16 +1530,14 @@ useEffect(()=>{
             setSelectedEventKeywords={setSelectedEventKeywords}
           />
         }
-        {inputFieldEnabled &&
-          <div style={{width:"calc(50% - 5px)"}}>
-            <EventKeyword state={selectedEventKeywords}
-            setState={setSelectedEventKeywords}
-            onClose={close} type={isDiv}
-            isMandatory={isMandatory}
-            setIsMandatory={setIsMandatory}
-            />
-          </div>
-        }
+      <div style={{width:"calc(50% - 5px)"}}>
+      <EventKeyword state={selectedEventKeywords}
+      setState={setSelectedEventKeywords}
+      onClose={close} type={isDiv}
+      isMandatory={isMandatory}
+      setIsMandatory={setIsMandatory}
+      />
+      </div>
       </div>
       }
       
@@ -1619,7 +1617,7 @@ useEffect(()=>{
           </div>
           }
           </div>
-          {inputFieldEnabled && template?.inputAreas &&
+          {template?.inputAreas &&
             <div>
               <div className={styles.allInputArea}>
                 {template?.inputAreas?.map((inputArea: any, index: number) => (
@@ -1672,18 +1670,6 @@ useEffect(()=>{
                   <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
                     Remove All
                   </div>
-
-                  {/* {customData.map((item: any, index: number) => (
-              
-                    <div key={index} className={styles.customDataOuterDiv}>
-                      <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                      <div className={styles.allCustomData}>
-                        {Object.entries(item)
-                          .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                          .join(' - ')}
-                      </div>
-                    </div>))
-                  } */}
                   <div className={styles.table_container}>
                   <table className={styles.allCustomData}>
                     <tbody>
