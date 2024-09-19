@@ -23,9 +23,12 @@ interface EditProps {
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
     widgetId?: string;
+    demoBanner:string;
+    demoEventName:string
+    demoLocation:string
 }
 
-const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId }: EditProps) => {
+const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoLocation  }: EditProps) => {
 
     let EventCard: ElementType;
 
@@ -61,12 +64,12 @@ const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                 </div>
             ) : (
                 <div className={styles.gridView}>
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/>
                 </div>
             )}
         </div>

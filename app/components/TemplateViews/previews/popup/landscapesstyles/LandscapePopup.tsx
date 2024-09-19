@@ -24,9 +24,13 @@ interface Props {
     selectedBtn? : "primary" | "secondary"
     fetchedAddedOtherData? : PrefilledAddedEventsType[]
     smallCard : boolean;
+    demoBanner:string;
+    demoEventName:string,
+    demoDescription:string
+    demoLocation:string
 }
 
-const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedOtherData,smallCard }: Props) => {
+const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedOtherData,smallCard, demoBanner,demoEventName, demoDescription,demoLocation }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -40,7 +44,7 @@ const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSetti
             EventCard = Popup3; // Or some default component or message
     }
   return (
-    <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}/>
+    <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner}demoEventName={demoEventName} demoDescription={demoDescription}demoLocation={demoLocation}/>
   )
 }
 

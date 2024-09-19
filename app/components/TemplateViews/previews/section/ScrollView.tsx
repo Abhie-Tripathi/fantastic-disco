@@ -23,8 +23,14 @@ interface Props {
         body: FontSettings;
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    fetchedEvent?: PrefilledAddedEventsType
+    demoEventName:string;
+    demoBanner:string
+    demoDescription:string
+    demoLocation:string
+
 }
-const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
+const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, demoEventName, demoBanner, demoDescription, demoLocation }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -80,26 +86,46 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBgColor={cardBgColor}
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
+                            demoEventName={demoEventName}
+                            demoBanner={demoBanner} 
+                            demoDescription={demoDescription}
+                            demoLocation={demoLocation}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
+                            demoEventName={demoEventName}
+                            demoBanner={demoBanner} 
+                            demoDescription={demoDescription}
+                            demoLocation={demoLocation}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
+                            demoEventName={demoEventName}
+                            demoBanner={demoBanner} 
+                            demoDescription={demoDescription}
+                            demoLocation={demoLocation}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
+                            demoEventName={demoEventName}
+                            demoBanner={demoBanner} 
+                            demoDescription={demoDescription}
+                            demoLocation={demoLocation}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
+                            demoEventName={demoEventName}
+                            demoBanner={demoBanner} 
+                            demoDescription={demoDescription}
+                            demoLocation={demoLocation}
                         />
                     </div>
                 </div>

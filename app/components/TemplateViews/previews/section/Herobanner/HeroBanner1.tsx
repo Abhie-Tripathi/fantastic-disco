@@ -21,6 +21,10 @@ interface Props {
     };
     buttonSettings?: ButtonSettingsState
     selectedBtn? : "primary" | "secondary"
+    demoBanner:string;
+    demoEventName:string; 
+    demoDescription:string;
+    demoLocation:string
 }
 
 const HeroBanner1: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -33,18 +37,18 @@ const HeroBanner1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-    },selectedBtn ="primary" }: Props) => {
+    },selectedBtn ="primary", demoBanner, demoEventName, demoDescription, demoLocation }: Props) => {
 
     return (
-        <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <Image src={placeholder2} alt='banner' className={styles.banner} />
+        <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius,  }}>
+            <Image src={demoBanner} alt='banner' className={styles.banner} />
             <div className={styles.detailsContainer}>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
                         <Image src={locationIcon} alt='location' />
-                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>Corpus Christi, USA</div>
+                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>Join Gifts World Expo 2024</div>
+                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{demoEventName}</div>
                 </div>
                 <div className={styles.date_type_btnContainer}>
                     <div className={styles.dateTypeContainer}>
