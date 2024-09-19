@@ -128,7 +128,6 @@ interface Template {
   templateName?: string;
   description?: string | undefined;
   inputAreas?: InputArea[] | undefined;
-  sampleImage?: string;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -173,11 +172,10 @@ const templates = [
       {
         img: Url,
         type: "text",
-        placeholder: "Add Competitor Name or Website",
+        placeholder: "Competitor Name or Website",
         required:true,
       }
-    ],
-    sampleImage: "/trackerimages/competitorsample.png"
+    ]
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
@@ -270,8 +268,7 @@ const templates = [
         placeholder: "Company Name",
         required:true,
       }
-    ],
-    sampleImage: "/trackerimages/speakersample.png"
+    ]
   },
   {
     name: "T_SOCIAL_CAUSE",
@@ -295,7 +292,6 @@ const templates = [
     //     placeholder: "Keywords",
     //   }
     // ]
-    sampleImage: "/trackerimages/keywordsample.png"
   }
 ]
 const Pages = () => {
@@ -1277,7 +1273,6 @@ const Pages = () => {
         }
         return acc;
       }, {});
-      console.log('newEntry', newEntry);
 
       if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
@@ -1408,11 +1403,10 @@ useEffect(()=>{
   }
 
   const [uploadEnabled, setUploadEnabled] = useState<boolean>(false);
-  const [inputFieldEnabled, setInputFieldEnabled] = useState<boolean>(true);
+  const [expandTable, setExpandTable] = useState<boolean>(false);
 
   const handleUploadEnable = () => {
     setUploadEnabled(!uploadEnabled)
-    // setInputFieldEnabled(!inputFieldEnabled)
   }
 
   return (
@@ -1533,20 +1527,17 @@ useEffect(()=>{
             customData={customData}
             handleCustomData={handleCustomData}
             setUploadEnabled={setUploadEnabled}
-            setInputFieldEnabled={setInputFieldEnabled}
             setSelectedEventKeywords={setSelectedEventKeywords}
           />
         }
-        {inputFieldEnabled &&
-          <div style={{width:"calc(50% - 5px)"}}>
-            <EventKeyword state={selectedEventKeywords}
-            setState={setSelectedEventKeywords}
-            onClose={close} type={isDiv}
-            isMandatory={isMandatory}
-            setIsMandatory={setIsMandatory}
-            />
-          </div>
-        }
+      <div style={{width:"calc(50% - 5px)"}}>
+      <EventKeyword state={selectedEventKeywords}
+      setState={setSelectedEventKeywords}
+      onClose={close} type={isDiv}
+      isMandatory={isMandatory}
+      setIsMandatory={setIsMandatory}
+      />
+      </div>
       </div>
       }
       
@@ -1578,7 +1569,6 @@ useEffect(()=>{
                 customData={customData}
                 handleCustomData={handleCustomData}
                 setUploadEnabled={setUploadEnabled}
-                setInputFieldEnabled={setInputFieldEnabled}
                 setSelectedEventKeywords={setSelectedEventKeywords}
               />) :
           <div className={`${styles.toggleDiv}`}>
@@ -1627,7 +1617,7 @@ useEffect(()=>{
           </div>
           }
           </div>
-          {inputFieldEnabled && template?.inputAreas &&
+          {template?.inputAreas &&
             <div>
               <div className={styles.allInputArea}>
                 {template?.inputAreas?.map((inputArea: any, index: number) => (
@@ -1680,17 +1670,39 @@ useEffect(()=>{
                   <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
                     Remove All
                   </div>
-
-                  {customData.map((item: any, index: number) => (
-              
-                    <div key={index} className={styles.customDataOuterDiv}>
-                      <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                      <div className={styles.allCustomData}>
-                        {Object.entries(item)
-                          .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                          .join(' - ')}
-                      </div>
-                    </div>))
+                  <div className={styles.table_container}>
+                  <table className={styles.allCustomData}>
+                    <tbody>
+                      {expandTable ? customData.map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        )) :
+                        customData.slice(0, 5).map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                  </div>
+                  {customData.length > 5 &&
+                    <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
                   }
                 </div>
               }
