@@ -237,7 +237,7 @@ useEffect(()=>{
           <div className={styles.searchbar}>
             <input
             type="text"
-          placeholder="Search Events"
+          placeholder="Search by event name"
           onChange={handleSearchChange}
           value={searchInput}
             />
