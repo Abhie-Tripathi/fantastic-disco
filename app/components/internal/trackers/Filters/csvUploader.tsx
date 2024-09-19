@@ -4,6 +4,7 @@ import styles from "./csvuploader.module.css";
 import { Cross, Share } from "geist-icons";
 import competitorSampleImage from "/public/trackerimages/competitorsample.png";
 import Image from "next/image";
+import { ReactSpreadsheetImport } from "react-spreadsheet-import";
 
 interface InputArea {
   type: string;
@@ -192,6 +193,105 @@ const CsvUploader = ({
       if (finalData2 && finalData2.length > 0) handleCustomData(finalData2);
     }
   }, [parsedData]);
+
+  const [uploaderOpen, setUploaderOpen] = useState<boolean>(true);
+  const onClose = () => {
+    console.log('onClose');
+    setUploaderOpen(false);
+    setUploadEnabled(false);
+  }
+
+  const onSubmit = (data: any) => {
+    console.log('onSubmit', data);
+  }
+
+  const speakerFields = [
+    {
+      // Visible in table header and when matching columns.
+      label: "Name",
+      // This is the key used for this field when we call onSubmit.
+      key: "name",
+      // Allows for better automatic column matching. Optional.
+      alternateMatches: ["first name", "first"],
+      // Used when editing and validating information.
+      fieldType: {
+        // There are 3 types - "input" / "checkbox" / "select".
+        type: "input",
+      },
+      // Used in the first step to provide an example of what data is expected in this field. Optional.
+      example: "Stephanie",
+      // Can have multiple validations that are visible in Validation Step table.
+      validations: [
+        {
+          // Can be "required" / "unique" / "regex"
+          rule: "required",
+          errorMessage: "Name is required",
+          // There can be "info" / "warning" / "error" levels. Optional. Default "error".
+          level: "error",
+        },
+      ],
+    },
+    {
+      // Visible in table header and when matching columns.
+      label: "Company1",
+      // This is the key used for this field when we call onSubmit.
+      key: "company",
+      // Allows for better automatic column matching. Optional.
+      // alternateMatches: ["first name", "first"],
+      // Used when editing and validating information.
+      fieldType: {
+        // There are 3 types - "input" / "checkbox" / "select".
+        type: "input",
+      },
+      // Used in the first step to provide an example of what data is expected in this field. Optional.
+      example: "10times.com",
+      // Can have multiple validations that are visible in Validation Step table.
+      validations: [
+        {
+          // Can be "required" / "unique" / "regex"
+          rule: "required",
+          errorMessage: "company name/website is required",
+          // There can be "info" / "warning" / "error" levels. Optional. Default "error".
+          level: "error",
+        },
+      ],
+    },
+  ]
+
+  return (
+    <>
+      <ReactSpreadsheetImport 
+        isOpen={uploaderOpen}
+        onClose={onClose}
+        onSubmit={onSubmit}
+        fields={speakerFields}
+        maxRecords={100}
+        maxFileSize={5000000}
+
+        customTheme={{
+          colors: {
+            background: 'var(--primary-foreground)',
+            textColor: 'var(--primary-text-color)',
+            highlight: "yellow",
+            secondaryBackground: 'var(--heading-background-color)',
+            border: "var(--border-color)",
+            rsi: {
+              50: 'var(--tabs-background-color)',
+              100: 'var(--tabs-background-color)',
+              200: 'var(--primary-color)',
+              300: 'var(--primary-color)',
+              400: 'var(--primary-color)',
+              500: 'var(--primary-color)',
+              600: 'var(--primary-color)',
+              700: 'var(--primary-color)',
+              800: 'var(--primary-color)',
+              900: 'var(--primary-color)',
+            },
+          },
+        }}
+      />
+    </>
+  );
 
   return (
     <>
