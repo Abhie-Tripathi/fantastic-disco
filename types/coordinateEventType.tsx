@@ -3,15 +3,16 @@ export interface eventDataType {
     eventId: string;
     eventName: string;
     name: string;
-    city: string;
+    eventCity: string;
     logo:string;
     orgName: string;
-    country: string;
+    eventCountry: string;
     startDate: string;
     endDate: string;
     duration: string;
     status: string;
     enquiryId: string;
+    enquiryStatus?:string;
     userCount: number;
     users: { name: string; }[];
     upvote: any;

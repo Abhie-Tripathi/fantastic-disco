@@ -413,6 +413,7 @@
 /* Owner css */
 .outreachStatusContainer {
   display: flex;
+  font-weight: var(--font-weight-medium);
   justify-content: space-evenly;
   /* border: 1px solid var(--border-color); */
   border-radius: 5px;

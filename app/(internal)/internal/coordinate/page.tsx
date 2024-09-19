@@ -57,55 +57,6 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
-  const [scrollY, setScrollY] = useState(0);
-
-  // const handleScroll = () => {
-  //   if(!modalOpen)
-  //     setScrollY(window.scrollY);
-  // };
-
-  // useEffect(() => {
-  //     window.addEventListener('scroll', handleScroll);
-      
-  //     // Cleanup the event listener on component unmount
-  //     return () => {
-  //         window.removeEventListener('scroll', handleScroll);
-  //     };
-  // }, []);
-  useEffect(()=>{
-
-  },[modalOpen])
- 
-  // useEffect(() => {
-  //   if (modalOpen) {
-  //     // Save current scroll position when modal is opened
-      
-  //     // window.scrollTo(0, scrollY)
-  //     setScrollY(window.scrollY);
-  //     // Disable scrolling by locking the body's scroll position
-  //     document.body.style.overflow = "hidden";
-  //     document.body.style.position = "fixed";
-  //   } else {
-  //     console.log(scrollY);
-      
-  //     // Restore scrolling and scroll to the saved position
-  //     document.body.style.overflow = "auto";
-  //     document.body.style.position = "static";
-  //   }
-  
-  //   // Cleanup: Restore the styles when modal is closed or component unmounts
-  //   return () => {
-  //     document.body.style.overflow = "auto";
-  //     document.body.style.position = "static";
-  //   };
-  // }, [modalOpen]);
-  
-  useEffect(()=>{
-    console.log(scrollY);
-  },[scrollY])
-//  console.log(scrollY);
- 
-  
   return (
     <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`} >
       <div >
@@ -127,7 +78,6 @@ const Page = () => {
         />
       </div>
       {modalOpen && (
-        // <div className={styles.mod}>
         <div
           className={`${styles.modal}`}
         >
@@ -142,7 +92,6 @@ const Page = () => {
             enquiryId={enquiryId}
           />
         </div>
-        //  </div>
       )}
 
       {shortlistModalOpen && (

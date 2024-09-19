@@ -139,13 +139,12 @@
     font-size: inherit;
     outline: none;
     border: none;
-    color: #a1a2a2;
     background-color: transparent;
     /* padding: 20px 0px; */
   }
-  .searchbar input::placeholder {
+  /* .searchbar input::placeholder {
     color: #a1a2a2;
-  }
+  } */
   
   .searchbar button {
     border: none;

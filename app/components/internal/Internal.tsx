@@ -2,18 +2,13 @@ import React, { useState, useRef, RefObject, useEffect } from 'react'
 import Image from 'next/image'
 import YourEventCard from './YourEventCard'
 import DropDown from './commondropdown/DropDown'
-import Search from '/public/search.svg'
-
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import CloseIcon from "/public/internal/cross.svg";
-import SearchIcon from "/public/search.svg";
 import DateRange from "@/app/components/dropdown/DateRange";
 import {
     Button,
-    Dialog,
-    DialogTrigger,
     MenuTrigger,
     Popover,
   } from "react-aria-components";
@@ -26,7 +21,6 @@ import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import SearchBar from './searchBar/SearchBar'
-import DropdownRef from '../employee/listView/DropdownRef'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -36,12 +30,8 @@ interface Props{
 }
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } : Props) => {
    const buttonRef = useRef(null);
-   const lastItemRef = useRef();
- const observer = useRef();
     let prevDate: any = null;
-    const { setIsOpen, isOpen } = DropdownRef();
     const { theme } = useTheme();
-    const [isOpen1, setIsOpen1] = useState(false);
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
     const [page, setPage] = useState(0);
@@ -60,12 +50,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const [participant,setParticipant]=useState("");
     const [statusType,setStatusType]=useState("IN_DISCUSSION");
     const [duration,setDuration]=useState<string>('');
-    const [selectedEvents, setSelectedEvents] = useState<{
-      [key: string]: string;
-    }>({});
-    const [scrollY, setScrollY] = useState(0);
     const [searchInput, setSearchInput] = useState("");
-    const [showAllEvents, setShowAllEvents] = useState<boolean>(false);
     const [eventId,setEventId]=useState("");
     const [showSuggestion,setShowSuggestion]=useState(false);
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
@@ -103,10 +88,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         setPage(1);
       },[selectedParticipantType])
       const handleSearchChange = (event: any) => {
-        const inputValue = event.target.value;
         setSearchInput(event.target.value);
-        // setText(inputValue);
-        // setSearchResultOpen(true);
       };
       useEffect(() => {
         if (selectedDateRange.length === 2) {
@@ -165,10 +147,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         console.log('fetching data... page=', page);
         
         if(page > 0) {
-            // setIsLoaded(false);
             let apiUrl="";
             try {
-            // const apiUrl = baseUrl + "/userInterest/enquiry?status=IN_DISCUSSION&limit=10&offset=" + (page-1)*10+"&source=internal";
             apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
             (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
             (selectedDateRange.length === 2 ? `&duration=${duration}` : '') +
@@ -178,7 +158,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
                 headers: headers,
             });
             if(apiData.data) {
-                if(apiData.data.enquiryData.length===0){
+                if(apiData.data.enquiryData.length===0 && page===1){
                     setEventData1([]);
                 }
                 if(page==1){
@@ -196,30 +176,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
             }
         }
     };
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         const currentDiv = divRef.current;
-    //         if (currentDiv) {
-    //             const { scrollTop, scrollHeight, clientHeight } = currentDiv;
-    //             if (scrollTop + clientHeight >= (scrollHeight - 2)) {
-    //                 handleScrollEnd();
-    //             }
-    //         }
-    //     };
-
-    //     const currentDiv = divRef.current;
-    //     if (currentDiv) {
-    //         currentDiv.addEventListener('scroll', handleScroll);
-    //     }
-
-    //     return () => {
-    //         const currentDiv = divRef.current;
-    //         if (currentDiv) {
-    //             currentDiv.removeEventListener('scroll', handleScroll);
-    //         }
-    //     };
-    // }, [handleScrollEnd]);
-      // useInfiniteScroll(divRef, handleScrollEnd);
   
    
 
@@ -232,22 +188,6 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
 }, [cardUpdated]);
 console.log(modalOpen);
 useInfiniteScroll(divRef, handleScrollEnd);
-// const handleInfiniteScroll = async () => {
-//   const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-//   const scrollPosition = document.documentElement.scrollTop;
-//   if (scrollPosition + 1 >= totalHeight && !noMoreData && modalOpen===false) {
-//       setPage(prev => prev + 1); 
-//   }
-// };
-
-// useEffect(() => {
-//   if (!noMoreData) {
-//       window.addEventListener('scroll', handleInfiniteScroll);
-//   }
-//   return () => {
-//       window.removeEventListener('scroll', handleInfiniteScroll);
-//   };
-// }, [noMoreData]);
 useEffect(()=>{
   if(page>0){
     setNoMoreData(false);
@@ -255,9 +195,6 @@ useEffect(()=>{
     
   }
 },[statusType, participant, page, duration, eventId])
-// if (!inetialLoading ) {
-//     return <div style={{padding: "50px"}}><Loading /></div>;
-// }else
  if(!isLoaded){
   return <div style={{padding: "50px"}}><Loading /></div>;
 } else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
@@ -267,11 +204,11 @@ useEffect(()=>{
         </div>
     );
 }
- const handleSelect=(id: string, name: string)=>{
+ const handleSelect=(id: number, name: string)=>{
     setSearchInput(name);
-    setEventId(id);
+    setEventId(id.toString());
     setShowSuggestion(true);
- } 
+ }
   return (
     <>
     <div className={styles.scrollContainer} ref={divRef} style={{ overflow: popoverState?"hidden":"auto"}}>
@@ -298,31 +235,6 @@ useEffect(()=>{
     <div className={styles.filters}>
     <div className={styles.searchContainer}>
           <div className={styles.searchbar}>
-            {/* {Object.keys(selectedEvents).length > 0 && !showAllEvents && (
-              <div className={styles.eventName_container}>
-                {Object.entries(selectedEvents).map(
-                  ([eventId, eventName], index) =>
-                    index < 4 ? (
-                      <div className={styles.eventName_chip} key={index}>
-                        <span className={styles.eventName_chip_text}>
-                          {eventName}
-                        </span>
-                        <Image
-                          src={CloseIcon}
-                          width={14}
-                          height={14}
-                          alt="close"
-                          className={styles.closeChip}
-                          onClick={() => removeSelectionHandler(eventId)}
-                        />
-                      </div>
-                    ) : (
-                      <></>
-                    )
-                )}
-              </div>
-            )} */}
-             {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
             <input
             type="text"
           placeholder="Search Events"
@@ -343,33 +255,10 @@ useEffect(()=>{
             </span>
           </div>
           {
-           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect} />
+           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect} endpoint={'userInterest/enquiry/suggestion'}/>
           }
-         
-
-          {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
-            <div className={styles.eventName_container2}>
-              {Object.entries(selectedEvents).map(
-                ([eventId, eventName], index) => (
-                  <div className={styles.eventName_chip} key={0}>
-                    <span className={styles.eventName_chip_text}>
-                      {eventName}
-                    </span>
-                    <Image
-                      src={CloseIcon}
-                      width={14}
-                      height={14}
-                      alt="close"
-                      className={styles.closeChip}
-                      onClick={() => removeSelectionHandler(eventId)}
-                    />
-                  </div>
-                )
-              )}
-            </div>
-          )} */}
         </div>
-          <div style={{width:"20%"}} className={styles.outerDiv}>
+          <div style={{width:"19%"}} className={styles.outerDiv}>
          <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
@@ -377,21 +266,8 @@ useEffect(()=>{
                       <div className={styles.input_title}>
                         Status
                         <span className={styles.input_selected_title}>
-                       { selectedStatusType[0]}
+                       {selectedStatusType[0]}
                             </span>
-                        {/* {
-                          selectedStatusType?.length == 1 ? (
-                            <span className={styles.input_selected_title}>
-                              {selectedStatusTypeName}
-                            </span>
-                          ) : (
-                            selectedStatusType?.length > 1 ? (
-                              <span className={styles.input_selected_no}>
-                                {selectedStatusType.length}
-                              </span>
-                            ) : <></>
-                          )
-                        } */}
                       </div>
                       <Image
                         src={DropIcon}
@@ -414,7 +290,7 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger>
           </div>
-        <div style={{width:"20%"}} className={styles.outerDiv}>
+        <div style={{width:"19%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
@@ -424,19 +300,6 @@ useEffect(()=>{
                        <span className={styles.input_selected_title}>
                        {selectedParticipantType[0]==='Attendee'?"Attend":selectedParticipantType[0]==='Exhibitor'?"Exhibit":selectedParticipantType[0]==="Speaker"? "Speak": selectedParticipantType[0]==='Sponsor'?"Sponsor":""}
                        </span>
-                        {/* {
-                          selectedParticipantType?.length == 1 ? (
-                            <span className={styles.input_selected_title}>
-                              {selectedParticipantType}
-                            </span>
-                          ) : (
-                            selectedParticipantType?.length > 1 ? (
-                              <span className={styles.input_selected_no}>
-                                {selectedParticipantType.length}
-                              </span>
-                            ) : <></>
-                          )
-                        } */}
                       </div>
                       <Image
                         src={DropIcon}
@@ -459,7 +322,7 @@ useEffect(()=>{
                 </Popover>
               </MenuTrigger>
         </div>
-        <div style={{width:"20%"}} className={styles.outerDiv}>
+        <div style={{width:"22%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen} >
               <Button ref={buttonRef} className={styles.dropdown_button}>
                 <div className={styles.input_container}>
@@ -490,12 +353,10 @@ useEffect(()=>{
               placement="left"
               style={{marginTop:"70px"}}
               >
-                {/* <Dialog> */}
                 <DateRange
                   state={selectedDateRange}
                   setState={setSelectedDateRange}
                 />
-                {/* </Dialog> */}
               </Popover>
             </MenuTrigger>
             </div>
@@ -508,22 +369,22 @@ useEffect(()=>{
         // Update previous date
         prevDate = item.startDate;
         return (
-            <div key={index} className={styles.timeline} style={{zIndex: modalOpen? "-1" :"1"}}>
+            <div key={index} className={styles.timeline}>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.eventId}
                     isDateSame={showDate}
                     enquiryId={item.enquiryId}
                     eventName={item.eventName}
-                    eventLocation={item.city}
-                    eventCountry={item.country}
+                    eventLocation={item.eventCity}
+                    eventCountry={item.eventCountry}
                     eventImage={item?.logo}
                     eventStartDate={item.startDate}
                     eventEndDate={item.endDate}
                     eventCompany={item.orgName}
                     eventDuration={item.duration}
                     userCount={item.userCount}
-                    currentEnquiryStatus={item.status}
+                    currentEnquiryStatus={item.enquiryStatus}
                     upvote={item.upvote}
                     enquiryActivity={item.enquiryActivity}
                     handleModal={handleModal}

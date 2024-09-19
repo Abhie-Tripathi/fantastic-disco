@@ -3,7 +3,9 @@
     /* overflow-x: unset; */
     position: absolute;
     left: -5px;
-    background-color: var(--primary-foreground);
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--background-secondary-color);
     top: 40px;
     /* background-color: var(--background-secondary-color); */
     flex-wrap: nowrap;
@@ -32,4 +34,8 @@
   }
   .event{
     text-wrap: wrap;
+  }
+  .subHeading{
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
   }

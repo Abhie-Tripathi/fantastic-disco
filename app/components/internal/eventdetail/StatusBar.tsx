@@ -18,7 +18,7 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
         <div className={styles.outreachStatusContainer}>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(1)}>
                 {status < 1 ?
-                    <StatusIcon fillColor={'var(--primary-color)'} borderColor={'var(--primary-color)'} /> :
+                    <StatusIcon fillColor={'var(--primary-color)'} borderColor={'var(--primary-color)'}/> :
                         status === 1 ?
                             <StatusIcon fillColor={'var(--primary-color)'} borderColor={'var(--primary-color)'} /> :
                                 <StatusIcon fillColor={'var(--primary-color)'} borderColor={""} />
@@ -29,37 +29,37 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
             </div>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(2)}>
                 {status < 2 ?
-                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"#6750A4"} /> :
+                    <StatusIcon2 fillColor={'var(--heading-background-color)'} borderColor={"var(--primary-color)"} /> :
                         status === 2 ?
                             <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText}>
                     {status > 2 && <Image width={14} height={14} src={tickIcon} alt="check" />}
-                    <span style={{color:status>=2? "white" :"var(--primary-color)"}}>In Progress</span>
+                    <span style={{color:status>=2? "white" :"var(--secondary-text-color)"}}>In Progress</span>
                 </div>
             </div>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(10)}>
                 {status < 10 ?
-                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"#6750A4"} /> :
+                    <StatusIcon2 fillColor={'var(--heading-background-color)'} borderColor={""} /> :
                         status === 10 ?
                             <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
                     {status > 10 && <Image width={14} height={14} src={tickIcon} alt="check" />}
-                    <span style={{color:status>=10? "white" :"var(--primary-color)"}}>Confirmed</span>
+                    <span style={{color:status>=10? "white" :"var(--secondary-text-color)"}}>Confirmed</span>
                 </div>
             </div>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(12)}>
                 {status < 12 ?
-                    <StatusIcon2 fillColor={'var(--tabs-background-color)'} borderColor={"var(--primary-color)"}  /> :
+                    <StatusIcon2 fillColor={'var(--heading-background-color)'} borderColor={""}  /> :
                         status === 12 ?
                             <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
-                <span style={{color:status>=12? "white" :"var(--primary-color)"}}>Canceled</span>
+                <span style={{color:status>=12? "white" :"var(--secondary-text-color)"}}>Canceled</span>
                 </div>
             </div>
         </div>
@@ -67,3 +67,6 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
 }
 
 export default StatusBar
+
+// color: var(--secondary-text-color);
+// font-weight: var(--font-weight-medium);

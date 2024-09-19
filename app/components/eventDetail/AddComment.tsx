@@ -121,22 +121,22 @@ export const AddComment = ({
   useEffect(()=>{
     setUsers(allUsers);
   },[allUsers])
-  useEffect(() => {
-    const url = `${baseUrl}/auth/users?limit=100`;
-    getAllUser(url);
-  }, []);
+  // useEffect(() => {
+  //   const url = `${baseUrl}/auth/users?limit=100`;
+  //   getAllUser(url);
+  // }, []);
 
-  // Function to fetch users from the API
-  const getAllUser = async (url: string) => {
-    const { data, error } = await myFetch(url);
-    console.log(data);
+  // // Function to fetch users from the API
+  // const getAllUser = async (url: string) => {
+  //   const { data, error } = await myFetch(url);
+  //   console.log(data);
     
-    if (data && data?.users?.length>0) {
-      setApiUserData(data?.users);
-      const usernames = data?.users?.map((item: any) => "@" + item.firstname + item.lastname);
-      setUsers(usernames);
-    }
-  };
+  //   if (data && data?.users?.length>0) {
+  //     setApiUserData(data?.users);
+  //     const usernames = data?.users?.map((item: any) => "@" + item.firstname + item.lastname);
+  //     setUsers(usernames);
+  //   }
+  // };
 
   // Effect to handle note changes and filter users
   useEffect(() => {

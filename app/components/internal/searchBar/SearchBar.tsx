@@ -5,20 +5,37 @@ import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
 import DropdownRef from '../../employee/listView/DropdownRef';
-interface RestructuredData {
-    key: string; 
-    value: string; 
+interface EventSuggestionItem {
+  key: string | number;
+  id?:any;
+  name: string;
+  location?: {
+    cityName?: string;
+    countryName?: string;
+  };
+  city?: string;
+  country?: string;
+}
+
+  interface SearchBarProps {
+    searchInput: string;
+    setEventSearchLoader: (loading: boolean) => void;
+    handleSelect: (id: number, name: string) => void;
+    endpoint: string; 
+    type?: string;
   }
-const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
+const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type}:SearchBarProps) => {
     const { theme } = useTheme();
-    const iconClass = theme === "light" ? "icons_light" : "icon";
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
-    const [restructureData, setRestructureData] = useState<RestructuredData[]>([]);
+    const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState([]);
-    const [previousInput, setPreviousInput] = useState<string>(searchInput); 
+    const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-        let url = `${baseUrl}/userInterest/enquiry/suggestion?q=${searchInput}&limit=5&offset=0`;
+      console.log(searchInput, previousInput);
+      
+      if(searchInput!==previousInput){
+        let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -34,6 +51,11 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
           })
           if (!controller.signal.aborted) {
             if (data) {
+              if(type==="T_COMPETITOR"){
+                console.log(data.company);
+                
+                setEventSuggestion(data.company);
+              }else
               setEventSuggestion(data.events); 
             } else {
               console.error('Fetch error:', error); 
@@ -46,10 +68,12 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
         }finally {
             setEventSearchLoader(false);
           }
+      }
       };
       
       useEffect(() => {
        if(searchInput.length>0){
+        if(searchInput!==previousInput)
         setEventSearchLoader(true);
         const debounceTimeout = setTimeout(() => {
           fetchSearchSuggestion();
@@ -58,65 +82,64 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect}:any) => {
           }else setEventSuggestion([]);
       }, [searchInput]);
       useEffect(()=>{
-            if(eventSuggestion.length>0){  
+            if(eventSuggestion?.length>0){  
                 setIsOpen(true);
-                const updatedData = eventSuggestion.map((item, index) => ({
+                let updatedData;
+                if (type === "T_COMPETITOR") {
+                  updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
-                    value: item.name,
+                    name: item?.name || '',
+                    city: item?.location?.cityName || '',
+                    country: item?.location?.countryName || ''
                   }));
-                  setRestructureData(updatedData)
+                } else {
+                  updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
+                    key: item.id,
+                    name: item?.name || '',
+                    city: item?.city || '',
+                    country: item?.country || ''
+                  }));
+                }
+            
+                setRestructureData(updatedData);
             }
       },[eventSuggestion])
       console.log(restructureData);
-      const selectedEventId=(id, name)=>{
+      const selectedEventId=(id:any, name:string)=>{
+        console.log(id);
+       
         handleSelect(id,name);
         setIsOpen(false);
-        setPreviousInput(searchInput); 
+        setPreviousInput(name); 
+        setEventSearchLoader(false);
       }
+      console.log(restructureData);
+      
   return (
         <>
          {searchInput.length > 0 && isOpen && (
   <div ref={dropdownRef} className={styles.eventName_container2}>
-    {eventSuggestion && eventSuggestion.length > 0  ? (
-      eventSuggestion.map((item) => (
-        <div key={item.id} className={styles.resultData_list}>
-          {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
-          <div className={styles.event} onClick={() => selectedEventId(item.id, item.name)}>
-            {item.name}
-          </div>
+    {restructureData && restructureData.length > 0  ? (
+      restructureData.map((item) => (
+        <div key={item.key} className={styles.resultData_list}>
+          <div className={styles.event} onClick={() => selectedEventId(item.key, item.name)}>
+  {item.name}
+  {item.city || item.country ? ", " : null} 
+  <span className={styles.subHeading}>
+    {item.city === item.country
+      ? item.country
+      : `${item.city ? item.city + ', ' : ''}${item.country || ''}`}
+  </span>
+</div>
         </div>
       ))
     ) : (
       <div className={styles.resultData_list}>
-        {/* <Image src={SearchIcon} alt="search" className={iconClass} width={18} height={18} /> */}
         No results
       </div>
     )}
   </div>
 )}
-      
-
-          {/* {Object.keys(selectedEvents).length > 0 && showAllEvents && (
-            <div className={styles.eventName_container2}>
-              {Object.entries(selectedEvents).map(
-                ([eventId, eventName], index) => (
-                  <div className={styles.eventName_chip} key={0}>
-                    <span className={styles.eventName_chip_text}>
-                      {eventName}
-                    </span>
-                    <Image
-                      src={CloseIcon}
-                      width={14}
-                      height={14}
-                      alt="close"
-                      className={styles.closeChip}
-                      onClick={() => removeSelectionHandler(eventId)}
-                    />
-                  </div>
-                )
-              )}
-            </div>
-          )} */}
          </> 
          
   )

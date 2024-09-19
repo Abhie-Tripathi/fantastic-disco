@@ -3,6 +3,7 @@ import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import CloseIcon from "/public/internal/cross.svg";
 import Url from '/public/url.svg'
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
@@ -66,7 +67,7 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import Suggestion from "../suggestion";
+import SearchBar from "../../searchBar/SearchBar";
 interface FilterValue {
   labels: string;
   name: string;
@@ -1335,50 +1336,17 @@ const Pages = () => {
   };
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const fetchSuggestionData = async () => {
-    let url = "";
-    if (inputValues[0]?.trim().length === 0) setWebsiteSuggestion(null);
-    if (inputValues[0]?.trim().length > 0) {
-      url = `${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+  // useEffect(() => {
+  //   if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
+  //     const debounceTimeout = setTimeout(() => {
+  //       fetchSuggestionData();
+  //     }, 500);
 
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-          signal: controller.signal,
-        });
-
-        if (!controller.signal.aborted) {
-          if (data) {
-            setWebsiteSuggestion(data);
-          } else {
-            console.error(error);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        fetchSuggestionData();
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    }
-  }, [inputValues, type]);
+  //     return () => clearTimeout(debounceTimeout);
+  //   }
+  // }, [inputValues, type]);
   const [selected, setSelected] = useState(false);
-  const addCompany = (val: string) => {
+  const addCompany = (id:number,val: string) => {
     setSelected(true);
     setInputValues(prevValues => ({
       ...prevValues,
@@ -1396,7 +1364,7 @@ const Pages = () => {
     if (type === "T_PRODUCT_KEYWORDS") setIsDiv(true);
   }, [type])
   console.log(selectedDateRange);
-
+  const [eventSearchLoader,setEventSearchLoader]=useState(false);
   return (
     <>
       <div>{isLoading ? <Loading /> :
@@ -1579,14 +1547,29 @@ const Pages = () => {
                               onChange={(e) => handleInput(index, e.target.value)}
                               onKeyPress={handleKeyDown}
                             />
-                            {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                             {(eventSearchLoader && inputValues[0]?.length>0)? (
+  <div className={styles.loader}></div>
+) : (
+  inputValues[0]?.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+      ...prevValues,
+      [index]: ""
+    }))}} />
+  ) : (
+    ""
+  )
+)}
+                            {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
                               <div className={styles.suggestionBox}>
                                 <Suggestion
                                   websiteData={websiteSuggestion}
                                   addCompany={addCompany}
                                 />
                               </div>
-                            }
+                            } */}
+          {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+           <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
+          }
                           </div>
 
                         </>
