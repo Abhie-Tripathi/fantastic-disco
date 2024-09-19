@@ -565,3 +565,32 @@ width: calc(100vw - 134px);
   font-weight: var(--font-weight-medium);
   width: fit-content;
 }
+
+.table_container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.allCustomData {
+  width: calc(50% - 45px);
+}
+
+.allCustomData td:first-child {
+  width: 35px;
+}
+
+.allCustomData td {
+  padding: 10px;
+}
+
+.allCustomData , .allCustomData td {
+  border: 1px solid var(--border-color);
+  border-collapse: collapse;
+}
+
+.expandTableBtn {
+  font-size: var(--font-size-default);
+  color: var(--secondary-text-color);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
