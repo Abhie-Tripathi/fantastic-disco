@@ -22,7 +22,9 @@
     word-wrap: break-word;
 }
 .eventName{
-    height: 70px;
+    min-height: 70px;
+    max-height: 70px;
+    overflow: hidden;
 }
 .banner{
     width: 350px;

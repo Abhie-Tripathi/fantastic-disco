@@ -55,7 +55,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     return (
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
-            <div className={styles.date_location_nameContainer}>
+            <div className={`${styles.date_location_nameContainer} ${smallCard ?styles.smalldate_location_nameContainer:"" }`}>
                 <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
                     <span className={styles.date} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{month}</span>
@@ -66,7 +66,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                         <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
                         <div className={styles.location} style={{ fontSize: fontSettings?.subheading.fontSize, color: fontSettings?.subheading.fontColor, fontFamily: fontSettings?.subheading.fontFamily, fontWeight: fontSettings?.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : "Corpus Christi, USA"}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : "Join Gifts World Expo 2024"}</div>
+                    <div className={`${styles.eventName} ${smallCard ? styles.smallName : ""}`} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : "Join Gifts World Expo 2024"}</div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>
@@ -76,7 +76,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                 <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings?.body.fontSize }}>Attending</div>
             </div>
             <div
-                className={styles.desc}
+                className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`}
                 style={{
                     fontSize: fontSettings?.body.fontSize,
                     color: fontSettings?.body.fontColor,

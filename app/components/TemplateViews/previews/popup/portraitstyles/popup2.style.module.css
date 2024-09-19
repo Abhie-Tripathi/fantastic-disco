@@ -21,6 +21,13 @@
 }
 .eventName{
     min-height: 40px;
+    max-height: 40px;
+    overflow: hidden;
+}
+.smallName{
+    min-height: 20px;
+    max-height: 20px;
+    overflow: hidden;
 }
 .location_dateContainer {
     min-height: 40px;
@@ -125,6 +132,16 @@
 }
 .desc{
     min-height: 55px;
+    max-height: 55px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+.smallDesc{
+    min-height: 30px;
+    max-height: 30px;
     width: 100%;
     padding-left: 10px;
     padding-right: 10px;

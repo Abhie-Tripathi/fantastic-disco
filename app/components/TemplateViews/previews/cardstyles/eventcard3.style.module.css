@@ -31,6 +31,8 @@
 }
 .eventName{
     height: 60px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .locationContainer{
     display: flex;

@@ -11,6 +11,7 @@ import { GolbalEventType } from '@/types/globaleventtype';
 import ParticipationContainer from './Details/participation/ParticipationContainer'
 import { AllEventsType } from '@/types/alleventtype';
 import { showToast } from "@/utils/showToast";
+import { AddedEventsType } from '@/types/addedeventtype';
 
 interface Props {
     setIsNormalEventModalOpen: (value: boolean) => void
@@ -18,9 +19,10 @@ interface Props {
     prefilledGlobalEvent?: GolbalEventType
     prefilledNormalEvent?: AllEventsType
     theme: string;
+    fetchAddedEvents : ()=> Promise<void>;
 }
 
-const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme }: Props) => {
+const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGlobalEvent, prefilledNormalEvent, theme,fetchAddedEvents }: Props) => {
     // const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [eventName, setEventName] = useState<string>(prefilledGlobalEvent?.name || prefilledNormalEvent?.name || "");
     const [timeZone, setTimeZone] = useState<string>(prefilledNormalEvent?.gmtZone || "GMT+05:30 Chennai")
@@ -88,6 +90,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             console.log(data)
             setIsNormalEventModalOpen(false)
             fetchEvents(0,"update")
+            fetchAddedEvents()
         }
         if (error) {
             console.log(error)
