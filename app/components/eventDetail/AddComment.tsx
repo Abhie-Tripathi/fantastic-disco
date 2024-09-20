@@ -217,6 +217,7 @@ export const AddComment = ({
     }
     if (key === "Enter" && !e.shiftKey && (showUser || types)) {
       e.preventDefault();
+      console.log(1111);
       
       let newNote="";
       if(showUser){

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, RefObject } from "react";
 import styles from "./page.style.module.css";
 import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -11,7 +11,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import Loading from "@/app/components/UI/Loading";
-import { use } from "node-vibrant";
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -22,7 +21,7 @@ const Page: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
-  const [selectedShortlisted,setSelectedShortlisted]=useState([]);
+  const [selectedConfirmed,setSelectedConfirmed]=useState([]);
   const [tabsVisible, setTabsVisible] = useState<string>("shortlist");
   const [enquiryId, setEnquiryId] = useState<string>("");
   const [singleEventId, setSingleEventId] = useState<string>("");
@@ -38,6 +37,7 @@ const Page: React.FC = () => {
   const [confirmedPage,setConfirmedPage]=useState(1);
   const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
   const [isInetial,setIsInetial]=useState(true);
+  const [totalCount,setTotalCount]=useState(0);
   const handleScrollEnd = () => {
     setTimeout(() => {
         if(!noMoreShortlistData) setShortlistPage(prevPage => prevPage + 1);
@@ -87,9 +87,9 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     event: React.DragEvent<HTMLDivElement>,
     target: string
   ) => {
-    console.log(selectedShortlisted);
+    // console.log(selectedShortlisted);
     
-    if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
+    // if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
       event.dataTransfer.getData("taskName")
@@ -114,9 +114,9 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         setPreFinalisedTasks(
           preFinalisedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
-        console.log(taskName.eventId, selectedShortlisted);
+        console.log(taskName.eventId, selectedConfirmed);
         
-        setSelectedShortlisted(selectedShortlisted.filter((item)=>item!==taskName.enquiryId))
+        setSelectedConfirmed(selectedConfirmed.filter((item)=>item!==taskName.enquiryId))
         // setSelectedShortlisted([...selectedShortlisted, taskName.eventId]);
         setConfirmedCount(prev=>prev-1);
       }
@@ -133,10 +133,13 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         setInProgressCount(prev=>prev+1);
         changeEnquiryStatus("IN_NEGO", taskName.enquiryId);
       } else if (target === "prefinalised") {
-        setPreFinalisedTasks([...preFinalisedTasks, taskName]);
+        if(noMoreConfirmData){
+          setPreFinalisedTasks([taskName,...preFinalisedTasks]);
+        }else
+        setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
         console.log(taskName.eventId);
-        setSelectedShortlisted([...selectedShortlisted, taskName.enquiryId]);
+        setSelectedConfirmed([...selectedConfirmed, taskName.enquiryId]);
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId);
       }
     }
@@ -217,7 +220,6 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
       }
     );
     if (shortlistApiData?.data) {
-      
       setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
       setShortlistedCount(shortlistApiData.data.totalCount);
     }
@@ -250,21 +252,24 @@ const fetchConfirmedData=async()=>{
       }
     );
     if (confirmApiData.data){
+      if(confirmedPage===1) { setConfirmedCount(confirmApiData.data.totalCount);
+        setTotalCount(Math.ceil(confirmApiData.data.totalCount / 10));
+      }
       // const d=[...preFinalisedTasks, ...confirmApiData.data.enquiryData]
-      const filteredEvent = confirmApiData.data.enquiryData.filter(
-        (event) => !selectedShortlisted.includes(event.enquiryId)
-      );
-      console.log(filteredEvent, selectedShortlisted);
-      
-      setPreFinalisedTasks(prev=>[...prev, ...confirmApiData.data.enquiryData])
-      setConfirmedCount(confirmApiData.data.totalCount);
+      // const filteredEvent = confirmApiData.data.enquiryData.filter(
+      //   (event) => !selectedShortlisted.includes(event.enquiryId)
+      // );
+      // console.log(filteredEvent, selectedShortlisted);
+     
+      setPreFinalisedTasks(prev=>[...prev,...confirmApiData.data.enquiryData])
+
       if(confirmApiData.data.enquiryData.length<10){
         setNoMoreConfirmData(true);
        }
     }
     
 }
-console.log(selectedShortlisted);
+console.log(selectedConfirmed);
 
   // const fetchData = async () => {
   //   let shortlistApiData: { data?: any; error?: any }={};
@@ -326,6 +331,8 @@ console.log(selectedShortlisted);
   //    }
   // }
   // };
+  console.log(totalCount);
+  
   return (
     <div
       className={`${styles.bodyContainer} ${
