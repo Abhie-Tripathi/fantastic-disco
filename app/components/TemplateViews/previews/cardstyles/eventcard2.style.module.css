@@ -16,8 +16,10 @@
     min-height: 130px;  
 }
 .eventName{
-    height: 60px;
+    min-height: 60px;
+    max-height: 60px;
     word-wrap: break-word;
+    overflow: hidden;
 }
 .location_dateContainer {
     display: flex;

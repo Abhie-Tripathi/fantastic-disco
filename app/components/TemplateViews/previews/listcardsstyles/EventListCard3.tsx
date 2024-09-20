@@ -65,7 +65,7 @@ const EventListCard3 = ({
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>
-        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : demoEventName}</div>
+        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>

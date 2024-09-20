@@ -61,7 +61,7 @@ const EventCard2 = ({
     };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
-            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : demoEventName}</div>
+            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
