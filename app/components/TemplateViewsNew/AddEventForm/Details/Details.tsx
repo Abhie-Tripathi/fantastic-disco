@@ -171,6 +171,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   };
 
+  useEffect(()=>{
+    console.log("banner is :", banner.placeHolder)
+    console.log("banner is :", banner.file)
+  },[banner])
+
   const handleAddEvent = async () => {
     if (!eventName.trim()) {
       setIsEventNameEmpty(true)
