@@ -116,8 +116,8 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   <div ref={dropdownRef} className={styles.eventName_container2}>
     {restructureData && restructureData.length > 0  ? (
       restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list}>
-          <div className={styles.event} onClick={() => selectedEventId(item.key, item.name)}>
+        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.name)}>
+          <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 
   <span className={styles.subHeading}>

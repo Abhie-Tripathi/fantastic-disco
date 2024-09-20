@@ -1336,49 +1336,6 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 const abortControllerRef = useRef<AbortController | null>(null);
-
-  const fetchSuggestionData = async () => {
-    let url = "";
-    if (inputValues[0]?.trim().length === 0) setWebsiteSuggestion(null);
-    if (inputValues[0]?.trim().length > 0) {
-      url = `${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-          signal: controller.signal,
-        });
-
-        if (!controller.signal.aborted) {
-          if (data) {
-            setWebsiteSuggestion(data);
-          } else {
-            console.error(error);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        fetchSuggestionData();
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    }
-  }, [inputValues, type]); 
 const [selected,setSelected]=useState(false);
 const addCompany = (id:number,val: string) => {
   setSelected(true);
