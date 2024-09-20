@@ -14,26 +14,58 @@
     gap: 20px;
     width: 220px;
 }
+.errorMessage{
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 220px;
+}
+.error1{
+    text-align: center;
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-default);
+}
+.error2{
+    text-align: center;
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-small);
+}
 .loader .loadingHeading{
     color: var(--primary-text-color);
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-h5);
 }
-.loader .spinner{
-    border: 5px solid #EAF0F6;
-    border-radius: 50%;
-    border-top: 5px solid #6750a4;
-    width: 30px;
-    height: 30px;
-    animation: spinner 2s linear infinite;
+.progressBarContainer {
+    width: 100%; /* Full width of the container */
+    height: 15px;
+    background-color: #e0e0e0; /* Light background for the progress bar */
+    border: 1px solid var(--primary-color);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
 }
-@keyframes spinner {
-    0% {
-        transform: rotate(0deg);
-    }
+/* The actual progress bar */
+.progressBar {
+    width: 0%; /* Start at 0% */
+    height: 100%;
+    border: 1px solid white;
+    background-color: var(--primary-color); /* Green color for the progress bar */
+    animation: fillBar 10s linear forwards; /* Animate over 10 seconds */
+    border-radius: 1px;
+}
 
+/* Keyframes for filling the bar */
+@keyframes fillBar {
+    0% {
+        width: 0%;
+    }
     100% {
-        transform: rotate(360deg);
+        width: 100%;
     }
 }
 .header{
