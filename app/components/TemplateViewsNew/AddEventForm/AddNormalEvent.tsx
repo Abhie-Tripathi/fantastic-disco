@@ -45,6 +45,8 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
     const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
     const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
     const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
+    const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
+    const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
     const [query, setQuery] = useState("")
     const handleDescClick = () => {
         setDescription(textValue)
@@ -59,6 +61,30 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleSaveEvent = async () => {
+        if (!eventName.trim()) {
+            setIsEventNameEmpty(true)
+        }else{
+            setIsEventNameEmpty(false)
+        }
+
+        if(!participationType){
+            setIsEventParticipationEmpty(true)
+        }else{
+            setIsEventParticipationEmpty(false)
+        }
+        if(!description){
+            setIsEventDescriptionEmpty(true)
+        }else{
+            setIsEventDescriptionEmpty(false)
+        }
+        if(!query && !latitude || !longitude){
+            setIsEventFormatEmpty(true)
+        }else{
+            setIsEventFormatEmpty(false)
+        }
+        if(!textValue.trim()){
+            setIsTextValueMessageEmpty(true)
+          }
         if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
             showToast("error","Please fill in all the fields");
             return; // Exit the function if any field is missing
@@ -100,7 +126,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleAddEvent = async () => {
-        if(!eventName){
+        if (!eventName.trim()) {
             setIsEventNameEmpty(true)
         }else{
             setIsEventNameEmpty(false)
@@ -121,6 +147,9 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }else{
             setIsEventFormatEmpty(false)
         }
+        if(!textValue){
+            setIsTextValueMessageEmpty(true)
+          }
         
         if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
             showToast("error","Please fill in all the fields");
@@ -191,7 +220,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             <div className={styles.line}></div>
             <div className={styles.form}>
                 <div>
-                    <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty}/></div>
+                    <div className={styles.participationContainer}><ParticipationContainer type='normal' theme={theme} size="small" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty}  isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}/></div>
                     {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
                 </div>
 
@@ -206,7 +235,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
                 </div>
                 <div>
                     <div className={styles.descriptionContainer} ><DescriptionContainer theme={theme} setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}/></div>
-                    {isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
+                    {isTextValueMessageEmpty&&isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                 </div>
             </div>
             {

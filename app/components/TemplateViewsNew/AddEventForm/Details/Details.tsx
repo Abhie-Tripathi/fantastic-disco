@@ -107,6 +107,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
   const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
   const [query, setQuery] = useState("")
+  const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
+  const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -170,7 +172,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   };
 
   const handleAddEvent = async () => {
-    if (!eventName) {
+    if (!eventName.trim()) {
       setIsEventNameEmpty(true)
     } else {
       setIsEventNameEmpty(false)
@@ -189,6 +191,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setIsEventParticipationEmpty(true)
     } else {
       setIsEventParticipationEmpty(false)
+    }
+    if(!participationMessage){
+      setIsParticipationMessageEmpty(true)
+    }
+    if(!textValue){
+      setIsTextValueMessageEmpty(true)
     }
 
     if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
@@ -296,6 +304,32 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
+    if (!eventName.trim()) {
+      setIsEventNameEmpty(true)
+    } else {
+      setIsEventNameEmpty(false)
+    }
+    if (!query && !latitude || !longitude) {
+      setIsEventFormatEmpty(true)
+    } else {
+      setIsEventFormatEmpty(false)
+    }
+    if (!description) {
+      setIsEventDescriptionEmpty(true)
+    } else {
+      setIsEventDescriptionEmpty(false)
+    }
+    if (!participationType) {
+      setIsEventParticipationEmpty(true)
+    } else {
+      setIsEventParticipationEmpty(false)
+    }
+    if(!participationMessage){
+      setIsParticipationMessageEmpty(true)
+    }
+    if(!textValue.trim()){
+      setIsTextValueMessageEmpty(true)
+    }
     if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
@@ -476,7 +510,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty}/></div>
+          <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty} isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}/></div>
           {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>
@@ -526,7 +560,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
             <div>
               <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}/></div>
-              {isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
+              {isTextValueMessageEmpty&&isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
             {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 
