@@ -24,7 +24,7 @@ const Page = () => {
 
     let prevDate: any = null;
     useEffect(() => {
-        fetchEvents(page*8);
+        fetchEvents(page * 8);
     }, [page])
 
     useEffect(() => {
@@ -82,7 +82,9 @@ const Page = () => {
                 format: event.data.format,
                 isLinkedToWidget: false,
                 gmtZone: event.data.gmt_time,
-                interest: "", // Assuming this field is optional and not present in the response
+                latitude: event.data.latitude,
+                longitude: event.data.longitude,
+                participationType: event.data.participationType
             }));
 
             if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events

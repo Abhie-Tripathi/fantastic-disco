@@ -15,15 +15,18 @@ interface Props {
     brandkitLoadingState: boolean;
     polling: boolean;
     setPolling: (value: boolean) => void;
-    setFetchedDomain : (value : string) => void;
+    setFetchedDomain: (value: string) => void;
+    brandkitFetched : boolean;
+    setBrandkitFetched : (value: boolean) => void;
 }
 
-const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain }: Props) => {
+const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain, brandkitFetched, setBrandkitFetched}: Props) => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
     const [fetchedFonts, setFetchedFonts] = useState<string[]>([])
     const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
+
 
     const fetchBrandkit = async () => {
         const { data, error } = await myFetch(`${baseUrl}/kit`)
@@ -39,7 +42,6 @@ const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, se
     }
     useEffect(() => {
         // Initial fetch
-
         fetchBrandkit();
         // Set up polling
         const intervalId = setInterval(() => {
@@ -47,8 +49,19 @@ const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, se
                 fetchBrandkit();
             }
         }, 1000); // Poll every 1 s 
+        const timerId = setTimeout(() => {
+            setBrandkitLoadingState(false);
+            setPolling(false);
+            if (fetchedLogos.length === 0) {
+                setBrandkitFetched(false); // Update state if brandkit not fetched within time
+            }
+            
+        }, 10000); // 20 seconds timeout
         // Clear interval on component unmount
-        return () => clearInterval(intervalId);
+        return () => {
+            clearInterval(intervalId);
+            clearTimeout(timerId);
+        };
     }, [polling]);
 
     useEffect(() => {
@@ -56,6 +69,7 @@ const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, se
         if (fetchedLogos.length > 0) {
             setBrandkitLoadingState(false)
             setPolling(false);
+            setBrandkitFetched(true);
         }
     }, [fetchedLogos])
 
@@ -65,22 +79,38 @@ const   DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, se
                 <div className={styles.heading}>Brand Kit</div>
                 <Link href={"/widget/brandkit"}><Image src={GotoIcon} alt='linkicon' /></Link>
             </div>
-            {brandkitLoadingState ? <div className={styles.loader}>
-                <Loading />
-                <div className={styles.loadingHeading}>Fetching your Brandkit</div>
-            </div> :
+            {brandkitLoadingState ? (
+                <div className={styles.loader}>
+                    {/* <Loading /> */}
+                    <div className={styles.progressBarContainer}>
+                        <div className={styles.progressBar}></div>
+                    </div>
+                    <div className={styles.loadingHeading}>Fetching your Brandkit</div>
+                </div>
+            ) : brandkitFetched ? (
                 <div className={styles.brandKitContainer}>
                     <div className={styles.container}>
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />
                     </div>
                     <div className={styles.container}>
-                        <BrandColor clickable={false} setValueUpdated={setValueUpdated} flex={false} setExtractedColors={setExtractedColors} extractedColors={fetchedColors} />
+                        <BrandColor
+                            clickable={false}
+                            setValueUpdated={setValueUpdated}
+                            flex={false}
+                            setExtractedColors={setExtractedColors}
+                            extractedColors={fetchedColors}
+                        />
                     </div>
                     <div className={styles.container}>
                         <BrandkitTypography clickable={false} fetchedFonts={fetchedFonts} flex={false} />
                     </div>
-                </div>}
-
+                </div>
+            ) : (
+                <div className={styles.errorMessage}>
+                    <span className={styles.error1}>Having issues while fetching your Brand kit</span>
+                    <span className={styles.error2}>Check the Domain again or try fetching again later</span>
+                </div>
+            )}
         </div>
     )
 }

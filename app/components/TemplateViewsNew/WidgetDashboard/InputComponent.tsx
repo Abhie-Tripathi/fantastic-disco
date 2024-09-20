@@ -13,10 +13,10 @@ interface Props {
     setPolling: (value: boolean) => void
     setFetchedDomain: (value: string) => void
     fetchedDomain: string;
-
+    setBrandkitFetched : (value: boolean) => void;
 }
 
-const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling, setFetchedDomain, fetchedDomain }: Props) => {
+const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling, setFetchedDomain, fetchedDomain, setBrandkitFetched }: Props) => {
 
     const [domain, setDomain] = useState<string>("");
     const [disableBtn, setDisableBtn] = useState<boolean>(false)
@@ -81,6 +81,7 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
         setFetchedBoolean(true)
         setBrandkitLoadingState(true)
         setPolling(true)
+        setBrandkitFetched(true)
     }
 
     return (
