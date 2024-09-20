@@ -20,21 +20,27 @@ interface CardTaskProps {
     onDragStart: (event: React.DragEvent<HTMLDivElement>, taskName: string) => void;
     handleModal: (id: string, enquiryId: string, enquiryStatus: string) => void
     onClick:() => void
+    interests: {
+        EXHIBITOR: number,
+        SPONSOR: number,
+        SPEAKER: number,
+        ATTENDING: number,
+    };
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick }) => {
+const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick, interests }) => {
     const {theme} = useTheme();
     const iconClass = theme === 'light' ? 'icons_light' : 'icon';
     // const startDate = formatDate(eventStartDate);
     // const endDate = formatDate(eventEndDate);
     return (
         <>
-        <div className={styles.eventAdd_container}>
+        {/* <div className={styles.eventAdd_container}>
             <div className={styles.addMore_event} onClick={onClick}>
                 <Image src={addEventIcon} alt="add" className={styles.addIcon} width={18} height={18} />
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
-        </div>
+        </div> */}
         <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"4px"}}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.companyName}>{eventCompany}</div>
@@ -42,10 +48,12 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
             <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
                 <div style={{marginTop:'3px'}}>{formatEventDates(eventStartDate,eventEndDate)}</div>
             </div>
-            {/* <div className={styles.typeOfEventContainer}>
-                <div className={styles.typeOfEvent}>Exhibting</div>
-                <div className={styles.typeOfEvent}>Attendee</div>
-            </div> */}
+            <div className={styles.typeOfEventContainer}>
+                {interests?.ATTENDING>0 &&<div className={styles.typeOfEvent}>Attend</div>}
+               {interests?.EXHIBITOR>0 && <div className={styles.typeOfEvent}>Exhibit</div>}
+               {interests?.SPEAKER>0 && <div className={styles.typeOfEvent}>Speak</div>}
+               {interests?.SPONSOR>0 && <div className={styles.typeOfEvent}>Sponsor</div>}
+            </div>
 
         </div>
         </>

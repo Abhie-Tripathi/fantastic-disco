@@ -239,6 +239,7 @@ const Page: React.FC = () => {
                       key={index}
                       name={task.eventName}
                       draggable={true}
+                      interests={task.userCountPerInterest}
                       eventLocation={""}
                       eventCompany={task.orgName}
                       eventStartDate={task.startDate}
@@ -291,6 +292,7 @@ const Page: React.FC = () => {
                       key={index}
                       name={task.eventName}
                       draggable={true}
+                      interests={task.userCountPerInterest}
                       eventLocation={""}
                       eventCompany={task.orgName}
                       eventStartDate={task.startDate}
@@ -350,6 +352,7 @@ const Page: React.FC = () => {
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
                       enquiryStatus="CONFIRMED"
+                      interests={task.userCountPerInterest}
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
