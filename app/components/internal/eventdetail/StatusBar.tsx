@@ -28,7 +28,7 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
             </div>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(2)}>
                 {status < 2 ?
-                    <StatusIcon2 fillColor={'var(--heading-background-color)'} borderColor={"var(--primary-color)"} /> :
+                    <StatusIcon2 fillColor={'var(--heading-background-color)'} borderColor={""} /> :
                         status === 2 ?
                             <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={"var(--primary-color)"} /> :
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />

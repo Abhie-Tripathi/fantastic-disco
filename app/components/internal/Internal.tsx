@@ -91,6 +91,9 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
       };
       useEffect(() => {
         if (selectedDateRange.length === 2) {
+          if(selectedDateRange[0]===null && selectedDateRange[1]===null)
+          setDuration("");
+        else
             setDuration([
                 new Date(selectedDateRange[0]).toISOString().split("T")[0],
                 new Date(selectedDateRange[1]).toISOString().split("T")[0],
@@ -150,7 +153,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
             try {
             apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
             (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
-            (selectedDateRange.length === 2 ? `&duration=${duration}` : '') +
+            (duration.length!==0 ? `&duration=${duration}` : '') +
             `&source=internal`+(eventId ? `&eventId=${eventId}` : '');
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
