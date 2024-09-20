@@ -242,7 +242,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       }
     }
 
-    formData.append("interest", participationType.toUpperCase())
+    // formData.append("interest", participationType.toUpperCase())
     // formData.append("source", "eventgeni/widget/event")
     formData.append("sourceId", widgetId)
 
@@ -366,7 +366,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     formData.append("id", eventId);
     formData.append("name", eventName);
     formData.append("data", JSON.stringify(eventData));
-    formData.append("interest", participationType.toUpperCase())
+    // formData.append("interest", participationType.toUpperCase())
     formData.append("sourceId", widgetId)
     if (banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
       if (banner.file) {
