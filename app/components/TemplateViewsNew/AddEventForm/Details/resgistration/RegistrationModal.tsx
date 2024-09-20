@@ -35,12 +35,12 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
         const trimmedBtnText = btnText.trim();
     
         if (trimmedCustomMessage === '') {
-            setCustomErrorMessage('Please fill in all fields with valid input.');
+            setCustomErrorMessage('Please fill with valid input.');
             return;  
         }
 
          if (trimmedBtnText === '') {
-            setButtonErrorMessage('Please fill in all fields with valid cta input.');
+            setButtonErrorMessage('Please fill with valid cta input.');
             return;  
         }
         
