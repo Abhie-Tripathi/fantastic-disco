@@ -19,12 +19,27 @@ const Page = () => {
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
+    const [page, setPage] = useState<number>(0);
     const { theme } = useTheme()
 
     let prevDate: any = null;
     useEffect(() => {
-        fetchEvents()
-    }, [])
+        fetchEvents(page*8);
+    }, [page])
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+                fetchedEvents.length > 0 // Prevent fetching on empty screen
+            ) {
+                setPage((prevPage) => prevPage + 1); // Increment page to load more events
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [fetchedEvents]);
 
     const handleDeleteModal = (eventId: string, eventName: string) => {
         setSelectedEventName(eventName)
@@ -43,7 +58,7 @@ const Page = () => {
             }
         );
         if (data) {
-            fetchEvents()
+            fetchEvents(0, "update")
             setDeleteModal(false)
         }
         if (error) {
@@ -51,8 +66,8 @@ const Page = () => {
         }
     }
 
-    const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc`)
+    const fetchEvents = async (page: number, type?: string) => {
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
         if (data) {
             const transformedEvents = data.data.map((event: any) => ({
                 eventId: event.id,
@@ -70,7 +85,11 @@ const Page = () => {
                 interest: "", // Assuming this field is optional and not present in the response
             }));
 
-            setFetchedEvents(transformedEvents);
+            if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
+                setFetchedEvents(transformedEvents)
+            } else {
+                setFetchedEvents(prevEvents => [...prevEvents, ...transformedEvents]);
+            }
         } else {
             console.error('Error fetching events:', error);
         }
@@ -105,13 +124,13 @@ const Page = () => {
                         />
                     </div>
                 );
-            }) : 
-            <div className={styles.emptyScreen}>
-                <Image src={EmptyImage} alt='empty' />
-                <div>Search or Add your Events</div>
-                <span>Start by searching for existing events to add to your widgets</span>
-                <span>or feel free to create your own event from scratch</span>
-            </div>}
+            }) :
+                <div className={styles.emptyScreen}>
+                    <Image src={EmptyImage} alt='empty' />
+                    <div>Search or Add your Events</div>
+                    <span>Start by searching for existing events to add to your widgets</span>
+                    <span>or feel free to create your own event from scratch</span>
+                </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addNormalEventModal}>
                 <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />

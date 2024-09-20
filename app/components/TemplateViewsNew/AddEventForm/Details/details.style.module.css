@@ -12,12 +12,17 @@
 }
 
 .detailsContainer {
-    padding: 70px 120px 30px 70px;
-    /* border: 1px solid red; */
+    padding: 50px 120px 30px 70px;
     display: flex;
-    gap: 30px;
+    flex-direction: column;
     overflow-y: auto;
     height: 89%;
+}
+
+.sections {
+    margin-top: 30px;
+    display: flex;
+    gap: 30px;
 }
 
 .modalOpen {
@@ -62,7 +67,14 @@
 .btnContainer .addBtn:hover {
     background-color: #7962b8;
 }
-
+.btnContainer .addBtnDisable{
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+.btnContainer .addBtnDisable:hover{
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
 .posterContainer {
     position: relative;
 }
@@ -75,6 +87,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .posterContainer .loader .spinner {
     border: 5px solid #EAF0F6;
     border-radius: 50%;
@@ -83,6 +96,7 @@
     height: 30px;
     animation: spinner 2s linear infinite;
 }
+
 @keyframes spinner {
     0% {
         transform: rotate(0deg);
@@ -92,6 +106,7 @@
         transform: rotate(360deg);
     }
 }
+
 .posterContainer .posterIcons {
     position: absolute;
     right: 19px;
@@ -113,7 +128,8 @@
     cursor: pointer;
     position: relative;
 }
-.posterContainer .posterIcons div::before{
+
+.posterContainer .posterIcons div::before {
     content: attr(data-name);
     position: absolute;
     bottom: 120%;
@@ -129,20 +145,23 @@
     pointer-events: none;
     transition: opacity 0.2s ease;
 }
-.posterContainer .posterIcons div:hover::before{
+
+.posterContainer .posterIcons div:hover::before {
     opacity: 1;
 }
+
 .participationContainer {
-    margin-top: 16px;
     height: fit-content;
     width: 100%;
 }
-.hashtagsContainer{
+
+.hashtagsContainer {
     margin-top: 16px;
     background-color: #ffffff53;
     border-radius: 10px;
     padding: 4px 11px 4px 19px;
 }
+
 .shareContainer {
     margin-top: 16px;
     background-color: #ffffff53;
@@ -172,6 +191,7 @@
 .eventName:focus {
     outline: none;
 }
+
 .descriptionModal {
     position: absolute;
     top: 50%;
@@ -202,3 +222,21 @@
 .speakerProfileContainer {
     width: 100%;
 }
+
+.errorHighlight {
+    border: .5px solid #DA2F35;
+    transition: border-color 0.3s ease; 
+    box-shadow: 0 0 5px red;
+}
+
+
+.errorBackground {
+    background-color: #D92D2017;
+    border-bottom: .5px solid #D92D20;
+  }
+  
+  .errorMessage {
+    color: #D92D20;
+    font-size: 12px;
+    margin-top: 4px;
+  }

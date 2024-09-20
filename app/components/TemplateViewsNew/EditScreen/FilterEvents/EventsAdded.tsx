@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './eventsadded.style.module.css'
 import Image from 'next/image';
 import StarIcon from '/public/staricon.svg'
+import StarIconFilled from '/public/stariconfilled.svg'
 import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { myFetch } from '@/utils/myFetch';
@@ -14,13 +15,17 @@ interface Props {
     handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
-    fetchEvents: () => Promise<void>;
+    fetchEvents: (page: number, type?: string) => Promise<void>;
+    selectedTemplate: string;
 }
 
-const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents }: Props) => {
+const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+
+    const showPromote = (selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG")
+
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -29,51 +34,100 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
 
     useEffect(() => {
         const handleOtherDataFetch = async () => {
-            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
-                fetchedAddedEvents.map(async (event) => {
-                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
-                    if (error) {
-                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
-                        return null;
-                    }
-                    if (data) {
-                        console.log("data of fetched event : ",)
-                    }
-                    return {
-                        id: event.id,
-                        name: data.data[0].name,
-                        pageBgColor: event.pageBgColor,
-                        description: data.data[0].data.description,
-                        eventFont: event.eventFont,
-                        startDate: data.data[0].data.start_date,
-                        endDate: data.data[0].data.end_date,
-                        startTime: data.data[0].data.start_time,
-                        endTime: data.data[0].data.end_time,
-                        timeZone: data.data[0].data.gmt_time,
-                        cityName: data.data[0].data.location_city,
-                        countryName: data.data[0].data.location_country,
-                        // participationType: data.data[0].data.participationType,
-                        eventFormat: data.data[0].data.format,
-                        registerBtnColor: event.registerBtnColor,
-                        registerBtnText: event.registerBtnText,
-                        registerMessage: event.registerMessage,
-                        boothNumber: event.boothNumber,
-                        speakerProfilesData: event.speakerProfilesData,
-                        participationMessage: event.participationMessage,
-                        bannerUrl: event.bannerUrl,
-                        latitude: event.latitude,
-                        longitude: event.longitude,
-                        venue: event.venue,
-                        hashtags : event.hashtags
-                    } as PrefilledAddedEventsType;
-                })
-            );
-            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
-        };
+            try {
+                const newFetchedAddedOtherData = await Promise.all(
+                    fetchedAddedEvents.map(async (event) => {
+                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        if (error) {
+                            console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                            return null;
+                        }
+                        const eventData = data?.data?.[0]?.data;
+                        if (!eventData) return null;
 
+                        return {
+                            id: event.id,
+                            name: data?.data?.[0]?.name,
+                            pageBgColor: event.pageBgColor,
+                            description: eventData.description,
+                            eventFont: event.eventFont,
+                            startDate: eventData.start_date,
+                            endDate: eventData.end_date,
+                            startTime: eventData.start_time,
+                            endTime: eventData.end_time,
+                            timeZone: eventData.gmt_time,
+                            cityName: eventData.location_city,
+                            countryName: eventData.location_country,
+                            participationType: eventData.participationType,
+                            eventFormat: eventData.format,
+                            registerBtnColor: event.registerBtnColor,
+                            registerBtnText: event.registerBtnText,
+                            registerMessage: event.registerMessage,
+                            boothNumber: event.boothNumber,
+                            speakerProfilesData: event.speakerProfilesData,
+                            participationMessage: event.participationMessage,
+                            bannerUrl: event.bannerUrl,
+                            latitude: event.latitude,
+                            longitude: event.longitude,
+                            venue: event.venue,
+                            hashtags: event.hashtags,
+                            promoted : event.promoted
+                        } as PrefilledAddedEventsType;
+                    })
+                );
+                setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            } catch (err) {
+                console.error("Error in handleOtherDataFetch:", err);
+            }
+        };
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
+    const handlePromoteEvent = async (newEvent: AddedEventsType) => {
+        const customizedFormData = new FormData();
+        const existingEvents = fetchedAddedEvents || [];
+        const updatedEvent = {
+            id: newEvent.id,
+            pageBgColor: newEvent.pageBgColor,
+            registerBtnColor: newEvent.registerBtnColor,
+            registerBtnText: newEvent.registerBtnColor,
+            registerMessage: newEvent.registerMessage,
+            boothNumber: newEvent.boothNumber,
+            speakerProfilesData: newEvent.speakerProfilesData,
+            participationMessage: newEvent.participationMessage,
+            bannerUrl: newEvent.bannerUrl,
+            eventFont : newEvent.eventFont,
+            latitude: newEvent.latitude,
+            longitude: newEvent.longitude,
+            venue: newEvent.venue,
+            hashtags: newEvent.hashtags,
+            promoted: newEvent.promoted === "true" ? "false" : "true"
+        };
+        // Find and update the existing event
+        const updatedEvents = existingEvents.map(event =>
+            event.id === newEvent.id ? updatedEvent : event
+        );
+
+        const otherData = {
+            event: updatedEvents,
+        };
+        const eventIds = updatedEvents.map(event => event.id).join(',');
+
+        customizedFormData.append('widgetId', widgetId);
+        customizedFormData.append('otherdata', JSON.stringify(otherData));
+        customizedFormData.append('eventId', eventIds);
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData,
+        });
+        if (data) {
+            console.log("widget event promote data", data);
+            fetchAddedEvents();
+        }
+        if (error) {
+            console.log("error in updating event in widget ", error);
+        }
+    }
 
     // This function is to trigger the delete event function from added events
     const handleCheckboxChange = async (eventId: string) => {
@@ -81,7 +135,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         if (!updatedEvents) {
             return;
         }
-        if(updatedEvents.length === 0){
+        if (updatedEvents.length === 0) {
             handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
         }
         try {
@@ -123,7 +177,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         if (data) {
             handleEventIdDelete(eventId)
             fetchAddedEvents()
-            fetchEvents()
+            fetchEvents(0, "update")
         }
         if (error) {
             console.log(error)
@@ -148,7 +202,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
     return (
         <div className={styles.body}>
             <div className={styles.headerContainer}>
-                <div>Events Added<span>{fetchedAddedEvents?.length || 0}</span></div>
+                <div>Events Added</div>
                 <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
             </div>
             <div className={styles.line}></div>
@@ -156,7 +210,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                 {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
-                            <div className={styles.eventName}>{event.name}</div>
+                            <div className={styles.eventName}>{`${event.name.substring(0,30)} ${event.name.length>30 ? "...": ""}`}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
                                 <div>{event.cityName}</div>
@@ -180,9 +234,10 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={styles.promotEditBtnContainer}>
-                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span></div>
-                                <div><Image src={StarIcon} alt='promote' /><span>Promote</span></div>
+                            <div className={showPromote ? styles.promotEditBtnContainer : styles.editBtnContainer}>
+                                {showPromote && <div onClick={() => handlePromoteEvent(event)}><Image src={event.promoted === "true" ? StarIconFilled: StarIcon} alt='promote' /><span>{event.promoted === "true" ? "Promoted":"Promote"}</span></div>}
+                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
+                                </div>
                             </div>
                         </div>
                     </div>

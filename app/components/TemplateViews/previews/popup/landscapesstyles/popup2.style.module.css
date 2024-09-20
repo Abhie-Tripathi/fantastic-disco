@@ -4,6 +4,7 @@
     display: flex;
     gap: 16px;
     padding: 12px;
+    overflow: hidden;
 }
 .smallCard{
     width: 600px;
@@ -13,15 +14,17 @@
     padding: 12px;
 }
 .details{
-    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-width: 50%;
+    max-width: 50%;
+    word-wrap: break-word;
 }
-.details .values{
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.eventName{
+    min-height: 70px;
+    max-height: 70px;
+    overflow: hidden;
 }
 .banner{
     width: 350px;
@@ -30,7 +33,7 @@
     filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
 }
 .location_dateContainer {
-    margin-top: 8px;
+    /* margin-top: 8px; */
     display: flex;
     flex-direction: column;
 }
@@ -126,9 +129,12 @@
     opacity: 1;
 }
 .description{
+    overflow: hidden;
+    height: 160px;
     line-height: 20px;
 }
 .btn{
+    width: 100%;
     margin-top: 20px;
     padding: 10px 20px;
     border: 1px solid;

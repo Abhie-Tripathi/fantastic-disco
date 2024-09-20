@@ -1,9 +1,10 @@
 import React from 'react'
 import styles from './eventlistcard1.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder2.png'
+// import placeholder2 from '/public/placeholder2.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location.svg'
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
   fontFamily: string;
@@ -19,7 +20,11 @@ interface CardProps {
     subheading: FontSettings;
     body: FontSettings;
   };
-  fetchedEvent?: PrefilledAddedEventsType
+  fetchedEvent?: PrefilledAddedEventsType;
+  demoBanner:string;
+  demoEventName:string; 
+  demoDescription:string;
+  demoLocation:string
 }
 const EventListCard1 = ({
   cardBgColor = "#ffffff",
@@ -28,10 +33,10 @@ const EventListCard1 = ({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-  }, fetchedEvent }: CardProps) => {
+  }, fetchedEvent, demoBanner, demoEventName, demoDescription,demoLocation }: CardProps) => {
 
   const formatDate = (date: string) => {
-    const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
     return new Date(date).toLocaleDateString('en-US', options);
   };
   const truncateText = (text: string, maxLength: number): string => {
@@ -49,11 +54,11 @@ const EventListCard1 = ({
     return { day, month };
   };
 
-  const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : "Some Description";
+  const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : demoDescription;
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
+      <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}>
@@ -64,9 +69,9 @@ const EventListCard1 = ({
           <div className={styles.name_locationContainer}>
             <div className={styles.locationContainer}>
               <LocationIcon color={fontSettings.subheading.fontColor}/>
-              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
+              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0,20) : demoLocation}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : "Join Gifts World Expo 2024"}</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : demoEventName}</div>
           </div>
         </div>
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
@@ -82,12 +87,12 @@ const EventListCard1 = ({
 
 export default EventListCard1
 
-interface IconProps{
-  color : string;
+interface IconProps {
+  color: string;
 }
 
-function LocationIcon({color}: IconProps) {
+function LocationIcon({ color }: IconProps) {
   return (
-    <svg  xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" fill={color} /></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" fill={color} /></svg>
   )
 }

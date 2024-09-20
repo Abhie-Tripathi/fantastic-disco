@@ -1,14 +1,17 @@
 .card{
     width: 629px;
-    height: 211px;
+    min-height: 211px;
+    max-height: 211px ;
     display: flex;
-    gap: 25px;
+    gap: 15px;
     align-items: center;
-    padding: 1px 12px 12px 15px;
+    padding: 0px 12px 12px 15px;
+    overflow: hidden;
 }
 .banner{
     min-width: 260px;
-    /* height: 200px; */
+    max-width: 260px;
+    height: 200px;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
     filter: drop-shadow(0px 3px 2px rgb(116, 116, 116));
@@ -18,17 +21,21 @@
     flex-direction: column;
     gap: 14px;
     max-height: 100%;
+    max-width: 53%;
+    word-wrap: break-word;
 }
 .date_location_nameContainer{
-    height: 110px;
+    min-height: 80px;
+    max-height: 80px;
+    overflow: hidden;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 .description{
-
     height: 50px;
+    overflow: hidden;
 }
 .dateContainer{
     background-color: #F6F6F6;
@@ -61,9 +68,14 @@
     width: 70%;
 }
 .locationContainer{
+    min-height: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
+}
+.eventName{
+    min-height: 50px;
+    max-height: 50px;
 }
 .dateRange_typeContainer{
     display: flex;

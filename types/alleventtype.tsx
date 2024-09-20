@@ -9,6 +9,7 @@ export interface AllEventsType {
   endDate: string;
   startTime: string;
   endTime: string;
+  participationType : string;
   description: string;
   format: string;
   isLinkedToWidget: boolean;

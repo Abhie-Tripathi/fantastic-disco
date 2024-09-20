@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './colors.style.module.css'
 import { SketchPicker } from 'react-color';
-import { useTheme } from '@/context';
+import { baseUrl, useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { myFetch } from '@/utils/myFetch';
 
 interface Props {
     pageBgColor: string;
@@ -17,18 +18,24 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
 
     const handleChange = (color: any) => {
-        // Convert hex to rgba with 10% opacity
-        // const rgbaColor = hexToRgba(color.hex, 0.1);
-        // setPageBgColor(rgbaColor);
-
-        setPageBgColor(color.hex);
+        const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
+        setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color : any)=>{
-        // const rgbaColor = hexToRgba(color, 0.1);
-        // setPageBgColor(rgbaColor);
-
-        setPageBgColor(color);
+    const handleColorClick = (color: any) => {
+        const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
+        setPageBgColor(colorWithOpacity);
     }
+    const addOpacityToHex = (hexColor: string, opacity: number) => {
+        // Remove the '#' if it's there
+        const cleanHex = hexColor.replace("#", "");
+      
+        // Convert the opacity percentage (0 to 1) to a 2-digit hex value
+        const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, "0");
+      
+        // Append the opacity to the hex color
+        return `#${cleanHex}${alphaHex}`;
+    }
+    
 
     // const hexToRgba = (hex: string, opacity: number) => {
     //     let r = 0, g = 0, b = 0;
@@ -68,6 +75,20 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
         return color; 
     };
 
+    const fetchBrandkit = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/kit`)
+        if (error) {
+          console.error('Error fetching brand kit:', error);
+          return;
+        }
+    
+        const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
+        setExtractedColors(data.color)
+      }
+    
+      useEffect(() => {
+        fetchBrandkit()
+      }, [])
     const formattedPageBgColor = formatColor(pageBgColor);
     return (
         <div className={styles.body}>

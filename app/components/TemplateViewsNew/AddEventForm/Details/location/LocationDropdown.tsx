@@ -19,16 +19,19 @@ interface Props {
     setLongitude: (value: number) => void;
     setLatitude: (value: number) => void;
     theme?: string;
+    setQuery:(value: string) => void;
+    query:string;
+    setIsEventFormatEmpty:(value: boolean) => void;
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme }: Props) => {
+const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery,setIsEventFormatEmpty }: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
     // });
 
-    const [query, setQuery] = useState<string>("");
+    // const [query, setQuery] = useState<string>("");
     const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
@@ -95,6 +98,10 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
         }
     }, [query, debouncedFetchSuggestions]);
     // if (!isLoaded) return <div>Loading...</div>;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+        setIsEventFormatEmpty(false)
+    }
     return (
         <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationTypes}>
@@ -130,7 +137,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                 </label>
             </div>
             {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
-                <input type="text" placeholder='Enter Location' onChange={(e) => setQuery(e.target.value)} />
+                <input type="text" placeholder='Enter Location' onChange={(e) => handleInputChange(e)} />
                 {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
                     <LocationIcon /> <span className={styles.state}>Bengaluru</span><span className={styles.country}>India</span>

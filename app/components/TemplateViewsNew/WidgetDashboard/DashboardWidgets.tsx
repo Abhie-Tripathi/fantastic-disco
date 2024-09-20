@@ -49,7 +49,6 @@ const DashboardWidgets = () => {
     }
     return str;
   };
-  // This function will fetch the widgets with status, ACTIVE and INACTIVE
   const fetchAllWidgets = async () => {
     const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
     const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?status=deactivate`);

@@ -24,8 +24,15 @@ interface EditProps {
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
     widgetId?: string;
+    demoBanner: string;
+    demoEventName: string;
+    demoDescription: string
+    demoLocation:string
+
 }
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation }: EditProps) => {
+
+    console.log("normal events in list view :", fetchedAddedOtherData)
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -62,16 +69,28 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
                     />
                 </div>
             )}

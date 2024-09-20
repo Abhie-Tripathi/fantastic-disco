@@ -6,6 +6,22 @@
     flex-direction: column;
     gap: 18px;
 }
+.headerContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.headerContainer .heading_iconContainer{
+    display: flex;
+    align-items: center;
+    gap:4px;
+}
+.headerContainer .heading_iconContainer .heading{
+    font-weight: 500;
+    color: #7D7D7D;
+    font-size: var(--font-size-small);
+}
 .info{
     display: flex;
     align-items: center;
@@ -26,6 +42,12 @@
 .info .heading{
     color:#52A8FF;
     font-size: var(--font-size-small);
+}
+
+.accordian{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 .header{
     display: flex;

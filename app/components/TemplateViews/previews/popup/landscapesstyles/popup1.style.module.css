@@ -5,10 +5,12 @@
     gap: 10px;
     align-items: flex-start;
     padding-left: 10px;
+    overflow: hidden;
     /* padding: 0px 12px 12px 10px; */
 }
 .smallCard{
     width: 600px;
+    overflow: hidden;
     height:300px;
     display: flex;
     gap: 10px;
@@ -26,6 +28,7 @@
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
 }
+
 .detailsContainer{  
     height: 100%;
     display: flex;
@@ -33,6 +36,10 @@
     justify-content: space-between;
     /* gap: 14px; */
     padding: 10px;
+    min-width: 50%;
+    max-width: 50%;
+    word-wrap: break-word;
+
 }
 .detailsContainer .valuesContainer {
     display: flex;
@@ -45,6 +52,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 85px;
 }
 .dateContainer{
     background-color: #F6F6F6;
@@ -73,6 +81,7 @@
     flex-direction: column;
     gap: 5px;
     width: 70%;
+    height: 70px;
 }
 .locationContainer{
     display: flex;
@@ -80,7 +89,13 @@
     gap: 8px;
 }
 .description{   
-    font-weight: 500;
+    overflow: hidden;
+    height: 160px;
+    line-height: 20px;
+}
+.smallDescription{
+    overflow: hidden;
+    height: 50px;
     line-height: 20px;
 }
 .dateRange_typeContainer{
@@ -108,6 +123,7 @@
     color: #6750A4;
 }
 .btn{
+    width: 100%;
     margin-top: 20px;
     padding: 10px 20px;
     border: 1px solid;
