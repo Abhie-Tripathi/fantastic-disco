@@ -112,6 +112,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
         <button
           className={styles.btn}
           style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
             color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
             backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
             borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,

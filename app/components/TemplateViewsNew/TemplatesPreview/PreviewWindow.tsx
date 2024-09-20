@@ -52,7 +52,7 @@ interface PreviewProps {
     fetchedAddedEvents?: AddedEventsType[];
     widgetId?: string;
     smallCard: boolean;
-    setIsDraftSaved? : (value : boolean)=>void
+    setIsDraftSaved?: (value: boolean) => void
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -79,7 +79,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         primary: { buttonColor: "#6750a4", fontColor: "#ffffff", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
-    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard,setIsDraftSaved }: PreviewProps) => {
+    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard, setIsDraftSaved }: PreviewProps) => {
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
     const [storedDomain, setStoredDomain] = useState<string>("")
@@ -89,17 +89,17 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
 
-    useEffect(()=>{
-        const fetchDomain = async()=>{
-            const {data, error} = await myFetch(`${baseUrl}/kit`)
+    useEffect(() => {
+        const fetchDomain = async () => {
+            const { data, error } = await myFetch(`${baseUrl}/kit`)
             setStoredDomain(data.domain.domain)
         }
         fetchDomain()
-    },[])
-    
+    }, [])
+
     useEffect(() => {
         const handleOtherDataFetch = async () => {
-            if(!fetchedAddedEvents){
+            if (!fetchedAddedEvents) {
                 return
             }
             try {
@@ -110,10 +110,10 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
                         }
-    
+
                         const eventData = data?.data?.[0]?.data;
                         if (!eventData) return null;
-    
+
                         return {
                             id: event.id,
                             name: data?.data?.[0]?.name,
@@ -144,13 +144,13 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         } as PrefilledAddedEventsType;
                     })
                 );
-    
+
                 setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
             } catch (err) {
                 console.error("Error in handleOtherDataFetch:", err);
             }
         };
-    
+
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
@@ -237,26 +237,26 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     </div>
                 </div>
             </div>
-            <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen)  ? styles.bigpreview_btnContainer : ""}`}>
+            <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen) ? styles.bigpreview_btnContainer : ""}`}>
                 <div className={`${styles.preview} ${(!draftWidget || isFullScreen) ? styles.bigPreview : ""}`} >
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
-                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
+                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                 selectedTemplate === "GS" ? <GridView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} /> :
-                                    selectedTemplate === "LS" ? <ListView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription}  demoLocation={ demoLocation}/> :
-                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                                selectedTemplate === "CVL" ? <CaraouselAndViews  type='list'
-                                                fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription}  demoLocation={ demoLocation}/> :
-                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                                        selectedTemplate === "CV" ? <CaraouselView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
-                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
+                                    selectedTemplate === "LS" ? <ListView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list'
+                                                    fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                        selectedTemplate === "CV" ? <CaraouselView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup
                                                                             smallCard={smallCard}
-                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> : selectedTemplate === "PUVL" ? <LandscapePopup 
-                                                                            smallCard={smallCard}fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> : <></>}
+                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : selectedTemplate === "PUVL" ? <LandscapePopup
+                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : <></>}
                 </div>
                 {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to Draft widgets</button>

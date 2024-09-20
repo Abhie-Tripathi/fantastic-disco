@@ -73,7 +73,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
       </div>
       <div className={styles.eventDetails}>
         <div className={styles.values}>
-          <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].name : demoEventName}</div>
+          <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
           <div className={styles.location_dateContainer}>
             <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor} />
@@ -89,6 +89,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
         <button
           className={styles.btn}
           style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
             color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
             backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
             borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
