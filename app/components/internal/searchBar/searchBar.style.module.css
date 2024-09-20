@@ -3,7 +3,7 @@
     /* overflow-x: unset; */
     position: absolute;
     left: -5px;
-    max-height: 200px;
+    max-height: 150px;
     overflow-y: auto;
     background-color: var(--background-secondary-color);
     top: 40px;

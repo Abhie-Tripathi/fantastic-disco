@@ -2,8 +2,6 @@ import React from "react";
 import styles from "./commondropdown.style.module.css";
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import { useTheme } from "@/context";
-import EventStatusData from "@/public/data/eventType.json";
-import DropdownRef from '../../employee/listView/DropdownRef';
 interface EventStatusProps {
   state: string[];
   status:string[];
@@ -15,12 +13,6 @@ interface EventStatusProps {
 const EventType = ({ state, setState, setSelectedEventTypeName, status }: EventStatusProps) => {
   const {theme} = useTheme();
   const onClickHandler = (value: any) => {
-    // if(state.includes(value)) {
-    //   setState(state.filter((data) => data !== value))
-    // } else {
-    //   setState([...state, value]);
-    //   setSelectedEventTypeName(value);
-    // }
     if(state.includes(value)) setState([]);
     else setState([value]);
   };

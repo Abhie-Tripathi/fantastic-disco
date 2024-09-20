@@ -63,20 +63,20 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const setMenuOpen = () => {
         setPopoverState(!popoverState);
     };
-      useEffect(() => {
-        const modalStatus = document.body.getAttribute("popover-status");
+      // useEffect(() => {
+      //   const modalStatus = document.body.getAttribute("popover-status");
     
-        if (modalStatus && modalStatus == "close") {
-          document.body.setAttribute("popover-status", "open");
-          document.documentElement.style.overflow = "";
-          document.documentElement.style.paddingRight = "";
-        } else {
-          document.body.setAttribute("popover-status", "close");
-        }
-        return () => {
-          document.body.removeAttribute("your-attribute");
-        };
-      }, [popoverState]); 
+      //   if (modalStatus && modalStatus == "close") {
+      //     document.body.setAttribute("popover-status", "open");
+      //     document.documentElement.style.overflow = "";
+      //     document.documentElement.style.paddingRight = "";
+      //   } else {
+      //     document.body.setAttribute("popover-status", "close");
+      //   }
+      //   return () => {
+      //     document.body.removeAttribute("your-attribute");
+      //   };
+      // }, [popoverState]); 
       useEffect(()=>{
         if(selectedParticipantType.length>0) {
             setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());

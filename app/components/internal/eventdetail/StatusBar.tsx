@@ -23,7 +23,7 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
                                 <StatusIcon fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
-                    {status > 1 && <Image width={14} height={14} src={tickIcon} alt="check" />}
+                    {/* {status > 1 && <Image width={14} height={14} src={tickIcon} alt="check" />} */}
                     Shortlisted </div>
             </div>
             <div className={styles.statusCard} onClick={()=>handleStatusChange(2)}>
@@ -34,7 +34,7 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText}>
-                    {status > 2 && <Image width={14} height={14} src={tickIcon} alt="check" />}
+                    {/* {status > 2 && <Image width={14} height={14} src={tickIcon} alt="check" />} */}
                     <span style={{color:status>=2? "white" :"var(--secondary-text-color)"}}>In Progress</span>
                 </div>
             </div>
@@ -46,7 +46,7 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
                                 <StatusIcon2 fillColor={'var(--primary-color)'} borderColor={""} />
                 }
                 <div className={styles.statusText} >
-                    {status > 10 && <Image width={14} height={14} src={tickIcon} alt="check" />}
+                    {/* {status > 10 && <Image width={14} height={14} src={tickIcon} alt="check" />} */}
                     <span style={{color:status>=10? "white" :"var(--secondary-text-color)"}}>Confirmed</span>
                 </div>
             </div>
