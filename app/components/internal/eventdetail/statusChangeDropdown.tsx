@@ -18,11 +18,13 @@ const statusValues: { [key: string]: number } = {
   SHORTLISTED: 1,
   "IN PROGRESS": 2,
   CONFIRMED: 10,
-  CANCELLED: 12,
+  CANCELED: 12,
 };
 
 const StatusChangeDropdown: React.FC<PropType> = (props: PropType) => {
   const [isOpen, setIsOpen] = useState(false);
+  // console.log(props.currentValue);
+  
   const [value, setValue] = useState(props.currentValue);
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);

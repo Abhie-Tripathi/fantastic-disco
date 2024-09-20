@@ -278,6 +278,7 @@
 
 .statusCard {
   color: #ffffff;
+  cursor: pointer;
   font-size: 18px;
   position: relative;
   text-align: center;
@@ -412,11 +413,12 @@
 /* Owner css */
 .outreachStatusContainer {
   display: flex;
+  font-weight: var(--font-weight-medium);
   justify-content: space-evenly;
-  border: 1px solid var(--border-color);
+  /* border: 1px solid var(--border-color); */
   border-radius: 5px;
-  padding: 12px;
-  margin-bottom: 30px;
+  /* padding: 12px; */
+  margin-bottom: 20px;
 }
 
 .noData_text {

@@ -75,7 +75,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN PROGRESS"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -174,12 +174,12 @@ const EventDetail = ({
       </div>
 
       <div className={styles.modalContainer}>
-        {pathName && pathName === "outreach" && <StatusBar status={status} />}
+        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
               <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
-              {pathName && pathName === "outreach" && (
+              {/* {pathName && pathName === "outreach" && (
                 <StatusChangeDropdown
                   label=""
                   eventId={123}
@@ -188,7 +188,7 @@ const EventDetail = ({
                     currentEnquiryStatus ? currentEnquiryStatus : ""
                   }
                 />
-              )}
+              )} */}
             </div>
             {singleEventData && (
               <>
