@@ -8,18 +8,22 @@ interface Props{
     description : string;
     theme? : string;
     isEventDescriptionEmpty:boolean
+    setIsEventDescriptionEmpty: (value : boolean)=>void
 }
 
-const DescriptionContainer = ({setDescriptionModal,description, theme,isEventDescriptionEmpty} : Props) => {
-
+const DescriptionContainer = ({setDescriptionModal,description, theme,isEventDescriptionEmpty, setIsEventDescriptionEmpty} : Props) => {
+const handleClick = () => {
+    setDescriptionModal(true)
+    setIsEventDescriptionEmpty(false)
+}
     return (
         <div className={`${styles.body} ${isEventDescriptionEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.descHeader}>
                 <div className={styles.descContainer}>
                     <DescIcon />
-                    <div className={styles.descriptionHeading} onClick={()=>setDescriptionModal(true)}>Add Event Description</div>
+                    <div className={styles.descriptionHeading} onClick={()=>handleClick()}>Add Event Description</div>
                 </div>
-                <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={()=>setDescriptionModal(true)}/>
+                <Image className={styles.editBtn} src={EditIcon} alt='edit' onClick={() => handleClick()}/>
             </div>
             {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description.substring(0,400) + (description.length > 400 ? "...":"") }}></div>}
         </div>

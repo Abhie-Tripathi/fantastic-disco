@@ -21,13 +21,18 @@ interface Props {
   theme?: string;
   type: string;
   isEventParticipationEmpty: boolean
+  setIsEventParticipationEmpty:(value: boolean) => void
+  isParticipationMessageEmpty:boolean;
+  setIsParticipationMessageEmpty: (value:boolean) => void
+
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type, isEventParticipationEmpty }: Props) => {
-
+const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type, isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty }: Props) => { 
   const handleSelection = (type: string) => {
     setParticipationType(type);
     // setDropdown(true)
+    setIsEventParticipationEmpty(false)
+
   }
   const handleCloseSelection = () => {
     // setDropdown(false)
@@ -42,6 +47,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
       showToast("error", "Please check, input should not contain any special character");
     } else {
       setParticipationMessage(value);
+      setIsParticipationMessageEmpty(false)
     }
   };
   return (
@@ -83,6 +89,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
                 <span onClick={handleCloseSelection}>x</span>
               </div>
+             {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
             </div>
           ) : (participationType === "Speaker" && type === "widget") ? (
             <div className={styles.selectedOption}>
@@ -94,6 +101,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
                 <span onClick={handleCloseSelection}>x</span>
               </div>
+              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
             </div>
           ) : (participationType === "Exhibitor" && type === "widget") ? (
             <div className={styles.selectedOption}>
@@ -105,6 +113,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
                 <span onClick={handleCloseSelection}>x</span>
               </div>
+              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
             </div>
           ) : (participationType === "Organiser" && type === "widget") ? (
             <div className={styles.selectedOption}>
@@ -116,6 +125,7 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
                 <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
                 <span onClick={handleCloseSelection}>x</span>
               </div>
+              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
             </div>
           ) : null}
         </>
