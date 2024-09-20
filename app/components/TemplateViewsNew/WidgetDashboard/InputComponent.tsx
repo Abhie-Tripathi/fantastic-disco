@@ -26,6 +26,11 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
     }, [])
 
     useEffect(() => {
+        const interval = setInterval(fetchWidget, 1000); 
+        return () => clearInterval(interval); 
+    }, []);
+
+    useEffect(() => {
         setDomain(fetchedDomain.substring(8))
     }, [fetchedDomain])
     const fetchWidget = async () => {
@@ -34,6 +39,8 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
         const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?`)
         if (draftData.data.length > 0 || activeData.data.length > 0 || deactivateData.data.length > 0) {
             setDisableBtn(true)
+        }else{
+            setDisableBtn(false)
         }
     }
 
@@ -52,7 +59,9 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
             alert("Please enter a valid domain.");
             return;
         }
-        postBrandkit(cleanDomain)
+
+        const cleanDomainResult = cleanDomain.split('/')[0]; 
+        postBrandkit(cleanDomainResult)
     }
     const postBrandkit = async (cleanDomain : string) => {
         const postDomain = {

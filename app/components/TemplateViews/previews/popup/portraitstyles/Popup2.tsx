@@ -27,6 +27,10 @@ interface Props {
   selectedBtn?: "primary" | "secondary"
   fetchedAddedEvents?: PrefilledAddedEventsType[];
   smallCard: boolean;
+  demoBanner:string;
+  demoEventName:string,
+  demoDescription:string
+  demoLocation:string
 }
 
 const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -39,7 +43,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents, smallCard }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation}: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
 
@@ -61,21 +65,21 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
     }
     return text.slice(0, maxLength) + '...';
   };
-  const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : "Some Description";
+  const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : demoDescription;
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <div className={smallCard ? styles.smallName : styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : "Join Gifts World Expo 2024"}</div>
+      <div className={smallCard ? styles.smallName : styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
       <div className={styles.location_dateContainer}>
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
-          <div className={styles.location} style={{ fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : "Corpus Christi, USA"}</div>
+          <div className={styles.location} style={{ fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
         </div>
         <div className={styles.dateContainer}>
           <DateIcon color={fontSettings?.subheading.fontColor || "black"} />
           <div className={styles.date} style={{ fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : "29 Jan - 5 Feb"}</div>
         </div>
       </div>
-      <Image width={350} height={smallCard ? 150 : 200} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' className={styles.banner} />
+      <Image width={350} height={smallCard ? 150 : 200} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={styles.banner} />
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>

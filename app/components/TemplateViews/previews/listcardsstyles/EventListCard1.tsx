@@ -20,7 +20,11 @@ interface CardProps {
     subheading: FontSettings;
     body: FontSettings;
   };
-  fetchedEvent?: PrefilledAddedEventsType
+  fetchedEvent?: PrefilledAddedEventsType;
+  demoBanner:string;
+  demoEventName:string; 
+  demoDescription:string;
+  demoLocation:string
 }
 const EventListCard1 = ({
   cardBgColor = "#ffffff",
@@ -29,7 +33,7 @@ const EventListCard1 = ({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-  }, fetchedEvent }: CardProps) => {
+  }, fetchedEvent, demoBanner, demoEventName, demoDescription,demoLocation }: CardProps) => {
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
@@ -50,11 +54,11 @@ const EventListCard1 = ({
     return { day, month };
   };
 
-  const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : "Some Description";
+  const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : demoDescription;
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='banner' className={styles.banner} style={{ objectFit: "cover" }} />
+      <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
       <div className={styles.detailsContainer}>
         <div className={styles.date_location_nameContainer}>
           <div className={styles.dateContainer}>
@@ -64,13 +68,10 @@ const EventListCard1 = ({
           <div className={styles.line}></div>
           <div className={styles.name_locationContainer}>
             <div className={styles.locationContainer}>
-              <LocationIcon color={fontSettings.subheading.fontColor} />
-              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent
-                ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0, 20)
-                : "Corpus Christi, USA".substring(0, 20)}
-              </div>
+              <LocationIcon color={fontSettings.subheading.fontColor}/>
+              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0,20) : demoLocation}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0, 30)} ${fetchedEvent.name.length > 30 ? "..." : ""}` : "Your Widget Event"}</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : demoEventName}</div>
           </div>
         </div>
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>

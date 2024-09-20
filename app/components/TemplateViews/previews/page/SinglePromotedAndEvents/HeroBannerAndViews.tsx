@@ -33,15 +33,20 @@ interface EditProps {
         primary: ButtonSettings;
         secondary: ButtonSettings;
     };
+    widgetId?: string;
+    demoBanner: string;
+    demoEventName: string;
+    demoDescription: string
+    demoLocation: string
 }
-const HeroBannerAndViews = ({ type, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedCard }: EditProps) => {
+const HeroBannerAndViews = ({ type, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedCard, demoBanner, demoEventName, demoDescription, demoLocation}: EditProps) => {
     return (
         <div className={styles.body}>
-            <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} />
+            <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>
             <div className={styles.bottomView}>
-                {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                    type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                        <ListAndGridView />}</div>
+                {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/> :
+                    type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation}/> :
+                        <ListAndGridView demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>}</div>
         </div>
     )
 }

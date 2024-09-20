@@ -2,7 +2,9 @@ import React from 'react'
 import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 // import placeholder2 from '/public/placeholder2.png'
-import placeholder2 from '/public/DemoBanner.png'
+import placeholder2 from '/public/demobanner.png'
+
+
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
@@ -21,6 +23,10 @@ interface CardProps {
         body: FontSettings;
     };
     fetchedEvent?: PrefilledAddedEventsType
+    demoEventName:string;
+    demoBanner:string;
+    demoDescription:string
+    demoLocation:string
 }
 
 const EventCard1 = ({
@@ -30,7 +36,12 @@ const EventCard1 = ({
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
         subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
         body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-    }, fetchedEvent
+    }, fetchedEvent,
+    demoBanner,
+    demoEventName,
+    demoDescription,
+    demoLocation
+
 }: CardProps) => {
 
     const formatStartDate = (dateString: string) => {
@@ -48,7 +59,7 @@ const EventCard1 = ({
 
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
+            <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
                 <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
@@ -57,9 +68,9 @@ const EventCard1 = ({
                     <div className={styles.locationContainer}>
                         {/* <Image src={locationIcon} alt='location' /> */}
                         <LocationIcon color={fontSettings.subheading.fontColor}/>
-                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
+                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,15) : "Join Gifts World Expo 2024"}</div>
+                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,15) : demoEventName}</div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>

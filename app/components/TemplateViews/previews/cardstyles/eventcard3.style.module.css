@@ -28,6 +28,7 @@
     max-height: 180px;
     width: 100%;
     border-radius: 8px;
+    object-fit:cover;
 }
 .eventName{
     height: 60px;
