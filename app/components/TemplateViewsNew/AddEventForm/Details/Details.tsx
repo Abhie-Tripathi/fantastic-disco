@@ -175,7 +175,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     console.log("banner is :", banner.placeHolder)
     console.log("banner is :", banner.file)
   },[banner])
-
+ 
   const handleAddEvent = async () => {
     if (!eventName.trim()) {
       setIsEventNameEmpty(true)
@@ -209,7 +209,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       return; // Exit the function if any field is missing
     }
 
-    if (!banner?.file || imageUrl) {
+    if (!imageUrl && !banner.file ) {
       showToast("error", "Please upload or generate a Poster");
       return; // Exit the function if any field is missing
     }
@@ -340,7 +340,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       return; // Exit the function if any field is missing
     }
     if (!prefilledAddedEvent?.bannerUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
-      if (!banner?.file || imageUrl) {
+      if (!banner?.file || !banner?.placeHolder) {
         showToast("error", "Please upload or generate a Poster");
         return; // Exit the function if any field is missing
       }
