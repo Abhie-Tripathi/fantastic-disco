@@ -26,7 +26,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     setIsOpen((prev) => !prev);
   };
 useEffect(()=>{
- setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
+ setValue((props.currentEnquiryStatus == 'CANCELED') ? 'Rejected' : 
  (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {

@@ -98,12 +98,13 @@ const EventDetail = ({
         });
         if (apiData.data.message === "Data updated") {
           if (handleRefresh) handleRefresh();
-          toast.success("Enquiry status updated!", {
-            position: "bottom-right",
-            autoClose: 2000,
-            closeButton: false,
-            hideProgressBar: true,
-          });
+          // toast.success("Enquiry status updated!", {
+          //   position: "bottom-right",
+          //   autoClose: 2000,
+          //   closeButton: false,
+          //   hideProgressBar: true,
+          // });
+          showToast("success","Enquiry status updated!")
         }
       } catch (error) {
         console.error("Error fetching data:", error);

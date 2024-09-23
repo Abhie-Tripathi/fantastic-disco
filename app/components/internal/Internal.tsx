@@ -39,7 +39,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [coordinateCount,setCoordinateCount]=useState<any>();
-    const [selectedStatusType, setSelectedStatusType] = useState<string[]>(["Pending"]);
+    const [selectedStatusType, setSelectedStatusType] = useState<string[]>([]);
     const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
     const [selectedParticipantType, setSelectedParticipantType] = useState<string[]>([]);
     const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
@@ -48,18 +48,24 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const status=["Pending", "Shortlisted" ];
     const participants=["Exhibitor", "Sponsor", "Speaker", "Attendee"];
     const [participant,setParticipant]=useState("");
-    const [statusType,setStatusType]=useState("IN_DISCUSSION");
+    const [statusType,setStatusType]=useState("");
     const [duration,setDuration]=useState<string>('');
     const [searchInput, setSearchInput] = useState("");
     const [eventId,setEventId]=useState("");
     const [showSuggestion,setShowSuggestion]=useState(false);
     const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
+    const [filterChanged,setFilterChanged]=useState(false);
     const handleScrollEnd = () => {
       setTimeout(() => {
           if(!noMoreData) setPage(prevPage => prevPage + 1);
       }, 1000);
   };
-    
+  const [interestedUsers, setInterestedUsers] = useState<any>({
+    attendee: [],
+    speakers: [],
+    sponsors: [],
+    exhibitors: [],
+  });
     const setMenuOpen = () => {
         setPopoverState(!popoverState);
     };
@@ -112,8 +118,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
             // console.log(selectedStatusType[selectedStatusType.length-1].toUpperCase());
             
         }else{
-         setStatusType("IN_DISCUSSION");
+          setStatusType("");
         }
+        // else{
+        //  setStatusType("IN_DISCUSSION");
+        // }
         setPage(1);
       },[selectedStatusType])
       const dateShowFormatter = (selectedDateRange: string[]) => {
@@ -151,10 +160,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         if(page > 0) {
             let apiUrl="";
             try {
-            apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
+            apiUrl = `${baseUrl}/userInterest/enquiry?${statusType.length > 0 ? `status=${statusType}&` : ''}limit=10&offset=${(page - 1) * 10}` +
             (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
-            (duration.length!==0 ? `&duration=${duration}` : '') +
-            `&source=internal`+(eventId ? `&eventId=${eventId}` : '');
+            (duration.length !== 0 ? `&duration=${duration}` : '') +
+            `&source=internal` + (eventId ? `&eventId=${eventId}` : '');
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
@@ -171,6 +180,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
                 if(apiData.data.enquiryData.length < 10){
                     setNoMoreData(true);}
             }
+            setFilterChanged(false);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -189,11 +199,31 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
 useInfiniteScroll(divRef, handleScrollEnd);
+// const fetchInterestedUsers = async () => {
+//   try {
+//     const apiUrl = `${baseUrl}/userInterest/${eventId}`;
+//     const apiData = await myFetch(apiUrl, {
+//       method: "GET",
+//       headers: headers,
+//     });
+//     if (apiData.data) {
+//       setInterestedUsers({
+//         attendee: apiData.data.participent.attendee,
+//         speakers: apiData.data.participent.speakers,
+//         sponsors: apiData.data.participent.sponsors,
+//         exhibitors: apiData.data.participent.exhibitors,
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// };
+
 useEffect(()=>{
   if(page>0){
     setNoMoreData(false);
     fetchData();
-    
+    setFilterChanged(true);
   }
 },[statusType, participant, page, duration, eventId])
  if(!isLoaded){
@@ -370,10 +400,13 @@ useEffect(()=>{
         // Update previous date
         prevDate = item.startDate;
         return (
+          <>
+          {item.enquiryStatus!=="CANCELED"&& 
             <div key={index} className={styles.timeline}>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.eventId}
+                    filterChanged={filterChanged}
                     isDateSame={showDate}
                     enquiryId={item.enquiryId}
                     eventName={item.eventName}
@@ -392,6 +425,8 @@ useEffect(()=>{
                     handleShortlistModal={handleShortlistModal}
                 />
             </div>
+        }
+        </>
         );
     })}
 </div>
