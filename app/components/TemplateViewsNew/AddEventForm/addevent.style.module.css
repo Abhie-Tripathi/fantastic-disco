@@ -11,3 +11,10 @@
 .details{
     width: 80%;
 }
+
+@media screen and (max-width: 1140px) {
+    .appearance{
+        min-width: 20%;
+        height: 100%;
+    }
+}

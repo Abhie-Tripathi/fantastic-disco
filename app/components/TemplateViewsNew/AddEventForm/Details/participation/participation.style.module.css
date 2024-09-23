@@ -105,3 +105,12 @@
     position: absolute;
     top: 100%;
   }
+
+
+  @media screen and (max-width: 1140px) {
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+  }
