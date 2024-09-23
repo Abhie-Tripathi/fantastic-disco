@@ -7,10 +7,13 @@ import { myFetch } from '@/utils/myFetch'
 import { AllEventsType } from '@/types/alleventtype'
 import { baseUrl } from '@/constants'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
+import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image'
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import { useTheme } from '@/context'
+import { AddedEventsType } from '@/types/addedeventtype'
+import DashboardEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEventCard'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
@@ -20,6 +23,7 @@ const Page = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
+    const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
     const { theme } = useTheme()
 
     let prevDate: any = null;
@@ -27,6 +31,16 @@ const Page = () => {
         fetchEvents(page * 8);
     }, [page])
 
+    const fetchAddedEvents = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/widget/${"1"}`)
+        if (data) {
+          const events = data.otherdata?.event;
+        }
+        if (error) {
+          console.log(error);
+        }
+      }
+    
     useEffect(() => {
         const handleScroll = () => {
             if (
@@ -119,11 +133,12 @@ const Page = () => {
                 return (
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.startDate : null} />
-                        <YourEventCard
+                        {/* <YourEventCard
                             handleDeleteModal={handleDeleteModal}
                             handlePrefillEvent={handlePrefillEvent}
                             geniEvent={event}
-                        />
+                        /> */}
+                        <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event}/>
                     </div>
                 );
             }) :
@@ -134,8 +149,8 @@ const Page = () => {
                     <span>or feel free to create your own event from scratch</span>
                 </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
-            {isEventFormModal && <div className={styles.addNormalEventModal}>
-                <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} setIsNormalEventModalOpen={setIsEventFormModal} fetchEvents={fetchEvents} prefilledNormalEvent={prefilledNormalEvent} />
+            {isEventFormModal && <div className={styles.addEventModal}>
+            <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents}/>
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

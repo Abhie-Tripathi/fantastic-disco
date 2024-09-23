@@ -69,7 +69,7 @@ const DashboardEvents = () => {
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
                             {fetchedAddedEvents.map((event,key)=>(
-                                <div className={styles.eventCard} key={key}><DashboardEventCard fetchEvents={fetchEvents} event={event}/></div>
+                                <div className={styles.eventCard} key={key}><DashboardEventCard width='large' fetchEvents={fetchEvents} event={event}/></div>
                             ))}
                         </div>
 

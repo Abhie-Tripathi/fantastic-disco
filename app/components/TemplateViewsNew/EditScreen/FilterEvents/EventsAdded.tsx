@@ -203,7 +203,7 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
         <div className={styles.body}>
             <div className={styles.headerContainer}>
                 <div>Events Added</div>
-                <button onClick={() => handleAddEventModal()}>Add Event to widget</button>
+                {/* <button onClick={() => handleAddEventModal()}>Add Event to widget</button> */}
             </div>
             <div className={styles.line}></div>
             {fetchedAddedOtherData.length > 0 ? <div className={styles.allEventsContainer}>

@@ -109,21 +109,16 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
         <div className={styles.body} ref={scrollableDivRef}>
             <div className={styles.headerContainer}>
                 <div className={styles.heading}>All Events</div>
-                <div className={styles.btnsDropdown}>
+                {/* <div className={styles.btnsDropdown}>
                     <div className={styles.dropdownBtn} onClick={() => setDropdown(!dropdown)}><span>Add Event</span><DownArrow /></div>
-                    {/* <button onClick={() => handleNormalEventModal()}><Addevent /> Add event</button>
-                    <button onClick={() => handleAddEventModal()}>
-                        <AddeventToWidget />Add Event to widget
-                    </button> */}
                     {dropdown && <div className={styles.dropdownContainer} ref={buttonDropdownRef}>
                         <li onClick={() => handleNormalEventModal()}><AddeventIcon/><span>Add event to list</span></li>
                         <li onClick={() => handleAddEventModal()}><AddeventToWidgetIcon/><span>Add event to widget</span></li>
                         <li><SideventIcon/><span>Add side event</span></li>
                     </div>}
-
-                </div>
+                </div> */}
             </div>
-            <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
+            {/* <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} /> */}
             <div className={styles.line}></div>
             {fetchedAllEvents.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
