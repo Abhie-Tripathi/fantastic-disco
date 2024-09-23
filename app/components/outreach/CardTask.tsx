@@ -23,7 +23,7 @@ interface CardTaskProps {
     onClick:() => void
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick, interests }) => {
+const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , eventCompany, eventStartDate, eventEndDate, eventId, enquiryId, enquiryStatus, onDragStart, handleModal,onClick, interests, task }) => {
     const {theme} = useTheme();
     const iconClass = theme === 'light' ? 'icons_light' : 'icon';
     // const startDate = formatDate(eventStartDate);
@@ -36,7 +36,7 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
                 <div className={styles.line}> <hr  className={styles.hr}/> </div>
             </div>
         </div>
-        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus)} style={{gap:"4px"}}>
+        <div className={`${styles.card} card`} draggable={draggable} onDragStart={(event) => onDragStart(event, name)} onClick={()=>handleModal(eventId, enquiryId, enquiryStatus, task)} style={{gap:"4px"}}>
             <div className={styles.heading}>{name}</div>
             <div className={styles.companyName}>{eventCompany}</div>
             <div className={styles.date}>

@@ -120,6 +120,8 @@ export const AddComment = ({
   }, [user]);
   useEffect(()=>{
     setUsers(allUsers);
+    console.log(allUsers);
+    
   },[allUsers])
   // useEffect(() => {
   //   const url = `${baseUrl}/auth/users?limit=100`;

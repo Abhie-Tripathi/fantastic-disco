@@ -15,13 +15,14 @@ const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
   const [preFinalisedTasks, setPreFinalisedTasks] = useState<enquiryType[]>([]);
+  const [data,setData]=useState([]);
   const [shortlistedCount,setShortlistedCount]=useState(0);
   const [inProgressCount,setInProgressCount]=useState(0);
   const [confirmedCount,setConfirmedCount]=useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
-  const [selectedConfirmed,setSelectedConfirmed]=useState([]);
+  // const [selectedConfirmed,setSelectedConfirmed]=useState([]);
   const [tabsVisible, setTabsVisible] = useState<string>("shortlist");
   const [enquiryId, setEnquiryId] = useState<string>("");
   const [singleEventId, setSingleEventId] = useState<string>("");
@@ -30,14 +31,13 @@ const Page: React.FC = () => {
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
   const [shortlistPage,setShortlistPage]=useState(1);
   const [noMoreShortlistData,setNoMoreShortlistData]=useState(false);
+  const [shortlistSent,setShortlistSent]=useState([]);
   const inProgressRef: RefObject<HTMLDivElement> = useRef(null);
   const [inProgressPage,setInProgressPage]=useState(1);
   const [noMoreProgressData,setNoMoreProgressData]=useState(false);
   const confirmedRef: RefObject<HTMLDivElement> = useRef(null);
   const [confirmedPage,setConfirmedPage]=useState(1);
   const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
-  const [isInetial,setIsInetial]=useState(true);
-  const [totalCount,setTotalCount]=useState(0);
   const handleScrollEnd = () => {
     setTimeout(() => {
         if(!noMoreShortlistData) setShortlistPage(prevPage => prevPage + 1);
@@ -87,25 +87,33 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     event: React.DragEvent<HTMLDivElement>,
     target: string
   ) => {
-    // console.log(selectedShortlisted);
+    console.log(target);
     
     // if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
+    console.log(event.dataTransfer.getData("taskName"));
+    
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
       event.dataTransfer.getData("taskName")
     );
     const source = event.dataTransfer.getData("source_container");
+console.log(source);
 
     // To prevent adding the task into the same container
     if (target !== source) {
       if (source === "shortlisted") {
+        console.log(shortlistedTasks);
+        
         setShortlistedTasks(
           shortlistedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
+        // setShortlistSent([...shortlistSent, taskName.enquiryId]);
         // setShortlistPage(1);
         // fetchShortlistData();
         setShortlistedCount(prev=>prev-1)
       } else if (source === "outreach") {
+        console.log(outreachTasks);
+        
         setOutreachTasks(
           outreachTasks.filter((task) => task.eventId !== taskName.eventId)
         );
@@ -114,24 +122,31 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         setPreFinalisedTasks(
           preFinalisedTasks.filter((task) => task.eventId !== taskName.eventId)
         );
-        console.log(taskName.eventId, selectedConfirmed);
-        
-        setSelectedConfirmed(selectedConfirmed.filter((item)=>item!==taskName.enquiryId))
+        // console.log(taskName.eventId, selectedConfirmed);
+        // setSelectedConfirmed(selectedConfirmed.filter((item)=>item!==taskName.enquiryId))
         // setSelectedShortlisted([...selectedShortlisted, taskName.eventId]);
         setConfirmedCount(prev=>prev-1);
       }
 
       if (target === "shortlisted") {
-        setShortlistedTasks([...shortlistedTasks, taskName]);
+        if(noMoreShortlistData){
+          setShortlistedTasks([taskName,...shortlistedTasks]);
+        }else{
+            setShortlistedTasks([taskName,...shortlistedTasks.slice(0,-1)]);
+        }
         setShortlistedCount(prev=>prev+1);
-        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId);
+        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
         // setShortlistPage(1);
         // setShortlistedTasks([]);
         // fetchShortlistData();
       } else if (target === "outreach") {
-        setOutreachTasks([...outreachTasks, taskName]);
+        if(noMoreProgressData){
+          setOutreachTasks([taskName,...outreachTasks]);
+        }else{
+          setOutreachTasks([taskName,...outreachTasks.slice(0,-1)])
+        }
         setInProgressCount(prev=>prev+1);
-        changeEnquiryStatus("IN_NEGO", taskName.enquiryId);
+        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
       } else if (target === "prefinalised") {
         if(noMoreConfirmData){
           setPreFinalisedTasks([taskName,...preFinalisedTasks]);
@@ -139,22 +154,36 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
         console.log(taskName.eventId);
-        setSelectedConfirmed([...selectedConfirmed, taskName.enquiryId]);
-        changeEnquiryStatus("CONFIRMED", taskName.enquiryId);
+        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
       }
     }
   };
-
+  const singleCall=async(source:string)=>{
+    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !!noMoreConfirmData && confirmedCount>10){
+    const apiData = await myFetch(
+      `${baseUrl}/userInterest/enquiry?status=${source}&limit=1&offset=${source==="SHORTLISTED"?(shortlistPage-1)*10+9:source==="IN_NEGO"?(inProgressPage - 1) * 10 + 9:(confirmedPage-1)*10+9}`,
+      {
+        method: "GET",
+        headers: headers,
+      }
+    );
+    if (apiData?.data) {
+      source==="SHORTLISTED"?setShortlistedTasks(prev => [...prev, ...apiData.data.enquiryData]):source==="IN_NEGO"?setOutreachTasks(prev => [...prev, ...apiData.data.enquiryData]): setPreFinalisedTasks(prev => [...prev, ...apiData.data.enquiryData])
+    }
+  }
+  }
   const handleModal = (
     eventId: string,
     enquiryId: string | null = null,
-    enquiryStatus: string | null = null
+    enquiryStatus: string | null = null,
+    task:any
   ) => {
     if (enquiryId != "") {
       setEnquiryId(enquiryId ? enquiryId : "");
       setSingleEventId(eventId);
       setCurrentEnquiryStatus(enquiryStatus ? enquiryStatus : "");
     }
+    setData(task);
     setModalOpen(!modalOpen);
   };
 
@@ -164,7 +193,8 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
 
   const changeEnquiryStatus = async (
     changeStatusTo: string,
-    enquiry_id: string
+    enquiry_id: string,
+    source:string
   ) => {
     if (enquiry_id && enquiry_id != "") {
       let payloadData = {
@@ -179,6 +209,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
           body: JSON.stringify(payloadData),
         });
         if (apiData.data.message === "Data updated") {
+            singleCall(source);
           toast.success("Enquiry status updated!", {
             position: "bottom-right",
             autoClose: 2000,
@@ -193,13 +224,18 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
   };
   useEffect(()=>{
       fetchShortlistData();
-  },[shortlistPage,statusChanged])
+  },[shortlistPage])
   useEffect(()=>{
     fetchInProgressData();
-  },[inProgressPage,statusChanged])
+  },[inProgressPage])
   useEffect(()=>{
     fetchConfirmedData();
-  },[confirmedPage,statusChanged])
+  },[confirmedPage])
+  // useEffect(()=>{
+  //   if(shortlistSent.length===8  && !noMoreShortlistData){
+  //       setShortlistPage(prev=>prev+1);
+  //   }
+  // },[shortlistSent])
 //   useEffect(() => {
 //     if (shortlistPage>1 || inProgressPage>1 || confirmedPage>1 ) {
 //         fetchData();
@@ -223,7 +259,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
       setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
       setShortlistedCount(shortlistApiData.data.totalCount);
     }
-    if(shortlistApiData.data.enquiryData.length < 10) {
+    if(shortlistApiData.data.enquiryData.length < 10 ) {
       setNoMoreShortlistData(true);
     }
   }
@@ -251,88 +287,48 @@ const fetchConfirmedData=async()=>{
         headers: headers,
       }
     );
-    if (confirmApiData.data){
-      if(confirmedPage===1) { setConfirmedCount(confirmApiData.data.totalCount);
-        setTotalCount(Math.ceil(confirmApiData.data.totalCount / 10));
-      }
-      // const d=[...preFinalisedTasks, ...confirmApiData.data.enquiryData]
-      // const filteredEvent = confirmApiData.data.enquiryData.filter(
-      //   (event) => !selectedShortlisted.includes(event.enquiryId)
-      // );
-      // console.log(filteredEvent, selectedShortlisted);
-     
-      setPreFinalisedTasks(prev=>[...prev,...confirmApiData.data.enquiryData])
-
-      if(confirmApiData.data.enquiryData.length<10){
-        setNoMoreConfirmData(true);
-       }
+    if (confirmApiData?.data) {
+      setPreFinalisedTasks(prev => [...prev, ...confirmApiData.data.enquiryData]);
+      setConfirmedCount(confirmApiData.data.totalCount);
+    }
+    if(confirmApiData.data.enquiryData.length < 10 || confirmedCount===10) {
+      setNoMoreConfirmData(true);
     }
     
 }
-console.log(selectedConfirmed);
 
-  // const fetchData = async () => {
-  //   let shortlistApiData: { data?: any; error?: any }={};
-  //   let negoApiData: { data?: any; error?: any }={};
-  //   let confirmApiData: { data?: any; error?: any }={};
-    
-  //   if(isInetial || shortlistPage>1 || statusChanged ){
-  //     shortlistApiData = await myFetch(
-  //       `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(shortlistPage-1)*10}`,
-  //       {
-  //         method: "GET",
-  //         headers: headers,
-  //       }
-  //     );
-  //   }
-  //   if(isInetial|| inProgressPage>1){
-  //   negoApiData = await myFetch(
-  //     `${baseUrl}/userInterest/enquiry?status=IN_NEGO&limit=10&offset=${(inProgressPage-1)*10}`,
-  //     {
-  //       method: "GET",
-  //       headers: headers,
-  //     }
-  //   );
-  // }
-  // if(isInetial|| confirmedPage>1){
-  //   confirmApiData = await myFetch(
-  //     `${baseUrl}/userInterest/enquiry?status=CONFIRMED&limit=10&offset=${(confirmedPage-1)*10}`,
-  //     {
-  //       method: "GET",
-  //       headers: headers,
-  //     }
-  //   );
-  // }
-  // if(shortlistApiData && shortlistApiData?.data) {
-  //   if (shortlistApiData?.data) {
-  //     setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
-  //     setShortlistedCount(shortlistApiData.data.totalCount);
-  //   }
-  //   if(shortlistApiData.data.enquiryData.length < 10) {
-  //     setNoMoreShortlistData(true);
-  //   }
-  // }
-  // if(negoApiData && negoApiData?.data) {
-  //   if (negoApiData.data) {
-  //     setOutreachTasks(prev => [...prev, ...negoApiData.data.enquiryData]);
-  //     setInProgressCount(negoApiData.data.totalCount);
-  //   }
-  //   if(negoApiData.data.enquiryData.length<10){
-  //    setNoMoreProgressData(true);
-  //   }
-  // }
-  // if(confirmApiData && confirmApiData?.data){
-  //   if (confirmApiData.data){
-  //     setPreFinalisedTasks(prev=>[...prev, ...confirmApiData.data.enquiryData])
-  //     setConfirmedCount(confirmApiData.data.totalCount);
-  //   }
-  //   if(confirmApiData.data.enquiryData.length<10){
-  //     setNoMoreConfirmData(true);
-  //    }
-  // }
-  // };
-  console.log(totalCount);
-  
+ 
+const handleDropdownSelect = (target: string, source:string) => {
+  // Assuming you have the taskName and source data available
+  const event = new DragEvent("drop", {
+    bubbles: true,
+    cancelable: true,
+  });
+console.log("Handle drop select");
+
+  // Mocking the dataTransfer object for the drop event
+  Object.defineProperty(event, "dataTransfer", {
+    value: {
+      getData: (key: string) => {
+        if (key === "taskName") return JSON.stringify(data);
+        if (key === "source_container") return source;
+        return "";
+      },
+    },
+  });
+  // event.dataTransfer.setData("source_container", source);
+  console.log(event.dataTransfer.getData("taskName"));
+
+  // Trigger the handleDrop function
+  handleDrop(event, target);
+};
+
+  useEffect(()=>{
+    if(Math.ceil(shortlistedCount/10)===shortlistPage) setNoMoreShortlistData(true);
+  },[shortlistedTasks])
+  useEffect(()=>{
+    if(Math.ceil(inProgressCount/10)===inProgressPage) setNoMoreProgressData(true);
+  },[outreachTasks])
   return (
     <div
       className={`${styles.bodyContainer} ${
@@ -399,6 +395,7 @@ console.log(selectedConfirmed);
                   <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
+                      task={task}
                       name={task.eventName}
                       interests={task.userCountPerInterest}
                       draggable={true}
@@ -415,7 +412,7 @@ console.log(selectedConfirmed);
                     />
                   </div>
                 ))}
-                {noMoreShortlistData ? 
+                {(noMoreShortlistData)  ? 
         <></> : <Loading />
     }
                 {/* <div
@@ -457,6 +454,7 @@ console.log(selectedConfirmed);
                     <CardTask
                       key={index}
                       name={task.eventName}
+                      task={task}
                       interests={task.userCountPerInterest}
                       draggable={true}
                       eventLocation={""}
@@ -465,14 +463,14 @@ console.log(selectedConfirmed);
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus="IN PROGRESS"
+                      enquiryStatus="IN_NEGO"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
                   </div>
                 ))}
-                {noMoreProgressData ? 
+                {(noMoreProgressData) ? 
         <></> : <Loading />
     }
                 {/* <div
@@ -513,6 +511,7 @@ console.log(selectedConfirmed);
                   <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
+                      task={task}
                       name={task.eventName}
                       interests={task.userCountPerInterest}
                       draggable={true}
@@ -529,7 +528,7 @@ console.log(selectedConfirmed);
                     />
                   </div>
                 ))}
-                {noMoreConfirmData ? 
+                {(noMoreConfirmData) ? 
         <></> : <Loading />
     }
                 {/* <div
@@ -556,6 +555,7 @@ console.log(selectedConfirmed);
             openOrganiserDetails={true}
             openPocDetails={true}
             closeBtn={true}
+            handleDropdownSelect={handleDropdownSelect}
             handleModal={handleModal}
             eventId={singleEventId}
             enquiryId={enquiryId ? enquiryId : ""}

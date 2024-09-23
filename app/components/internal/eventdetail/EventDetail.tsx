@@ -53,7 +53,8 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
-  handleRefresh
+  handleRefresh,
+  handleDropdownSelect
 }: Props) => {
   const [meet, setMeet] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
@@ -75,7 +76,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -84,31 +85,35 @@ const EventDetail = ({
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
-    if (enquiryId && enquiryId != "") {
-      let payloadData = {
-        enquiryId: enquiryId,
-        enquiryStatus: statusValues[changeStatusTo],
-      };
-      try {
-        const apiUrl = baseUrl + "/userInterest/enquiry";
-        const apiData = await myFetch(apiUrl, {
-          method: "PATCH",
-          headers: headers,
-          body: JSON.stringify(payloadData),
-        });
-        if (apiData.data.message === "Data updated") {
-          if (handleRefresh) handleRefresh();
-          toast.success("Enquiry status updated!", {
-            position: "bottom-right",
-            autoClose: 2000,
-            closeButton: false,
-            hideProgressBar: true,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
+    // if (enquiryId && enquiryId != "") {
+    //   let payloadData = {
+    //     enquiryId: enquiryId,
+    //     enquiryStatus: statusValues[changeStatusTo],
+    //   };
+    //   try {
+    //     const apiUrl = baseUrl + "/userInterest/enquiry";
+    //     const apiData = await myFetch(apiUrl, {
+    //       method: "PATCH",
+    //       headers: headers,
+    //       body: JSON.stringify(payloadData),
+    //     });
+    //     if (apiData.data.message === "Data updated") {
+    //       // if (handleRefresh) handleRefresh();
+    //       toast.success("Enquiry status updated!", {
+    //         position: "bottom-right",
+    //         autoClose: 2000,
+    //         closeButton: false,
+    //         hideProgressBar: true,
+    //       });
+    //       console.log("curr",currentEnquiryStatus);
+          
+          
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // }
+    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
   };
 
   useEffect(() => {
@@ -120,10 +125,12 @@ const EventDetail = ({
     const fetchEventData = async () => {
       try {
         const { data, error } = await myFetch(
-          `${baseUrl}/event/search?eventId=${eventId}`
+          `${baseUrl}/event/${eventId}`
         );
         if (data) {
-          const eventsData = data.events[0];
+          const eventsData = data.event;
+          console.log(eventsData);
+          
           setSingleEventData(eventsData);
         }
       } catch (error) {
