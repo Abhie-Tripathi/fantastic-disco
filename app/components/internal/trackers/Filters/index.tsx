@@ -174,6 +174,7 @@ const templates = [
         type: "text",
         placeholder: "Competitor Name or Website",
         required:true,
+        example: "facebook.com",
       }
     ]
   },
@@ -261,12 +262,14 @@ const templates = [
         type: "text",
         placeholder: "Speaker's Name",
         required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
         required:true,
+        example: "Facebook",
       }
     ]
   },
