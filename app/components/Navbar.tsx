@@ -43,7 +43,8 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [title, setTitle] = useState("");
   const router = useRouter();
-  const [showBackButton, setShowBackButton] = useState(true);
+  const pathname = usePathname();
+  const [shouldShowBackButton, setShouldShowBackButton] = useState(false);
 
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -140,13 +141,23 @@ const Navbar = () => {
   console.log(userDetail);
 
   useEffect(() => {
-    if (!document.referrer.includes("eventgeni") || !document.referrer.includes("localhost")) {
-      setShowBackButton(true);
-    }else{
-      setShowBackButton(false);
-    }
+    const referrer = document.referrer;
 
+    if (!referrer || !referrer.includes(window.location.origin)) {
+      setShouldShowBackButton(false);
+    } else {
+      setShouldShowBackButton(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (
+      window.location.origin === document.referrer ||
+      document.referrer === ""
+    ) {
+      setShouldShowBackButton(true);
+    }
+  }, [pathname]);
 
   return (
     <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
@@ -174,14 +185,13 @@ const Navbar = () => {
             {title.length !== 0 && title}</div> */}
 
         <div className={styles.page_title}>
-          {showBackButton&&(currPath.startsWith("/widget/edit") || currPath.startsWith("/widget/add") || currPath.startsWith("/widget/list") || currPath.startsWith("/widget/brandkit") || currPath.startsWith("/widget/events"))  && (
+          {shouldShowBackButton && (
             <button className={styles.backBtn} onClick={() => router.back()}>
               <BackIcon />
             </button>
           )}
           {title.length !== 0 && title}
         </div>
-
 
         {/* ) : ( */}
         {/* <Link href="/">
