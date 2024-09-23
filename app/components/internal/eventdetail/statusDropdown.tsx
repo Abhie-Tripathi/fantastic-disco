@@ -2,7 +2,7 @@ import ClockIcon from '/public/clock.svg'
 import ClockIconLight from '/public/clock_light.svg'
 import Image from "next/image";
 import styles from './statusDropdown.style.module.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from '@/context';
 import { toast } from 'react-toastify';
 import { myFetch } from "@/utils/myFetch";
@@ -17,16 +17,18 @@ interface PropType {
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
+  
   const [isOpen, setIsOpen] = useState(false);
-  const enquiryStatus = (props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
-    (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted';
-  const [value, setValue] = useState(enquiryStatus);
+  const [value, setValue] = useState("");
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsOpen((prev) => !prev);
   };
-
+useEffect(()=>{
+ setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
+ (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
+}, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
     setIsOpen(false);
@@ -77,7 +79,8 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
         headers: headers,
         body: JSON.stringify(payloadData),
       });
-      setValue(enquiryStatus);
+      setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
+      (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted');
     } catch (error) {
       console.error('Error fetching data:', error);
     }

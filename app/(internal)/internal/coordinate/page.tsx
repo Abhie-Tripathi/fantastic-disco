@@ -57,9 +57,9 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
-
   return (
-    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`}>
+    <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`} >
+      <div >
       {totalCount >= 9 && (
         <div className={styles.innerContainer}>
           {TypeOfEventsCount.map((item, key) => (
@@ -71,10 +71,12 @@ const Page = () => {
         </div>
       )}
         <Internal
+        modalOpen={modalOpen}
           handleModal={handleModal}
           handleShortlistModal={handleShortlistModal}
           cardUpdated={cardUpdated}
         />
+      </div>
       {modalOpen && (
         <div
           className={`${styles.modal}`}
