@@ -115,33 +115,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   }
   const { theme } = useTheme()
 
-  // useEffect(() => {
-  //   const adjustHeight = () => {
-  //     const textArea = textAreaRef.current;
-  //     if (textArea) {
-  //       textArea.style.height = 'auto'; // Reset the height
-  //       textArea.style.height = `${textArea.scrollHeight}px`; // Set the height to the scroll height
-  //     }
-  //   };
-
-  //   const textArea = textAreaRef.current;
-  //   if (textArea) {
-  //     textArea.addEventListener('input', adjustHeight);
-  //     adjustHeight(); // Initial adjustment
-  //   }
-
-  //   return () => {
-  //     if (textArea) {
-  //       textArea.removeEventListener('input', adjustHeight);
-  //     }
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (mapDivRef.current) {
-  //     setMapWidth(mapDivRef.current.getBoundingClientRect().width);
-  //   }
-  // }, [cityName])
   const handleDescClick = () => {
     setDescription(textValue)
     setDescriptionModal(false)
@@ -447,11 +420,13 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
-      if (description && eventName && countryName) {
-        generatePrompt(countryName, description, eventName, 1024, 1024)
+      if (description && eventName && participationMessage) {
+        generatePrompt(participationMessage, description, eventName, 1024, 1024)
       } else {
-        showToast("error", "Please provide Event name, Description, and Location to generate the Banner");
+        showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
       }
+    }else{
+      showToast("error", "Please wait for the banner to generate first before generating again");
     }
   }
   const handleTagsGenerate = () => {
@@ -526,7 +501,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                   <div className={styles.spinner}></div>
                 </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
               <div className={styles.posterIcons}>
-                <div onClick={handleGeneratePoster} data-name={eventName && description && location ? "Generate your Banner" : "Add Event name, Location and Description to generate a banner"}>
+                <div onClick={handleGeneratePoster} data-name={eventName && description ? "Generate your Banner" : "Add Event name and Description and participationMessage to generate a banner"}>
                   <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
                 </div>
                 <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>

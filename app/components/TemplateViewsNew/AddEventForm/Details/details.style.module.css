@@ -67,17 +67,25 @@
 .btnContainer .addBtn:hover {
     background-color: #7962b8;
 }
-.btnContainer .addBtnDisable{
+
+.btnContainer .addBtnDisable {
     cursor: not-allowed;
     background-color: var(--disabled-btn-color);
 }
-.btnContainer .addBtnDisable:hover{
+
+.btnContainer .addBtnDisable:hover {
     cursor: not-allowed;
     background-color: var(--disabled-btn-color);
 }
+
 .posterContainer {
     position: relative;
+    width: 296px;
+    /* Fixed width */
+    height: 290px;
+    /* Fixed height */
 }
+
 .posterContainer .loader {
     border: 1px solid grey;
     border-radius: 10px;
@@ -107,6 +115,13 @@
     }
 }
 
+.posterContainer .placeHolder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
 .posterContainer .posterIcons {
     position: absolute;
     right: 19px;
@@ -115,6 +130,11 @@
     gap: 5px;
     align-items: center;
 }
+
+/* .posterContainer .placeHolder{
+    width: 1792px;
+    height: 1024px;
+} */
 
 .posterContainer .posterIcons div {
     border: 2px solid white;
@@ -225,7 +245,7 @@
 
 .errorHighlight {
     border: .5px solid #DA2F35;
-    transition: border-color 0.3s ease; 
+    transition: border-color 0.3s ease;
     box-shadow: 0 0 5px red;
 }
 
@@ -233,10 +253,10 @@
 .errorBackground {
     background-color: #D92D2017;
     border-bottom: .5px solid #D92D20;
-  }
-  
-  .errorMessage {
+}
+
+.errorMessage {
     color: #D92D20;
     font-size: 12px;
     margin-top: 4px;
-  }
+}

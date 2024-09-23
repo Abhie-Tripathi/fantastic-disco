@@ -13,43 +13,50 @@
     justify-content: space-between;
     padding: 14px 30px 14px 23px;
 }
-.headerContainer div{
-    display: flex;
-    align-items: center;
+.headerContainer .heading{
     gap: 8px;
     font-size: 14px;
     font-weight: 600;
 }
-.headerContainer div span{
-    font-size: 11px;
-    font-weight: 500;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: #E6E6F9;
-    color: #6750a4;
+.btnsDropdown{
+    position: relative;
+}
+.btnsDropdown .dropdownBtn{
     display: flex;
     align-items: center;
-    justify-content: center;
-}
-.headerContainer .addBtnContainer{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.headerContainer button{
-    color: white;
-    background-color: #6750a4;
+    gap: 4px;
+    background-color: var(--primary-color);
     border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-    padding: 5px 8px;
+    padding: 4px 8px;
+    color: white;
+    font-size: var(--font-size-small);
+    cursor: pointer;
+}
+.btnsDropdown .dropdownContainer{
+    z-index: 2;
+    filter: drop-shadow(1px 1px 2px rgb(135, 135, 135));
+    position: absolute;
+    top: 25px;
+    right: 0;
+    background-color: var(--primary-foreground);
+    padding: 17px 6px;
+    border-radius: 3px;
+}
+.dropdownContainer li{
+    width: 155px;
+    text-align: center;
     display: flex;
     align-items: center;
     gap: 5px;
+    font-size: var(--font-size-small);
+    color: var(--primary-text-colo);
+    padding: 3px 5px;
+    cursor: pointer;
+    border-radius: 2px;
 }
-
+.dropdownContainer li:hover{
+    background-color: var(--accent-color);
+}
 .allEventsHeading{
     display: flex;
     align-items: center;
