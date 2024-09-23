@@ -401,7 +401,6 @@ useEffect(()=>{
         prevDate = item.startDate;
         return (
           <>
-          {item.enquiryStatus!=="CANCELED"&& 
             <div key={index} className={styles.timeline}>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
@@ -425,7 +424,6 @@ useEffect(()=>{
                     handleShortlistModal={handleShortlistModal}
                 />
             </div>
-        }
         </>
         );
     })}
