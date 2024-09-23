@@ -109,6 +109,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [query, setQuery] = useState("")
   const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
   const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
+  const [errorMessage, setErrorMssage] = useState("Event name is required.");
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -177,7 +178,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   },[banner])
 
   const handleAddEvent = async () => {
-    if (!eventName.trim()) {
+    if (!eventName || eventName ==="") {
       setIsEventNameEmpty(true)
     } else {
       setIsEventNameEmpty(false)
@@ -204,7 +205,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setIsTextValueMessageEmpty(true)
     }
 
-    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+    if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }
@@ -309,7 +310,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
-    if (!eventName.trim()) {
+    if (!eventName || eventName ==="") {
       setIsEventNameEmpty(true)
     } else {
       setIsEventNameEmpty(false)
@@ -335,7 +336,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if(!textValue.trim()){
       setIsTextValueMessageEmpty(true)
     }
-    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+    if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }
@@ -487,14 +488,16 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   }, [imageUrl]);
 
   const handleInputChange = (value : string) => {
-    console.log("value typed : ", value)
+    console.log("value typed ___: ", value)
     const specialCharRegex = /[@#$%^&*"|<>]/g;
 
     if (specialCharRegex.test(value)) {
       showToast("error", "Please check, input should not contain any special character");
     } else {
       setEventName(value);
-      setIsEventNameEmpty(false)
+      if (value.trim() === "") {
+        setIsEventNameEmpty(true);
+      }
     }
   };
   return (
@@ -555,7 +558,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 onChange={(e) => handleInputChange(e.target.value)}
                 value={eventName}
               />
-              {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required.</p>}
+              {isEventNameEmpty && <p className={styles.errorMessage}>{errorMessage}</p>}
             </div>
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
             <div>
