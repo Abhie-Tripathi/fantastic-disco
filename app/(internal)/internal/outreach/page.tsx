@@ -10,7 +10,8 @@ import { baseUrl, headers } from "@/constants";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
-import Loading from "@/app/components/UI/Loading";
+import Loading from "@/app/components/UI/Loading";import { showToast } from "@/utils/showToast";
+
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -210,12 +211,13 @@ console.log(source);
         });
         if (apiData.data.message === "Data updated") {
             singleCall(source);
-          toast.success("Enquiry status updated!", {
-            position: "bottom-right",
-            autoClose: 2000,
-            closeButton: false,
-            hideProgressBar: true,
-          });
+          // toast.success("Enquiry status updated!", {
+          //   position: "bottom-right",
+          //   autoClose: 2000,
+          //   closeButton: false,
+          //   hideProgressBar: true,
+          // });
+          showToast("success","Enquiry status updated!")
         }
       } catch (error) {
         console.error("Error fetching data:", error);

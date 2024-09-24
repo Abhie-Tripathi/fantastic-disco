@@ -18,9 +18,10 @@ interface Props {
   handleShortlistModal: (eventId: string) => void;
   shortlistModalData: any;
   handleRefresh: () => void;
+  setStatusChanged: (status: boolean) => void;
 }
 
-const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh }: Props) => {
+const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh, setStatusChanged }: Props) => {
   const { user } = useAuthContext();
 
   const closeModal = () => {
@@ -45,6 +46,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
   const [shortlistedExhibitor, setShortlistedExhibitor] = useState<string[]>([]);
   const [shortlistedSpeaker, setShortlistedSpeaker] = useState<string[]>([]);
   const [shortlistedSponsor, setShortlistedSponosor] = useState<string[]>([]);
+console.log(shortlistedVisitors.concat(shortlistedSpeaker, shortlistedExhibitor, shortlistedSponsor).join());
 
   const handleSubmit = async() => {
     if(user){
@@ -64,6 +66,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           body: JSON.stringify(payloadData),
         });
         // handleRefresh();
+        setStatusChanged(true);
         closeModal();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -80,8 +83,10 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
             headers: headers,
             body: JSON.stringify(payloadData),
           });
-          handleRefresh();
+          // handleRefresh();
+          setStatusChanged(true);
           closeModal();
+          
         } catch (error) {
           console.error('Error fetching data:', error);
         }
