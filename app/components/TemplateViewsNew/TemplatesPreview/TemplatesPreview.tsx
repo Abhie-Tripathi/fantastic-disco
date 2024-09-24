@@ -8,8 +8,6 @@ import { StaticImageData } from 'next/image';
 import CarouselGridImage from '/public/widgetimages/pageimages/CarouselGrid.png'
 import PreviewWindow from './PreviewWindow';
 
-
-
 interface Props {
     widgetSelected: string;
     draftWidgets: DraftWidgetsType[]

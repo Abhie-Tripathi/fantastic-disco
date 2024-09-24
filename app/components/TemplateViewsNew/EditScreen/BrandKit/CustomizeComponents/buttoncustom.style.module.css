@@ -27,6 +27,7 @@
 }
 
 .btnPreviewContainer {
+    background-color: var(--accent-color);
     border-radius: 5px;
     width: 100%;
     display: flex;
@@ -128,6 +129,7 @@
     font-size: 11px;
 }
 .inputContainer{
+    background-color:var(--accent-color);
     border-radius: 5px;
     width: 70px;
     line-height: 14px;
@@ -137,6 +139,7 @@
     font-size: 10px;
 }
 .inputContainer input{
+    color: var(--primary-text-color);
     width: 100%;
     background-color: transparent;
     border: none;
@@ -163,6 +166,7 @@
     font-size: 11px;
 }
 .btnTextContainer input{
+    color: var(--primary-text-color);
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 10px;

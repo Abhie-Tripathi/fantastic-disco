@@ -1,12 +1,10 @@
 .body{
     height: 100%;
     width: 100%;
-    background-color: #FAFAFA;
+    background-color: var(--background-secondary-color);
     border-radius: 10px;
 }
-.darkBody{
-    background-color: #1A1A1A;
-}
+
 .heading{
     font-size: 18px;
     font-weight: 500;
@@ -32,25 +30,21 @@
 .styleBtns{
     display: flex;
     gap: 8px;
-    background-color: #FBF8FF;
+    background-color: var(--tabs-background-color);
     border-radius: 10px;    
     padding: 12px;
     z-index: 12;
 }
-.darkStyleBtns{
+/* .darkStyleBtns{
     background-color: #202020;
-}
+} */
 .styleBtn{
     padding: 4px 8px;
     border-radius: 3px;
-    background-color: white;
-    color: black;
-    filter: drop-shadow(1px 1px 2px rgb(205, 205, 205));
-}
-.darkStyleBtn{
-    background-color: #1a1a1a;
-    color: white;
-    filter: drop-shadow(1px 1px 2px rgb(49, 49, 49));
+    background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
+    border: 1px solid var(--border-color);
+    /* filter: drop-shadow(1px 1px 2px rgb(205, 205, 205)); */
 }
 .activeBtn{
     border: none;

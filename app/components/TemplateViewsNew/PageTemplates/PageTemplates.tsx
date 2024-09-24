@@ -13,8 +13,6 @@ import CarouselGridImageDark from '/public/widgetimages/pageimages/CarouselGridD
 import CarouselListImageDark from '/public/widgetimages/pageimages/CarouselListDark.png'
 import HeroGridViewImageDark from '/public/widgetimages/pageimages/HeroGridViewDark.png'
 import HeroListViewImageDark from '/public/widgetimages/pageimages/HeroListViewDark.png'
-
-import { useTheme } from "@/context";
 import { StaticImageData } from 'next/image'
 
 interface Props {
@@ -27,7 +25,6 @@ interface Props {
 }
 
 const PageTemplates = ({ setSelectedTemplate, selectedTemplate, setTempelateName, setSelectedImage, activeBtn, setActiveBtn }: Props) => {
-    const { theme } = useTheme();
 
     const NonHighlightedTemplates =
         [
@@ -42,10 +39,10 @@ const PageTemplates = ({ setSelectedTemplate, selectedTemplate, setTempelateName
             { key: "CVG", name: "Carousel & Grid Style", desc: "Present Multiple Events as a Grid View for a streamlined, easy-to-read schedule display.", tag: "Multiple Events", image1: CarouselGridImage, image2: CarouselGridImageDark }
         ]
     return (
-        <div className={`${styles.body}`}>
-            <div className={`${styles.btnContainer} ${theme == "dark" ? styles.darkbtnContainer : ""}`}>
-                <button className={`${styles.btn} ${activeBtn === "Highlighted" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkBtn : ""}`} onClick={() => setActiveBtn("Highlighted")}>Highlighted Event Styles</button>
-                <button className={`${styles.btn} ${activeBtn === "NonHighlighted" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkBtn : ""}`} onClick={() => setActiveBtn("NonHighlighted")}>Non-Highlighted Event Styles</button>
+        <div className={styles.body}>
+            <div className={styles.btnContainer}>
+                <button className={`${styles.btn} ${activeBtn === "Highlighted" ? styles.activeBtn : ""}`} onClick={() => setActiveBtn("Highlighted")}>Highlighted Event Styles</button>
+                <button className={`${styles.btn} ${activeBtn === "NonHighlighted" ? styles.activeBtn : ""}`} onClick={() => setActiveBtn("NonHighlighted")}>Non-Highlighted Event Styles</button>
             </div>
             <div className={styles.templates}>
                 {activeBtn === "NonHighlighted" ? (

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './dashboardbrandkit.style.module.css'
 import LogoComponent from '../EditScreen/BrandKit/CustomizeComponents/LogoComponent'
 import BrandColor from '../EditScreen/BrandKit/CustomizeComponents/BrandColor'
@@ -43,8 +43,6 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
     useEffect(() => {
         // Initial fetch
         fetchBrandkit();
-    }, [])
-    useEffect(() => {
         // Set up polling
         const intervalId = setInterval(() => {
             if (polling) {
@@ -89,7 +87,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                     </div>
                     <div className={styles.loadingHeading}>Fetching your Brandkit</div>
                 </div>
-            ) : !brandkitFetched ? (
+            ) : brandkitFetched ? (
                 <div className={styles.brandKitContainer}>
                     <div className={styles.container}>
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />

@@ -10,7 +10,6 @@ import PortraitPopup from '../../TemplateViews/previews/popup/portraitstyles/Por
 import LandscapePopup from '../../TemplateViews/previews/popup/landscapesstyles/LandscapePopup';
 import ScrollView from '@/app/components/TemplateViews/previews/section/ScrollView'
 import CaraouselView from '@/app/components/TemplateViews/previews/page/CarouselView/CaraouselView';
-import { useTheme } from '@/context';
 import { StaticImageData } from 'next/image';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
@@ -83,7 +82,6 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
     const [storedDomain, setStoredDomain] = useState<string>("")
-    const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
@@ -204,24 +202,24 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         }
     };
     return (
-        <div className={`${styles.body}  ${theme === "dark" ? styles.darkBody : ""}`} >
+        <div className={styles.body} >
             <div className={styles.heading_btnContainer}>
                 {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LSR" || selectedTemplate === "RSR" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
-                    <div className={`${styles.styleBtns} ${theme == "dark" ? styles.darkStyleBtns : ""}`}>
+                    <div className={styles.styleBtns}>
                         <button
-                            className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            className={`${styles.styleBtn} ${selectedCard === "style1" ? styles.activeBtn : ""}`}
                             onClick={() => setSelectedCard("style1")}
                         >
                             Style 1
                         </button>
                         <button
-                            className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            className={`${styles.styleBtn} ${selectedCard === "style2" ? styles.activeBtn : ""} `}
                             onClick={() => setSelectedCard("style2")}
                         >
                             Style 2
                         </button>
                         <button
-                            className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} ${theme === "dark" ? styles.darkStyleBtn : ""}`}
+                            className={`${styles.styleBtn} ${selectedCard === "style3" ? styles.activeBtn : ""} `}
                             onClick={() => setSelectedCard("style3")}
                         >
                             Style 3
@@ -233,7 +231,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     {/* <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div> */}
                     <div onClick={() => setIsFullScreen(!isFullScreen)}>
-                        {isFullScreen ? <CloseFullScreenIcon color={theme === "dark" ? "white" : "black"} /> : <FullScreenIcon color={theme === "dark" ? "white" : "black"} />}
+                        {isFullScreen ? <CloseFullScreenIcon/> : <FullScreenIcon/>}
                     </div>
                 </div>
             </div>
@@ -268,34 +266,31 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
 }
 
 export default PreviewWindow
-interface IconProps {
-    color: string;
-}
 
-function MobileIcon({ color }: IconProps) {
+function MobileIcon() {
     return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.5 6H13.5M16.286 3H7.714C6.768 3 6 3.806 6 4.8V19.2C6 20.194 6.768 21 7.714 21H16.286C17.233 21 18 20.194 18 19.2V4.8C18 3.806 17.233 3 16.286 3Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     )
 }
-function DesktopIcon({ color }: IconProps) {
+function DesktopIcon() {
     return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 20H12M12 20H15M12 20V17M12 17H19C19.5304 17 20.0391 16.7893 20.4142 16.4142C20.7893 16.0391 21 15.5304 21 15V6C21 5.46957 20.7893 4.96086 20.4142 4.58579C20.0391 4.21071 19.5304 4 19 4H5C4.46957 4 3.96086 4.21071 3.58579 4.58579C3.21071 4.96086 3 5.46957 3 6V15C3 15.5304 3.21071 16.0391 3.58579 16.4142C3.96086 16.7893 4.46957 17 5 17H12Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
 
     )
 }
-function FullScreenIcon({ color }: IconProps) {
+function FullScreenIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill={color}><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z" /></svg>
     )
 }
 
-function CloseFullScreenIcon({ color }: IconProps) {
+function CloseFullScreenIcon() {
     return (
-        <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill={color}></path></svg>
+        <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill="currentColor"></path></svg>
     )
 }
 

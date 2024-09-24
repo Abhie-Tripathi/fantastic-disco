@@ -3,19 +3,19 @@
     width: 100%;
 }
 .btnContainer{
-    background-color: #FBF8FF;
+    background-color: var(--tabs-background-color);
     border-radius: 6px;
     padding: 12px;
     display: flex;
     gap: 18px;
     justify-content: center;
 }
-.darkbtnContainer{
+/* .darkbtnContainer{
     background-color: #202020;
-}
+} */
 .btn{
-    background-color: white;
-    color: #424242;
+    background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
     padding: 8px 24px;
     border-radius: 4px;
     filter: drop-shadow(1px 1px 1px #0000000A);
@@ -23,10 +23,10 @@
     font-size: 13px;
     width: 300px;
 }
-.darkBtn{
+/* .darkBtn{
     background-color: #1a1a1a;
     color: white;
-}
+} */
 .activeBtn{
     border: 1px solid #6750A4;
 }
