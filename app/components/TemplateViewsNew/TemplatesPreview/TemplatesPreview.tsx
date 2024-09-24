@@ -41,10 +41,10 @@ const TemplatesPreview = ({ widgetSelected, draftWidgets, setDraftWidgets, fetch
     useEffect(() => {
         if (widgetSelected === "Page") {
             setSelectedTemplate("LS");
-            setTemplateName("Left Scroll")
+            setTemplateName("List Style")
         } else if (widgetSelected === "Section") {
-            setSelectedTemplate("HB");
-            setTemplateName("Hero Banner")
+            setSelectedTemplate("CV");
+            setTemplateName("Carousel Section")
         } else if (widgetSelected === "Sticky") {
             setSelectedTemplate("ST");
             setTemplateName("Sticky Top")

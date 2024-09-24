@@ -296,31 +296,25 @@ const fetchConfirmedData=async()=>{
     }
     
 }
-
- 
-const handleDropdownSelect = (target: string, source:string) => {
-  // Assuming you have the taskName and source data available
-  const event = new DragEvent("drop", {
-    bubbles: true,
-    cancelable: true,
-  });
-console.log("Handle drop select");
-
-  // Mocking the dataTransfer object for the drop event
-  Object.defineProperty(event, "dataTransfer", {
-    value: {
+const handleDropdownSelect = (target: string, source: string) => {
+  // console.log("Handle drop select");
+  const mockEvent = {
+    preventDefault: () => {},
+    stopPropagation: () => {},
+    dataTransfer: {
       getData: (key: string) => {
         if (key === "taskName") return JSON.stringify(data);
         if (key === "source_container") return source;
         return "";
       },
+      setData: () => {}
     },
-  });
-  // event.dataTransfer.setData("source_container", source);
-  console.log(event.dataTransfer.getData("taskName"));
-
-  // Trigger the handleDrop function
-  handleDrop(event, target);
+    nativeEvent: new Event("drop"),
+    isDefaultPrevented: () => false,
+    isPropagationStopped: () => false,
+    persist: () => {}
+  } as any;
+  handleDrop(mockEvent, target);
 };
 
   useEffect(()=>{

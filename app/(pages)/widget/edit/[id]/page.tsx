@@ -19,13 +19,13 @@ import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
 import { useTheme } from '@/context'
 
 const Page = () => {
-  const {theme} = useTheme()
+  const { theme } = useTheme()
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
-    subheading: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" },
+    subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "normal" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
   });
   const [buttonSettings, setButtonSettings] = useState<ButtonSettingsState>({
@@ -35,7 +35,7 @@ const Page = () => {
 
   const [cardStyle, setCardStyle] = useState<string>("style1")
   const [selectedBtn, setSelectedBtn] = useState<"primary" | "secondary">("primary");
-  const [selectedTemplate, setSelectedTemplate] = useState<string>()
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("")
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState<boolean>(false)
   const [isNormalEventModalOpen, setIsNormalEventModalOpen] = useState<boolean>(false)
   const [fetchedAllEvents, setFetchedAllEvents] = useState<AllEventsType[]>([])
@@ -47,6 +47,7 @@ const Page = () => {
   const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>()
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
+  const [allEventsCount, setAllEventsCount] = useState<number>(0)
 
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
@@ -64,8 +65,8 @@ const Page = () => {
 
 
   // This function is fetching all the events regardless added in the widget or not
-  const fetchEvents = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}`)
+  const fetchEvents = async (page: number, type? : string) => {
+    const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}&offset=${page}&limit=8`)
     if (data) {
       const events: AllEventsType[] = data.data.map((event: any) => ({
         eventId: event.id,
@@ -77,17 +78,25 @@ const Page = () => {
         endDate: event.data.end_date,
         format: event.data.format,
         isLinkedToWidget: event.isWidgetLinked,
-        startTime: event.data.startTime,
-        endTime: event.data.endTime,
+        startTime: event.data.start_time,
+        endTime: event.data.end_time,
         gmtZone: event.data.gmt_time,
-        latitude : event.data.latitude,
-        longitude : event.data.longitude
+        latitude: event.data.latitude,
+        longitude: event.data.longitude,
+        participationType: event.data.participationType
       }))
-      setFetchedAllEvents(events)
+      if(type === "update"){ // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
+        setFetchedAllEvents(events)
+      }else{
+        setFetchedAllEvents(prevEvents => [...prevEvents, ...events]);
+      }
+
+      setAllEventsCount(data.totalCount)
     } if (error) {
       console.log(error)
     }
   }
+
   // Function for fetching the added events in widget
   const fetchAddedEvents = async () => {
     const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
@@ -99,6 +108,7 @@ const Page = () => {
       console.log(error);
     }
   }
+
 
   useEffect(() => {
     const fetchWidgetData = async () => {
@@ -117,17 +127,14 @@ const Page = () => {
         setSelectedTemplate(asciiToString(data.templatePublicId));
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
+        setfetchedAddedEvents( data.otherdata?.event);
       }
-      setLoading(false); 
+      setLoading(false);
     }
     fetchWidgetData();
-    fetchEvents();
-    fetchAddedEvents();
+    fetchEvents(0);
+    // fetchAddedEvents();
   }, [])
-
-  useEffect(()=>{
-    console.log("event : ", prefilledAddedEvent)
-  },[prefilledAddedEvent])
 
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
@@ -163,7 +170,7 @@ const Page = () => {
     setPrefilledGlobalEvent(undefined)
     setIsAddEventModalOpen(true)
   }
-  const handleNormalEventModal = () =>{
+  const handleNormalEventModal = () => {
     setPrefilledNormalEvent(undefined)
     setIsNormalEventModalOpen(true)
   }
@@ -173,9 +180,9 @@ const Page = () => {
     setIsAddEventModalOpen(true)
   }
 
-  const handlePrefillNormalEvent = (event: AllEventsType, type : string) => {
+  const handlePrefillNormalEvent = (event: AllEventsType, type: string) => {
     setPrefilledNormalEvent(event)
-    if(type === "add"){
+    if (type === "add") {
       setIsAddEventModalOpen(true)
     } else setIsNormalEventModalOpen(true)
 
@@ -200,6 +207,7 @@ const Page = () => {
       <ToastContainer />
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
+          selectedTemplate={selectedTemplate}
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}
@@ -225,6 +233,7 @@ const Page = () => {
           handleAddEventModal={handleAddEventModal}
           addedEventIds={addedEventIds}
           handleNormalEventModal={handleNormalEventModal}
+          allEventsCount = {allEventsCount}
         />
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
@@ -248,7 +257,7 @@ const Page = () => {
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
       </div>}
       {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
-        <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} />
+        <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} fetchAddedEvents={fetchAddedEvents}/>
       </div>}
     </div>
   )

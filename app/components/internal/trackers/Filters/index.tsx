@@ -4,11 +4,12 @@ import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Url from '/public/url.svg'
+import CloseIcon from "/public/internal/cross.svg";
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
-import { ChevronDown, Plus } from "geist-icons";
+import { ChevronDown, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
@@ -66,7 +67,9 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import Suggestion from "../suggestion";
+import SearchBar from "../../searchBar/SearchBar";
+import CsvUploader from "./csvUploader";
+import { Button as Button10x } from "10xui";
 interface FilterValue {
   labels: string;
   name: string;
@@ -107,13 +110,19 @@ interface FilterValue {
   speakerName: string;
   orgWebsite: string;
   orgName:string;
+  userType?:Toggle
+  userName?:string;
   eventAttendanceRange: any;
 }
 interface InputArea {
   type: string;
   placeholder: string;
 }
-
+interface Toggle{
+  rating?:boolean;
+  exhibit?:boolean;
+  trust?:boolean;
+}
 interface Template {
   name: string;
   type?: string;
@@ -164,7 +173,7 @@ const templates = [
       {
         img: Url,
         type: "text",
-        placeholder: "Add Competitor Name or Website",
+        placeholder: "Competitor Name or Website",
         required:true,
       }
     ]
@@ -291,9 +300,10 @@ const Pages = () => {
   interface SelectedLocation {
     [id: string]: string;
   }
+  const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
+  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  console.log(type);
 
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
@@ -324,6 +334,7 @@ const Pages = () => {
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
   );
+  const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
@@ -356,7 +367,12 @@ const Pages = () => {
     isEventRank: false,
     isLocalRank: false,
     isAviationRank: false,
+    isTrustScore: false,
   });
+  const [isPop,setIsPop]=useState({
+  rating:false,
+  exhibit:false
+});
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
@@ -510,8 +526,6 @@ const Pages = () => {
       setDesignations(designation);
     }
   }, [type, customData])
-  console.log(websites);
-  console.log(selectedEventType);
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -526,9 +540,12 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-
+    const userType = {
+      ...(isRatingOpen && { rating: true }),
+      ...(isExhibitOpen && { exhibit: true }),
+      ...(rankToggles.isTrustScore && {trust:true}),
+    }
     if (last === "editTracker") {
-      console.log(1);
 
       const secondLast = pathName[pathName.length - 2];
       const formData = {
@@ -538,6 +555,9 @@ const Pages = () => {
         // }),
         accessLevel: editData?.tracker?.accessLevel,
         filterValue: {
+            ...(userType &&{
+             userType:JSON.stringify(userType)
+            }),
           ...(selectedLabels?.length > 0 && {
             labels: selectedLabels.join(","),
           }),
@@ -719,7 +739,12 @@ const Pages = () => {
           type: type.toUpperCase()
         }),
         filterValue: {
-
+          
+          
+         ...(userType &&{
+          userType:JSON.stringify(userType)
+         }),
+          
           ...(selectedEventRanking?.length > 0 && {
             eventRanking: selectedEventRanking.join(","),
           }),
@@ -970,6 +995,13 @@ const Pages = () => {
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
+      let toggleOpend: Toggle = {};
+      if (typeof editData?.tracker?.filterValue?.userType === 'string') {
+          toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
+      }
+      setRatingOpen(toggleOpend?.rating ? true : false);
+      setExhibitOpen(toggleOpend?.exhibit ?true:false)
+      setRankToggles({...rankToggles, isTrustScore:toggleOpend?.trust?true:false})
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
           ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
@@ -1246,8 +1278,8 @@ const Pages = () => {
 
       if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
+          newEntry,
           ...prevData,
-          newEntry
         ]);
         setInputValues({});
       } else {
@@ -1306,51 +1338,8 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 const abortControllerRef = useRef<AbortController | null>(null);
-
-  const fetchSuggestionData = async () => {
-    let url = "";
-    if (inputValues[0]?.trim().length === 0) setWebsiteSuggestion(null);
-    if (inputValues[0]?.trim().length > 0) {
-      url = `${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-          signal: controller.signal,
-        });
-
-        if (!controller.signal.aborted) {
-          if (data) {
-            setWebsiteSuggestion(data);
-          } else {
-            console.error(error);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        fetchSuggestionData();
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    }
-  }, [inputValues, type]); 
 const [selected,setSelected]=useState(false);
-const addCompany=(val:string)=>{
+const addCompany = (id:number,val: string) => {
   setSelected(true);
   setInputValues(prevValues => ({
     ...prevValues,
@@ -1367,6 +1356,17 @@ const [isDiv,setIsDiv]=useState(false);
 useEffect(()=>{
   if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
 }, [type])
+
+  const handleCustomData = (data: any) => {
+    setCustomData(data);
+  }
+
+  const [uploadEnabled, setUploadEnabled] = useState<boolean>(false);
+  const [expandTable, setExpandTable] = useState<boolean>(false);
+
+  const handleUploadEnable = () => {
+    setUploadEnabled(!uploadEnabled)
+  }
 
   return (
     <>
@@ -1425,8 +1425,18 @@ useEffect(()=>{
       {type==="T_PRODUCT_KEYWORDS" &&
       <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
         <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}</div>
-        <div className={`${styles.toggleDiv}`}>
+        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}
+          <Button10x
+            style={{ color: "white", float: "right" }}
+            variant="primary"
+            size="sm"
+            onClick={handleUploadEnable}
+          >
+            <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+            {" "}Upload
+          </Button10x>
+        </div>
+        {/* <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Add data manually
@@ -1468,8 +1478,17 @@ useEffect(()=>{
 
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
+        {template && uploadEnabled && 
+          <CsvUploader
+            templateData={template}
+            customData={customData}
+            handleCustomData={handleCustomData}
+            setUploadEnabled={setUploadEnabled}
+            setSelectedEventKeywords={setSelectedEventKeywords}
+          />
+        }
       <div style={{width:"calc(50% - 5px)"}}>
       <EventKeyword state={selectedEventKeywords}
       setState={setSelectedEventKeywords}
@@ -1489,7 +1508,28 @@ useEffect(()=>{
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template.description}</div>
+          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px", lineHeight: "32px"}}>{template.description}
+            {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+              <Button10x
+                style={{ color: "white", float: "right" }}
+                variant="primary"
+                size="sm"
+                onClick={handleUploadEnable}
+              >
+                <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                {" "}Upload
+              </Button10x>
+            }
+          </div>
+          {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
+            (uploadEnabled && 
+              <CsvUploader
+                templateData={template}
+                customData={customData}
+                handleCustomData={handleCustomData}
+                setUploadEnabled={setUploadEnabled}
+                setSelectedEventKeywords={setSelectedEventKeywords}
+              />) :
           <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
@@ -1534,42 +1574,58 @@ useEffect(()=>{
               </div>
             </div>
           </div>
+          }
           </div>
           {template?.inputAreas &&
-            <div className={`${styles.competitor}`}>
-              <div className={styles.allInputArea}>
-                {template?.inputAreas?.map((inputArea: any, index: number) => (
-                  <>
-                  <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
-                    {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
-                    <input
-                      className={styles.textArea}
-                      type="text"
-                      placeholder={inputArea.placeholder}
-                      value={inputValues[index] || ''}
-                      onChange={(e) => handleInput(index, e.target.value)}
-                      onKeyPress={handleKeyDown}
-                    />
-                    {type==="T_COMPETITOR" && inputValues[0]?.length > 0  && websiteSuggestion &&
-                    <div className={styles.suggestionBox}>
-                      <Suggestion 
-                      websiteData={websiteSuggestion}
-                      addCompany={addCompany}
-                      />
+                  <div>
+                    <div className={styles.allInputArea}>
+                      {template?.inputAreas?.map((inputArea: any, index: number) => (
+                        <>
+                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                            {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                            <input
+                              className={styles.textArea}
+                              type="text"
+                              placeholder={inputArea.placeholder}
+                              value={inputValues[index] || ''}
+                              onChange={(e) => handleInput(index, e.target.value)}
+                              onKeyPress={handleKeyDown}
+                            />
+                             {(eventSearchLoader && inputValues[0]?.length>0)? (
+  <div className={styles.loader}></div>
+) : (
+  inputValues[0]?.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+      ...prevValues,
+      [index]: ""
+    }))}} />
+  ) : (
+    ""
+  )
+)}
+                            {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                              <div className={styles.suggestionBox}>
+                                <Suggestion
+                                  websiteData={websiteSuggestion}
+                                  addCompany={addCompany}
+                                />
+                              </div>
+                            } */}
+          {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+           <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
+          }
+                          </div>
+
+                        </>
+                      ))}
+                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                        style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                      >
+                        <Image src={Add} alt="add_Icon" />
                       </div>
-                  } 
-                  </div>
-                  
-                  </>
-                ))}
-                <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
-                  style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                >
-                  <Image src={Add} alt="add_Icon" />
-                </div>
-                
-              </div>
-              {/* {customData.map((item:any, index:number) => (
+
+                    </div>
+                    {/* {customData.map((item:any, index:number) => (
       // <div key={index} className={styles.customDataOuterDiv}>
       // <div className={styles.singleInputBox}>{item.name}</div>
       // <div className={styles.singleInputBox}>{item.companyName}</div>
@@ -1583,20 +1639,47 @@ useEffect(()=>{
     {!valid && (
                 <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
               )}
-              <div className={styles.allCompetitors}>
-              {customData.map((item: any, index: number) => (
-                
-                <div key={index} className={styles.customDataOuterDiv}>
-                  <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                  <div className={styles.allCustomData}>
-                    {Object.entries(item)
-                      .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                      .join(' - ')}
+              {customData && customData.length >0 &&
+                <div className={styles.allCompetitors}>
+                  <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
+                    Remove All
                   </div>
+                  <div className={styles.table_container}>
+                  <table className={styles.allCustomData}>
+                    <tbody>
+                      {expandTable ? customData.map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        )) :
+                        customData.slice(0, 5).map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                  </div>
+                  {customData.length > 5 &&
+                    <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
+                  }
                 </div>
-               
-              ))}
-               </div>
+              }
             </div>
           }
         </div>
@@ -1999,49 +2082,51 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger> */}
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
-              <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
-                    <div className={styles.input_title}>
-                      User Ratings
-                      {selectedUserRatings?.length > 1 ? (
-                        <span className={styles.input_selected_no}>
-                          {selectedUserRatings.length}
-                        </span>
-                      ) : (
-                        <span className={styles.input_selected_title}>
-                          {selectedUserRatings[0]}
-                        </span>
-                      )}
-                    </div>
+<MenuTrigger onOpenChange={setMenuOpen}>
+                  {/* <Button className={styles.dropdown_button}> */}
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>{setIsPop(prev => ({ ...prev, rating: !prev.rating }))}}>
+                          User Ratings
+                          {selectedUserRatings?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedUserRatings.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedUserRatings[0]}
+                            </span>
+                          )}
+                        </div>
+                        </Button>
 
-                    <div className={styles.toggle_container}>
-                      <span>
-                        <label className={styles.switch}>
-                          <input
-                            type="checkbox"
-                            onChange={() => { }}
-                            checked={selectedUserRatings.length !== 0}
-                          />
-                          <span className={styles.slider}></span>
-                        </label>
-                      </span>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onClick={() => {
+                                  setRatingOpen(!isRatingOpen)
+                                  if(!isRatingOpen) setIsPop({...isPop, rating:true})
+                                }}
+                                onChange={() => {}}
+                                checked={selectedUserRatings.length !== 0 || isRatingOpen}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Button>
-              <Popover>
-                <Dialog className={styles.noBorder}>
-                  {({ close }) => (
+                  {/* </Button> */}
+                  <Popover className={styles.filterPopover} isOpen={isPop.rating} onOpenChange={() => setIsPop(prev => ({ ...prev, rating: !prev.rating }))}>
                     <UserRatings
                       state={selectedUserRatings}
                       setState={setSelectedUserRatings}
                     />
-                  )}
-                </Dialog>
-              </Popover>
-            </MenuTrigger>
+                  </Popover>
+                </MenuTrigger>
           </div>
 
           {/* <div className={styles.buttons_container}>
@@ -2460,49 +2545,55 @@ useEffect(()=>{
                   </Popover>
                 </MenuTrigger>
 
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                      Estimated Exhibitor
-                        {selectedExhibitScore?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedExhibitScore.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedExhibitScore[0]}
-                          </span>
-                        )}
-                      </div>
+                <MenuTrigger onOpenChange={setMenuOpen}>
+                  {/* <Button className={styles.dropdown_button}> */}
+                    <div className={styles.input_container}>
+                      <div className={styles.input}>
+                        <Button className={styles.dropdown_button} style={{margin: '-16px'}}>
+                        <div className={styles.input_title}
+                        onClick={()=>{setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}} 
+                          style={{paddingLeft: '16px'}} >
+                          Estimated Exhibitor
+                          {selectedExhibitScore?.length > 1 ? (
+                            <span className={styles.input_selected_no}>
+                              {selectedExhibitScore.length}
+                            </span>
+                          ) : (
+                            <span className={styles.input_selected_title}>
+                              {selectedExhibitScore[0]}
+                            </span>
+                          )}
+                        </div>
+                        </Button>
 
-                      <div className={styles.toggle_container}>
-                        <span>
-                          <label className={styles.switch}>
-                            <input
-                              type="checkbox"
-                              checked={selectedExhibitScore?.length !== 0}
-                            />
-                            <span className={styles.slider}></span>
-                          </label>
-                        </span>
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onClick={() => {
+                                  setExhibitOpen(!isExhibitOpen)
+                                  if(!isExhibitOpen) setIsPop({...isPop, exhibit:true})
+                                }}
+                                
+                                onChange={() => {}}
+                                checked={selectedExhibitScore.length !== 0 || isExhibitOpen}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Button>
-                <Popover>
-                  <Dialog className={styles.noBorder}>
-                    {({ close }) => (
+                  {/* </Button> */}
+                  <Popover isOpen={isPop.exhibit} onOpenChange={() => setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}>
                       <EventAdvFilter
                         state={selectedExhibitScore}
                         setState={setSelectedExhibitScore}
                         data={eventExhibitScoreData}
                       />
-                    )}
-                  </Dialog>
                 </Popover>
-              </MenuTrigger>
+                </MenuTrigger>
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>

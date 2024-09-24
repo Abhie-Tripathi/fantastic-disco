@@ -12,9 +12,10 @@ const DashboardEvents = () => {
     const [selectedBtn, setSelectedBtn] = useState<string>("Added")
     const [fetchedAddedEvents, setFetchedAddedEvents] = useState<AllEventsType[]>([])
     const [siteFetchedEvents, setSiteFetchedEvents] = useState([])
+    const [addedEventsLength, setLength] = useState<number>(0)
 
     const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc`)
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
         if (data) {
             const events: AllEventsType[] = data.data.map((event: any) => ({
                 eventId: event.id,
@@ -30,6 +31,7 @@ const DashboardEvents = () => {
                 endTime: event.data.end_time,
                 gmtZone: event.data.gmt_time,
             }))
+            setLength(data.totalCount)
             setFetchedAddedEvents(events)
         } if (error) {
             console.log(error)
@@ -42,12 +44,12 @@ const DashboardEvents = () => {
         <div className={styles.body}>
             <div className={styles.btnContainer}>
                 <button className={`${styles.btn} ${selectedBtn === "Fetched" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Fetched")}>
-                    <span>Fetched</span>
+                    <span>Discovered Events</span>
                     <span className={`${styles.count} ${selectedBtn === "Fetched" ? styles.selectedCount : ""}`}>0</span>
                 </button>
                 <button className={`${styles.btn} ${selectedBtn === "Added" ? styles.selectedBtn : ""}`} onClick={() => setSelectedBtn("Added")}>
-                    <span>Added</span>
-                    <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{fetchedAddedEvents.length}</span>
+                    <span>Your Events</span>
+                    <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{addedEventsLength}</span>
                 </button>
             </div>
             <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span><Link href={"/widget/events"}>Fetch Now</Link></div>
@@ -66,7 +68,7 @@ const DashboardEvents = () => {
                 <div className={styles.addedEventsContainer}>
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
-                            {fetchedAddedEvents.slice(0, 2).map((event,key)=>(
+                            {fetchedAddedEvents.map((event,key)=>(
                                 <div className={styles.eventCard} key={key}><DashboardEventCard fetchEvents={fetchEvents} event={event}/></div>
                             ))}
                         </div>

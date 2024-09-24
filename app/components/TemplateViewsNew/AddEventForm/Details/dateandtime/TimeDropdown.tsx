@@ -26,7 +26,7 @@ const TimeDropdown = ({ setTime, time, minTime }: Props) => {
         if (!minTime) return false;
         return timeToMinutes(value) < timeToMinutes(minTime);
     };
-    
+
 
     return (
         <div className={styles.body}>

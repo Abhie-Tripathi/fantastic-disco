@@ -36,7 +36,8 @@ interface Props {
   openPocDetails: boolean;
   closeBtn: boolean;
   openEventRequest: boolean;
-  handleModal: (id: string, enquiryId: string) => void;
+  handleModal: (id: string, enquiryId: string, enquiryStatus: string, task: any) => void;
+  handleDropdownSelect?: (target: string, source: string) => void;
   eventId: string;
   enquiryId: string;
   currentEnquiryStatus?: string;
@@ -85,6 +86,8 @@ const EventDetail = ({
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
+    console.log(handleDropdownSelect);
+    
     // if (enquiryId && enquiryId != "") {
     //   let payloadData = {
     //     enquiryId: enquiryId,
@@ -113,6 +116,7 @@ const EventDetail = ({
     //     console.error("Error fetching data:", error);
     //   }
     // }
+    if (handleDropdownSelect) 
     handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
   };
 
@@ -143,7 +147,7 @@ const EventDetail = ({
 
   const handleCloseModal = () => {
     if (handleModal) {
-      handleModal("", "");
+      handleModal("", "", "", null);
     }
   };
 
@@ -181,12 +185,12 @@ const EventDetail = ({
       </div>
 
       <div className={styles.modalContainer}>
-        {pathName && pathName === "outreach" && <StatusBar status={status} />}
+        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
               <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
-              {pathName && pathName === "outreach" && (
+              {/* {pathName && pathName === "outreach" && (
                 <StatusChangeDropdown
                   label=""
                   eventId={123}
@@ -195,7 +199,7 @@ const EventDetail = ({
                     currentEnquiryStatus ? currentEnquiryStatus : ""
                   }
                 />
-              )}
+              )} */}
             </div>
             {singleEventData && (
               <>

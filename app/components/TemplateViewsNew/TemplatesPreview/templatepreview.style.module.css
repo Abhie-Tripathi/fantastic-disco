@@ -15,9 +15,10 @@
 }
 .previewContainer{
     height: 100%;
-    width: 60%;
+    width: 60%; 
 }
 .fullPreview{
+    height: 100%;
     width: 100%;
 }
 .previewBtnContainer{

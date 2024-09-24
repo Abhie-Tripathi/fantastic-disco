@@ -5,8 +5,6 @@ import TimezoneDropdown from './TimezoneDropdown'
 import CalendarDropdown from './CalendarDropdown'
 import TimeDropdown from './TimeDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
-import { CalendarDate, parseDate, today } from "@internationalized/date"; 
-
 
 const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -75,11 +73,48 @@ const DateTimeContainer = ({
             setEndDate(formattedStartDate)
             setTodaysDate(formattedStartDate);
         }
-        const closestTime = findClosestTime();
-        setStartTime(closestTime);
-        setEndTime(closestTime)
+        if(!startTime){
+            const closestTime = findClosestTime();
+            const halfHourAddedTime = addMinutesToTime(closestTime,30)
+            setStartTime(closestTime);
+            console.log("half hour added time : ", halfHourAddedTime)
+            setEndTime(halfHourAddedTime)
+        }
     }, []);
-
+    const addMinutesToTime = (time: string, minutesToAdd: number): string => {
+        // Extract the time and period (AM/PM) parts
+        const [timePart, period] = time.split(' ');  // e.g., "2:00 P.M" -> ["2:00", "P.M"]
+        let [hours, minutes] = timePart.split(':').map(Number);  // e.g., "2:00" -> [2, 0]
+        
+        // Convert 12-hour time to 24-hour time
+        if (period === 'P.M' && hours !== 12) {
+            hours += 12;  // Convert P.M hours to 24-hour format (except for 12 P.M)
+        }
+        if (period === 'A.M' && hours === 12) {
+            hours = 0;  // Midnight case (12 A.M should be 00:00 in 24-hour format)
+        }
+    
+        // Create a new Date object
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        
+        // Add the minutes
+        date.setMinutes(date.getMinutes() + minutesToAdd);
+    
+        // Get the updated hours and minutes
+        let updatedHours = date.getHours();
+        const updatedMinutes = date.getMinutes().toString().padStart(2, '0');
+    
+        // Convert back to 12-hour format
+        const updatedPeriod = updatedHours >= 12 ? 'P.M' : 'A.M';
+        if (updatedHours > 12) updatedHours -= 12;  // Convert from 24-hour to 12-hour format
+        if (updatedHours === 0) updatedHours = 12;  // Midnight case
+        const updatedTime = `${updatedHours}:${updatedMinutes} ${updatedPeriod}`;
+    
+        return updatedTime;
+    };
+    
     const addDays = (date: string, days: number) => {
         const initialDate = new Date(date);
         initialDate.setDate(initialDate.getDate() + days);
@@ -102,6 +137,9 @@ const DateTimeContainer = ({
         const isPM = t.includes("P.M");
         return (parseInt(hour) % 12 + (isPM ? 12 : 0)) * 60 + parseInt(minute);
     };
+
+
+    
     const findClosestTime = () => {
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -181,7 +219,7 @@ const DateTimeContainer = ({
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
                             {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setEndTime} time={endTime} minTime={startTime} />
+                                <TimeDropdown setTime={setEndTime} time={endTime} minTime={addMinutesToTime(startTime,30)}/>
                             </div>}
                         </div>
                     </div>

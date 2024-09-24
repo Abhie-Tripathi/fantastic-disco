@@ -23,8 +23,14 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         fetchDomain()
     }, [])
     const fetchDomain = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
-        setDomains(data.domain.split(","))
+        const { data: allDomains, error: allDomainError } = await myFetch(`${baseUrl}/widget/${widgetId}`)
+        if (allDomains ) {
+            // Split the domains and set inputDomain.domain.domain as the first element
+            const domainArray = allDomains.domain.split(",");
+            console.log("domains : ", domainArray)
+            // Set the domains with the updated first element
+            setDomains(domainArray);
+        }
     }
     const getWidgetTag = (type: string) => {
         switch (type) {
@@ -47,7 +53,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         const widgetTag = getWidgetTag(widgetType);
         const textToCopy = `
             <script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>
-            <${widgetTag} id="${widgetId}"></${widgetTag}>
+            <${widgetTag} ${widgetTag.replace("-widget", "")}-id="${widgetId}"></${widgetTag}>
         `;
         navigator.clipboard.writeText(textToCopy.trim());
     };
@@ -55,19 +61,22 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault()
+        const cleanDomain = enteredDomain.startsWith('https://')
+            ? enteredDomain.replace('https://', '')
+            : enteredDomain;
         const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
         // Check if the entered domain is valid
-        if (!urlPattern.test(enteredDomain)) {
+        if (!urlPattern.test(cleanDomain)) {
             alert("Please enter a valid domain.");
             return;
         }
         // Check if the entered domain is already in the domains list
-        if (domains.includes(enteredDomain)) {
+        if (domains.includes(cleanDomain)) {
             alert("This domain is already whitelisted.");
             return;
         }
 
-        const updatedDomains = [...domains, enteredDomain];
+        const updatedDomains = [...domains, `https://${cleanDomain}`];
         const formData = new FormData()
         formData.append("widgetId", widgetId)
         formData.append("domain", updatedDomains.join())
@@ -114,14 +123,13 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                 {domains.slice(0, 1).map((domain, key) => (
                     <div className={styles.inputContainer} key={key}>
                         <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
-                        <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain} />
-                    </div>
-                ))}
+                        <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain.substring(8)} disabled className={styles.disabledInput} />
+                    </div>))}
                 {domains.slice(1, 3).map((domain, key) => (
                     <div className={styles.input_deleteContainer} key={key}>
                         <div className={styles.inputContainer} >
                             <span style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#292929" }}>https://</span>
-                            <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain} />
+                            <input placeholder='Your Company' style={{ color: theme === "light" ? "black" : "white" }} value={domain.substring(8)} />
                         </div>
                         <div className={styles.deleteBtn} onClick={() => handleDelete(domain)}><DeleteIcon /></div>
                     </div>
@@ -153,7 +161,7 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
                 <div className={styles.codewindow} style={{ backgroundColor: theme == "light" ? "#FAFAFA" : "#1A1A1A" }}>
                     {`<script src='https://widget-webcomp-nolit.vercel.app/dist/eventgeni.js'></script>`}
                     <br />
-                    {`<${widgetTag} id= "${widgetId}"></${widgetTag}>`}
+                    {`<${widgetTag} ${widgetTag.replace("-widget", "")}-id= "${widgetId}"></${widgetTag}>`}
                 </div>
             </div>
 
