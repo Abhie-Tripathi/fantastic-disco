@@ -11,7 +11,7 @@ import useOutsideClick from "@/hooks/useOutsideClick";
 
 interface Props {
   widgetId: string;
-  handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void;
+  handlePrefillGlobalEvent?: (event: GolbalEventType, type: string) => void;
 }
 
 const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
@@ -43,6 +43,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
       venue: event.data.venue_address,
     };
     setDatadropdown(false);
+    if(handlePrefillGlobalEvent)
     handlePrefillGlobalEvent(newEvent, type);
   };
   const formatDate = (dateString: string) => {

@@ -73,7 +73,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-   const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
+  const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
   const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
   const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
 
@@ -144,11 +144,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("banner is :", banner.placeHolder)
     console.log("banner is :", banner.file)
-  },[banner])
- 
+  }, [banner])
+
   const handleAddEvent = async () => {
     if (!eventName.trim()) {
       setIsEventNameEmpty(true)
@@ -170,10 +170,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     } else {
       setIsEventParticipationEmpty(false)
     }
-    if(!participationMessage){
+    if (!participationMessage) {
       setIsParticipationMessageEmpty(true)
     }
-    if(!textValue){
+    if (!textValue) {
       setIsTextValueMessageEmpty(true)
     }
 
@@ -182,7 +182,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       return; // Exit the function if any field is missing
     }
 
-    if (!imageUrl && !banner.file ) {
+    if (!imageUrl && !banner.file) {
       showToast("error", "Please upload or generate a Poster");
       return; // Exit the function if any field is missing
     }
@@ -206,7 +206,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     formData.append("name", eventName)
     formData.append("data", JSON.stringify(eventData))
     formData.append("type", "MAIN")
-    
+
     if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
       if (banner.file) {
         formData.append("file", banner.file); // Use the file field if uploaded by the user
@@ -302,10 +302,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     } else {
       setIsEventParticipationEmpty(false)
     }
-    if(!participationMessage){
+    if (!participationMessage) {
       setIsParticipationMessageEmpty(true)
     }
-    if(!textValue.trim()){
+    if (!textValue.trim()) {
       setIsTextValueMessageEmpty(true)
     }
     if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
@@ -420,12 +420,12 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
-      if (description && eventName && participationMessage) {
+      if (eventName && participationMessage) {
         generatePrompt(participationMessage, description, eventName, 1024, 1024)
       } else {
         showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
       }
-    }else{
+    } else {
       showToast("error", "Please wait for the banner to generate first before generating again");
     }
   }
@@ -461,7 +461,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     }
   }, [imageUrl]);
 
-  const handleInputChange = (value : string) => {
+  const handleInputChange = (value: string) => {
     console.log("value typed : ", value)
     const specialCharRegex = /[@#$%^&*"|<>]/g;
 
@@ -477,7 +477,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
         <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
         <button className={`${styles.addBtn} ${loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
-          disabled={loadingState}
+          disabled={loadingState || isLoading}
           onClick={
             prefilledAddedEvent
               ? () => handleSaveEvent(prefilledAddedEvent.id)
@@ -490,7 +490,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       <div className={styles.line}></div>
       <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty} isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}/></div>
+          <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty} isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty} /></div>
           {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>
@@ -499,9 +499,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
               {isLoading ?
                 <div className={styles.loader}>
                   <div className={styles.spinner}></div>
-                </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} />}
+                </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} unoptimized />}
               <div className={styles.posterIcons}>
-                <div onClick={handleGeneratePoster} data-name={eventName && description ? "Generate your Banner" : "Add Event name and Description and participationMessage to generate a banner"}>
+                <div onClick={handleGeneratePoster} data-name={eventName && participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
                   <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
                 </div>
                 <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
@@ -534,13 +534,13 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
             </div>
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
             <div>
-              <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty}/></div>
+              <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} /></div>
               {isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
             <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
             <div>
-              <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}/></div>
-              {isTextValueMessageEmpty&&isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
+              <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} /></div>
+              {isTextValueMessageEmpty && isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
             {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
 

@@ -10,7 +10,7 @@ import { baseUrl } from '@/constants'
 
 const Page = () => {
 
-  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false);
+  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false); // To check if atleast once the user has fetched the brandkit
   const [brandkitLoadingState ,setBrandkitLoadingState] = useState<boolean>(true)
   const [polling, setPolling] = useState<boolean>(true);
   const [fetchedDomain, setFetchedDomain] = useState<string>("")

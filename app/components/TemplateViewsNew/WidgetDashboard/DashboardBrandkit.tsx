@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import styles from './dashboardbrandkit.style.module.css'
 import LogoComponent from '../EditScreen/BrandKit/CustomizeComponents/LogoComponent'
 import BrandColor from '../EditScreen/BrandKit/CustomizeComponents/BrandColor'
@@ -16,11 +16,11 @@ interface Props {
     polling: boolean;
     setPolling: (value: boolean) => void;
     setFetchedDomain: (value: string) => void;
-    brandkitFetched : boolean;
-    setBrandkitFetched : (value: boolean) => void;
+    brandkitFetched: boolean;
+    setBrandkitFetched: (value: boolean) => void;
 }
 
-const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain, brandkitFetched, setBrandkitFetched}: Props) => {
+const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setPolling, polling, setFetchedDomain, brandkitFetched, setBrandkitFetched }: Props) => {
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const [valueUpdate, setValueUpdated] = useState<boolean>(false)
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
@@ -43,6 +43,8 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
     useEffect(() => {
         // Initial fetch
         fetchBrandkit();
+    }, [])
+    useEffect(() => {
         // Set up polling
         const intervalId = setInterval(() => {
             if (polling) {
@@ -55,8 +57,8 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
             if (fetchedLogos.length === 0) {
                 setBrandkitFetched(false); // Update state if brandkit not fetched within time
             }
-            
-        }, 10000); // 20 seconds timeout
+
+        }, 10000); // 10 seconds timeout
         // Clear interval on component unmount
         return () => {
             clearInterval(intervalId);
@@ -87,7 +89,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                     </div>
                     <div className={styles.loadingHeading}>Fetching your Brandkit</div>
                 </div>
-            ) : brandkitFetched ? (
+            ) : !brandkitFetched ? (
                 <div className={styles.brandKitContainer}>
                     <div className={styles.container}>
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />
@@ -108,7 +110,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
             ) : (
                 <div className={styles.errorMessage}>
                     <span className={styles.error1}>Having issues while fetching your Brand kit</span>
-                    <span className={styles.error2}>Check the Domain again or try fetching again later</span>
+                    <span className={styles.error2}>Check the Domain or try fetching again later</span>
                 </div>
             )}
         </div>

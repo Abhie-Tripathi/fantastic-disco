@@ -14,6 +14,7 @@ import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import { useTheme } from '@/context'
 import { AddedEventsType } from '@/types/addedeventtype'
 import DashboardEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEventCard'
+import GlobalSearch from '@/app/components/TemplateViewsNew/EditScreen/FilterEvents/GlobalSearch'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
@@ -34,13 +35,13 @@ const Page = () => {
     const fetchAddedEvents = async () => {
         const { data, error } = await myFetch(`${baseUrl}/widget/${"1"}`)
         if (data) {
-          const events = data.otherdata?.event;
+            const events = data.otherdata?.event;
         }
         if (error) {
-          console.log(error);
+            console.log(error);
         }
-      }
-    
+    }
+
     useEffect(() => {
         const handleScroll = () => {
             if (
@@ -127,6 +128,9 @@ const Page = () => {
                 </div>
                 <button onClick={handleFormModal}>+ Add Event</button>
             </nav>
+            <div className={styles.globalSearch}>
+                <GlobalSearch widgetId='123' />
+            </div>
             {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
                 const showDate = event.startDate !== prevDate;
                 prevDate = event.startDate;
@@ -138,7 +142,7 @@ const Page = () => {
                             handlePrefillEvent={handlePrefillEvent}
                             geniEvent={event}
                         /> */}
-                        <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event}/>
+                        <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} />
                     </div>
                 );
             }) :
@@ -150,7 +154,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-            <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents}/>
+                <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

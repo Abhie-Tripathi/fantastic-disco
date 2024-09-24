@@ -28,6 +28,9 @@
     overflow-y: hidden;
     height: 90vh;
 }
+.globalSearch{
+    margin-bottom: 20px;
+}
 
 .container {
     display: flex;
