@@ -24,7 +24,8 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
             setPageBgColor(rgbaColor);
         }
         if (setCardBgColor) {
-            setCardBgColor(color)
+            // setCardBgColor(color)
+            setCardBgColor(rgbaColor)
         }
     }
     const hexToRgba = (hex: string, opacity: number) => {
@@ -58,6 +59,15 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
             }
         }
     }, [extractedColors, setPageBgColor]);
+
+
+    useEffect(() => {
+        if (extractedColors.length > 0 && setCardBgColor) {
+            if(setCardBgColor){
+                setCardBgColor(hexToRgba(extractedColors[0], 0.1));
+            }
+        }
+    }, [extractedColors, setCardBgColor]);
 
 
     // const handleChange = (color: any) => {
