@@ -77,3 +77,15 @@
     border-radius: 50%;
     cursor: pointer;
 }
+
+.plusIconOuter{
+    border: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #F2F2F2;
+}

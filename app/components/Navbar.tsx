@@ -184,12 +184,23 @@ const Navbar = () => {
             </Link>}
             {title.length !== 0 && title}</div> */}
 
-        <div className={styles.page_title}>
+        {/* <div className={styles.page_title}>
           {shouldShowBackButton && (
             <button className={styles.backBtn} onClick={() => router.back()}>
               <BackIcon />
             </button>
           )}
+          {title.length !== 0 && title}
+        </div> */}
+
+        <div className={styles.page_title}>
+          {shouldShowBackButton &&
+            (currPath.startsWith("/widget/edit") ||
+              currPath.startsWith("/widget/list")) && (
+              <button className={styles.backBtn} onClick={() => router.back()}>
+                <BackIcon />
+              </button>
+            )}
           {title.length !== 0 && title}
         </div>
 
