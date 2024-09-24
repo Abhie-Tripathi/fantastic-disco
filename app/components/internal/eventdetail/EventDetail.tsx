@@ -77,7 +77,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN PROGRESS"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -102,12 +102,13 @@ const EventDetail = ({
     //     });
     //     if (apiData.data.message === "Data updated") {
     //       // if (handleRefresh) handleRefresh();
-    //       toast.success("Enquiry status updated!", {
-    //         position: "bottom-right",
-    //         autoClose: 2000,
-    //         closeButton: false,
-    //         hideProgressBar: true,
-    //       });
+    //       // toast.success("Enquiry status updated!", {
+    //       //   position: "bottom-right",
+    //       //   autoClose: 2000,
+    //       //   closeButton: false,
+    //       //   hideProgressBar: true,
+    //       // });
+          showToast("success","Enquiry status updated!")
     //       console.log("curr",currentEnquiryStatus);
           
           

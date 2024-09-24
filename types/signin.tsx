@@ -6,6 +6,7 @@ export interface SignInResponse {
   lastname: string;
   id: string;
   profilePicture: string | null;
+  companyId: string | null;
 }
 
 export const SignInFormSchema = z.object({

@@ -180,7 +180,7 @@
     gap: var(--spacing-sm);
     border-radius: var(--border-radius-sm);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(49%, 1fr));
     /* border: 1px solid var(--border-color); */
 }
 .speakerAllInputBox{
@@ -206,7 +206,11 @@
     width: 100%;
     align-items: center;
     gap: 10px;
-    line-break: anywhere;
+    /* line-break: anywhere; */
+     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
     /* border-bottom: 1px solid var(--border-color); */
   }
   /* .allInputBox > .singleUrl:last-child{
