@@ -9,7 +9,8 @@
     padding: 12px 14px 24px 12px;
 }
 .banner{
-    /* height: 220px; */
+    min-height: 220px;
+    max-height: 220px;
     width: 100%;
     border-radius: 8px;
 }
