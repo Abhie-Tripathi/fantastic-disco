@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Url from '/public/url.svg'
+import CloseIcon from "/public/internal/cross.svg";
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
@@ -66,7 +67,7 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import Suggestion from "../suggestion";
+import SearchBar from "../../searchBar/SearchBar";
 interface FilterValue {
   labels: string;
   name: string;
@@ -331,6 +332,7 @@ const Pages = () => {
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
   );
+  const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
@@ -1334,51 +1336,8 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 const abortControllerRef = useRef<AbortController | null>(null);
-
-  const fetchSuggestionData = async () => {
-    let url = "";
-    if (inputValues[0]?.trim().length === 0) setWebsiteSuggestion(null);
-    if (inputValues[0]?.trim().length > 0) {
-      url = `${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-          signal: controller.signal,
-        });
-
-        if (!controller.signal.aborted) {
-          if (data) {
-            setWebsiteSuggestion(data);
-          } else {
-            console.error(error);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        fetchSuggestionData();
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    }
-  }, [inputValues, type]); 
 const [selected,setSelected]=useState(false);
-const addCompany=(val:string)=>{
+const addCompany = (id:number,val: string) => {
   setSelected(true);
   setInputValues(prevValues => ({
     ...prevValues,
@@ -1564,40 +1523,55 @@ useEffect(()=>{
           </div>
           </div>
           {template?.inputAreas &&
-            <div className={`${styles.competitor}`}>
-              <div className={styles.allInputArea}>
-                {template?.inputAreas?.map((inputArea: any, index: number) => (
-                  <>
-                  <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
-                    {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
-                    <input
-                      className={styles.textArea}
-                      type="text"
-                      placeholder={inputArea.placeholder}
-                      value={inputValues[index] || ''}
-                      onChange={(e) => handleInput(index, e.target.value)}
-                      onKeyPress={handleKeyDown}
-                    />
-                    {type==="T_COMPETITOR" && inputValues[0]?.length > 0  && websiteSuggestion &&
-                    <div className={styles.suggestionBox}>
-                      <Suggestion 
-                      websiteData={websiteSuggestion}
-                      addCompany={addCompany}
-                      />
+                  <div className={`${styles.competitor}`}>
+                    <div className={styles.allInputArea}>
+                      {template?.inputAreas?.map((inputArea: any, index: number) => (
+                        <>
+                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                            {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                            <input
+                              className={styles.textArea}
+                              type="text"
+                              placeholder={inputArea.placeholder}
+                              value={inputValues[index] || ''}
+                              onChange={(e) => handleInput(index, e.target.value)}
+                              onKeyPress={handleKeyDown}
+                            />
+                             {(eventSearchLoader && inputValues[0]?.length>0)? (
+  <div className={styles.loader}></div>
+) : (
+  inputValues[0]?.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+      ...prevValues,
+      [index]: ""
+    }))}} />
+  ) : (
+    ""
+  )
+)}
+                            {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                              <div className={styles.suggestionBox}>
+                                <Suggestion
+                                  websiteData={websiteSuggestion}
+                                  addCompany={addCompany}
+                                />
+                              </div>
+                            } */}
+          {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+           <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
+          }
+                          </div>
+
+                        </>
+                      ))}
+                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                        style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                      >
+                        <Image src={Add} alt="add_Icon" />
                       </div>
-                  } 
-                  </div>
-                  
-                  </>
-                ))}
-                <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
-                  style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                >
-                  <Image src={Add} alt="add_Icon" />
-                </div>
-                
-              </div>
-              {/* {customData.map((item:any, index:number) => (
+
+                    </div>
+                    {/* {customData.map((item:any, index:number) => (
       // <div key={index} className={styles.customDataOuterDiv}>
       // <div className={styles.singleInputBox}>{item.name}</div>
       // <div className={styles.singleInputBox}>{item.companyName}</div>
@@ -1608,25 +1582,25 @@ useEffect(()=>{
         </div>
       ))}
     ))} */}
-    {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
-              )}
-              <div className={styles.allCompetitors}>
-              {customData.map((item: any, index: number) => (
-                
-                <div key={index} className={styles.customDataOuterDiv}>
-                  <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                  <div className={styles.allCustomData}>
-                    {Object.entries(item)
-                      .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                      .join(' - ')}
+                    {!valid && (
+                      <div style={{ color: "#f15050", fontSize: "12px", marginTop: "-8px" }}>Enter valid input</div>
+                    )}
+                    <div className={styles.allCompetitors}>
+                      {customData.map((item: any, index: number) => (
+
+                        <div key={index} className={styles.customDataOuterDiv}>
+                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                          <div className={styles.allCustomData}>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
+                              .join(' - ')}
+                          </div>
+                        </div>
+
+                      ))}
+                    </div>
                   </div>
-                </div>
-               
-              ))}
-               </div>
-            </div>
-          }
+                }
         </div>
       }
      {
