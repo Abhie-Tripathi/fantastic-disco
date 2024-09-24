@@ -58,7 +58,6 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
-  console.log(shortlistModalOpen);
   
   return (
     <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`} >
