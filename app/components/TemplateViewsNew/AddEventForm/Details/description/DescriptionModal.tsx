@@ -157,7 +157,9 @@ const DescriptionModal: React.FC<Props> = ({
 }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const [editor, setEditor] = useState<any>(null);
-    const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
+    // const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
+    const phoneRegex = /.*(\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?[\d-\s]{7,14}).*/;
+
     const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
 
     
@@ -165,21 +167,33 @@ const DescriptionModal: React.FC<Props> = ({
         // Replace multiple consecutive empty <p> or <br> tags with a single one
         return content.replace(/(<p><br><\/p>|\s)*<p><br><\/p>(<p><br><\/p>|\s)*/g, '<p><br></p>');
     };
+    
     const handleInputChange = (value: string) => {
         const cleanedValue = cleanUpEmptyLines(value);
+        const isEmptyHTML = /^<p>(\s|<br>)*<\/p>$/i.test(value.trim());
+        if (isEmptyHTML) {
+            setTextValue(""); 
+            return; 
+        }
         setTextValue(cleanedValue);
     }
     const handleSave = () => {
         // Check for phone numbers and emails
-        if (phoneRegex.test(textValue)) {
+        const trimmedInput = textValue.trim();
+        if (trimmedInput.length === 0) {
+            showToast("error", "Input cannot be an empty string!");
+            return;
+        }
+       
+        if (phoneRegex.test(trimmedInput)) {
             showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-        if (emailRegex.test(textValue)) {
+        if (emailRegex.test(trimmedInput)) {
             showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-        if(textValue.length > 1500){
+        if(trimmedInput.length > 1500){
             showToast("error", "Description should not be more then 1500 characters");
             return; // Prevent save
         }
