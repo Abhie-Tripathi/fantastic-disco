@@ -27,13 +27,19 @@ interface Props{
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
     cardUpdated: boolean;
     modalOpen:boolean;
+    setStatusChanged?: (status: boolean) => void;
+    statusChanged?:boolean;
+    selectedId?:string;
+    setSelectedId: any; 
+
 }
-const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,setSelectedId, setStatusChanged, statusChanged,selectedId } : Props) => {
    const buttonRef = useRef(null);
     let prevDate: any = null;
     const { theme } = useTheme();
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
+    // const [value,setValue]=useState("");
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
@@ -45,10 +51,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
     const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
     const [popoverState, setPopoverState] = useState<boolean | null>(false);
     const [selectedParticipantTypeName,setSelectedParticipantTypeName]=useState<string>('');
-    const status=["Pending", "Shortlisted" ];
+    const status=["Pending", "Shortlisted", "Rejected"];
     const participants=["Exhibitor", "Sponsor", "Speaker", "Attendee"];
     const [participant,setParticipant]=useState("");
-    const [statusType,setStatusType]=useState("");
+    const [statusType,setStatusType]=useState("IN_DISCUSSION,SHORTLISTED,REJECTED");
     const [duration,setDuration]=useState<string>('');
     const [searchInput, setSearchInput] = useState("");
     const [eventId,setEventId]=useState("");
@@ -84,8 +90,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
       //   };
       // }, [popoverState]); 
       useEffect(()=>{
-        if(selectedParticipantType.length>0) {
-            setParticipant(selectedParticipantType[selectedParticipantType.length-1].toUpperCase());
+        if (selectedParticipantType.length > 0) {
+          setParticipant(selectedParticipantType.map((item) => item.toUpperCase()).join(','));
         }else{
           // setStatusType("PENDING");
           setParticipant("");
@@ -110,21 +116,25 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
             setPage(1); 
         }
     }, [selectedDateRange]);
-      useEffect(()=>{
-        if(selectedStatusType.length>0) {
-          
-          if(selectedStatusType[0]==="Pending") setStatusType("IN_DISCUSSION");
-           else  setStatusType(selectedStatusType[selectedStatusType.length-1].toUpperCase());
-            // console.log(selectedStatusType[selectedStatusType.length-1].toUpperCase());
-            
-        }else{
-          setStatusType("");
-        }
-        // else{
-        //  setStatusType("IN_DISCUSSION");
-        // }
-        setPage(1);
-      },[selectedStatusType])
+    useEffect(() => {
+      if (selectedStatusType.length > 0) {
+        let newStatusType = "";
+        
+        selectedStatusType.forEach((item) => {
+          if (item === "Pending") {
+            newStatusType += "IN_DISCUSSION,";
+          } else {
+            newStatusType += `${item.toUpperCase()},`;
+          }
+        });
+        setStatusType(newStatusType.slice(0, -1));
+      } else {
+        setStatusType("IN_DISCUSSION,SHORTLISTED,REJECTED");
+      }
+    
+      setPage(1);
+    }, [selectedStatusType]);
+    
       const dateShowFormatter = (selectedDateRange: string[]) => {
         const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
           selectedDateRange[0]
@@ -160,7 +170,7 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
         if(page > 0) {
             let apiUrl="";
             try {
-            apiUrl = `${baseUrl}/userInterest/enquiry?${statusType.length > 0 ? `status=${statusType}&` : ''}limit=10&offset=${(page - 1) * 10}` +
+            apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
             (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
             (duration.length !== 0 ? `&duration=${duration}` : '') +
             `&source=internal` + (eventId ? `&eventId=${eventId}` : '');
@@ -199,26 +209,20 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen } :
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [cardUpdated]);
 useInfiniteScroll(divRef, handleScrollEnd);
-// const fetchInterestedUsers = async () => {
-//   try {
-//     const apiUrl = `${baseUrl}/userInterest/${eventId}`;
-//     const apiData = await myFetch(apiUrl, {
-//       method: "GET",
-//       headers: headers,
-//     });
-//     if (apiData.data) {
-//       setInterestedUsers({
-//         attendee: apiData.data.participent.attendee,
-//         speakers: apiData.data.participent.speakers,
-//         sponsors: apiData.data.participent.sponsors,
-//         exhibitors: apiData.data.participent.exhibitors,
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// };
-
+useEffect(()=>{
+  
+  if(statusChanged===true){
+    console.log(selectedId);
+    const updatedData=eventData1.map((item)=>{
+      return item.eventId === selectedId ? { ...item, enquiryStatus: "Shortlisted" } : item;
+    })
+    
+    setEventData1(updatedData);
+    setSelectedId('');
+    if (setStatusChanged) 
+    setStatusChanged(false);
+  }
+},[statusChanged])
 useEffect(()=>{
   if(page>0){
     setNoMoreData(false);
@@ -297,7 +301,8 @@ useEffect(()=>{
                       <div className={styles.input_title}>
                         Status
                         <span className={styles.input_selected_title}>
-                       {selectedStatusType[0]}
+                       {selectedStatusType.length===1&&<>{selectedStatusType[0]}</>}
+                       {selectedStatusType.length>1&&<span className={styles.selected_no}>{selectedStatusType.length}</span>}
                             </span>
                       </div>
                       <Image
@@ -329,7 +334,10 @@ useEffect(()=>{
                       <div className={styles.input_title}>
                        Type
                        <span className={styles.input_selected_title}>
-                       {selectedParticipantType[0]==='Attendee'?"Attend":selectedParticipantType[0]==='Exhibitor'?"Exhibit":selectedParticipantType[0]==="Speaker"? "Speak": selectedParticipantType[0]==='Sponsor'?"Sponsor":""}
+                       {selectedParticipantType.length===1 &&(selectedParticipantType[0]==='Attendee'?"Attend":selectedParticipantType[0]==='Exhibitor'?"Exhibit":selectedParticipantType[0]==="Speaker"? "Speak": selectedParticipantType[0]==='Sponsor'?"Sponsor":"")}
+                       {selectedParticipantType.length>1 && 
+                       <span className={styles.selected_no}>{selectedParticipantType.length}</span>
+                       }
                        </span>
                       </div>
                       <Image
@@ -405,6 +413,7 @@ useEffect(()=>{
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
                     eventId={item.eventId}
+                    setSelectedId={setSelectedId}
                     filterChanged={filterChanged}
                     isDateSame={showDate}
                     enquiryId={item.enquiryId}

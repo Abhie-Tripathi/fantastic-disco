@@ -39,6 +39,7 @@ interface YourEventCardProps {
   enquiryActivity?: any;
   handleModal?: (id: string, enquiryId: string) => void;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
+  setSelectedId?:(status:string)=>void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
   handleDeleteModal?: (id: string, name: string) => void;
@@ -82,13 +83,15 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handlePrefillEvent,
   isDateSame,
   handleDeleteModal,
-  filterChanged
+  filterChanged,
+  setSelectedId
+  
 }) => {
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
   }
   console.log(enquiryActivity);
-  
+  // const [value,setValue]=useState("");
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [votesCount, setVotesCount] = useState(0);
@@ -199,6 +202,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             <div className={styles.leftContainer}>
               <div className="tablet_view mobile_view">
                 <StatusChangeDropdown
+                 setSelectedId={setSelectedId}
                   label=""
                   eventId={eventId}
                   enquiryId={enquiryId}
@@ -227,6 +231,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               </div>
               {!geniEvent && <div className="desktop_view">
                 <StatusChangeDropdown
+                setSelectedId={setSelectedId}
                   label=""
                   eventId={eventId}
                   enquiryId={enquiryId}

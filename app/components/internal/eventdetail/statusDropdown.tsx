@@ -15,6 +15,9 @@ interface PropType {
   enquiryId?: string;
   currentEnquiryStatus?: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
+  setSelectedId:any;
+  // value:any;
+  // setValue:any;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   
@@ -26,7 +29,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     setIsOpen((prev) => !prev);
   };
 useEffect(()=>{
- setValue((props.currentEnquiryStatus == 'CANCELED') ? 'Rejected' : 
+ setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
  (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -35,6 +38,7 @@ useEffect(()=>{
     // setValue(target.innerText);
     if(props.handleShortlistModal && props.eventId && props.enquiryId){
       props.handleShortlistModal(props.eventId, props.enquiryId);
+      props.setSelectedId(props.eventId);
     }
 
   };
