@@ -89,3 +89,30 @@
     cursor: pointer;
     background-color: #F2F2F2;
 }
+
+.extractedColorOutter {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.extractedColorInner {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+
+.activeColor {
+    border: 2px solid;
+    padding: 3.4px;
+}
+
+
+
+.colorList {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}

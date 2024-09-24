@@ -18,12 +18,15 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
-
+    const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+    const [color, setColor] = useState('#2c68f6');
+    const clickable=true
     const handleChange = (color: any) => {
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color: any) => {
+    const handleColorClick = (color: any,index:any) => {
+        setSelectedColorIndex(index)
         const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
     }
@@ -91,6 +94,13 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
       useEffect(() => {
         fetchBrandkit()
       }, [])
+
+    useEffect(() => {
+        if (clickable) {
+            setColor(extractedColors[selectedColorIndex]);
+        }
+    }, [selectedColorIndex])
+
     const formattedPageBgColor = formatColor(pageBgColor);
     return (
         <div className={styles.body}>
@@ -116,15 +126,38 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                             presetColors={extractedColors}
                         /></div>}
                 </div>
-                <div className={styles.extractedColors}>
+                {/* <div className={styles.extractedColors}>
                     {extractedColors.map((color, key) => (
                         <div className={styles.extractedColor} onClick={()=>handleColorClick(color)} style={{ backgroundColor: color }} key={key}></div>
                     ))}
-
                 <div className={styles.plusIconOuter}  style={{ borderColor: pageBgColor }}  onClick={() => setDisplayColorPicker(!displayColorPicker)}>
                     <PlusIcon/>
                 </div>
-                </div>
+                </div> */}
+
+            <div className={styles.extractedColors}>
+            <div className={styles.colorList}>
+                {extractedColors.map((color, key) => (
+                    <div 
+                        key={key} 
+                        className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ''}`} 
+                        style={{
+                            backgroundColor: key === selectedColorIndex ? 'transparent' : color, 
+                            borderColor: key === selectedColorIndex ? color : 'transparent',
+                        }} 
+                        onClick={()=>handleColorClick(color, key)}
+                    >
+                        {key === selectedColorIndex && (
+                            <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className={styles.plusIconOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                <PlusIcon />
+            </div>
+        </div>
             </div>
         </div>
     )
