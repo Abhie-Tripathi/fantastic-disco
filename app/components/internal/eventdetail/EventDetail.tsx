@@ -87,7 +87,7 @@ const EventDetail = ({
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
     console.log(handleDropdownSelect);
-    
+    showToast("success","Enquiry status updated!")
     // if (enquiryId && enquiryId != "") {
     //   let payloadData = {
     //     enquiryId: enquiryId,
@@ -116,8 +116,7 @@ const EventDetail = ({
     //     console.error("Error fetching data:", error);
     //   }
     // }
-    if (handleDropdownSelect) 
-    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
+    
   };
 
   useEffect(() => {
@@ -148,6 +147,8 @@ const EventDetail = ({
   const handleCloseModal = () => {
     if (handleModal) {
       handleModal("", "", "", null);
+      if (handleDropdownSelect) 
+        handleDropdownSelect(statusValues[status]==="SHORTLISTED"?"shortlisted":statusValues[status]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
     }
   };
 

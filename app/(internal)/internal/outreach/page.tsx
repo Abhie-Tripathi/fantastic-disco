@@ -217,6 +217,7 @@ console.log(source);
           //   closeButton: false,
           //   hideProgressBar: true,
           // });
+          if(!modalOpen)
           showToast("success","Enquiry status updated!")
         }
       } catch (error) {
