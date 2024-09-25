@@ -632,7 +632,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   }
 
   const [userArr, setUserArr] = useState<string[]>([]);
-
+  const  [users,setUsers]=useState("");
   const getAllUser = async (url: string) => {
     const { data, error } = await myFetch(url);
 
@@ -641,7 +641,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
 
       // Collect new items to add to the array
       const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-
+      setUsers(data?.users);
 
       // Use functional form to update state
       setUserArr(prevArr => [...prevArr, ...newItems]);
@@ -736,12 +736,13 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           `}
       >
         <AddComment
+        allUsers={users}
           setSuggest={setSuggest}
           replyId={replyId}
           setType={setType}
           setInterestType={setInterestType}
           productId={productId}
-          allUsers={userArr}
+          structuredUsers={userArr}
           notes={addNote}
           setNote={setNote}
           note={note}

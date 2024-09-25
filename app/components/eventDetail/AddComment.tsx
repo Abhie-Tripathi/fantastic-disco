@@ -45,6 +45,7 @@ interface Props {
   comments?: IComment[];
   commentType?: string;
   allUsers?:any;
+  structuredUsers:any;
 }
 interface User {
   firstname: string;
@@ -84,7 +85,8 @@ export const AddComment = ({
   setSelectedPdfs,
   comments,
   commentType,
-  allUsers
+  allUsers,
+  structuredUsers
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const path=usePathname().split('/');
@@ -119,9 +121,8 @@ export const AddComment = ({
     setUserDetail(user);
   }, [user]);
   useEffect(()=>{
-    setUsers(allUsers);
-    console.log(allUsers);
-    
+    setUsers(structuredUsers);
+    setApiUserData(allUsers)
   },[allUsers])
   // useEffect(() => {
   //   const url = `${baseUrl}/auth/users?limit=100`;
@@ -676,14 +677,14 @@ export const AddComment = ({
           >
             I want to Speak
           </button>
-          {/* <button
+          <button
             onClick={handleRecommend}
             className={`${styles.btn1} ${
               theme === "light" && styles.btn1_light
             }`}
           >
             I want to #Recommend
-          </button> */}
+          </button>
         </div>
         : <></>}
         <div style={{ display: "flex", gap: "10px" }}>

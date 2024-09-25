@@ -156,11 +156,13 @@ console.log(source);
         setConfirmedCount(prev=>prev+1)
         console.log(taskName.eventId);
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+      }else if(target==="canceled"){
+        changeEnquiryStatus("CANCELED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
       }
     }
   };
   const singleCall=async(source:string)=>{
-    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !!noMoreConfirmData && confirmedCount>10){
+    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !noMoreConfirmData && confirmedCount>10){
     const apiData = await myFetch(
       `${baseUrl}/userInterest/enquiry?status=${source}&limit=1&offset=${source==="SHORTLISTED"?(shortlistPage-1)*10+9:source==="IN_NEGO"?(inProgressPage - 1) * 10 + 9:(confirmedPage-1)*10+9}`,
       {

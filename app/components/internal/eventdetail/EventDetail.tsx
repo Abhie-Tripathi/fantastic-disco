@@ -87,6 +87,8 @@ const EventDetail = ({
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
     console.log(handleDropdownSelect);
+    if (handleDropdownSelect) 
+      handleDropdownSelect(statusValues[status]==="SHORTLISTED"?"shortlisted":statusValues[status]==="IN_NEGO"?"outreach":statusValues[status]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
     showToast("success","Enquiry status updated!")
     // if (enquiryId && enquiryId != "") {
     //   let payloadData = {
@@ -147,8 +149,6 @@ const EventDetail = ({
   const handleCloseModal = () => {
     if (handleModal) {
       handleModal("", "", "", null);
-      if (handleDropdownSelect) 
-        handleDropdownSelect(statusValues[status]==="SHORTLISTED"?"shortlisted":statusValues[status]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
     }
   };
 
