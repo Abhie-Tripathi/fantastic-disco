@@ -29,7 +29,6 @@ interface CustomizationData {
   participationMessage: string;
   venue: string;
   hashtags: string;
-  promoted: string;
   boothNumber : string;
   eventFormat : string;
 }

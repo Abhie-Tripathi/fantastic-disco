@@ -100,7 +100,6 @@ const Page = () => {
                     participationMessage: event.data.customizationData.participationMessage,
                     venue: event.data.customizationData.venue,
                     hashtags: event.data.customizationData.hashtags,
-                    promoted: event.data.customizationData.promoted, // Convert string to boolean
                     boothNumber: event.data.customizationData.boothNumber
                 }
             }));
@@ -120,10 +119,14 @@ const Page = () => {
         setIsEventFormModal(true)
     }
     const handlePrefillEvent = (event: AllEventsType) => {
+        setPrefilledEvent(undefined)
+        setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
         setIsEventFormModal(true)
     }
     const handlePrefillGlobalEvent = (event : GolbalEventType)=>{
+        setPrefilledEvent(undefined)
+        setPrefilledGlobalEvent(undefined)
         setPrefilledGlobalEvent(event)
         setIsEventFormModal(true)
     }

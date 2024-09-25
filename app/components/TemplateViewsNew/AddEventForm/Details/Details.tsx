@@ -95,7 +95,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
   const [longitude, setLongitude] = useState(Number(prefilledEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledEvent?.customizationData.hashtags.split(",") || [])
-  const eventPromoted = prefilledEvent?.customizationData.promoted || "false"
+  // const eventPromoted = prefilledEvent?.customizationData.promoted || "false"
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
   const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
@@ -193,7 +193,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
       participationMessage,
       venue,
       hashtags: hashtags.join(","),
-      promoted: eventPromoted,
       boothNumber 
     }
     const eventData = {
@@ -338,7 +337,6 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
       participationMessage,
       venue,
       hashtags: hashtags.join(","),
-      promoted: eventPromoted,
       boothNumber 
     }
     const eventData = {

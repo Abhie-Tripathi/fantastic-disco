@@ -232,7 +232,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={showPromote ? styles.promotEditBtnContainer : styles.editBtnContainer}>
+                            <div className={styles.editBtnContainer}>
                                 {showPromote && <div onClick={() => handlePromoteEvent(event)}><Image src={event.promoted === "true" ? StarIconFilled: StarIcon} alt='promote' /><span>{event.promoted === "true" ? "Promoted":"Promote"}</span></div>}
                                 {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
                                 </div> */}

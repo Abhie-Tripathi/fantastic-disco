@@ -65,7 +65,7 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
         />
     )
 }
-const fetchData = async (eventId: string) => {
+const fetchData = async (widgetId : string,eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
         const response = await fetch(`${baseUrl}/public/widget/${eventId}/event?ts=${Date.now()}`, {
@@ -80,10 +80,10 @@ const fetchData = async (eventId: string) => {
 
         const data = await response.json();
         // Check if data is valid
-        // if (!data || !data.data.widgetData || !data.data.widgetData.id) {
-        //     console.log("Invalid widgetId or error encountered");
-        //     notFound();
-        // }
+        if (data.data.length === 0) {
+            console.log("Invalid widgetId or error encountered");
+            notFound();
+        }
 
         console.log("data is: ", data);
         const event = {
@@ -121,7 +121,7 @@ const fetchData = async (eventId: string) => {
 };
 const DetailPage = async ({ searchParams }: { searchParams: {widgetId : string, eventId: string } }) => {
     const {widgetId, eventId } = searchParams;
-    const data = await fetchData(eventId);
+    const data = await fetchData(widgetId,eventId);
     console.log("data is ,", data)
     return <Page {...data} eventId={eventId} widgetId={widgetId}/>;
 };
@@ -129,7 +129,7 @@ export default DetailPage;
 
 export async function generateMetadata({ searchParams }: { searchParams: {widgetId : string, eventId: string } }) {
     const {widgetId, eventId } = searchParams;
-    const data = await fetchData(eventId);
+    const data = await fetchData(widgetId,eventId);
 
     // Check if data is valid, if not return 404 metadata
     if (!data || !data.name || !data.description || !data.logoUrl) {

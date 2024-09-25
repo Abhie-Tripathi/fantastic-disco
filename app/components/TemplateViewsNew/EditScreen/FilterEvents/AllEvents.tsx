@@ -101,29 +101,36 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         }
 
     }
-    const handleAddToWidget = async (event: AllEventsType) => {
-        const customizedFormData = new FormData()
-        const existingEvents = fetchedAddedEvents || [];
-        const newEvent = {
-            id: event.eventId,
-        };
-        const mergedEvents = [...existingEvents, newEvent];
-        const otherData = {
-            event: mergedEvents,
-        };  
-        const eventIds = [...addedEventIds, event.eventId].join(',');
-        customizedFormData.append('widgetId', widgetId);
-        customizedFormData.append('eventId', eventIds)
-        customizedFormData.append('otherdata', JSON.stringify(otherData))
-        customizedFormData.append('status', 'active');
-        const { data, error } = await myFetch(`${baseUrl}/widget`, {
-            method: 'POST',
-            body: customizedFormData
-        })
-        if (data) {
-            showToast("success", "Event Successfully added to the widget");
-            fetchAddedEvents()
+    const handleAddToWidget = async (event: AllEventsType, check : boolean) => {
+        if(!check){
+            const customizedFormData = new FormData()
+            const existingEvents = fetchedAddedEvents || [];
+            const newEvent = {
+                id: event.eventId,
+                promoted : "false"
+            };
+            const mergedEvents = [...existingEvents, newEvent];
+            const otherData = {
+                event: mergedEvents,
+            };  
+            const eventIds = [...addedEventIds, event.eventId].join(',');
+            customizedFormData.append('widgetId', widgetId);
+            customizedFormData.append('eventId', eventIds)
+            customizedFormData.append('otherdata', JSON.stringify(otherData))
+            customizedFormData.append('status', 'active');
+            const { data, error } = await myFetch(`${baseUrl}/widget`, {
+                method: 'POST',
+                body: customizedFormData
+            })
+            if (data) {
+                showToast("success", "Event Successfully added to the widget");
+                fetchEvents(0,"update")
+                fetchAddedEvents()
+            }
+        }else{
+            showToast("success", "Event Already added to the widget");
         }
+
     }
     return (
         <div className={styles.body} ref={scrollableDivRef}>
@@ -164,7 +171,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
-                                    onChange={() => handleAddToWidget(event)}
+                                    onChange={() => handleAddToWidget(event, event.isLinkedToWidget)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
