@@ -17,8 +17,9 @@ const Page = () => {
   const [shortlistModalData, setShortlistModalData] = useState({});
   const { theme } = useTheme();
   const [singleEventId, setSingleEventId] = useState<string>("");
-  const [enquiryId, setEnquiryId] = useState("");
-
+  const [enquiryId, setEnquiryId] = useState<string>("");
+  const [selectedId,setSelectedId]=useState("");
+  const [statusChanged,setStatusChanged]=useState<boolean>(false);
   const [cardUpdated, setCardUpdated] = useState<boolean>(false);
   const handleRefresh = () => {
     setCardUpdated(!cardUpdated);
@@ -57,6 +58,7 @@ const Page = () => {
     (total, item) => total + item.count,
     0
   );
+  
   return (
     <div className={`${styles.container} ${modalOpen ? styles.modalOpen : ""}`} >
       <div >
@@ -71,6 +73,10 @@ const Page = () => {
         </div>
       )}
         <Internal
+        setSelectedId={setSelectedId}
+        selectedId={selectedId}
+        statusChanged={statusChanged}
+        setStatusChanged={setStatusChanged}
         modalOpen={modalOpen}
           handleModal={handleModal}
           handleShortlistModal={handleShortlistModal}
@@ -97,6 +103,7 @@ const Page = () => {
       {shortlistModalOpen && (
         <div>
           <ShortlistModal
+          setStatusChanged={setStatusChanged}
             handleShortlistModal={handleShortlistModal}
             shortlistModalData={shortlistModalData}
             handleRefresh={handleRefresh}

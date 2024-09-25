@@ -20,21 +20,13 @@ const Page = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
+    const [prefilledEvent, setPrefilledEvent] = useState<AllEventsType>();
 
     let prevDate: any = null;
     useEffect(() => {
         fetchEvents(page * 8);
     }, [page])
 
-    const fetchAddedEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/widget/${"1"}`)
-        if (data) {
-            const events = data.otherdata?.event;
-        }
-        if (error) {
-            console.log(error);
-        }
-    }
 
     // useEffect(() => {
     //     const handleScroll = () => {
@@ -78,13 +70,13 @@ const Page = () => {
     const fetchEvents = async (page: number, type?: string) => {
         const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
         if (data) {
-
             const transformedEvents = data.data.map((event: any) => ({
                 eventId: event.id,
                 name: event.name,
                 cityName: event.data.location_city,
                 countryName: event.data.location_country,
                 startDate: event.data.start_date,
+                logoUrl : event.data.logoUrl,
                 endDate: event.data.end_date,
                 startTime: event.data.start_time,
                 endTime: event.data.end_time,
@@ -95,7 +87,20 @@ const Page = () => {
                 latitude: event.data.latitude,
                 longitude: event.data.longitude,
                 participationType: event.data.participationType,
-                widgetTags : event.widgetData.map((item: { type: any })=> item.type).join(', ')
+                widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+                customizationData: {
+                    pageBgColor: event.data.customizationData.pageBgColor,
+                    eventFont: event.data.customizationData.eventFont,
+                    registerBtnColor: event.data.customizationData.registerBtnColor,
+                    registerBtnText: event.data.customizationData.registerBtnText,
+                    registerMessage: event.data.customizationData.registerMessage,
+                    speakerProfilesData: event.data.customizationData.speakerProfilesData,
+                    participationMessage: event.data.customizationData.participationMessage,
+                    venue: event.data.customizationData.venue,
+                    hashtags: event.data.customizationData.hashtags,
+                    promoted: event.data.customizationData.promoted, // Convert string to boolean
+                    boothNumber: event.data.customizationData.boothNumber
+                }
             }));
 
             if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
@@ -111,6 +116,7 @@ const Page = () => {
         setIsEventFormModal(true)
     }
     const handlePrefillEvent = (event: AllEventsType) => {
+        setPrefilledEvent(event)
         setIsEventFormModal(true)
     }
     return (
@@ -148,7 +154,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                {/* <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} /> */}
+                <AddEvent widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

@@ -14,7 +14,6 @@ interface Props {
 }
 
 const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable }: Props) => {
-
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
 
@@ -25,7 +24,8 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
             setPageBgColor(rgbaColor);
         }
         if (setCardBgColor) {
-            setCardBgColor(color)
+            // setCardBgColor(color)
+            setCardBgColor(rgbaColor)
         }
     }
     const hexToRgba = (hex: string, opacity: number) => {
@@ -51,6 +51,23 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
             setColor(extractedColors[selectedColorIndex]);
         }
     }, [selectedColorIndex])
+
+    useEffect(() => {
+        if (extractedColors.length > 0 && setPageBgColor) {
+            if (setPageBgColor) {
+                setPageBgColor(hexToRgba(extractedColors[0], 0.1));
+            }
+        }
+    }, [extractedColors, setPageBgColor]);
+
+
+    useEffect(() => {
+        if (extractedColors.length > 0 && setCardBgColor) {
+            if(setCardBgColor){
+                setCardBgColor(hexToRgba(extractedColors[0], 0.1));
+            }
+        }
+    }, [extractedColors, setCardBgColor]);
 
 
     // const handleChange = (color: any) => {

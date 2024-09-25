@@ -74,8 +74,15 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
             );
         }
     }
+    
+    const handleCardClick = ()=>{
+        if(width === "small" && handlePrefillEvent){
+            handlePrefillEvent(event)
+        }
+    }
 
-    const handleDelete = async () => {
+    const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
         if (handleDeleteModal) {
             handleDeleteModal(event.eventId, event.name)
         }
@@ -100,7 +107,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
     }
     return (
         <div className={width === "small" ? styles.smallouterDiv : styles.bigouterDiv}>
-            <div className={width === "small" ? styles.smallCard : styles.bigCard}>
+            <div className={width === "small" ? styles.smallCard : styles.bigCard} onClick={handleCardClick}>
                 <div className={width === "small" ? styles.bigName : styles.smallName}>{event.name}</div>
                 <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                     <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
@@ -125,7 +132,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         <div className={styles.tag1}>Tradeshow</div>
                         <div className={styles.tag2}>In-Person</div>
                     </div>
-                    <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
+                    <button className={styles.deleteBtn} onClick={(e)=>handleDelete(e)}>Delete</button>
                 </div>
             </div>
         </div>

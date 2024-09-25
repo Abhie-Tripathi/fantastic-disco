@@ -46,11 +46,8 @@ interface Props {
   eventFont: string;
   widgetId: string;
   fetchEvents: (page: number, type?: string) => Promise<void>;
-  fetchAddedEvents: () => Promise<void>;
   addedEventIds: string[]
-  fetchedAddedEvents: AddedEventsType[]
-  prefilledAddedEvent?: PrefilledAddedEventsType
-  prefilledNormalEvent?: AllEventsType
+  prefilledEvent?: AllEventsType
   prefilledGlobalEvent?: GolbalEventType
   eventName: string;
   setEventName: (value: string) => void;
@@ -61,7 +58,7 @@ interface Props {
   description: string;
   setDescription: (value: string) => void;
 }
-const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription }: Props) => {
+const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription,fetchEvents }: Props) => {
 
   // const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -73,32 +70,32 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
   const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-  const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
-  const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
-  const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
+  const [registerMessage, setRegisterMessage] = useState<string>(prefilledEvent?.customizationData.registerMessage || "Welcome! To join the event, please register below.")
+  const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledEvent?.customizationData.registerBtnText || "Register")
+  const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledEvent?.customizationData.registerBtnColor || "#1a1a1a")
 
-  const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || prefilledGlobalEvent?.countryName || "")
-  const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
+  const [countryName, setCountryName] = useState<string>(prefilledEvent?.countryName || prefilledGlobalEvent?.countryName || "")
+  const [timeZone, setTimeZone] = useState<string>(prefilledEvent?.gmtZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-  const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || prefilledGlobalEvent?.startDate || "")
-  const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || prefilledGlobalEvent?.endDate || "")
-  const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || prefilledNormalEvent?.startTime || "12:00 A.M")
-  const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || prefilledNormalEvent?.endTime || "12:00 A.M")
-  const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || prefilledGlobalEvent?.format || "In-person")
+  const [startDate, setStartDate] = useState<string>(prefilledEvent?.startDate || prefilledGlobalEvent?.startDate || "")
+  const [endDate, setEndDate] = useState<string>(prefilledEvent?.endDate || "")
+  const [startTime, setStartTime] = useState<string>(prefilledEvent?.startTime || "12:00 A.M")
+  const [endTime, setEndTime] = useState<string>(prefilledEvent?.endTime || "12:00 A.M")
+  const [eventFormat, setEventFormat] = useState<string>(prefilledEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person")
 
-  const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
-  const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
+  const [boothNumber, setBoothNumber] = useState<string>(prefilledEvent?.customizationData.boothNumber || "")
+  const [participationMessage, setParticipationMessage] = useState<string>(prefilledEvent?.customizationData.participationMessage || "")
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const [banner, setBanner] = useState<ImageState>({
-    placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
+    placeHolder: prefilledEvent?.logoUrl || Placeholder,
     file: null
   });
-  const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
-  const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledNormalEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledNormalEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
+  const [venue, setVenue] = useState(prefilledEvent?.customizationData.venue || prefilledGlobalEvent?.venue || "")
+  const [latitude, setLatitude] = useState(Number(prefilledEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
+  const [longitude, setLongitude] = useState(Number(prefilledEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
-  const eventPromoted = prefilledAddedEvent?.promoted || "false"
+  const [hashtags, setHashtags] = useState<string[]>(prefilledEvent?.customizationData.hashtags.split(",") || [])
+  const eventPromoted = prefilledEvent?.customizationData.promoted || "false"
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
   const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
   const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
@@ -107,6 +104,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const [query, setQuery] = useState("")
   const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
   const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
+  const [errorMessage, setErrorMssage] = useState("Event name is required.");
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
     setSpeakerModal(true)
@@ -148,7 +146,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   }, [banner])
 
   const handleAddEvent = async () => {
-    if (!eventName.trim()) {
+    if (!eventName || eventName ==="") {
       setIsEventNameEmpty(true)
     } else {
       setIsEventNameEmpty(false)
@@ -175,7 +173,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       setIsTextValueMessageEmpty(true)
     }
 
-    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+    if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }
@@ -194,7 +192,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       participationMessage,
       venue,
       hashtags: hashtags.join(","),
-      promoted: eventPromoted
+      promoted: eventPromoted,
+      boothNumber 
     }
     const eventData = {
       format: eventFormat,
@@ -233,10 +232,10 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       method: 'POST',
       body: formData
     })
-    if (data) {
-      const eventId = data.data.id
-      const bannerUrl = data.data.data.logoUrl
-      // addEventToWidget(eventId, bannerUrl)
+    if(data){
+      setIsAddEventModalOpen(false)
+      showToast("success","Event Added Successfully")
+      fetchEvents(0, "update")
     }
     if (error) {
       console.log(error)
@@ -292,7 +291,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
 
   // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
-    if (!eventName.trim()) {
+    if (!eventName || eventName ==="") {
       setIsEventNameEmpty(true)
     } else {
       setIsEventNameEmpty(false)
@@ -318,15 +317,28 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (!textValue.trim()) {
       setIsTextValueMessageEmpty(true)
     }
-    if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+    if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }
-    if (!prefilledAddedEvent?.bannerUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
+    if (!prefilledEvent?.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
       if (!imageUrl && !banner.file) {
         showToast("error", "Please upload or generate a Poster");
         return; // Exit the function if any field is missing
       }
+    }
+    const eventCustomizationData = {
+      pageBgColor,
+      eventFont,
+      registerBtnColor,
+      registerBtnText,
+      registerMessage,
+      speakerProfilesData,
+      participationMessage,
+      venue,
+      hashtags: hashtags.join(","),
+      promoted: eventPromoted,
+      boothNumber 
     }
     const eventData = {
       id: eventId,
@@ -343,7 +355,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       gmt_time: timeZone,
       latitude,
       longitude,
-      event_type: "Tradeshow"
+      event_type: "Tradeshow",
+      customizationData: JSON.stringify(eventCustomizationData)
     };
     const formData = new FormData();
     formData.append("id", eventId);
@@ -372,6 +385,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     //   }
 
     // }
+    if(data){
+      setIsAddEventModalOpen(false)
+      showToast("success","Event Updated Successfully")
+      fetchEvents(0, "update")
+    }
     if (error) {
       console.log(error);
     }
@@ -452,7 +470,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     //     generatePrompt(countryName, description, eventName, 1024, 1024)
     //   }
     // }
-    if (!prefilledAddedEvent) {
+    if (!prefilledEvent) {
       if (description && eventName) {
         generateHashtags(eventName, description)
       }
@@ -460,7 +478,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   }, [description, eventName, countryName])
 
   useEffect(() => {
-    if (!prefilledAddedEvent) {
+    if (!prefilledEvent) {
       setHashtags(generatedHashtags)
     }
   }, [generatedHashtags])
@@ -474,7 +492,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleInputChange = (value: string) => {
     console.log("value typed : ", value)
     const specialCharRegex = /[@#$%^&*"|<>]/g;
-
+    setIsEventNameEmpty(false)
     if (specialCharRegex.test(value)) {
       showToast("error", "Please check, input should not contain any special character");
     } else {
@@ -491,10 +509,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
         <button className={`${styles.addBtn} ${loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
           disabled={loadingState || isLoading}
           onClick={
-            prefilledAddedEvent
-              ? () => handleSaveEvent(prefilledAddedEvent.id)
-              : prefilledNormalEvent
-                ? () => handleSaveEvent(prefilledNormalEvent.eventId)
+            prefilledEvent
+              ? () => handleSaveEvent(prefilledEvent.eventId)
                 : handleAddEvent
           }>
           Save and Add event</button>
@@ -538,11 +554,11 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
                 className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`}
                 maxLength={80}
                 placeholder='Event Name'
-                style={{ fontFamily: prefilledAddedEvent?.eventFont || eventFont }}
+                style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
                 onChange={(e) => handleInputChange(e.target.value)}
                 value={eventName}
               />
-              {isEventNameEmpty && <p className={styles.errorMessage}>Event name is required.</p>}
+              {isEventNameEmpty && <p className={styles.errorMessage}>{errorMessage}</p>}
             </div>
             <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
             <div>

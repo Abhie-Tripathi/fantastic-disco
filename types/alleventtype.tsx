@@ -16,7 +16,8 @@ export interface AllEventsType {
   gmtZone: string;
   interest: string;
   logoUrl: string;
-  customizationData : CustomizationData
+  customizationData : CustomizationData;
+  widgetTags : string;
 }
 interface CustomizationData {
   pageBgColor: string;
@@ -28,5 +29,7 @@ interface CustomizationData {
   participationMessage: string;
   venue: string;
   hashtags: string;
-  promoted: boolean;
+  promoted: string;
+  boothNumber : string;
+  eventFormat : string;
 }

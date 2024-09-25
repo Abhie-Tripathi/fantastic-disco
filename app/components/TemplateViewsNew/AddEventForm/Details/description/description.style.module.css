@@ -39,3 +39,9 @@
     border: 1px solid red;
 }
 
+.readmore_style{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}

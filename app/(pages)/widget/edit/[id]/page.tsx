@@ -250,10 +250,10 @@ const Page = () => {
           fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
-      {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
+      {/* {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
-      </div>}
+      </div>} */}
       {/* {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
         <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} fetchAddedEvents={fetchAddedEvents}/>
       </div>} */}
