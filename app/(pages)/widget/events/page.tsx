@@ -6,26 +6,20 @@ import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { myFetch } from '@/utils/myFetch'
 import { AllEventsType } from '@/types/alleventtype'
 import { baseUrl } from '@/constants'
-import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
 import CalendarIcon from '/public/calendar.svg'
 import Image from 'next/image'
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
-import { useTheme } from '@/context'
-import { AddedEventsType } from '@/types/addedeventtype'
 import DashboardEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEventCard'
 import GlobalSearch from '@/app/components/TemplateViewsNew/EditScreen/FilterEvents/GlobalSearch'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
     const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false)
-    const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
-    const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
-    const { theme } = useTheme()
 
     let prevDate: any = null;
     useEffect(() => {
@@ -42,19 +36,19 @@ const Page = () => {
         }
     }
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
-                fetchedEvents.length > 0 // Prevent fetching on empty screen
-            ) {
-                setPage((prevPage) => prevPage + 1); // Increment page to load more events
-            }
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (
+    //             window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+    //             fetchedEvents.length > 0 // Prevent fetching on empty screen
+    //         ) {
+    //             setPage((prevPage) => prevPage + 1); // Increment page to load more events
+    //         }
+    //     };
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [fetchedEvents]);
+    //     window.addEventListener("scroll", handleScroll);
+    //     return () => window.removeEventListener("scroll", handleScroll);
+    // }, [fetchedEvents]);
 
     const handleDeleteModal = (eventId: string, eventName: string) => {
         setSelectedEventName(eventName)
@@ -84,6 +78,7 @@ const Page = () => {
     const fetchEvents = async (page: number, type?: string) => {
         const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
         if (data) {
+
             const transformedEvents = data.data.map((event: any) => ({
                 eventId: event.id,
                 name: event.name,
@@ -99,7 +94,8 @@ const Page = () => {
                 gmtZone: event.data.gmt_time,
                 latitude: event.data.latitude,
                 longitude: event.data.longitude,
-                participationType: event.data.participationType
+                participationType: event.data.participationType,
+                widgetTags : event.widgetData.map((item: { type: any })=> item.type).join(', ')
             }));
 
             if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
@@ -112,11 +108,9 @@ const Page = () => {
         }
     }
     const handleFormModal = () => {
-        setPrefilledNormalEvent(undefined)
         setIsEventFormModal(true)
     }
     const handlePrefillEvent = (event: AllEventsType) => {
-        setPrefilledNormalEvent(event)
         setIsEventFormModal(true)
     }
     return (
@@ -154,7 +148,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} />
+                {/* <AddEvent widgetId='22323' prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} /> */}
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

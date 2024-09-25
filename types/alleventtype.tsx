@@ -1,7 +1,7 @@
 export interface AllEventsType {
   eventId: string;
   name: string;
-  latitude : number;
+  latitude: number;
   longitude: number;
   cityName: string;
   countryName: string;
@@ -9,10 +9,24 @@ export interface AllEventsType {
   endDate: string;
   startTime: string;
   endTime: string;
-  participationType : string;
+  participationType: string;
   description: string;
   format: string;
   isLinkedToWidget: boolean;
   gmtZone: string;
   interest: string;
+  logoUrl: string;
+  customizationData : CustomizationData
+}
+interface CustomizationData {
+  pageBgColor: string;
+  eventFont: string;
+  registerBtnColor: string;
+  registerBtnText: string;
+  registerMessage: string;
+  speakerProfilesData: any[];
+  participationMessage: string;
+  venue: string;
+  hashtags: string;
+  promoted: boolean;
 }

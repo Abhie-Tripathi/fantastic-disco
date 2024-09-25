@@ -93,11 +93,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
     file: null
   });
-  // const [mapWidth, setMapWidth] = useState(0);
   const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
   const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledNormalEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledNormalEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
-  // const mapDivRef = useRef<HTMLDivElement>(null);
+  const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledNormalEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
   const eventPromoted = prefilledAddedEvent?.promoted || "false"
@@ -186,7 +184,18 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       showToast("error", "Please upload or generate a Poster");
       return; // Exit the function if any field is missing
     }
-
+    const eventCustomizationData = {
+      pageBgColor,
+      eventFont,
+      registerBtnColor,
+      registerBtnText,
+      registerMessage,
+      speakerProfilesData,
+      participationMessage,
+      venue,
+      hashtags: hashtags.join(","),
+      promoted: eventPromoted
+    }
     const eventData = {
       format: eventFormat,
       start_time: startTime,
@@ -200,7 +209,8 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       latitude,
       longitude,
       participationType,
-      event_type: "Tradeshow"
+      event_type: "Tradeshow",
+      customizationData: JSON.stringify(eventCustomizationData)
     };
     const formData = new FormData()
     formData.append("name", eventName)
@@ -226,59 +236,59 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
     if (data) {
       const eventId = data.data.id
       const bannerUrl = data.data.data.logoUrl
-      addEventToWidget(eventId, bannerUrl)
+      // addEventToWidget(eventId, bannerUrl)
     }
     if (error) {
       console.log(error)
     }
 
   }
-  const addEventToWidget = async (eventId: string, bannerUrl: string) => {
-    const customizedFormData = new FormData()
-    const existingEvents = fetchedAddedEvents || [];
-    const newEvent = {
-      id: eventId,
-      pageBgColor,
-      eventFont,
-      registerBtnColor,
-      registerBtnText,
-      registerMessage,
-      speakerProfilesData,
-      participationMessage,
-      bannerUrl,
-      latitude,
-      longitude,
-      venue,
-      hashtags: hashtags.join(","),
-      promoted: eventPromoted
-    };
-    const mergedEvents = [...existingEvents, newEvent];
+  // const addEventToWidget = async (eventId: string, bannerUrl: string) => {
+  //   const customizedFormData = new FormData()
+  //   const existingEvents = fetchedAddedEvents || [];
+  //   const newEvent = {
+  //     id: eventId,
+  //     pageBgColor,
+  //     eventFont,
+  //     registerBtnColor,
+  //     registerBtnText,
+  //     registerMessage,
+  //     speakerProfilesData,
+  //     participationMessage,
+  //     bannerUrl,
+  //     latitude,
+  //     longitude,
+  //     venue,
+  //     hashtags: hashtags.join(","),
+  //     promoted: eventPromoted
+  //   };
+  //   const mergedEvents = [...existingEvents, newEvent];
 
-    const otherData = {
-      event: mergedEvents,
-    };
+  //   const otherData = {
+  //     event: mergedEvents,
+  //   };
 
-    const eventIds = [...addedEventIds, eventId].join(',');
+  //   const eventIds = [...addedEventIds, eventId].join(',');
 
-    customizedFormData.append('widgetId', widgetId);
-    customizedFormData.append('otherdata', JSON.stringify(otherData))
-    customizedFormData.append('eventId', eventIds)
-    customizedFormData.append('status', 'active');
+  //   customizedFormData.append('widgetId', widgetId);
+  //   customizedFormData.append('otherdata', JSON.stringify(otherData))
+  //   customizedFormData.append('eventId', eventIds)
+  //   customizedFormData.append('status', 'active');
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: 'POST',
-      body: customizedFormData
-    })
-    if (data) {
-      console.log("widget event data", data)
-      setIsAddEventModalOpen(false)
-      fetchEvents(0, "update");
-      fetchAddedEvents();
-    }
-    if (error) {
-      console.log("error in adding event to widget ", error)
-    }
-  }
+  //   const { data, error } = await myFetch(`${baseUrl}/widget`, {
+  //     method: 'POST',
+  //     body: customizedFormData
+  //   })
+  //   if (data) {
+  //     console.log("widget event data", data)
+  //     setIsAddEventModalOpen(false)
+  //     fetchEvents(0, "update");
+  //     fetchAddedEvents();
+  //   }
+  //   if (error) {
+  //     console.log("error in adding event to widget ", error)
+  //   }
+  // }
 
   // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
   const handleSaveEvent = async (eventId: string) => {
@@ -313,7 +323,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       return; // Exit the function if any field is missing
     }
     if (!prefilledAddedEvent?.bannerUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
-      if (!banner?.file || !banner?.placeHolder) {
+      if (!imageUrl && !banner.file) {
         showToast("error", "Please upload or generate a Poster");
         return; // Exit the function if any field is missing
       }
@@ -352,70 +362,70 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       method: 'PATCH',
       body: formData,
     });
-    if (data) {
-      const updatedEventId = data.data.id;
-      const updatedBannerUrl = data.data.data.logoUrl;
-      if (prefilledAddedEvent) {
-        updateEventInWidget(updatedEventId, updatedBannerUrl)
-      } else {
-        addEventToWidget(updatedEventId, updatedBannerUrl);
-      }
+    // if (data) {
+    //   const updatedEventId = data.data.id;
+    //   const updatedBannerUrl = data.data.data.logoUrl;
+    //   if (prefilledAddedEvent) {
+    //     updateEventInWidget(updatedEventId, updatedBannerUrl)
+    //   } else {
+    //     addEventToWidget(updatedEventId, updatedBannerUrl);
+    //   }
 
-    }
+    // }
     if (error) {
       console.log(error);
     }
   }
-  const updateEventInWidget = async (eventId: string, updatedBannerUrl: string) => {
-    const customizedFormData = new FormData();
-    const existingEvents = fetchedAddedEvents || [];
-    const updatedEvent = {
-      id: eventId,
-      pageBgColor,
-      registerBtnColor,
-      registerBtnText,
-      registerMessage,
-      boothNumber,
-      eventFont,
-      speakerProfilesData,
-      participationMessage,
-      bannerUrl: updatedBannerUrl,
-      latitude,
-      longitude,
-      venue,
-      hashtags: hashtags.join(","),
-      promoted: eventPromoted
-    };
+  // const updateEventInWidget = async (eventId: string, updatedBannerUrl: string) => {
+  //   const customizedFormData = new FormData();
+  //   const existingEvents = fetchedAddedEvents || [];
+  //   const updatedEvent = {
+  //     id: eventId,
+  //     pageBgColor,
+  //     registerBtnColor,
+  //     registerBtnText,
+  //     registerMessage,
+  //     boothNumber,
+  //     eventFont,
+  //     speakerProfilesData,
+  //     participationMessage,
+  //     bannerUrl: updatedBannerUrl,
+  //     latitude,
+  //     longitude,
+  //     venue,
+  //     hashtags: hashtags.join(","),
+  //     promoted: eventPromoted
+  //   };
 
-    // Find and update the existing event
-    const updatedEvents = existingEvents.map(event =>
-      event.id === eventId ? updatedEvent : event
-    );
+  //   // Find and update the existing event
+  //   const updatedEvents = existingEvents.map(event =>
+  //     event.id === eventId ? updatedEvent : event
+  //   );
 
-    const otherData = {
-      event: updatedEvents,
-    };
+  //   const otherData = {
+  //     event: updatedEvents,
+  //   };
 
-    const eventIds = updatedEvents.map(event => event.id).join(',');
+  //   const eventIds = updatedEvents.map(event => event.id).join(',');
 
-    customizedFormData.append('widgetId', widgetId);
-    customizedFormData.append('otherdata', JSON.stringify(otherData));
-    customizedFormData.append('eventId', eventIds);
+  //   customizedFormData.append('widgetId', widgetId);
+  //   customizedFormData.append('otherdata', JSON.stringify(otherData));
+  //   customizedFormData.append('eventId', eventIds);
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: 'POST',
-      body: customizedFormData,
-    });
-    if (data) {
-      console.log("widget event data", data);
-      setIsAddEventModalOpen(false);
-      fetchEvents(0, "update");
-      fetchAddedEvents();
-    }
-    if (error) {
-      console.log("error in updating event in widget ", error);
-    }
-  };
+  //   const { data, error } = await myFetch(`${baseUrl}/widget`, {
+  //     method: 'POST',
+  //     body: customizedFormData,
+  //   });
+  //   if (data) {
+  //     console.log("widget event data", data);
+  //     setIsAddEventModalOpen(false);
+  //     fetchEvents(0, "update");
+  //     fetchAddedEvents();
+  //   }
+  //   if (error) {
+  //     console.log("error in updating event in widget ", error);
+  //   }
+  // };
 
 
   const handleGeneratePoster = () => {
@@ -469,7 +479,9 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
       showToast("error", "Please check, input should not contain any special character");
     } else {
       setEventName(value);
-      setIsEventNameEmpty(false)
+      if (value.trim() === "") {
+        setIsEventNameEmpty(true);
+      }
     }
   };
   return (

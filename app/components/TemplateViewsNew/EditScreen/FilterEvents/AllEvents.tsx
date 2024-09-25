@@ -109,14 +109,14 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
         <div className={styles.body} ref={scrollableDivRef}>
             <div className={styles.headerContainer}>
                 <div className={styles.heading}>All Events</div>
-                {/* <div className={styles.btnsDropdown}>
+                <div className={styles.btnsDropdown}>
                     <div className={styles.dropdownBtn} onClick={() => setDropdown(!dropdown)}><span>Add Event</span><DownArrow /></div>
                     {dropdown && <div className={styles.dropdownContainer} ref={buttonDropdownRef}>
                         <li onClick={() => handleNormalEventModal()}><AddeventIcon/><span>Add event to list</span></li>
                         <li onClick={() => handleAddEventModal()}><AddeventToWidgetIcon/><span>Add event to widget</span></li>
                         <li><SideventIcon/><span>Add side event</span></li>
                     </div>}
-                </div> */}
+                </div>
             </div>
             {/* <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} /> */}
             <div className={styles.line}></div>
