@@ -268,7 +268,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
   //     event: mergedEvents,
   //   };
 
-  //   const eventIds = [...addedEventIds, eventId].join(',');
+    // const eventIds = [...addedEventIds, eventId].join(',');
 
   //   customizedFormData.append('widgetId', widgetId);
   //   customizedFormData.append('otherdata', JSON.stringify(otherData))

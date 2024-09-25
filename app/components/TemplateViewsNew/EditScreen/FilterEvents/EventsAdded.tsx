@@ -10,16 +10,14 @@ import { baseUrl } from '@/constants';
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 
 interface Props {
-    handleAddEventModal: (value: void) => void
     fetchedAddedEvents: AddedEventsType[]
-    handlePrefilledAddedEvent: (event: PrefilledAddedEventsType) => void
     widgetId: string;
     fetchAddedEvents: () => Promise<void>;
     fetchEvents: (page: number, type?: string) => Promise<void>;
     selectedTemplate: string;
 }
 
-const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledAddedEvent, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate }: Props) => {
+const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
@@ -236,8 +234,8 @@ const EventsAdded = ({ handleAddEventModal, fetchedAddedEvents, handlePrefilledA
                             </div>
                             <div className={showPromote ? styles.promotEditBtnContainer : styles.editBtnContainer}>
                                 {showPromote && <div onClick={() => handlePromoteEvent(event)}><Image src={event.promoted === "true" ? StarIconFilled: StarIcon} alt='promote' /><span>{event.promoted === "true" ? "Promoted":"Promote"}</span></div>}
-                                <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
-                                </div>
+                                {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
+                                </div> */}
                             </div>
                         </div>
                     </div>

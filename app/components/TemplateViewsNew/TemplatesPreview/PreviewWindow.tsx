@@ -115,9 +115,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         return {
                             id: event.id,
                             name: data?.data?.[0]?.name,
-                            pageBgColor: event.pageBgColor,
+                            pageBgColor: eventData.customizationData.pageBgColor,
                             description: eventData.description,
-                            eventFont: event.eventFont,
+                            eventFont: eventData.customizationData.eventFont,
                             startDate: eventData.start_date,
                             endDate: eventData.end_date,
                             startTime: eventData.start_time,
@@ -127,18 +127,18 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             countryName: eventData.location_country,
                             participationType: eventData.participationType,
                             eventFormat: eventData.format,
-                            registerBtnColor: event.registerBtnColor,
-                            registerBtnText: event.registerBtnText,
-                            registerMessage: event.registerMessage,
-                            boothNumber: event.boothNumber,
-                            speakerProfilesData: event.speakerProfilesData,
-                            participationMessage: event.participationMessage,
-                            bannerUrl: event.bannerUrl,
+                            registerBtnColor: eventData.customizationData.registerBtnColor,
+                            registerBtnText: eventData.customizationData.registerBtnText,
+                            registerMessage: eventData.customizationData.registerMessage,
+                            boothNumber: eventData.customizationData.boothNumber,
+                            speakerProfilesData: eventData.customizationData.speakerProfilesData,
+                            participationMessage: eventData.customizationData.participationMessage,
+                            bannerUrl: eventData.logoUrl,
                             latitude: event.latitude,
                             longitude: event.longitude,
-                            venue: event.venue,
-                            hashtags: event.hashtags,
-                            promoted: event.promoted
+                            venue: eventData.customizationData.venue,
+                            hashtags: eventData.customizationData.hashtags,
+                            promoted: eventData.customizationData.promoted
                         } as PrefilledAddedEventsType;
                     })
                 );
