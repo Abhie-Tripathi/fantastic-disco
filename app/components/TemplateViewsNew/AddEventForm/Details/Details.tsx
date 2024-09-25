@@ -466,7 +466,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fet
   const handleInputChange = (value : string) => {
     console.log("value typed ___: ", value)
     const specialCharRegex = /[@#$%^&*"|<>]/g;
-
+    setIsEventNameEmpty(false)
     if (specialCharRegex.test(value)) {
       showToast("error", "Please check, input should not contain any special character");
     } else {
