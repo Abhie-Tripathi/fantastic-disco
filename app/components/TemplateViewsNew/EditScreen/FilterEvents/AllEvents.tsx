@@ -7,6 +7,7 @@ import { AllEventsType } from '@/types/alleventtype';
 import { GolbalEventType } from '@/types/globaleventtype';
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import Image from 'next/image';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
@@ -26,6 +27,8 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true); // To heck if there are more events
     const scrollableDivRef = useRef(null);
+    const [dropdown, setDropdown] = useState<boolean>(false)
+    const buttonDropdownRef = useOutsideClick(() => setDropdown(false));
 
     useEffect(() => {
         const handleScroll = () => {
@@ -105,12 +108,19 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
     return (
         <div className={styles.body} ref={scrollableDivRef}>
             <div className={styles.headerContainer}>
-                <div>All Events</div>
-                <div className={styles.addBtnContainer}>
-                    <button onClick={() => handleNormalEventModal()}><Addevent /> Add event</button>
+                <div className={styles.heading}>All Events</div>
+                <div className={styles.btnsDropdown}>
+                    <div className={styles.dropdownBtn} onClick={() => setDropdown(!dropdown)}><span>Add Event</span><DownArrow /></div>
+                    {/* <button onClick={() => handleNormalEventModal()}><Addevent /> Add event</button>
                     <button onClick={() => handleAddEventModal()}>
                         <AddeventToWidget />Add Event to widget
-                    </button>
+                    </button> */}
+                    {dropdown && <div className={styles.dropdownContainer} ref={buttonDropdownRef}>
+                        <li onClick={() => handleNormalEventModal()}><AddeventIcon/><span>Add event to list</span></li>
+                        <li onClick={() => handleAddEventModal()}><AddeventToWidgetIcon/><span>Add event to widget</span></li>
+                        <li><SideventIcon/><span>Add side event</span></li>
+                    </div>}
+
                 </div>
             </div>
             <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
@@ -189,36 +199,36 @@ function EditIcon() {
 }
 
 
-function AddeventToWidget() {
+function AddeventToWidgetIcon() {
     return (
-        <svg
-            width="12"
-            height="12"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
-                fill="white"
-            />
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z" fill="currentColor" />
         </svg>
     );
 }
 
-function Addevent() {
+function AddeventIcon() {
     return (
-        <svg
-            width="14"
-            height="14"
-            viewBox="0 0 21 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M18 0H0V2.25H18V0ZM18 4.5H0V6.75H18V4.5ZM0 9H9V11.25H0V9ZM9 13.5H0V15.75H9V13.5ZM16.875 12.375H20.25V14.625H16.875V18H14.625V14.625H11.25V12.375H14.625V9H16.875V12.375Z"
-                fill="white"
-            />
+        <svg width="12" height="12" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 0H0V2.25H18V0ZM18 4.5H0V6.75H18V4.5ZM0 9H9V11.25H0V9ZM9 13.5H0V15.75H9V13.5ZM16.875 12.375H20.25V14.625H16.875V18H14.625V14.625H11.25V12.375H14.625V9H16.875V12.375Z" fill="currentColor" />
         </svg>
     );
+}
+
+function SideventIcon() {
+    return (
+        <svg width="12" height="12" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.12435 9.04525H5.67578C4.40723 9.04525 3.77251 9.04525 3.37867 8.65096C2.98437 8.25711 2.98438 7.62239 2.98438 6.35384V5.45671M2.98438 5.45671V3.88672M2.98438 5.45671H5.00293" stroke="currentColor" stroke-width="0.672852" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7.47135 4.33529V6.57812M8.59277 5.45671H6.34994M6.12565 9.04525C6.12565 8.51683 6.12565 8.25218 6.2831 8.088C6.44144 7.92383 6.69533 7.92383 7.20221 7.92383H7.7405C8.24783 7.92383 8.50171 7.92383 8.65916 8.088C8.81706 8.25218 8.81706 8.51683 8.81706 9.04525C8.81706 9.57366 8.81706 9.83832 8.65916 10.0025C8.50216 10.1667 8.24783 10.1667 7.7405 10.1667H7.20221C6.69488 10.1667 6.44099 10.1667 6.28355 10.0025C6.12565 9.83832 6.12565 9.57366 6.12565 9.04525ZM2.21683 1.19531H3.75452C4.68575 1.19531 4.77995 1.69322 4.77995 2.54102C4.77995 3.38881 4.6853 3.88672 3.75452 3.88672H2.21683C1.28561 3.88672 1.19141 3.38881 1.19141 2.54102C1.19141 1.69322 1.28605 1.19531 2.21683 1.19531Z" stroke="currentColor" stroke-width="0.672852" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+    )
+}
+function DownArrow() {
+    return (
+        <svg width={8} height={8} viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.47124 5.47026C5.34622 5.59524 5.17668 5.66545 4.9999 5.66545C4.82313 5.66545 4.65359 5.59524 4.52857 5.47026L0.757237 1.69893C0.693563 1.63743 0.642775 1.56387 0.607836 1.48253C0.572896 1.40119 0.554505 1.31371 0.553736 1.22519C0.552967 1.13667 0.569835 1.04889 0.603355 0.966957C0.636876 0.885027 0.686378 0.810592 0.748973 0.747996C0.811568 0.685401 0.886003 0.635899 0.967934 0.602379C1.04986 0.568858 1.13765 0.55199 1.22617 0.55276C1.31469 0.553529 1.40217 0.57192 1.48351 0.606859C1.56484 0.641798 1.63841 0.692586 1.6999 0.75626L4.9999 4.05626L8.2999 0.75626C8.42564 0.634821 8.59404 0.567625 8.76884 0.569144C8.94363 0.570663 9.11084 0.640775 9.23445 0.76438C9.35805 0.887986 9.42817 1.05519 9.42969 1.22999C9.43121 1.40479 9.36401 1.57319 9.24257 1.69893L5.47124 5.47026Z" fill="white" />
+        </svg>
+
+    )
 }

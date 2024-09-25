@@ -12,7 +12,8 @@
 
 .banner {
     border-radius: 8px;
-    width: 100% ;
+    width: 100%;
+    object-fit:cover;
     min-height: 130px;  
 }
 .eventName{
