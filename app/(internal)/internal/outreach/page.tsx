@@ -170,7 +170,6 @@ const Page: React.FC = () => {
       if (shortlistApiData.data){
         setShortlistedTasks(shortlistApiData.data.enquiryData);
         setShortlistedCount(shortlistApiData.data.totalCount);
-        console.log(shortlistApiData.data.totalCount);
         
       }
       if (negoApiData.data) {
