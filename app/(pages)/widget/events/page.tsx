@@ -12,6 +12,7 @@ import Image from 'next/image'
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import DashboardEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEventCard'
 import GlobalSearch from '@/app/components/TemplateViewsNew/EditScreen/FilterEvents/GlobalSearch'
+import { GolbalEventType } from '@/types/globaleventtype'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
@@ -21,6 +22,7 @@ const Page = () => {
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
     const [prefilledEvent, setPrefilledEvent] = useState<AllEventsType>();
+    const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>();
 
     let prevDate: any = null;
     useEffect(() => {
@@ -113,10 +115,16 @@ const Page = () => {
         }
     }
     const handleFormModal = () => {
+        setPrefilledEvent(undefined)
+        setPrefilledGlobalEvent(undefined)
         setIsEventFormModal(true)
     }
     const handlePrefillEvent = (event: AllEventsType) => {
         setPrefilledEvent(event)
+        setIsEventFormModal(true)
+    }
+    const handlePrefillGlobalEvent = (event : GolbalEventType)=>{
+        setPrefilledGlobalEvent(event)
         setIsEventFormModal(true)
     }
     return (
@@ -129,7 +137,7 @@ const Page = () => {
                 <button onClick={handleFormModal}>+ Add Event</button>
             </nav>
             <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' />
+                <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
             </div>
             {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
                 const showDate = event.startDate !== prevDate;
@@ -154,7 +162,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} addedEventIds={[""]} />
+                <AddEvent widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

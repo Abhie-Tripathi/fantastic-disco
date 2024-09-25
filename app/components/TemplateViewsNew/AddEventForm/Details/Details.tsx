@@ -78,7 +78,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
   const [timeZone, setTimeZone] = useState<string>(prefilledEvent?.gmtZone || "GMT+05:30 Chennai")
   const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
   const [startDate, setStartDate] = useState<string>(prefilledEvent?.startDate || prefilledGlobalEvent?.startDate || "")
-  const [endDate, setEndDate] = useState<string>(prefilledEvent?.endDate || "")
+  const [endDate, setEndDate] = useState<string>(prefilledEvent?.endDate ||prefilledGlobalEvent?.startDate || "")
   const [startTime, setStartTime] = useState<string>(prefilledEvent?.startTime || "12:00 A.M")
   const [endTime, setEndTime] = useState<string>(prefilledEvent?.endTime || "12:00 A.M")
   const [eventFormat, setEventFormat] = useState<string>(prefilledEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person")
@@ -174,6 +174,7 @@ const Details = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, pre
     }
 
     if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+      
       showToast("error", "Please fill in all the fields");
       return; // Exit the function if any field is missing
     }

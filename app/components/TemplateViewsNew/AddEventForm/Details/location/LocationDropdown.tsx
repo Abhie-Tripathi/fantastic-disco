@@ -109,7 +109,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={eventFormat === "In-person"}
+                        checked={eventFormat === "In-person" || eventFormat === "OFFLINE"}
                         onChange={() => setEventFormat("In-person")}
                     />
                     <span className={styles.customCheckbox}></span>
@@ -119,7 +119,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={eventFormat === "Virtual"}
+                        checked={eventFormat === "Virtual" || eventFormat === "ONLINE"}
                         onChange={() => setEventFormat("Virtual")}
                     />
                     <span className={styles.customCheckbox}></span>
@@ -136,7 +136,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <span className={styles.checkboxLabel}>Hybrid</span>
                 </label>
             </div>
-            {(eventFormat === "In-person" || eventFormat === "Hybrid") && <div className={styles.locationInputContainer}>
+            {(eventFormat === "In-person" || eventFormat === "Hybrid" || eventFormat === "OFFLINE") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => handleInputChange(e)} />
                 {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
@@ -160,7 +160,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                 )}
 
             </div>}
-            {(eventFormat === "Virtual" || eventFormat === "Hybrid") &&
+            {(eventFormat === "Virtual" || eventFormat === "Hybrid" || eventFormat === "ONLINE") &&
                 <div className={styles.inputLinkContainer}>
                     <input type="text" placeholder='Enter Virtual Link' />
                     <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above.</span></div>
