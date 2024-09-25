@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
+import Demobanner from '/public/demobanner.png'
 
 
 interface FontSettings {
@@ -51,7 +52,7 @@ interface PreviewProps {
     fetchedAddedEvents?: AddedEventsType[];
     widgetId?: string;
     smallCard: boolean;
-    setIsDraftSaved? : (value : boolean)=>void
+    setIsDraftSaved?: (value: boolean) => void
 }
 interface DraftWidgetsType {
     widgetType: string;
@@ -61,20 +62,27 @@ interface DraftWidgetsType {
     widgetStatus: string;
 }
 
+const demoBanner: string = Demobanner as unknown as string;
+const demoEventName: string = "Demo Event"
+const demoDescription: string = "This is a demo event created to showcase the functionalities of our event widgets. Please note, this is a placeholder description and does not represent a real event. Feel free to replace this with your event details to see how the widgets will appear with live data."
+const demoLocation: string = "Corpus Christi, USA"
+
+
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
-        subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "normal" },
+        subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "normal" },
         body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "normal" }
     },
     buttonSettings = {
         primary: { buttonColor: "#6750a4", fontColor: "#ffffff", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
-    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard,setIsDraftSaved }: PreviewProps) => {
+    selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard, setIsDraftSaved }: PreviewProps) => {
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+    const [storedDomain, setStoredDomain] = useState<string>("")
     const { theme } = useTheme()
     const router = useRouter();
     const getAsciiString = (str: string): string => {
@@ -82,45 +90,67 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     };
 
     useEffect(() => {
+        const fetchDomain = async () => {
+            const { data, error } = await myFetch(`${baseUrl}/kit`)
+            setStoredDomain(data.domain.domain)
+        }
+        fetchDomain()
+    }, [])
+
+    useEffect(() => {
         const handleOtherDataFetch = async () => {
-            if (!fetchedAddedEvents) return;
-            const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
-                fetchedAddedEvents.map(async (event) => {
-                    const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
-                    if (error) {
-                        console.error(`Error fetching event data for event ID ${event.id}:`, error);
-                        return null;
-                    }
-                    if (data) {
-                        console.log("data : ", data)
-                    }
-                    return {
-                        id: event.id,
-                        name: data.data[0].name,
-                        pageBgColor: event.pageBgColor,
-                        description: data.data[0].data.description,
-                        eventFont: event.eventFont,
-                        startDate: data.data[0].data.start_date,
-                        endDate: data.data[0].data.end_date,
-                        startTime: data.data[0].data.start_time,
-                        endTime: data.data[0].data.end_time,
-                        timeZone: data.data[0].data.gmt_time,
-                        cityName: data.data[0].data.location_city,
-                        countryName: data.data[0].data.location_country,
-                        participationType: data.data[0].data.participationType,
-                        eventFormat: data.data[0].data.format,
-                        registerBtnColor: event.registerBtnColor,
-                        registerBtnText: event.registerBtnText,
-                        registerMessage: event.registerMessage,
-                        boothNumber: event.boothNumber,
-                        speakerProfilesData: event.speakerProfilesData,
-                        participationMessage: event.participationMessage,
-                        bannerUrl: event.bannerUrl
-                    } as PrefilledAddedEventsType;
-                })
-            );
-            setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            if (!fetchedAddedEvents) {
+                return
+            }
+            try {
+                const newFetchedAddedOtherData = await Promise.all(
+                    fetchedAddedEvents.map(async (event) => {
+                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        if (error) {
+                            console.error(`Error fetching event data for event ID ${event.id}:`, error);
+                            return null;
+                        }
+
+                        const eventData = data?.data?.[0]?.data;
+                        if (!eventData) return null;
+
+                        return {
+                            id: event.id,
+                            name: data?.data?.[0]?.name,
+                            pageBgColor: event.pageBgColor,
+                            description: eventData.description,
+                            eventFont: event.eventFont,
+                            startDate: eventData.start_date,
+                            endDate: eventData.end_date,
+                            startTime: eventData.start_time,
+                            endTime: eventData.end_time,
+                            timeZone: eventData.gmt_time,
+                            cityName: eventData.location_city,
+                            countryName: eventData.location_country,
+                            participationType: eventData.participationType,
+                            eventFormat: eventData.format,
+                            registerBtnColor: event.registerBtnColor,
+                            registerBtnText: event.registerBtnText,
+                            registerMessage: event.registerMessage,
+                            boothNumber: event.boothNumber,
+                            speakerProfilesData: event.speakerProfilesData,
+                            participationMessage: event.participationMessage,
+                            bannerUrl: event.bannerUrl,
+                            latitude: event.latitude,
+                            longitude: event.longitude,
+                            venue: event.venue,
+                            hashtags: event.hashtags,
+                            promoted: event.promoted
+                        } as PrefilledAddedEventsType;
+                    })
+                );
+
+                setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+            } catch (err) {
+                console.error("Error in handleOtherDataFetch:", err);
+            }
         };
+
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
@@ -142,7 +172,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         }
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
-        customizeData.append('domain', 'http://example.com'); // replace with actual domain
+        customizeData.append('domain', storedDomain); // replace with actual domain
         customizeData.append('otherdata', JSON.stringify(otherdata))
         const customizationData = {
             fontSettings,
@@ -207,25 +237,26 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     </div>
                 </div>
             </div>
-            <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen)  ? styles.bigpreview_btnContainer : ""}`}>
+            <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen) ? styles.bigpreview_btnContainer : ""}`}>
                 <div className={`${styles.preview} ${(!draftWidget || isFullScreen) ? styles.bigPreview : ""}`} >
                     {selectedTemplate === "ST" ? <StickyPreview type="top" /> :
                         selectedTemplate === "SB" ? <StickyPreview type="down" /> :
-                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} /> :
-                                selectedTemplate === "GS" ? <GridView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                    selectedTemplate === "LS" ? <ListView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                        selectedTemplate === "CV" ? <CaraouselView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
-                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} /> :
+                            selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                selectedTemplate === "GS" ? <GridView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} /> :
+                                    selectedTemplate === "LS" ? <ListView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                        selectedTemplate === "HBL" ? <HeroBannerAndViews type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                            selectedTemplate === "HBG" ? <HeroBannerAndViews type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                selectedTemplate === "CVL" ? <CaraouselAndViews type='list'
+                                                    fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                    selectedTemplate === "CVG" ? <CaraouselAndViews type='grid' fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                        selectedTemplate === "CV" ? <CaraouselView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                            selectedTemplate === "HS" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup
                                                                             smallCard={smallCard}
-                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : selectedTemplate === "PUVL" ? <LandscapePopup 
-                                                                            smallCard={smallCard}fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} /> : <></>}
+                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : selectedTemplate === "PUVL" ? <LandscapePopup
+                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : <></>}
                 </div>
                 {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to Draft widgets</button>
@@ -267,3 +298,52 @@ function CloseFullScreenIcon({ color }: IconProps) {
         <svg data-testid="geist-icon" height="16" stroke-linejoin="round" viewBox="0 0 16 16" width="16"><path fillRule="evenodd" clipRule="evenodd" d="M6 1V1.75V5C6 5.55229 5.55228 6 5 6H1.75H1V4.5H1.75H4.5V1.75V1H6ZM14.25 6H15V4.5H14.25H11.5V1.75V1H10V1.75V5C10 5.55228 10.4477 6 11 6H14.25ZM10 14.25V15H11.5V14.25V11.5H14.29H15.04V10H14.29H11C10.4477 10 10 10.4477 10 11V14.25ZM1.75 10H1V11.5H1.75H4.5V14.25V15H6V14.25V11C6 10.4477 5.55229 10 5 10H1.75Z" fill={color}></path></svg>
     )
 }
+
+
+
+// useEffect(() => {
+//     const handleOtherDataFetch = async () => {
+//         const newFetchedAddedOtherData: (PrefilledAddedEventsType | null)[] = await Promise.all(
+//             fetchedAddedEvents.map(async (event) => {
+//                 const { data, error } = await myFetch(${baseUrl}/event?id=${event.id});
+//                 if (error) {
+//                     console.error(Error fetching event data for event ID ${event.id}:, error);
+//                     return null;
+//                 }
+//                 if (data) {
+//                     console.log("data of fetched event : ",)
+//                 }
+//                 return {
+//                     id: event.id,
+//                     name: data.data[0].name,
+//                     pageBgColor: event.pageBgColor,
+//                     description: data.data[0].data.description,
+//                     eventFont: event.eventFont,
+//                     startDate: data.data[0].data.start_date,
+//                     endDate: data.data[0].data.end_date,
+//                     startTime: data.data[0].data.start_time,
+//                     endTime: data.data[0].data.end_time,
+//                     timeZone: data.data[0].data.gmt_time,
+//                     cityName: data.data[0].data.location_city,
+//                     countryName: data.data[0].data.location_country,
+//                     participationType: data.data[0].data.participationType,
+//                     eventFormat: data.data[0].data.format,
+//                     registerBtnColor: event.registerBtnColor,
+//                     registerBtnText: event.registerBtnText,
+//                     registerMessage: event.registerMessage,
+//                     boothNumber: event.boothNumber,
+//                     speakerProfilesData: event.speakerProfilesData,
+//                     participationMessage: event.participationMessage,
+//                     bannerUrl: event.bannerUrl,
+//                     latitude: event.latitude,
+//                     longitude: event.longitude,
+//                     venue: event.venue,
+//                     hashtags : event.hashtags
+//                 } as PrefilledAddedEventsType;
+//             })
+//         );
+//         setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
+//     };
+
+//     handleOtherDataFetch();
+// }, [fetchedAddedEvents])

@@ -8,7 +8,9 @@
     height: 88vh;
 }
 .modalOpen {
+    max-height: 88vh;
     overflow-y: hidden;
+    max-height: 88vh;
 }
 
 .editContainer {
@@ -25,31 +27,41 @@
     width: 100%;
 }
 .blackScreen {
-    position: absolute;
+    /* position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     height: 100%;
     width: 100%;
     background-color: black;
-    opacity: .3;
+    opacity: .3; */
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: grey; 
+    opacity: 0.8; 
+    z-index: 90; 
+
 }
 
 .addEventModal {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 47%;
     transform: translate(-50%, -50%);
     height: 100%;
     width: 90%;
-    z-index: 1;
+    z-index: 99;
 }
 .addNormalEventModal{
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 47%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 99;
     width: 50%;
 }
 
