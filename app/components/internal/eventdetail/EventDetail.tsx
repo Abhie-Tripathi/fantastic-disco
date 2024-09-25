@@ -121,10 +121,12 @@ const EventDetail = ({
     const fetchEventData = async () => {
       try {
         const { data, error } = await myFetch(
-          `${baseUrl}/event/search?eventId=${eventId}`
+          `${baseUrl}/event/${eventId}`
         );
         if (data) {
-          const eventsData = data.events[0];
+          const eventsData = data.event;
+          console.log(eventsData);
+          
           setSingleEventData(eventsData);
         }
       } catch (error) {
