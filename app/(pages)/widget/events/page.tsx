@@ -23,6 +23,7 @@ const Page = () => {
     const [page, setPage] = useState<number>(0);
     const [prefilledEvent, setPrefilledEvent] = useState<AllEventsType>();
     const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>();
+    const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
 
     let prevDate: any = null;
     useEffect(() => {
@@ -44,10 +45,15 @@ const Page = () => {
     //     return () => window.removeEventListener("scroll", handleScroll);
     // }, [fetchedEvents]);
 
-    const handleDeleteModal = (eventId: string, eventName: string) => {
-        setSelectedEventName(eventName)
-        setSelectedEventId(eventId)
-        setDeleteModal(true)
+    const handleDeleteModal = (eventId: string, eventName: string, isPresentinWidget: boolean) => {
+        if (isPresentinWidget) {
+            setDeleteModalTwo(true)
+        } else {
+            setSelectedEventName(eventName)
+            setSelectedEventId(eventId)
+            setDeleteModal(true)
+        }
+
     }
     const handleDelete = async () => {
         const customizeData = new FormData();
@@ -78,7 +84,7 @@ const Page = () => {
                 cityName: event.data.location_city,
                 countryName: event.data.location_country,
                 startDate: event.data.start_date,
-                logoUrl : event.data.logoUrl,
+                logoUrl: event.data.logoUrl,
                 endDate: event.data.end_date,
                 startTime: event.data.start_time,
                 endTime: event.data.end_time,
@@ -124,14 +130,14 @@ const Page = () => {
         setPrefilledEvent(event)
         setIsEventFormModal(true)
     }
-    const handlePrefillGlobalEvent = (event : GolbalEventType)=>{
+    const handlePrefillGlobalEvent = (event: GolbalEventType) => {
         setPrefilledEvent(undefined)
         setPrefilledGlobalEvent(undefined)
         setPrefilledGlobalEvent(event)
         setIsEventFormModal(true)
     }
     return (
-        <div className={`${styles.body} ${isEventFormModal || deleteModal ? styles.modalOpen : ""}`}>
+        <div className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo ? styles.modalOpen : ""}`}>
             <nav className={styles.nav}>
                 <div>
                     <Image src={CalendarIcon} alt='cal' width={14} height={14} className='icons' />
@@ -140,7 +146,7 @@ const Page = () => {
                 <button onClick={handleFormModal}>+ Add Event</button>
             </nav>
             <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent}/>
+                <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
             </div>
             {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
                 const showDate = event.startDate !== prevDate;
@@ -163,7 +169,7 @@ const Page = () => {
                     <span>Start by searching for existing events to add to your widgets</span>
                     <span>or feel free to create your own event from scratch</span>
                 </div>}
-            {(isEventFormModal || deleteModal) && <div className={styles.blackScreen}></div>}
+            {(isEventFormModal || deleteModal ||deleteModalTwo) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
                 <AddEvent widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
@@ -173,6 +179,14 @@ const Page = () => {
                 <div className={styles.btns}>
                     <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
                     <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
+                </div>
+            </div>}
+            {deleteModalTwo && <div className={styles.deleteModal}>
+                <div className={styles.deleteHeading}>This event is Present in one of your widgets.</div>
+                <span>Remove the event from widget to delete this event</span>
+                <div className={styles.btns}>
+                    <button className={styles.cancelBtn} onClick={() => setDeleteModalTwo(false)}>Cancel</button>
+                    {/* <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button> */}
                 </div>
             </div>}
         </div>

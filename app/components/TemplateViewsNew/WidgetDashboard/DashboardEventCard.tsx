@@ -11,7 +11,7 @@ import { baseUrl } from '@/constants';
 interface Props {
     event: AllEventsType;
     fetchEvents?: (value: void) => void
-    handleDeleteModal?: (id: string, name: string) => void
+    handleDeleteModal: (id: string, name: string, isPresentinWidget : boolean) => void
     handlePrefillEvent?: (value: AllEventsType) => void
     width: string;
 }
@@ -83,27 +83,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
 
     const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
-        if (handleDeleteModal) {
-            handleDeleteModal(event.eventId, event.name)
-        }
-        else {
-            const customizeData = new FormData();
-            customizeData.append("id", event.eventId)
-            customizeData.append('published', "false");
-            const { data, error } = await myFetch(
-                `${baseUrl}/event`,
-                {
-                    method: 'PATCH',
-                    body: customizeData,
-                }
-            );
-            if (data && fetchEvents) {
-                fetchEvents()
-            }
-            if (error) {
-                console.log(error);
-            }
-        }
+            handleDeleteModal(event.eventId, event.name, event.widgetTags.length > 0)
     }
     return (
         <div className={width === "small" ? styles.smallouterDiv : styles.bigouterDiv}>
