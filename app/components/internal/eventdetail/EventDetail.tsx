@@ -20,6 +20,7 @@ import { baseUrl, headers } from "@/constants";
 import { number } from "zod";
 import { toast } from "react-toastify";
 import { showToast } from "@/utils/showToast";
+import Loading from "../../UI/Loading";
 // import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
@@ -62,6 +63,7 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
+  const [isLoading,setIsLoading]=useState(true);
   const [participentData, setParticipentData] = useState({
     attendee: [],
     speakers: [],
@@ -126,7 +128,7 @@ const EventDetail = ({
         if (data) {
           const eventsData = data.event;
           console.log(eventsData);
-          
+          setIsLoading(false)
           setSingleEventData(eventsData);
         }
       } catch (error) {
@@ -166,6 +168,8 @@ const EventDetail = ({
   }, [eventId]);
 
   return (
+    <>
+    {isLoading ? <div className={styles.innerContainer} style={{height:"calc(100vh - 80px)"}}><div style={{width:"100%"}}><Loading/></div></div>:
     <div
       className={
         meet ? `${styles.container} ${styles.fullHeight}` : styles.container
@@ -178,54 +182,58 @@ const EventDetail = ({
 
       <div className={styles.modalContainer}>
         {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
+        
         <div className={styles.innerContainer}>
-          <div className={styles.containerLeft} ref={leftContainerRef}>
-            <div className={styles.containerLeftTop}>
-              <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
-              {/* {pathName && pathName === "outreach" && (
-                <StatusChangeDropdown
-                  label=""
-                  eventId={123}
-                  handleStatusChange={handleStatusChange}
-                  currentValue={
-                    currentEnquiryStatus ? currentEnquiryStatus : ""
-                  }
-                />
-              )} */}
-            </div>
-            {singleEventData && (
-              <>
-                <SingleEvent {...singleEventData} />
-                <EventDescription
-                  description={singleEventData.description}
-                  open={openEventDetails}
-                  speakers={false}
-                  shortlist={false}
-                  eventDetail={singleEventData}
-                />
-              </>
-            )}
-            <EventRequest open={openEventRequest} participentData={participentData} />
-            <Organiser
-              open={openOrganiserDetails}
-              organizerData={singleEventData?.organizer}
-            />
-            <EventPoc open={openPocDetails} eventId={eventId} />
-            <Follower eventId={eventId} enquiryId={enquiryId} />
-          </div>
-          <div className={styles.containerRight} ref={rightContainerRef}>
-            {singleEventData && (
-              <Notes
-                eventId={singleEventData.id}
-                eventGroupId={singleEventData.eventGroupId}
-                stage={stage}
+        <div className={styles.containerLeft} ref={leftContainerRef}>
+          <div className={styles.containerLeftTop}>
+            <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
+            {/* {pathName && pathName === "outreach" && (
+              <StatusChangeDropdown
+                label=""
+                eventId={123}
+                handleStatusChange={handleStatusChange}
+                currentValue={
+                  currentEnquiryStatus ? currentEnquiryStatus : ""
+                }
               />
-            )}
+            )} */}
           </div>
+          {singleEventData && (
+            <>
+              <SingleEvent {...singleEventData} />
+              <EventDescription
+                description={singleEventData.description}
+                open={openEventDetails}
+                speakers={false}
+                shortlist={false}
+                eventDetail={singleEventData}
+              />
+            </>
+          )}
+          <EventRequest open={openEventRequest} participentData={participentData} />
+          <Organiser
+            open={openOrganiserDetails}
+            organizerData={singleEventData?.organizer}
+          />
+          <EventPoc open={openPocDetails} eventId={eventId} />
+          <Follower eventId={eventId} enquiryId={enquiryId} />
         </div>
+        <div className={styles.containerRight} ref={rightContainerRef}>
+          {singleEventData && (
+            <Notes
+              eventId={singleEventData.id}
+              eventGroupId={singleEventData.eventGroupId}
+              stage={stage}
+            />
+          )}
+        </div>
+      </div>
+        
       </div>
       {/* <ToastContainer /> */}
     </div>
+    }
+    </>
   );
 };
 
