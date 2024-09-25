@@ -39,12 +39,21 @@ interface YourEventCardProps {
   enquiryActivity?: any;
   handleModal?: (id: string, enquiryId: string) => void;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
+  setSelectedId?:(status:string)=>void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
-  handleDeleteModal?: (id: string, name: string) => void
+  handleDeleteModal?: (id: string, name: string) => void;
+  filterChanged?:boolean
+}
+interface VoteStatus {
+  Attending: boolean;
+  Speaking: boolean;
+  Sponsoring: boolean;
+  Exhibiting: boolean;
 }
 interface enquiry {
   for: string;
+  like: number;
 }
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -73,21 +82,26 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   geniEvent,
   handlePrefillEvent,
   isDateSame,
-  handleDeleteModal
+  handleDeleteModal,
+  filterChanged,
+  setSelectedId
+  
 }) => {
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
   }
+  console.log(enquiryActivity);
+  // const [value,setValue]=useState("");
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
-  const [voteStatus, setVoteStatus] = useState({
-    Attending: enquiryActivity?.some((item: enquiry) => item.for === 'ATTENDING') ? true : false,
-    Speaking: enquiryActivity?.some((item: enquiry) => item.for === 'SPEAKING') ? true : false,
-    Sponsoring: enquiryActivity?.some((item: enquiry) => item.for === 'SPONSORING') ? true : false,
-    Exhibiting: enquiryActivity?.some((item: enquiry) => item.for === 'EXHIBITING') ? true : false,
+  const [votesCount, setVotesCount] = useState(0);
+  const [voteStatus, setVoteStatus] = useState<VoteStatus>({
+    Attending: false,
+    Speaking: false,
+    Sponsoring: false,
+    Exhibiting: false,
   });
-
+  
   const [interestedUsers, setInterestedUsers] = useState<any>({
     attendee: [],
     speakers: [],
@@ -98,7 +112,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     let payloadData = {
       source: "GTM",
       like: !voteStatus[item] ? 1 : 0,
-      for: item.toUpperCase(),
+      for: item?.toUpperCase(),
     };
     try {
       const apiUrl = baseUrl + "/userInterest/" + enquiryId + "/activity";
@@ -147,30 +161,37 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
       // });
     }
 
-    const fetchInterestedUsers = async () => {
-      try {
-        const apiUrl = `${baseUrl}/userInterest/${eventId}`;
-        const apiData = await myFetch(apiUrl, {
-          method: "GET",
-          headers: headers,
-        });
-        if (apiData.data) {
-          setInterestedUsers({
-            attendee: apiData.data.participent.attendee,
-            speakers: apiData.data.participent.speakers,
-            sponsors: apiData.data.participent.sponsors,
-            exhibitors: apiData.data.participent.exhibitors,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if(!filterChanged){
     fetchInterestedUsers();
+    setVotesCount(upvote && upvote[0].like);
+    setVoteStatus({ Attending: enquiryActivity?.some((item: enquiry) => item.for === 'ATTENDING' && item.like===1) ? true : false,
+    Speaking: enquiryActivity?.some((item: enquiry) => item.for === 'SPEAKING' && item.like===1) ? true : false,
+    Sponsoring: enquiryActivity?.some((item: enquiry) => item.for === 'SPONSORING' && item.like===1) ? true : false,
+    Exhibiting: enquiryActivity?.some((item: enquiry) => item.for === 'EXHIBITING'&& item.like===1) ? true : false,})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
- 
-  const [votesCount, setVotesCount] = useState(upvote && upvote[0].like);
+  }, [filterChanged]);
+  console.log(filterChanged);
+  
+  const fetchInterestedUsers = async () => {
+    try {
+      const apiUrl = `${baseUrl}/userInterest/${eventId}`;
+      const apiData = await myFetch(apiUrl, {
+        method: "GET",
+        headers: headers,
+      });
+      if (apiData.data) {
+        setInterestedUsers({
+          attendee: apiData.data.participent.attendee,
+          speakers: apiData.data.participent.speakers,
+          sponsors: apiData.data.participent.sponsors,
+          exhibitors: apiData.data.participent.exhibitors,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   return (
 
     <div className={styles.outerDiv} >
@@ -181,6 +202,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             <div className={styles.leftContainer}>
               <div className="tablet_view mobile_view">
                 <StatusChangeDropdown
+                 setSelectedId={setSelectedId}
                   label=""
                   eventId={eventId}
                   enquiryId={enquiryId}
@@ -209,6 +231,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               </div>
               {!geniEvent && <div className="desktop_view">
                 <StatusChangeDropdown
+                setSelectedId={setSelectedId}
                   label=""
                   eventId={eventId}
                   enquiryId={enquiryId}

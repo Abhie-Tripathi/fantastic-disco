@@ -15,6 +15,9 @@ interface PropType {
   enquiryId?: string;
   currentEnquiryStatus?: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
+  setSelectedId:any;
+  // value:any;
+  // setValue:any;
 }
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   
@@ -35,6 +38,7 @@ useEffect(()=>{
     // setValue(target.innerText);
     if(props.handleShortlistModal && props.eventId && props.enquiryId){
       props.handleShortlistModal(props.eventId, props.enquiryId);
+      props.setSelectedId(props.eventId);
     }
 
   };
