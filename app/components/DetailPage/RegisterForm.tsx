@@ -36,7 +36,7 @@ const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widg
     const rgb = hexToRgb(registerBtnColor);
     const brightness = calculateBrightness(rgb);
     const fontColor = brightness > 155 ? '#000000' : '#FFFFFF';
-
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,

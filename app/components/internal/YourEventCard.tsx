@@ -90,7 +90,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   if (eventStartDate) {
     const formattedDate = formatDate(eventStartDate);
   }
-  console.log(enquiryActivity);
   // const [value,setValue]=useState("");
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -171,7 +170,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterChanged]);
-  console.log(filterChanged);
   
   const fetchInterestedUsers = async () => {
     try {
