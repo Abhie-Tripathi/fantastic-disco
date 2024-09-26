@@ -26,8 +26,9 @@ const Page = () => {
     const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>();
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
     const [choiceFormModal, setChoiceFormModal] = useState<boolean>(false)
-    const [mainEventFlow, setMainEventFlow] = useState<boolean>(false)
-    const [sideEventFlow, setSideEventFlow] = useState<boolean>(false)
+    // const [mainEventFlow, setMainEventFlow] = useState<boolean>(false)
+    // const [sideEventFlow, setSideEventFlow] = useState<boolean>(false)
+    const [eventFlow, setEventFlow] = useState<string>("")
 
     let prevDate: any = null;
     useEffect(() => {
@@ -125,16 +126,15 @@ const Page = () => {
     }
     useEffect(() => {
         handleFormModal()
-    }, [sideEventFlow, mainEventFlow])
+    }, [eventFlow])
 
     const handleFormModal = () => {
         setPrefilledEvent(undefined)
         setPrefilledGlobalEvent(undefined)
-        if(sideEventFlow || mainEventFlow){
+        if(eventFlow){
             setIsEventFormModal(true)
         }
-        setSideEventFlow(false)
-        setMainEventFlow(false)
+        setEventFlow("")
     }
     const handlePrefillEvent = (event: AllEventsType) => {
         setPrefilledEvent(undefined)
@@ -183,7 +183,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
+                <AddEvent eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
@@ -202,7 +202,7 @@ const Page = () => {
             </div>}
             {choiceFormModal &&
                 <div className={styles.choiceModal}>
-                    <ChoiceModal setChoiceFormModal={setChoiceFormModal} setSideEventFlow={setSideEventFlow} setMainEventFlow={setMainEventFlow}/>
+                    <ChoiceModal setChoiceFormModal={setChoiceFormModal} setEventFlow={setEventFlow}/>
                 </div>
             }
         </div>

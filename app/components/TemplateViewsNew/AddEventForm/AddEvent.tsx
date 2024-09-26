@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import styles from './addevent.style.module.css'
 import Appearance from './Appearance/Appearance'
-import Details from './Details/Details'
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
-import { AddedEventsType } from '@/types/addedeventtype'
 import { AllEventsType } from '@/types/alleventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import AddEventFormTab from './AddEventFormTab'
@@ -11,12 +8,13 @@ import AddEventFormTab from './AddEventFormTab'
 interface Props {
   setIsAddEventModalOpen: (value: boolean) => void
   widgetId: string;
+  eventFlow : string;
   fetchEvents: (page: number) => Promise<void>;
   addedEventIds: string[]
   prefilledEvent?: AllEventsType
   prefilledGlobalEvent?: GolbalEventType
 }
-const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent }: Props) => {
+const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow }: Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledEvent?.customizationData.pageBgColor || "")
   const [eventFont, setEventFont] = useState<string>("Arial")
@@ -31,7 +29,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     <div className={styles.body}>
       <div className={styles.appearance}><Appearance prefilledEvent={prefilledEvent} cityName={cityName} description={description} eventName={eventName} participationType={participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
       <div className={styles.details}>
-        <AddEventFormTab setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/>
+        <AddEventFormTab eventFlow={eventFlow} setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen}/>
         {/* <Details setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} /> */}
       </div>
     </div>

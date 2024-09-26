@@ -6,11 +6,10 @@ import Image from 'next/image'
 
 interface Props {
     setChoiceFormModal : (value : boolean)=> void
-    setSideEventFlow: (value : boolean)=> void
-    setMainEventFlow: (value : boolean)=> void
+    setEventFlow : (value : string)=> void
 }
 
-const ChoiceModal = ({setChoiceFormModal, setMainEventFlow, setSideEventFlow}: Props) => {
+const ChoiceModal = ({setChoiceFormModal, setEventFlow}: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -19,14 +18,14 @@ const ChoiceModal = ({setChoiceFormModal, setMainEventFlow, setSideEventFlow}: P
             </div>
             <div className={styles.subHeading}>Make a selection to add your event</div>
             <div className={styles.choiceContainer}>
-                <div className={styles.eventContainer} onClick={()=>setMainEventFlow(true)}>
+                <div className={styles.eventContainer} onClick={()=>setEventFlow("main")}>
                     <div className={styles.imageContainer}>
                         <Image src={MainEventIcon} alt='mainevent' unoptimized />
                     </div>
                     <div className={styles.eventName}>Main Event</div>
                     <div className={styles.eventSummary}>Your primary event that is mainly focused on networking, entertainment, or other experiences.</div>
                 </div>
-                <div className={styles.eventContainer} onClick={()=>setSideEventFlow(true)}>
+                <div className={styles.eventContainer} onClick={()=>setEventFlow("side")}>
                     <div className={styles.imageContainer}>
                         <Image src={SideEventIcon} alt='sideevent' unoptimized />
                     </div>

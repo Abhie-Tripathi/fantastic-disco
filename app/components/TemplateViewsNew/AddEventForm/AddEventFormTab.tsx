@@ -1,31 +1,11 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styles from './addeventformtab.style.module.css'
-import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
-import AiIcon from '/public/AiIcon.svg'
-import UploadIcon from '/public/UploadImageIcon.svg'
-import ShareButtons from '@/app/components/DetailPage/ShareButtons'
-import DateTimeContainer from './Details/dateandtime/DateTimeContainer'
-import LocationContainer from './Details/location/LocationContainer'
-import ParticipationContainer from './Details/participation/ParticipationContainer'
-import RegistrationForm from './Details/resgistration/RegistrationForm'
-import DescriptionContainer from './Details/description/DescriptionContainer'
-import SpeakerProfile from './Details/participation/speaker/SpeakerProfile'
-import SpeakerModal from './Details/participation/speaker/SpeakerModal'
-import ExhibitorContainer from './Details/participation/exhibitor/ExhibitorContainer'
-import RegistrationModal from './Details/resgistration/RegistrationModal'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
-import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
-import DescriptionModal from './Details/description/DescriptionModal'
-import { AddedEventsType } from '@/types/addedeventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
-import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
-import HashtagContainer from './Details/Hashtags/HashtagContainer'
-import MapView from '@/app/components/DetailPage/Mapview'
 import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
 
@@ -58,8 +38,9 @@ interface Props {
     setParticipationType: (value: string) => void;
     description: string;
     setDescription: (value: string) => void;
+    eventFlow : string;
 }
-const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription, fetchEvents, addedEventIds }: Props) => {
+const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription, fetchEvents, addedEventIds,  eventFlow}: Props) => {
 
     const [textValue, setTextValue] = useState<string>(description)
     const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
@@ -97,6 +78,8 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
     const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState("Event name is required.");
+    const [activeBtn, setActiveBtn] = useState<string>("main")
+    const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
 
     const { theme } = useTheme()
 
@@ -188,6 +171,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             body: formData
         })
         if (data) {
+            console.log("event added :", data)
             setIsAddEventModalOpen(false)
             showToast("success", "Event Added Successfully")
             fetchEvents(0, "update")
@@ -295,89 +279,100 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     return (
         <div className={styles.body}>
             <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
-                <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
-                <button className={`${styles.addBtn} ${loadingState || loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
-                    disabled={loadingState || loadingState}
-                    onClick={
-                        prefilledEvent
-                            ? () => handleSaveEvent(prefilledEvent.eventId)
-                            : handleAddEvent
-                    }>
-                    Save and Add event</button>
+                <div className={styles.eventBtns}>
+                    <button className={activeBtn === "main" ? styles.activebtn : ""}>Main Event</button>
+                    <button className={activeBtn === "side" ? styles.activebtn : ""}>Side Event</button>
+                </div>
+                <div className={styles.saveCancelBtns}>
+                    <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
+                    <button className={`${styles.addBtn} ${loadingState || loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
+                        disabled={loadingState || loadingState}
+                        onClick={
+                            prefilledEvent
+                                ? () => handleSaveEvent(prefilledEvent.eventId)
+                                : handleAddEvent
+                        }>
+                        Save and Add event</button>
+                </div>
             </div>
-            <Details
-                pageBgColor={pageBgColor}
-                eventFont={eventFont}
-                eventName={eventName}
-                setEventName={setEventName}
-                cityName={cityName}
-                setCityName={setCityName}
-                participationType={participationType}
-                setParticipationType={setParticipationType}
-                description={description}
-                setDescription={setDescription}
-                textValue={textValue}
-                setTextValue={setTextValue}
-                speakerProfilesData={speakerProfilesData}
-                setSpeakerProfilesData={setSpeakerProfilesData}
-                prefilledProfile={prefilledProfile}
-                setPrefilledProfile={setPrefilledProfile}
-                registerMessage={registerMessage}
-                setRegisterMessage={setRegisterMessage}
-                registerBtnText={registerBtnText}
-                setRegisterBtnText={setRegisterBtnText}
-                registerBtnColor={registerBtnColor}
-                setRegisterBtnColor={setRegisterBtnColor}
-                countryName={countryName}
-                setCountryName={setCountryName}
-                timeZone={timeZone}
-                setTimeZone={setTimeZone}
-                timeZoneKey={timeZoneKey}
-                setTimeZoneKey={setTimeZoneKey}
-                startDate={startDate}
-                setStartDate={setStartDate}
-                endDate={endDate}
-                setEndDate={setEndDate}
-                startTime={startTime}
-                setStartTime={setStartTime}
-                endTime={endTime}
-                setEndTime={setEndTime}
-                eventFormat={eventFormat}
-                setEventFormat={setEventFormat}
-                boothNumber={boothNumber}
-                setBoothNumber={setBoothNumber}
-                participationMessage={participationMessage}
-                setParticipationMessage={setParticipationMessage}
-                setLoadingState={setLoadingState}
-                banner={banner}
-                setBanner={setBanner}
-                venue={venue}
-                setVenue={setVenue}
-                latitude={latitude}
-                setLatitude={setLatitude}
-                longitude={longitude}
-                setLongitude={setLongitude}
-                fileInputRef={fileInputRef}
-                hashtags={hashtags}
-                setHashtags={setHashtags}
-                query={query}
-                setQuery={setQuery}
-                isEventNameEmpty={isEventNameEmpty}
-                setIsEventNameEmpty={setIsEventNameEmpty}
-                isEventFormatEmpty={isEventFormatEmpty}
-                setIsEventFormatEmpty={setIsEventFormatEmpty}
-                isEventDescriptionEmpty={isEventDescriptionEmpty}
-                setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}
-                isEventParticipationEmpty={isEventParticipationEmpty}
-                setIsEventParticipationEmpty={setIsEventParticipationEmpty}
-                isParticipationMessageEmpty={isParticipationMessageEmpty}
-                setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}
-                isTextValueMessageEmpty={isTextValueMessageEmpty}
-                setIsTextValueMessageEmpty={setIsTextValueMessageEmpty}
-                errorMessage={errorMessage}
-                setErrorMessage={setErrorMessage}
-                prefilledEvent={prefilledEvent}
-            />
+            <div className={styles.formContainer} style={{ backgroundColor: pageBgColor }}>
+                <Details
+                    pageBgColor={pageBgColor}
+                    eventFont={eventFont}
+                    eventName={eventName}
+                    setEventName={setEventName}
+                    cityName={cityName}
+                    setCityName={setCityName}
+                    participationType={participationType}
+                    setParticipationType={setParticipationType}
+                    description={description}
+                    setDescription={setDescription}
+                    textValue={textValue}
+                    setTextValue={setTextValue}
+                    speakerProfilesData={speakerProfilesData}
+                    setSpeakerProfilesData={setSpeakerProfilesData}
+                    prefilledProfile={prefilledProfile}
+                    setPrefilledProfile={setPrefilledProfile}
+                    registerMessage={registerMessage}
+                    setRegisterMessage={setRegisterMessage}
+                    registerBtnText={registerBtnText}
+                    setRegisterBtnText={setRegisterBtnText}
+                    registerBtnColor={registerBtnColor}
+                    setRegisterBtnColor={setRegisterBtnColor}
+                    countryName={countryName}
+                    setCountryName={setCountryName}
+                    timeZone={timeZone}
+                    setTimeZone={setTimeZone}
+                    timeZoneKey={timeZoneKey}
+                    setTimeZoneKey={setTimeZoneKey}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                    endTime={endTime}
+                    setEndTime={setEndTime}
+                    eventFormat={eventFormat}
+                    setEventFormat={setEventFormat}
+                    boothNumber={boothNumber}
+                    setBoothNumber={setBoothNumber}
+                    participationMessage={participationMessage}
+                    setParticipationMessage={setParticipationMessage}
+                    setLoadingState={setLoadingState}
+                    banner={banner}
+                    setBanner={setBanner}
+                    venue={venue}
+                    setVenue={setVenue}
+                    latitude={latitude}
+                    setLatitude={setLatitude}
+                    longitude={longitude}
+                    setLongitude={setLongitude}
+                    fileInputRef={fileInputRef}
+                    hashtags={hashtags}
+                    setHashtags={setHashtags}
+                    query={query}
+                    setQuery={setQuery}
+                    isEventNameEmpty={isEventNameEmpty}
+                    setIsEventNameEmpty={setIsEventNameEmpty}
+                    isEventFormatEmpty={isEventFormatEmpty}
+                    setIsEventFormatEmpty={setIsEventFormatEmpty}
+                    isEventDescriptionEmpty={isEventDescriptionEmpty}
+                    setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}
+                    isEventParticipationEmpty={isEventParticipationEmpty}
+                    setIsEventParticipationEmpty={setIsEventParticipationEmpty}
+                    isParticipationMessageEmpty={isParticipationMessageEmpty}
+                    setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}
+                    isTextValueMessageEmpty={isTextValueMessageEmpty}
+                    setIsTextValueMessageEmpty={setIsTextValueMessageEmpty}
+                    errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
+                    prefilledEvent={prefilledEvent}
+                    setCollapseMainEventForm = {setCollapseMainEventForm}
+                    collapseMainEventForm = {collapseMainEventForm}
+                />
+            </div>
+
         </div >
     )
 }

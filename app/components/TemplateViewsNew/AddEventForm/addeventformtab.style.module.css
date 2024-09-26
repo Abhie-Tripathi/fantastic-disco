@@ -11,10 +11,31 @@
     align-items: center;
     gap: 9px;
     padding: 17px 14px;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
-
-.btnContainer button {
+.eventBtns{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 6px;
+    background-color: var(--accent-color);
+    padding: 4.5px;
+    border: 1px solid var(--border-color);
+    margin-left: 20px;
+}
+.eventBtns button{
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    color: var(--secondary-text-color);
+    border-radius: 4px;
+    padding: 6px 24px;
+}
+.eventBtns .activebtn{
+    color: var(--primary-text-color);
+    background-color: var(--primary-foreground);
+}
+.saveCancelBtns button {
     font-size: 12px;
     line-height: 18px;
     font-weight: 600;
@@ -22,21 +43,26 @@
     padding: 7px 12px;
 }
 
-.btnContainer .addBtn {
+.saveCancelBtns .addBtn {
     color: white;
     background-color: #6750a4;
 }
 
-.btnContainer .addBtn:hover {
+.saveCancelBtns .addBtn:hover {
     background-color: #7962b8;
 }
 
-.btnContainer .addBtnDisable {
+.saveCancelBtns .addBtnDisable {
     cursor: not-allowed;
     background-color: var(--disabled-btn-color);
 }
 
-.btnContainer .addBtnDisable:hover {
+.saveCancelBtns .addBtnDisable:hover {
     cursor: not-allowed;
     background-color: var(--disabled-btn-color);
+}
+.formContainer{
+    height: 100%;
+    overflow: auto;
+    
 }

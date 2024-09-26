@@ -15,18 +15,14 @@ import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
 import { useTheme } from '@/context'
-import { myFetch } from '@/utils/myFetch'
-import { baseUrl } from '@/constants'
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
-import { AddedEventsType } from '@/types/addedeventtype'
-import { GolbalEventType } from '@/types/globaleventtype'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
 import MapView from '@/app/components/DetailPage/Mapview'
 import { showToast } from "@/utils/showToast";
+import SideEventIcon from '/public/sideevent.svg'
 
 interface SpeakerProfileType {
   id: string;
@@ -112,10 +108,12 @@ interface Props {
   setIsTextValueMessageEmpty: React.Dispatch<React.SetStateAction<boolean>>;
   errorMessage: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
+  collapseMainEventForm: boolean;
 }
-const Details = ({prefilledEvent,pageBgColor,eventFont,eventName,setEventName,cityName,setCityName,participationType,setParticipationType,description,setDescription,textValue,setTextValue,speakerProfilesData,setSpeakerProfilesData, prefilledProfile,setPrefilledProfile,registerMessage,setRegisterMessage,registerBtnText,
-setRegisterBtnText,registerBtnColor,setRegisterBtnColor,countryName,setCountryName,timeZone,setTimeZone,timeZoneKey,setTimeZoneKey,startDate,setStartDate,endDate,setEndDate,startTime,setStartTime,endTime,  setEndTime,eventFormat,setEventFormat,boothNumber,setBoothNumber,participationMessage,setParticipationMessage,
-setLoadingState,banner,setBanner,venue,setVenue,latitude,setLatitude,longitude,setLongitude,fileInputRef,hashtags,setHashtags,query,setQuery,isEventNameEmpty,setIsEventNameEmpty,isEventFormatEmpty,setIsEventFormatEmpty,isEventDescriptionEmpty,setIsEventDescriptionEmpty,isEventParticipationEmpty,setIsEventParticipationEmpty,isParticipationMessageEmpty,setIsParticipationMessageEmpty,isTextValueMessageEmpty,setIsTextValueMessageEmpty,errorMessage,setErrorMessage}: Props) => {
+const Details = ({ prefilledEvent, pageBgColor, eventFont, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription, textValue, setTextValue, speakerProfilesData, setSpeakerProfilesData, prefilledProfile, setPrefilledProfile, registerMessage, setRegisterMessage, registerBtnText,
+  setRegisterBtnText, registerBtnColor, setRegisterBtnColor, countryName, setCountryName, timeZone, setTimeZone, timeZoneKey, setTimeZoneKey, startDate, setStartDate, endDate, setEndDate, startTime, setStartTime, endTime, setEndTime, eventFormat, setEventFormat, boothNumber, setBoothNumber, participationMessage, setParticipationMessage,
+  setLoadingState, banner, setBanner, venue, setVenue, latitude, setLatitude, longitude, setLongitude, fileInputRef, hashtags, setHashtags, query, setQuery, isEventNameEmpty, setIsEventNameEmpty, isEventFormatEmpty, setIsEventFormatEmpty, isEventDescriptionEmpty, setIsEventDescriptionEmpty, isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty, isTextValueMessageEmpty, setIsTextValueMessageEmpty, errorMessage, setErrorMessage, setCollapseMainEventForm, collapseMainEventForm }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
@@ -123,6 +121,7 @@ setLoadingState,banner,setBanner,venue,setVenue,latitude,setLatitude,longitude,s
   const [registerModal, setRegisterModal] = useState<boolean>(false)
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
+
 
   const handlePrefill = (profile: SpeakerProfileType) => {
     setPrefilledProfile(profile)
@@ -191,13 +190,13 @@ setLoadingState,banner,setBanner,venue,setVenue,latitude,setLatitude,longitude,s
     }
   }, [description, eventName, countryName])
 
-  useEffect(()=>{
-    if(loadingState || isLoading){
+  useEffect(() => {
+    if (loadingState || isLoading) {
       setLoadingState(true)
-    }else{
+    } else {
       setLoadingState(false)
     }
-  },[loadingState, isLoading])
+  }, [loadingState, isLoading])
 
   useEffect(() => {
     if (!prefilledEvent) {
@@ -226,77 +225,96 @@ setLoadingState,banner,setBanner,venue,setVenue,latitude,setLatitude,longitude,s
   };
   return (
     <div className={styles.body}>
-      <div className={styles.line}></div>
-      <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }}>
-        <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty} isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty} /></div>
-          {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
-        </div>
-        <div className={styles.sections}>
-          <div className={styles.leftSection}>
-            <div className={styles.posterContainer}>
-              {isLoading ?
-                <div className={styles.loader}>
-                  <div className={styles.spinner}></div>
-                </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} unoptimized />}
-              <div className={styles.posterIcons}>
-                <div onClick={handleGeneratePoster} data-name={eventName && participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
-                  <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
-                </div>
-                <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
-                  <Image src={UploadIcon} alt='upload'></Image>
-                  <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
+      {collapseMainEventForm ?
+        <div className={styles.collapsedContainer}>
+          <div className={styles.collapsedSubContainer}>
+            <div>
+              <DescIcon />
+              <span>Main Event</span>
+            </div>
+            <div className={styles.collapseBtn} onClick={()=>setCollapseMainEventForm(false)}><DownArrow /></div>
+          </div>
+        </div> :
+        <div className={`${styles.detailsContainer} ${descriptionModal || speakerModal || registerModal ? styles.modalOpen : ""}`} >
+          <div>
+            <div className={`${styles.participationContainer}`}><ParticipationContainer type='widget' size="large" participationMessage={participationMessage} setParticipationMessage={setParticipationMessage} setParticipationType={setParticipationType} participationType={participationType} isEventParticipationEmpty={isEventParticipationEmpty} setIsEventParticipationEmpty={setIsEventParticipationEmpty} isParticipationMessageEmpty={isParticipationMessageEmpty} setIsParticipationMessageEmpty={setIsParticipationMessageEmpty} /></div>
+            {isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+          </div>
+          <div className={styles.sections}>
+            <div className={styles.leftSection}>
+              <div className={styles.posterContainer}>
+                {isLoading ?
+                  <div className={styles.loader}>
+                    <div className={styles.spinner}></div>
+                  </div> : <Image src={banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} unoptimized />}
+                <div className={styles.posterIcons}>
+                  <div onClick={handleGeneratePoster} data-name={eventName && participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
+                    <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
+                  </div>
+                  <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
+                    <Image src={UploadIcon} alt='upload'></Image>
+                    <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} ref={fileInputRef} />
+                  </div>
                 </div>
               </div>
+              <div className={styles.hashtagsContainer}>
+                <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate} />
+              </div>
+              <div className={styles.shareContainer}>
+                <div className={styles.heading}>Share</div>
+                <ShareButtons disabled={true} shareUrl='www.10times.com' />
+              </div>
             </div>
-            <div className={styles.hashtagsContainer}>
-              <HashtagContainer loadingState={loadingState} hashtags={hashtags} setHashtags={setHashtags} handleTagsGenerate={handleTagsGenerate} />
-            </div>
-            <div className={styles.shareContainer}>
-              <div className={styles.heading}>Share</div>
-              <ShareButtons disabled={true} shareUrl='www.10times.com' />
+            <div className={styles.rightSection}>
+              {/* <textarea ref={textAreaRef} className={`${styles.eventName} ${isEventNameEmpty ? styles.errorHighlight : ""} `} maxLength={80} placeholder='Event Name' style={{ fontFamily:prefilledAddedEvent?.eventFont || eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} /> */}
+              <div>
+                <textarea
+                  ref={textAreaRef}
+                  className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`}
+                  maxLength={80}
+                  placeholder='Event Name'
+                  style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  value={eventName}
+                />
+                {isEventNameEmpty && <p className={styles.errorMessage}>{errorMessage}</p>}
+              </div>
+              <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
+              <div>
+                <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} /></div>
+                {isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
+              </div>
+              <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
+              <div>
+                <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} /></div>
+                {isTextValueMessageEmpty && isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
+              </div>
+              {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
+
+              {cityName &&
+                // <div className={styles.map} ref={mapDivRef}>
+                // <Suspense fallback={<div>Loading...</div>}>
+                <MapView latitude={latitude}
+                  longitude={longitude}
+                  venue={cityName}
+                  zoom={6} />
+                // </Suspense>
+                // </div>
+              }
+              <div className={styles.sideEventContainer}>
+                <div className={styles.sideEventSubContainer}>
+                  <Image src={SideEventIcon} alt='sideevent' />
+                  <div
+                    className={styles.sideEventHeading}
+                  >
+                    Do you wish to add a side event ?
+                  </div>
+                </div>
+                <button onClick={() => setCollapseMainEventForm(true)}>Yes</button>
+              </div>
             </div>
           </div>
-          <div className={styles.rightSection}>
-            {/* <textarea ref={textAreaRef} className={`${styles.eventName} ${isEventNameEmpty ? styles.errorHighlight : ""} `} maxLength={80} placeholder='Event Name' style={{ fontFamily:prefilledAddedEvent?.eventFont || eventFont }} onChange={(e) => setEventName(e.target.value)} value={eventName} /> */}
-            <div>
-              <textarea
-                ref={textAreaRef}
-                className={`${styles.eventName} ${isEventNameEmpty ? styles.errorBackground : ""}`}
-                maxLength={80}
-                placeholder='Event Name'
-                style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
-                onChange={(e) => handleInputChange(e.target.value)}
-                value={eventName}
-              />
-              {isEventNameEmpty && <p className={styles.errorMessage}>{errorMessage}</p>}
-            </div>
-            <div className={styles.dateTimeContainer}><DateTimeContainer setEndDate={setEndDate} endDate={endDate} setStartDate={setStartDate} startDate={startDate} endTime={endTime} setEndTime={setEndTime} startTime={startTime} setStartTime={setStartTime} timeZone={timeZone} setTimeZone={setTimeZone} timeZoneKey={timeZoneKey} setTimeZoneKey={setTimeZoneKey} /></div>
-            <div>
-              <div className={`${styles.locationContainer}`} ><LocationContainer setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName={setCityName} cityName={cityName} setCountryName={setCountryName} countryName={countryName} isEventFormatEmpty={isEventFormatEmpty} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} /></div>
-              {isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
-            </div>
-            <div className={styles.resgitrationContainer}><RegistrationForm registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} setRegisterModal={setRegisterModal} /></div>
-            <div>
-              <div className={`${styles.descriptionContainer}`} ><DescriptionContainer setDescriptionModal={setDescriptionModal} description={description} isEventDescriptionEmpty={isEventDescriptionEmpty} setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} /></div>
-              {isTextValueMessageEmpty && isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
-            </div>
-            {participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={speakerProfilesData} setSpeakerModal={setSpeakerModal} handlePrefill={handlePrefill} /></div> : participationType === "Exhibitor" ? <div><ExhibitorContainer setBoothNumber={setBoothNumber} boothNumber={boothNumber} /></div> : <></>}
-
-            {cityName &&
-              // <div className={styles.map} ref={mapDivRef}>
-              // <Suspense fallback={<div>Loading...</div>}>
-              <MapView latitude={latitude}
-                longitude={longitude}
-                venue={cityName}
-                zoom={6} />
-              // </Suspense>
-              // </div>
-            }
-
-          </div>
-        </div>
-      </div>
+        </div>}
       {
         descriptionModal && <div className={styles.descriptionModal}>
           <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick} />
@@ -317,3 +335,31 @@ setLoadingState,banner,setBanner,venue,setVenue,latitude,setLatitude,longitude,s
 }
 
 export default Details
+function DescIcon() {
+  return (
+    <svg
+      width="14"
+      height="10"
+      viewBox="0 0 14 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.1665 1.66699H12.8332M1.1665 5.00033H12.8332M1.1665 8.33366H6.1665"
+        stroke="#A8A8A8"
+        stroke-width="1.66667"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+
+function DownArrow() {
+  return (
+    <svg width={10} height={10} viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.47124 5.47026C5.34622 5.59524 5.17668 5.66545 4.9999 5.66545C4.82313 5.66545 4.65359 5.59524 4.52857 5.47026L0.757237 1.69893C0.693563 1.63743 0.642775 1.56387 0.607836 1.48253C0.572896 1.40119 0.554505 1.31371 0.553736 1.22519C0.552967 1.13667 0.569835 1.04889 0.603355 0.966957C0.636876 0.885027 0.686378 0.810592 0.748973 0.747996C0.811568 0.685401 0.886003 0.635899 0.967934 0.602379C1.04986 0.568858 1.13765 0.55199 1.22617 0.55276C1.31469 0.553529 1.40217 0.57192 1.48351 0.606859C1.56484 0.641798 1.63841 0.692586 1.6999 0.75626L4.9999 4.05626L8.2999 0.75626C8.42564 0.634821 8.59404 0.567625 8.76884 0.569144C8.94363 0.570663 9.11084 0.640775 9.23445 0.76438C9.35805 0.887986 9.42817 1.05519 9.42969 1.22999C9.43121 1.40479 9.36401 1.57319 9.24257 1.69893L5.47124 5.47026Z" fill="black" />
+    </svg>
+
+  )
+}

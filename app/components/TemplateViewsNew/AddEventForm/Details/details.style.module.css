@@ -3,7 +3,6 @@
     border-top-right-radius: 10px;
     height: 100%;
     position: relative;
-    background-color: white;
 }
 
 .line {
@@ -11,6 +10,30 @@
     border-top: 1px solid #E6E6E6;
 }
 
+.collapsedContainer {
+    padding: 50px 120px 30px 70px;
+}
+
+.collapsedSubContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 14px 38px;
+    font-size: 12px;
+    color: #7D7D7D;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    justify-content: space-between;
+    line-height: 18px;
+}
+.collapsedSubContainer div{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.collapsedSubContainer .collapseBtn{
+    cursor: pointer;
+}
 .detailsContainer {
     padding: 50px 120px 30px 70px;
     display: flex;
@@ -187,6 +210,36 @@
     background-color: #ffffff53;
     border-radius: 10px;
     padding: 4px 11px 18px 19px;
+}
+
+.sideEventContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 9px 19px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sideEventSubContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sideEventSubContainer .sideEventHeading {
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+}
+
+.sideEventContainer button {
+    background-color: #8F8F8F1F;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 5px 8px;
+    color: black;
+    font-weight: var(--font-weight-semibold);
 }
 
 .shareContainer .heading {
