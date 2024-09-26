@@ -634,13 +634,13 @@ const Pages = () => {
             reputationScore: selectedReptScore.toString(),
           }),
           ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
             ].join(","),
           }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
             endDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
@@ -819,13 +819,13 @@ const Pages = () => {
             reputationScore: selectedReptScore.toString(),
           }),
           ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!=null && selectedDateRange[1]!=null && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
             ].join(","),
           }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null &&{
             endDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
