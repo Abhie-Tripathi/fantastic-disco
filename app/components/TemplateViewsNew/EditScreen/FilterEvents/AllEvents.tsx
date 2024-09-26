@@ -93,6 +93,9 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             }
         );
         if (data) {
+            if (fetchedAddedEvents.length === 1) {
+                handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
+            }
             fetchEvents(0, "update")
             fetchAddedEvents()
         }
@@ -101,18 +104,32 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         }
 
     }
-    const handleAddToWidget = async (event: AllEventsType, check : boolean) => {
-        if(!check){
+
+    // To move the widget to draft if all events are deleted
+    const handleDraftWidget = async () => {
+        const formData = new FormData();
+        formData.append("widgetId", widgetId)
+        formData.append("status", "draft")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: "POST",
+            body: formData
+        })
+        if (data) {
+            console.log("widget moved to draft widgets")
+        }
+    }
+    const handleAddToWidget = async (event: AllEventsType, check: boolean) => {
+        if (!check) {
             const customizedFormData = new FormData()
             const existingEvents = fetchedAddedEvents || [];
             const newEvent = {
                 id: event.eventId,
-                promoted : "false"
+                promoted: "false"
             };
             const mergedEvents = [...existingEvents, newEvent];
             const otherData = {
                 event: mergedEvents,
-            };  
+            };
             const eventIds = [...addedEventIds, event.eventId].join(',');
             customizedFormData.append('widgetId', widgetId);
             customizedFormData.append('eventId', eventIds)
@@ -124,10 +141,10 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             })
             if (data) {
                 showToast("success", "Event Successfully added to the widget");
-                fetchEvents(0,"update")
+                fetchEvents(0, "update")
                 fetchAddedEvents()
             }
-        }else{
+        } else {
             showToast("success", "Event Already added to the widget");
         }
 
