@@ -7,6 +7,7 @@ import FontContainer from './FontContainer'
 import BrandKit from '../../EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import { useTheme } from '@/context'
 import ProgressBar from './ProgressBar'
+import { AllEventsType } from '@/types/alleventtype'
 
 interface Props {
     pageBgColor: string;
@@ -19,9 +20,10 @@ interface Props {
     cityName: string;
     participationType: string;
     description: string;
+    prefilledEvent?: AllEventsType
 }
 
-const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors,eventName, cityName, participationType, description }: Props) => {
+const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors, eventName, cityName, participationType, description ,prefilledEvent}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -31,10 +33,10 @@ const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extr
             </div>
             <div className={styles.container}>
                 <div className={styles.progressContainer}>
-                    <ProgressBar cityName={cityName} description={description} eventName={eventName} participationType={participationType}/>
+                    <ProgressBar cityName={cityName} description={description} eventName={eventName} participationType={participationType} />
                 </div>
                 <div className={styles.line}></div>
-                <BrandKit flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
+                <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
                 <div className={styles.line}></div>
                 <div className={styles.colorContainer}>
                     <ColorContainer setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />

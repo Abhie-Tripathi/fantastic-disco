@@ -1,11 +1,33 @@
-import React, { useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styles from './addeventformtab.style.module.css'
-import { AddedEventsType } from '@/types/addedeventtype';
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
-import { AllEventsType } from '@/types/alleventtype';
-import { GolbalEventType } from '@/types/globaleventtype';
+import Image from 'next/image'
 import Placeholder from '/public/placeholder.png'
+import AiIcon from '/public/AiIcon.svg'
+import UploadIcon from '/public/UploadImageIcon.svg'
+import ShareButtons from '@/app/components/DetailPage/ShareButtons'
+import DateTimeContainer from './Details/dateandtime/DateTimeContainer'
+import LocationContainer from './Details/location/LocationContainer'
+import ParticipationContainer from './Details/participation/ParticipationContainer'
+import RegistrationForm from './Details/resgistration/RegistrationForm'
+import DescriptionContainer from './Details/description/DescriptionContainer'
+import SpeakerProfile from './Details/participation/speaker/SpeakerProfile'
+import SpeakerModal from './Details/participation/speaker/SpeakerModal'
+import ExhibitorContainer from './Details/participation/exhibitor/ExhibitorContainer'
+import RegistrationModal from './Details/resgistration/RegistrationModal'
 import { useTheme } from '@/context'
+import { myFetch } from '@/utils/myFetch'
+import { baseUrl } from '@/constants'
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import usePosterGenerator from '@/app/service/posterGenerator'
+import { AllEventsType } from '@/types/alleventtype'
+import DescriptionModal from './Details/description/DescriptionModal'
+import { AddedEventsType } from '@/types/addedeventtype'
+import { GolbalEventType } from '@/types/globaleventtype'
+import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
+import HashtagContainer from './Details/Hashtags/HashtagContainer'
+import MapView from '@/app/components/DetailPage/Mapview'
+import { showToast } from "@/utils/showToast";
+import Details from './Details/Details'
 
 interface SpeakerProfileType {
     id: string;
@@ -14,23 +36,19 @@ interface SpeakerProfileType {
     designation: string;
     // profileImage: string | ArrayBuffer | null;
     profileImage: File | null
-  }
-  interface ImageState {
+}
+interface ImageState {
     placeHolder: any;
     file: File | null;
-  }
-
+}
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
     eventFont: string;
     widgetId: string;
     fetchEvents: (page: number, type?: string) => Promise<void>;
-    fetchAddedEvents: () => Promise<void>;
     addedEventIds: string[]
-    fetchedAddedEvents: AddedEventsType[]
-    prefilledAddedEvent?: PrefilledAddedEventsType
-    prefilledNormalEvent?: AllEventsType
+    prefilledEvent?: AllEventsType
     prefilledGlobalEvent?: GolbalEventType
     eventName: string;
     setEventName: (value: string) => void;
@@ -41,58 +59,326 @@ interface Props {
     description: string;
     setDescription: (value: string) => void;
 }
-
-const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, fetchEvents, addedEventIds, fetchAddedEvents, fetchedAddedEvents, prefilledAddedEvent, prefilledNormalEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription }: Props) => {
-    const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const [descriptionModal, setDescriptionModal] = useState<boolean>(false)
-    const [speakerModal, setSpeakerModal] = useState<boolean>(false)
-    const [registerModal, setRegisterModal] = useState<boolean>(false)
+const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription, fetchEvents, addedEventIds }: Props) => {
 
     const [textValue, setTextValue] = useState<string>(description)
-
     const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
     const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-    const [registerMessage, setRegisterMessage] = useState<string>(prefilledAddedEvent?.registerMessage || "Welcome! To join the event, please register below.")
-    const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledAddedEvent?.registerBtnText || "Register")
-    const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledAddedEvent?.registerBtnColor || "#1a1a1a")
+    const [registerMessage, setRegisterMessage] = useState<string>(prefilledEvent?.customizationData.registerMessage || "Welcome! To join the event, please register below.")
+    const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledEvent?.customizationData.registerBtnText || "Register")
+    const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledEvent?.customizationData.registerBtnColor || "#1a1a1a")
 
-    const [countryName, setCountryName] = useState<string>(prefilledAddedEvent?.countryName || prefilledNormalEvent?.countryName || prefilledGlobalEvent?.countryName || "")
-    const [timeZone, setTimeZone] = useState<string>(prefilledAddedEvent?.timeZone || "GMT+05:30 Chennai")
+    const [countryName, setCountryName] = useState<string>(prefilledEvent?.countryName || prefilledGlobalEvent?.countryName || "")
+    const [timeZone, setTimeZone] = useState<string>(prefilledEvent?.gmtZone || "GMT+05:30 Chennai")
     const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    const [startDate, setStartDate] = useState<string>(prefilledAddedEvent?.startDate || prefilledNormalEvent?.startDate || prefilledGlobalEvent?.startDate || "")
-    const [endDate, setEndDate] = useState<string>(prefilledAddedEvent?.endDate || prefilledNormalEvent?.endDate || prefilledGlobalEvent?.endDate || "")
-    const [startTime, setStartTime] = useState<string>(prefilledAddedEvent?.startTime || prefilledNormalEvent?.startTime || "12:00 A.M")
-    const [endTime, setEndTime] = useState<string>(prefilledAddedEvent?.endTime || prefilledNormalEvent?.endTime || "12:00 A.M")
-    const [eventFormat, setEventFormat] = useState<string>(prefilledAddedEvent?.eventFormat || prefilledNormalEvent?.format || prefilledGlobalEvent?.format || "In-person")
+    const [startDate, setStartDate] = useState<string>(prefilledEvent?.startDate || prefilledGlobalEvent?.startDate || "")
+    const [endDate, setEndDate] = useState<string>(prefilledEvent?.endDate || prefilledGlobalEvent?.endDate || "")
+    const [startTime, setStartTime] = useState<string>(prefilledEvent?.startTime || "12:00 A.M")
+    const [endTime, setEndTime] = useState<string>(prefilledEvent?.endTime || "12:00 A.M")
+    const [eventFormat, setEventFormat] = useState<string>(prefilledEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person")
 
-    const [boothNumber, setBoothNumber] = useState<string>(prefilledAddedEvent?.boothNumber || "")
-    const [participationMessage, setParticipationMessage] = useState<string>(prefilledAddedEvent?.participationMessage || "")
+    const [boothNumber, setBoothNumber] = useState<string>(prefilledEvent?.customizationData.boothNumber || "")
+    const [participationMessage, setParticipationMessage] = useState<string>(prefilledEvent?.customizationData.participationMessage || "")
+    const [loadingState, setLoadingState] = useState<boolean>(false)
     const [banner, setBanner] = useState<ImageState>({
-        placeHolder: prefilledAddedEvent?.bannerUrl || Placeholder,
+        placeHolder: prefilledEvent?.logoUrl || Placeholder,
         file: null
     });
-    // const [mapWidth, setMapWidth] = useState(0);
-    const [venue, setVenue] = useState(prefilledAddedEvent?.venue || prefilledGlobalEvent?.venue || "")
-    const [latitude, setLatitude] = useState(Number(prefilledAddedEvent?.latitude || prefilledNormalEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-    const [longitude, setLongitude] = useState(Number(prefilledAddedEvent?.longitude || prefilledNormalEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194)
-    // const mapDivRef = useRef<HTMLDivElement>(null);
+    const [venue, setVenue] = useState(prefilledEvent?.customizationData.venue || prefilledGlobalEvent?.venue || "")
+    const [latitude, setLatitude] = useState(Number(prefilledEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
+    const [longitude, setLongitude] = useState(Number(prefilledEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const [hashtags, setHashtags] = useState<string[]>(prefilledAddedEvent?.hashtags.split(",") || [])
-    const eventPromoted = prefilledAddedEvent?.promoted || "false"
+    const [hashtags, setHashtags] = useState<string[]>(prefilledEvent?.customizationData.hashtags.split(",") || [])
+    const [query, setQuery] = useState("")
     const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
     const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
     const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
     const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
-    const [query, setQuery] = useState("")
     const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
     const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
-    const handlePrefill = (profile: SpeakerProfileType) => {
-        setPrefilledProfile(profile)
-        setSpeakerModal(true)
-    }
+    const [errorMessage, setErrorMessage] = useState("Event name is required.");
+
     const { theme } = useTheme()
+
+    const handleAddEvent = async () => {
+        if (!eventName || eventName === "") {
+            setIsEventNameEmpty(true)
+        } else {
+            setIsEventNameEmpty(false)
+        }
+        if (!query) {
+            setIsEventFormatEmpty(true)
+        } else {
+            setIsEventFormatEmpty(false)
+        }
+        if (!description) {
+            setIsEventDescriptionEmpty(true)
+        } else {
+            setIsEventDescriptionEmpty(false)
+        }
+        if (!participationType) {
+            setIsEventParticipationEmpty(true)
+        } else {
+            setIsEventParticipationEmpty(false)
+        }
+        if (!participationMessage) {
+            setIsParticipationMessageEmpty(true)
+        }
+        if (!textValue) {
+            setIsTextValueMessageEmpty(true)
+        }
+
+        if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+
+            showToast("error", "Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
+
+        if (!banner.placeHolder && !banner.file) {
+            showToast("error", "Please upload or generate a Poster");
+            return; // Exit the function if any field is missing
+        }
+        const eventCustomizationData = {
+            pageBgColor,
+            eventFont,
+            registerBtnColor,
+            registerBtnText,
+            registerMessage,
+            speakerProfilesData,
+            participationMessage,
+            venue,
+            hashtags: hashtags.join(","),
+            boothNumber
+        }
+        const eventData = {
+            format: eventFormat,
+            start_time: startTime,
+            end_time: endTime,
+            end_date: endDate,
+            start_date: startDate,
+            description,
+            location_city: cityName,
+            location_country: countryName,
+            gmt_time: timeZone,
+            latitude,
+            longitude,
+            participationType,
+            event_type: "Tradeshow",
+            customizationData: JSON.stringify(eventCustomizationData)
+        };
+        const formData = new FormData()
+        formData.append("name", eventName)
+        formData.append("data", JSON.stringify(eventData))
+        formData.append("type", "MAIN")
+
+        if (banner.file || banner.placeHolder.includes("oaidalleapiprodscus")) {
+            if (banner.file) {
+                formData.append("file", banner.file); // Use the file field if uploaded by the user
+            } else {
+                formData.append("logoUrl", banner.placeHolder); // Use logoUrl if the banner is AI-generated
+            }
+        }
+
+        // formData.append("interest", participationType.toUpperCase())
+        // formData.append("source", "eventgeni/widget/event")
+        formData.append("sourceId", widgetId)
+
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'POST',
+            body: formData
+        })
+        if (data) {
+            setIsAddEventModalOpen(false)
+            showToast("success", "Event Added Successfully")
+            fetchEvents(0, "update")
+        }
+        if (error) {
+            console.log(error)
+        }
+
+    }
+
+    // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
+    const handleSaveEvent = async (eventId: string) => {
+        if (!eventName || eventName === "") {
+            setIsEventNameEmpty(true)
+        } else {
+            setIsEventNameEmpty(false)
+        }
+        if (!query && !latitude || !longitude) {
+            setIsEventFormatEmpty(true)
+        } else {
+            setIsEventFormatEmpty(false)
+        }
+        if (!description) {
+            setIsEventDescriptionEmpty(true)
+        } else {
+            setIsEventDescriptionEmpty(false)
+        }
+        if (!participationType) {
+            setIsEventParticipationEmpty(true)
+        } else {
+            setIsEventParticipationEmpty(false)
+        }
+        if (!participationMessage) {
+            setIsParticipationMessageEmpty(true)
+        }
+        if (!textValue.trim()) {
+            setIsTextValueMessageEmpty(true)
+        }
+        if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType || !participationMessage) {
+            showToast("error", "Please fill in all the fields");
+            return; // Exit the function if any field is missing
+        }
+        if (!prefilledEvent?.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
+            if (!banner.placeHolder && !banner.file) {
+                showToast("error", "Please upload or generate a Poster");
+                return; // Exit the function if any field is missing
+            }
+        }
+        const eventCustomizationData = {
+            pageBgColor,
+            eventFont,
+            registerBtnColor,
+            registerBtnText,
+            registerMessage,
+            speakerProfilesData,
+            participationMessage,
+            venue,
+            hashtags: hashtags.join(","),
+            boothNumber
+        }
+        const eventData = {
+            id: eventId,
+            format: eventFormat,
+            start_time: startTime,
+            end_time: endTime,
+            end_date: endDate,
+            start_date: startDate,
+            description,
+            logoUrl: banner.placeHolder,
+            location_city: cityName,
+            location_country: countryName,
+            participationType,
+            gmt_time: timeZone,
+            latitude,
+            longitude,
+            event_type: "Tradeshow",
+            customizationData: JSON.stringify(eventCustomizationData)
+        };
+        const formData = new FormData();
+        formData.append("id", eventId);
+        formData.append("name", eventName);
+        formData.append("data", JSON.stringify(eventData));
+        // formData.append("interest", participationType.toUpperCase())
+        formData.append("sourceId", widgetId)
+        if (banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
+            if (banner.file) {
+                formData.append("file", banner.file); // Use the file field if uploaded by the user
+            } else {
+                formData.append("logoUrl", banner.placeHolder); // Use logoUrl if the banner is AI-generated
+            }
+        }
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'PATCH',
+            body: formData,
+        });
+        if (data) {
+            setIsAddEventModalOpen(false)
+            showToast("success", "Event Updated Successfully")
+            fetchEvents(0, "update")
+        }
+        if (error) {
+            console.log(error);
+        }
+    }
     return (
-        <div>AddEventFormTab</div>
+        <div className={styles.body}>
+            <div className={styles.btnContainer} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
+                <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={() => setIsAddEventModalOpen(false)}>Close</button>
+                <button className={`${styles.addBtn} ${loadingState || loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
+                    disabled={loadingState || loadingState}
+                    onClick={
+                        prefilledEvent
+                            ? () => handleSaveEvent(prefilledEvent.eventId)
+                            : handleAddEvent
+                    }>
+                    Save and Add event</button>
+            </div>
+            <Details
+                pageBgColor={pageBgColor}
+                eventFont={eventFont}
+                eventName={eventName}
+                setEventName={setEventName}
+                cityName={cityName}
+                setCityName={setCityName}
+                participationType={participationType}
+                setParticipationType={setParticipationType}
+                description={description}
+                setDescription={setDescription}
+                textValue={textValue}
+                setTextValue={setTextValue}
+                speakerProfilesData={speakerProfilesData}
+                setSpeakerProfilesData={setSpeakerProfilesData}
+                prefilledProfile={prefilledProfile}
+                setPrefilledProfile={setPrefilledProfile}
+                registerMessage={registerMessage}
+                setRegisterMessage={setRegisterMessage}
+                registerBtnText={registerBtnText}
+                setRegisterBtnText={setRegisterBtnText}
+                registerBtnColor={registerBtnColor}
+                setRegisterBtnColor={setRegisterBtnColor}
+                countryName={countryName}
+                setCountryName={setCountryName}
+                timeZone={timeZone}
+                setTimeZone={setTimeZone}
+                timeZoneKey={timeZoneKey}
+                setTimeZoneKey={setTimeZoneKey}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+                startTime={startTime}
+                setStartTime={setStartTime}
+                endTime={endTime}
+                setEndTime={setEndTime}
+                eventFormat={eventFormat}
+                setEventFormat={setEventFormat}
+                boothNumber={boothNumber}
+                setBoothNumber={setBoothNumber}
+                participationMessage={participationMessage}
+                setParticipationMessage={setParticipationMessage}
+                setLoadingState={setLoadingState}
+                banner={banner}
+                setBanner={setBanner}
+                venue={venue}
+                setVenue={setVenue}
+                latitude={latitude}
+                setLatitude={setLatitude}
+                longitude={longitude}
+                setLongitude={setLongitude}
+                fileInputRef={fileInputRef}
+                hashtags={hashtags}
+                setHashtags={setHashtags}
+                query={query}
+                setQuery={setQuery}
+                isEventNameEmpty={isEventNameEmpty}
+                setIsEventNameEmpty={setIsEventNameEmpty}
+                isEventFormatEmpty={isEventFormatEmpty}
+                setIsEventFormatEmpty={setIsEventFormatEmpty}
+                isEventDescriptionEmpty={isEventDescriptionEmpty}
+                setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}
+                isEventParticipationEmpty={isEventParticipationEmpty}
+                setIsEventParticipationEmpty={setIsEventParticipationEmpty}
+                isParticipationMessageEmpty={isParticipationMessageEmpty}
+                setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}
+                isTextValueMessageEmpty={isTextValueMessageEmpty}
+                setIsTextValueMessageEmpty={setIsTextValueMessageEmpty}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+                prefilledEvent={prefilledEvent}
+            />
+        </div >
     )
 }
 

@@ -1,0 +1,42 @@
+.body {
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 100%;
+    position: relative;
+    background-color: white;
+}
+.btnContainer {
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: flex-end;
+}
+
+.btnContainer button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+
+.btnContainer .addBtn {
+    color: white;
+    background-color: #6750a4;
+}
+
+.btnContainer .addBtn:hover {
+    background-color: #7962b8;
+}
+
+.btnContainer .addBtnDisable {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+
+.btnContainer .addBtnDisable:hover {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
