@@ -16,10 +16,8 @@ import { AddedEventsType } from '@/types/addedeventtype'
 import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 import { GolbalEventType } from '@/types/globaleventtype'
 import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
-import { useTheme } from '@/context'
 
 const Page = () => {
-  const { theme } = useTheme()
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
@@ -42,9 +40,7 @@ const Page = () => {
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
-  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<PrefilledAddedEventsType>()
   const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
-  const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>()
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [allEventsCount, setAllEventsCount] = useState<number>(0)
@@ -127,7 +123,7 @@ const Page = () => {
         setSelectedTemplate(asciiToString(data.templatePublicId));
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
-        setfetchedAddedEvents( data.otherdata?.event);
+        setfetchedAddedEvents(data.otherdata?.event);
       }
       setLoading(false);
     }
@@ -164,36 +160,35 @@ const Page = () => {
     }
   }
 
-  const handleAddEventModal = () => {
-    setPrefilledAddedEvent(undefined)
-    setPrefilledNormalEvent(undefined)
-    setPrefilledGlobalEvent(undefined)
-    setIsAddEventModalOpen(true)
-  }
-  const handleNormalEventModal = () => {
-    setPrefilledNormalEvent(undefined)
-    setIsNormalEventModalOpen(true)
-  }
+  // const handleAddEventModal = () => {
+  //   setPrefilledAddedEvent(undefined)
+  //   setPrefilledNormalEvent(undefined)
+  //   setPrefilledGlobalEvent(undefined)
+  //   setIsAddEventModalOpen(true)
+  // }
+  // const handleNormalEventModal = () => {
+  //   setPrefilledNormalEvent(undefined)
+  //   setIsNormalEventModalOpen(true)
+  // }
 
-  const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
-    setPrefilledAddedEvent(event)
-    setIsAddEventModalOpen(true)
-  }
+  // const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
+  //   setPrefilledAddedEvent(event)
+  //   setIsAddEventModalOpen(true)
+  // }
 
-  const handlePrefillNormalEvent = (event: AllEventsType, type: string) => {
-    setPrefilledNormalEvent(event)
-    if (type === "add") {
-      setIsAddEventModalOpen(true)
-    } else setIsNormalEventModalOpen(true)
+  // const handlePrefillEvent = (event: AllEventsType, type: string) => {
+  //   setPrefilledNormalEvent(event)
+  //   if (type === "add") {
+  //     setIsAddEventModalOpen(true)
+  //   } else setIsNormalEventModalOpen(true)
 
-  }
-  const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
-    setPrefilledGlobalEvent(event)
-    if (type === "widget") {
-      setIsAddEventModalOpen(true)
-    } else setIsNormalEventModalOpen(true)
-
-  }
+  // }
+  // const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
+  //   setPrefilledGlobalEvent(event)
+  //   if (type === "widget") {
+  //     setIsAddEventModalOpen(true)
+  //   } else setIsNormalEventModalOpen(true)
+  // }
   if (loading) {
     return <div>Loading...</div>; // Show a loading state
   }
@@ -227,12 +222,8 @@ const Page = () => {
           fetchAddedEvents={fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
-          handlePrefilledAddedEvent={handlePrefilledAddedEvent}
-          handlePrefillNormalEvent={handlePrefillNormalEvent}
-          handlePrefillGlobalEvent={handlePrefillGlobalEvent}
-          handleAddEventModal={handleAddEventModal}
+          // handlePrefillEvent={handlePrefillEvent}
           addedEventIds={addedEventIds}
-          handleNormalEventModal={handleNormalEventModal}
           allEventsCount = {allEventsCount}
         />
       </div>}
@@ -252,13 +243,13 @@ const Page = () => {
           fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
-      {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
+      {/* {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
-      </div>}
-      {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
+      </div>} */}
+      {/* {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
         <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} fetchAddedEvents={fetchAddedEvents}/>
-      </div>}
+      </div>} */}
     </div>
   )
 }

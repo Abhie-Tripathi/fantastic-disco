@@ -11,7 +11,7 @@ import useOutsideClick from "@/hooks/useOutsideClick";
 
 interface Props {
   widgetId: string;
-  handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void;
+  handlePrefillGlobalEvent?: (event: GolbalEventType) => void;
 }
 
 const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
@@ -29,7 +29,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
     return () => clearTimeout(debounceTimeout);
   }, [searchValue]);
 
-  const handleClickEvent = (event: any, type: string) => {
+  const handleClickEvent = (event: any) => {
     const newEvent: GolbalEventType = {
       name: event.name,
       cityName: event.data.location_city,
@@ -43,13 +43,15 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
       venue: event.data.venue_address,
     };
     setDatadropdown(false);
-    handlePrefillGlobalEvent(newEvent, type);
+    if(handlePrefillGlobalEvent)
+    handlePrefillGlobalEvent(newEvent);
   };
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
+    console.log(`date is : ${year}-${month}-${day}`)
     return `${year}-${month}-${day}`;
   };
 
@@ -120,17 +122,17 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
                     <div
                       className={styles.button}
                       data-name="Add Event"
-                      onClick={() => handleClickEvent(event, "normal")}
+                      onClick={() => handleClickEvent(event)}
                     >
                       <Addevent />
                     </div>
-                    <div
+                    {/* <div
                       className={styles.button}
                       data-name="Add Event to widget"
                       onClick={() => handleClickEvent(event, "widget")}
                     >
                       <AddeventToWidget />
-                    </div>
+                    </div> */}
                     <Image src={logo} alt="logo" width={15} height={15} />
                   </div>
                 )}

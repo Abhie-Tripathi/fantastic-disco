@@ -212,7 +212,6 @@ useInfiniteScroll(divRef, handleScrollEnd);
 useEffect(()=>{
   
   if(statusChanged===true){
-    console.log(selectedId);
     const updatedData=eventData1.map((item)=>{
       return item.eventId === selectedId ? { ...item, enquiryStatus: "Shortlisted" } : item;
     })

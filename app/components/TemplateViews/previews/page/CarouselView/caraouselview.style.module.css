@@ -36,13 +36,13 @@
 .card.left {
   transform: translateX(-70%) scale(0.8) ;
   z-index: 1;
-  opacity: .5;
+  opacity: .8;
 }
 
 .card.right {
   transform: translateX(70%) scale(0.8);
   z-index: 1;
-  opacity: .5;
+  opacity: .8;
 }
 
 .navButton {

@@ -4,7 +4,6 @@ import styles from './colorcontainer.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 
-
 interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void

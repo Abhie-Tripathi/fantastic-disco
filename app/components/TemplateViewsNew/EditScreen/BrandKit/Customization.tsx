@@ -5,7 +5,6 @@ import ButtonCustomization from './CustomizeComponents/ButtonCustomization'
 import TypographyCustomization from './CustomizeComponents/TypographyCustomization'
 import CardStyles from './CustomizeComponents/CardStyles'
 import BrandKit from './CustomizeComponents/BrandKit'
-import { useTheme } from '@/context'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 
 interface EditScreenProps {
@@ -39,7 +38,7 @@ interface FontSettingsState {
   body: FontSettings;
 }
 
-const   Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
 
   const handleUpdate = async () => {
     handleUpdateCustomization()
