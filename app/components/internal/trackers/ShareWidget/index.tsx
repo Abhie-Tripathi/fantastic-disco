@@ -1,7 +1,13 @@
 import { ArrowUpRight } from 'geist-icons';
 import React,{useState, useEffect} from 'react'
-
-const ShareWidget: React.FC= ({})=>{
+interface ShareWidgetProps {
+  id:string
+}
+const ShareWidget: React.FC<ShareWidgetProps>= ({id})=>{
+  const [searchValue,setSearchValue]=useState("");
+  const handleInvitSend=()=>{
+    
+  }
     return(
             <div className="flex flex-col gap-2 bg-white border rounded-[12px] p-2 w-[100%]" style={{border:"1px solid var(--border-color)"}}>
                <div className='flex items-center gap-2' style={{color:"var(--primary-color)"}}>
@@ -14,11 +20,11 @@ const ShareWidget: React.FC= ({})=>{
                <input
               className="outline-none w-full"
               placeholder="Email"
-              // value={searchValue}
-              // onChange={(e) => setSearchValue(e.target.value)}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
              <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
-        style={{ background: "var(--primary-color)" }}>
+        style={{ background: "var(--primary-color)" }} onClick={handleInvitSend}>
             <span>Invite</span>
           </button>
                </div>

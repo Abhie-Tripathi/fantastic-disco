@@ -32,13 +32,22 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note }) =
         <div className='flex items-center p-2 h-[85px] w-[100%] top-[-12px] flex-row rounded-[20px] gap-2 absolute justify-between' style={{ border: "1px solid var(--border-color)", boxShadow: "var(--shadow-medium)" }}>
           <div className='flex gap-2'>
             {note &&
+            <>
+            <div className="flex items-center justify-center">
             <UserProfile name={note && `${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`}/>
-            }
+            </div>
             
             <div className='flex flex-col'>
             <div>{note && `${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`}</div>
-            <div className='text-[12px]'>{note && note[0]?.content}</div>
-          </div>
+            <div className='text-[12px]'>
+            {note && note[0]?.content.length > 70 
+    ? `${note[0]?.content.substring(0, 70)}...` 
+    : note[0]?.content
+  }
+            </div>
+            </div>
+            </>
+}
           </div>
           
           <div className='flex items-center justify-center p-3 rounded-[50%] font-medium' style={{ border: "1px solid var(--border-color)" }}>

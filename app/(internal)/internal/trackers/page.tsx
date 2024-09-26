@@ -367,6 +367,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   }
   // }, [updateSteps]);
   const [note,setNote]=useState();
+  const [savedEvents,setSavedEvents]=useState();
   console.log(singleTrackerData);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
@@ -375,13 +376,13 @@ const Trackers = ({ searchParams }: Search) => {
     const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
     const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
-    if(singleTrackerData)
+    if(singleTrackerData){
     fetchNote(singleTrackerData?.id)
+  fetchSavedEvent(singleTrackerData?.id)
+    }
   }, [singleTrackerData]);
   console.log(hideTemplate);
   const fetchNote=async(id:string)=>{
-    console.log(1);
-    
     const url =
     `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
     const { data, error } = await myFetch(url);
@@ -396,7 +397,21 @@ const Trackers = ({ searchParams }: Search) => {
       }
     }
   }
-  console.log(note);
+  const fetchSavedEvent=async(id:string)=>{
+    const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
+    const { data, error } = await myFetch(url);
+    if (data) {
+      // setNotes([]);
+      console.log(data);
+      // setNotes(data.comments.reverse());
+      if (data?.count > 0){
+        console.log(data);
+        
+        setSavedEvents(data);
+      }
+    }
+  }
+  console.log(savedEvents);
   
   return (
     // <div className={styles.body}>
@@ -476,7 +491,7 @@ const Trackers = ({ searchParams }: Search) => {
         </div>
         <div className="flex flex-row gap-2">
   <div className="flex w-[45%] items-stretch">
-    <SavedEventWidget/>
+    <SavedEventWidget savedEvents={savedEvents}/>
   </div>
   <div className="flex w-[55%] items-stretch">
   <NotesDiscussionWidget note={note}/>
@@ -484,10 +499,10 @@ const Trackers = ({ searchParams }: Search) => {
         </div>
         <div className="flex flex-row gap-2">
           <div className="flex w-[45%] items-stretch">
-            <SavedEventWidget/>
+            <SavedEventWidget savedEvents={savedEvents}/>
           </div>
           <div className="flex w-[55%] items-stretch">
-            <ShareWidget/>
+            <ShareWidget id={singleTrackerData?.id}/>
           </div>
         </div>
   </div>
