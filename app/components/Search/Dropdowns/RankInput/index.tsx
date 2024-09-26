@@ -151,19 +151,31 @@ const RankInput = ({
           </>
         </div>
 
-        <div className={styles.line}></div>
-
-        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span>
-
         <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+          <label className={styles.switch}>
+            <input
+              type="checkbox"
+              onChange={() => handleToggleChange("isEventRank")}
+              checked={rankToggles.isEventRank}
+            />
+            <span className={styles.slider}></span>
+          </label>
+          <div className={styles.checkbox_title}>Event Ranking</div>
+        </div>
+
+        {/* <div className={styles.line}></div>
+
+        <span className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</span> */}
+
+        {/* <div className={styles.slider_container}>
+          <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isEventRank")}
               checked={rankToggles.isEventRank}
             />
             <span className={styles.checkbox}></span>
-          </label> */}
+          </label>
           <div className={styles.checkbox_title}>Category Rank</div>
           <>
             <ReactSlider
@@ -206,17 +218,17 @@ const RankInput = ({
               />
             </div>
           </>
-        </div>
+        </div> */}
 
-        <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+        {/* <div className={styles.slider_container}>
+          <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isLocalRank")}
               checked={rankToggles.isLocalRank}
             />
             <span className={styles.checkbox}></span>
-          </label> */}
+          </label>
           <div className={styles.checkbox_title}>Country Rank</div>
           <>
             <ReactSlider
@@ -259,17 +271,17 @@ const RankInput = ({
               />
             </div>
           </>
-        </div>
+        </div> */}
 
-        <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+        {/* <div className={styles.slider_container}>
+          <label className={styles.checkbox_label}>
             <input
               type="checkbox"
               onChange={() => handleToggleChange("isAviationRank")}
               checked={rankToggles.isAviationRank}
             />
             <span className={styles.checkbox}></span>
-          </label> */}
+          </label>
           <div className={styles.checkbox_title}>Category + Country Rank</div>
           <>
             <ReactSlider
@@ -310,7 +322,7 @@ const RankInput = ({
               />
             </div>
           </>
-        </div>
+        </div> */}
 
         {/* <div className={styles.line}></div> */}
 

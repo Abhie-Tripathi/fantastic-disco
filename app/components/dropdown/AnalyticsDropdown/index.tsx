@@ -37,6 +37,16 @@ const AnalyticsDropdown = ({
     }
   }
 
+  const handleToggleChange = (key: string) => {
+    setRankToggles((prevState: any) => {
+      const newState = {
+        ...prevState,
+        [key]: !prevState[key],
+      };
+      return newState;
+    });
+  }
+
   return (
     <div
       className={`${styles.container} ${className}`}
@@ -51,16 +61,16 @@ const AnalyticsDropdown = ({
       </div>
       <div className={styles.sub_container}>
         <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+          <label className={styles.switch}>
             <input
               type="checkbox"
-              onChange={() => handleToggleChange("isEventRank")}
-              checked={rankToggles.isEventRank}
+              onChange={() => handleToggleChange("impactScore")}
+              checked={rankToggles.impactScore}
             />
-            <span className={styles.checkbox}></span>
-          </label> */}
+            <span className={styles.slider}></span>
+          </label>
           <div className={styles.checkbox_title}>Event Impact Score</div>
-          <>
+          {/* <>
             <ReactSlider
               onChange={(values) => {setSelectedEventRank(values); handleRankSlider(values, "isEventRank")}}
               value={selectedEventRank}
@@ -100,20 +110,20 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </>
+          </> */}
         </div>
 
         <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+          <label className={styles.switch}>
             <input
               type="checkbox"
-              onChange={() => handleToggleChange("isLocalRank")}
-              checked={rankToggles.isLocalRank}
+              onChange={() => handleToggleChange("inboundScore")}
+              checked={rankToggles.inboundScore}
             />
-            <span className={styles.checkbox}></span>
-          </label> */}
+            <span className={styles.slider}></span>
+          </label>
           <div className={styles.checkbox_title}>Inbound Score</div>
-          <>
+          {/* <>
             <ReactSlider
               onChange={(values) => {setSelectedLocalRank(values); handleRankSlider(values, "isLocalRank")}}
               value={selectedLocalRank}
@@ -153,20 +163,20 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </>
+          </> */}
         </div>
 
         <div className={styles.slider_container}>
-          {/* <label className={styles.checkbox_label}>
+          <label className={styles.switch}>
             <input
               type="checkbox"
-              onChange={() => handleToggleChange("isAviationRank")}
-              checked={rankToggles.isAviationRank}
+              onChange={() => handleToggleChange("internationalScore")}
+              checked={rankToggles.internationalScore}
             />
-            <span className={styles.checkbox}></span>
-          </label> */}
+            <span className={styles.slider}></span>
+          </label>
           <div className={styles.checkbox_title}>International Score</div>
-          <>
+          {/* <>
             <ReactSlider
               onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "isAviationRank")}}
               value={selectedAviationRank}
@@ -204,7 +214,7 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </>
+          </> */}
         </div>
       </div>
     </div>

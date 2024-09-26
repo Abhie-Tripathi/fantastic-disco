@@ -230,16 +230,25 @@ const Search = () => {
     isAviationRank: false,
     isTrustScore: false,
   });
+
+  const [analyticsToggles, setAnalyticsToggles] = useState({
+    impactScore: false,
+    inboundScore: false,
+    internationalScore: false,
+  })
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState(0);
+  const [selectedMaturity, setSelectedMaturity] = useState<string>('');
   const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
+  const [forecastedStatus, setForecastedStatus] = useState(false);
+  const [audienceZone, setAudienceZone] = useState<boolean>(false);
+  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
 
   const [categoryData, setCatgeoryData] = useState([]);
 
@@ -293,11 +302,19 @@ const Search = () => {
     matchScore: true,
     growth: true,
     eventSeries: selectedEventSeries,
+    brandedEvent: selectedBrandedEvent,
     global: false,
     reptSent: false,
     eventRating: false,
     estExhibit: false,
     repeatSent: false,
+    maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+    impactScore: analyticsToggles.impactScore,
+    inboundScore: analyticsToggles.inboundScore,
+    internationalScore: analyticsToggles.internationalScore,
+    forecasted: forecastedStatus,
+    audienceZone: audienceZone,
+    audienceSpread: audienceSpread,
   });
 
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
@@ -356,7 +373,7 @@ const Search = () => {
           ...(selectedReputationScore[0] > 0 && {
             reputationScore: selectedReputationScore[0].toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
+          // ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -510,9 +527,9 @@ const Search = () => {
     // }
 
     // Rank
-    if (rankToggles.isEventRank) {
-      queryString.eventRank = selectedEventRank;
-    }
+    // if (rankToggles.isEventRank) {
+    //   queryString.eventRank = selectedEventRank;
+    // }
 
     // Event Type
     if (selectedEventType.length > 0) {
@@ -584,9 +601,9 @@ const Search = () => {
     }
 
     // Event Ranking
-    if (selectedEventRanking.length > 0) {
-      queryString.eventRanking = selectedEventRanking;
-    }
+    // if (selectedEventRanking.length > 0) {
+    //   queryString.eventRanking = selectedEventRanking;
+    // }
 
     // Branded Event
     if (selectedBrandedEvent) {
@@ -609,9 +626,9 @@ const Search = () => {
     }
 
     // Maturity
-    if (selectedMaturity > 0) {
-      queryString.maturity = selectedMaturity;
-    }
+    // if (selectedMaturity > 0) {
+    //   queryString.maturity = selectedMaturity;
+    // }
 
     // Int. Score
     if (selectedINScore > 0) {
@@ -632,6 +649,10 @@ const Search = () => {
     if (selectedExhibitScore.length > 0) {
       queryString.estimatedExhibitScore = selectedExhibitScore;
     }
+
+    // Show
+    queryString.eventRanking = true;
+    // queryString.globalRanking = '0-100';
 
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
@@ -871,12 +892,29 @@ const Search = () => {
       eventRating: (selectedUserRatings.length > 0 || selectedInsights?.eventRating),
       estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
       repeatSent: (rankToggles.isTrustScore),
+      maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+      eventRank: (rankToggles.isEventRank),
+      impactScore: analyticsToggles.impactScore,
+      inboundScore: analyticsToggles.inboundScore,
+      internationalScore: analyticsToggles.internationalScore,
+      forecasted: forecastedStatus,
+      audienceZone: audienceZone,
+      audienceSpread: audienceSpread,
+      eventSeries: selectedEventSeries,
+      brandedEvent: selectedBrandedEvent,
     }));
   }, [
     selectedUserRatings,
     selectedExhibitScore,
     selectedTrustScore,
     rankToggles,
+    selectedMaturity,
+    analyticsToggles,
+    forecastedStatus,
+    audienceZone,
+    audienceSpread,
+    selectedEventSeries,
+    selectedBrandedEvent,
   ]);
 
   useEffect(() => {
@@ -1545,12 +1583,10 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Regularity & Edition
-                          {selectedRegularity[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedRegularity[0]}
-                            </span>
-                          )}
+                          Maturity
+                          {selectedMaturity !== '' && selectedMaturity !== 'none' &&
+                            <span className={styles.input_selected_title}>{formatText(selectedMaturity)}</span>
+                          }
                         </div>
                         <Image
                           src={DropIcon}
@@ -1573,8 +1609,10 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <RegularityEdition
-                          selectedRegularity={selectedRegularity}
-                          setSelectedRegularity={setSelectedRegularity}
+                          selectedMaturity={selectedMaturity}
+                          setSelectedMaturity={setSelectedMaturity}
+                          // selectedRegularity={selectedRegularity}
+                          // setSelectedRegularity={setSelectedRegularity}
                           onClose={close}
                         />
                       )}
@@ -1589,24 +1627,23 @@ const Search = () => {
                         <div className={styles.input_title}>
                           Global & Touring
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover} >
                     <GlobalTouring
-                      state={selectedEntry}
-                      setState={setSelectedEntry}
-                      data={eventEntryData}
                       selectedBrandedEvent={selectedBrandedEvent}
                       setSelectedBrandedEvent={setSelectedBrandedEvent}
+                      selectedEventSeries={selectedEventSeries}
+                      setSelectedEventSeries={setSelectedEventSeries}
                     />
                   </Popover>
                 </MenuTrigger>
@@ -1619,23 +1656,23 @@ const Search = () => {
                           Forecasted Status
                         </div>
 
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
 
-                        {/* <div className={styles.toggle_container}>
+                        <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
                                 onChange={() => {
-                                  setSelectedBrandedEvent((prev) => !prev);
+                                  setForecastedStatus((prev) => !prev);
                                 }}
-                                checked={selectedBrandedEvent}
-                                disabled={true}
+                                checked={forecastedStatus}
+                                // disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
                           </span>
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2035,14 +2072,14 @@ const Search = () => {
                             </span>
                           )} */}
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
@@ -2056,8 +2093,8 @@ const Search = () => {
                           setSelectedLocalRank={setSelectedLocalRank}
                           selectedAviationRank={selectedAviationRank}
                           setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
+                          rankToggles={analyticsToggles}
+                          setRankToggles={setAnalyticsToggles}
                           onClose={close}
                         />
                       )}
@@ -2133,13 +2170,13 @@ const Search = () => {
                             <span className={styles.selected_no_filters}>1</span>
                           }
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                         {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
@@ -2264,7 +2301,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
                 <div
                   className={styles.inputdropdowns_container_AI}
-                  style={{gridTemplateColumns:"repeat(4, 20vw)"}}
+                  style={{gridTemplateColumns:"repeat(5, 17vw)"}}
                 >
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
@@ -2359,6 +2396,34 @@ const Search = () => {
                   {/* </Button> */}
                 </MenuTrigger>
 
+                <div>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Audience Zone
+                      </div>
+
+                      {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+
+                      <div className={styles.toggle_container}>
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                setAudienceZone((prev) => !prev);
+                              }}
+                              checked={audienceZone}
+                              // disabled={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   {/* <Button className={`${styles.dropdown_button}`} > */}
@@ -2382,7 +2447,22 @@ const Search = () => {
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {
+                                  setAudienceSpread((prev) => !prev);
+                                }}
+                                checked={audienceSpread}
+                                // disabled={true}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   {/* </Button> */}

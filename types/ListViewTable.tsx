@@ -33,6 +33,9 @@ export interface EventTableType {
         categoryRank: [{name: string, rank: number}]
         eventRank: number;
     };
+    ranking: [{
+        globalRank: number;
+    }]
     reputationSentiment: number;
     interestsGrowth: number;
     interestsGrowthRange: any,
@@ -54,5 +57,6 @@ export interface EventTableType {
         estimatedVisitor: string | null;
     };
     internationalAudience: string;
-    type: string[]
+    type: string[];
+    "trustScore%": number;
 }

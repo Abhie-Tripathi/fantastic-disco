@@ -394,3 +394,24 @@
   border: none;
   outline: none;
 }
+
+.event_badge_container{
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.event_badge_container .span{
+  font-size: var(--font-size-small);
+}
+
+.country_badge {
+  /* border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 1px; */
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  padding-right: 6px;
+  padding-left: 2px;
+}

@@ -177,7 +177,7 @@
 .regularity_container {
   display: flex;
   width: 100%;
-  gap: 50px;
+  gap: 25px;
   margin-left: 20px;
 }
 

@@ -131,7 +131,7 @@
 .inputdropdowns_container_AI {
   display: grid;
   grid-template-columns: repeat(4, minmax(0px, 285px));
-  gap: 15px 25px;
+  gap: 15px 15px;
 }
 
 @media screen and (max-width: 1300px) {
