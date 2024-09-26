@@ -13,8 +13,11 @@ interface EventStatusProps {
 const EventType = ({ state, setState, setSelectedEventTypeName, status }: EventStatusProps) => {
   const {theme} = useTheme();
   const onClickHandler = (value: any) => {
-    if(state.includes(value)) setState([]);
-    else setState([value]);
+    if (state.includes(value)) {
+      setState(state.filter((data) => data !==value));
+    } else {
+      setState([...state, value]);
+    }
   };
   const formatTag=(tag:string)=>{
     if(tag==="Exhibitor") return "Exhibit";

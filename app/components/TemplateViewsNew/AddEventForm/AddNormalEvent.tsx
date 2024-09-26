@@ -61,7 +61,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleSaveEvent = async () => {
-        if (!eventName.trim()) {
+        if (!eventName || eventName ==="") {
             setIsEventNameEmpty(true)
         }else{
             setIsEventNameEmpty(false)
@@ -85,7 +85,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         if(!textValue.trim()){
             setIsTextValueMessageEmpty(true)
           }
-        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+        if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
             showToast("error","Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -126,7 +126,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
         }
     }
     const handleAddEvent = async () => {
-        if (!eventName.trim()) {
+        if (!eventName || eventName ==="") {
             setIsEventNameEmpty(true)
         }else{
             setIsEventNameEmpty(false)
@@ -151,7 +151,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             setIsTextValueMessageEmpty(true)
           }
         
-        if (!eventName || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
+        if (!eventName.trim() || !eventFormat || !startTime || !endTime || !startDate || !endDate || !description.trim() || !cityName || !countryName || !timeZone || !latitude || !longitude || !participationType) {
             showToast("error","Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -205,7 +205,9 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
             showToast("error","Please check, input should not contain any special character");
         } else {
             setEventName(value); 
-            setIsEventNameEmpty(false) 
+            if (value.trim() === "") {
+                setIsEventNameEmpty(true);
+            }
         }
       };
     return (

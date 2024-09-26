@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 .btnContainer{
     padding: 6px;
@@ -110,4 +111,61 @@
 }
 .allEventBtn:hover{
     background-color: var(--primary-light-color);
+}
+.blackScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    background-color: var(--background-color);
+    opacity: .3;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.deleteModal{
+    position: absolute;
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.deleteModal .deleteHeading{
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.deleteModal .btns{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.deleteModal .btns button{
+    font-size: var(--font-size-default);
+    border-radius: 4px;
+    padding: 5px 9px;
+    color: white;
+}
+.deleteModal .deleteBtn{
+    background-color: var(--danger-text-color);
+}
+.deleteModal .cancelBtn{
+    background-color: var(--primary-color);
+}
+.deleteModal .deleteBtn:hover{
+    background-color: #eb6368;
+}
+.deleteModal .cancelBtn:hover{
+    background-color: #7d62c7;
 }

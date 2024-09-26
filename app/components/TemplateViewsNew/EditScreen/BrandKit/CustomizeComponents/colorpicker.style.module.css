@@ -11,8 +11,9 @@
 }
 
 .pickedColorCode {
+    color: var(--primary-text-color);
     font-size: 9px;
-    background-color: #F2F2F2;
+    background-color: var(--accent-color);
     line-height: 14px;
     letter-spacing: 1px;
     padding: 5px 18px;

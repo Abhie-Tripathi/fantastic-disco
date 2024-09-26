@@ -4,24 +4,26 @@ import GlobalSearch from './GlobalSearch';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
-import { GolbalEventType } from '@/types/globaleventtype';
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import Image from 'next/image';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { showToast } from '@/utils/showToast';
+import { AddedEventsType } from '@/types/addedeventtype';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
+    fetchedAddedEvents: AddedEventsType[]
     fetchEvents: (page: number, type?: string) => Promise<void>;
     fetchAddedEvents: () => Promise<void>;
-    handleAddEventModal: (value: void) => void
-    handlePrefillNormalEvent: (event: AllEventsType, type: string) => void
-    handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void
+    // handlePrefillEvent: (event: AllEventsType, type: string) => void
     widgetId: string;
-    handleNormalEventModal: (value: void) => void;
     allEventsCount: number;
+    addedEventIds: string[]
 }
 
-const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAddedEvents, handlePrefillNormalEvent, widgetId, handleNormalEventModal, handlePrefillGlobalEvent, allEventsCount }: Props) => {
+const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAddedEvents,
+    //  handlePrefillEvent,
+    widgetId, allEventsCount, addedEventIds }: Props) => {
 
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +93,9 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
             }
         );
         if (data) {
+            if (fetchedAddedEvents.length === 1) {
+                handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
+            }
             fetchEvents(0, "update")
             fetchAddedEvents()
         }
@@ -99,31 +104,65 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
         }
 
     }
-    const handlePrefillingNormalEvent = (event: AllEventsType, type: string, checked: boolean) => {
-        // we need to make a check here that if the event is already added to the widget, we dont want to open the detail page form again by clicking on the checkbox
-        if (!checked) {
-            handlePrefillNormalEvent(event, type)
+
+    // To move the widget to draft if all events are deleted
+    const handleDraftWidget = async () => {
+        const formData = new FormData();
+        formData.append("widgetId", widgetId)
+        formData.append("status", "draft")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: "POST",
+            body: formData
+        })
+        if (data) {
+            console.log("widget moved to draft widgets")
         }
+    }
+    const handleAddToWidget = async (event: AllEventsType, check: boolean) => {
+        if (!check) {
+            const customizedFormData = new FormData()
+            const existingEvents = fetchedAddedEvents || [];
+            const newEvent = {
+                id: event.eventId,
+                promoted: "false"
+            };
+            const mergedEvents = [...existingEvents, newEvent];
+            const otherData = {
+                event: mergedEvents,
+            };
+            const eventIds = [...addedEventIds, event.eventId].join(',');
+            customizedFormData.append('widgetId', widgetId);
+            customizedFormData.append('eventId', eventIds)
+            customizedFormData.append('otherdata', JSON.stringify(otherData))
+            customizedFormData.append('status', 'active');
+            const { data, error } = await myFetch(`${baseUrl}/widget`, {
+                method: 'POST',
+                body: customizedFormData
+            })
+            if (data) {
+                showToast("success", "Event Successfully added to the widget");
+                fetchEvents(0, "update")
+                fetchAddedEvents()
+            }
+        } else {
+            showToast("success", "Event Already added to the widget");
+        }
+
     }
     return (
         <div className={styles.body} ref={scrollableDivRef}>
             <div className={styles.headerContainer}>
                 <div className={styles.heading}>All Events</div>
-                <div className={styles.btnsDropdown}>
+                {/* <div className={styles.btnsDropdown}>
                     <div className={styles.dropdownBtn} onClick={() => setDropdown(!dropdown)}><span>Add Event</span><DownArrow /></div>
-                    {/* <button onClick={() => handleNormalEventModal()}><Addevent /> Add event</button>
-                    <button onClick={() => handleAddEventModal()}>
-                        <AddeventToWidget />Add Event to widget
-                    </button> */}
                     {dropdown && <div className={styles.dropdownContainer} ref={buttonDropdownRef}>
                         <li onClick={() => handleNormalEventModal()}><AddeventIcon/><span>Add event to list</span></li>
                         <li onClick={() => handleAddEventModal()}><AddeventToWidgetIcon/><span>Add event to widget</span></li>
                         <li><SideventIcon/><span>Add side event</span></li>
                     </div>}
-
-                </div>
+                </div> */}
             </div>
-            <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
+            {/* <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} /> */}
             <div className={styles.line}></div>
             {fetchedAllEvents.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
@@ -149,13 +188,13 @@ const AllEvents = ({ handleAddEventModal, fetchedAllEvents, fetchEvents, fetchAd
                                     id={key.toString()}
                                     className={styles.checkboxInput}
                                     checked={event.isLinkedToWidget}
-                                    onChange={() => handlePrefillingNormalEvent(event, "add", event.isLinkedToWidget)}
+                                    onChange={() => handleAddToWidget(event, event.isLinkedToWidget)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
                             <div className={styles.delete_editBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
-                                <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div>
+                                {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
                                 <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
                             </div>
                         </div>

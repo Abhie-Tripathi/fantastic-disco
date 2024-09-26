@@ -1,12 +1,34 @@
-.card{
+.bigouterDiv{
+    width: 100%;
+}
+.smallouterDiv{
+    width: 85%;
+    border-left: 1px dashed var(--primary-color);
+    display: flex;
+    justify-content: flex-end;
+}
+.bigCard{
     width: 100%;
     padding: 12px;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
 }
-.eventName {
+.smallCard{
+    width: 98%;
+    padding: 12px;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    cursor: pointer;
+}
+.smallName {
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
+}
+.bigName{
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-medium);
 }
 .eventDataField{
     display: flex;
@@ -21,6 +43,12 @@
     align-items: center;
     margin-top: 4px;
     gap: 10px;
+}
+.description{
+    margin-top: 5px;
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-semibold);
 }
 .tags_deleteContainer{
     width: 100%;

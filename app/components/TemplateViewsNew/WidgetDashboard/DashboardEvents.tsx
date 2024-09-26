@@ -13,6 +13,10 @@ const DashboardEvents = () => {
     const [fetchedAddedEvents, setFetchedAddedEvents] = useState<AllEventsType[]>([])
     const [siteFetchedEvents, setSiteFetchedEvents] = useState([])
     const [addedEventsLength, setLength] = useState<number>(0)
+    const [deleteModal, setDeleteModal] = useState<boolean>(false)
+    const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
+    const [selectedEventId, setSelectedEventId] = useState<string>("")
+    const [selectedEventName, setSelectedEventName] = useState<string>("")
 
     const fetchEvents = async () => {
         const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
@@ -30,6 +34,7 @@ const DashboardEvents = () => {
                 startTime: event.data.start_time,
                 endTime: event.data.end_time,
                 gmtZone: event.data.gmt_time,
+                widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
             }))
             setLength(data.totalCount)
             setFetchedAddedEvents(events)
@@ -40,6 +45,34 @@ const DashboardEvents = () => {
     useEffect(() => {
         fetchEvents()
     }, [])
+    const handleDeleteModal = (eventId: string, eventName: string, isPresentinWidget: boolean) => {
+        if (isPresentinWidget) {
+            setDeleteModalTwo(true)
+        } else {
+            setSelectedEventName(eventName)
+            setSelectedEventId(eventId)
+            setDeleteModal(true)
+        }
+
+    }
+    const handleDelete = async () => {
+        const customizeData = new FormData();
+        customizeData.append("id", selectedEventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+                method: 'PATCH',
+                body: customizeData,
+            }
+        );
+        if (data) {
+            setDeleteModal(false)
+        }
+        if (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={styles.btnContainer}>
@@ -56,7 +89,7 @@ const DashboardEvents = () => {
             {selectedBtn === "Fetched" ? <div className={styles.fetchedEventsContainer}>
                 {siteFetchedEvents.length > 0 ?
                     <div className={styles.eventsList}>
-                        
+
                     </div> :
                     <div className={styles.emptyScreen}>
                         <Image src={EmptyImage} alt='empty' />
@@ -68,8 +101,8 @@ const DashboardEvents = () => {
                 <div className={styles.addedEventsContainer}>
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
-                            {fetchedAddedEvents.map((event,key)=>(
-                                <div className={styles.eventCard} key={key}><DashboardEventCard fetchEvents={fetchEvents} event={event}/></div>
+                            {fetchedAddedEvents.map((event, key) => (
+                                <div className={styles.eventCard} key={key}><DashboardEventCard handleDeleteModal={handleDeleteModal} width='large' fetchEvents={fetchEvents} event={event} /></div>
                             ))}
                         </div>
 
@@ -81,7 +114,23 @@ const DashboardEvents = () => {
                         </div>}
                 </div>}
             <Link href={"/widget/events"} className={styles.allEventBtn}>Show all events</Link>
-
+            {(deleteModal || deleteModalTwo) && <div className={styles.blackScreen}></div>}
+            {deleteModal && <div className={styles.deleteModal}>
+                <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
+                <span>{selectedEventName}</span>
+                <div className={styles.btns}>
+                    <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
+                    <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
+                </div>
+            </div>}
+            {deleteModalTwo && <div className={styles.deleteModal}>
+                <div className={styles.deleteHeading}>This event is Present in one of your widgets.</div>
+                <span>Remove the event from widget to delete this event</span>
+                <div className={styles.btns}>
+                    <button className={styles.cancelBtn} onClick={() => setDeleteModalTwo(false)}>Close</button>
+                    {/* <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button> */}
+                </div>
+            </div>}
         </div >
     )
 }

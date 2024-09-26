@@ -28,6 +28,9 @@
     overflow-y: hidden;
     height: 90vh;
 }
+.globalSearch{
+    margin-bottom: 20px;
+}
 
 .container {
     display: flex;
@@ -47,13 +50,14 @@
     z-index: 1;
 }
 
-.addNormalEventModal {
+.addEventModal {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 50%;
+    height: 100%;
+    width: 90%;
+    z-index: 99;
 }
 .deleteModal{
     position: absolute;

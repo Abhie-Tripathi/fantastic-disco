@@ -47,6 +47,7 @@
     /* color: black; */
 }
 .inputContainer{
+    background-color: var(--accent-color);
     border-radius: 5px;
     width: 70px;
     line-height: 14px;
@@ -60,6 +61,7 @@
     background-color: transparent;
     border: none;
     font-size: 10px;
+    color: var(--primary-text-color);
 }
 .inputContainer input:focus{
     outline: none;

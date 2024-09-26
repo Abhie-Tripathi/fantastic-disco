@@ -66,6 +66,8 @@ const DateTimeContainer = ({
     ];
 
     useEffect(() => {
+        console.log("start date :", startDate)
+        console.log("end date :", endDate)
         if (!startDate) {
             const currentDate = new Date();
             const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
