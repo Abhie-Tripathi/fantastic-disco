@@ -56,7 +56,7 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 
-const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPresent:any, isData:boolean}) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:{setDataPresent:any, dataPresent:any, isData:boolean, setSingleTrackerData:any, singletTrackerData:any}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [allTracker, setAllTracker] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,6 +64,7 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
   const [page, setPage] = useState(0);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const [totalCount,setTotalCount]=useState(0);
   const [loadOne,setLoadOne]=useState(false);
   const [loadTwo,setLoadTwo]=useState(false);
   const endOfListRef = useRef(null);
@@ -96,7 +97,9 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
               ...prevAllTracker,...firstFetchResult.data.trackerData
               
             ]);
+            setSingleTrackerData(firstFetchResult.data.trackerData[0]);
             setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
+            setTotalCount(firstFetchResult.data.totalCount)
           setLoadOne(false);
           setLoadTwo(true);
             // const secondFetchResult = await myFetch(
@@ -177,12 +180,25 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
         <div className={styles.containerRight}>
-          
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div>Your Trackers</div>
+              <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
+               {totalCount}
+              </span>
+            </div>
+            {/* <FilterDropdown
+              filterName="Sort by"
+              selectItems={["Name", "Last Modified"]}
+              setState={setSort}
+              state={sort}
+            /> */}
+          </div>
           {/* {error && <div>{error}</div>} */}
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
-            allTracker.map((item, id) => <Trackers key={id} item={item} />)}
+            allTracker.map((item, id) => <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>)}
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}

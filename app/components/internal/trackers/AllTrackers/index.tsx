@@ -11,7 +11,7 @@ import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
 // import { useTheme } from '@/context/theme';
-const AllTrackers = ({ item }: any) => {
+const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   // const { theme } = useTheme();
   // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
@@ -89,8 +89,10 @@ const AllTrackers = ({ item }: any) => {
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
   return (
-    <div className="card">
-      <Link
+    <div className="card cursor-pointer" onClick={()=>setSingleTrackerData(item)}
+    style={{border: singleTrackerData.id===item.id?"1px solid var(--primary-color)":"" }}
+    >
+      {/* <Link
         href={`/internal/trackers/${item.id}/trackedEvents?type=${item?.type}`}
         onClick={() =>
           GAEvent(
@@ -100,7 +102,7 @@ const AllTrackers = ({ item }: any) => {
             "View"
           )
         }
-      >
+      > */}
         <div className={styles.cardOne}>
           <div className={styles.heading}>{item.name}</div>
           <Image  src={GoTo} alt="goTo" />
@@ -159,7 +161,7 @@ const AllTrackers = ({ item }: any) => {
             <Line data={lineData} options={lineOptions} />
           </div> */}
         </div>
-      </Link>
+      {/* </Link> */}
     </div>
   );
 };

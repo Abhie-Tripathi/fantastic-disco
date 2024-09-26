@@ -5,6 +5,14 @@ import Link from "next/link";
 import { Suspense, lazy } from "react";
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
+import {
+  InformationFill,
+  Location,
+  MagnifyingGlass,
+  PencilEdit,
+} from "geist-icons";
+import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
+import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import Table from "@/app/components/Table";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
@@ -99,6 +107,7 @@ import { useTheme } from "@/context";
 import { Step } from "react-joyride";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
 interface Search {
   searchParams: {
     tab:string;
@@ -114,6 +123,7 @@ const Trackers = ({ searchParams }: Search) => {
     else if(tab==="customTrackers") setType("Custom Trackers")
     else setType("All Trackers")
   },[tab])
+  const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
  
   const [offset, setOffset] = useState(0);
@@ -252,6 +262,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
   ];
   const [hide, setHide] = useState(false);
+  const [singleTrackerData,setSingleTrackerData]=useState();
   const [isLoading, setIsLoading] = useState(true);
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
@@ -277,10 +288,10 @@ const Trackers = ({ searchParams }: Search) => {
     }
   };
   const [showTracker, setShowTracker] = useState(false);
-  const viewTracker = () => {
-    setShowTracker(true);
-    setHideTemplate(!hideTemplate);
-  };
+  // const viewTracker = () => {
+  //   setShowTracker(true);
+  //   setHideTemplate(!hideTemplate);
+  // };
   const [hideTemplate, setHideTemplate] = useState(true);
   const [dataPresent, setDataPresent] = useState(false);
   // useEffect(() => {
@@ -295,7 +306,7 @@ const Trackers = ({ searchParams }: Search) => {
       );
       if (data) setIsLoading(false)
       if (data.trackerExists) {
-        setHideTemplate(false);
+        // setHideTemplate(false);
         setIsData(true)
       }
 
@@ -355,8 +366,38 @@ const Trackers = ({ searchParams }: Search) => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
+  const [note,setNote]=useState();
+  console.log(singleTrackerData);
+  useEffect(() => {
+    // console.log(item?.tracker?.eventCountry);
+    
+    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
+    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    if(singleTrackerData)
+    fetchNote(singleTrackerData?.id)
+  }, [singleTrackerData]);
   console.log(hideTemplate);
-
+  const fetchNote=async(id:string)=>{
+    console.log(1);
+    
+    const url =
+    `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
+    const { data, error } = await myFetch(url);
+    if (data) {
+      // setNotes([]);
+      console.log(data);
+      // setNotes(data.comments.reverse());
+      if (data.comments?.length > 0){
+        console.log(data);
+        
+        setNote(data.comments);
+      }
+    }
+  }
+  console.log(note);
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -377,101 +418,90 @@ const Trackers = ({ searchParams }: Search) => {
     //   </div>
     // </div>
     <>{isLoading ? <Loading /> : (
-      <>
-        <div className={styles.outerContainer}>
-          {steps?.length > 0 && (
-            <JoyRideCustom
-              steps={steps}
-              run={run}
-              onFinish={() => setRun(false)}
-              pathName="tracker"
+      <div>
+      <div className="flex flex-row m-[-24px]">
+  <div className="w-1/2 p-4 h-[calc(100vh-80px)] overflow-y-auto">
+    <div className="flex flex-col gap-4">
+      <div className="text-gray-700">
+        Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
+      </div>
+      <button
+        className="w-[160px] text-white font-bold py-2 px-4 rounded"
+        style={{ background: "var(--primary-color)" }} onClick={()=>setHideTemplate(false)}
+      >
+        Create Tracker
+      </button>
+      <hr style={{borderBottom:"1px solid var(--neutral-light-color)"}}/>
+      <div className="border border-[#ebebeb] rounded px-3 py-2 flex items-center gap-2">
+            <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+            <input
+              className="outline-none w-full"
+              placeholder="Search by name, address or tag"
+              // value={searchValue}
+              // onChange={(e) => setSearchValue(e.target.value)}
             />
-          )}
-          <div className={styles.header_container}>
-            <div className={styles.tab_container}>
-
-              <div className={`${styles.tab}`}>Create Your Event Tracker</div>
-
-              {/* <Link
-            href="/internal/trackers/savedevents"
-            className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
-              }`}
-          >
-            Saved Events
-          </Link> */}
-            </div>
-
-            <div className={styles.trackers_header}>
-
-              <Link
-                href="/internal/trackers/create?type=CUSTOM"
-                onClick={() =>
-                  GAEvent(
-                    "trackers",
-                    "Tracker",
-                    "Saved Tracker | New Tracker Created",
-                    "Create New Tracker"
-                  )
-                }
-                // ref={allTrackerRef}
-                className={styles.trackers_header_newtracker_button}
-              >
-                Create Tracker
-              </Link>
-              {!hideTemplate ?
-                (<div
-                  className={styles.trackers_header_newtracker_button}
-                  onClick={viewTracker}
-                >
-                  Explore Templates
-                </div>) : (
-                  <div
-                    className={styles.trackers_header_newtracker_button}
-                    onClick={viewTracker}
-                  >
-                    Hide Templates
-                  </div>
-                )
-
-              }
-              {/* <Image src={Add} alt="add" /> */}
-
-              {/* <div
-            onClick={() => setHide(!hide)}
-            className={styles.trackers_header_more_button}
-          >
-            <Image src={MoreIcon} alt="moreicon" />
-            {hide && (
-              <div
-                className={styles.hide}
-                onClick={() => setHideTemplate(!hideTemplate)}
-              >
-                {hideTemplate ?
-                  <div
-                    onClick={() => GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "Hide Templates",
-                      "Hide Templates"
-                    )}
-                  >Hide Templates</div> :
-                  <div
-                    onClick={() => GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "Show Templates",
-                      "Show Templates"
-                    )}
-                  >Show Templates</div>}
-              </div>
-            )}
-          </div> */}
-            </div>
           </div>
-
-          {hideTemplate && (
-            <div className={`${styles.container}`}>
-
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+    </div>
+  </div>
+  <div className="w-1/2 p-4 h-[calc(100vh-80px)] overflow-y-auto" style={{background:"var(--background-secondary-color)"}}>
+    <div className="flex flex-col gap-4">
+  <div className="flex items-center justify-between border border-[#E6E6F9] p-3">
+          <span className="flex items-center gap-2 text-[#696B83]">
+            {locations?.length>0 && 
+            <>
+            <Location width="18px" height="18px" style={{color:"var(--primary-color)"}} />
+            <span className="font-medium">
+            {locations[0]}
+            </span>
+            </>
+}
+          </span>
+          <Link
+        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}
+        onClick={() =>
+          GAEvent(
+            "trackers",
+            "Trackers",
+            "Saved Tracker | Any Filter Applied",
+            "View"
+          )
+        }
+      >
+          <button className="w-[160px] text-white font-bold py-2 px-4 rounded"
+        style={{ background: "var(--primary-color)" }}>
+            <span>View Events</span>
+          </button>
+          </Link>
+        </div>
+        <div className="flex flex-row gap-2">
+  <div className="flex w-[45%] items-stretch">
+    <SavedEventWidget/>
+  </div>
+  <div className="flex w-[55%] items-stretch">
+  <NotesDiscussionWidget note={note}/>
+  </div>
+        </div>
+        <div className="flex flex-row gap-2">
+          <div className="flex w-[45%] items-stretch">
+            <SavedEventWidget/>
+          </div>
+          <div className="flex w-[55%] items-stretch">
+            <ShareWidget/>
+          </div>
+        </div>
+  </div>
+  </div>
+</div>
+{!hideTemplate && (
+          <div style={{position:"absolute", left:"70px", top:"70px", background:"white", display:"flex", right:"0", height:"calc(100vh - 70px)"}}>
+            <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
+            <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
+        style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
+          <Image src={Back} alt="close" height={22} width={22} />
+            Back
+          </button>
+          <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
                   <div className={styles.innerContainerTwo}>
@@ -533,128 +563,12 @@ const Trackers = ({ searchParams }: Search) => {
                   </button>
                 </Link>
               </div>
-            </div>
-          )}
-
-
-
-          {(
-            <>
-              {/* {loading ? <Loading/>:<> */}
-              <div
-                className={`${styles.trackers}`}
-              >
-                <div
-                  className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
-                    }`}
-                  onClick={() => setType("All Trackers")}
-
-                >
-                  <AllTrackers
-                    fillColor={type === "All Trackers" ? "#6750A4" : "#696B83"}
-                  />
-                  All Trackers
-                </div>
-                <div
-                  className={`${styles.trackersHead} ${type === "Custom Trackers" ? styles.active : ""
-                    }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "View",
-                      "Custom Trackers"
-                    )
-                    setType("Custom Trackers")
-                  }}
-                >
-                  <CustomeTracker
-                    fillColor={type === "Custom Trackers" ? "#6750A4" : "#696B83"}
-                  />
-                  Custom Trackers
-                </div>
-                {/* <div
-              className={`${styles.trackersHead} ${
-                type === "Premium Trackers" ? styles.active : ""
-              }`}
-              onClick={() => setType("Premium Trackers")}
-            >
-              <PremiumTracker
-                fillColor={type === "Premium Trackers" ? "#6750A4" : "#696B83"}
-              />
-              Premium Trackers
-            </div> */}
-                <div
-                  className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""
-                    }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "View",
-                      "Saved Events"
-                    )
-                    setType("Saved Events")
-                  }}
-                  ref={savedEventRef}
-                >
-                  <Bookmark
-                    fillColor={type === "Saved Events" ? "#6750A4" : "#696B83"}
-                  />
-                  Saved Events
-                </div>
-              </div>
-              {/* </>
-    } */}
-              {type === "All Trackers" && (
-                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
-              )}
-              {type === "Custom Trackers" && (
-                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
-              )}
-              {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
-              {type === "Saved Events" && (
-                <div>
-                  <Table showInsights={showInsights} />
-                </div>
-              )}
-            </>
-          )}
-
-          {showModal && (
-            <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
-              <div className={styles.modalInnerContainer}>
-                <div className={styles.newTrackerHead}>Choose Tracker Type</div>
-                <Link href="/internal/trackers/create">
-                  <div className={styles.customTracker}>
-                    <div style={{ display: "flex" }}>
-                      <Image src={Vector3} alt="vector3" />
-                    </div>
-                    <div>
-                      <div className={styles.head}>Custom Tracker</div>
-                      <div className={styles.content}>
-                        Select from the available data filters to create a tracker
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-                <div className={styles.customTracker}>
-                  <div style={{ display: "flex" }}>
-                    <Image src={Vector4} alt="vector4" />
-                  </div>
-                  <div>
-                    <div className={styles.head}>Premium Tracker</div>
-                    <div className={styles.content}>
-                      Seamlessly integrate your own data to tailor your event
-                      tracking experience.
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+            </div>
+          
           )}
-        </div>
-      </>
+      </div>
     )}</>
 
   );
