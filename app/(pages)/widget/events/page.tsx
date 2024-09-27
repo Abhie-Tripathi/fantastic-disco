@@ -134,13 +134,14 @@ const Page = () => {
         if(eventFlow){
             setIsEventFormModal(true)
         }
-        setEventFlow("")
+        // setEventFlow("")
     }
     const handlePrefillEvent = (event: AllEventsType) => {
         setPrefilledEvent(undefined)
         setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
         setIsEventFormModal(true)
+        setEventFlow("main")
     }
     const handlePrefillGlobalEvent = (event: GolbalEventType) => {
         setPrefilledEvent(undefined)
@@ -183,7 +184,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
+                <AddEvent setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

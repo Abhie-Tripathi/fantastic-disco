@@ -13,6 +13,9 @@
     padding: 17px 14px;
     justify-content: space-between;
 }
+.endBtnContainer{
+    justify-content: flex-end;
+}
 .eventBtns{
     display: flex;
     align-items: center;
@@ -62,7 +65,29 @@
     background-color: var(--disabled-btn-color);
 }
 .formContainer{
-    height: 100%;
+    height: 89%;
     overflow: auto;
-    
+    padding: 50px 120px 50px 70px;
+}
+.collapsedContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 14px 38px;
+    font-size: 12px;
+    color: #7D7D7D;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    justify-content: space-between;
+    line-height: 18px;
+    margin-bottom: 32px;
+}
+
+.collapsedContainer div{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.collapsedContainer .collapseBtn{
+    cursor: pointer;
 }

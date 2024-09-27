@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './locationdropdown.style.module.css'
 import { baseUrl } from "@/constants";
+import { FormState } from '@/types/Formstate';
 
 interface LocationSuggestion {
     id: string;
@@ -12,20 +13,24 @@ interface LocationSuggestion {
 }
 
 interface Props {
+    formState: FormState;
+    handleChange: (field: keyof FormState, value: any) => void;
     setCityName: (value: string) => void
-    setCountryName: (value: string) => void
-    setEventFormat: (value: string) => void;
-    eventFormat: string;
-    setLongitude: (value: number) => void;
-    setLatitude: (value: number) => void;
+    // setCountryName: (value: string) => void
+    // setEventFormat: (value: string) => void;
+    // eventFormat: string;
+    // setLongitude: (value: number) => void;
+    // setLatitude: (value: number) => void;
     theme?: string;
-    setQuery:(value: string) => void;
-    query:string;
-    setIsEventFormatEmpty:(value: boolean) => void;
+    // setQuery:(value: string) => void;
+    // query:string;
+    // setIsEventFormatEmpty:(value: boolean) => void;
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery,setIsEventFormatEmpty }: Props) => {
+const LocationDropdown = ({ setCityName,theme, formState, handleChange
+    //  setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery,setIsEventFormatEmpty 
+    }: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
@@ -37,9 +42,12 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
         setCityName(suggestion.name);
-        setCountryName(suggestion.countryName)
-        setLatitude(Number(suggestion.lat));
-        setLongitude(Number(suggestion.long));
+        handleChange('countryName',suggestion.countryName)
+        handleChange('latitude',Number(suggestion.lat))
+        handleChange('longitude',Number(suggestion.long))
+        // setCountryName(suggestion.countryName)
+        // setLatitude(Number(suggestion.lat));
+        // setLongitude(Number(suggestion.long));
 
         setIsDropdownVisible(false);
 
@@ -90,17 +98,19 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
     const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
     useEffect(() => {
-        if (query.length > 0) {
-            debouncedFetchSuggestions(query);
+        if (formState.query.length > 0) {
+            debouncedFetchSuggestions(formState.query);
         } else {
             setSuggestions([]);
             setIsDropdownVisible(false);
         }
-    }, [query, debouncedFetchSuggestions]);
+    }, [formState.query, debouncedFetchSuggestions]);
     // if (!isLoaded) return <div>Loading...</div>;
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-        setIsEventFormatEmpty(false)
+        handleChange('query',e.target.value)
+        handleChange('isEventFormatEmpty',false)
+        // setQuery(e.target.value);
+        // setIsEventFormatEmpty(false)
     }
     return (
         <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
@@ -109,8 +119,8 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={eventFormat === "In-person" || eventFormat === "OFFLINE"}
-                        onChange={() => setEventFormat("In-person")}
+                        checked={formState.eventFormat === "In-person" || formState.eventFormat === "OFFLINE"}
+                        onChange={() => handleChange("eventFormat","In-person")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>In-person</span>
@@ -119,8 +129,8 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={eventFormat === "Virtual" || eventFormat === "ONLINE"}
-                        onChange={() => setEventFormat("Virtual")}
+                        checked={formState.eventFormat === "Virtual" || formState.eventFormat === "ONLINE"}
+                        onChange={() => handleChange("eventFormat","Virtual")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Virtual</span>
@@ -129,14 +139,14 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                     <input
                         type="checkbox"
                         className={styles.checkbox}
-                        checked={eventFormat === "Hybrid"}
-                        onChange={() => setEventFormat("Hybrid")}
+                        checked={formState.eventFormat === "Hybrid"}
+                        onChange={() => handleChange("eventFormat","Hybrid")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Hybrid</span>
                 </label>
             </div>
-            {(eventFormat === "In-person" || eventFormat === "Hybrid" || eventFormat === "OFFLINE") && <div className={styles.locationInputContainer}>
+            {(formState.eventFormat === "In-person" || formState.eventFormat === "Hybrid" ||formState. eventFormat === "OFFLINE") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => handleInputChange(e)} />
                 {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
@@ -160,7 +170,7 @@ const LocationDropdown = ({ setCityName, setCountryName, setEventFormat, eventFo
                 )}
 
             </div>}
-            {(eventFormat === "Virtual" || eventFormat === "Hybrid" || eventFormat === "ONLINE") &&
+            {(formState.eventFormat === "Virtual" || formState.eventFormat === "Hybrid" || formState.eventFormat === "ONLINE") &&
                 <div className={styles.inputLinkContainer}>
                     <input type="text" placeholder='Enter Virtual Link' />
                     <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above.</span></div>

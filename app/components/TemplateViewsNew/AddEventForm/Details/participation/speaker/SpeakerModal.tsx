@@ -3,6 +3,7 @@ import styles from './speakermodal.style.module.css'
 import ProfileIcon from '/public/profile_Image.jpg'
 import Image from 'next/image'
 import Link from 'next/link'
+import { FormState } from '@/types/Formstate'
 
 interface SpeakerProfileType {
     id: string;
@@ -14,14 +15,15 @@ interface SpeakerProfileType {
 }
 
 interface Props {
+    handleChange: (field: keyof FormState, value: any) => void;
     setSpeakerModal: (value: boolean) => void
-    setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
+    // setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
     prefilledProfile?: SpeakerProfileType | null;
     deleteSpeaker: (id: string) => void;
     updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
 }
 
-const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
+const SpeakerModal = ({ setSpeakerModal, handleChange, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
     // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
     const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
     const [name, setName] = useState<string>(prefilledProfile?.name || "");
@@ -74,7 +76,8 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
         if (prefilledProfile) {
             updateSpeaker(updatedProfile);
         } else {
-            setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
+            handleChange('speakerProfilesData', (prevData : any) => [...prevData, updatedProfile])
+            // setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
             setSpeakerModal(false);
         }
     };

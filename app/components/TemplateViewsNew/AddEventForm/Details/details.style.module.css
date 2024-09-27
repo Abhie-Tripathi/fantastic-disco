@@ -1,7 +1,5 @@
 .body {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
-    height: 100%;
+    height: fit-content;
     position: relative;
 }
 
@@ -10,7 +8,7 @@
     border-top: 1px solid #E6E6E6;
 }
 
-.collapsedContainer {
+/* .collapsedContainer {
     padding: 50px 120px 30px 70px;
 }
 
@@ -33,13 +31,12 @@
 }
 .collapsedSubContainer .collapseBtn{
     cursor: pointer;
-}
+} */
 .detailsContainer {
-    padding: 50px 120px 30px 70px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    height: 89%;
+    /* overflow-y: auto; */
+    /* height: 89%; */
 }
 
 .sections {

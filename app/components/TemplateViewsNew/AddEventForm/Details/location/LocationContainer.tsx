@@ -5,51 +5,60 @@ import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import LocationDropdown from './LocationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import { FormState } from '@/types/Formstate'
 
 interface Props{
+    formState: FormState;
+    handleChange: (field: keyof FormState, value: any) => void;
     setCityName: (value : string)=>void;
     cityName : string;
-    setCountryName:(value : string)=>void;
-    countryName : string;
-    setEventFormat: (value : string)=>void;
-    eventFormat : string;
-    setLongitude : (value : number)=>void;
-    setLatitude : (value : number)=> void;
+    // setCountryName:(value : string)=>void;
+    // countryName : string;
+    // setEventFormat: (value : string)=>void;
+    // eventFormat : string;
+    // setLongitude : (value : number)=>void;
+    // setLatitude : (value : number)=> void;
     theme? : string;
-    isEventFormatEmpty:boolean
-    query:string;
-    setQuery:(value : string)=>void;
-    setIsEventFormatEmpty:(value : boolean)=>void;
+    // isEventFormatEmpty:boolean
+    // query:string;
+    // setQuery:(value : string)=>void;
+    // setIsEventFormatEmpty:(value : boolean)=>void;
 }
 
 const LocationContainer = ({
+    formState,
+    handleChange,
     setCityName,
     cityName,
-    setCountryName, 
-    countryName,
-    setEventFormat,
-    eventFormat,
-    setLongitude,
-    setLatitude,
+    // setCountryName, 
+    // countryName,
+    // setEventFormat,
+    // eventFormat,
+    // setLongitude,
+    // setLatitude,
     theme,
-    isEventFormatEmpty,
-    query,
-    setQuery,
-    setIsEventFormatEmpty
+    // isEventFormatEmpty,
+    // query,
+    // setQuery,
+    // setIsEventFormatEmpty
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
     return (
-        <div className={`${styles.body} ${isEventFormatEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
+        <div className={`${styles.body} ${formState.isEventFormatEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
             <div className={styles.locationContainer} onClick={()=>setDropdown(!dropdown)}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
                     <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>{cityName ? cityName : "Add Event Location"}</div>
-                    <div className={styles.eventLocationTwo}>{countryName ? countryName : "Offline location or Virtual Link"}</div>
+                    <div className={styles.eventLocationTwo}>{formState.countryName ? formState.countryName : "Offline location or Virtual Link"}</div>
                 </div>
             </div>
             {/* <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/> */}
-            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown theme={theme} setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} setCityName = {setCityName} setCountryName={setCountryName} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} /></div>}
+            {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown formState={formState} handleChange={handleChange} theme={theme} 
+            // setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} 
+            setCityName = {setCityName}
+            //  setCountryName={setCountryName} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} 
+             /></div>}
         </div>
     )
 }
