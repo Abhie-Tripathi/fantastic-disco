@@ -197,6 +197,11 @@ const Search = () => {
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
+
+  const [selectedImpactScore, setSelectedImpactScore] = useState([0, 100]);
+  const [selectedInboundScore, setSelectedInboundScore] = useState([0, 100]);
+  const [selectedInternationalScore, setSelectedInternationalScore] = useState([0, 100]);
+
   const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
   const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
     searchParams.get("status")?.split(",") || []
@@ -243,7 +248,7 @@ const Search = () => {
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState<string>('');
-  const [selectedInboundScore, setSelectedInboundScore] = useState(0);
+  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [forecastedStatus, setForecastedStatus] = useState(false);
@@ -389,9 +394,9 @@ const Search = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
+          // ...(selectedInboundScore > 0 && {
+          //   inboundScore: selectedInboundScore.toString(),
+          // }),
           ...(selectedEventAttendanceRange?.length === 2 && {
             eventAttendanceRange: [
               +selectedEventAttendanceRange[0],
@@ -636,9 +641,9 @@ const Search = () => {
     }
 
     // Inbound Score
-    if (selectedInboundScore > 0) {
-      queryString.inboundScore = selectedInboundScore;
-    }
+    // if (selectedInboundScore > 0) {
+    //   queryString.inboundScore = selectedInboundScore;
+    // }
 
     // User Ratings
     if (selectedUserRatings.length > 0) {
@@ -2056,6 +2061,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Analytics
+                          {Object.values(analyticsToggles).filter(value => value === true).length > 0 &&
+                            <span className={styles.selected_no_filters}>
+                              {Object.values(analyticsToggles).filter(value => value === true).length}
+                            </span>
+                          }
                           {/* {rankToggles.isEventRank && (
                             <span className={styles.input_selected_title}>
                               [{selectedEventRank[0]} , {selectedEventRank[1]}]
@@ -2087,12 +2097,12 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <AnalyticsDropdown
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
+                          selectedEventRank={selectedImpactScore}
+                          setSelectedEventRank={setSelectedImpactScore}
+                          selectedLocalRank={selectedInboundScore}
+                          setSelectedLocalRank={setSelectedInboundScore}
+                          selectedAviationRank={selectedInternationalScore}
+                          setSelectedAviationRank={setSelectedInternationalScore}
                           rankToggles={analyticsToggles}
                           setRankToggles={setAnalyticsToggles}
                           onClose={close}
@@ -2309,7 +2319,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                        Audience Quality Score
+                        Audience Quality
                           {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
@@ -2349,7 +2359,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Exhibitor Quality Score
+                          Exhibitor Quality
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                         {/* <Image
@@ -2381,7 +2391,8 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Audience Des &amp; Dept
+                          {/* Audience Des &amp; Dept */}
+                          Audience Profile
                         </div>
                         {/* <Image
                           src={DropIcon}

@@ -70,9 +70,9 @@ const AnalyticsDropdown = ({
             <span className={styles.slider}></span>
           </label>
           <div className={styles.checkbox_title}>Event Impact Score</div>
-          {/* <>
+          <>
             <ReactSlider
-              onChange={(values) => {setSelectedEventRank(values); handleRankSlider(values, "isEventRank")}}
+              onChange={(values) => {setSelectedEventRank(values); handleRankSlider(values, "impactScore")}}
               value={selectedEventRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -81,7 +81,7 @@ const AnalyticsDropdown = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
-              disabled={true}
+              // disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -110,7 +110,7 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </> */}
+          </>
         </div>
 
         <div className={styles.slider_container}>
@@ -123,9 +123,9 @@ const AnalyticsDropdown = ({
             <span className={styles.slider}></span>
           </label>
           <div className={styles.checkbox_title}>Inbound Score</div>
-          {/* <>
+          <>
             <ReactSlider
-              onChange={(values) => {setSelectedLocalRank(values); handleRankSlider(values, "isLocalRank")}}
+              onChange={(values) => {setSelectedLocalRank(values); handleRankSlider(values, "inboundScore")}}
               value={selectedLocalRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -134,7 +134,7 @@ const AnalyticsDropdown = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
-              disabled={true}
+              // disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -163,7 +163,7 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </> */}
+          </>
         </div>
 
         <div className={styles.slider_container}>
@@ -176,9 +176,9 @@ const AnalyticsDropdown = ({
             <span className={styles.slider}></span>
           </label>
           <div className={styles.checkbox_title}>International Score</div>
-          {/* <>
+          <>
             <ReactSlider
-              onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "isAviationRank")}}
+              onChange={(values) => {setSelectedAviationRank(values); handleRankSlider(values, "internationalScore")}}
               value={selectedAviationRank}
               className={styles.horizontal_slider}
               thumbClassName={styles.thumb}
@@ -187,7 +187,7 @@ const AnalyticsDropdown = ({
               ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
               pearling
               minDistance={1}
-              disabled={true}
+              // disabled={true}
             />
             <div className={styles.rank_input_container}>
               <input
@@ -214,7 +214,7 @@ const AnalyticsDropdown = ({
                 disabled={true}
               />
             </div>
-          </> */}
+          </>
         </div>
       </div>
     </div>

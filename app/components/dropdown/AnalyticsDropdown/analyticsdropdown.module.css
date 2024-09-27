@@ -1,6 +1,6 @@
 .container {
   background-color: var(--primary-foreground);
-  /* min-width: 600px; */
+  min-width: 600px;
   color: inherit;
   filter: drop-shadow(1px 1px 5px rgb(216, 216, 216));
   border-radius: var(--border-radius-sm);
@@ -80,7 +80,7 @@
   /* text-transform: uppercase; */
   line-height: 1.3333333333;
   /* letter-spacing: 0.05em; */
-  /* width: 100px; */
+  width: 100px;
   /* white-space: nowrap; */
 }
 
