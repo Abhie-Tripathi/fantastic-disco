@@ -340,6 +340,16 @@ const Search = () => {
       ...(selectedInsights.eventRating && { rating: true }),
       ...(selectedInsights.estExhibit && { exhibit: true }),
       ...(selectedInsights.repeatSent&& {trust:true}),
+      ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      ...(selectedBrandedEvent && {brandedEvent:true}),
+      ...(selectedEventSeries && {eventSeries:true}),
+      ...(forecastedStatus && {forecastedStatus:true}),
+      ...(analyticsToggles.impactScore&& {impactScore:true}),
+      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
+      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
+      ...(rankToggles.isEventRank&& {eventRank:true}),
+      ...(audienceZone && {audienceZone:true}),
+      ...(audienceSpread && {audienceSpread:true}),
     }
     if(customTrackerName != '') {
       const formData = {
