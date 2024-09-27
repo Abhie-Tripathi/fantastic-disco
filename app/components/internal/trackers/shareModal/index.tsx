@@ -9,13 +9,13 @@ import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 interface ShareModalProps {
     fetchAccess?: any;
-  closeShareModal: () => void;
+  closeShareModal?: () => void;
  
   id: string;
-  setId: any;
-  shareFunction: () => void;
-  share: boolean;
-  setShare: any
+  setId?: any;
+  shareFunction?: () => void;
+  share?: boolean;
+  setShare?: any
   setAccessData?: (data: any) => void;
 }
 const ShareModal: React.FC<ShareModalProps> = ({
@@ -108,6 +108,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     fetchAccess();
                       setFilter('');
                       setIsClicked(false);
+                      if(shareFunction)
                       shareFunction();
                 } 
                 if(data) {
@@ -120,6 +121,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                       );
                       showToast("success","Tracker shared successfully!")
                       fetchAccess();
+                      if(shareFunction)
                       shareFunction();
                       setId('');
                       setIsClicked(false);
@@ -190,6 +192,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             
             if (id && isClicked) {
                 shareInvite();
+                if(closeShareModal)
                 closeShareModal();
             }
         }, [id, isClicked]);

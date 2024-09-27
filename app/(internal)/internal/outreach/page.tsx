@@ -88,20 +88,22 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     event: React.DragEvent<HTMLDivElement>,
     target: string
   ) => {
-    console.log(target);
+    console.log(event);
     
     // if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
-    console.log(event.dataTransfer.getData("taskName"));
+    console.log(event.dataTransfer.getData("source_container"),target);
     
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
       event.dataTransfer.getData("taskName")
     );
     const source = event.dataTransfer.getData("source_container");
-console.log(source);
+console.log(target,source);
 
     // To prevent adding the task into the same container
     if (target !== source) {
+      console.log(source);
+      
       if (source === "shortlisted") {
         console.log(shortlistedTasks);
         

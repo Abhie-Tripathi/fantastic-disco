@@ -13,6 +13,9 @@ import {
 } from "geist-icons";
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
+import NotiicationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import Calendar from '@/public/internal/calendar.svg'
+import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
@@ -108,6 +111,9 @@ import { Step } from "react-joyride";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
+import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
+import ShareModal from "@/app/components/internal/trackers/shareModal";
+
 interface Search {
   searchParams: {
     tab:string;
@@ -489,7 +495,27 @@ const Trackers = ({ searchParams }: Search) => {
           </button>
           </Link>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-3">
+  <div className="flex w-[45%] items-stretch">
+    <div className="flex flex-col w-[100%] gap-3">
+    <div className="w-[100%]">
+      <Image src={Calendar} alt="Calendar" style={{width:"100%"}}/>
+    </div>
+    <div>
+      <AnalyticWidget/>
+    </div>
+    </div>
+  </div>
+  <div className="flex w-[55%] items-stretch">
+  <div className="relative w-full h-full">
+    <Image 
+      src={TrackerLocation} 
+      alt="trackerLocation"  
+    />
+  </div>
+  </div>
+        </div>
+        <div className="flex flex-row gap-3">
   <div className="flex w-[45%] items-stretch">
     <SavedEventWidget savedEvents={savedEvents}/>
   </div>
@@ -497,14 +523,17 @@ const Trackers = ({ searchParams }: Search) => {
   <NotesDiscussionWidget note={note}/>
   </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-3">
           <div className="flex w-[45%] items-stretch">
-            <SavedEventWidget savedEvents={savedEvents}/>
+            <NotiicationWidget/>
           </div>
           <div className="flex w-[55%] items-stretch">
             <ShareWidget id={singleTrackerData?.id}/>
           </div>
         </div>
+  </div>
+  <div>
+    {/* <ShareModal id={singleTrackerData?.id} /> */}
   </div>
   </div>
 </div>

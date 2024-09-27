@@ -83,7 +83,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
         if (firstFetchResult.error) {
           setError('Create your first tracker!');
           setLoading(false);
-          setLoading(false);
           setLoadOne(false);
           console.log(firstFetchResult.error);
           return;

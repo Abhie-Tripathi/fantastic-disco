@@ -22,9 +22,9 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note }) =
     // console.log(displayNote[0]?.id);
     
   return (
-    <div className="flex w-[100%] flex-col gap-6 bg-white border rounded-[12px] p-2" style={{ border: "1px solid var(--border-color)" }}>
+    <div className="flex w-[100%] flex-col gap-6 bg-white border rounded-[12px] p-4" style={{ border: "1px solid var(--border-color)" }}>
       <div className='flex items-center gap-2' style={{ color: "var(--primary-color)" }}>
-        <div>Notes & Discussions</div>
+        <div className='font-semibold'>Notes & Discussions</div>
       </div>
       <div className='relative flex items-center justify-center'>
         <div className='flex p-2 h-[85px] w-[95%] flex-col rounded-[20px] gap-2' style={{ borderBottom: "1px solid var(--border-color)" }}>
@@ -38,8 +38,8 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note }) =
             </div>
             
             <div className='flex flex-col'>
-            <div>{note && `${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`}</div>
-            <div className='text-[12px]'>
+            <div className='font-semibold'>{note && `${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`}</div>
+            <div className='text-[14px]'>
             {note && note[0]?.content.length > 70 
     ? `${note[0]?.content.substring(0, 70)}...` 
     : note[0]?.content
