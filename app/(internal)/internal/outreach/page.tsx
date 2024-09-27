@@ -176,7 +176,7 @@ const Page: React.FC = () => {
       if (negoApiData.data) {
         
         setOutreachTasks(negoApiData.data.enquiryData);
-        setInProgressCount(shortlistApiData.data.totalCount);
+        setInProgressCount(negoApiData.data.totalCount);
       }
       if (confirmApiData.data)
         setPreFinalisedTasks(confirmApiData.data.enquiryData);
