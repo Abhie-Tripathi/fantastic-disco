@@ -12,6 +12,13 @@ interface ImageState {
     file: File | null;
 }
 export interface FormState {
+    descriptionModal : boolean;
+    speakerModal : boolean;
+    registerModal : boolean;
+    eventName : string;
+    cityName : string;
+    participationType : string;
+    description : string;
     textValue: string;
     speakerProfilesData: SpeakerProfileType[];
     prefilledProfile?: SpeakerProfileType;

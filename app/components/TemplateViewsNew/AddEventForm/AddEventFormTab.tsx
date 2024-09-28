@@ -11,19 +11,6 @@ import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 
-// interface SpeakerProfileType {
-//     id: string;
-//     name: string;
-//     linkedin: string;
-//     designation: string;
-//     // profileImage: string | ArrayBuffer | null;
-//     profileImage: File | null
-// }
-// interface ImageState {
-//     placeHolder: any;
-//     file: File | null;
-// }
-
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
@@ -33,102 +20,27 @@ interface Props {
     addedEventIds: string[]
     prefilledEvent?: AllEventsType
     prefilledGlobalEvent?: GolbalEventType
-    eventName: string;
-    setEventName: (value: string) => void;
-    cityName: string;
-    setCityName: (value: string) => void;
-    participationType: string;
-    setParticipationType: (value: string) => void;
-    description: string;
-    setDescription: (value: string) => void;
     eventFlow: string;
     setEventFlow: (value: string) => void;
+    mainEventState: FormState;
+    subEventState: FormState;
+    handleSubeventChange: (field: keyof FormState, value: any) => void;
+    handleMaineventChanges: (field: keyof FormState, value: any) => void;
 }
 
-const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, eventName, setEventName, cityName, setCityName, participationType, setParticipationType, description, setDescription, fetchEvents, addedEventIds, eventFlow, setEventFlow }: Props) => {
-    const initialFormState: FormState = {
-        textValue: description,
-        speakerProfilesData: [],
-        prefilledProfile: undefined,
-        registerMessage: prefilledEvent?.customizationData.registerMessage || 'Welcome! To join the event, please register below.',
-        registerBtnText:prefilledEvent?.customizationData.registerBtnText || 'Register',
-        registerBtnColor: prefilledEvent?.customizationData.registerBtnColor || '#1a1a1a',
-        countryName:prefilledEvent?.countryName || prefilledGlobalEvent?.countryName || '',
-        timeZone:prefilledEvent?.gmtZone || 'GMT+05:30 Chennai',
-        timeZoneKey: 1,
-        startDate: prefilledEvent?.startDate || prefilledGlobalEvent?.startDate || '',
-        endDate: prefilledEvent?.endDate || prefilledGlobalEvent?.endDate || '',
-        startTime:prefilledEvent?.startTime || '12:00 A.M',
-        endTime: prefilledEvent?.endTime || '12:00 A.M',
-        eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
-        boothNumber: prefilledEvent?.customizationData.boothNumber || "",
-        participationMessage: prefilledEvent?.customizationData.participationMessage || "",
-        banner: { placeHolder: prefilledEvent?.logoUrl || Placeholder, file: null }, // Customize placeholder as needed
-        venue: prefilledEvent?.customizationData.venue || prefilledGlobalEvent?.venue || "",
-        latitude: Number(prefilledEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749,
-        longitude: Number(prefilledEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194,
-        hashtags: prefilledEvent?.customizationData.hashtags.split(",") || [],
-        query: '',
-        isEventNameEmpty: false,
-        isEventFormatEmpty: false,
-        isEventDescriptionEmpty: false,
-        isEventParticipationEmpty: false,
-        isParticipationMessageEmpty: false,
-        isTextValueMessageEmpty: false,
-        errorMessage: 'Event name is required.',
-    };
-    const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
-    const [subeventState, setSubeventState] = useState<FormState>(initialFormState);
-
-    // const [textValue, setTextValue] = useState<string>(description)
-    // const [speakerProfilesData, setSpeakerProfilesData] = useState<SpeakerProfileType[]>([])
-    // const [prefilledProfile, setPrefilledProfile] = useState<SpeakerProfileType | undefined>();
-    // const [registerMessage, setRegisterMessage] = useState<string>(prefilledEvent?.customizationData.registerMessage || "Welcome! To join the event, please register below.")
-    // const [registerBtnText, setRegisterBtnText] = useState<string>(prefilledEvent?.customizationData.registerBtnText || "Register")
-    // const [registerBtnColor, setRegisterBtnColor] = useState<string>(prefilledEvent?.customizationData.registerBtnColor || "#1a1a1a")
-    // const [countryName, setCountryName] = useState<string>(prefilledEvent?.countryName || prefilledGlobalEvent?.countryName || "")
-    // const [timeZone, setTimeZone] = useState<string>(prefilledEvent?.gmtZone || "GMT+05:30 Chennai")
-    // const [timeZoneKey, setTimeZoneKey] = useState<number>(18)
-    // const [startDate, setStartDate] = useState<string>(prefilledEvent?.startDate || prefilledGlobalEvent?.startDate || "")
-    // const [endDate, setEndDate] = useState<string>(prefilledEvent?.endDate || prefilledGlobalEvent?.endDate || "")
-    // const [startTime, setStartTime] = useState<string>(prefilledEvent?.startTime || "12:00 A.M")
-    // const [endTime, setEndTime] = useState<string>(prefilledEvent?.endTime || "12:00 A.M")
-    // const [eventFormat, setEventFormat] = useState<string>(prefilledEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person")
-
-    // const [boothNumber, setBoothNumber] = useState<string>(prefilledEvent?.customizationData.boothNumber || "")
-    // const [participationMessage, setParticipationMessage] = useState<string>(prefilledEvent?.customizationData.participationMessage || "")
+const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
+    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
-    // const [banner, setBanner] = useState<ImageState>({
-    //     placeHolder: prefilledEvent?.logoUrl || Placeholder,
-    //     file: null
-    // });
-    // const [venue, setVenue] = useState(prefilledEvent?.customizationData.venue || prefilledGlobalEvent?.venue || "")
-    // const [latitude, setLatitude] = useState(Number(prefilledEvent?.latitude || prefilledGlobalEvent?.latitude) || 37.7749)
-    // const [longitude, setLongitude] = useState(Number(prefilledEvent?.longitude || prefilledGlobalEvent?.longitude) || -122.4194);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    // const [hashtags, setHashtags] = useState<string[]>(prefilledEvent?.customizationData.hashtags.split(",") || [])
-    // const [query, setQuery] = useState("")
-    // const [isEventNameEmpty, setIsEventNameEmpty] = useState(false);
-    // const [isEventFormatEmpty, setIsEventFormatEmpty] = useState(false);
-    // const [isEventDescriptionEmpty, setIsEventDescriptionEmpty] = useState(false);
-    // const [isEventParticipationEmpty, setIsEventParticipationEmpty] = useState(false);
-    // const [isParticipationMessageEmpty, setIsParticipationMessageEmpty] = useState<boolean>(false)
-    // const [isTextValueMessageEmpty, setIsTextValueMessageEmpty] = useState<boolean>(false)
-    // const [errorMessage, setErrorMessage] = useState("Event name is required.");
     const [activeBtn, setActiveBtn] = useState<string>("main")
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
     const { theme } = useTheme()
 
-    const handleMaineventChanges = (field: keyof FormState, value: any) => {
-        setMainEventState((prev) => ({ ...prev, [field]: value }));
-    };
 
-    const handleSubeventChange = (field: keyof FormState, value: any) => {
-        setSubeventState((prev) => ({ ...prev, [field]: value }));
-    };
     const handleAddEvent = async () => {
-        if (!eventName || eventName === "") {
+        if (!mainEventState.eventName || mainEventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true)
             // setIsEventNameEmpty(true)
         } else {
@@ -142,14 +54,14 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             handleMaineventChanges('isEventFormatEmpty', false)
             // setIsEventFormatEmpty(false)
         }
-        if (!description) {
+        if (!mainEventState.description) {
             handleMaineventChanges('isEventDescriptionEmpty', true)
             // setIsEventDescriptionEmpty(true)
         } else {
             handleMaineventChanges('isEventDescriptionEmpty', false)
             // setIsEventDescriptionEmpty(false)
         }
-        if (!participationType) {
+        if (!mainEventState.participationType) {
             handleMaineventChanges('isEventParticipationEmpty', true)
             // setIsEventParticipationEmpty(true)
         } else {
@@ -165,7 +77,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !description.trim() || !cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !participationType || !mainEventState.participationMessage) {
+        if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
 
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
@@ -193,18 +105,18 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             end_time: mainEventState.endTime,
             end_date: mainEventState.endDate,
             start_date: mainEventState.startDate,
-            description,
-            location_city: cityName,
+            description: mainEventState.description,
+            location_city: mainEventState.cityName,
             location_country: mainEventState.countryName,
             gmt_time: mainEventState.timeZone,
             latitude: mainEventState.latitude,
             longitude: mainEventState.longitude,
-            participationType,
+            participationType: mainEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData)
         };
         const formData = new FormData()
-        formData.append("name", eventName)
+        formData.append("name", mainEventState.eventName)
         formData.append("data", JSON.stringify(eventData))
         formData.append("type", "MAIN")
 
@@ -238,7 +150,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
 
     // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
     const handleSaveEvent = async (eventId: string) => {
-        if (!eventName || eventName === "") {
+        if (!mainEventState.eventName || mainEventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true)
             // setIsEventNameEmpty(true)
         } else {
@@ -252,14 +164,14 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             handleMaineventChanges('isEventFormatEmpty', false)
             // setIsEventFormatEmpty(false)
         }
-        if (!description) {
+        if (!mainEventState.description) {
             handleMaineventChanges('isEventDescriptionEmpty', true)
             // setIsEventDescriptionEmpty(true)
         } else {
             handleMaineventChanges('isEventDescriptionEmpty', false)
             // setIsEventDescriptionEmpty(false)
         }
-        if (!participationType) {
+        if (!mainEventState.participationType) {
             handleMaineventChanges('isEventParticipationEmpty', true)
             // setIsEventParticipationEmpty(true)
         } else {
@@ -274,7 +186,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             handleMaineventChanges('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
-        if (!eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !description.trim() || !cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !participationType || !mainEventState.participationMessage) {
+        if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -303,11 +215,11 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             end_time: mainEventState.endTime,
             end_date: mainEventState.endDate,
             start_date: mainEventState.startDate,
-            description,
+            description: mainEventState.description,
             logoUrl: mainEventState.banner.placeHolder,
-            location_city: cityName,
+            location_city: mainEventState.cityName,
             location_country: mainEventState.countryName,
-            participationType,
+            participationType: mainEventState.participationType,
             gmt_time: mainEventState.timeZone,
             latitude: mainEventState.latitude,
             longitude: mainEventState.longitude,
@@ -316,7 +228,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
         };
         const formData = new FormData();
         formData.append("id", eventId);
-        formData.append("name", eventName);
+        formData.append("name", mainEventState.eventName);
         formData.append("data", JSON.stringify(eventData));
         // formData.append("interest", participationType.toUpperCase())
         formData.append("sourceId", widgetId)
@@ -344,7 +256,19 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
         setIsAddEventModalOpen(false)
         setEventFlow("")
     }
-    console.log("event flow is : ", eventFlow)
+    useEffect(() => {
+        if (mainEventState.speakerModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+            setIsModalOpen(true)
+        }else{
+            setIsModalOpen(false)
+        }
+    }, [mainEventState.speakerModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+    const formContainerRef = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        if (isModalOpen && formContainerRef.current) {
+          formContainerRef.current.scrollTop = 0;
+        }
+      }, [isModalOpen]);
     return (
         <div className={styles.body}>
             <div className={`${styles.btnContainer} ${eventFlow === "side" ? styles.endBtnContainer : ""}`} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -364,7 +288,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                         Save and Add event</button>
                 </div>
             </div>
-            <div className={styles.formContainer} style={{ backgroundColor: pageBgColor }}>
+            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
                 {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
                     <div>
                         <DescIcon />
@@ -375,153 +299,19 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                     <Details
                         formState={mainEventState}
                         handleChange={handleMaineventChanges}
-                        // pageBgColor={pageBgColor}
                         eventFont={eventFont}
-                        eventName={eventName}
-                        setEventName={setEventName}
-                        cityName={cityName}
-                        setCityName={setCityName}
-                        participationType={participationType}
-                        setParticipationType={setParticipationType}
-                        description={description}
-                        setDescription={setDescription}
-                        // textValue={textValue}
-                        // setTextValue={setTextValue}
-                        // speakerProfilesData={speakerProfilesData}
-                        // setSpeakerProfilesData={setSpeakerProfilesData}
-                        // prefilledProfile={prefilledProfile}
-                        // setPrefilledProfile={setPrefilledProfile}
-                        // registerMessage={registerMessage}
-                        // setRegisterMessage={setRegisterMessage}
-                        // registerBtnText={registerBtnText}
-                        // setRegisterBtnText={setRegisterBtnText}
-                        // registerBtnColor={registerBtnColor}
-                        // setRegisterBtnColor={setRegisterBtnColor}
-                        // countryName={countryName}
-                        // setCountryName={setCountryName}
-                        // timeZone={timeZone}
-                        // setTimeZone={setTimeZone}
-                        // timeZoneKey={timeZoneKey}
-                        // setTimeZoneKey={setTimeZoneKey}
-                        // startDate={startDate}
-                        // setStartDate={setStartDate}
-                        // endDate={endDate}
-                        // setEndDate={setEndDate}
-                        // startTime={startTime}
-                        // setStartTime={setStartTime}
-                        // endTime={endTime}
-                        // setEndTime={setEndTime}
-                        // eventFormat={eventFormat}
-                        // setEventFormat={setEventFormat}
-                        // boothNumber={boothNumber}
-                        // setBoothNumber={setBoothNumber}
-                        // participationMessage={participationMessage}
-                        // setParticipationMessage={setParticipationMessage}
                         setLoadingState={setLoadingState}
-                        // banner={banner}
-                        // setBanner={setBanner}
-                        // venue={venue}
-                        // setVenue={setVenue}
-                        // latitude={latitude}
-                        // setLatitude={setLatitude}
-                        // longitude={longitude}
-                        // setLongitude={setLongitude}
                         fileInputRef={fileInputRef}
-                        // hashtags={hashtags}
-                        // setHashtags={setHashtags}
-                        // query={query}
-                        // setQuery={setQuery}
-                        // isEventNameEmpty={isEventNameEmpty}
-                        // setIsEventNameEmpty={setIsEventNameEmpty}
-                        // isEventFormatEmpty={isEventFormatEmpty}
-                        // setIsEventFormatEmpty={setIsEventFormatEmpty}
-                        // isEventDescriptionEmpty={isEventDescriptionEmpty}
-                        // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}
-                        // isEventParticipationEmpty={isEventParticipationEmpty}
-                        // setIsEventParticipationEmpty={setIsEventParticipationEmpty}
-                        // isParticipationMessageEmpty={isParticipationMessageEmpty}
-                        // setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}
-                        // isTextValueMessageEmpty={isTextValueMessageEmpty}
-                        // setIsTextValueMessageEmpty={setIsTextValueMessageEmpty}
-                        // errorMessage={errorMessage}
-                        // setErrorMessage={setErrorMessage}
                         prefilledEvent={prefilledEvent}
                         setCollapseMainEventForm={setCollapseMainEventForm}
                         collapseMainEventForm={collapseMainEventForm}
                     />)}
-                {(collapseMainEventForm || eventFlow === "side") && <Subeventform 
-                formState={subeventState}
-                handleChange={handleSubeventChange}
-                // pageBgColor={pageBgColor}
+                {(collapseMainEventForm || eventFlow === "side") && <Subeventform
+                    formState={subEventState}
+                    handleChange={handleSubeventChange}
                     eventFont={eventFont}
-                    eventName={eventName}
-                    setEventName={setEventName}
-                    cityName={cityName}
-                    setCityName={setCityName}
-                    participationType={participationType}
-                    setParticipationType={setParticipationType}
-                    description={description}
-                    setDescription={setDescription}
-                    // textValue={textValue}
-                    // setTextValue={setTextValue}
-                    // speakerProfilesData={speakerProfilesData}
-                    // setSpeakerProfilesData={setSpeakerProfilesData}
-                    // prefilledProfile={prefilledProfile}
-                    // setPrefilledProfile={setPrefilledProfile}
-                    // registerMessage={registerMessage}
-                    // setRegisterMessage={setRegisterMessage}
-                    // registerBtnText={registerBtnText}
-                    // setRegisterBtnText={setRegisterBtnText}
-                    // registerBtnColor={registerBtnColor}
-                    // setRegisterBtnColor={setRegisterBtnColor}
-                    // countryName={countryName}
-                    // setCountryName={setCountryName}
-                    // timeZone={timeZone}
-                    // setTimeZone={setTimeZone}
-                    // timeZoneKey={timeZoneKey}
-                    // setTimeZoneKey={setTimeZoneKey}
-                    // startDate={startDate}
-                    // setStartDate={setStartDate}
-                    // endDate={endDate}
-                    // setEndDate={setEndDate}
-                    // startTime={startTime}
-                    // setStartTime={setStartTime}
-                    // endTime={endTime}
-                    // setEndTime={setEndTime}
-                    // eventFormat={eventFormat}
-                    // setEventFormat={setEventFormat}
-                    // boothNumber={boothNumber}
-                    // setBoothNumber={setBoothNumber}
-                    // participationMessage={participationMessage}
-                    // setParticipationMessage={setParticipationMessage}
                     setLoadingState={setLoadingState}
-                    // banner={banner}
-                    // setBanner={setBanner}
-                    // venue={venue}
-                    // setVenue={setVenue}
-                    // latitude={latitude}
-                    // setLatitude={setLatitude}
-                    // longitude={longitude}
-                    // setLongitude={setLongitude}
                     fileInputRef={fileInputRef}
-                    // hashtags={hashtags}
-                    // setHashtags={setHashtags}
-                    // query={query}
-                    // setQuery={setQuery}
-                    // isEventNameEmpty={isEventNameEmpty}
-                    // setIsEventNameEmpty={setIsEventNameEmpty}
-                    // isEventFormatEmpty={isEventFormatEmpty}
-                    // setIsEventFormatEmpty={setIsEventFormatEmpty}
-                    // isEventDescriptionEmpty={isEventDescriptionEmpty}
-                    // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty}
-                    // isEventParticipationEmpty={isEventParticipationEmpty}
-                    // setIsEventParticipationEmpty={setIsEventParticipationEmpty}
-                    // isParticipationMessageEmpty={isParticipationMessageEmpty}
-                    // setIsParticipationMessageEmpty={setIsParticipationMessageEmpty}
-                    // isTextValueMessageEmpty={isTextValueMessageEmpty}
-                    // setIsTextValueMessageEmpty={setIsTextValueMessageEmpty}
-                    // errorMessage={errorMessage}
-                    // setErrorMessage={setErrorMessage}
                     prefilledEvent={prefilledEvent}
                     eventFlow={eventFlow}
                 />}

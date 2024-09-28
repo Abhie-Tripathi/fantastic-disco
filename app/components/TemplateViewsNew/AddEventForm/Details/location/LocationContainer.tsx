@@ -10,8 +10,8 @@ import { FormState } from '@/types/Formstate'
 interface Props{
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
-    setCityName: (value : string)=>void;
-    cityName : string;
+    // setCityName: (value : string)=>void;
+    // cityName : string;
     // setCountryName:(value : string)=>void;
     // countryName : string;
     // setEventFormat: (value : string)=>void;
@@ -28,8 +28,8 @@ interface Props{
 const LocationContainer = ({
     formState,
     handleChange,
-    setCityName,
-    cityName,
+    // setCityName,
+    // cityName,
     // setCountryName, 
     // countryName,
     // setEventFormat,
@@ -49,14 +49,14 @@ const LocationContainer = ({
             <div className={styles.locationContainer} onClick={()=>setDropdown(!dropdown)}>
                 <LocationIcon />
                 <div className={styles.eventLocation}>
-                    <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>{cityName ? cityName : "Add Event Location"}</div>
+                    <div className={`${styles.eventLocationOne} ${formState.cityName ? styles.activeLocation : ""}`}>{formState.cityName ? formState.cityName : "Add Event Location"}</div>
                     <div className={styles.eventLocationTwo}>{formState.countryName ? formState.countryName : "Offline location or Virtual Link"}</div>
                 </div>
             </div>
             {/* <Image className={styles.editIcon} src={EditIcon} alt='edit' onClick={()=>setDropdown(!dropdown)}/> */}
             {dropdown && <div ref={dropdownRef} className={styles.dropdown}><LocationDropdown formState={formState} handleChange={handleChange} theme={theme} 
             // setLatitude={setLatitude} setLongitude={setLongitude} eventFormat={eventFormat} setEventFormat={setEventFormat} 
-            setCityName = {setCityName}
+            // setCityName = {setCityName}
             //  setCountryName={setCountryName} query={query} setQuery={setQuery} setIsEventFormatEmpty={setIsEventFormatEmpty} 
              /></div>}
         </div>

@@ -20,9 +20,9 @@ import { FormState } from '@/types/Formstate'
 interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
   formState : FormState
-  setParticipationType: (value: string) => void
+  // setParticipationType: (value: string) => void
   heading: string;
-  participationType: string;
+  // participationType: string;
   // setParticipationMessage: (value: string) => void
   // participationMessage: string
   size: string;
@@ -35,7 +35,9 @@ interface Props {
 
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, size, theme, type,handleChange, formState,
+const ParticipationContainer = ({ 
+  // setParticipationType, participationType,
+   size, theme, type,handleChange, formState,
   // setParticipationMessage, participationMessage,  isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty, 
   heading }: Props) => {
   const mainOptions = [
@@ -51,7 +53,8 @@ const ParticipationContainer = ({ setParticipationType, participationType, size,
     { label: 'Founders Party', value: 'FoundersParty', icon: FoundersIcon },
   ];
   const handleSelection = (type: string) => {
-    setParticipationType(type);
+    handleChange('participationType', type)
+    // setParticipationType(type);
     // setDropdown(true)
     handleChange('isEventParticipationEmpty', false)
     // setIsEventParticipationEmpty(false)
@@ -59,7 +62,8 @@ const ParticipationContainer = ({ setParticipationType, participationType, size,
   }
   const handleCloseSelection = () => {
     // setDropdown(false)
-    setParticipationType("")
+    handleChange('participationType', "")
+    // setParticipationType("")
   }
   const handleInputChange = (e: any) => {
     let value = e.target.value;
@@ -79,9 +83,9 @@ const ParticipationContainer = ({ setParticipationType, participationType, size,
 
   // Helper function to render selected option
   const renderSelectedOption = useCallback(() => {
-    if (!participationType) return null;
+    if (!formState.participationType) return null;
 
-    const selectedOption = options.find(option => option.value === participationType);
+    const selectedOption = options.find(option => option.value === formState.participationType);
     if (!selectedOption) return null;
 
     return (
@@ -102,11 +106,11 @@ const ParticipationContainer = ({ setParticipationType, participationType, size,
         {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
       </div>
     );
-  }, [participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);
+  }, [formState.participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);
 
   return (
     <div className={`${styles.body} ${theme === "dark" ? styles.darkBody : ""}`}>
-      {!participationType ? (
+      {!formState.participationType ? (
         <>
           <div className={styles.header}>
             <Image src={type === "main" ? ParticipationIcon : ConfettiIcon} alt='svg' />

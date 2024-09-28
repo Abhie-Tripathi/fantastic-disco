@@ -4,7 +4,7 @@ import ColorPicker from '../../../EditScreen/BrandKit/CustomizeComponents/ColorP
 import { showToast } from "@/utils/showToast";
 import { FormState } from '@/types/Formstate';
 interface Props{
-    setRegisterModal : (value : boolean)=>void
+    // setRegisterModal : (value : boolean)=>void
     // setRegisterBtnColor : (value : string)=>void
     // setRegisterBtnText: (value : string)=>void
     // setRegisterMessage: (value : string)=>void
@@ -15,7 +15,7 @@ interface Props{
     handleChange: (field: keyof FormState, value: any) => void;
 }
 
-const RegistrationModal = ({setRegisterModal,formState, handleChange
+const RegistrationModal = ({formState, handleChange
     // setRegisterBtnColor,setRegisterBtnText,setRegisterMessage ,registerMessage ,registerBtnText, registerBtnColor
 }:Props) => {
 
@@ -60,7 +60,8 @@ const RegistrationModal = ({setRegisterModal,formState, handleChange
         // setRegisterMessage(trimmedCustomMessage);
     
         // Close modal only after successful validation
-        setRegisterModal(false);
+        handleChange('registerModal',false)
+        // setRegisterModal(false);
     };
 
     const handleColor = (color : any)=>{
@@ -95,7 +96,7 @@ const RegistrationModal = ({setRegisterModal,formState, handleChange
   return (
     <form className={styles.body} onSubmit={handleSubmit}>
         <div className={styles.closeContainer}>
-            <button className={styles.closeBtn} onClick={()=>setRegisterModal(false)} type='button'>Close</button>
+            <button className={styles.closeBtn} onClick={()=>handleChange('registerModal', false)} type='button'>Close</button>
         </div>
         <div className={styles.container}>
             <span>Customize your message</span>

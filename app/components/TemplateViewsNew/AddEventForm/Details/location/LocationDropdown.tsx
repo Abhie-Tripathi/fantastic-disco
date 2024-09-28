@@ -15,7 +15,7 @@ interface LocationSuggestion {
 interface Props {
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
-    setCityName: (value: string) => void
+    // setCityName: (value: string) => void
     // setCountryName: (value: string) => void
     // setEventFormat: (value: string) => void;
     // eventFormat: string;
@@ -28,7 +28,7 @@ interface Props {
 }
 // const libraries: Libraries = ['places'];
 
-const LocationDropdown = ({ setCityName,theme, formState, handleChange
+const LocationDropdown = ({ theme, formState, handleChange
     //  setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery,setIsEventFormatEmpty 
     }: Props) => {
     // const { isLoaded } = useLoadScript({
@@ -41,7 +41,8 @@ const LocationDropdown = ({ setCityName,theme, formState, handleChange
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        setCityName(suggestion.name);
+        handleChange('cityName',suggestion.name)
+        // setCityName(suggestion.name);
         handleChange('countryName',suggestion.countryName)
         handleChange('latitude',Number(suggestion.lat))
         handleChange('longitude',Number(suggestion.long))

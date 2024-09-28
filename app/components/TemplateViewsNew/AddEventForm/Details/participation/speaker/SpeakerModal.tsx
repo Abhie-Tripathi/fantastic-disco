@@ -16,14 +16,14 @@ interface SpeakerProfileType {
 
 interface Props {
     handleChange: (field: keyof FormState, value: any) => void;
-    setSpeakerModal: (value: boolean) => void
+    // setSpeakerModal: (value: boolean) => void
     // setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
     prefilledProfile?: SpeakerProfileType | null;
     deleteSpeaker: (id: string) => void;
     updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
 }
 
-const SpeakerModal = ({ setSpeakerModal, handleChange, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
+const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
     // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
     const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
     const [name, setName] = useState<string>(prefilledProfile?.name || "");
@@ -78,7 +78,8 @@ const SpeakerModal = ({ setSpeakerModal, handleChange, prefilledProfile, deleteS
         } else {
             handleChange('speakerProfilesData', (prevData : any) => [...prevData, updatedProfile])
             // setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
-            setSpeakerModal(false);
+            handleChange('speakerModal', false)
+            // setSpeakerModal(false);
         }
     };
 
@@ -103,7 +104,7 @@ const SpeakerModal = ({ setSpeakerModal, handleChange, prefilledProfile, deleteS
                         <label htmlFor="upload" className={styles.uploadLabel}>Upload</label>
                     </div>
                 </div>
-                <button type='button' className={styles.closeBtn} onClick={() => setSpeakerModal(false)}>Close</button>
+                <button type='button' className={styles.closeBtn} onClick={() => handleChange('speakerModal', false)}>Close</button>
             </div>
             <div className={styles.infoContainer}><span className={styles.infoBtn}>i</span><span className={styles.info}>Upload speaker profile photo</span></div>
             <div className={styles.inputContainers}>

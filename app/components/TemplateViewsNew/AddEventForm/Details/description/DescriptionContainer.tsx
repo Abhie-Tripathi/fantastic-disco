@@ -6,7 +6,7 @@ import { FormState } from "@/types/Formstate";
 
 interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
-  setDescriptionModal: (value: boolean) => void;
+  // setDescriptionModal: (value: boolean) => void;
   description: string;
   theme?: string;
   isEventDescriptionEmpty: boolean;
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const DescriptionContainer = ({
-  setDescriptionModal,
+  // setDescriptionModal,
   description,
   theme,
   isEventDescriptionEmpty,
@@ -23,7 +23,8 @@ const DescriptionContainer = ({
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleClick = () => {
-    setDescriptionModal(true);
+    handleChange('descriptionModal', true)
+    // setDescriptionModal(true);
     handleChange('isEventDescriptionEmpty', false)
     // setIsEventDescriptionEmpty(false);
   };
