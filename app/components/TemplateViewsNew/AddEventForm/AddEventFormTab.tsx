@@ -138,9 +138,10 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
         })
         if (data) {
             console.log("event added :", data)
-            setIsAddEventModalOpen(false)
+            addSubEvent(data.data.id)
+            // setIsAddEventModalOpen(false)
             showToast("success", "Event Added Successfully")
-            fetchEvents(0, "update")
+            // fetchEvents(0, "update")
         }
         if (error) {
             console.log(error)
@@ -148,176 +149,286 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
 
     }
 
-    // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
-    const handleSaveEvent = async (eventId: string) => {
-        if (!mainEventState.eventName || mainEventState.eventName === "") {
-            handleMaineventChanges('isEventNameEmpty', true)
+    const addSubEvent = async(eventId: string) => {
+        if (!subEventState.eventName || subEventState.eventName === "") {
+            handleSubeventChange('isEventNameEmpty', true)
             // setIsEventNameEmpty(true)
         } else {
-            handleMaineventChanges('isEventNameEmpty', false)
+            handleSubeventChange('isEventNameEmpty', false)
             // setIsEventNameEmpty(false)
         }
-        if (!mainEventState.query && !mainEventState.latitude || !mainEventState.longitude) {
-            handleMaineventChanges('isEventFormatEmpty', true)
+        if (!subEventState.query) {
+            handleSubeventChange('isEventFormatEmpty', true)
             // setIsEventFormatEmpty(true)
         } else {
-            handleMaineventChanges('isEventFormatEmpty', false)
+            handleSubeventChange('isEventFormatEmpty', false)
             // setIsEventFormatEmpty(false)
         }
-        if (!mainEventState.description) {
-            handleMaineventChanges('isEventDescriptionEmpty', true)
+        if (!subEventState.description) {
+            handleSubeventChange('isEventDescriptionEmpty', true)
             // setIsEventDescriptionEmpty(true)
         } else {
-            handleMaineventChanges('isEventDescriptionEmpty', false)
+            handleSubeventChange('isEventDescriptionEmpty', false)
             // setIsEventDescriptionEmpty(false)
         }
-        if (!mainEventState.participationType) {
-            handleMaineventChanges('isEventParticipationEmpty', true)
+        if (!subEventState.participationType) {
+            handleSubeventChange('isEventParticipationEmpty', true)
             // setIsEventParticipationEmpty(true)
         } else {
-            handleMaineventChanges('isEventParticipationEmpty', false)
+            handleSubeventChange('isEventParticipationEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
-        if (!mainEventState.participationMessage) {
-            handleMaineventChanges('isParticipationMessageEmpty', true)
+        if (!subEventState.participationMessage) {
+            handleSubeventChange('isParticipationMessageEmpty', true)
             // setIsParticipationMessageEmpty(true)
         }
-        if (!mainEventState.textValue.trim()) {
-            handleMaineventChanges('isTextValueMessageEmpty', true)
+        if (!subEventState.textValue) {
+            handleSubeventChange('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
-        if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
+
+        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType || !subEventState.participationMessage) {
+
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
-        if (!prefilledEvent?.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
-            if (!mainEventState.banner.placeHolder && !mainEventState.banner.file) {
-                showToast("error", "Please upload or generate a Poster");
-                return; // Exit the function if any field is missing
-            }
+
+        if (subEventState.banner.placeHolder === Placeholder && !subEventState.banner.file) {
+            showToast("error", "Please upload or generate a Poster");
+            return; // Exit the function if any field is missing
         }
         const eventCustomizationData = {
             pageBgColor,
             eventFont,
-            registerBtnColor: mainEventState.registerBtnColor,
-            registerBtnText: mainEventState.registerBtnText,
-            registerMessage: mainEventState.registerMessage,
-            speakerProfilesData: mainEventState.speakerProfilesData,
-            participationMessage: mainEventState.participationMessage,
-            venue: mainEventState.venue,
-            hashtags: mainEventState.hashtags.join(","),
-            boothNumber: mainEventState.boothNumber
+            registerBtnColor: subEventState.registerBtnColor,
+            registerBtnText: subEventState.registerBtnText,
+            registerMessage: subEventState.registerMessage,
+            speakerProfilesData: subEventState.speakerProfilesData,
+            participationMessage: subEventState.participationMessage,
+            venue: subEventState.venue,
+            hashtags: subEventState.hashtags.join(","),
+            boothNumber: subEventState.boothNumber
         }
         const eventData = {
-            id: eventId,
-            format: mainEventState.eventFormat,
-            start_time: mainEventState.startTime,
-            end_time: mainEventState.endTime,
-            end_date: mainEventState.endDate,
-            start_date: mainEventState.startDate,
-            description: mainEventState.description,
-            logoUrl: mainEventState.banner.placeHolder,
-            location_city: mainEventState.cityName,
-            location_country: mainEventState.countryName,
-            participationType: mainEventState.participationType,
-            gmt_time: mainEventState.timeZone,
-            latitude: mainEventState.latitude,
-            longitude: mainEventState.longitude,
+            format: subEventState.eventFormat,
+            start_time: subEventState.startTime,
+            end_time: subEventState.endTime,
+            end_date: subEventState.endDate,
+            start_date: subEventState.startDate,
+            description: subEventState.description,
+            location_city: subEventState.cityName,
+            location_country: subEventState.countryName,
+            gmt_time: subEventState.timeZone,
+            latitude: subEventState.latitude,
+            longitude: subEventState.longitude,
+            participationType: subEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData)
         };
-        const formData = new FormData();
-        formData.append("id", eventId);
-        formData.append("name", mainEventState.eventName);
-        formData.append("data", JSON.stringify(eventData));
-        // formData.append("interest", participationType.toUpperCase())
-        formData.append("sourceId", widgetId)
-        if (mainEventState.banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
-            if (mainEventState.banner.file) {
-                formData.append("file", mainEventState.banner.file); // Use the file field if uploaded by the user
+        const formData = new FormData()
+        formData.append("name", subEventState.eventName)
+        formData.append("data", JSON.stringify(eventData))
+        formData.append("type", "SUB")
+        formData.append('eventId', eventId)
+
+        if (subEventState.banner.file || subEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
+            if (subEventState.banner.file) {
+                formData.append("file", subEventState.banner.file); // Use the file field if uploaded by the user
             } else {
-                formData.append("logoUrl", mainEventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
+                formData.append("logoUrl", subEventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
             }
         }
+
+        // formData.append("interest", participationType.toUpperCase())
+        // formData.append("source", "eventgeni/widget/event")
+        formData.append("sourceId", widgetId)
+
         const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData,
-        });
+            method: 'POST',
+            body: formData
+        })
         if (data) {
+            console.log("subevent added :", data)
             setIsAddEventModalOpen(false)
-            showToast("success", "Event Updated Successfully")
+            showToast("success", "Subevent Added Successfully")
             fetchEvents(0, "update")
         }
         if (error) {
-            console.log(error);
+            console.log(error)
+        }
+
+
+}
+// This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
+const handleSaveEvent = async (eventId: string) => {
+    if (!mainEventState.eventName || mainEventState.eventName === "") {
+        handleMaineventChanges('isEventNameEmpty', true)
+        // setIsEventNameEmpty(true)
+    } else {
+        handleMaineventChanges('isEventNameEmpty', false)
+        // setIsEventNameEmpty(false)
+    }
+    if (!mainEventState.query && !mainEventState.latitude || !mainEventState.longitude) {
+        handleMaineventChanges('isEventFormatEmpty', true)
+        // setIsEventFormatEmpty(true)
+    } else {
+        handleMaineventChanges('isEventFormatEmpty', false)
+        // setIsEventFormatEmpty(false)
+    }
+    if (!mainEventState.description) {
+        handleMaineventChanges('isEventDescriptionEmpty', true)
+        // setIsEventDescriptionEmpty(true)
+    } else {
+        handleMaineventChanges('isEventDescriptionEmpty', false)
+        // setIsEventDescriptionEmpty(false)
+    }
+    if (!mainEventState.participationType) {
+        handleMaineventChanges('isEventParticipationEmpty', true)
+        // setIsEventParticipationEmpty(true)
+    } else {
+        handleMaineventChanges('isEventParticipationEmpty', false)
+        // setIsEventParticipationEmpty(false)
+    }
+    if (!mainEventState.participationMessage) {
+        handleMaineventChanges('isParticipationMessageEmpty', true)
+        // setIsParticipationMessageEmpty(true)
+    }
+    if (!mainEventState.textValue.trim()) {
+        handleMaineventChanges('isTextValueMessageEmpty', true)
+        // setIsTextValueMessageEmpty(true)
+    }
+    if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
+        showToast("error", "Please fill in all the fields");
+        return; // Exit the function if any field is missing
+    }
+    if (!prefilledEvent?.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
+        if (!mainEventState.banner.placeHolder && !mainEventState.banner.file) {
+            showToast("error", "Please upload or generate a Poster");
+            return; // Exit the function if any field is missing
         }
     }
-    const handleModalClose = () => {
+    const eventCustomizationData = {
+        pageBgColor,
+        eventFont,
+        registerBtnColor: mainEventState.registerBtnColor,
+        registerBtnText: mainEventState.registerBtnText,
+        registerMessage: mainEventState.registerMessage,
+        speakerProfilesData: mainEventState.speakerProfilesData,
+        participationMessage: mainEventState.participationMessage,
+        venue: mainEventState.venue,
+        hashtags: mainEventState.hashtags.join(","),
+        boothNumber: mainEventState.boothNumber
+    }
+    const eventData = {
+        id: eventId,
+        format: mainEventState.eventFormat,
+        start_time: mainEventState.startTime,
+        end_time: mainEventState.endTime,
+        end_date: mainEventState.endDate,
+        start_date: mainEventState.startDate,
+        description: mainEventState.description,
+        logoUrl: mainEventState.banner.placeHolder,
+        location_city: mainEventState.cityName,
+        location_country: mainEventState.countryName,
+        participationType: mainEventState.participationType,
+        gmt_time: mainEventState.timeZone,
+        latitude: mainEventState.latitude,
+        longitude: mainEventState.longitude,
+        event_type: "Tradeshow",
+        customizationData: JSON.stringify(eventCustomizationData)
+    };
+    const formData = new FormData();
+    formData.append("id", eventId);
+    formData.append("name", mainEventState.eventName);
+    formData.append("data", JSON.stringify(eventData));
+    // formData.append("interest", participationType.toUpperCase())
+    formData.append("sourceId", widgetId)
+    if (mainEventState.banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
+        if (mainEventState.banner.file) {
+            formData.append("file", mainEventState.banner.file); // Use the file field if uploaded by the user
+        } else {
+            formData.append("logoUrl", mainEventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
+        }
+    }
+    const { data, error } = await myFetch(`${baseUrl}/event`, {
+        method: 'PATCH',
+        body: formData,
+    });
+    if (data) {
         setIsAddEventModalOpen(false)
-        setEventFlow("")
+        showToast("success", "Event Updated Successfully")
+        fetchEvents(0, "update")
     }
-    useEffect(() => {
-        if (mainEventState.speakerModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
-            setIsModalOpen(true)
-        }else{
-            setIsModalOpen(false)
-        }
-    }, [mainEventState.speakerModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
-    const formContainerRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-        if (isModalOpen && formContainerRef.current) {
-          formContainerRef.current.scrollTop = 0;
-        }
-      }, [isModalOpen]);
-    return (
-        <div className={styles.body}>
-            <div className={`${styles.btnContainer} ${eventFlow === "side" ? styles.endBtnContainer : ""}`} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
-                {eventFlow === "main" && <div className={styles.eventBtns}>
-                    <button className={activeBtn === "main" ? styles.activebtn : ""}>Main Event</button>
-                    <button className={activeBtn === "side" ? styles.activebtn : ""}>Side Event</button>
-                </div>}
-                <div className={styles.saveCancelBtns}>
-                    <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={handleModalClose}>Close</button>
-                    <button className={`${styles.addBtn} ${loadingState || loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
-                        disabled={loadingState || loadingState}
-                        onClick={
-                            prefilledEvent
-                                ? () => handleSaveEvent(prefilledEvent.eventId)
-                                : handleAddEvent
-                        }>
-                        Save and Add event</button>
-                </div>
+    if (error) {
+        console.log(error);
+    }
+}
+const handleModalClose = () => {
+    setIsAddEventModalOpen(false)
+    setEventFlow("")
+}
+useEffect(() => {
+    if (mainEventState.speakerModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+        setIsModalOpen(true)
+    } else {
+        setIsModalOpen(false)
+    }
+}, [mainEventState.speakerModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+const formContainerRef = useRef<HTMLDivElement | null>(null);
+useEffect(() => {
+    if (isModalOpen && formContainerRef.current) {
+        formContainerRef.current.scrollTop = 0;
+    }
+}, [isModalOpen]);
+return (
+    <div className={styles.body}>
+        <div className={`${styles.btnContainer} ${eventFlow === "side" ? styles.endBtnContainer : ""}`} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
+            {eventFlow === "main" && <div className={styles.eventBtns}>
+                <button className={activeBtn === "main" ? styles.activebtn : ""}>Main Event</button>
+                <button className={activeBtn === "side" ? styles.activebtn : ""}>Side Event</button>
+            </div>}
+            <div className={styles.saveCancelBtns}>
+                <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={handleModalClose}>Close</button>
+                <button className={`${styles.addBtn} ${loadingState || loadingState ? styles.addBtnDisable : ""}`} // This class is if hashtags are generating we need to disable the button
+                    disabled={loadingState || loadingState}
+                    onClick={
+                        prefilledEvent
+                            ? () => handleSaveEvent(prefilledEvent.eventId)
+                            : handleAddEvent
+                    }>
+                    Save and Add event</button>
             </div>
-            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
-                {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
-                    <div>
-                        <DescIcon />
-                        <span>Main Event</span>
-                    </div>
-                    <div className={styles.collapseBtn} onClick={() => setCollapseMainEventForm(false)}><DownArrow /></div>
-                </div>) : (eventFlow === 'main' &&
-                    <Details
-                        formState={mainEventState}
-                        handleChange={handleMaineventChanges}
-                        eventFont={eventFont}
-                        setLoadingState={setLoadingState}
-                        fileInputRef={fileInputRef}
-                        prefilledEvent={prefilledEvent}
-                        setCollapseMainEventForm={setCollapseMainEventForm}
-                        collapseMainEventForm={collapseMainEventForm}
-                    />)}
-                {(collapseMainEventForm || eventFlow === "side") && <Subeventform
-                    formState={subEventState}
-                    handleChange={handleSubeventChange}
+        </div>
+        <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
+            {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
+                <div>
+                    <DescIcon />
+                    <span>Main Event</span>
+                </div>
+                <div className={styles.collapseBtn} onClick={() => setCollapseMainEventForm(false)}><DownArrow /></div>
+            </div>) : (eventFlow === 'main' &&
+                <Details
+                    formState={mainEventState}
+                    handleChange={handleMaineventChanges}
                     eventFont={eventFont}
                     setLoadingState={setLoadingState}
                     fileInputRef={fileInputRef}
                     prefilledEvent={prefilledEvent}
-                    eventFlow={eventFlow}
-                />}
-            </div>
-        </div >
-    )
+                    setCollapseMainEventForm={setCollapseMainEventForm}
+                    collapseMainEventForm={collapseMainEventForm}
+                />)}
+            {(collapseMainEventForm || eventFlow === "side") && <Subeventform
+                formState={subEventState}
+                handleChange={handleSubeventChange}
+                eventFont={eventFont}
+                setLoadingState={setLoadingState}
+                fileInputRef={fileInputRef}
+                prefilledEvent={prefilledEvent}
+                eventFlow={eventFlow}
+            />}
+        </div>
+    </div >
+)
 }
 
 export default AddEventFormTab
