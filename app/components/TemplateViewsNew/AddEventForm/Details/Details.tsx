@@ -43,7 +43,7 @@ interface Props {
   setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
   collapseMainEventForm: boolean;
 }
-const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadingState, fileInputRef,
+const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   setCollapseMainEventForm, collapseMainEventForm }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -103,9 +103,9 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
     }
   };
 
-  useEffect(()=>{
-    console.log("banner is",formState.banner)
-  },[formState.banner])
+  useEffect(() => {
+    console.log("banner is", formState.banner)
+  }, [formState.banner])
 
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
@@ -170,7 +170,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
     if (specialCharRegex.test(value)) {
       showToast("error", "Please check, input should not contain any special character");
     } else {
-      handleChange('eventName',value)
+      handleChange('eventName', value)
       // setEventName(value);
       if (value.trim() === "") {
         handleChange('isEventNameEmpty', true)
@@ -178,13 +178,21 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
       }
     }
   };
+  const handleCollapseForm = () => {
+    if (formState.eventName && formState.description && formState.participationType && formState.participationMessage && formState.cityName && (formState.banner.placeHolder || formState.banner.file)) {
+      setCollapseMainEventForm(true)
+    }
+    else {
+      showToast("error", "Fill all the fields in the main event form to continue")
+    }
+  }
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer 
-          handleChange = {handleChange} formState={formState}
-          heading='Choose Your Mode of Participation' type='main' size="large"/></div>
+          <div className={`${styles.participationContainer}`}><ParticipationContainer
+            handleChange={handleChange} formState={formState}
+            heading='Choose Your Mode of Participation' type='main' size="large" /></div>
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>
@@ -205,8 +213,8 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
               </div>
             </div>
             <div className={styles.hashtagsContainer}>
-              <HashtagContainer loadingState={loadingState} hashtags={formState.hashtags} 
-              handleChange = {handleChange} handleTagsGenerate={handleTagsGenerate} />
+              <HashtagContainer loadingState={loadingState} hashtags={formState.hashtags}
+                handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
             </div>
             <div className={styles.shareContainer}>
               <div className={styles.heading}>Share</div>
@@ -226,29 +234,29 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
               />
               {formState.isEventNameEmpty && <p className={styles.errorMessage}>{formState.errorMessage}</p>}
             </div>
-            <div className={styles.dateTimeContainer}><DateTimeContainer handleChange = {handleChange} formState={formState}/></div>
+            <div className={styles.dateTimeContainer}><DateTimeContainer handleChange={handleChange} formState={formState} /></div>
             <div>
               <div className={`${styles.locationContainer}`} ><LocationContainer handleChange={handleChange}
-              formState={formState}/></div>
+                formState={formState} /></div>
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
             <div className={styles.resgitrationContainer}><RegistrationForm
               registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
               // setRegisterModal={setRegisterModal}
               handleChange={handleChange}
-               /></div>
+            /></div>
             <div>
-              <div className={`${styles.descriptionContainer}`} ><DescriptionContainer 
-              // setDescriptionModal={setDescriptionModal}
-               description={formState.description} isEventDescriptionEmpty={formState.isEventDescriptionEmpty} 
-              // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} 
-              handleChange = {handleChange}/></div>
+              <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
+                // setDescriptionModal={setDescriptionModal}
+                description={formState.description} isEventDescriptionEmpty={formState.isEventDescriptionEmpty}
+                // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} 
+                handleChange={handleChange} /></div>
               {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
-            {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData} 
-            // setSpeakerModal={setSpeakerModal} 
-            handlePrefill={handlePrefill}  handleChange={handleChange}/></div> : formState.participationType === "Exhibitor" ? <div>
-              <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+            {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
+              // setSpeakerModal={setSpeakerModal} 
+              handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
+                <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
             {formState.cityName &&
               // <div className={styles.map} ref={mapDivRef}>
@@ -269,35 +277,35 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont,  setLoadi
                   Do you wish to add a side event ?
                 </div>
               </div>
-              <button onClick={() => setCollapseMainEventForm(true)}>Yes</button>
+              <button onClick={handleCollapseForm}>Yes</button>
             </div>
           </div>
         </div>
       </div>
       {
         formState.descriptionModal && <div className={styles.descriptionModal}>
-          <DescriptionModal 
-          // setDescriptionModal={setDescriptionModal}
-          textValue={formState.textValue}
-          // setTextValue={setTextValue}
-          handleChange={handleChange}
-          handleDescClick={handleDescClick} />
+          <DescriptionModal
+            // setDescriptionModal={setDescriptionModal}
+            textValue={formState.textValue}
+            // setTextValue={setTextValue}
+            handleChange={handleChange}
+            handleDescClick={handleDescClick} />
         </div>
       }
       {
         formState.speakerModal && <div className={styles.speakerModal}>
-          <SpeakerModal 
-          handleChange={handleChange}
-          // setSpeakerProfilesData={setSpeakerProfilesData} 
-          // setSpeakerModal={setSpeakerModal} 
-          prefilledProfile={formState.prefilledProfile} deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker} />
+          <SpeakerModal
+            handleChange={handleChange}
+            // setSpeakerProfilesData={setSpeakerProfilesData} 
+            // setSpeakerModal={setSpeakerModal} 
+            prefilledProfile={formState.prefilledProfile} deleteSpeaker={deleteSpeaker} updateSpeaker={updateSpeaker} />
         </div>
       }
       {
         formState.registerModal && <div className={styles.registerModal}>
-          <RegistrationModal 
-          handleChange={handleChange}
-          formState = {formState}/>
+          <RegistrationModal
+            handleChange={handleChange}
+            formState={formState} />
         </div>
       }
     </div >

@@ -83,7 +83,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             return; // Exit the function if any field is missing
         }
 
-        if (!mainEventState.banner.placeHolder && !mainEventState.banner.file) {
+        if (mainEventState.banner.placeHolder === Placeholder && !mainEventState.banner.file) {
             showToast("error", "Please upload or generate a Poster");
             return; // Exit the function if any field is missing
         }
