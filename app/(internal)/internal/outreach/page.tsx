@@ -136,6 +136,7 @@ console.log(source);
         }
         setShortlistedCount(prev=>prev+1);
         changeEnquiryStatus("SHORTLISTED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        setCurrentEnquiryStatus("SHORTLISTED");
         // setShortlistPage(1);
         // setShortlistedTasks([]);
         // fetchShortlistData();
@@ -147,6 +148,7 @@ console.log(source);
         }
         setInProgressCount(prev=>prev+1);
         changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        setCurrentEnquiryStatus("IN_NEGO")
       } else if (target === "prefinalised") {
         if(noMoreConfirmData){
           setPreFinalisedTasks([taskName,...preFinalisedTasks]);
@@ -155,11 +157,12 @@ console.log(source);
         setConfirmedCount(prev=>prev+1)
         console.log(taskName.eventId);
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        setCurrentEnquiryStatus("CONFIRMED")
       }
     }
   };
   const singleCall=async(source:string)=>{
-    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !!noMoreConfirmData && confirmedCount>10){
+    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !noMoreConfirmData && confirmedCount>10){
     const apiData = await myFetch(
       `${baseUrl}/userInterest/enquiry?status=${source}&limit=1&offset=${source==="SHORTLISTED"?(shortlistPage-1)*10+9:source==="IN_NEGO"?(inProgressPage - 1) * 10 + 9:(confirmedPage-1)*10+9}`,
       {
