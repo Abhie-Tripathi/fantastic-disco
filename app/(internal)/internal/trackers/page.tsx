@@ -5,6 +5,10 @@ import Link from "next/link";
 import { Suspense, lazy } from "react";
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
+import BookmarkBackground from '@/public/BookmarkBackground.svg'
+import NotesBackground from "@/public/NotesBackground.svg"
+import AccessBackground from '@/public/AccessBackground.svg'
+import ConfigBackground from '@/public/ConfigBackground.svg'
 import {
   InformationFill,
   Location,
@@ -14,6 +18,7 @@ import {
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import NotiicationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import CardWidgitNote from "@/app/components/internal/trackers/CardWidgitNote";
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
@@ -113,6 +118,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
 import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
 import ShareModal from "@/app/components/internal/trackers/shareModal";
+import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
 
 interface Search {
   searchParams: {
@@ -270,9 +276,17 @@ const Trackers = ({ searchParams }: Search) => {
   const [hide, setHide] = useState(false);
   const [singleTrackerData,setSingleTrackerData]=useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [currentUrl, setCurrentUrl] = useState('');
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const url = window.location.href;
+        const baseUrl = url.substring(0, url.lastIndexOf('/'));
+        setCurrentUrl(`${baseUrl}/trackers`);
+    }
+}, []);
   const modalOpen = () => {
     setShowModal(true);
     console.log(document.body.style);
@@ -372,6 +386,8 @@ const Trackers = ({ searchParams }: Search) => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
+  console.log(currentUrl);
+  
   const [note,setNote]=useState();
   const [savedEvents,setSavedEvents]=useState();
   console.log(singleTrackerData);
@@ -441,7 +457,7 @@ const Trackers = ({ searchParams }: Search) => {
     <>{isLoading ? <Loading /> : (
       <div>
       <div className="flex flex-row m-[-24px]">
-  <div className="w-1/2 p-4 h-[calc(100vh-80px)] overflow-y-auto">
+  <div className="w-1/2 p-4 h-[calc(100vh-70px)] overflow-y-auto">
     <div className="flex flex-col gap-4">
       <div className="text-gray-700">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
@@ -465,7 +481,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
     </div>
   </div>
-  <div className="w-1/2 p-4 h-[calc(100vh-80px)] overflow-y-auto" style={{background:"var(--background-secondary-color)"}}>
+  <div className="w-1/2 p-4 h-[calc(100vh-70px)] overflow-y-auto">
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[#E6E6F9] p-3">
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -495,8 +511,8 @@ const Trackers = ({ searchParams }: Search) => {
           </button>
           </Link>
         </div>
-        <div className="flex flex-row gap-3">
-  <div className="flex w-[45%] items-stretch">
+        <div className="flex">
+  {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
       <Image src={Calendar} alt="Calendar" style={{width:"100%"}}/>
@@ -505,17 +521,16 @@ const Trackers = ({ searchParams }: Search) => {
       <AnalyticWidget/>
     </div>
     </div>
-  </div>
-  <div className="flex w-[55%] items-stretch">
-  <div className="relative w-full h-full">
+  </div> */}
+  
+  <div className="relative w-full h-full flex justify-center">
     <Image 
       src={TrackerLocation} 
       alt="trackerLocation"  
     />
   </div>
-  </div>
         </div>
-        <div className="flex flex-row gap-3">
+        {/* <div className="flex flex-row gap-3">
   <div className="flex w-[45%] items-stretch">
     <SavedEventWidget savedEvents={savedEvents}/>
   </div>
@@ -530,11 +545,26 @@ const Trackers = ({ searchParams }: Search) => {
           <div className="flex w-[55%] items-stretch">
             <ShareWidget id={singleTrackerData?.id}/>
           </div>
+        </div> */}
+        <div className="flex gap-4">
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
+        </div>
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitNote heading={"Notes & Discussions"} content={"9 New Messages"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={NotesBackground}/>
+        </div>
+   
+  </div>
+  <div className="flex gap-4">
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitConfig heading={"Configurations"} content={"Manage your tracker configurations using our configurable filters, tailored to your specific needs."} imgUrl={ConfigBackground}/>
+        </div>
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground}/>
+        </div>
         </div>
   </div>
-  <div>
-    {/* <ShareModal id={singleTrackerData?.id} /> */}
-  </div>
+ 
   </div>
 </div>
 {!hideTemplate && (
