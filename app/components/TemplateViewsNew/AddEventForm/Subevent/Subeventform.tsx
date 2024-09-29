@@ -43,8 +43,9 @@ interface Props {
     setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement>;
     eventFlow: string;
+    setMainEventName : (value : string)=>void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow }: Props) => {
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow,setMainEventName }: Props) => {
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -177,7 +178,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     return (
         <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' />
+                <GlobalSearch widgetId='123' setMainEventName={setMainEventName}/>
             </div>}
 
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
