@@ -3,24 +3,44 @@
 }
 .smallouterDiv{
     width: 85%;
-    border-left: 1px dashed var(--primary-color);
+    border-left: 1px dashed var(--disabled-background-color);
     display: flex;
     justify-content: flex-end;
 }
 .bigCard{
+    background-color: var(--primary-foreground);
     width: 100%;
     padding: 12px;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
 }
-.smallCard{
+.cardSubeventContainer{
     width: 98%;
-    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+.smallCard{
+    background-color: var(--primary-foreground);
+    width: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(202, 202, 202));
+    padding: 18px 30px;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
     margin-top: 20px;
-    margin-bottom: 25px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.imageContainer{
+    border-radius: 6px;
+    overflow: hidden;
+    height: 130px;
+    width: 130px;
+}
+.details{
+    width: 90%;
 }
 .smallName {
     font-size: var(--font-size-default);
@@ -88,4 +108,12 @@
 }
 .deleteBtn:hover{
     background-color:red;
+}
+.subEventsContainer{
+    background-color: var(--background-secondary-color);
+    padding: 18px 30px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-end;
 }

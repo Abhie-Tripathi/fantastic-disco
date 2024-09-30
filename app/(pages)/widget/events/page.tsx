@@ -14,6 +14,7 @@ import DashboardEventCard from '@/app/components/TemplateViewsNew/WidgetDashboar
 import GlobalSearch from '@/app/components/TemplateViewsNew/EditScreen/FilterEvents/GlobalSearch'
 import { GolbalEventType } from '@/types/globaleventtype'
 import ChoiceModal from '@/app/components/TemplateViewsNew/Events/ChoiceModal'
+import SubEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/SubEventCard'
 
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
@@ -84,36 +85,70 @@ const Page = () => {
         const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
         if (data) {
             const transformedEvents = data.data.map((event: any) => ({
-                eventId: event.id,
-                name: event.name,
-                cityName: event.data.location_city,
-                countryName: event.data.location_country,
-                startDate: event.data.start_date,
-                logoUrl: event.data.logoUrl,
-                endDate: event.data.end_date,
-                startTime: event.data.start_time,
-                endTime: event.data.end_time,
-                description: event.data.description,
-                format: event.data.format,
-                isLinkedToWidget: false,
-                gmtZone: event.data.gmt_time,
-                latitude: event.data.latitude,
-                eventType : event.type,
-                longitude: event.data.longitude,
-                participationType: event.data.participationType,
-                widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
-                customizationData: {
-                    pageBgColor: event.data.customizationData.pageBgColor,
-                    eventFont: event.data.customizationData.eventFont,
-                    registerBtnColor: event.data.customizationData.registerBtnColor,
-                    registerBtnText: event.data.customizationData.registerBtnText,
-                    registerMessage: event.data.customizationData.registerMessage,
-                    speakerProfilesData: event.data.customizationData.speakerProfilesData,
-                    participationMessage: event.data.customizationData.participationMessage,
-                    venue: event.data.customizationData.venue,
-                    hashtags: event.data.customizationData.hashtags,
-                    boothNumber: event.data.customizationData.boothNumber
-                }
+                mainEvent: {
+                    eventId: event.id,
+                    name: event.name,
+                    cityName: event.data.location_city,
+                    countryName: event.data.location_country,
+                    startDate: event.data.start_date,
+                    logoUrl: event.data.logoUrl,
+                    endDate: event.data.end_date,
+                    startTime: event.data.start_time,
+                    endTime: event.data.end_time,
+                    description: event.data.description,
+                    format: event.data.format,
+                    isLinkedToWidget: false,
+                    gmtZone: event.data.gmt_time,
+                    latitude: event.data.latitude,
+                    eventType: event.type,
+                    longitude: event.data.longitude,
+                    participationType: event.data.participationType,
+                    widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+                    customizationData: {
+                        pageBgColor: event.data.customizationData.pageBgColor,
+                        eventFont: event.data.customizationData.eventFont,
+                        registerBtnColor: event.data.customizationData.registerBtnColor,
+                        registerBtnText: event.data.customizationData.registerBtnText,
+                        registerMessage: event.data.customizationData.registerMessage,
+                        speakerProfilesData: event.data.customizationData.speakerProfilesData,
+                        participationMessage: event.data.customizationData.participationMessage,
+                        venue: event.data.customizationData.venue,
+                        hashtags: event.data.customizationData.hashtags,
+                        boothNumber: event.data.customizationData.boothNumber
+                    }
+                },
+                subEvents: event.children.map((subEvent: any) => ({
+                    eventId: subEvent.id,
+                    name: subEvent.name,
+                    cityName: subEvent.data.location_city,
+                    countryName: subEvent.data.location_country,
+                    startDate: subEvent.data.start_date,
+                    logoUrl: subEvent.data.logoUrl,
+                    endDate: subEvent.data.end_date,
+                    startTime: subEvent.data.start_time,
+                    endTime: subEvent.data.end_time,
+                    description: subEvent.data.description,
+                    format: subEvent.data.format,
+                    isLinkedToWidget: false,
+                    gmtZone: subEvent.data.gmt_time,
+                    latitude: subEvent.data.latitude,
+                    eventType: subEvent.type,
+                    longitude: subEvent.data.longitude,
+                    participationType: subEvent.data.participationType,
+                    // widgetTags: subEvent.widgetData.map((item: { type: any }) => item.type).join(', '),
+                    customizationData: {
+                        pageBgColor: subEvent.data.customizationData.pageBgColor,
+                        eventFont: subEvent.data.customizationData.eventFont,
+                        registerBtnColor: subEvent.data.customizationData.registerBtnColor,
+                        registerBtnText: subEvent.data.customizationData.registerBtnText,
+                        registerMessage: subEvent.data.customizationData.registerMessage,
+                        speakerProfilesData: subEvent.data.customizationData.speakerProfilesData,
+                        participationMessage: subEvent.data.customizationData.participationMessage,
+                        venue: subEvent.data.customizationData.venue,
+                        hashtags: subEvent.data.customizationData.hashtags,
+                        boothNumber: subEvent.data.customizationData.boothNumber
+                    }
+                }))
             }));
 
             if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
@@ -132,7 +167,7 @@ const Page = () => {
     const handleFormModal = () => {
         setPrefilledEvent(undefined)
         setPrefilledGlobalEvent(undefined)
-        if(eventFlow){
+        if (eventFlow) {
             setIsEventFormModal(true)
         }
         // setEventFlow("")
@@ -142,10 +177,10 @@ const Page = () => {
         setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
         setIsEventFormModal(true)
-        if(event.eventType === "MAIN"){
+        if (event.mainEvent.eventType === "MAIN") {
             setEventFlow("main")
-        }else setEventFlow("side")
-        
+        } else setEventFlow("side")
+
     }
     const handlePrefillGlobalEvent = (event: GolbalEventType) => {
         setPrefilledEvent(undefined)
@@ -166,17 +201,17 @@ const Page = () => {
                 <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
             </div>
             {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
-                const showDate = event.startDate !== prevDate;
-                prevDate = event.startDate;
+                const showDate = event.mainEvent.startDate !== prevDate;
+                prevDate = event.mainEvent.startDate;
                 return (
                     <div key={index} className={styles.container}>
-                        <TimelineItem eventDate={showDate ? event.startDate : null} />
+                        <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
                         {/* <YourEventCard
                             handleDeleteModal={handleDeleteModal}
                             handlePrefillEvent={handlePrefillEvent}
                             geniEvent={event}
                         /> */}
-                        <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} />
+                        {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} normalEvent={event} />}
                     </div>
                 );
             }) :
@@ -207,7 +242,7 @@ const Page = () => {
             </div>}
             {choiceFormModal &&
                 <div className={styles.choiceModal}>
-                    <ChoiceModal setChoiceFormModal={setChoiceFormModal} setEventFlow={setEventFlow}/>
+                    <ChoiceModal setChoiceFormModal={setChoiceFormModal} setEventFlow={setEventFlow} />
                 </div>
             }
         </div>

@@ -224,7 +224,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                             maxLength={80}
                             placeholder='Event Name'
-                            style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
+                            style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
                             onChange={(e) => handleInputChange(e.target.value)}
                             value={formState.eventName}
                         />

@@ -42,10 +42,11 @@ interface Props {
   fileInputRef: React.RefObject<HTMLInputElement>;
   setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
   collapseMainEventForm: boolean;
-  setActiveBtn : (value : string)=>void;
+  handleCollapseForm : (value : string)=>void
+  // setActiveBtn: (value: string) => void;
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
-  setCollapseMainEventForm, collapseMainEventForm, setActiveBtn }: Props) => {
+  handleCollapseForm }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -179,14 +180,8 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       }
     }
   };
-  const handleCollapseForm = () => {
-    if (formState.eventName && formState.description && formState.participationType && formState.participationMessage && formState.cityName && (formState.banner.placeHolder!==Placeholder || formState.banner.file)) {
-      setCollapseMainEventForm(true)
-      setActiveBtn("side")
-    }
-    else {
-      showToast("error", "Fill all the fields in the main event form to continue")
-    }
+  const handleFormCollapse = () => {
+    handleCollapseForm("side")
   }
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
@@ -231,7 +226,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                 className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                 maxLength={80}
                 placeholder='Event Name'
-                style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
+                style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
                 onChange={(e) => handleInputChange(e.target.value)}
                 value={formState.eventName}
               />
@@ -280,7 +275,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                   Do you wish to add a side event ?
                 </div>
               </div>
-              <button onClick={handleCollapseForm}>Yes</button>
+              <button onClick={()=>handleFormCollapse()}>Yes</button>
             </div>
           </div>
         </div>
