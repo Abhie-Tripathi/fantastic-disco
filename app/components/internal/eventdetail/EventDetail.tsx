@@ -77,7 +77,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN PROGRESS"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -108,7 +108,7 @@ const EventDetail = ({
     //       //   closeButton: false,
     //       //   hideProgressBar: true,
     //       // });
-          showToast("success","Enquiry status updated!")
+          
     //       console.log("curr",currentEnquiryStatus);
           
           
@@ -118,7 +118,8 @@ const EventDetail = ({
     //   }
     // }
     if (handleDropdownSelect) 
-    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
+    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
+    showToast("success","Enquiry status updated!")
   };
 
   useEffect(() => {

@@ -135,7 +135,7 @@ console.log(source);
             setShortlistedTasks([taskName,...shortlistedTasks.slice(0,-1)]);
         }
         setShortlistedCount(prev=>prev+1);
-        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("SHORTLISTED");
         // setShortlistPage(1);
         // setShortlistedTasks([]);
@@ -147,7 +147,7 @@ console.log(source);
           setOutreachTasks([taskName,...outreachTasks.slice(0,-1)])
         }
         setInProgressCount(prev=>prev+1);
-        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("IN_NEGO")
       } else if (target === "prefinalised") {
         if(noMoreConfirmData){
@@ -156,8 +156,11 @@ console.log(source);
         setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
         console.log(taskName.eventId);
-        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("CONFIRMED")
+      }else if(target==="canceled"){
+        changeEnquiryStatus("CANCELED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("CANCELED")
       }
     }
   };
