@@ -25,7 +25,7 @@
     position: relative;
     width: 80%;
     padding: 18px 30px;
-    background-color: #E6E6F9;
+    background-color: var(--primary-light-color);
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
     margin-top: 20px;
@@ -41,7 +41,7 @@
     position: relative;
     width: 98%;
     padding: 18px 30px;
-    background-color: #E6E6F9;
+    background-color: var(--primary-light-color);
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
     margin-top: 20px;

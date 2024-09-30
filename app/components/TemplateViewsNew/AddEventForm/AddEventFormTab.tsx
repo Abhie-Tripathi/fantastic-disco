@@ -36,7 +36,6 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [mainEventName, setMainEventName] = useState<string>("");
-    const [isSubEventFilled, setIsSubEventFilled] = useState<boolean>(false)
 
     const { theme } = useTheme()
 
@@ -124,12 +123,12 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             }
 
             if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-
                 showToast("error", "Please fill in all the fields");
                 return; // Exit the function if any field is missing
             }
 
             if (mainEventState.banner.placeHolder === Placeholder && !mainEventState.banner.file) {
+                console.log("this code is running")
                 showToast("error", "Please upload or generate a Poster");
                 return; // Exit the function if any field is missing
             }
