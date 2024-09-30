@@ -212,7 +212,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
       };
     return (
         <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
-            <div className={styles.header}>
+            {/* <div className={styles.header}>
                 <div className={styles.heading}>Add Event Form</div>
                 <div className={styles.btnContainer}>
                     <button className={styles.closeBtn} onClick={() => setIsNormalEventModalOpen(false)}>Close</button>
@@ -244,7 +244,7 @@ const AddNormalEvent = ({ setIsNormalEventModalOpen, fetchEvents, prefilledGloba
                 descriptionModal && <div className={styles.descriptionModalFill}>
                     <DescriptionModal setDescriptionModal={setDescriptionModal} textValue={textValue} setTextValue={setTextValue} handleDescClick={handleDescClick} />
                 </div>
-            }
+            } */}
         </div >
     )
 }

@@ -3,16 +3,19 @@ import styles from './hashtag.style.module.css'
 import Image from 'next/image';
 import AiIcon from '/public/AiIcon.svg'
 import EditIcon from '/public/EditIcon.svg'
+import { FormState } from '@/types/Formstate';
 
 interface Props {
     hashtags: string[];
-    setHashtags: (value: string[]) => void
+    // setHashtags: (value: string[]) => void
+    handleChange: (field: keyof FormState, value: any) => void;
     loadingState: boolean;
     handleTagsGenerate: (value: void) => void
 }
 
-const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGenerate }: Props) => {
+const HashtagContainer = ({ hashtags, handleChange, loadingState, handleTagsGenerate }: Props) => {
 
+    console.log("hashtags are :",  hashtags)
     const [showInput, setShowInput] = useState<boolean>(false)
     const [newTag, setNewTag] = useState<string>("");
 
@@ -21,7 +24,8 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     }
     const handleTagDelete = (index: number) => {
         const updatedHashtags = hashtags.filter((_, i) => i !== index);
-        setHashtags(updatedHashtags);
+        handleChange('hashtags', updatedHashtags)
+        // setHashtags(updatedHashtags);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +35,8 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (newTag.trim() !== "") {
-            setHashtags([...hashtags, "#" + newTag.trim()]);
+            handleChange('hashtags', [...hashtags, "#" + newTag.trim()])
+            // setHashtags([...hashtags, "#" + newTag.trim()]);
             setNewTag(""); // Clear the input field
             setShowInput(false); // Hide the input field
         }

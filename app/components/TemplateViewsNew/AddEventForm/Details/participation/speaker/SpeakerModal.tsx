@@ -3,6 +3,7 @@ import styles from './speakermodal.style.module.css'
 import ProfileIcon from '/public/profile_Image.jpg'
 import Image from 'next/image'
 import Link from 'next/link'
+import { FormState } from '@/types/Formstate'
 
 interface SpeakerProfileType {
     id: string;
@@ -14,14 +15,15 @@ interface SpeakerProfileType {
 }
 
 interface Props {
-    setSpeakerModal: (value: boolean) => void
-    setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
+    handleChange: (field: keyof FormState, value: any) => void;
+    // setSpeakerModal: (value: boolean) => void
+    // setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
     prefilledProfile?: SpeakerProfileType | null;
     deleteSpeaker: (id: string) => void;
     updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
 }
 
-const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
+const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
     // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
     const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
     const [name, setName] = useState<string>(prefilledProfile?.name || "");
@@ -74,8 +76,10 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
         if (prefilledProfile) {
             updateSpeaker(updatedProfile);
         } else {
-            setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
-            setSpeakerModal(false);
+            handleChange('speakerProfilesData', (prevData : any) => [...prevData, updatedProfile])
+            // setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
+            handleChange('speakerModal', false)
+            // setSpeakerModal(false);
         }
     };
 
@@ -100,7 +104,7 @@ const SpeakerModal = ({ setSpeakerModal, setSpeakerProfilesData, prefilledProfil
                         <label htmlFor="upload" className={styles.uploadLabel}>Upload</label>
                     </div>
                 </div>
-                <button type='button' className={styles.closeBtn} onClick={() => setSpeakerModal(false)}>Close</button>
+                <button type='button' className={styles.closeBtn} onClick={() => handleChange('speakerModal', false)}>Close</button>
             </div>
             <div className={styles.infoContainer}><span className={styles.infoBtn}>i</span><span className={styles.info}>Upload speaker profile photo</span></div>
             <div className={styles.inputContainers}>

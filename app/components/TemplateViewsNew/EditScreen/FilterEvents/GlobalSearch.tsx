@@ -12,9 +12,10 @@ import useOutsideClick from "@/hooks/useOutsideClick";
 interface Props {
   widgetId: string;
   handlePrefillGlobalEvent?: (event: GolbalEventType) => void;
+  setMainEventName?: (value: string) => void
 }
 
-const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
+const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, setMainEventName }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [dataDropdown, setDatadropdown] = useState<boolean>(false);
   const [searchData, setSearchData] = useState<any[]>([]);
@@ -30,21 +31,27 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
   }, [searchValue]);
 
   const handleClickEvent = (event: any) => {
-    const newEvent: GolbalEventType = {
-      name: event.name,
-      cityName: event.data.location_city,
-      countryName: event.data.location_country,
-      startDate: formatDate(event.data.start_date),
-      endDate: formatDate(event.data.end_date),
-      description: event.data.description,
-      format: event.data.format,
-      latitude: event.data.latitude,
-      longitude: event.data.longitude,
-      venue: event.data.venue_address,
-    };
+    console.log("clicked event is :", event)
+    setSearchValue(event.name)
+    if (setMainEventName) {
+      setMainEventName(event.name)
+    } else {
+      const newEvent: GolbalEventType = {
+        name: event.name,
+        cityName: event.data.location_city,
+        countryName: event.data.location_country,
+        startDate: formatDate(event.data.start_date),
+        endDate: formatDate(event.data.end_date),
+        description: event.data.description,
+        format: event.data.format,
+        latitude: event.data.latitude,
+        longitude: event.data.longitude,
+        venue: event.data.venue_address,
+      };
+      if (handlePrefillGlobalEvent)
+        handlePrefillGlobalEvent(newEvent);
+    }
     setDatadropdown(false);
-    if(handlePrefillGlobalEvent)
-    handlePrefillGlobalEvent(newEvent);
   };
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -94,6 +101,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
         type="text"
         placeholder="Search for events"
         onChange={(e) => setSearchValue(e.target.value)}
+        value={searchValue}
         style={{
           color: theme === "light" ? "black" : "white",
           backgroundColor: theme === "light" ? "white" : "#131313",
@@ -101,9 +109,8 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
       />
       {dataDropdown && (
         <div
-          className={`${styles.dropdownContainer} ${
-            theme === "dark" ? styles.darkDropdown : styles.lightDropdown
-          }`}
+          className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown
+            }`}
         >
           {searchData.length > 0 ? (
             searchData.map((event) => (
@@ -162,24 +169,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
 
 export default GlobalSearch;
 
-function AddeventToWidget() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
-        fill="#6750A4"
-      />
-    </svg>
-  );
-}
-
-function  Addevent() {
+function Addevent() {
   return (
     <svg
       width="13"

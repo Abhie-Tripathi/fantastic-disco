@@ -2,16 +2,20 @@ import React, { useState } from 'react'
 import styles from './registration.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
+import { FormState } from '@/types/Formstate';
 
 
 interface Props {
-    setRegisterModal: (value: boolean) => void
+    // setRegisterModal: (value: boolean) => void
+    handleChange: (field: keyof FormState, value: any) => void;
     registerMessage: string
     registerBtnText: string
     registerBtnColor: string
 }
 
-const RegistrationForm = ({ setRegisterModal, registerMessage, registerBtnText, registerBtnColor }: Props) => {
+const RegistrationForm = ({ 
+    // setRegisterModal,
+    registerMessage, registerBtnText, registerBtnColor,handleChange }: Props) => {
     // Function to convert hex to RGB
     const [accordian, setAccordian] = useState<boolean>(false)
     const hexToRgb = (hex: string) => {
@@ -49,7 +53,7 @@ const RegistrationForm = ({ setRegisterModal, registerMessage, registerBtnText, 
                 </div>
                 <div className={styles.header}>
                     <div>Join us at the event</div>
-                    <Image src={EditIcon} alt='edit' onClick={() => setRegisterModal(true)} />
+                    <Image src={EditIcon} alt='edit' onClick={() => handleChange('registerModal', true)} />
                 </div>
                 <div className={styles.formSubHeading}>{registerMessage}
                 </div>

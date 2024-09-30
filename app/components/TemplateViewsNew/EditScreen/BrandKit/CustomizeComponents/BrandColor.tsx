@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './brandcolor.style.module.css'
 import ColorPicker from './ColorPicker';
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props {
     extractedColors: string[]
@@ -11,9 +12,10 @@ interface Props {
     pageBgColor?: string;
     setCardBgColor?: (value: string) => void
     clickable: boolean;
+    prefilledEvent?: AllEventsType;
 }
 
-const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable }: Props) => {
+const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable, prefilledEvent }: Props) => {
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
 
@@ -54,7 +56,7 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
 
     useEffect(() => {
         if (extractedColors.length > 0 && setPageBgColor) {
-            if (setPageBgColor) {
+            if (setPageBgColor && !prefilledEvent) {
                 setPageBgColor(hexToRgba(extractedColors[0], 0.1));
             }
         }
