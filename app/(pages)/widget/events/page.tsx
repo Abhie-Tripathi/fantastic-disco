@@ -98,6 +98,7 @@ const Page = () => {
                 isLinkedToWidget: false,
                 gmtZone: event.data.gmt_time,
                 latitude: event.data.latitude,
+                eventType : event.type,
                 longitude: event.data.longitude,
                 participationType: event.data.participationType,
                 widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
@@ -141,7 +142,10 @@ const Page = () => {
         setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
         setIsEventFormModal(true)
-        setEventFlow("main")
+        if(event.eventType === "MAIN"){
+            setEventFlow("main")
+        }else setEventFlow("side")
+        
     }
     const handlePrefillGlobalEvent = (event: GolbalEventType) => {
         setPrefilledEvent(undefined)

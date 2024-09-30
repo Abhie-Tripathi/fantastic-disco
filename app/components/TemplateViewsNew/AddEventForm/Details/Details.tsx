@@ -42,9 +42,10 @@ interface Props {
   fileInputRef: React.RefObject<HTMLInputElement>;
   setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
   collapseMainEventForm: boolean;
+  setActiveBtn : (value : string)=>void;
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
-  setCollapseMainEventForm, collapseMainEventForm }: Props) => {
+  setCollapseMainEventForm, collapseMainEventForm, setActiveBtn }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -179,8 +180,9 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
     }
   };
   const handleCollapseForm = () => {
-    if (formState.eventName && formState.description && formState.participationType && formState.participationMessage && formState.cityName && (formState.banner.placeHolder || formState.banner.file)) {
+    if (formState.eventName && formState.description && formState.participationType && formState.participationMessage && formState.cityName && (formState.banner.placeHolder!==Placeholder || formState.banner.file)) {
       setCollapseMainEventForm(true)
+      setActiveBtn("side")
     }
     else {
       showToast("error", "Fill all the fields in the main event form to continue")
@@ -192,7 +194,8 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
         <div>
           <div className={`${styles.participationContainer}`}><ParticipationContainer
             handleChange={handleChange} formState={formState}
-            heading='Choose Your Mode of Participation' type='main' size="large" /></div>
+            heading='Choose Your Mode of Participation' type='main' size="large" />
+          </div>
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>

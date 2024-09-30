@@ -40,7 +40,6 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     const { theme } = useTheme()
 
     const handleAddEvent = async () => {
-        
         if (eventFlow === "main") {
             if (!mainEventState.eventName || mainEventState.eventName === "") {
                 handleMaineventChanges('isEventNameEmpty', true)
@@ -386,15 +385,29 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             formContainerRef.current.scrollTop = 0;
         }
     }, [isModalOpen]);
-    useEffect(()=>{
+    useEffect(() => {
         console.log("main event name :", mainEventName)
-    },[mainEventName])
+    }, [mainEventName])
+    const handleCollapseForm = (type: string) => {
+        if (type === "side") {
+            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && mainEventState.cityName && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
+                setCollapseMainEventForm(true)
+                setActiveBtn("side")
+            }
+            else {
+                showToast("error", "Fill all the fields in the main event form to continue")
+            }
+        } else {
+            setCollapseMainEventForm(false)
+            setActiveBtn("main")
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={`${styles.btnContainer} ${eventFlow === "side" ? styles.endBtnContainer : ""}`} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
                 {eventFlow === "main" && <div className={styles.eventBtns}>
-                    <button className={activeBtn === "main" ? styles.activebtn : ""}>Main Event</button>
-                    <button className={activeBtn === "side" ? styles.activebtn : ""}>Side Event</button>
+                    <button className={activeBtn === "main" ? styles.activebtn : ""} onClick={() => handleCollapseForm("main")}>Main Event</button>
+                    <button className={activeBtn === "side" ? styles.activebtn : ""} onClick={() => handleCollapseForm("side")}>Side Event</button>
                 </div>}
                 <div className={styles.saveCancelBtns}>
                     <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={handleModalClose}>Close</button>
@@ -425,9 +438,10 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                         prefilledEvent={prefilledEvent}
                         setCollapseMainEventForm={setCollapseMainEventForm}
                         collapseMainEventForm={collapseMainEventForm}
+                        setActiveBtn={setActiveBtn}
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
-                setMainEventName = {setMainEventName}
+                    setMainEventName={setMainEventName}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}

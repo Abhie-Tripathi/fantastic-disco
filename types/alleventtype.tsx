@@ -18,6 +18,7 @@ export interface AllEventsType {
   logoUrl: string;
   customizationData : CustomizationData;
   widgetTags : string;
+  eventType : string;
 }
 interface CustomizationData {
   pageBgColor: string;
