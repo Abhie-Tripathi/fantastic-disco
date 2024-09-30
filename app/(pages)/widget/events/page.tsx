@@ -37,19 +37,19 @@ const Page = () => {
     }, [page])
 
 
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         if (
-    //             window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
-    //             fetchedEvents.length > 0 // Prevent fetching on empty screen
-    //         ) {
-    //             setPage((prevPage) => prevPage + 1); // Increment page to load more events
-    //         }
-    //     };
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+                fetchedEvents.length > 0 // Prevent fetching on empty screen
+            ) {
+                setPage((prevPage) => prevPage + 1); // Increment page to load more events
+            }
+        };
 
-    //     window.addEventListener("scroll", handleScroll);
-    //     return () => window.removeEventListener("scroll", handleScroll);
-    // }, [fetchedEvents]);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [fetchedEvents]);
 
     const handleDeleteModal = (eventId: string, eventName: string, isPresentinWidget: boolean) => {
         if (isPresentinWidget) {
@@ -187,6 +187,8 @@ const Page = () => {
         setPrefilledGlobalEvent(undefined)
         setPrefilledGlobalEvent(event)
         setIsEventFormModal(true)
+        setEventFlow("main")
+
     }
     return (
         <div className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal ? styles.modalOpen : ""}`}>

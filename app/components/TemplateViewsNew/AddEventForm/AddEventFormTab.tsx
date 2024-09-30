@@ -43,7 +43,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
             if (activeBtn === "side") {
-                if (subEventState.eventName || subEventState.description || subEventState.eventFormat || subEventState.participationType) {
+                if (subEventState.eventName || subEventState.description || subEventState.query || subEventState.participationType) {
                     if (!subEventState.eventName || subEventState.eventName === "") {
                         handleSubeventChange('isEventNameEmpty', true)
                         // setIsEventNameEmpty(true)
@@ -186,10 +186,11 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                 console.log("event added :", data)
                 if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
                     addSubEvent(data.data.id)
+                } else {
+                    setIsAddEventModalOpen(false)
+                    showToast("success", "Main Event Added Successfully")
+                    fetchEvents(0, "update")
                 }
-                // setIsAddEventModalOpen(false)
-                showToast("success", "Event Added Successfully")
-                // fetchEvents(0, "update")
             }
             if (error) {
                 console.log(error)
@@ -439,12 +440,13 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     }, [mainEventName])
 
     const handleCollapseForm = (type: string) => {
-        if (type === "side") {
+        if (type === "side") { // This is when we click on sideevent button or Yes button
             if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && mainEventState.cityName && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
                 setCollapseMainEventForm(true)
                 setActiveBtn("side")
             }
             else {
+                showToast("error","Fill all the fields in this form to proceed")
                 if (!mainEventState.eventName || mainEventState.eventName === "") {
                     handleMaineventChanges('isEventNameEmpty', true)
                     // setIsEventNameEmpty(true)
