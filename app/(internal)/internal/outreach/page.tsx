@@ -338,7 +338,7 @@ const handleDropdownSelect = (target: string, source: string) => {
             >
               Shortlisted{" "}
               <span className={styles.eventSize}>
-                {shortlistedCount}
+                {shortlistedTasks.length}
               </span>
             </div>
             <span className={styles.seprator}></span>
@@ -370,7 +370,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   Shortlisted{" "}
                   <span className={styles.eventSize}>
-                    {shortlistedCount}
+                    {shortlistedTasks.length}
                   </span>
                 </div>
               </div>
@@ -428,7 +428,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   In Progress{" "}
                   <span className={styles.eventSize}>
-                    {inProgressCount}
+                    {outreachTasks.length}
                   </span>
                 </div>
               </div>
@@ -486,7 +486,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   Confirmed{" "}
                   <span className={styles.eventSize}>
-                    {confirmedCount}
+                    {preFinalisedTasks.length}
                   </span>
                 </div>
               </div>

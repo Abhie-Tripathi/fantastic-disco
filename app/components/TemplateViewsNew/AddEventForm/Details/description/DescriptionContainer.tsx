@@ -2,26 +2,31 @@ import React, { useState } from "react";
 import styles from "./description.style.module.css";
 import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
+import { FormState } from "@/types/Formstate";
 
 interface Props {
-  setDescriptionModal: (value: boolean) => void;
+  handleChange: (field: keyof FormState, value: any) => void;
+  // setDescriptionModal: (value: boolean) => void;
   description: string;
   theme?: string;
   isEventDescriptionEmpty: boolean;
-  setIsEventDescriptionEmpty: (value: boolean) => void;
+  // setIsEventDescriptionEmpty: (value: boolean) => void;
 }
 
 const DescriptionContainer = ({
-  setDescriptionModal,
+  // setDescriptionModal,
   description,
   theme,
   isEventDescriptionEmpty,
-  setIsEventDescriptionEmpty,
+  // setIsEventDescriptionEmpty,
+  handleChange
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleClick = () => {
-    setDescriptionModal(true);
-    setIsEventDescriptionEmpty(false);
+    handleChange('descriptionModal', true)
+    // setDescriptionModal(true);
+    handleChange('isEventDescriptionEmpty', false)
+    // setIsEventDescriptionEmpty(false);
   };
 
   const toggleReadMore = () => {

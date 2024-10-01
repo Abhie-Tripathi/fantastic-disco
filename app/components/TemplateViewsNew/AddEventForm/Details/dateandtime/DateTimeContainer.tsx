@@ -5,40 +5,45 @@ import TimezoneDropdown from './TimezoneDropdown'
 import CalendarDropdown from './CalendarDropdown'
 import TimeDropdown from './TimeDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import { FormState } from '@/types/Formstate'
 
 const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
     return new Date(date).toLocaleDateString('en-US', options);
 };
 interface TimeSettingsProps {
-    timeZone: string;
-    setTimeZone: React.Dispatch<React.SetStateAction<string>>;
-    timeZoneKey: number;
-    setTimeZoneKey: React.Dispatch<React.SetStateAction<number>>;
-    startDate: string;
-    setStartDate: React.Dispatch<React.SetStateAction<string>>;
-    endDate: string;
-    setEndDate: React.Dispatch<React.SetStateAction<string>>;
-    startTime: string;
-    setStartTime: React.Dispatch<React.SetStateAction<string>>;
-    endTime: string;
-    setEndTime: React.Dispatch<React.SetStateAction<string>>;
+    formState: FormState;
+    handleChange: (field: keyof FormState, value: any) => void;
+    // timeZone: string;
+    // setTimeZone: React.Dispatch<React.SetStateAction<string>>;
+    // timeZoneKey: number;
+    // setTimeZoneKey: React.Dispatch<React.SetStateAction<number>>;
+    // startDate: string;
+    // setStartDate: React.Dispatch<React.SetStateAction<string>>;
+    // endDate: string;
+    // setEndDate: React.Dispatch<React.SetStateAction<string>>;
+    // startTime: string;
+    // setStartTime: React.Dispatch<React.SetStateAction<string>>;
+    // endTime: string;
+    // setEndTime: React.Dispatch<React.SetStateAction<string>>;
     theme?: string;
 }
 
 const DateTimeContainer = ({
-    timeZone,
-    setTimeZone,
-    timeZoneKey = 1,
-    setTimeZoneKey,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
+    formState,
+    handleChange,
+    // timeZone,
+    // setTimeZone,
+    // timeZoneKey = 1,
+    // setTimeZoneKey,
+    // startDate,
+    // setStartDate,
+    // endDate,
+    // setEndDate,
+    // startTime,
+    // setStartTime,
+    // endTime,
+    // setEndTime,
     theme
 }: TimeSettingsProps) => {
 
@@ -66,21 +71,25 @@ const DateTimeContainer = ({
     ];
 
     useEffect(() => {
-        console.log("start date :", startDate)
-        console.log("end date :", endDate)
-        if (!startDate) {
+        console.log("start date :", formState.startDate)
+        console.log("end date :", formState.endDate)
+        if (!formState.startDate) {
             const currentDate = new Date();
             const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
-            setStartDate(formattedStartDate);
-            setEndDate(formattedStartDate)
+            handleChange('startDate', formattedStartDate)
+            handleChange('endDate', formattedStartDate)
+            // setStartDate(formattedStartDate);
+            // setEndDate(formattedStartDate)
             setTodaysDate(formattedStartDate);
         }
-        if(!startTime){
+        if(!formState.startTime){
             const closestTime = findClosestTime();
             const halfHourAddedTime = addMinutesToTime(closestTime,30)
-            setStartTime(closestTime);
+            handleChange('startDate', closestTime)
+            // setStartTime(closestTime);
             console.log("half hour added time : ", halfHourAddedTime)
-            setEndTime(halfHourAddedTime)
+            handleChange('startDate', halfHourAddedTime)
+            // setEndTime(halfHourAddedTime)
         }
     }, []);
     const addMinutesToTime = (time: string, minutesToAdd: number): string => {
@@ -125,14 +134,15 @@ const DateTimeContainer = ({
     };
 
     useEffect(() => {
-        if (new Date(endDate) < new Date(startDate)) {
-            setEndDate(startDate);
+        if (new Date(formState.endDate) < new Date(formState.startDate)) {
+            handleChange("endDate", formState.startDate)
+            // setEndDate(startDate);
         }
-        if(startDate){
-            const maxDate = addDays(startDate, 28)
+        if(formState.startDate){
+            const maxDate = addDays(formState.startDate, 28)
             setMaxEndDate(maxDate)
         }
-    }, [startDate, endDate]);
+    }, [formState.startDate, formState.endDate]);
 
     const timeToMinutes = (t: string) => {
         const [hour, minute] = t.split(/:|\s/);
@@ -161,9 +171,11 @@ const DateTimeContainer = ({
 
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
-        setTimeZoneKey(key)
+        handleChange('timeZoneKey',key)
+        // setTimeZoneKey(key)
         const timeZoneString = `${value} ${label}`;
-        setTimeZone(truncateString(timeZoneString, 20));
+        handleChange('timeZoneKey',truncateString(timeZoneString, 20))
+        // setTimeZone(truncateString(timeZoneString, 20));
     };
     const truncateString = (str: string, num: number) => {
         if (str.length <= num) {
@@ -201,27 +213,41 @@ const DateTimeContainer = ({
                 <div className={styles.dateTimeBoxes}>
                     <div className={styles.dateBoxes}>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
-                            {formatDate(startDate)}
+                            {formatDate(formState.startDate)}
                             {startCalendarDropdown && <div ref={startCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown minDate={todaysDate} setDate={setStartDate} dateValue={startDate} />
+                                <CalendarDropdown minDate={todaysDate} 
+                                 // setDate={setEndDate} 
+                                type ="start"
+                                handleChange={handleChange}
+                                 dateValue={formState.startDate} />
                             </div>}
                         </div>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
-                            {formatDate(endDate)}
+                            {formatDate(formState.endDate)}
                             {endCalendarDropdown && <div ref={endCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown  maxDate={maxEndDate} minDate={startDate} setDate={setEndDate} dateValue={endDate} />
+                                <CalendarDropdown  maxDate={maxEndDate} minDate={formState.startDate}
+                                // setDate={setEndDate} 
+                                type ="start"
+                                handleChange={handleChange}
+                                dateValue={formState.endDate} />
                             </div>}
                         </div>
                     </div>
                     <div className={styles.timeBoxes}>
-                        <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{startTime}
+                        <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{formState.startTime}
                             {startTimeDropdown && <div ref={startTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setStartTime} time={startTime} />
+                                <TimeDropdown 
+                                // setTime={setStartTime} 
+                                handleChange={handleChange}
+                                time={formState.startTime} />
                             </div>}
                         </div>
-                        <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{endTime}
+                        <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{formState.endTime}
                             {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown setTime={setEndTime} time={endTime} minTime={addMinutesToTime(startTime,30)}/>
+                                <TimeDropdown 
+                                // setTime={setEndTime} 
+                                handleChange={handleChange}
+                                time={formState.endTime} minTime={addMinutesToTime(formState.startTime,30)}/>
                             </div>}
                         </div>
                     </div>
@@ -234,10 +260,10 @@ const DateTimeContainer = ({
                     <div className={styles.dropdownIcon}><DownIcon /></div>
                 </div>
                 <div className={`${styles.timeZone} ${theme && styles.themeTimeZone}`}>
-                    {timeZone}
+                    {formState.timeZone}
                 </div>
                 {timezoneDropdown && <div className={styles.timezoneDropdown}>
-                    <TimezoneDropdown timeZoneKey={timeZoneKey} handleTimeSelect={handleTimeSelect} />
+                    <TimezoneDropdown timeZoneKey={formState.timeZoneKey} handleTimeSelect={handleTimeSelect} />
                 </div>}
             </div>
         </div>

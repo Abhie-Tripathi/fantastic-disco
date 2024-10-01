@@ -21,27 +21,103 @@ const DashboardEvents = () => {
     const fetchEvents = async () => {
         const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
         if (data) {
-            const events: AllEventsType[] = data.data.map((event: any) => ({
-                eventId: event.id,
-                name: event.name,
-                cityName: event.data.location_city,
-                countryName: event.data.location_country,
-                description: event.data.description,
-                startDate: event.data.start_date,
-                endDate: event.data.end_date,
-                format: event.data.format,
-                isLinkedToWidget: event.isWidgetLinked,
-                startTime: event.data.start_time,
-                endTime: event.data.end_time,
-                gmtZone: event.data.gmt_time,
-                widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
-            }))
+            const events = data.data.map((event: any) => ({
+                mainEvent: {
+                    eventId: event.id,
+                    name: event.name,
+                    cityName: event.data.location_city,
+                    countryName: event.data.location_country,
+                    startDate: event.data.start_date,
+                    logoUrl: event.data.logoUrl,
+                    endDate: event.data.end_date,
+                    startTime: event.data.start_time,
+                    endTime: event.data.end_time,
+                    description: event.data.description,
+                    format: event.data.format,
+                    isLinkedToWidget: false,
+                    gmtZone: event.data.gmt_time,
+                    latitude: event.data.latitude,
+                    eventType: event.type,
+                    longitude: event.data.longitude,
+                    participationType: event.data.participationType,
+                    widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+                    customizationData: {
+                        pageBgColor: event.data.customizationData.pageBgColor,
+                        eventFont: event.data.customizationData.eventFont,
+                        registerBtnColor: event.data.customizationData.registerBtnColor,
+                        registerBtnText: event.data.customizationData.registerBtnText,
+                        registerMessage: event.data.customizationData.registerMessage,
+                        speakerProfilesData: event.data.customizationData.speakerProfilesData,
+                        participationMessage: event.data.customizationData.participationMessage,
+                        venue: event.data.customizationData.venue,
+                        hashtags: event.data.customizationData.hashtags,
+                        boothNumber: event.data.customizationData.boothNumber
+                    }
+                },
+                subEvents : event.children.map((subEvent : any)=>({
+                    eventId : subEvent.id,
+                    name: subEvent.name,
+                    cityName: subEvent.data.location_city,
+                    countryName: subEvent.data.location_country,
+                    startDate: subEvent.data.start_date,
+                    logoUrl: subEvent.data.logoUrl,
+                    endDate: subEvent.data.end_date,
+                    startTime: subEvent.data.start_time,
+                    endTime: subEvent.data.end_time,
+                    description: subEvent.data.description,
+                    format: subEvent.data.format,
+                    isLinkedToWidget: false,
+                    gmtZone: subEvent.data.gmt_time,
+                    latitude: subEvent.data.latitude,
+                    eventType: subEvent.type,
+                    longitude: subEvent.data.longitude,
+                    participationType: subEvent.data.participationType,
+                    // widgetTags: subEvent.widgetData.map((item: { type: any }) => item.type).join(', '),
+                    customizationData: {
+                        pageBgColor: subEvent.data.customizationData.pageBgColor,
+                        eventFont: subEvent.data.customizationData.eventFont,
+                        registerBtnColor: subEvent.data.customizationData.registerBtnColor,
+                        registerBtnText: subEvent.data.customizationData.registerBtnText,
+                        registerMessage: subEvent.data.customizationData.registerMessage,
+                        speakerProfilesData: subEvent.data.customizationData.speakerProfilesData,
+                        participationMessage: subEvent.data.customizationData.participationMessage,
+                        venue: subEvent.data.customizationData.venue,
+                        hashtags: subEvent.data.customizationData.hashtags,
+                        boothNumber: subEvent.data.customizationData.boothNumber
+                    }
+                })) 
+            }));
+
             setLength(data.totalCount)
             setFetchedAddedEvents(events)
-        } if (error) {
-            console.log(error)
+        } else {
+            console.error('Error fetching events:', error);
         }
     }
+    // const fetchEvents = async () => {
+    //     const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
+    //     if (data) {
+    //         const events: AllEventsType[] = data.data.map((event: any) => ({
+    //             eventId: event.id,
+    //             name: event.name,
+    //             cityName: event.data.location_city,
+    //             countryName: event.data.location_country,
+    //             description: event.data.description,
+    //             startDate: event.data.start_date,
+    //             endDate: event.data.end_date,
+    //             format: event.data.format,
+    //             isLinkedToWidget: event.isWidgetLinked,
+    //             startTime: event.data.start_time,
+    //             endTime: event.data.end_time,
+    //             gmtZone: event.data.gmt_time,
+    //             widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+    //         }))
+    //         setLength(data.totalCount)
+    //         setFetchedAddedEvents(events)
+    //     } if (error) {
+    //         console.log(error)
+    //     }
+    // }
     useEffect(() => {
         fetchEvents()
     }, [])

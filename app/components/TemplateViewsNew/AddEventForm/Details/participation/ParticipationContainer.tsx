@@ -1,9 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styles from './participation.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import ParticipationIcon from '/public/ParticipationIcon.svg'
+import ConfettiIcon from '/public/confetti.svg'
 import ParticipationDropdown from './ParticipationDropdown'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import AttendeeIcon from '/public/widgetimages/attendeeIcon.svg'
@@ -11,32 +12,58 @@ import SpeakerIcon from '/public/widgetimages/speakerIcon.svg'
 import ExhibitorIcon from '/public/widgetimages/exhibitorIcon.svg'
 import OrganiserIcon from '/public/widgetimages/organiserIcon.svg'
 import { showToast } from "@/utils/showToast";
+import HappyHoursIcon from '/public/widgetimages/Happyhours.png'
+import FoundersIcon from '/public/widgetimages/foundersparty.png'
+import CocktailHoursIcon from '/public/widgetimages/cocktailhours.png'
+import { FormState } from '@/types/Formstate'
 
 interface Props {
-  setParticipationType: (value: string) => void
-  participationType: string;
-  setParticipationMessage: (value: string) => void
-  participationMessage: string
+  handleChange: (field: keyof FormState, value: any) => void;
+  formState: FormState
+  // setParticipationType: (value: string) => void
+  heading: string;
+  // participationType: string;
+  // setParticipationMessage: (value: string) => void
+  // participationMessage: string
   size: string;
   theme?: string;
   type: string;
-  isEventParticipationEmpty: boolean
-  setIsEventParticipationEmpty:(value: boolean) => void
-  isParticipationMessageEmpty:boolean;
-  setIsParticipationMessageEmpty: (value:boolean) => void
+  // isEventParticipationEmpty: boolean
+  // setIsEventParticipationEmpty: (value: boolean) => void
+  // isParticipationMessageEmpty: boolean;
+  // setIsParticipationMessageEmpty: (value: boolean) => void
 
 }
 
-const ParticipationContainer = ({ setParticipationType, participationType, setParticipationMessage, participationMessage, size, theme, type, isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty }: Props) => { 
+const ParticipationContainer = ({
+  // setParticipationType, participationType,
+  size, theme, type, handleChange, formState,
+  // setParticipationMessage, participationMessage,  isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty, 
+  heading }: Props) => {
+  const mainOptions = [
+    { label: 'Attendee', value: 'Attendee', icon: AttendeeIcon },
+    { label: 'Speaker', value: 'Speaker', icon: SpeakerIcon },
+    { label: 'Exhibitor', value: 'Exhibitor', icon: ExhibitorIcon },
+    { label: 'Organiser', value: 'Organiser', icon: OrganiserIcon },
+  ];
+
+  const sideOptions = [
+    { label: 'Happy Hours', value: 'HappyHours', icon: HappyHoursIcon },
+    { label: 'Cocktail Hours', value: 'CocktailHours', icon: CocktailHoursIcon },
+    { label: 'Founders Party', value: 'FoundersParty', icon: FoundersIcon },
+  ];
   const handleSelection = (type: string) => {
-    setParticipationType(type);
+    handleChange('participationType', type)
+    // setParticipationType(type);
     // setDropdown(true)
-    setIsEventParticipationEmpty(false)
+    handleChange('isEventParticipationEmpty', false)
+    // setIsEventParticipationEmpty(false)
 
   }
   const handleCloseSelection = () => {
     // setDropdown(false)
-    setParticipationType("")
+    handleChange('participationType', "")
+    // setParticipationType("")
   }
   const handleInputChange = (e: any) => {
     let value = e.target.value;
@@ -46,102 +73,66 @@ const ParticipationContainer = ({ setParticipationType, participationType, setPa
     if (specialCharRegex.test(value)) {
       showToast("error", "Please check, input should not contain any special character");
     } else {
-      setParticipationMessage(value);
-      setIsParticipationMessageEmpty(false)
+      handleChange('participationMessage', value)
+      // setParticipationMessage(value);
+      handleChange('isParticipationMessageEmpty', false)
+      // setIsParticipationMessageEmpty(false)
     }
   };
+  const options = type === 'main' ? mainOptions : sideOptions;
+
+  // Helper function to render selected option
+  const renderSelectedOption = useCallback(() => {
+    if (!formState.participationType) return null;
+    const selectedOption = options.find(option => option.value === formState.participationType);
+    if (!selectedOption) return null;
+
+    return (
+      <div className={styles.selectedOption}>
+        <div className={styles.option}>
+          <Image src={selectedOption.icon} alt={`${selectedOption.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54} />
+          <span>{selectedOption.label}</span>
+        </div>
+        <div className={styles.inputContainer}>
+          <input
+            type="text"
+            placeholder='Add your message here!'
+            onChange={handleInputChange}
+            value={formState.participationMessage}
+          />
+          <span onClick={handleCloseSelection}>x</span>
+        </div>
+        {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
+      </div>
+    );
+  }, [formState.participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);
+
   return (
-    <div className={`${styles.body} ${theme && theme === "dark" ? styles.darkBody : ""}`} >
-      {(type === "normal" ? true : !participationType) ?
+    <div className={`${styles.body} ${theme === "dark" ? styles.darkBody : ""}`}>
+      {!formState.participationType ? (
         <>
           <div className={styles.header}>
-            <Image src={ParticipationIcon} alt='svg' />
-            <span>Choose Your Mode of Participation</span>
+            <Image src={type === "main" ? ParticipationIcon : ConfettiIcon} alt='svg' />
+            <span>{heading}</span>
           </div>
-          <div className={`${styles.options} ${isEventParticipationEmpty ? styles.errorHighlight : ""}`} >
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Attendee") ? styles.activeOption : ""} `} onClick={() => handleSelection("Attendee")}>
-              <Image src={AttendeeIcon} alt='icon' />
-              <span>Attendee</span>
-            </div>
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Speaker") ? styles.activeOption : ""}`} onClick={() => handleSelection("Speaker")}>
-              <Image src={SpeakerIcon} alt='icon' />
-              <span>Speaker</span>
-            </div>
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Exhibitor") ? styles.activeOption : ""}`} onClick={() => handleSelection("Exhibitor")}>
-              <Image src={ExhibitorIcon} alt='icon' />
-              <span>Exhibitor</span>
-            </div>
-            <div className={`${styles.option} ${(type === "normal" && participationType === "Organiser") ? styles.activeOption : ""}`} onClick={() => handleSelection("Organiser")}>
-              <Image src={OrganiserIcon} alt='icon' />
-              <span>Organiser</span>
-            </div>
+          <div className={`${styles.options} ${formState.isEventParticipationEmpty ? styles.errorHighlight : ""}`}>
+            {options.map((option) => (
+              <div
+                key={option.value}
+                className={styles.option}
+                onClick={() => handleSelection(option.value)}
+              >
+                <Image src={option.icon} alt={`${option.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54} />
+                <span>{option.label}</span>
+              </div>
+            ))}
           </div>
         </>
-        :
-        <>
-          {(participationType === "Attendee" && type === "widget") ? (
-            <div className={styles.selectedOption}>
-              <div className={styles.option}>
-                <Image src={AttendeeIcon} alt="icon" />
-                <span>Attendee</span>
-              </div>
-              <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
-                <span onClick={handleCloseSelection}>x</span>
-              </div>
-             {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
-            </div>
-          ) : (participationType === "Speaker" && type === "widget") ? (
-            <div className={styles.selectedOption}>
-              <div className={styles.option}>
-                <Image src={SpeakerIcon} alt="icon" />
-                <span>Speaker</span>
-              </div>
-              <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
-                <span onClick={handleCloseSelection}>x</span>
-              </div>
-              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
-            </div>
-          ) : (participationType === "Exhibitor" && type === "widget") ? (
-            <div className={styles.selectedOption}>
-              <div className={styles.option}>
-                <Image src={ExhibitorIcon} alt="icon" />
-                <span>Exhibitor</span>
-              </div>
-              <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
-                <span onClick={handleCloseSelection}>x</span>
-              </div>
-              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
-            </div>
-          ) : (participationType === "Organiser" && type === "widget") ? (
-            <div className={styles.selectedOption}>
-              <div className={styles.option}>
-                <Image src={OrganiserIcon} alt="icon" />
-                <span>Organiser</span>
-              </div>
-              <div className={styles.inputContainer}>
-                <input type="text" placeholder='Add your message here!' onChange={(e) => { handleInputChange(e) }} value={participationMessage} />
-                <span onClick={handleCloseSelection}>x</span>
-              </div>
-              {isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
-            </div>
-          ) : null}
-        </>
+      ) : (
+        renderSelectedOption()
+      )}
+    </div>
+  );
+};
 
-      }
-      {/* <div className={styles.participationContainer}>
-
-        <div className={styles.inputMessage} dangerouslySetInnerHTML={{ __html: participationMessage }}></div>
-      </div>
-
-      <Image src={EditIcon} alt='edit' onClick={() => setDropdown(!dropdown)} className={styles.editBtn} />
-      {dropdown && <div className={styles.dropdown} style={{width : size === "large" ? "150%" : "100%"}}>
-        <ParticipationDropdown size={size} participationType={participationType} setParticipationType={setParticipationType} setInputMessage={setParticipationMessage} inputMessage={participationMessage} />
-      </div>} */}
-    </div >
-  )
-}
-
-export default ParticipationContainer
+export default ParticipationContainer;

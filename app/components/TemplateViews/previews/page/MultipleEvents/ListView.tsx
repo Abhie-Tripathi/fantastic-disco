@@ -59,9 +59,9 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
 
     const router = useRouter();
     const handleCardClick = (eventId: string, widgetId: string) => {
-        const hash = createHash(widgetId, eventId);
-        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
-        // router.push(`/detailpage/${hash}`);
+        // const hash = createHash(widgetId, eventId);
+        // router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        router.push(`/detailpage/${eventId}`);
     }
     return (
         <div className={styles.listView}>

@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react'
 import styles from './progressbar.style.module.css'
 
 interface Props {
-    participationType: string;
-    eventName: string;
-    cityName: string;
-    description: string;
+    eventNameMain: string;
+    cityNameMain: string;
+    participationTypeMain: string;
+    descriptionMain: string;
+    eventNameSub: string;
+    cityNameSub: string;
+    participationTypeSub: string;
+    descriptionSub: string;
 }
 
-const ProgressBar = ({ participationType, eventName, cityName, description }: Props) => {
+const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descriptionMain,eventNameSub, participationTypeSub, descriptionSub, cityNameSub }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
@@ -34,13 +38,19 @@ const ProgressBar = ({ participationType, eventName, cityName, description }: Pr
         };
 
         // Update the activeBars based on the changes in each field
-        updateActiveBars('participationType', participationType);
-        updateActiveBars('eventName', eventName);
-        updateActiveBars('cityName', cityName);
-        updateActiveBars('description', description);
+        updateActiveBars('participationType', participationTypeMain);
+        updateActiveBars('eventName', eventNameMain);
+        updateActiveBars('cityName', cityNameMain);
+        updateActiveBars('description', descriptionMain);
+        // Check for combined sub-fields to activate the 5th step
+        if (eventNameSub && cityNameSub && participationTypeSub && descriptionSub) {
+            updateActiveBars('subEvent', 'combinedSubFields');
+        } else {
+            updateActiveBars('subEvent', ''); // Remove if not all sub-fields are filled
+        }
 
-    }, [participationType, eventName, cityName, description]);
-    const totalSteps = 4;
+    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, participationTypeSub, descriptionSub]);
+    const totalSteps = 5;
     return (
         <div className={styles.body}>
             <div className={styles.header}>PROGRESS</div>
@@ -56,10 +66,13 @@ const ProgressBar = ({ participationType, eventName, cityName, description }: Pr
                 </div>
             </div>
             <div className={styles.listContainer}>
-                <li className={participationType ? styles.activeItem : ""}>{participationType && <TickIcon />}<span>Mode Of Participation</span></li>
-                <li className={eventName ? styles.activeItem : ""}>{eventName && <TickIcon />}<span>Event Name</span></li>
-                <li className={cityName ? styles.activeItem : ""}>{cityName && <TickIcon />}<span>Location</span></li>
-                <li className={description ? styles.activeItem : ""}>{description && <TickIcon />}<span>Description</span></li>
+                <li className={participationTypeMain ? styles.activeItem : ""}>{participationTypeMain && <TickIcon />}<span>Mode Of Participation</span></li>
+                <li className={eventNameMain ? styles.activeItem : ""}>{eventNameMain && <TickIcon />}<span>Event Name</span></li>
+                <li className={cityNameMain ? styles.activeItem : ""}>{cityNameMain && <TickIcon />}<span>Location</span></li>
+                <li className={descriptionMain ? styles.activeItem : ""}>{descriptionMain && <TickIcon />}<span>Description</span></li>
+                <li className={(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) ? styles.activeItem : ""}>
+                    {(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) && <TickIcon />}<span>Sub-Event</span>
+                </li>
             </div>
         </div>
     )

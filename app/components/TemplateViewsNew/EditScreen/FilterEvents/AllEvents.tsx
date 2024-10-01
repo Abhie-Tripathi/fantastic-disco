@@ -123,14 +123,14 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             const customizedFormData = new FormData()
             const existingEvents = fetchedAddedEvents || [];
             const newEvent = {
-                id: event.eventId,
+                id: event.mainEvent.eventId,
                 promoted: "false"
             };
             const mergedEvents = [...existingEvents, newEvent];
             const otherData = {
                 event: mergedEvents,
             };
-            const eventIds = [...addedEventIds, event.eventId].join(',');
+            const eventIds = [...addedEventIds, event.mainEvent.eventId].join(',');
             customizedFormData.append('widgetId', widgetId);
             customizedFormData.append('eventId', eventIds)
             customizedFormData.append('otherdata', JSON.stringify(otherData))
@@ -168,34 +168,34 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                 {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
                         <div className={styles.eventDetailsContainer}>
-                            <div className={styles.eventName}>{`${event.name.substring(0, 30)} ${event.name.length > 30 ? "..." : ""}`}</div>
+                            <div className={styles.eventName}>{`${event.mainEvent.name.substring(0, 30)} ${event.mainEvent.name.length > 30 ? "..." : ""}`}</div>
                             <div className={styles.eventLocationContainer}>
                                 <LocationIcon />
-                                <div>{event.cityName}</div>
+                                <div>{event.mainEvent.cityName}</div>
                             </div>
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
-                                <div>{formatDate(event.startDate)} - {formatDate(event.endDate)}</div>
+                                <div>{formatDate(event.mainEvent.startDate)} - {formatDate(event.mainEvent.endDate)}</div>
                             </div>
                         </div>
                         <div className={styles.btnContainer}>
                             <div className={styles.addButtonContainer}>
                                 <div className={styles.heading}>
-                                    {event.isLinkedToWidget ? "Added to Widget" : "Add to widget"}
+                                    {event.mainEvent.isLinkedToWidget ? "Added to Widget" : "Add to widget"}
                                 </div>
                                 <input
                                     type="checkbox"
                                     id={key.toString()}
                                     className={styles.checkboxInput}
-                                    checked={event.isLinkedToWidget}
-                                    onChange={() => handleAddToWidget(event, event.isLinkedToWidget)}
+                                    checked={event.mainEvent.isLinkedToWidget}
+                                    onChange={() => handleAddToWidget(event, event.mainEvent.isLinkedToWidget)}
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
                             <div className={styles.delete_editBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
                                 {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
-                                <button onClick={() => handleDelete(event.eventId)}><DeleteIcon /></button>
+                                <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button>
                             </div>
                         </div>
                     </div>
