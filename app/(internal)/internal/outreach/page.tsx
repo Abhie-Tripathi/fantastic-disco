@@ -87,22 +87,18 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     event: React.DragEvent<HTMLDivElement>,
     target: string
   ) => {
-    console.log(target);
     
     // if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
-    console.log(event.dataTransfer.getData("taskName"));
     
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
       event.dataTransfer.getData("taskName")
     );
     const source = event.dataTransfer.getData("source_container");
-console.log(source);
 
     // To prevent adding the task into the same container
     if (target !== source) {
       if (source === "shortlisted") {
-        console.log(shortlistedTasks);
         
         setShortlistedTasks(
           shortlistedTasks.filter((task) => task.eventId !== taskName.eventId)
@@ -112,7 +108,6 @@ console.log(source);
         // fetchShortlistData();
         setShortlistedCount(prev=>prev-1)
       } else if (source === "outreach") {
-        console.log(outreachTasks);
         
         setOutreachTasks(
           outreachTasks.filter((task) => task.eventId !== taskName.eventId)
@@ -155,7 +150,6 @@ console.log(source);
         }else
         setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
-        console.log(taskName.eventId);
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("CONFIRMED")
       }else if(target==="canceled"){
@@ -573,7 +567,6 @@ const handleDropdownSelect = (target: string, source: string) => {
             theme === "light" ? styles.modal_light : ""
           }`}
           onClick={(e) => {
-            console.log(e);
             const targetElement = e.target as HTMLElement;
             if (
               targetElement.classList.contains(styles.modal2) ||
