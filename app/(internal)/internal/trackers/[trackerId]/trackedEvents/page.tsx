@@ -25,6 +25,16 @@ interface Toggle{
   rating?:boolean;
   exhibit?:boolean;
   trust?:boolean;
+  maturity?: boolean;
+  brandedEvent?: boolean;
+  eventSeries?: boolean;
+  forecastedStatus?: boolean;
+  impactScore?: boolean;
+  inboundScore?: boolean;
+  internationalScore?: boolean;
+  eventRank?: boolean;
+  audienceZone?: boolean;
+  audienceSpread?: boolean;
 }
 const Page = ({ params }: { params: any }) => {
   const [active, setActive] = useState("Active Events");
@@ -350,6 +360,21 @@ const Page = ({ params }: { params: any }) => {
     if(trackerDetail?.filterValue?.eventKeywords?.length>0){
       const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
       setShowInsights(prev=>({...prev, keywords:keywords}));
+    }
+    if(trackerDetail?.filterValue) {
+      const toggleObj = {
+        maturity: (toggleOpend?.maturity ? true : false),
+        brandedEvent: (toggleOpend?.brandedEvent ? true : false),
+        eventSeries: (toggleOpend?.eventSeries ? true : false),
+        forecastedStatus: (toggleOpend?.forecastedStatus ? true : false),
+        impactScore: (toggleOpend?.impactScore ? true : false),
+        inboundScore: (toggleOpend?.inboundScore ? true : false),
+        internationalScore: (toggleOpend?.internationalScore ? true : false),
+        eventRank: (toggleOpend?.eventRank ? true : false),
+        audienceZone: (toggleOpend?.audienceZone ? true : false),
+        audienceSpread: (toggleOpend?.audienceSpread ? true : false),
+      };
+      setShowInsights(prev=>({...prev, ...toggleObj}));
     }
  },[trackerDetail])
  

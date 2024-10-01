@@ -1,11 +1,13 @@
 import React from 'react'
 import styles from './insights.style.module.css'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen}: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, eventRankToggle}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
   // const rank=["Country Rank","Category Rank"];
   const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
+
+  const isAnalyticsOpen = (internationalScore || inboundScore || eventImpactScore);
   
   return (
     <div className={styles.container}>
@@ -78,7 +80,8 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                                 defaultChecked
                                 disabled
                               />
-                              <span className={`${styles.slider}`}></span>
+                              {/* <span className={`${styles.slider}`}></span> */}
+                              <span className={`${isAnalyticsOpen ? styles.sliderBranded : styles.slider}`}></span>
                             </label>
                           </span>
                         </div>
@@ -153,6 +156,24 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                   disabled
                 />
                 <span className={`${isTrustOpen ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>
+            Event Ranking
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${eventRankToggle ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>
