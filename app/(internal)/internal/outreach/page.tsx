@@ -338,7 +338,7 @@ const handleDropdownSelect = (target: string, source: string) => {
             >
               Shortlisted{" "}
               <span className={styles.eventSize}>
-                {shortlistedTasks.length}
+                {shortlistedCount}
               </span>
             </div>
             <span className={styles.seprator}></span>
@@ -370,7 +370,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   Shortlisted{" "}
                   <span className={styles.eventSize}>
-                    {shortlistedTasks.length}
+                    {shortlistedCount}
                   </span>
                 </div>
               </div>
@@ -428,7 +428,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   In Progress{" "}
                   <span className={styles.eventSize}>
-                    {outreachTasks.length}
+                    {inProgressCount}
                   </span>
                 </div>
               </div>
@@ -486,7 +486,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 >
                   Confirmed{" "}
                   <span className={styles.eventSize}>
-                    {preFinalisedTasks.length}
+                    {confirmedCount}
                   </span>
                 </div>
               </div>
@@ -567,6 +567,7 @@ const handleDropdownSelect = (target: string, source: string) => {
             theme === "light" ? styles.modal_light : ""
           }`}
           onClick={(e) => {
+            console.log(e);
             const targetElement = e.target as HTMLElement;
             if (
               targetElement.classList.contains(styles.modal2) ||
