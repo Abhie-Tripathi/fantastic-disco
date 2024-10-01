@@ -14,7 +14,8 @@ const config = {
           'api.dev.eventgeni.com',
           'logo.clearbit.com',
           'c1.10times.com',
-          'oaidalleapiprodscus.blob.core.windows.net'
+          'oaidalleapiprodscus.blob.core.windows.net',
+          'img.10times.com',
         ],
   },
   experimental: {

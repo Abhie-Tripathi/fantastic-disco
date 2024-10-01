@@ -94,6 +94,7 @@ import RegularityEdition from "@/app/components/dropdown/RegularityEdition";
 import GlobalTouring from "@/app/components/dropdown/GlobalTouring";
 import AnalyticsDropdown from "@/app/components/dropdown/AnalyticsDropdown";
 import AudienceQuality from "@/app/components/dropdown/AudienceQuality";
+import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
 
 const data =[
   {
@@ -197,6 +198,11 @@ const Search = () => {
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
+
+  const [selectedImpactScore, setSelectedImpactScore] = useState([0, 100]);
+  const [selectedInboundScore, setSelectedInboundScore] = useState([0, 100]);
+  const [selectedInternationalScore, setSelectedInternationalScore] = useState([0, 100]);
+
   const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
   const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
     searchParams.get("status")?.split(",") || []
@@ -230,16 +236,27 @@ const Search = () => {
     isAviationRank: false,
     isTrustScore: false,
   });
+
+  const [analyticsToggles, setAnalyticsToggles] = useState({
+    impactScore: false,
+    inboundScore: false,
+    internationalScore: false,
+  })
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(false);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState(0);
-  const [selectedInboundScore, setSelectedInboundScore] = useState(0);
+  const [selectedMaturity, setSelectedMaturity] = useState<string>('');
+  const [selectedRank, setSelectedRank] = useState<string>('');
+  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
+  const [forecastedStatus, setForecastedStatus] = useState(false);
+  const [audienceZone, setAudienceZone] = useState<boolean>(false);
+  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
+  const [selectedCountries, setSelectedCountries] = useState<any>([]);
 
   const [categoryData, setCatgeoryData] = useState([]);
 
@@ -261,6 +278,7 @@ const Search = () => {
   const [isInternationalOpen, setInternationalOpen] = useState<boolean>(false);
   const [isReputationOpen, setReputationOpen] = useState<boolean>(false);
   const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
+  const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
 
   const [requestExhausted, setRequestExhausted] = useState<boolean>(false);
 
@@ -289,15 +307,23 @@ const Search = () => {
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({
     eventSize: true,
     eventKeywords: true,
-    eventRank: rankToggles.isEventRank,
+    eventRank: (selectedRank !== '' && selectedRank !== 'none'),
     matchScore: true,
     growth: true,
     eventSeries: selectedEventSeries,
+    brandedEvent: selectedBrandedEvent,
     global: false,
     reptSent: false,
     eventRating: false,
     estExhibit: false,
     repeatSent: false,
+    maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+    impactScore: analyticsToggles.impactScore,
+    inboundScore: analyticsToggles.inboundScore,
+    internationalScore: analyticsToggles.internationalScore,
+    forecasted: forecastedStatus,
+    audienceZone: audienceZone,
+    audienceSpread: audienceSpread,
   });
 
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
@@ -318,6 +344,16 @@ const Search = () => {
       ...(selectedInsights.eventRating && { rating: true }),
       ...(selectedInsights.estExhibit && { exhibit: true }),
       ...(selectedInsights.repeatSent&& {trust:true}),
+      ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      ...(selectedBrandedEvent && {brandedEvent:true}),
+      ...(selectedEventSeries && {eventSeries:true}),
+      ...(forecastedStatus && {forecastedStatus:true}),
+      ...(analyticsToggles.impactScore&& {impactScore:true}),
+      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
+      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
+      ...((selectedRank !== '' && selectedRank !== 'none') && {eventRank:true}),
+      ...(audienceZone && {audienceZone:true}),
+      ...(audienceSpread && {audienceSpread:true}),
     }
     if(customTrackerName != '') {
       const formData = {
@@ -333,14 +369,14 @@ const Search = () => {
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent.toString(),
+          ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          eventSeries: selectedEventSeries.toString(),
+          ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -356,7 +392,7 @@ const Search = () => {
           ...(selectedReputationScore[0] > 0 && {
             reputationScore: selectedReputationScore[0].toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
+          ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -372,9 +408,9 @@ const Search = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
+          // ...(selectedInboundScore > 0 && {
+          //   inboundScore: selectedInboundScore.toString(),
+          // }),
           ...(selectedEventAttendanceRange?.length === 2 && {
             eventAttendanceRange: [
               +selectedEventAttendanceRange[0],
@@ -390,6 +426,25 @@ const Search = () => {
          ...(selectedVisitors?.length>0 && {
           eventSize: selectedVisitors.join(",")
          }),
+         ...(analyticsToggles.impactScore && {
+          eventImpactSocre: selectedImpactScore.join("-")
+         }),
+         ...(analyticsToggles.inboundScore && {
+          inboundScore: selectedImpactScore.join("-")
+         }),
+         ...(analyticsToggles.internationalScore && {
+          internationalScore: selectedImpactScore.join("-")
+         }),
+         ...(forecastedStatus && {
+          isforecasted: forecastedStatus.toString()
+         }),
+         ...(selectedCountries?.length > 0 && {
+          audienceSpread: selectedCountries.join(",")
+         }),
+         ...((selectedRank !== '' && selectedRank !== 'none') && {
+          // globalRanking: selectedRank,
+          eventRanking: selectedRank,
+         })
         },
       };
 
@@ -510,9 +565,9 @@ const Search = () => {
     // }
 
     // Rank
-    if (rankToggles.isEventRank) {
-      queryString.eventRank = selectedEventRank;
-    }
+    // if (rankToggles.isEventRank) {
+    //   queryString.eventRank = selectedEventRank;
+    // }
 
     // Event Type
     if (selectedEventType.length > 0) {
@@ -584,13 +639,13 @@ const Search = () => {
     }
 
     // Event Ranking
-    if (selectedEventRanking.length > 0) {
-      queryString.eventRanking = selectedEventRanking;
-    }
+    // if (selectedEventRanking.length > 0) {
+    //   queryString.eventRanking = selectedEventRanking;
+    // }
 
     // Branded Event
     if (selectedBrandedEvent) {
-      queryString.brandedEvent = selectedBrandedEvent;
+      queryString.eventBrand = selectedBrandedEvent;
     }
 
     // Trust Score
@@ -609,8 +664,15 @@ const Search = () => {
     }
 
     // Maturity
-    if (selectedMaturity > 0) {
+    if (selectedMaturity !== '' && selectedMaturity !== 'none') {
       queryString.maturity = selectedMaturity;
+    }
+
+    if(selectedRank !== '' && selectedRank !== 'none') {
+      // queryString.categoryRanking = selectedRank;
+      // queryString.globalRanking = selectedRank;
+      // queryString.countryRanking = selectedRank;
+      queryString.eventRanking = selectedRank;
     }
 
     // Int. Score
@@ -619,9 +681,9 @@ const Search = () => {
     }
 
     // Inbound Score
-    if (selectedInboundScore > 0) {
-      queryString.inboundScore = selectedInboundScore;
-    }
+    // if (selectedInboundScore > 0) {
+    //   queryString.inboundScore = selectedInboundScore;
+    // }
 
     // User Ratings
     if (selectedUserRatings.length > 0) {
@@ -632,6 +694,35 @@ const Search = () => {
     if (selectedExhibitScore.length > 0) {
       queryString.estimatedExhibitScore = selectedExhibitScore;
     }
+
+    // Event Impact Score
+    if (analyticsToggles.impactScore) {
+      queryString.eventImpactSocre = selectedImpactScore.join("-");
+    }
+
+    // Event inbound Score
+    if (analyticsToggles.inboundScore) {
+      queryString.inboundScore = selectedInboundScore.join("-");
+    }
+
+    // Event Impact Score
+    if (analyticsToggles.internationalScore) {
+      queryString.internationalScore = selectedInternationalScore.join("-");
+    }
+
+    // Forecasted Status
+    if (forecastedStatus) {
+      queryString.isforecasted = forecastedStatus;
+    }
+
+    // Audience Spread
+    if(selectedCountries.length > 0) {
+      queryString.audienceSpread = selectedCountries;
+    }
+
+    // Show
+    if(Object.keys(queryString).length > 0)
+      queryString.shows = ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating'];
 
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
@@ -871,12 +962,30 @@ const Search = () => {
       eventRating: (selectedUserRatings.length > 0 || selectedInsights?.eventRating),
       estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
       repeatSent: (rankToggles.isTrustScore),
+      maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+      eventRank: (selectedRank !== '' && selectedRank !== 'none'),
+      impactScore: analyticsToggles.impactScore,
+      inboundScore: analyticsToggles.inboundScore,
+      internationalScore: analyticsToggles.internationalScore,
+      forecasted: forecastedStatus,
+      audienceZone: audienceZone,
+      audienceSpread: audienceSpread,
+      eventSeries: selectedEventSeries,
+      brandedEvent: selectedBrandedEvent,
     }));
   }, [
     selectedUserRatings,
     selectedExhibitScore,
     selectedTrustScore,
     rankToggles,
+    selectedMaturity,
+    analyticsToggles,
+    forecastedStatus,
+    audienceZone,
+    audienceSpread,
+    selectedEventSeries,
+    selectedBrandedEvent,
+    selectedRank,
   ]);
 
   useEffect(() => {
@@ -1545,12 +1654,10 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Regularity & Edition
-                          {selectedRegularity[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedRegularity[0]}
-                            </span>
-                          )}
+                          Maturity
+                          {selectedMaturity !== '' && selectedMaturity !== 'none' &&
+                            <span className={styles.input_selected_title}>{formatText(selectedMaturity)}</span>
+                          }
                         </div>
                         <Image
                           src={DropIcon}
@@ -1573,8 +1680,10 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <RegularityEdition
-                          selectedRegularity={selectedRegularity}
-                          setSelectedRegularity={setSelectedRegularity}
+                          selectedMaturity={selectedMaturity}
+                          setSelectedMaturity={setSelectedMaturity}
+                          // selectedRegularity={selectedRegularity}
+                          // setSelectedRegularity={setSelectedRegularity}
                           onClose={close}
                         />
                       )}
@@ -1587,26 +1696,25 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Global & Touring
+                          Branded
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover} >
                     <GlobalTouring
-                      state={selectedEntry}
-                      setState={setSelectedEntry}
-                      data={eventEntryData}
                       selectedBrandedEvent={selectedBrandedEvent}
                       setSelectedBrandedEvent={setSelectedBrandedEvent}
+                      selectedEventSeries={selectedEventSeries}
+                      setSelectedEventSeries={setSelectedEventSeries}
                     />
                   </Popover>
                 </MenuTrigger>
@@ -1619,23 +1727,23 @@ const Search = () => {
                           Forecasted Status
                         </div>
 
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
 
-                        {/* <div className={styles.toggle_container}>
+                        <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
                                 onChange={() => {
-                                  setSelectedBrandedEvent((prev) => !prev);
+                                  setForecastedStatus((prev) => !prev);
                                 }}
-                                checked={selectedBrandedEvent}
-                                disabled={true}
+                                checked={forecastedStatus}
+                                // disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
                           </span>
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2019,6 +2127,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Analytics
+                          {Object.values(analyticsToggles).filter(value => value === true).length > 0 &&
+                            <span className={styles.selected_no_filters}>
+                              {Object.values(analyticsToggles).filter(value => value === true).length}
+                            </span>
+                          }
                           {/* {rankToggles.isEventRank && (
                             <span className={styles.input_selected_title}>
                               [{selectedEventRank[0]} , {selectedEventRank[1]}]
@@ -2035,14 +2148,14 @@ const Search = () => {
                             </span>
                           )} */}
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
@@ -2050,14 +2163,14 @@ const Search = () => {
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <AnalyticsDropdown
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
+                          selectedEventRank={selectedImpactScore}
+                          setSelectedEventRank={setSelectedImpactScore}
+                          selectedLocalRank={selectedInboundScore}
+                          setSelectedLocalRank={setSelectedInboundScore}
+                          selectedAviationRank={selectedInternationalScore}
+                          setSelectedAviationRank={setSelectedInternationalScore}
+                          rankToggles={analyticsToggles}
+                          setRankToggles={setAnalyticsToggles}
                           onClose={close}
                         />
                       )}
@@ -2133,13 +2246,13 @@ const Search = () => {
                             <span className={styles.selected_no_filters}>1</span>
                           }
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                         {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
@@ -2161,6 +2274,8 @@ const Search = () => {
                           rankToggles={rankToggles}
                           setRankToggles={setRankToggles}
                           onClose={close}
+                          selectedRank={selectedRank}
+                          setSelectedRank={setSelectedRank}
                         />
                       )}
                     </Dialog>
@@ -2264,7 +2379,7 @@ const Search = () => {
             {showAdvanceFilter && selectedAdvFilter === "AI" && (
                 <div
                   className={styles.inputdropdowns_container_AI}
-                  style={{gridTemplateColumns:"repeat(4, 20vw)"}}
+                  style={{gridTemplateColumns:"repeat(5, 17vw)"}}
                 >
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
@@ -2272,7 +2387,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                        Audience Quality Score
+                        Audience Quality
                           {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
@@ -2312,7 +2427,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Exhibitor Quality Score
+                          Exhibitor Quality
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                         {/* <Image
@@ -2344,7 +2459,8 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Audience Des &amp; Dept
+                          {/* Audience Des &amp; Dept */}
+                          Audience Profile
                         </div>
                         {/* <Image
                           src={DropIcon}
@@ -2359,44 +2475,79 @@ const Search = () => {
                   {/* </Button> */}
                 </MenuTrigger>
 
+                <div>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Audience Zone
+                      </div>
+
+                      {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+
+                      <div className={styles.toggle_container}>
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                setAudienceZone((prev) => !prev);
+                              }}
+                              checked={audienceZone}
+                              // disabled={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setSpreadOpen(true)}>
                         Audience Spread
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
+                          {selectedCountries.length > 0 ? (
+                            <span className={styles.selected_no_filters}>
+                              {selectedCountries.length}
                             </span>
                           ) : (
                             ""
-                          )} */}
+                          )}
                         </div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                      </Button>
+                      <div className={styles.toggle_container}>
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                setAudienceSpread((prev) => !prev);
+                              }}
+                              onClick={() => {
+                                if(selectedInsights?.audienceSpread) setSelectedCountries([])
+                                else setSpreadOpen(true)
+                                setSelectedInsights((prevInsights) => ({ ...prevInsights, audienceSpread: !selectedInsights?.audienceSpread }));
+                              }}
+                              checked={audienceSpread}
+                              // disabled={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
                       </div>
                     </div>
-                  {/* </Button> */}
-                  {/* <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <EventAttendance
-                          state={selectedEventAttendanceRange}
-                          setState={setSelectedEventAttendanceRange}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover> */}
+                  </div>
+                  <Popover className={styles.filterPopover} isOpen={isSpreadOpen} onOpenChange={setSpreadOpen}>
+                    <AudienceSpread
+                      selectedCountries={selectedCountries}
+                      setSelectedCountries={setSelectedCountries}
+                      onClose={close}
+                    />
+                  </Popover>
                 </MenuTrigger>
 
               </div>

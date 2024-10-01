@@ -3,19 +3,17 @@ import styles from "./globaltouring.module.css";
 import { useTheme } from "@/context";
 
 interface LabelDropdownProps {
-  state: string[];
-  setState: ([]) => void;
-  data: any;
   selectedBrandedEvent: boolean;
   setSelectedBrandedEvent: (val: any) => void;
+  selectedEventSeries: boolean;
+  setSelectedEventSeries: (val: any) => void;
 }
 
 const GlobalTouring = ({
-  state,
-  setState,
-  data,
   selectedBrandedEvent,
   setSelectedBrandedEvent,
+  selectedEventSeries,
+  setSelectedEventSeries,
 }: LabelDropdownProps) => {
   return (
     <div className={styles.container}>
@@ -30,7 +28,7 @@ const GlobalTouring = ({
                   setSelectedBrandedEvent((prev: any) => !prev);
                 }}
                 checked={selectedBrandedEvent}
-                disabled={true}
+                // disabled={true}
               />
               <span className={styles.slider}></span>
             </label>
@@ -42,7 +40,14 @@ const GlobalTouring = ({
         <div className={styles.toggle_container}>
           <span>
             <label className={styles.switch}>
-              <input type="checkbox" disabled={true} />
+              <input
+                type="checkbox"
+                onChange={() => {
+                  setSelectedEventSeries((prev: any) => !prev);
+                }}
+                checked={selectedEventSeries}
+                // disabled={true}
+              />
               <span className={styles.slider}></span>
             </label>
           </span>
