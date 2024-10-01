@@ -3,6 +3,7 @@ export interface AllEventsType {
   subEvents : EventsType[]
 }
 export interface EventsType{
+  promoted : string;
   eventId: string;
   name: string;
   latitude: number;
@@ -23,6 +24,7 @@ export interface EventsType{
   customizationData : CustomizationData;
   widgetTags : string;
   eventType : string;
+  parentData : string;
 }
 interface CustomizationData {
   pageBgColor: string;

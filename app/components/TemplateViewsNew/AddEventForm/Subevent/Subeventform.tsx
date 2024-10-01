@@ -16,7 +16,7 @@ import ExhibitorContainer from '../Details/participation/exhibitor/ExhibitorCont
 import RegistrationModal from '../Details/resgistration/RegistrationModal'
 import { useTheme } from '@/context'
 import usePosterGenerator from '@/app/service/posterGenerator'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 import DescriptionModal from '../Details/description/DescriptionModal'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from '../Details/Hashtags/HashtagContainer'
@@ -38,14 +38,15 @@ interface SpeakerProfileType {
 interface Props {
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
-    prefilledEvent?: AllEventsType
+    prefilledEvent?: AllEventsType | null
     eventFont: string;
     setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement>;
     eventFlow: string;
-    setMainEventName: (value: string) => void
+    prefilledSubEvent?: EventsType | null;
+    // setMainEventName: (value: string) => void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, setMainEventName }: Props) => {
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow,prefilledSubEvent }: Props) => {
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -127,7 +128,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
         //     generatePrompt(countryName, description, eventName, 1024, 1024)
         //   }
         // }
-        if (!prefilledEvent) {
+        if (!prefilledEvent && !prefilledSubEvent) {
             if (formState.description && formState.eventName) {
                 generateHashtags(formState.eventName, formState.description)
             }
@@ -143,7 +144,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     }, [loadingState, isLoading])
 
     useEffect(() => {
-        if (!prefilledEvent) {
+        if (!prefilledEvent && !prefilledSubEvent) {
             handleChange('hashtags', generatedHashtags)
             // setHashtags(generatedHashtags)
         }
@@ -178,7 +179,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     return (
         <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' setMainEventName={setMainEventName} />
+                <GlobalSearch widgetId='123' handleChange = {handleChange} />
             </div>}
 
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >

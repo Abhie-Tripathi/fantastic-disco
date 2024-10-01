@@ -12,6 +12,7 @@ interface ImageState {
     file: File | null;
 }
 export interface FormState {
+    promoted : string;
     descriptionModal : boolean;
     speakerModal : boolean;
     registerModal : boolean;
@@ -48,5 +49,6 @@ export interface FormState {
     isParticipationMessageEmpty: boolean;
     isTextValueMessageEmpty: boolean;
     errorMessage: string;
+    parentData : string;
   }
   

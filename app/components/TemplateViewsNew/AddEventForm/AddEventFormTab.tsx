@@ -4,7 +4,7 @@ import Placeholder from '/public/placeholder.png'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
@@ -18,24 +18,28 @@ interface Props {
     widgetId: string;
     fetchEvents: (page: number, type?: string) => Promise<void>;
     addedEventIds: string[]
-    prefilledEvent?: AllEventsType
-    prefilledGlobalEvent?: GolbalEventType
+    prefilledEvent?: AllEventsType | null
+    prefilledGlobalEvent?: GolbalEventType | null
     eventFlow: string;
     setEventFlow: (value: string) => void;
     mainEventState: FormState;
     subEventState: FormState;
     handleSubeventChange: (field: keyof FormState, value: any) => void;
     handleMaineventChanges: (field: keyof FormState, value: any) => void;
+    setPrefilledGlobalEvent: (value: GolbalEventType | null) => void;
+    setPrefilledEvent: (value: AllEventsType | null) => void;
+    prefilledSubEvent?: EventsType | null;
+    setPrefilledSubEvent: (value: EventsType | null) => void
 }
 
-const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
-    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges }: Props) => {
+const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
+    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges,prefilledSubEvent, setPrefilledSubEvent }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    const [mainEventName, setMainEventName] = useState<string>("");
+    // const [mainEventName, setMainEventName] = useState<string>("");
 
     const { theme } = useTheme()
 
@@ -158,7 +162,8 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                 longitude: mainEventState.longitude,
                 participationType: mainEventState.participationType,
                 event_type: "Tradeshow",
-                customizationData: JSON.stringify(eventCustomizationData)
+                customizationData: JSON.stringify(eventCustomizationData),
+                promoted : mainEventState.promoted
             };
             const formData = new FormData()
             formData.append("name", mainEventState.eventName)
@@ -275,7 +280,8 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             participationType: subEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
-            parentData: mainEventName ? mainEventName : ""
+            parentData: subEventState.parentData ? subEventState.parentData : "",
+            promoted : subEventState.promoted
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -311,111 +317,132 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             console.log(error)
         }
     }
-    // This function can be called from 2 perspectives. If the already added event in the widget is getting updated or if we are adding the event to the widget from all events list
+    // This function can be called from 2 perspectives. Updating a Main or Updating a main event whose type is sub. So in that case the formState will change to SubEventState
     const handleSaveEvent = async (eventId: string) => {
-        if (!mainEventState.eventName || mainEventState.eventName === "") {
-            handleMaineventChanges('isEventNameEmpty', true)
-            // setIsEventNameEmpty(true)
+        // Use the eventFlow variable to decide which state to use
+        const eventState = eventFlow === "main" ? mainEventState : subEventState;
+
+        // Perform the necessary validation checks with the selected state
+        if (!eventState.eventName || eventState.eventName === "") {
+            handleMaineventChanges('isEventNameEmpty', true);
         } else {
-            handleMaineventChanges('isEventNameEmpty', false)
-            // setIsEventNameEmpty(false)
+            handleMaineventChanges('isEventNameEmpty', false);
         }
-        if (!mainEventState.query && !mainEventState.latitude || !mainEventState.longitude) {
-            handleMaineventChanges('isEventFormatEmpty', true)
-            // setIsEventFormatEmpty(true)
+
+        if ((!eventState.query && !eventState.latitude) || !eventState.longitude) {
+            handleMaineventChanges('isEventFormatEmpty', true);
         } else {
-            handleMaineventChanges('isEventFormatEmpty', false)
-            // setIsEventFormatEmpty(false)
+            handleMaineventChanges('isEventFormatEmpty', false);
         }
-        if (!mainEventState.description) {
-            handleMaineventChanges('isEventDescriptionEmpty', true)
-            // setIsEventDescriptionEmpty(true)
+
+        if (!eventState.description) {
+            handleMaineventChanges('isEventDescriptionEmpty', true);
         } else {
-            handleMaineventChanges('isEventDescriptionEmpty', false)
-            // setIsEventDescriptionEmpty(false)
+            handleMaineventChanges('isEventDescriptionEmpty', false);
         }
-        if (!mainEventState.participationType) {
-            handleMaineventChanges('isEventParticipationEmpty', true)
-            // setIsEventParticipationEmpty(true)
+
+        if (!eventState.participationType) {
+            handleMaineventChanges('isEventParticipationEmpty', true);
         } else {
-            handleMaineventChanges('isEventParticipationEmpty', false)
-            // setIsEventParticipationEmpty(false)
+            handleMaineventChanges('isEventParticipationEmpty', false);
         }
-        if (!mainEventState.participationMessage) {
-            handleMaineventChanges('isParticipationMessageEmpty', true)
-            // setIsParticipationMessageEmpty(true)
+
+        if (!eventState.participationMessage) {
+            handleMaineventChanges('isParticipationMessageEmpty', true);
         }
-        if (!mainEventState.textValue.trim()) {
-            handleMaineventChanges('isTextValueMessageEmpty', true)
-            // setIsTextValueMessageEmpty(true)
+
+        if (!eventState.textValue.trim()) {
+            handleMaineventChanges('isTextValueMessageEmpty', true);
         }
-        if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
+
+        // Check if all required fields are present
+        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType || !eventState.participationMessage) {
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
-        if (!prefilledEvent?.mainEvent.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
-            if (!mainEventState.banner.placeHolder && !mainEventState.banner.file) {
+
+        // Check if banner exists, if not, show error for missing poster
+        if (!prefilledEvent?.mainEvent.logoUrl) {
+            if (!eventState.banner.placeHolder && !eventState.banner.file) {
                 showToast("error", "Please upload or generate a Poster");
-                return; // Exit the function if any field is missing
+                return; // Exit the function if banner is missing
             }
         }
+
+        // Prepare the event customization data
         const eventCustomizationData = {
             pageBgColor,
             eventFont,
-            registerBtnColor: mainEventState.registerBtnColor,
-            registerBtnText: mainEventState.registerBtnText,
-            registerMessage: mainEventState.registerMessage,
-            speakerProfilesData: mainEventState.speakerProfilesData,
-            participationMessage: mainEventState.participationMessage,
-            venue: mainEventState.venue,
-            hashtags: mainEventState.hashtags.join(","),
-            boothNumber: mainEventState.boothNumber
-        }
+            registerBtnColor: eventState.registerBtnColor,
+            registerBtnText: eventState.registerBtnText,
+            registerMessage: eventState.registerMessage,
+            speakerProfilesData: eventState.speakerProfilesData,
+            participationMessage: eventState.participationMessage,
+            venue: eventState.venue,
+            hashtags: eventState.hashtags.join(","),
+            boothNumber: eventState.boothNumber,
+        };
+
+        // Prepare the event data
         const eventData = {
             id: eventId,
-            format: mainEventState.eventFormat,
-            start_time: mainEventState.startTime,
-            end_time: mainEventState.endTime,
-            end_date: mainEventState.endDate,
-            start_date: mainEventState.startDate,
-            description: mainEventState.description,
-            logoUrl: mainEventState.banner.placeHolder,
-            location_city: mainEventState.cityName,
-            location_country: mainEventState.countryName,
-            participationType: mainEventState.participationType,
-            gmt_time: mainEventState.timeZone,
-            latitude: mainEventState.latitude,
-            longitude: mainEventState.longitude,
+            format: eventState.eventFormat,
+            start_time: eventState.startTime,
+            end_time: eventState.endTime,
+            end_date: eventState.endDate,
+            start_date: eventState.startDate,
+            description: eventState.description,
+            logoUrl: eventState.banner.placeHolder,
+            location_city: eventState.cityName,
+            location_country: eventState.countryName,
+            participationType: eventState.participationType,
+            gmt_time: eventState.timeZone,
+            latitude: eventState.latitude,
+            longitude: eventState.longitude,
             event_type: "Tradeshow",
-            customizationData: JSON.stringify(eventCustomizationData)
+            customizationData: JSON.stringify(eventCustomizationData),
+            parentData: eventState.parentData,
+            promoted : eventState.promoted
         };
+
+        // Prepare formData for the request
         const formData = new FormData();
         formData.append("id", eventId);
-        formData.append("name", mainEventState.eventName);
+        formData.append("name", eventState.eventName);
         formData.append("data", JSON.stringify(eventData));
-        // formData.append("interest", participationType.toUpperCase())
-        formData.append("sourceId", widgetId)
-        if (mainEventState.banner.placeHolder.includes("eventgeni") == false) { // This means if the banner is not updated we dont want to send the patch request for banner updation.
-            if (mainEventState.banner.file) {
-                formData.append("file", mainEventState.banner.file); // Use the file field if uploaded by the user
+        formData.append("sourceId", widgetId);
+
+        // Check if the banner has been updated
+        if (eventState.banner.placeHolder.includes("eventgeni") === false) {
+            if (eventState.banner.file) {
+                // formData.append("file", eventState.banner.file); // Use the file field if uploaded by the user
             } else {
-                formData.append("logoUrl", mainEventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
+                formData.append("logoUrl", eventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
             }
         }
+
+        // Make the PATCH request
         const { data, error } = await myFetch(`${baseUrl}/event`, {
             method: 'PATCH',
             body: formData,
         });
+
+        // Handle the response
         if (data) {
-            setIsAddEventModalOpen(false)
-            showToast("success", "Event Updated Successfully")
-            fetchEvents(0, "update")
+            setIsAddEventModalOpen(false);
+            showToast("success", "Event Updated Successfully");
+            fetchEvents(0, "update");
         }
+
         if (error) {
             console.log(error);
         }
-    }
+    };
+
     const handleModalClose = () => {
+        setPrefilledEvent(null)
+        setPrefilledSubEvent(null)
+        setPrefilledGlobalEvent(null)
         setIsAddEventModalOpen(false)
         setEventFlow("")
     }
@@ -434,9 +461,9 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
         }
     }, [isModalOpen]);
 
-    useEffect(() => {
-        console.log("main event name :", mainEventName)
-    }, [mainEventName])
+    // useEffect(() => {
+    //     console.log("main event name :", mainEventName)
+    // }, [mainEventName])
 
     const handleCollapseForm = (type: string) => {
         if (type === "side") { // This is when we click on sideevent button or Yes button
@@ -445,7 +472,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                 setActiveBtn("side")
             }
             else {
-                showToast("error","Fill all the fields in this form to proceed")
+                showToast("error", "Fill all the fields in this form to proceed")
                 if (!mainEventState.eventName || mainEventState.eventName === "") {
                     handleMaineventChanges('isEventNameEmpty', true)
                     // setIsEventNameEmpty(true)
@@ -527,12 +554,13 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                         collapseMainEventForm={collapseMainEventForm}
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
-                    setMainEventName={setMainEventName}
+                    // setMainEventName={setMainEventName}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}
                     setLoadingState={setLoadingState}
                     fileInputRef={fileInputRef}
+                    prefilledSubEvent={prefilledSubEvent} 
                     prefilledEvent={prefilledEvent}
                     eventFlow={eventFlow}
                 />}

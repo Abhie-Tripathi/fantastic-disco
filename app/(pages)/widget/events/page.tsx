@@ -4,7 +4,7 @@ import styles from './page.style.module.css'
 import YourEventCard from '@/app/components/internal/YourEventCard'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { myFetch } from '@/utils/myFetch'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 import { baseUrl } from '@/constants'
 import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
 import CalendarIcon from '/public/calendar.svg'
@@ -23,13 +23,15 @@ const Page = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
-    const [prefilledEvent, setPrefilledEvent] = useState<AllEventsType>();
-    const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>();
+    const [prefilledEvent, setPrefilledEvent] = useState<AllEventsType | null>(null);
+    const [prefilledSubEvent, setPrefilledSubEvent] = useState<EventsType | null>(null)
+    const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType | null>(null);
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
     const [choiceFormModal, setChoiceFormModal] = useState<boolean>(false)
     // const [mainEventFlow, setMainEventFlow] = useState<boolean>(false)
     // const [sideEventFlow, setSideEventFlow] = useState<boolean>(false)
     const [eventFlow, setEventFlow] = useState<string>("")
+    const [selectedEventType, setSelectedEventType] = useState<string>("") // This will be used to Delete an event
 
     let prevDate: any = null;
     useEffect(() => {
@@ -37,19 +39,19 @@ const Page = () => {
     }, [page])
 
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
-                fetchedEvents.length > 0 // Prevent fetching on empty screen
-            ) {
-                setPage((prevPage) => prevPage + 1); // Increment page to load more events
-            }
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (
+    //             window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+    //             fetchedEvents.length > 0 // Prevent fetching on empty screen
+    //         ) {
+    //             setPage((prevPage) => prevPage + 1); // Increment page to load more events
+    //         }
+    //     };
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [fetchedEvents]);
+    //     window.addEventListener("scroll", handleScroll);
+    //     return () => window.removeEventListener("scroll", handleScroll);
+    // }, [fetchedEvents]);
 
     const handleDeleteModal = (eventId: string, eventName: string, isPresentinWidget: boolean) => {
         if (isPresentinWidget) {
@@ -59,16 +61,20 @@ const Page = () => {
             setSelectedEventId(eventId)
             setDeleteModal(true)
         }
-
     }
+
     const handleDelete = async () => {
         const customizeData = new FormData();
         customizeData.append("id", selectedEventId)
         customizeData.append('published', "false");
+        if (selectedEventType === "side") {
+            customizeData.append("type", "SUB")
+        }
         const { data, error } = await myFetch(
             `${baseUrl}/event`,
             {
                 method: 'PATCH',
+
                 body: customizeData,
             }
         );
@@ -103,6 +109,7 @@ const Page = () => {
                     eventType: event.type,
                     longitude: event.data.longitude,
                     participationType: event.data.participationType,
+                    parentData: event.data.parentData,
                     widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
                     customizationData: {
                         pageBgColor: event.data.customizationData.pageBgColor,
@@ -161,20 +168,20 @@ const Page = () => {
         }
     }
     useEffect(() => {
-        handleFormModal()
-    }, [eventFlow])
-
-    const handleFormModal = () => {
-        setPrefilledEvent(undefined)
-        setPrefilledGlobalEvent(undefined)
         if (eventFlow) {
             setIsEventFormModal(true)
         }
-        // setEventFlow("")
-    }
+    }, [eventFlow])
+
+    // const handleFormModal = () => {
+    //     setPrefilledEvent(undefined)
+    //     setPrefilledGlobalEvent(undefined)
+    //     if (eventFlow) {
+    //         setIsEventFormModal(true)
+    //     }
+    // }
     const handlePrefillEvent = (event: AllEventsType) => {
-        setPrefilledEvent(undefined)
-        setPrefilledGlobalEvent(undefined)
+        // setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
         setIsEventFormModal(true)
         if (event.mainEvent.eventType === "MAIN") {
@@ -182,13 +189,17 @@ const Page = () => {
         } else setEventFlow("side")
 
     }
+    const handlePrefillSubEvent = (event: EventsType) => {
+        setPrefilledSubEvent(event)
+        setIsEventFormModal(true)
+        setEventFlow("side")
+    }
     const handlePrefillGlobalEvent = (event: GolbalEventType) => {
-        setPrefilledEvent(undefined)
-        setPrefilledGlobalEvent(undefined)
+        // setPrefilledEvent(undefined)
+        // setPrefilledGlobalEvent(undefined)
         setPrefilledGlobalEvent(event)
         setIsEventFormModal(true)
         setEventFlow("main")
-
     }
     return (
         <div className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal ? styles.modalOpen : ""}`}>
@@ -208,12 +219,8 @@ const Page = () => {
                 return (
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
-                        {/* <YourEventCard
-                            handleDeleteModal={handleDeleteModal}
-                            handlePrefillEvent={handlePrefillEvent}
-                            geniEvent={event}
-                        /> */}
-                        {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} normalEvent={event} />}
+
+                        {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} normalEvent={event} />}
                     </div>
                 );
             }) :
@@ -225,7 +232,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
+                <AddEvent prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

@@ -24,7 +24,7 @@ interface Props {
     cityNameSub: string;
     participationTypeSub: string;
     descriptionSub: string;
-    prefilledEvent?: AllEventsType
+    prefilledEvent?: AllEventsType | null
 }
 
 const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub}: Props) => {

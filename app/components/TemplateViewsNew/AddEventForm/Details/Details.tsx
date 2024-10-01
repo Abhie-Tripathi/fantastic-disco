@@ -34,7 +34,7 @@ interface SpeakerProfileType {
 interface Props {
   formState: FormState;
   handleChange: (field: keyof FormState, value: any) => void;
-  prefilledEvent?: AllEventsType
+  prefilledEvent?: AllEventsType | null
   eventFont: string;
   setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
   fileInputRef: React.RefObject<HTMLInputElement>;
