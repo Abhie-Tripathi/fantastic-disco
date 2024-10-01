@@ -19,7 +19,7 @@ import { FormState } from '@/types/Formstate'
 
 interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
-  formState : FormState
+  formState: FormState
   // setParticipationType: (value: string) => void
   heading: string;
   // participationType: string;
@@ -35,9 +35,9 @@ interface Props {
 
 }
 
-const ParticipationContainer = ({ 
+const ParticipationContainer = ({
   // setParticipationType, participationType,
-   size, theme, type,handleChange, formState,
+  size, theme, type, handleChange, formState,
   // setParticipationMessage, participationMessage,  isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty, 
   heading }: Props) => {
   const mainOptions = [
@@ -84,14 +84,13 @@ const ParticipationContainer = ({
   // Helper function to render selected option
   const renderSelectedOption = useCallback(() => {
     if (!formState.participationType) return null;
-
     const selectedOption = options.find(option => option.value === formState.participationType);
     if (!selectedOption) return null;
 
     return (
       <div className={styles.selectedOption}>
         <div className={styles.option}>
-          <Image src={selectedOption.icon} alt={`${selectedOption.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54}/>
+          <Image src={selectedOption.icon} alt={`${selectedOption.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54} />
           <span>{selectedOption.label}</span>
         </div>
         <div className={styles.inputContainer}>

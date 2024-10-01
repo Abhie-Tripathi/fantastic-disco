@@ -43,9 +43,9 @@ interface Props {
     setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement>;
     eventFlow: string;
-    setMainEventName : (value : string)=>void
+    setMainEventName: (value: string) => void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow,setMainEventName }: Props) => {
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, setMainEventName }: Props) => {
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -178,15 +178,18 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     return (
         <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' setMainEventName={setMainEventName}/>
+                <GlobalSearch widgetId='123' setMainEventName={setMainEventName} />
             </div>}
 
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
                 <div>
-                    <div className={`${styles.participationContainer}`}><ParticipationContainer
-                        handleChange={handleChange} formState={formState}
-                        heading='Choose Your sub event type' type='side' size="large" /></div></div>
-                {formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+                    <div className={`${styles.participationContainer}`}>
+                        <ParticipationContainer
+                            handleChange={handleChange} formState={formState}
+                            heading='Choose Your sub event type' type='side' size="large" />
+                    </div>
+                    {formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+                </div>
             </div>
             <div className={styles.sections}>
                 <div className={styles.leftSection}>
@@ -221,7 +224,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                             maxLength={80}
                             placeholder='Event Name'
-                            style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
+                            style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
                             onChange={(e) => handleInputChange(e.target.value)}
                             value={formState.eventName}
                         />

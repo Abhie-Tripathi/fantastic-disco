@@ -133,7 +133,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const handleDeleteEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     if (handleDeleteModal && geniEvent) {
-      handleDeleteModal(geniEvent.eventId, geniEvent.name)
+      // handleDeleteModal(geniEvent.eventId, geniEvent.name)
     }
   }
   const handleModalOpen = () => {
@@ -224,8 +224,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           <div className={styles.cardDetails}>
             <div className={styles.eventNameComp}>
               <div>
-                <div className={styles.eventName}>{geniEvent?.name || eventName}</div>
-                <div className={styles.company}>{geniEvent?.cityName || eventCompany}</div>
+                {/* <div className={styles.eventName}>{geniEvent?.name || eventName}</div>
+                <div className={styles.company}>{geniEvent?.cityName || eventCompany}</div> */}
               </div>
               {!geniEvent && <div className="desktop_view">
                 <StatusChangeDropdown
@@ -257,7 +257,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       ? eventLocation === eventCountry
                         ? eventCountry
                         : `${eventLocation}, ${eventCountry}`
-                      : `${geniEvent?.cityName}, ${geniEvent?.countryName}`}
+                      :""
+                      //  `${geniEvent?.cityName}, ${geniEvent?.countryName}`
+                      }
                   </div>
                 </div>
               )}
@@ -273,7 +275,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
                 <div style={{marginTop:"3px"}}>
                   {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
-                  {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)}
+                  {/* {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)} */}
                 </div>
               </div>
               {geniEvent && <div className={styles.eventTime}>
@@ -284,11 +286,11 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   height={14}
                   className='icons'
                 />
-                <div>{geniEvent.startTime}{" - "}{geniEvent.endTime}{", "}{geniEvent.gmtZone}</div>
+                {/* <div>{geniEvent.startTime}{" - "}{geniEvent.endTime}{", "}{geniEvent.gmtZone}</div> */}
               </div>}
             </div>
             {geniEvent && <div className={styles.description}>
-              {geniEvent.description.substring(0, 100)}{geniEvent.description.length > 100 && "..."}
+              {/* {geniEvent.description.substring(0, 100)}{geniEvent.description.length > 100 && "..."} */}
             </div>}
             {geniEvent && <div className={styles.tags_deleteContainer}>
               <div className={styles.tags}>

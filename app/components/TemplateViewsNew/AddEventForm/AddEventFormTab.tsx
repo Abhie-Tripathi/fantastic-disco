@@ -40,8 +40,51 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
     const { theme } = useTheme()
 
     const handleAddEvent = async () => {
-        
         if (eventFlow === "main") {
+            if (activeBtn === "side") {
+                if (subEventState.eventName || subEventState.description || subEventState.query || subEventState.participationType) {
+                    if (!subEventState.eventName || subEventState.eventName === "") {
+                        handleSubeventChange('isEventNameEmpty', true)
+                        // setIsEventNameEmpty(true)
+                    } else {
+                        handleSubeventChange('isEventNameEmpty', false)
+                        // setIsEventNameEmpty(false)
+                    }
+                    if (!subEventState.query) {
+                        handleSubeventChange('isEventFormatEmpty', true)
+                        // setIsEventFormatEmpty(true)
+                    } else {
+                        handleSubeventChange('isEventFormatEmpty', false)
+                        // setIsEventFormatEmpty(false)
+                    }
+                    if (!subEventState.description) {
+                        handleSubeventChange('isEventDescriptionEmpty', true)
+                        // setIsEventDescriptionEmpty(true)
+                    } else {
+                        handleSubeventChange('isEventDescriptionEmpty', false)
+                        // setIsEventDescriptionEmpty(false)
+                    }
+                    if (!subEventState.participationType) {
+                        handleSubeventChange('isEventParticipationEmpty', true)
+                        // setIsEventParticipationEmpty(true)
+                    } else {
+                        handleSubeventChange('isEventParticipationEmpty', false)
+                        // setIsEventParticipationEmpty(false)
+                    }
+                    if (!subEventState.participationMessage) {
+                        handleSubeventChange('isParticipationMessageEmpty', true)
+                        // setIsParticipationMessageEmpty(true)
+                    }
+                    if (!subEventState.textValue) {
+                        handleSubeventChange('isTextValueMessageEmpty', true)
+                        // setIsTextValueMessageEmpty(true)
+                    }
+                    if (subEventState.banner.placeHolder === Placeholder && !subEventState.banner.file) {
+                        showToast("error", "Please upload or generate a Poster");
+                        return; // Exit the function if any field is missing
+                    }
+                }
+            }
             if (!mainEventState.eventName || mainEventState.eventName === "") {
                 handleMaineventChanges('isEventNameEmpty', true)
                 // setIsEventNameEmpty(true)
@@ -80,12 +123,12 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             }
 
             if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-
                 showToast("error", "Please fill in all the fields");
                 return; // Exit the function if any field is missing
             }
 
             if (mainEventState.banner.placeHolder === Placeholder && !mainEventState.banner.file) {
+                console.log("this code is running")
                 showToast("error", "Please upload or generate a Poster");
                 return; // Exit the function if any field is missing
             }
@@ -140,10 +183,13 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             })
             if (data) {
                 console.log("event added :", data)
-                addSubEvent(data.data.id)
-                // setIsAddEventModalOpen(false)
-                showToast("success", "Event Added Successfully")
-                // fetchEvents(0, "update")
+                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
+                    addSubEvent(data.data.id)
+                } else {
+                    setIsAddEventModalOpen(false)
+                    showToast("success", "Main Event Added Successfully")
+                    fetchEvents(0, "update")
+                }
             }
             if (error) {
                 console.log(error)
@@ -307,7 +353,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
-        if (!prefilledEvent?.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
+        if (!prefilledEvent?.mainEvent.logoUrl) { // We are checking that if the banner is already there i.e if the user has not upadted the banner while saving, then we dont need to check the below conditions
             if (!mainEventState.banner.placeHolder && !mainEventState.banner.file) {
                 showToast("error", "Please upload or generate a Poster");
                 return; // Exit the function if any field is missing
@@ -381,20 +427,73 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
         }
     }, [mainEventState.speakerModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
     const formContainerRef = useRef<HTMLDivElement | null>(null);
+
     useEffect(() => {
         if (isModalOpen && formContainerRef.current) {
             formContainerRef.current.scrollTop = 0;
         }
     }, [isModalOpen]);
-    useEffect(()=>{
+
+    useEffect(() => {
         console.log("main event name :", mainEventName)
-    },[mainEventName])
+    }, [mainEventName])
+
+    const handleCollapseForm = (type: string) => {
+        if (type === "side") { // This is when we click on sideevent button or Yes button
+            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && mainEventState.cityName && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
+                setCollapseMainEventForm(true)
+                setActiveBtn("side")
+            }
+            else {
+                showToast("error","Fill all the fields in this form to proceed")
+                if (!mainEventState.eventName || mainEventState.eventName === "") {
+                    handleMaineventChanges('isEventNameEmpty', true)
+                    // setIsEventNameEmpty(true)
+                } else {
+                    handleMaineventChanges('isEventNameEmpty', false)
+                    // setIsEventNameEmpty(false)
+                }
+                if (!mainEventState.query) {
+                    handleMaineventChanges('isEventFormatEmpty', true)
+                    // setIsEventFormatEmpty(true)
+                } else {
+                    handleMaineventChanges('isEventFormatEmpty', false)
+                    // setIsEventFormatEmpty(false)
+                }
+                if (!mainEventState.description) {
+                    handleMaineventChanges('isEventDescriptionEmpty', true)
+                    // setIsEventDescriptionEmpty(true)
+                } else {
+                    handleMaineventChanges('isEventDescriptionEmpty', false)
+                    // setIsEventDescriptionEmpty(false)
+                }
+                if (!mainEventState.participationType) {
+                    handleMaineventChanges('isEventParticipationEmpty', true)
+                    // setIsEventParticipationEmpty(true)
+                } else {
+                    handleMaineventChanges('isEventParticipationEmpty', false)
+                    // setIsEventParticipationEmpty(false)
+                }
+                if (!mainEventState.participationMessage) {
+                    handleMaineventChanges('isParticipationMessageEmpty', true)
+                    // setIsParticipationMessageEmpty(true)
+                }
+                if (!mainEventState.textValue.trim()) {
+                    handleMaineventChanges('isTextValueMessageEmpty', true)
+                    // setIsTextValueMessageEmpty(true)
+                }
+            }
+        } else {
+            setCollapseMainEventForm(false)
+            setActiveBtn("main")
+        }
+    }
     return (
         <div className={styles.body}>
             <div className={`${styles.btnContainer} ${eventFlow === "side" ? styles.endBtnContainer : ""}`} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
                 {eventFlow === "main" && <div className={styles.eventBtns}>
-                    <button className={activeBtn === "main" ? styles.activebtn : ""}>Main Event</button>
-                    <button className={activeBtn === "side" ? styles.activebtn : ""}>Side Event</button>
+                    <button className={activeBtn === "main" ? styles.activebtn : ""} onClick={() => handleCollapseForm("main")}>Main Event</button>
+                    <button className={activeBtn === "side" ? styles.activebtn : ""} onClick={() => handleCollapseForm("side")}>Side Event</button>
                 </div>}
                 <div className={styles.saveCancelBtns}>
                     <button className={styles.closeBtn} style={{ color: theme === "dark" ? "white" : "black" }} onClick={handleModalClose}>Close</button>
@@ -402,7 +501,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                         disabled={loadingState || loadingState}
                         onClick={
                             prefilledEvent
-                                ? () => handleSaveEvent(prefilledEvent.eventId)
+                                ? () => handleSaveEvent(prefilledEvent.mainEvent.eventId)
                                 : handleAddEvent
                         }>
                         Save and Add event</button>
@@ -417,6 +516,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                     <div className={styles.collapseBtn} onClick={() => setCollapseMainEventForm(false)}><DownArrow /></div>
                 </div>) : (eventFlow === 'main' &&
                     <Details
+                        handleCollapseForm={handleCollapseForm}
                         formState={mainEventState}
                         handleChange={handleMaineventChanges}
                         eventFont={eventFont}
@@ -427,7 +527,7 @@ const AddEventFormTab = ({ setIsAddEventModalOpen, pageBgColor, eventFont, widge
                         collapseMainEventForm={collapseMainEventForm}
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
-                setMainEventName = {setMainEventName}
+                    setMainEventName={setMainEventName}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}

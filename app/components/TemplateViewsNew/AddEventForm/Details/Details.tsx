@@ -42,9 +42,11 @@ interface Props {
   fileInputRef: React.RefObject<HTMLInputElement>;
   setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
   collapseMainEventForm: boolean;
+  handleCollapseForm : (value : string)=>void
+  // setActiveBtn: (value: string) => void;
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
-  setCollapseMainEventForm, collapseMainEventForm }: Props) => {
+  handleCollapseForm }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -178,13 +180,8 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       }
     }
   };
-  const handleCollapseForm = () => {
-    if (formState.eventName && formState.description && formState.participationType && formState.participationMessage && formState.cityName && (formState.banner.placeHolder || formState.banner.file)) {
-      setCollapseMainEventForm(true)
-    }
-    else {
-      showToast("error", "Fill all the fields in the main event form to continue")
-    }
+  const handleFormCollapse = () => {
+    handleCollapseForm("side")
   }
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
@@ -192,7 +189,8 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
         <div>
           <div className={`${styles.participationContainer}`}><ParticipationContainer
             handleChange={handleChange} formState={formState}
-            heading='Choose Your Mode of Participation' type='main' size="large" /></div>
+            heading='Choose Your Mode of Participation' type='main' size="large" />
+          </div>
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>
@@ -228,7 +226,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                 className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                 maxLength={80}
                 placeholder='Event Name'
-                style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
+                style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
                 onChange={(e) => handleInputChange(e.target.value)}
                 value={formState.eventName}
               />
@@ -277,7 +275,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                   Do you wish to add a side event ?
                 </div>
               </div>
-              <button onClick={handleCollapseForm}>Yes</button>
+              <button onClick={()=>handleFormCollapse()}>Yes</button>
             </div>
           </div>
         </div>
