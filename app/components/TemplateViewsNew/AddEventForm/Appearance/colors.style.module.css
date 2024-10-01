@@ -5,7 +5,6 @@
     display: flex;
     align-items: center;
     gap: 5px;
-
 }
 .header span{
     font-size: 10px;
@@ -77,4 +76,43 @@
     height: 20px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.plusIconOuter{
+    border: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #F2F2F2;
+}
+
+.extractedColorOutter {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.extractedColorInner {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+
+.activeColor {
+    border: 2px solid;
+    padding: 3.4px;
+}
+
+
+
+.colorList {
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }

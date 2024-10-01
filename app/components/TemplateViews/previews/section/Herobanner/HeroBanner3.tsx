@@ -29,6 +29,10 @@ interface Props {
     };
     buttonSettings?: ButtonSettingsState
     selectedBtn? : "primary" | "secondary"
+    demoBanner:string;
+    demoEventName:string;
+    demoDescription:string;
+    demoLocation:string
 }
 
 const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -41,20 +45,20 @@ const HeroBanner3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     buttonSettings = {
         primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-    }, selectedBtn ="primary" }: Props) => {
+    }, selectedBtn ="primary",demoBanner, demoEventName, demoDescription, demoLocation }: Props) => {
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
-                <Image src={placeholder2} alt='placeholder' className={styles.banner} />
+                <Image src={demoBanner} alt='placeholder' className={styles.banner} />
                 <div className={styles.type}>Workshop</div>
             </div>
             <div className={styles.eventDetails}>
-                <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>East Midlands Young Planners</div>
+                <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{demoEventName}</div>
                 <div className={styles.location_date_btnContainer}>
                     <div className={styles.location_dateContainer}>
                         <div className={styles.locationContainer}>
                             <Image src={locationIcon} alt='location' />
-                            <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>Corpus Christi, USA</div>
+                            <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{demoLocation}</div>
                         </div>
                         <div className={styles.dateContainer}>
                             <DateIcon />

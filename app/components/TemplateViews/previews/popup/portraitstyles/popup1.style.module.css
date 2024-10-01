@@ -16,18 +16,39 @@
 }
 .banner{
     width: 95%;
-    /* height: 220px; */
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
     filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
     object-fit: cover;
 }
-.date_location_nameContainer{
-    padding: 10px 14px 0px 14px;
+.eventName{
+    word-wrap: break-word;
+    min-height: 60px;
+    max-height: 60px;
+    overflow: hidden;
+}
+.smallName{
+    word-wrap: break-word;
+    min-height: 30px;
+    max-height: 30px;
+    overflow: hidden;
+}
+.date_location_nameContainer{   
+    padding: 0px 14px 0px 14px;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 15px;
+    min-height: 95px;
+}
+.smalldate_location_nameContainer{
+    padding: 0px 14px 0px 14px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-height: 80px;
+    max-height: 80px;
 }
 .smallDateContainer{
     background-color: #F6F6F6;
@@ -73,17 +94,19 @@
     gap: 8px;
 }
 .dividerLine{
-    margin-top: 12px;
     width: 100%;
     border-top: 1px solid #E8EAF1;
 }
 .dateRange_typeContainer{
+    margin-top: 8px; 
     display: flex;
     align-items: center;
     width: 100%;
     /* justify-content: space-between; */
     gap: 8px;
-    padding: 10px;  
+    height: 20px;
+    padding-left: 10px;  
+    padding-right: 10px;
 }
 .pill{
     border-radius: 6px;
@@ -102,9 +125,25 @@
     background-color: #F7E5EE;
     color: #6750A4;
 }
-.desc{
+.description{
+    min-height: 70px;
+    max-height: 70px;
+    margin-top: 10px;
     width: 100%;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+.smallDescription{
+    min-height: 40px;
+    max-height: 40px;
+    margin-top: 10px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .btnContainer{
     width: 100%;

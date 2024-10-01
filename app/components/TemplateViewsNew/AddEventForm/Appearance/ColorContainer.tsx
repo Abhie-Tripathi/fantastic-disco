@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './colors.style.module.css'
 import { SketchPicker } from 'react-color';
-import { useTheme } from '@/context';
+import { baseUrl, useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import { myFetch } from '@/utils/myFetch';
+import colorPicker from '/public/colorPick.png';
+import Image from 'next/image';
 
 interface Props {
     pageBgColor: string;
@@ -15,20 +18,29 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
-
+    const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+    const [color, setColor] = useState('#2c68f6');
+    const clickable=true
     const handleChange = (color: any) => {
-        // Convert hex to rgba with 10% opacity
-        // const rgbaColor = hexToRgba(color.hex, 0.1);
-        // setPageBgColor(rgbaColor);
-
-        setPageBgColor(color.hex);
+        const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
+        setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color : any)=>{
-        // const rgbaColor = hexToRgba(color, 0.1);
-        // setPageBgColor(rgbaColor);
-
-        setPageBgColor(color);
+    const handleColorClick = (color: any,index:any) => {
+        setSelectedColorIndex(index)
+        const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
+        setPageBgColor(colorWithOpacity);
     }
+    const addOpacityToHex = (hexColor: string, opacity: number) => {
+        // Remove the '#' if it's there
+        const cleanHex = hexColor.replace("#", "");
+      
+        // Convert the opacity percentage (0 to 1) to a 2-digit hex value
+        const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, "0");
+      
+        // Append the opacity to the hex color
+        return `#${cleanHex}${alphaHex}`;
+    }
+    
 
     // const hexToRgba = (hex: string, opacity: number) => {
     //     let r = 0, g = 0, b = 0;
@@ -68,6 +80,27 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
         return color; 
     };
 
+    const fetchBrandkit = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/kit`)
+        if (error) {
+          console.error('Error fetching brand kit:', error);
+          return;
+        }
+    
+        const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
+        setExtractedColors(data.color)
+      }
+    
+      useEffect(() => {
+        fetchBrandkit()
+      }, [])
+
+    useEffect(() => {
+        if (clickable) {
+            setColor(extractedColors[selectedColorIndex]);
+        }
+    }, [selectedColorIndex])
+
     const formattedPageBgColor = formatColor(pageBgColor);
     return (
         <div className={styles.body}>
@@ -80,10 +113,12 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                 <div className={styles.colorPickerContainer} style={{backgroundColor : theme === "light" ? "#f2f2f2" : "#1a1a1a"}}>
                     {/* <span>{pageBgColor}</span> */}
                     <span>{formattedPageBgColor}</span> 
-                    <div className={styles.colorPickerOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                    {/* <div className={styles.colorPickerOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
                         <div className={styles.colorPickerInner} style={{ backgroundColor: pageBgColor }}>
                         </div>
-                    </div>
+                        <Image src={colorPicker} alt='' width={20} height={20}/>
+                    </div> */}
+
                     {displayColorPicker && <div ref={colorPickerRef} className={styles.sketchPicker}>
                         <SketchPicker
                             color={pageBgColor}
@@ -91,11 +126,38 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                             presetColors={extractedColors}
                         /></div>}
                 </div>
-                <div className={styles.extractedColors}>
+                {/* <div className={styles.extractedColors}>
                     {extractedColors.map((color, key) => (
                         <div className={styles.extractedColor} onClick={()=>handleColorClick(color)} style={{ backgroundColor: color }} key={key}></div>
                     ))}
+                <div className={styles.plusIconOuter}  style={{ borderColor: pageBgColor }}  onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                    <PlusIcon/>
                 </div>
+                </div> */}
+
+            <div className={styles.extractedColors}>
+            <div className={styles.colorList}>
+                {extractedColors.map((color, key) => (
+                    <div 
+                        key={key} 
+                        className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ''}`} 
+                        style={{
+                            backgroundColor: key === selectedColorIndex ? 'transparent' : color, 
+                            borderColor: key === selectedColorIndex ? color : 'transparent',
+                        }} 
+                        onClick={()=>handleColorClick(color, key)}
+                    >
+                        {key === selectedColorIndex && (
+                            <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className={styles.plusIconOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                <PlusIcon />
+            </div>
+        </div>
             </div>
         </div>
     )
@@ -119,5 +181,14 @@ function PaintIcon() {
         <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12.2499 8.625C12.2499 8.625 10.7499 10.2525 10.7499 11.25C10.7499 11.6478 10.908 12.0294 11.1893 12.3107C11.4706 12.592 11.8521 12.75 12.2499 12.75C12.6477 12.75 13.0293 12.592 13.3106 12.3107C13.5919 12.0294 13.7499 11.6478 13.7499 11.25C13.7499 10.2525 12.2499 8.625 12.2499 8.625ZM1.90742 7.5L5.49992 3.9075L9.09242 7.5M10.4199 6.705L3.71492 0L2.65742 1.0575L4.44242 2.8425L0.579922 6.705C0.137422 7.125 0.137422 7.8525 0.579922 8.295L4.70492 12.42C4.92242 12.6375 5.21492 12.75 5.49992 12.75C5.78492 12.75 6.07742 12.6375 6.29492 12.42L10.4199 8.295C10.8624 7.8525 10.8624 7.125 10.4199 6.705Z" fill="#7D7D7D" />
         </svg>
+    )
+}
+
+function PlusIcon() {
+    return (
+        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.221 5.16439H5.25814V8.12725C5.25814 8.45316 4.99149 8.71982 4.66557 8.71982C4.33966 8.71982 4.073 8.45316 4.073 8.12725V5.16439H1.11015C0.784235 5.16439 0.517578 4.89774 0.517578 4.57182C0.517578 4.24591 0.784235 3.97925 1.11015 3.97925H4.073V1.0164C4.073 0.690485 4.33966 0.423828 4.66557 0.423828C4.99149 0.423828 5.25814 0.690485 5.25814 1.0164V3.97925H8.221C8.54691 3.97925 8.81357 4.24591 8.81357 4.57182C8.81357 4.89774 8.54691 5.16439 8.221 5.16439Z" fill="black"/>
+        </svg>
+        
     )
 }

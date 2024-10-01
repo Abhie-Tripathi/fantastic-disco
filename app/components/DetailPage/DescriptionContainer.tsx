@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styles from './description.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
@@ -8,6 +8,10 @@ interface Props{
 }
 
 const DescriptionContainer = ({description} : Props) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const toggleReadMore = () => {
+        setIsExpanded((prev) => !prev);
+      };
 
     return (
         <div className={styles.body}>
@@ -17,7 +21,23 @@ const DescriptionContainer = ({description} : Props) => {
                     <div className={styles.descriptionHeading}>Event Description</div>
                 </div>
             </div>
-            {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description }}></div>}
+            {/* {description && <div className={styles.description} dangerouslySetInnerHTML={{ __html: description }}></div>} */}
+            {description && (
+                <div className={styles.description}>
+                    <div
+                        dangerouslySetInnerHTML={{
+                        __html: isExpanded
+                        ? description
+                        : `${description.substring(0, 400)}`,
+                        }}
+                    />
+                    {description.length > 400 && (
+                        <button onClick={toggleReadMore} className={styles.readMoreButton}>
+                            {isExpanded ? "Read Less" : "...Read More"}
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     )
 }

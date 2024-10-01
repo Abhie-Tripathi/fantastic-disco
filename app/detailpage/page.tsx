@@ -3,11 +3,10 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { notFound } from 'next/navigation';
 import DetailPageComponent from '../components/DetailPage/DetailPageComponent'
-
+// export const revalidate = 0;
 interface EventProps {
     venue: string;
     latitude: number;
-    bannerUrl: string;
     eventFont: string;
     longitude: number;
     pageBgColor: string;
@@ -30,16 +29,17 @@ interface EventProps {
     widgetId: string;
     eventId: string;
     hashtags: string;
+    participationType : string;
 }
 
-const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags }: EventProps) => {
+const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags,participationType }: EventProps) => {
     return (
         <DetailPageComponent
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
-            bannerUrl={bannerUrl}
+            bannerUrl={logoUrl}
             eventFont={eventFont}
             longitude={longitude}
             pageBgColor={pageBgColor}
@@ -61,46 +61,78 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
             location_country={location_country}
             widgetId={widgetId}
             eventId={eventId}
+            participationType={participationType}
         />
     )
 }
-const fetchData = async (widgetId: string, eventId: string) => {
-    const { data, error } = await myFetch(`${baseUrl}/public/widget/${widgetId}`);
-    if (error || !data || !data.widgetData || !data.widgetData.id) {
-        console.log("Invalid widgetId or error encountered");
-        notFound();
+const fetchData = async (widgetId : string,eventId: string) => {
+    try {
+        // Manually fetching data instead of using the myFetch hook
+        const response = await fetch(`${baseUrl}/public/widget/${eventId}/event?ts=${Date.now()}`, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        // Check if data is valid
+        if (data.data.length === 0) {
+            console.log("Invalid widgetId or error encountered");
+            notFound();
+        }
+
+        console.log("data is: ", data);
+        const event = {
+            eventId: data.data.event.id,
+            name: data.data.event.name,
+            format: data.data.event.data.format,
+            logoUrl: data.data.event.data.logoUrl,
+            end_date: data.data.event.data.end_date,
+            end_time: data.data.event.data.end_time,
+            gmt_time: data.data.event.data.gmt_time,
+            latitude: data.data.event.data.latitude,
+            longitude: data.data.event.data.longitude,
+            start_date: data.data.event.data.start_date,
+            start_time: data.data.event.data.start_time,
+            description: data.data.event.data.description,
+            location_city: data.data.event.data.location_city,
+            location_country: data.data.event.data.location_country,
+            participationType: data.data.event.data.participationType,
+            pageBgColor: data.data.event.data.customizationData.pageBgColor,
+            eventFont: data.data.event.data.customizationData.eventFont,
+            registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
+            registerBtnText: data.data.event.data.customizationData.registerBtnText,
+            registerMessage: data.data.event.data.customizationData.registerMessage,
+            speakerProfilesData: data.data.event.data.customizationData.speakerProfilesData,
+            participationMessage: data.data.event.data.customizationData.participationMessage,
+            venue: data.data.event.data.customizationData.venue,
+            hashtags: data.data.event.data.customizationData.hashtags,
+        };
+
+        return event;
+    } catch (error) {
+        console.log("Error fetching data:", error);
+        notFound(); // Handle the error by redirecting to a not found page or similar
     }
-    console.log("data is : ", JSON.stringify(data))
-    console.log("event id is :", eventId)
-    const eventFromOtherData = data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
-    const eventFromEventData = data.eventData?.find((event: any) => event.id === eventId);
-    console.log("eventFromOtherData", eventFromOtherData)
-    console.log("eventFromEventData", eventFromEventData)
-    if (!eventFromOtherData && !eventFromEventData) {
-        console.log("Invalid eventId");
-        notFound();
-    }
-    const mergedEventData = {
-        ...eventFromOtherData,
-        ...eventFromEventData,
-    };
-    return mergedEventData;
 };
-const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
-    const { widgetId, eventId } = searchParams;
-    const data = await fetchData(widgetId, eventId);
+const DetailPage = async ({ searchParams }: { searchParams: {widgetId : string, eventId: string } }) => {
+    const {widgetId, eventId } = searchParams;
+    const data = await fetchData(widgetId,eventId);
     console.log("data is ,", data)
-    return <Page {...data} widgetId={widgetId} eventId={eventId} />;
+    return <Page {...data} eventId={eventId} widgetId={widgetId}/>;
 };
 export default DetailPage;
 
-
-export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) {
-    const { widgetId, eventId } = searchParams
-    const data = await fetchData(widgetId, eventId);
+export async function generateMetadata({ searchParams }: { searchParams: {widgetId : string, eventId: string } }) {
+    const {widgetId, eventId } = searchParams;
+    const data = await fetchData(widgetId,eventId);
 
     // Check if data is valid, if not return 404 metadata
-    if (!data || !data.name || !data.description || !data.bannerUrl) {
+    if (!data || !data.name || !data.description || !data.logoUrl) {
         return {
             title: "404 - Not Found",
             description: "The page you are looking for does not exist.",
@@ -108,20 +140,20 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+                url: `https://console.eventgeni.com/detailpage?eventId=${eventId}`,
                 type: "website"
             },
         };
     }
-    const { name, description, bannerUrl } = data;
+    const { name, description, logoUrl } = data;
     return {
         title: name,
         description: description,
         openGraph: {
             title: name,
             description: description,
-            images: [bannerUrl],
-            url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+            images: [logoUrl],
+            url: `https://console.eventgeni.com/detailpage?eventId=${eventId}`,
             type: "website"
         },
     };

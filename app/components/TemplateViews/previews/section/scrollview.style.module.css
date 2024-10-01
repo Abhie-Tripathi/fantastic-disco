@@ -19,7 +19,7 @@
 }
 .horizontalScroll{
     padding: 10px;
-    display: flex;
+    display: flex;  
     overflow-x: auto;
     gap: 20px;
 }

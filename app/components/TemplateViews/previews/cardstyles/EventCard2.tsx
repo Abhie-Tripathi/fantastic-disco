@@ -23,6 +23,10 @@ interface CardProps {
         body: FontSettings;
     };
     fetchedEvent?: PrefilledAddedEventsType
+    demoEventName:string;
+    demoBanner:string
+    demoDescription:string
+    demoLocation:string
 }
 
 const EventCard2 = ({
@@ -30,16 +34,20 @@ const EventCard2 = ({
     cardBorderRadius = 20,
     fontSettings = {
       heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-      subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+      subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "bolder" },
       body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-    },fetchedEvent
+    },fetchedEvent,
+    demoEventName,
+    demoBanner,
+    demoDescription,
+    demoLocation
 }: CardProps) => {
 
     const formatDate = (date: string) => {
         const dateObj = new Date(date);
     
         const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
         const year = dateObj.getFullYear();
     
         // Function to get the appropriate suffix for the day
@@ -53,18 +61,18 @@ const EventCard2 = ({
     };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
-            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
+            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
                     <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
                 </div> 
             </div>
-            <Image width={100} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
+            <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
             <div className={styles.dividerLine}></div>
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>

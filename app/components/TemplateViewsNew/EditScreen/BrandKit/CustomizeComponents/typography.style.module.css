@@ -142,7 +142,7 @@
 }
 
 .dropDownContainer {
-    
+    background-color: var(--accent-color);
     width: 110px;
     border-radius: 5px;
     display: flex;
@@ -166,14 +166,8 @@
     top: 24px;
     padding: 5px;
     left: 0;
-
-}
-.dropDownContainer .lightDropdown{
-    background-color: white;
-    filter: drop-shadow(1px 1px 2px rgb(119, 119, 119));
-}
-.dropDownContainer .darkDropdown{
-    background-color: black;
+    border: 1px solid var(--border-color);
+    background-color: var(--primary-foreground);
 }
 .dropDownContainer .dropDown .dropdownFont {
     padding: 3px 10px;
@@ -202,6 +196,7 @@
 
 .fontSizeContainer .sizeContainer {
     width: 110px;
+    background-color: var(--accent-color);
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -211,6 +206,7 @@
 }
 
 .sizeContainer input {
+    color: var(--primary-text-color);
     font-size: 10px;
     width: 80%;
     background: none;

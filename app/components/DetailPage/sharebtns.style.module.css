@@ -1,7 +1,35 @@
-.shareIconContainer{
+.shareIconContainer {
     display: flex;
     gap: 20px;
 }
-.copyContainer{
+
+.copyContainer {
     cursor: pointer;
+}
+
+
+.iconWrapper {
+    position: relative;
+}
+
+.iconWrapper::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.iconWrapper:hover::before {
+    opacity: 1;
 }

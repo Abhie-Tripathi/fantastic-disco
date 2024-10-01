@@ -23,9 +23,13 @@ interface Props {
     buttonSettings?: ButtonSettingsState
     selectedBtn? : "primary" | "secondary"
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    demoBanner:string;
+    demoEventName:string;
+    demoDescription:string;
+    demoLocation:string;
 }
 
-const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn,fetchedAddedOtherData}: Props) => {
+const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,buttonSettings, selectedBtn,fetchedAddedOtherData, demoBanner, demoEventName, demoDescription, demoLocation}: Props) => {
 
     let EventCard: ElementType;
 
@@ -41,7 +45,7 @@ const HeroBanner = ({ selectedCard, cardBgColor,cardBorderRadius,fontSettings,bu
     }
 
     return (
-        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings}/>
+        <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>
     )
 }
 

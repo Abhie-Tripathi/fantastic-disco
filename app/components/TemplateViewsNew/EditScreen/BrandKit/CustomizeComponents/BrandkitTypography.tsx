@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './brandkittypo.style.module.css'
-import Image from 'next/image'
-import WarningIcon from '/public/warningicon.svg'
+// import Image from 'next/image'
+// import WarningIcon from '/public/warningicon.svg'
 import { useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
@@ -11,6 +11,7 @@ interface Props {
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
     fetchedFonts : string[]
+    clickable : boolean;
 }
 interface FontSettings {
     fontFamily: string;
@@ -25,7 +26,7 @@ interface FontSettingsState {
     body: FontSettings;
 }
 
-const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fetchedFonts }: Props) => {
+const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fetchedFonts,clickable }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
@@ -72,7 +73,10 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fet
                         <DownArrow color={theme === "light" ? "black" : "white"} />
                         {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
                             {fetchedFonts.map((font, key) => (
+                                clickable ? 
                                 <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
+                                :
+                                <div key={key} className={styles.disableddropdownFont}>{font}</div>
                             ))}
                         </div>}
                     </div>
