@@ -1,7 +1,6 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './details.style.module.css'
 import Image from 'next/image'
-import Placeholder from '/public/placeholder.png'
 import AiIcon from '/public/AiIcon.svg'
 import UploadIcon from '/public/UploadImageIcon.svg'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
@@ -14,7 +13,6 @@ import SpeakerProfile from './participation/speaker/SpeakerProfile'
 import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
-import { useTheme } from '@/context'
 import usePosterGenerator from '@/app/service/posterGenerator'
 import { AllEventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
@@ -42,7 +40,7 @@ interface Props {
   fileInputRef: React.RefObject<HTMLInputElement>;
   setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
   collapseMainEventForm: boolean;
-  handleCollapseForm : (value : string)=>void
+  handleCollapseForm: (value: string) => void
   // setActiveBtn: (value: string) => void;
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
@@ -59,7 +57,6 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
     handleChange('speakerModal', true)
     // setSpeakerModal(true)
   }
-  const { theme } = useTheme()
 
   const handleDescClick = () => {
     const trimmedValue = formState.textValue.trim();
@@ -104,11 +101,6 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       });
     }
   };
-
-  useEffect(() => {
-    console.log("banner is", formState.banner)
-  }, [formState.banner])
-
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (formState.eventName && formState.participationMessage) {
@@ -135,10 +127,12 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
     // }
     if (!prefilledEvent) {
       if (formState.description && formState.eventName) {
-        generateHashtags(formState.eventName, formState.description)
+        if (formState.hashtags.length === 0) {
+          generateHashtags(formState.eventName, formState.description)
+        }
       }
     }
-  }, [formState.description, formState.eventName, formState.countryName])
+  }, [formState.description, formState.eventName])
 
   useEffect(() => {
     if (loadingState || isLoading) {
@@ -150,7 +144,9 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
 
   useEffect(() => {
     if (!prefilledEvent) {
-      handleChange('hashtags', generatedHashtags)
+      if (formState.hashtags.length === 0) {
+        handleChange('hashtags', generatedHashtags)
+      }
       // setHashtags(generatedHashtags)
     }
   }, [generatedHashtags])
@@ -275,7 +271,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                   Do you wish to add a side event ?
                 </div>
               </div>
-              <button onClick={()=>handleFormCollapse()}>Yes</button>
+              <button onClick={() => handleFormCollapse()}>Yes</button>
             </div>
           </div>
         </div>
