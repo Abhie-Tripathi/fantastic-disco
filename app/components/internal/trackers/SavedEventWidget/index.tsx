@@ -1,37 +1,49 @@
 import { ArrowUpRight } from 'geist-icons';
+import Link from 'next/link';
 import React,{useState, useEffect} from 'react'
 interface SavedEvents{
         result:any,
-        count: number
+        count: number,
     
 }
 interface SavedEventWidgetProps{
     savedEvents:SavedEvents
+    redirectUrl:string
 }
-const SavedEventWidget: React.FC<SavedEventWidgetProps>= ({savedEvents})=>{
+const SavedEventWidget: React.FC<SavedEventWidgetProps>= ({savedEvents, redirectUrl})=>{
     console.log(savedEvents?.count);
+    console.log(redirectUrl);
     
     return(
-            <div className="flex flex-col gap-2 bg-white border rounded-[12px] p-4 w-[100%]" style={{border:"1px solid var(--border-color)"}}>
-                {savedEvents && 
+        <Link href={`${redirectUrl}`} className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)]">
+            
                 <>
                <div className='flex items-center gap-2' style={{color:"var(--primary-color)"}}>
-                <div className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" style={{backgroundColor:"var(--primary-light-color)"}}>{savedEvents?.count}</div>
+                {savedEvents && <div className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" style={{backgroundColor:"var(--primary-light-color)"}}>{savedEvents?.count}</div>}
                 <div className='font-semibold'>Saved Events</div>
                </div>
-               {savedEvents?.result.map((item)=>(
-                    <div className='flex p-2 flex-col border rounded gap-2' style={{border:"1px solid var(--border-color)"}}>
-                    <div className='flex justify-between items-center w-[100%]'>
-                        <div className='text-[12px] font-semibold'>{item?.name}</div>
-                        <ArrowUpRight width="16px" height='16px' color='var(--primary-color)'/>
-                    </div>
-                    <div className="text-[12px]" style={{color:"var(--secondary-text-color)"}}>{(item.location?.cityName && item.location?.countryName) ?
-                  (item.location.cityName!==item.location?.countryName ?item.location.cityName +', '+item.location?.countryName: item.location.countryName) :
-                  item.location.countryName
-                }</div>
-                   </div>
-               ))}
-               
+               {savedEvents ? (
+  savedEvents?.result.map((item) => (
+    <div className='flex p-2 flex-col border rounded gap-2' style={{border: "1px solid var(--border-color)"}} key={item.id}>
+      <div className='flex justify-between items-center w-[100%]'>
+        <div className='text-[12px] font-semibold'>{item?.name}</div>
+        <ArrowUpRight width="16px" height='16px' color='var(--primary-color)' />
+      </div>
+      <div className="text-[12px]" style={{color: "var(--secondary-text-color)"}}>
+        {(item.location?.cityName && item.location?.countryName) ?
+          (item.location.cityName !== item.location?.countryName ?
+            item.location.cityName + ', ' + item.location?.countryName :
+            item.location.countryName) :
+          item.location.countryName}
+      </div>
+    </div>
+  ))
+) : (
+  <div className='text-[var(--secondary-text-color)] text-sm'>
+    Stay informed about the latest industry events and save them to stay updated on event updates.
+  </div>
+)}
+
                {/* <div className='flex p-2 flex-col border rounded gap-2' style={{border:"1px solid var(--border-color)"}}>
                 <div className='flex justify-between items-center w-[100%]'>
                     <div className='text-[12px] font-semibold'>Milano PharmaTech & LabTech Expo</div>
@@ -39,8 +51,8 @@ const SavedEventWidget: React.FC<SavedEventWidgetProps>= ({savedEvents})=>{
                 </div>
                 <div className="text-[12px]" style={{color:"var(--secondary-text-color)"}}>Milano, Lombardia</div>
                </div> */}
-               </>}
-            </div>
+               </>
+        </Link>
     )
 }
 export default SavedEventWidget;

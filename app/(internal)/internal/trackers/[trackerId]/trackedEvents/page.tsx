@@ -17,6 +17,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
+import Link from "next/link";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -354,14 +355,14 @@ const Page = ({ params }: { params: any }) => {
  },[trackerDetail])
  
   return (
-    <div className={styles.container}>
+    <div className="flex w-[90%]">
       <Suspense fallback={<p>Loading feed...</p>}>
-        <div className={styles.innerRight}>
-          <div className={styles.eventStatus}>
+        <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
+          <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between p-[5px]">
           {/* <div className={styles.new}></div> */}
-            <div className={styles.eventStatusLeft}>
+            <div className="flex gap-2">
               <button
-                className={`${styles.eventStatusBtn} ${
+                 className={`${styles.eventStatusBtn} ${
                   active === "Active Events" ? styles.active : ""
                 }`}
                 onClick={() => {
@@ -376,7 +377,7 @@ const Page = ({ params }: { params: any }) => {
               >
                 Active Events
                 {
-                  <div className={styles.circle}>
+                  <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                     {loading ? (
                       formatCount(
                         trackerDetail?.groupedEventsCountByStatus
@@ -389,9 +390,9 @@ const Page = ({ params }: { params: any }) => {
                 }
               </button>
               <button
-                className={`${styles.eventStatusBtn} ${
-                  active === "New Events" ? styles.active : ""
-                }`}
+               className={`${styles.eventStatusBtn} ${
+                active === "New Events" ? styles.active : ""
+              }`}
                 onClick={() => {
                   GAEvent("trackers", "Tracker Detail", "View", "New Events");
                   setActive("New Events");
@@ -439,8 +440,47 @@ const Page = ({ params }: { params: any }) => {
                   </div>
                 }
               </button>
+              <button
+                 className={`${styles.eventStatusBtn} ${
+                  active === "Saved Events" ? styles.active : ""
+                }`}
+                onClick={() => {
+                  GAEvent(
+                    "trackers",
+                    "Tracker Detail",
+                    "View",
+                    "Active Events"
+                  );
+                  setActive("Saved Events");
+                }}
+              >
+                Saved Events
+                {
+                  <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
+                    {loading ? (
+                      formatCount(
+                        trackerDetail?.groupedEventsCountByStatus
+                          ?.groupedEventsByStatus?.active
+                      )
+                    ) : (
+                      <div className={styles.loader}></div>
+                    )}
+                  </div>
+                }
+              </button>
             </div>
-            <div className={styles.eventStatusRight}>
+            <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${type}`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                  "Notes and Discussion"
+                )
+              }}
+            >
+            <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer">
+            Notes and Discussion
               {/* <ListUnordered
                 height="16px"
                 width="16px"
@@ -464,11 +504,11 @@ const Page = ({ params }: { params: any }) => {
                 onClick={() => setView("calendar")}
               /> */}
             </div>
+            </Link>
           </div>
 
           {view === "list" && (
-            <div style={{marginTop:"140px",width: "calc(100vw - 134px)"}}>
-              <div className='dummyDiv'></div> 
+            <div>
             <Table
               showInsights={showInsights}
               eventType={active}

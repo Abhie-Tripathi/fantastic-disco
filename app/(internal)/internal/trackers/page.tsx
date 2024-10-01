@@ -416,7 +416,7 @@ const Trackers = ({ searchParams }: Search) => {
         console.log(data);
         
         setNote(data.comments);
-      }
+      }else setNote("");
     }
   }
   const fetchSavedEvent=async(id:string)=>{
@@ -430,7 +430,7 @@ const Trackers = ({ searchParams }: Search) => {
         console.log(data);
         
         setSavedEvents(data);
-      }
+      }else setSavedEvents("");
     }
   }
   console.log(savedEvents);
@@ -456,23 +456,23 @@ const Trackers = ({ searchParams }: Search) => {
     // </div>
     <>{isLoading ? <Loading /> : (
       <div>
-      <div className="flex flex-row m-[-24px]">
-  <div className="w-1/2 p-4 h-[calc(100vh-70px)] overflow-y-auto">
+      <div className="flex flex-row">
+  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto">
     <div className="flex flex-col gap-4">
-      <div className="text-gray-700">
+      <div className="text-sm text-[var(--secondary-text-color)]">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <button
-        className="w-[160px] text-white font-bold py-2 px-4 rounded"
+        className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
         style={{ background: "var(--primary-color)" }} onClick={()=>setHideTemplate(false)}
       >
         Create Tracker
       </button>
-      <hr style={{borderBottom:"1px solid var(--neutral-light-color)"}}/>
-      <div className="border border-[#ebebeb] rounded px-3 py-2 flex items-center gap-2">
+      <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
+      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
-              className="outline-none w-full"
+              className="outline-none w-full bg-[var(--primary-foreground)]"
               placeholder="Search by name, address or tag"
               // value={searchValue}
               // onChange={(e) => setSearchValue(e.target.value)}
@@ -481,9 +481,9 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
     </div>
   </div>
-  <div className="w-1/2 p-4 h-[calc(100vh-70px)] overflow-y-auto">
+  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto bg-[var(--background-secondary-color)]">
     <div className="flex flex-col gap-4">
-  <div className="flex items-center justify-between border border-[#E6E6F9] p-3">
+  <div className="flex items-center justify-between border border-[var(--border-color)] p-3">
           <span className="flex items-center gap-2 text-[#696B83]">
             {locations?.length>0 && 
             <>
@@ -505,7 +505,7 @@ const Trackers = ({ searchParams }: Search) => {
           )
         }
       >
-          <button className="w-[160px] text-white font-bold py-2 px-4 rounded"
+          <button className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
         style={{ background: "var(--primary-color)" }}>
             <span>View Events</span>
           </button>
@@ -530,23 +530,23 @@ const Trackers = ({ searchParams }: Search) => {
     />
   </div>
         </div>
-        {/* <div className="flex flex-row gap-3">
-  <div className="flex w-[45%] items-stretch">
-    <SavedEventWidget savedEvents={savedEvents}/>
+        <div className="flex flex-row gap-3">
+  <div className="flex w-1/2 items-stretch">
+    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
   </div>
-  <div className="flex w-[55%] items-stretch">
+  <div className="flex w-1/2 items-stretch">
   <NotesDiscussionWidget note={note}/>
   </div>
         </div>
         <div className="flex flex-row gap-3">
-          <div className="flex w-[45%] items-stretch">
+          <div className="flex w-1/2 items-stretch">
             <NotiicationWidget/>
           </div>
-          <div className="flex w-[55%] items-stretch">
-            <ShareWidget id={singleTrackerData?.id}/>
+          <div className="flex w-1/2 items-stretch">
+          <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
           </div>
-        </div> */}
-        <div className="flex gap-4">
+        </div>
+        {/* <div className="flex gap-4">
         <div className="flex w-1/2 items-stretch">
         <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
         </div>
@@ -562,7 +562,7 @@ const Trackers = ({ searchParams }: Search) => {
         <div className="flex w-1/2 items-stretch">
         <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground}/>
         </div>
-        </div>
+        </div> */}
   </div>
  
   </div>

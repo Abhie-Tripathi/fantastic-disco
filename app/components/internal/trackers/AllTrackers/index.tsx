@@ -3,13 +3,13 @@ import styles from "./allTrackers.style.module.css";
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Image from "next/image";
-import Location from "/public/location_on.svg";
 import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
+import { Location } from "geist-icons";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   // const { theme } = useTheme();
@@ -88,27 +88,81 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
   }, [item]);
+  const formatType=(type:string)=>{
+    if(type==="CUSTOM") return "Custom"
+    return type.split("_").slice(1).map((ele)=>`${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
+  }
   return (
     <div className="card cursor-pointer" onClick={()=>setSingleTrackerData(item)}
     style={{border: singleTrackerData.id===item.id?"1px solid var(--primary-color)":"" }}
     >
-      {/* <Link
-        href={`/internal/trackers/${item.id}/trackedEvents?type=${item?.type}`}
-        onClick={() =>
-          GAEvent(
-            "trackers",
-            "Trackers",
-            "Saved Tracker | Any Filter Applied",
-            "View"
-          )
-        }
-      > */}
-        <div className={styles.cardOne}>
+     
+        <div className="flex justify-between">
+          <div className="flex gap-2 flex-col justify-between">
+            <div className="font-semibold">{item.name}</div>
+            <div className="flex items-center gap-1 ">
+        {locations?.length>0 && 
+        <>
+        <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
+        <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]">
+          {locations?.length > 0 && locations[0]}
+          {locations?.length > 1 && (
+            <span className={styles.moreBtn}>+{locations.length - 1}</span>
+          )}
+        </div>
+        </>
+}
+      </div> 
+      <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
+          </div>
+          <div className="flex gap-2">
+          <div className="flex w-full h-[100px]">
+          <div className="flex gap-2 w-[100%]">
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+              <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
+                <Image src={Vectore6} alt="newVector" width={12} height={12}/>
+                New
+              </div>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new.toLocaleString('en-US')}
+              </div>
+              <div className={styles.events}>Events</div>
+            </div>
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+              <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
+                <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
+                Active
+              </div>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
+              </div>
+              <div className={styles.events}>Events</div>
+            </div>
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+              <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
+                <Image src={Vectore8} alt="expired" width={12} height={12}/>
+                Expired
+              </div>
+              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
+              </div>
+              <div className={styles.events}>Events</div>
+            </div>
+          </div>
+
+          {/* <div className={styles.lineChart}>
+            <Line data={lineData} options={lineOptions} />
+          </div> */}
+        </div> 
+            <div><Image  src={GoTo} alt="goTo" /></div>
+          </div>
+        </div>
+        {/* <div className={styles.cardOne}>
           <div className={styles.heading}>{item.name}</div>
           <Image  src={GoTo} alt="goTo" />
-        </div>
+        </div> */}
         
-        <div className={styles.cardTwo}>
+        {/* <div className={styles.cardTwo}>
         {locations?.length>0 && 
         <>
         <Image src={Location} alt="location" />
@@ -120,10 +174,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         </div>
         </>
 }
-      </div>
+      </div> */}
         
         
-        <div className={styles.cardThree}>
+        {/* <div className={styles.cardThree}>
           <div className={styles.cardThreeLeft}>
             <div className={`${styles.cardType} card`}>
               <div className={styles.new}>
@@ -157,11 +211,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
           </div>
 
-          {/* <div className={styles.lineChart}>
+          <div className={styles.lineChart}>
             <Line data={lineData} options={lineOptions} />
-          </div> */}
-        </div>
-      {/* </Link> */}
+          </div>
+        </div> */}
     </div>
   );
 };

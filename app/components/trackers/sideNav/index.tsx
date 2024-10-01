@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Back from '/public/back.svg';
+
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import Settings from '/public/trackerSetting.svg';
@@ -12,11 +13,13 @@ import styles from './sideNav.style.module.css';
 import Link from 'next/link';
 import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import { GAEvent } from '@/utils/GAEvent';
+import { SettingsGear, User } from 'geist-icons';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
+  const [view,setView]=useState("list");
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()
@@ -52,8 +55,8 @@ const Index = () => {
   }, [secondLast]);
   return (
     <>
-      <div className={styles.bar}>
-        <div className={styles.leftNav}>
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-10 text-h6">
+        <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
             last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
               ? (last === "editTracker"
@@ -71,8 +74,13 @@ const Index = () => {
         </div>
 
         <>
-          <div className={styles.leftContainer}>
-            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
+          <div className="flex justify-center items-center" >
+          <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
+              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""}`} onClick={()=>setView("list")}>List</div>
+              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div>
+              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div>
+            </div>
+            {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -114,7 +122,7 @@ const Index = () => {
               <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
                 Saved Events
               </div>
-            </Link>
+            </Link> */}
 
           </div>
           <div className={styles.configAccess}>
@@ -128,8 +136,8 @@ const Index = () => {
                 )
               }}>
               <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-                <Image src={Settings} alt="setting" />
-                <span className={styles.tooltipText}>Configurations</span>
+                <SettingsGear width='12px' height='12px' style={{color: trackerSection === "Tracker Configurations" ? "var(--primary-color)" :"var(--tertiary-text-color)"}}/>
+                <span>Configurations</span>
               </div>
             </Link>
             <Link href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
@@ -143,8 +151,8 @@ const Index = () => {
               }}
             >
               <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-                <Image src={Manage} alt="setting" />
-                <span className={styles.tooltipText}>Manage Access</span>
+                <User width='12px' height='12px' style={{color: trackerSection === "Manage Access" ? "var(--primary-color)" :"var(--tertiary-text-color)"}}/>
+                <span>Manage Access</span>
               </div>
             </Link>
           </div>

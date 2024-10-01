@@ -67,11 +67,11 @@ const ShareWidget: React.FC<ShareWidgetProps>= ({id})=>{
 }
 
     return(
-            <div className="flex flex-col gap-2 bg-white border-[1px] border-solid border-[var(--border-color)] rounded-[12px] p-4 w-[100%]">
+            <div className="flex flex-col gap-2 border-[1px] border-solid border-[var(--border-color)] rounded-[12px] p-4 w-[100%]">
                <div className='flex items-center gap-2 text-[var(--primary-color)]'>
                 <div className='font-semibold'>Manage Access</div>
                </div>
-               <div className='flex flex-col text-sm'>
+               <div className='flex flex-col text-sm text-[var(--secondary-text-color)]'>
                Share or Invite your team members to keep track of events 
                </div>
                <div className='flex p-2 border-[1px] border-solid border-[var(--border-color)] rounded gap-2 justify-between h-[40px] bg-[var(--background-secondary-color)]'>

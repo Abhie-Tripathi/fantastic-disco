@@ -568,6 +568,8 @@ const Table = ({
     else if (eventType === "Expired Events")
       url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
         }&type=expired`;
+    else if(eventType==="Saved Events")
+      return fetchSavedData();
     const { data, error } = await myFetch(url);
     if (error) {
       console.log(error);

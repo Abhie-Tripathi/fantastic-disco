@@ -1,6 +1,5 @@
 .container {
-  padding: var(--spacing-lg);
-  min-height: calc(100vh - 80px);
+  /* padding: var(--spacing-lg); */
   /* background-color: #131313;
   color: #ffffff; */
   min-width: 810px;

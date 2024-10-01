@@ -1,21 +1,20 @@
-.bar{
+/* .bar{
     padding: 18px 40px;
     height: 60px;
     background-color: var(--heading-background-color);
     display: flex;
     padding: 0px 10px;
     justify-content: space-between;
-}
-.bar{
+} */
+/* .bar{
   position: fixed;
-  top: 96px;
-  width: calc(100vw - 134px);
+  top: 70px;
+  width: calc(100vw - 70px);
   height: 70px;
-  /* background-color: #333; */
   color: white;
   padding: 10px;
   z-index: 20;
-}
+} */
   .containerLeft{
     /* border-left: 2px solid #ECECF9; */
     width: 20%;
@@ -23,21 +22,20 @@
   .containerRight{
     width: 80%;
   }
-  .leftContainer{
+  /* .leftContainer{
     display: flex;
     width: 50%;
     justify-content: center;
-    /* flex-direction: column; */
-    /* gap: 10px; */
-  }
+  } */
   .heading{
-    color: #696B83;
+    color: var(--secondary-text-color);
     display: flex;
+    gap: 4px;
     align-items: center;
     height: 60px;
     padding: 18px;
-    border-bottom: 4px solid var(--heading-background-color);
-    font-size: var(--font-size-large);
+    /* border-bottom: 4px solid var(--heading-background-color); */
+    font-size: var(--font-size-small);
     font-weight: var(--font-weight-medium);
     cursor: pointer;
     /* transition: color 1s ease-in-out, border-bottom 1s ease-in-out; */
@@ -47,7 +45,7 @@
   }
   .active{
     color:var(--primary-color);
-    border-bottom: 4px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
     
    
   }
@@ -133,4 +131,20 @@
 .tooltipContainer:hover .tooltipText {
   visibility: visible;
   opacity: 1;
+}
+.viewsTab{
+  width: 105px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  color: var(--secondary-text-color);
+  cursor: pointer;
+}
+.tabActive{
+  background: var(--primary-foreground);
+  color: var(--primary-text-color);
+  border-radius: 8px;
 }

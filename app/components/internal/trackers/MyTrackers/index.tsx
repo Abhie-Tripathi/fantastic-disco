@@ -96,6 +96,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               ...prevAllTracker,...firstFetchResult.data.trackerData
               
             ]);
+            if(allTracker.length===0)
             setSingleTrackerData(firstFetchResult.data.trackerData[0]);
             setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
             setTotalCount(firstFetchResult.data.totalCount)
@@ -178,10 +179,10 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
-        <div className={styles.containerRight}>
+        <div className="grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div>Your Trackers</div>
+              <div className="text-sm font-medium">Your Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
               </span>

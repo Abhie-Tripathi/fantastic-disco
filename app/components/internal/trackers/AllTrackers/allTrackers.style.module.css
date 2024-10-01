@@ -1,14 +1,3 @@
-.cardOne{
-    display: flex; 
-    justify-content: space-between;
-    word-break: break-all;
-}
-.cardTwo{
-    display: flex;
-    align-items: center;
-    gap:10px;
-    min-height: 18px;
-}
 .location{
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-medium);
@@ -42,19 +31,11 @@
     justify-content: center;
 }
 .new{
-    color:var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-wrap: nowrap;
-    gap:var(--spacing-xxs);
-    border-bottom: 0.39px solid var(--border-color);
-    padding-bottom: 10px;
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-medium);
 }
 .numberOfEvents{
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-small);
     font-weight: var(--font-weight-bold);
 }
 .events{

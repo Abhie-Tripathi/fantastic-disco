@@ -9,7 +9,14 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'xs': '10px', 
+        'h6' : 'var(--font-size-h6)',
+        'small': 'var(--font-size-small)',
+      },
+
+    },
   },
   plugins: [],
 }
