@@ -184,7 +184,7 @@ const userRating=
     <>
     {loading ? <Loading/> :
     <div className={styles.container}>
-    <div className={`fixedNav ${styles.containerTop}`}>
+    <div className={`${styles.containerTop}`}>
       <div className={styles.containerTopLeft}>
         <div>
           <CustomeTracker fillColor="#6750a4" />
@@ -223,7 +223,7 @@ const userRating=
       </div>
     </div>
     <div className={styles.outerContainer}>
-      <div className='dummyDiv'></div>
+      {/* <div className='dummyDiv'></div> */}
     <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
     {data.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>

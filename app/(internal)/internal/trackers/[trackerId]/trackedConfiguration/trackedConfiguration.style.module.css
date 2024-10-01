@@ -1,12 +1,13 @@
 .container{
     display: flex;
-    width: calc(100vw - 134px);
+    width: 90%;
     flex-direction: column;
     gap: var(--spacing-lg);
     font-size: var(--font-size-default);
 }
 .containerTop{
     display: flex;
+    margin-top: 54px;
     align-items: center;
     justify-content: space-between;
     background: var(--heading-background-color);
@@ -264,7 +265,7 @@
 .outerContainer{
     display: flex;
     flex-direction: column;
-    margin-top: 140px;
+    /* margin-top: 140px; */
     gap:24px;
 }
 .keywordsIncluded, .keywordsExcluded{
