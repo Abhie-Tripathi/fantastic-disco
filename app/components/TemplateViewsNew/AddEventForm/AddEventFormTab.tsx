@@ -163,7 +163,6 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                 participationType: mainEventState.participationType,
                 event_type: "Tradeshow",
                 customizationData: JSON.stringify(eventCustomizationData),
-                promoted : mainEventState.promoted
             };
             const formData = new FormData()
             formData.append("name", mainEventState.eventName)
@@ -281,7 +280,6 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: subEventState.parentData ? subEventState.parentData : "",
-            promoted : subEventState.promoted
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -402,7 +400,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
-            promoted : eventState.promoted
+
         };
 
         // Prepare formData for the request

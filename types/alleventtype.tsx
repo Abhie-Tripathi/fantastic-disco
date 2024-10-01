@@ -3,7 +3,6 @@ export interface AllEventsType {
   subEvents : EventsType[]
 }
 export interface EventsType{
-  promoted : string;
   eventId: string;
   name: string;
   latitude: number;

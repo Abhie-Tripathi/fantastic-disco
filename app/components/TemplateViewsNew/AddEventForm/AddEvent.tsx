@@ -28,7 +28,6 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
   const initialFormState: FormState = {
-    promoted : prefilledEvent?.mainEvent.promoted || prefilledSubEvent?.promoted || "false",
     parentData: prefilledEvent?.mainEvent.parentData || "",
     descriptionModal: false,
     speakerModal: false,

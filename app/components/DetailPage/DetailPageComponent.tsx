@@ -36,14 +36,14 @@ interface EventProps {
     description: string;
     location_city: string;
     location_country: string;
-    widgetId: string;
+    // widgetId: string;
     eventId: string;
     hashtags: string;
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
 
@@ -102,7 +102,7 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} widgetId={widgetId} eventId={eventId} /></div>
+                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} /></div>
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>

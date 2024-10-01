@@ -12,7 +12,6 @@ interface ImageState {
     file: File | null;
 }
 export interface FormState {
-    promoted : string;
     descriptionModal : boolean;
     speakerModal : boolean;
     registerModal : boolean;
