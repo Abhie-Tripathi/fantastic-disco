@@ -94,6 +94,7 @@ import RegularityEdition from "@/app/components/dropdown/RegularityEdition";
 import GlobalTouring from "@/app/components/dropdown/GlobalTouring";
 import AnalyticsDropdown from "@/app/components/dropdown/AnalyticsDropdown";
 import AudienceQuality from "@/app/components/dropdown/AudienceQuality";
+import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
 
 const data =[
   {
@@ -248,12 +249,14 @@ const Search = () => {
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState<string>('');
+  const [selectedRank, setSelectedRank] = useState<string>('');
   // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [forecastedStatus, setForecastedStatus] = useState(false);
   const [audienceZone, setAudienceZone] = useState<boolean>(false);
   const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
+  const [selectedCountries, setSelectedCountries] = useState<any>([]);
 
   const [categoryData, setCatgeoryData] = useState([]);
 
@@ -275,6 +278,7 @@ const Search = () => {
   const [isInternationalOpen, setInternationalOpen] = useState<boolean>(false);
   const [isReputationOpen, setReputationOpen] = useState<boolean>(false);
   const [isTrustOpen, setTrustOpen] = useState<boolean>(false);
+  const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
 
   const [requestExhausted, setRequestExhausted] = useState<boolean>(false);
 
@@ -303,7 +307,7 @@ const Search = () => {
   const [selectedInsights, setSelectedInsights] = useState<InsightsType>({
     eventSize: true,
     eventKeywords: true,
-    eventRank: rankToggles.isEventRank,
+    eventRank: (selectedRank !== '' && selectedRank !== 'none'),
     matchScore: true,
     growth: true,
     eventSeries: selectedEventSeries,
@@ -347,7 +351,7 @@ const Search = () => {
       ...(analyticsToggles.impactScore&& {impactScore:true}),
       ...(analyticsToggles.inboundScore&& {inboundScore:true}),
       ...(analyticsToggles.internationalScore&& {internationalScore:true}),
-      ...(rankToggles.isEventRank&& {eventRank:true}),
+      ...((selectedRank !== '' && selectedRank !== 'none') && {eventRank:true}),
       ...(audienceZone && {audienceZone:true}),
       ...(audienceSpread && {audienceSpread:true}),
     }
@@ -365,14 +369,14 @@ const Search = () => {
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-          brandedEvent:selectedBrandedEvent.toString(),
+          ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          eventSeries: selectedEventSeries.toString(),
+          ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -388,7 +392,7 @@ const Search = () => {
           ...(selectedReputationScore[0] > 0 && {
             reputationScore: selectedReputationScore[0].toString(),
           }),
-          // ...(selectedMaturity > 0 && { maturity: selectedMaturity }),
+          ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
           ...(selectedDateRange?.length === 2 && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
@@ -422,6 +426,25 @@ const Search = () => {
          ...(selectedVisitors?.length>0 && {
           eventSize: selectedVisitors.join(",")
          }),
+         ...(analyticsToggles.impactScore && {
+          eventImpactSocre: selectedImpactScore.join("-")
+         }),
+         ...(analyticsToggles.inboundScore && {
+          inboundScore: selectedImpactScore.join("-")
+         }),
+         ...(analyticsToggles.internationalScore && {
+          internationalScore: selectedImpactScore.join("-")
+         }),
+         ...(forecastedStatus && {
+          isforecasted: forecastedStatus.toString()
+         }),
+         ...(selectedCountries?.length > 0 && {
+          audienceSpread: selectedCountries.join(",")
+         }),
+         ...((selectedRank !== '' && selectedRank !== 'none') && {
+          // globalRanking: selectedRank,
+          eventRanking: selectedRank,
+         })
         },
       };
 
@@ -622,7 +645,7 @@ const Search = () => {
 
     // Branded Event
     if (selectedBrandedEvent) {
-      queryString.brandedEvent = selectedBrandedEvent;
+      queryString.eventBrand = selectedBrandedEvent;
     }
 
     // Trust Score
@@ -641,9 +664,16 @@ const Search = () => {
     }
 
     // Maturity
-    // if (selectedMaturity > 0) {
-    //   queryString.maturity = selectedMaturity;
-    // }
+    if (selectedMaturity !== '' && selectedMaturity !== 'none') {
+      queryString.maturity = selectedMaturity;
+    }
+
+    if(selectedRank !== '' && selectedRank !== 'none') {
+      // queryString.categoryRanking = selectedRank;
+      // queryString.globalRanking = selectedRank;
+      // queryString.countryRanking = selectedRank;
+      queryString.eventRanking = selectedRank;
+    }
 
     // Int. Score
     if (selectedINScore > 0) {
@@ -665,9 +695,34 @@ const Search = () => {
       queryString.estimatedExhibitScore = selectedExhibitScore;
     }
 
+    // Event Impact Score
+    if (analyticsToggles.impactScore) {
+      queryString.eventImpactSocre = selectedImpactScore.join("-");
+    }
+
+    // Event inbound Score
+    if (analyticsToggles.inboundScore) {
+      queryString.inboundScore = selectedInboundScore.join("-");
+    }
+
+    // Event Impact Score
+    if (analyticsToggles.internationalScore) {
+      queryString.internationalScore = selectedInternationalScore.join("-");
+    }
+
+    // Forecasted Status
+    if (forecastedStatus) {
+      queryString.isforecasted = forecastedStatus;
+    }
+
+    // Audience Spread
+    if(selectedCountries.length > 0) {
+      queryString.audienceSpread = selectedCountries;
+    }
+
     // Show
-    queryString.eventRanking = true;
-    // queryString.globalRanking = '0-100';
+    if(Object.keys(queryString).length > 0)
+      queryString.shows = ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating'];
 
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();
@@ -908,7 +963,7 @@ const Search = () => {
       estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
       repeatSent: (rankToggles.isTrustScore),
       maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
-      eventRank: (rankToggles.isEventRank),
+      eventRank: (selectedRank !== '' && selectedRank !== 'none'),
       impactScore: analyticsToggles.impactScore,
       inboundScore: analyticsToggles.inboundScore,
       internationalScore: analyticsToggles.internationalScore,
@@ -930,6 +985,7 @@ const Search = () => {
     audienceSpread,
     selectedEventSeries,
     selectedBrandedEvent,
+    selectedRank,
   ]);
 
   useEffect(() => {
@@ -1640,7 +1696,7 @@ const Search = () => {
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Global & Touring
+                          Branded
                         </div>
                         {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                         <Image
@@ -2218,6 +2274,8 @@ const Search = () => {
                           rankToggles={rankToggles}
                           setRankToggles={setRankToggles}
                           onClose={close}
+                          selectedRank={selectedRank}
+                          setSelectedRank={setSelectedRank}
                         />
                       )}
                     </Dialog>
@@ -2447,57 +2505,49 @@ const Search = () => {
 
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
-                        <div className={styles.input_title}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <Button className={styles.dropdown_button} >
+                        <div className={styles.input_title} onClick={()=>setSpreadOpen(true)}>
                         Audience Spread
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
+                          {selectedCountries.length > 0 ? (
+                            <span className={styles.selected_no_filters}>
+                              {selectedCountries.length}
                             </span>
                           ) : (
                             ""
-                          )} */}
+                          )}
                         </div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
-                        <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => {
-                                  setAudienceSpread((prev) => !prev);
-                                }}
-                                checked={audienceSpread}
-                                // disabled={true}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div>
+                      </Button>
+                      <div className={styles.toggle_container}>
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                setAudienceSpread((prev) => !prev);
+                              }}
+                              onClick={() => {
+                                if(selectedInsights?.audienceSpread) setSelectedCountries([])
+                                else setSpreadOpen(true)
+                                setSelectedInsights((prevInsights) => ({ ...prevInsights, audienceSpread: !selectedInsights?.audienceSpread }));
+                              }}
+                              checked={audienceSpread}
+                              // disabled={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
                       </div>
                     </div>
-                  {/* </Button> */}
-                  {/* <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <EventAttendance
-                          state={selectedEventAttendanceRange}
-                          setState={setSelectedEventAttendanceRange}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover> */}
+                  </div>
+                  <Popover className={styles.filterPopover} isOpen={isSpreadOpen} onOpenChange={setSpreadOpen}>
+                    <AudienceSpread
+                      selectedCountries={selectedCountries}
+                      setSelectedCountries={setSelectedCountries}
+                      onClose={close}
+                    />
+                  </Popover>
                 </MenuTrigger>
 
               </div>

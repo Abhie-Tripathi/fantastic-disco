@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './intel.style.module.css'
-const index = ({internationalScore,inboundScore, userRating, exhibitScore, trustScore, reputation}:any) => {
+const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -25,7 +25,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(trustScore) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${styles.slider}`}></span>
               </label>
             </span>
           </div>
@@ -44,7 +44,7 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${styles.slider}`}></span>
               </label>
             </span>
           </div>
@@ -63,11 +63,30 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${styles.slider}`}></span>
               </label>
             </span>
           </div>
         </div>
+
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>
+          Audience Zone
+          </div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${audienceZone ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+
         <div className={styles.branded}>
           <div className={styles.formatHead}>
           Audience Spread
@@ -78,11 +97,11 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
                 <input
                   type="checkbox"
                   // onChange={() => {}}
-                  // checked={}
+                  // checked={} audienceSpread
                   defaultChecked
                   disabled
                 />
-                <span className={`${parseInt(reputation) > 0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${audienceSpread ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>

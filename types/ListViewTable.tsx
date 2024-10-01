@@ -33,9 +33,16 @@ export interface EventTableType {
         categoryRank: [{name: string, rank: number}]
         eventRank: number;
     };
-    ranking: [{
-        globalRank: number;
-    }]
+    ranking: {
+        globalRank?: number;
+        countryRank?: number;
+        categoryRank?: {
+            [key: string]: number;
+        };
+        countryCategoryRank?: {
+            [key: string]: number;
+        };
+    };
     reputationSentiment: number;
     interestsGrowth: number;
     interestsGrowthRange: any,
@@ -58,5 +65,23 @@ export interface EventTableType {
     };
     internationalAudience: string;
     type: string[];
-    "trustScore%": number;
+    isEventBrand?: boolean;
+    eventBrand?: string;
+    isEventSeries?: boolean;
+    maturity?: string;
+    eventImpactScore?: number | null;
+    eventInboundScore?: number | null;
+    internationalScore?: number | null;
+    "trustScore%"?: number | null;
+    audienceZone?: string,
+    futureExpectedStartDate?: Date;
+    futureExpectedEndDate?: Date;
+    audienceSpread?: {
+        [key: string]: {
+            iso: string;
+            name: string;
+            count: number;
+            percentage: number;
+        };
+      }
 }

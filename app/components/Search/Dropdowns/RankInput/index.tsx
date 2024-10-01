@@ -18,6 +18,8 @@ interface RankInputProps {
   setSelectedAviationRank: (rank: number[]) => void;
   rankToggles: any;
   setRankToggles: any;
+  selectedRank?: string;
+  setSelectedRank?: (maturity: string) => void;
   onClose: () => void;
 }
 
@@ -35,6 +37,8 @@ const RankInput = ({
   setSelectedAviationRank,
   rankToggles,
   setRankToggles,
+  selectedRank,
+  setSelectedRank,
   onClose,
 }: RankInputProps) => {
   const { theme } = useTheme();
@@ -83,6 +87,10 @@ const RankInput = ({
     }
   }
 
+  const handleRegularityChange = (e: any) => {
+    setSelectedRank?.(e.target.value);
+  }
+
   return (
     <div
       className={`${styles.container} ${className}`}
@@ -96,6 +104,69 @@ const RankInput = ({
         </div> */}
       </div>
       <div className={styles.sub_container}>
+
+        {setSelectedRank &&
+          <div className={styles.slider_container}>
+            <div className={styles.regularity_container}>
+              <div>
+                <input
+                  type="radio"
+                  id="none"
+                  name="maturity"
+                  value="none"
+                  onChange={handleRegularityChange}
+                  checked={selectedRank === 'none'}
+                  // disabled={true}
+                />
+                <label htmlFor="none">
+                  None
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="low"
+                  name="maturity"
+                  value="0-100"
+                  onChange={handleRegularityChange}
+                  checked={selectedRank === '0-100'}
+                  // disabled={true}
+                />
+                <label htmlFor="low">
+                  Top 100
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="medium"
+                  name="maturity"
+                  value="0-500"
+                  onChange={handleRegularityChange}
+                  checked={selectedRank === '0-500'}
+                  // disabled={true}
+                />
+                <label htmlFor="medium">
+                  Top 500
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="high"
+                  name="maturity"
+                  value="0-1000"
+                  onChange={handleRegularityChange}
+                  checked={selectedRank === '0-1000'}
+                  // disabled={true}
+                />
+                <label htmlFor="high">
+                  Top 1000
+                </label>
+              </div>
+            </div>
+          </div>
+        }
 
         <div className={styles.slider_container}>
           <label className={styles.switch}>
@@ -151,7 +222,7 @@ const RankInput = ({
           </>
         </div>
 
-        <div className={styles.slider_container}>
+        {/* <div className={styles.slider_container}>
           <label className={styles.switch}>
             <input
               type="checkbox"
@@ -161,7 +232,7 @@ const RankInput = ({
             <span className={styles.slider}></span>
           </label>
           <div className={styles.checkbox_title}>Event Ranking</div>
-        </div>
+        </div> */}
 
         {/* <div className={styles.line}></div>
 

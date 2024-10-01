@@ -91,17 +91,81 @@ function getGrowthRange(ex_ed_leads_following: number) {
   return lead_reange;
 }
 
-function getEventRank(rank: number) {
+interface CategoryRank {
+    [key: string]: number;
+}
+
+interface RankingResponse {
+  countryRank?: number;
+  categoryRank?: CategoryRank;
+  globalRank?: number;
+  countryCategoryRank?: CategoryRank
+}
+
+function getLeastRank(response: RankingResponse) {
+    let minRank = {
+      rank: Infinity,
+      name: '',
+      type: '',
+    };
+
+    if (response?.globalRank !== undefined) {
+      minRank.rank = response.globalRank;
+      minRank.name = '';
+      minRank.type = 'Global';
+    }
+    else if (response?.countryRank !== undefined) {
+      minRank.rank = response.countryRank;
+      minRank.name = '';
+      minRank.type = 'Country';
+    }
+    else if (response?.categoryRank) {
+      const c_ranks = response.categoryRank;      
+      for (const category in c_ranks) {
+        if (c_ranks[category] < minRank.rank) {
+          minRank.rank = c_ranks[category];
+          minRank.name = category;
+          minRank.type = 'Category';
+        }
+      }
+    }
+    else if (response?.countryCategoryRank) {
+      const c_ranks = response.countryCategoryRank;      
+      for (const category in c_ranks) {
+        if (c_ranks[category] < minRank.rank) {
+          minRank.rank = c_ranks[category];
+          minRank.name = category;
+          minRank.type = 'Country Category';
+        }
+      }
+    }
+
+    if (minRank.type === '') {
+      return <></>;
+    }
+    return getEventRank(minRank);
+}
+
+interface rankTag {
+  rank: number;
+  type: string;
+  name: string
+}
+
+function getEventRank(prop: rankTag) {
   let rankString = "";
-  if (rank == 1) rankString = "st";
-  else if (rank == 2) rankString = "nd";
-  else if (rank == 3) rankString = "rd";
+  if (prop.rank == 1) rankString = "st";
+  else if (prop.rank == 2) rankString = "nd";
+  else if (prop.rank == 3) rankString = "rd";
   else rankString = "th";
   return (
-    <div style={{ textAlign: "center" }}>
-      {rank}
-      <sup>{rankString}</sup>
-    </div>
+    <>
+      <div style={{ textAlign: "center", fontWeight: '500' }}>
+        {prop.rank}
+        <sup>{rankString}</sup>
+      </div>
+      <span title={prop.name} className={`${styles.truncateText_1} badge_warning`} style={{textTransform: 'capitalize', padding: '1px 10px'}}>{prop.type}</span>
+    </>
   );
 }
 
@@ -796,10 +860,10 @@ const Table = ({
               <tr key={event.id}>
                 <td className={`${styles.table_actionColumn}`} style={{left:"0", textAlign:"left", boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)"}}>
                   <div className={styles.event_badge_container}>
-                    {showInsights.brandedEvent &&
-                      <span className="badge_success" data-toggle="tooltip" title="Brand Name" >Brand</span>
+                    {(showInsights.brandedEvent && event?.eventBrand && event?.eventBrand !== '') &&
+                      <span className="badge_success" data-toggle="tooltip" title={event.eventBrand} >Brand</span>
                     }
-                    {showInsights.eventSeries &&
+                    {(showInsights.eventSeries && event?.isEventSeries) &&
                       <span className="badge_info" >Series</span>
                     }
                   </div>
@@ -971,10 +1035,11 @@ const Table = ({
                   ))} */}
                 {showInsights.eventRank && (
                   <td style={{textAlign: 'center', width: 'fit-content'}}>
-                    {event.ranking[0]?.globalRank ? (
+                    {event?.ranking ? (
                       <div>
-                        {getEventRank(event.ranking[0].globalRank)}
-                        <span className={styles.rank_tag}>Global</span>
+                        {/* {getEventRank(event.ranking?.globalRank)} */}
+                        {getLeastRank(event.ranking)}
+                        {/* <span className="badge_warning" style={{display: 'inline-block'}}>Global</span> */}
                       </div>
                     ) : (
                       "-"
@@ -1068,30 +1133,58 @@ const Table = ({
                   </td>
                 }
                 {showInsights.repeatSent && (
-                  <td style={{textAlign: 'center'}}>
-                    {event["trustScore%"] > 10 &&
-                      <span style={{borderRadius:"50%", backgroundColor: "var(--success-background-color)", padding:"4px"}}>
-                        <ArrowUp style={{width:"14px", height:"14px", color:"var(--success-text-color)", marginBottom:"5px"}}/>
-                      </span>
+                  <td style={{textAlign:"center"}}>
+                    {(event?.repeatSentiment !== undefined && event?.repeatSentiment > 0) ? (
+                      <>
+                        {(event["trustScore%"] !== undefined && event["trustScore%"] !== null) &&
+                          <>
+                            {event["trustScore%"] > 10 &&
+                            <span style={{borderRadius:"50%", backgroundColor: "var(--success-background-color)", padding:"4px"}}>
+                              <ArrowUp style={{width:"14px", height:"14px", color:"var(--success-text-color)", marginBottom:"5px"}}/>
+                              </span>
+                            }
+                            {event["trustScore%"] < -10 &&
+                            <span style={{borderRadius:"50%", backgroundColor: "var(--danger-background-color)", padding:"4px"}}>
+                                <ArrowDown style={{width:"14px", height:"14px", color:"var(--danger-text-color)", marginBottom:"5px"}}/>
+                                </span>
+                            }
+                          </>
+                        }
+                        &nbsp;
+                        {event.repeatSentiment}
+                      </>
+                    ) : (
+                      '-'
+                    )
                     }
-                    {event["trustScore%"] < -10 &&
-                      <span style={{borderRadius:"50%", backgroundColor: "var(--danger-background-color)", padding:"4px"}}>
-                        <ArrowDown style={{width:"14px", height:"14px", color:"var(--danger-text-color)", marginBottom:"5px"}}/>
-                      </span>
-                    }
-                    &nbsp;
-                    {event.repeatSentiment && event.repeatSentiment != 0
-                      ? event.repeatSentiment + "%"
-                      : "-"}
                   </td>
                 )}
 
+                {/* {(event?.repeatSentiment && event?.repeatSentiment !== 0)
+                      ? <>
+                          {event["trustScore%"] && event["trustScore%"] > 10 &&
+                            <span style={{borderRadius:"50%", backgroundColor: "var(--success-background-color)", padding:"4px"}}>
+                              <ArrowUp style={{width:"14px", height:"14px", color:"var(--success-text-color)", marginBottom:"5px"}}/>
+                            </span>
+                          }
+                          {event["trustScore%"] && event["trustScore%"] < -10 &&
+                            <span style={{borderRadius:"50%", backgroundColor: "var(--danger-background-color)", padding:"4px"}}>
+                              <ArrowDown style={{width:"14px", height:"14px", color:"var(--danger-text-color)", marginBottom:"5px"}}/>
+                            </span>
+                          }
+                          &nbsp;
+                          {event.repeatSentiment}
+                        </> + "%"
+                      : "-"} */}
+
                 {showInsights.forecasted && 
                   <td>
-                    {new Date().toLocaleDateString("en-GB", {
-                      month: "short",
-                      year: "numeric",
-                    })}
+                    {event?.futureExpectedStartDate ?
+                      new Date(event?.futureExpectedStartDate).toLocaleDateString("en-GB", {
+                        month: "short",
+                        year: "numeric",
+                      }) : '-'
+                    }
                   </td>
                 }
 
@@ -1210,19 +1303,24 @@ const Table = ({
 
                 {showInsights.maturity && (
                   <td>
-                    <span className="badge_primary">Growing</span>
+                    {(event?.maturity && event?.maturity !== '') ?
+                      <span style={{textTransform: 'capitalize'}} className="badge_primary">{event?.maturity}</span> :
+                      '-'
+                    }
                   </td>
                 )}
 
                 {showInsights.impactScore && 
-                  <td>Impact</td>
+                  <td>
+                    {(event?.eventImpactScore && event?.eventImpactScore !== 0) ? event.eventImpactScore : '-'}
+                  </td>
                 }
                 {showInsights.inboundScore && 
-                  <td>Inbound</td>
+                  <td>{(event?.eventInboundScore && event?.eventInboundScore !== 0) ? event.eventInboundScore : '-'}</td>
                 }
                 {showInsights.internationalScore && 
                   <td>
-                    {event["internationalAudience%"] !== undefined ? (
+                    {/* {event["internationalAudience%"] !== undefined ? (
                       event["internationalAudience%"] == "high" ? (
                         <span className={styles.badge_success}>High</span>
                       ) : event["internationalAudience%"] == "medium" ? (
@@ -1234,31 +1332,28 @@ const Table = ({
                       )
                     ) : (
                       <></>
-                    )}
+                    )} */}
+                    {(event?.internationalScore && event?.internationalScore !== 0) ? event.internationalScore : '-'}
                 </td>
                 }
 
                 {showInsights.audienceZone &&
                   <td>
-                    <span className={styles.badge_primary}>National</span>
+                    {(event?.audienceZone && event?.audienceZone !== '') ?
+                      <span className={styles.badge_primary}>{event.audienceZone}</span> : '-'
+                    }
                   </td>
                 }
 
                 {showInsights.audienceSpread &&
                   <td>
                     <div style={{display: 'flex', gap: '8px'}}>
-                      <span className={styles.country_badge} title="India">
-                        <Image src="https://img.10times.com/img/flag/in.jpg" alt="flag" width={25} height={18} />
-                        &nbsp;15%
-                      </span>
-                      <span className={styles.country_badge} title="United States">
-                        <Image src="https://img.10times.com/img/flag/us.jpg" alt="flag" width={25} height={18} />
-                        &nbsp;15%
-                      </span>
-                      <span className={styles.country_badge} title="United Kingdom">
-                        <Image src="https://img.10times.com/img/flag/uk.jpg" alt="flag" width={25} height={18} />
-                        &nbsp;15%
-                      </span>
+                      {event?.audienceSpread && Object.entries(event?.audienceSpread).map(([key, { iso, name, count, percentage }]) => (
+                        <span key={key} className={styles.country_badge} title={name}>
+                          <Image src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`} alt="flag" width={25} height={18} />
+                          &nbsp;{Math.round(percentage * 10) / 10}%
+                        </span>
+                      ))}
                     </div>
                   </td>
                 }
