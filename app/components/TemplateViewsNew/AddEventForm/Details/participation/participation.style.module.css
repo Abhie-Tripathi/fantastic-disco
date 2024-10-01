@@ -41,9 +41,7 @@
     color: #171717;
     font-weight: var(--font-weight-semibold);
 }
-.options .activeOption{
-    border: 1px solid var(--primary-color);
-}
+
 .selectedOption{
     display: flex;
     flex-direction: column;

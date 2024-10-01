@@ -142,17 +142,20 @@ import React, { useEffect, useRef, useState } from "react";
 import { showToast } from "@/utils/showToast";
 import styles from './modal.style.module.css'
 import "quill/dist/quill.snow.css";
+import { FormState } from "@/types/Formstate";
 interface Props {
-    setDescriptionModal: (value: boolean) => void;
+    // setDescriptionModal: (value: boolean) => void;
     handleDescClick: () => void;
-    setTextValue: (value: string) => void;
+    // setTextValue: (value: string) => void;
+    handleChange: (field: keyof FormState, value: any) => void;
     textValue: string;
 }
 
 const DescriptionModal: React.FC<Props> = ({
-    setDescriptionModal,
+    // setDescriptionModal,
     handleDescClick,
-    setTextValue,
+    handleChange,
+    // setTextValue,
     textValue
 }) => {
     const editorRef = useRef<HTMLDivElement>(null);
@@ -172,10 +175,12 @@ const DescriptionModal: React.FC<Props> = ({
         const cleanedValue = cleanUpEmptyLines(value);
         const isEmptyHTML = /^<p>(\s|<br>)*<\/p>$/i.test(value.trim());
         if (isEmptyHTML) {
-            setTextValue(""); 
+            handleChange('textValue', "")
+            // setTextValue(""); 
             return; 
         }
-        setTextValue(cleanedValue);
+        handleChange('textValue', cleanedValue)
+        // setTextValue(cleanedValue);
     }
     const handleSave = () => {
         // Check for phone numbers and emails
@@ -244,7 +249,7 @@ const DescriptionModal: React.FC<Props> = ({
             <div className={styles.header}>
                 <span>Add your description</span>
                 <div className={styles.btnContainer}>
-                    <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+                    <span className={styles.close} onClick={() => handleChange('descriptionModal', false)}>Close</span>
                     <button className={styles.saveBtn} onClick={handleSave}>Save</button>
                 </div>
 

@@ -1,4 +1,8 @@
 export interface AllEventsType {
+  mainEvent : EventsType;
+  subEvents : EventsType[]
+}
+export interface EventsType{
   eventId: string;
   name: string;
   latitude: number;
@@ -18,6 +22,8 @@ export interface AllEventsType {
   logoUrl: string;
   customizationData : CustomizationData;
   widgetTags : string;
+  eventType : string;
+  parentData : string;
 }
 interface CustomizationData {
   pageBgColor: string;

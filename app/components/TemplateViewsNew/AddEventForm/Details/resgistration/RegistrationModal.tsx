@@ -2,21 +2,26 @@ import React, { useState } from 'react'
 import styles from './registrationmodal.style.module.css'
 import ColorPicker from '../../../EditScreen/BrandKit/CustomizeComponents/ColorPicker'
 import { showToast } from "@/utils/showToast";
+import { FormState } from '@/types/Formstate';
 interface Props{
-    setRegisterModal : (value : boolean)=>void
-    setRegisterBtnColor : (value : string)=>void
-    setRegisterBtnText: (value : string)=>void
-    setRegisterMessage: (value : string)=>void
-    registerMessage:string
-    registerBtnText:string
-    registerBtnColor : string
+    // setRegisterModal : (value : boolean)=>void
+    // setRegisterBtnColor : (value : string)=>void
+    // setRegisterBtnText: (value : string)=>void
+    // setRegisterMessage: (value : string)=>void
+    // registerMessage:string
+    // registerBtnText:string
+    // registerBtnColor : string
+    formState: FormState;
+    handleChange: (field: keyof FormState, value: any) => void;
 }
 
-const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnText,setRegisterMessage ,registerMessage ,registerBtnText, registerBtnColor}:Props) => {
+const RegistrationModal = ({formState, handleChange
+    // setRegisterBtnColor,setRegisterBtnText,setRegisterMessage ,registerMessage ,registerBtnText, registerBtnColor
+}:Props) => {
 
-    const [customMessage, setCustomMessage] = useState<string>(registerMessage)
-    const [btnText, setBtnText] = useState<string>(registerBtnText)
-    const [btnColor, setBtnColor] = useState<string>(registerBtnColor)
+    const [customMessage, setCustomMessage] = useState<string>(formState.registerMessage)
+    const [btnText, setBtnText] = useState<string>(formState.registerBtnText)
+    const [btnColor, setBtnColor] = useState<string>(formState.registerBtnColor)
     const [customErrorMessage, setCustomErrorMessage] = useState<string>('');
     const [buttonErrorMessage, setButtonErrorMessage] = useState<string>('');
 
@@ -47,13 +52,16 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
     
         setCustomErrorMessage('');
         setButtonErrorMessage("")
-    
-        setRegisterBtnColor(btnColor);
-        setRegisterBtnText(trimmedBtnText);
-        setRegisterMessage(trimmedCustomMessage);
+        handleChange('registerBtnColor',btnColor)
+        handleChange('registerBtnText',trimmedBtnText)
+        handleChange('registerMessage',trimmedCustomMessage)
+        // setRegisterBtnColor(btnColor);
+        // setRegisterBtnText(trimmedBtnText);
+        // setRegisterMessage(trimmedCustomMessage);
     
         // Close modal only after successful validation
-        setRegisterModal(false);
+        handleChange('registerModal',false)
+        // setRegisterModal(false);
     };
 
     const handleColor = (color : any)=>{
@@ -88,7 +96,7 @@ const RegistrationModal = ({setRegisterModal,setRegisterBtnColor,setRegisterBtnT
   return (
     <form className={styles.body} onSubmit={handleSubmit}>
         <div className={styles.closeContainer}>
-            <button className={styles.closeBtn} onClick={()=>setRegisterModal(false)} type='button'>Close</button>
+            <button className={styles.closeBtn} onClick={()=>handleChange('registerModal', false)} type='button'>Close</button>
         </div>
         <div className={styles.container}>
             <span>Customize your message</span>

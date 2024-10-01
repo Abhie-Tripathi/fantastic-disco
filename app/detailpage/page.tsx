@@ -59,7 +59,7 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             description={description}
             location_city={location_city}
             location_country={location_country}
-            widgetId={widgetId}
+            // widgetId={widgetId}
             eventId={eventId}
             participationType={participationType}
         />

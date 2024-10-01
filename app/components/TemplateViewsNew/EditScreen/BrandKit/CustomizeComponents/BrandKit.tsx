@@ -7,6 +7,7 @@ import { useTheme } from '@/context';
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import Loading from '@/app/components/UI/Loading';
+import { AllEventsType } from '@/types/alleventtype';
 
 interface Props {
     extractedColors: string[];
@@ -18,6 +19,7 @@ interface Props {
     eventFont?: string;
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
+    prefilledEvent?: AllEventsType | null
 }
 interface FontSettings {
     fontFamily: string;
@@ -32,7 +34,7 @@ interface FontSettingsState {
     body: FontSettings;
 }
 
-const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont, setCardBgColor, setFontSettings }: Props) => {
+const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, pageBgColor, eventFont, setEventFont, setCardBgColor, setFontSettings, prefilledEvent }: Props) => {
 
     const { theme } = useTheme()
     const [accordian, setAccordian] = useState<boolean>(true)
@@ -110,6 +112,7 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
                                 setValueUpdated={setValueUpdated}
                                 setExtractedColors={setExtractedColors}
                                 extractedColors={fetchedColors}
+                                prefilledEvent={prefilledEvent}
                             />
                         </div>
                         {!flex && <div className={styles.line}></div>}

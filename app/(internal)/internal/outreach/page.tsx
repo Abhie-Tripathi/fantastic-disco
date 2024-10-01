@@ -18,9 +18,7 @@ const Page: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
-  const [shortlistedCount,setShortlistedCount]=useState(0);
-  const [inProgressCount,setInProgressCount]=useState(0);
-  const [confirmedCount,setConfirmedCount]=useState(0);
+
   const [tabsVisible, setTabsVisible] = useState<string>("shortlist");
   const [enquiryId, setEnquiryId] = useState<string>("");
   const [singleEventId, setSingleEventId] = useState<string>("");
@@ -147,39 +145,31 @@ const Page: React.FC = () => {
     }
     const fetchData = async () => {
       const shortlistApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=SHORTLISTED&limit=20&offset=0",
+        baseUrl + "/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=0",
         {
           method: "GET",
           headers: headers,
         }
       );
       const negoApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=20&offset=0",
+        baseUrl + "/userInterest/enquiry?status=IN_NEGO&limit=10&offset=0",
         {
           method: "GET",
           headers: headers,
         }
       );
       const confirmApiData = await myFetch(
-        baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=20&offset=0",
+        baseUrl + "/userInterest/enquiry?status=CONFIRMED&limit=10&offset=0",
         {
           method: "GET",
           headers: headers,
         }
       );
-      if (shortlistApiData.data){
+      if (shortlistApiData.data)
         setShortlistedTasks(shortlistApiData.data.enquiryData);
-        setShortlistedCount(shortlistApiData.data.totalCount);
-        
-      }
-      if (negoApiData.data) {
-        
-        setOutreachTasks(negoApiData.data.enquiryData);
-        setInProgressCount(shortlistApiData.data.totalCount);
-      }
+      if (negoApiData.data) setOutreachTasks(negoApiData.data.enquiryData);
       if (confirmApiData.data)
         setPreFinalisedTasks(confirmApiData.data.enquiryData);
-        setConfirmedCount(confirmApiData.data.totalCount);
     };
     fetchData();
   }, [statusChanged]);
@@ -199,7 +189,7 @@ const Page: React.FC = () => {
             >
               Shortlisted{" "}
               <span className={styles.eventSize}>
-                {shortlistedCount}
+                {shortlistedTasks.length}
               </span>
             </div>
             <span className={styles.seprator}></span>
@@ -208,7 +198,7 @@ const Page: React.FC = () => {
               className={`${styles.heading} ${tabsVisible == "outreach" ? styles.tabActive : ""}`}
             >
               In Progress{" "}
-              <span className={styles.eventSize}>{inProgressCount}</span>
+              <span className={styles.eventSize}>{outreachTasks.length}</span>
             </div>
             <span className={styles.seprator}></span>
             <div
@@ -217,7 +207,7 @@ const Page: React.FC = () => {
             >
               Confirmed{" "}
               <span className={styles.eventSize}>
-                {confirmedCount}
+                {preFinalisedTasks.length}
               </span>
             </div>
           </div>
@@ -231,7 +221,7 @@ const Page: React.FC = () => {
                 >
                   Shortlisted{" "}
                   <span className={styles.eventSize}>
-                    {shortlistedCount}
+                    {shortlistedTasks.length}
                   </span>
                 </div>
               </div>
@@ -284,7 +274,7 @@ const Page: React.FC = () => {
                 >
                   In Progress{" "}
                   <span className={styles.eventSize}>
-                    {inProgressCount}
+                    {outreachTasks.length}
                   </span>
                 </div>
               </div>
@@ -337,7 +327,7 @@ const Page: React.FC = () => {
                 >
                   Confirmed{" "}
                   <span className={styles.eventSize}>
-                    {confirmedCount}
+                    {preFinalisedTasks.length}
                   </span>
                 </div>
               </div>
