@@ -15,7 +15,7 @@ interface Props {
     handlePrefillEvent?: (value: AllEventsType) => void
     width: string;
     handlePrefillSubEvent? : (value : EventsType) => void
-    setSelectedEventType : (value : string)=>void
+    setSelectedEventType?: (value : string)=>void
 }
 
 const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, handlePrefillEvent,handlePrefillSubEvent, width,setSelectedEventType }: Props) => {
@@ -93,7 +93,10 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
         else if(subEvent){
             handleDeleteModal(subEvent.eventId, subEvent.name, false)
         }
-        setSelectedEventType("side")
+        if(setSelectedEventType){
+            setSelectedEventType("side")
+        }
+        
     }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>

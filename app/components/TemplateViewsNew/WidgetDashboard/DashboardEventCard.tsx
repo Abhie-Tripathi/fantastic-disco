@@ -15,7 +15,7 @@ interface Props {
     handlePrefillEvent?: (value: AllEventsType) => void
     handlePrefillSubEvent?: (value: EventsType) => void
     width: string;
-    setSelectedEventType: (value: string) => void
+    setSelectedEventType?: (value: string) => void
 }
 
 const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefillEvent, handlePrefillSubEvent, width, setSelectedEventType }: Props) => {
@@ -86,7 +86,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
 
     const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
-        setSelectedEventType("main")
+        // setSelectedEventType("main")
         handleDeleteModal(event.mainEvent.eventId, event.mainEvent.name, event.mainEvent.widgetTags.length > 0)
     }
     let prevDate: any = null;
