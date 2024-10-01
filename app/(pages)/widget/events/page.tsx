@@ -34,24 +34,27 @@ const Page = () => {
     const [selectedEventType, setSelectedEventType] = useState<string>("") // This will be used to Delete an event
 
     let prevDate: any = null;
+    
     useEffect(() => {
         fetchEvents(page * 8);
     }, [page])
-
-
-    // useEffect(() => {
-    //     const handleScroll = () => {
-    //         if (
-    //             window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
-    //             fetchedEvents.length > 0 // Prevent fetching on empty screen
-    //         ) {
-    //             setPage((prevPage) => prevPage + 1); // Increment page to load more events
-    //         }
-    //     };
-
-    //     window.addEventListener("scroll", handleScroll);
-    //     return () => window.removeEventListener("scroll", handleScroll);
-    // }, [fetchedEvents]);
+    useEffect(() => {
+        const handleScroll = () => {
+            const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
+    
+            if (isAtBottom && fetchedEvents.length > 0) {
+                setPage((prevPage) => prevPage + 1); // Increment page to load more events
+            }
+        };
+    
+        const debounceScroll = () => {
+            clearTimeout(window.scrollTimeout); // Clear any existing timeout
+            window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+        };
+    
+        window.addEventListener("scroll", debounceScroll);
+        return () => window.removeEventListener("scroll", debounceScroll);
+    }, [fetchedEvents]);
 
     const handleDeleteModal = (eventId: string, eventName: string, isPresentinWidget: boolean) => {
         if (isPresentinWidget) {
