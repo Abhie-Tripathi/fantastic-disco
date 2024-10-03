@@ -139,7 +139,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             longitude: event.longitude,
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
-                            promoted: event.promoted
+                            promoted: event.promoted,
+                            eventType : data.type
                         } as PrefilledAddedEventsType;
                     })
                 );
