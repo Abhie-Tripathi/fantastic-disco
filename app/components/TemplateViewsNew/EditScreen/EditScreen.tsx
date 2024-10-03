@@ -69,6 +69,64 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
             return theme === "light" ? "#424242" : "#ffffff";
         }
     };
+    const handleCustomizationWindowClick=() => {
+        if (isCustomisationWindowDisable) {
+            if(selectedTemplate ==="CVL"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                );
+            }else if(selectedTemplate ==="CVG"){
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                );
+            }else if(selectedTemplate ==="CV"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for this widget style"
+                );
+            } else if(selectedTemplate ==="HS"){
+               
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for this widget style"
+                );
+            }
+          } else {
+            setSelectedNavItem("customize");
+          }
+    }
+
+    const handleCodeWindowClick=() => {
+        if (isCustomisationWindowDisable) {
+            if(selectedTemplate ==="CVL"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                );
+            }else if(selectedTemplate ==="CVG"){
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                );
+            }else if(selectedTemplate ==="CV"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for this widget style"
+                );
+            } else if(selectedTemplate ==="HS"){
+               
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for this widget style"
+                );
+            }
+           
+          } else {
+            setSelectedNavItem("code")
+          }
+    }
     return (
         <div className={styles.body} >
             <div className={styles.navbar} style={{ backgroundColor: theme === "light" ? "#FBF8FF" : "#1F1F1F" }}>
@@ -76,22 +134,15 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                     className={`${selectedNavItem === "events" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
                     <FilterIcon color={getIconColor("events")} /><span>Select Events</span></button>
 
-                <button  disabled={isCustomisationWindowDisable} 
+                <button  
                 // onClick={() => setSelectedNavItem("customize")}
                 onClick={() => {
-                    if (isCustomisationWindowDisable) {
-                      showToast(
-                        "error",
-                        "Minimum 3 events to be selected for this widget style"
-                      );
-                    } else {
-                      setSelectedNavItem("customize");
-                    }
+                    handleCustomizationWindowClick()
                 }}
                     className={`${selectedNavItem === "customize" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn} ${isCustomisationWindowDisable ? styles.disabledBtn : ""}`}>
                     <CustomizeIcon color={getIconColor("customize")} /><span>Customize</span></button>
 
-                <button disabled={isCodeWindowDisable} onClick={() => setSelectedNavItem("code")}
+                <button  onClick={() => handleCodeWindowClick()}
                     className={`${selectedNavItem === "code" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn} ${isCodeWindowDisable ? styles.disabledBtn : ""}`}>
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>

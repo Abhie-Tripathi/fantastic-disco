@@ -78,7 +78,7 @@ const Page = () => {
           endTime: event.data.end_time,
           description: event.data.description,
           format: event.data.format,
-          isLinkedToWidget: false,
+          isLinkedToWidget: event.isWidgetLinked,
           gmtZone: event.data.gmt_time,
           latitude: event.data.latitude,
           eventType: event.type,
@@ -136,7 +136,6 @@ const Page = () => {
       } else {
         setFetchedAllEvents(prevEvents => [...prevEvents, ...transformedEvents]);
       }
-
       setAllEventsCount(data.totalCount)
     } if (error) {
       console.log(error)
@@ -154,7 +153,6 @@ const Page = () => {
       console.log(error);
     }
   }
-
 
   useEffect(() => {
     const fetchWidgetData = async () => {
@@ -210,35 +208,6 @@ const Page = () => {
     }
   }
 
-  // const handleAddEventModal = () => {
-  //   setPrefilledAddedEvent(undefined)
-  //   setPrefilledNormalEvent(undefined)
-  //   setPrefilledGlobalEvent(undefined)
-  //   setIsAddEventModalOpen(true)
-  // }
-  // const handleNormalEventModal = () => {
-  //   setPrefilledNormalEvent(undefined)
-  //   setIsNormalEventModalOpen(true)
-  // }
-
-  // const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
-  //   setPrefilledAddedEvent(event)
-  //   setIsAddEventModalOpen(true)
-  // }
-
-  // const handlePrefillEvent = (event: AllEventsType, type: string) => {
-  //   setPrefilledNormalEvent(event)
-  //   if (type === "add") {
-  //     setIsAddEventModalOpen(true)
-  //   } else setIsNormalEventModalOpen(true)
-
-  // }
-  // const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
-  //   setPrefilledGlobalEvent(event)
-  //   if (type === "widget") {
-  //     setIsAddEventModalOpen(true)
-  //   } else setIsNormalEventModalOpen(true)
-  // }
   if (loading) {
     return <div>Loading...</div>; // Show a loading state
   }

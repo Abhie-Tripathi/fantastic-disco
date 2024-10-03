@@ -10,6 +10,7 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { showToast } from '@/utils/showToast';
 import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
@@ -44,28 +45,30 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
     const [minNumberOfEvents,setMinNumberOfEvents] = useState("")
     const [showMSG, setShowMsg] = useState(false)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
+    const router = useRouter()
+
+    
 
 
     useEffect(() => {
-        console.log("SELECTED_TEMPLATE",selectedTemplate)
         const handleOtherDataFetch = async () => {
             try {
                 const newFetchedAddedOtherData = await Promise.all(
                     fetchedAddedEvents.map(async (event) => {
-                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
                         if (error) {
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
                         }
-                        const eventData = data?.data?.[0]?.data;
-                        if (!eventData) return null;
+                        const eventData = data?.data;
+                        // if (!eventData) return null;
 
                         const eventObject = {
                             id: event.id,
-                            name: data?.data?.[0]?.name,
-                            pageBgColor: event.pageBgColor,
+                            name: data?.name,
+                            pageBgColor: eventData.customizationData.pageBgColor,
                             description: eventData.description,
-                            eventFont: event.eventFont,
+                            eventFont: eventData.customizationData.eventFont,
                             startDate: eventData.start_date,
                             endDate: eventData.end_date,
                             startTime: eventData.start_time,
@@ -73,19 +76,19 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                             timeZone: eventData.gmt_time,
                             cityName: eventData.location_city,
                             countryName: eventData.location_country,
-                            participationType: eventData.participationType,
+                            participationType: data?.participationType,
                             eventFormat: eventData.format,
-                            registerBtnColor: event.registerBtnColor,
-                            registerBtnText: event.registerBtnText,
-                            registerMessage: event.registerMessage,
-                            boothNumber: event.boothNumber,
-                            speakerProfilesData: event.speakerProfilesData,
-                            participationMessage: event.participationMessage,
-                            bannerUrl: event.bannerUrl,
-                            latitude: event.latitude,
-                            longitude: event.longitude,
-                            venue: event.venue,
-                            hashtags: event.hashtags,
+                            registerBtnColor: eventData.customizationData.registerBtnColor,
+                            registerBtnText: eventData.customizationData.registerBtnText,
+                            registerMessage: eventData.customizationData.registerMessage,
+                            boothNumber: eventData.customizationData.boothNumber,
+                            speakerProfilesData: eventData.customizationData.speakerProfilesData,
+                            participationMessage: eventData.customizationData.participationMessage,
+                            bannerUrl: eventData.logoUrl,
+                            latitude: eventData.latitude,
+                            longitude: eventData.longitude,
+                            venue: eventData.customizationData.venue,
+                            hashtags: eventData.customizationData.hashtags,
                             promoted : event.promoted
                         } as PrefilledAddedEventsType;
                         if (event.promoted === "true") {
@@ -345,6 +348,8 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                 <div>Search or Add your Events</div>
                 <span>Start by searching for existing events to add to your widgets</span>
                 <span>or feel free to create your own event from scratch</span>
+                {/* <span>Add your events from scratch to add your widget</span> */}
+                <div className={styles.add_event_button} onClick={() =>{router.push('/widget/events')}}><span style={{color:"white"}}>Add Event</span></div>
             </div>}
         </div>
     )

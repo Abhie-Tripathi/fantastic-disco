@@ -181,3 +181,12 @@
     color:#52A8FF;
     font-size: 12px;
 }
+
+.add_event_button{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    color: white;
+    font-size: var(--font-size-small);
+    padding: 9px 20px;
+    cursor: pointer;
+}

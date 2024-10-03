@@ -113,16 +113,6 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
-            {/* <div className={styles.dotsContainer}>
-                {[currentIndex - 1, currentIndex, currentIndex + 1].map((index, dotIdx) => (
-                    <button
-                        key={dotIdx}
-                        className={`${styles.dotButton} ${dotIdx === 1 ? styles.activeDot : styles.fadedDot}`}
-                        onClick={() => handleDotClick(index)}
-                        disabled={index < 0 || index >= banners.length} // Disable dots if out of bounds
-                    />
-                ))}
-            </div> */}
         </div>
     );
 };

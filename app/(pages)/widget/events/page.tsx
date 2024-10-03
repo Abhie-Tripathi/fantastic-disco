@@ -70,9 +70,9 @@ const Page = () => {
         const customizeData = new FormData();
         customizeData.append("id", selectedEventId)
         customizeData.append('published', "false");
-        if (selectedEventType === "side") {
-            customizeData.append("type", "SUB")
-        }
+        // if (selectedEventType === "side") {
+        //     customizeData.append("type", "SUB")
+        // }
         const { data, error } = await myFetch(
             `${baseUrl}/event`,
             {
