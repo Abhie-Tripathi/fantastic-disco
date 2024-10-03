@@ -48,5 +48,6 @@ export interface FormState {
     isParticipationMessageEmpty: boolean;
     isTextValueMessageEmpty: boolean;
     errorMessage: string;
+    parentData : string;
   }
   

@@ -9,12 +9,12 @@ interface Props {
     registerMessage: string
     registerBtnText: string
     registerBtnColor: string
-    widgetId: string;
+    // widgetId: string;
     eventId: string;
     setRegisterSuccess : (value : boolean)=>void
 }
 
-const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widgetId, eventId,setRegisterSuccess }: Props) => {
+const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, eventId,setRegisterSuccess }: Props) => {
     const [formData, setFormData] = useState({ firstname: '', lastname: '', email: '' });
     const [emailError, setEmailError] = useState<string | null>(null);
     // Function to convert hex to RGB
@@ -54,7 +54,7 @@ const RegisterForm = ({ registerMessage, registerBtnText, registerBtnColor, widg
             interest: "ATTENDEE",
             note: "intend",
             source: "eventgeni",
-            sorceId: widgetId,
+            // sorceId: widgetId,
         };
 
         try {

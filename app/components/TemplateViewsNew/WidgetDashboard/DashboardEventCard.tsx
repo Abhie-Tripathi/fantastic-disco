@@ -1,12 +1,10 @@
 import React from 'react'
 import styles from './dashboardeventcard.style.module.css'
-import { AllEventsType } from '@/types/alleventtype';
+import { AllEventsType, EventsType } from '@/types/alleventtype';
 import calendarIcon from "/public/calendar.svg";
 import PlaceIcon from "/public/location.svg";
 import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
-import { myFetch } from '@/utils/myFetch';
-import { baseUrl } from '@/constants';
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import SubEventCard from './SubEventCard';
 
@@ -15,10 +13,12 @@ interface Props {
     fetchEvents?: (value: void) => void
     handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
     handlePrefillEvent?: (value: AllEventsType) => void
+    handlePrefillSubEvent?: (value: EventsType) => void
     width: string;
+    setSelectedEventType?: (value: string) => void
 }
 
-const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefillEvent, width }: Props) => {
+const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefillEvent, handlePrefillSubEvent, width, setSelectedEventType }: Props) => {
     function formatEventDates(startDate: string, endDate: string) {
 
         const start = new Date(startDate);
@@ -86,6 +86,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
 
     const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
+        // setSelectedEventType("main")
         handleDeleteModal(event.mainEvent.eventId, event.mainEvent.name, event.mainEvent.widgetTags.length > 0)
     }
     let prevDate: any = null;
@@ -134,8 +135,9 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                                 <div key={index} className={styles.container}>
                                     <TimelineItem eventDate={showDate ? subEvent.startDate : null} />
                                     <SubEventCard
+                                        setSelectedEventType={setSelectedEventType}
+                                        handlePrefillSubEvent={handlePrefillSubEvent}
                                         width="small"
-                                        handlePrefillEvent={handlePrefillEvent}
                                         handleDeleteModal={handleDeleteModal}
                                         subEvent={subEvent}
                                     />

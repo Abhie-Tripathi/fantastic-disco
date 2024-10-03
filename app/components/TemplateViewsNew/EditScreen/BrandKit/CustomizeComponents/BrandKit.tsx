@@ -19,7 +19,7 @@ interface Props {
     eventFont?: string;
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
-    prefilledEvent?: AllEventsType;
+    prefilledEvent?: AllEventsType | null
 }
 interface FontSettings {
     fontFamily: string;

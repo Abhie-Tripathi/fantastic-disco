@@ -6,7 +6,6 @@ import DetailPageComponent from '../../components/DetailPage/DetailPageComponent
 interface EventProps {
     venue: string;
     latitude: number;
-    bannerUrl: string;
     eventFont: string;
     longitude: number;
     pageBgColor: string;
@@ -26,20 +25,19 @@ interface EventProps {
     description: string;
     location_city: string;
     location_country: string;
-    widgetId: string;
     eventId: string;
     hashtags: string;
     participationType: string;
 }
 
-const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType }: EventProps) => {
+const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType }: EventProps) => {
     return (
         <DetailPageComponent
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
-            bannerUrl={bannerUrl}
+            bannerUrl={logoUrl}
             eventFont={eventFont}
             longitude={longitude}
             pageBgColor={pageBgColor}
@@ -59,16 +57,16 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
             description={description}
             location_city={location_city}
             location_country={location_country}
-            widgetId={widgetId}
+            // widgetId={widgetId}
             eventId={eventId}
             participationType={participationType}
         />
     )
 }
-const fetchData = async (widgetId: string, eventId: string) => {
+const fetchData = async (eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
-        const response = await fetch(`${baseUrl}/public/widget/${widgetId}/event?ts=${Date.now()}`, {
+        const response = await fetch(`${baseUrl}/public/widget/${eventId}/event?ts=${Date.now()}`, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             },
@@ -80,42 +78,44 @@ const fetchData = async (widgetId: string, eventId: string) => {
 
         const data = await response.json();
         // Check if data is valid
-        if (!data || !data.data.widgetData || !data.data.widgetData.id) {
+        if (data.data.length === 0) {
             console.log("Invalid widgetId or error encountered");
             notFound();
         }
 
         console.log("data is: ", data);
-        console.log("Event data is :", data.data.eventData)
-        console.log("event id is: ", eventId);
-
-        // Find the event in otherdata or eventData
-        const eventFromOtherData = data.data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
-        const eventFromEventData = data.data.eventData?.find((event: any) => event.id === eventId);
-
-        // If the event is not found in either dataset, return 404
-        if (!eventFromOtherData && !eventFromEventData) {
-            console.log("Invalid eventId");
-            notFound();
-        }
-
-        // Merge event data from both sources
-        const mergedEventData = {
-            ...eventFromOtherData,
-            ...eventFromEventData,
+        const event = {
+            eventId: data.data.event.id,
+            name: data.data.event.name,
+            format: data.data.event.data.format,
+            logoUrl: data.data.event.data.logoUrl,
+            end_date: data.data.event.data.end_date,
+            end_time: data.data.event.data.end_time,
+            gmt_time: data.data.event.data.gmt_time,
+            latitude: data.data.event.data.latitude,
+            longitude: data.data.event.data.longitude,
+            start_date: data.data.event.data.start_date,
+            start_time: data.data.event.data.start_time,
+            description: data.data.event.data.description,
+            location_city: data.data.event.data.location_city,
+            location_country: data.data.event.data.location_country,
+            participationType: data.data.event.data.participationType,
+            pageBgColor: data.data.event.data.customizationData.pageBgColor,
+            eventFont: data.data.event.data.customizationData.eventFont,
+            registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
+            registerBtnText: data.data.event.data.customizationData.registerBtnText,
+            registerMessage: data.data.event.data.customizationData.registerMessage,
+            speakerProfilesData: data.data.event.data.customizationData.speakerProfilesData,
+            participationMessage: data.data.event.data.customizationData.participationMessage,
+            venue: data.data.event.data.customizationData.venue,
+            hashtags: data.data.event.data.customizationData.hashtags,
         };
 
-        return mergedEventData;
+        return event;
     } catch (error) {
         console.log("Error fetching data:", error);
         notFound(); // Handle the error by redirecting to a not found page or similar
     }
-};
-// utils/hashUtils.ts
-const decodeHash = (hash: string) => {
-    const decodedString = Buffer.from(hash, 'base64').toString('ascii');
-    const [widgetId, eventId] = decodedString.split(':');
-    return { widgetId, eventId };
 };
 
 // const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
@@ -127,22 +127,23 @@ const decodeHash = (hash: string) => {
 // export default DetailPage;
 
 const DetailPage = async (context: any) => {
-    const hash = context.params.id;
-    const { widgetId, eventId } = decodeHash(hash as string);
-    console.log("widgetId : ", widgetId)
+    const eventId = context.params.id;
+    // const { widgetId, eventId } = decodeHash(hash as string);
+    // console.log("widgetId : ", widgetId)
     console.log("eventId : ", eventId)
-    const data = await fetchData(widgetId, eventId);
+    const data = await fetchData(eventId);
     console.log("data is ,", data)
-    return <Page {...data} widgetId={widgetId} eventId={eventId} />;
+    return <Page {...data} eventId={eventId} />;
 };
 export default DetailPage;
+
 export async function generateMetadata(context: any) {
-    const hash = context.params.id;
-    const { widgetId, eventId } = decodeHash(hash as string);
-    const data = await fetchData(widgetId, eventId);
+    const eventId = context.params.id;
+    // const { widgetId, eventId } = decodeHash(hash as string);
+    const data = await fetchData(eventId);
 
     // Check if data is valid, if not return 404 metadata
-    if (!data || !data.name || !data.description || !data.bannerUrl) {
+    if (!data || !data.name || !data.description || !data.logoUrl) {
         return {
             title: "404 - Not Found",
             description: "The page you are looking for does not exist.",
@@ -150,20 +151,20 @@ export async function generateMetadata(context: any) {
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+                url: `https://console.eventgeni.com/${eventId}`,
                 type: "website"
             },
         };
     }
-    const { name, description, bannerUrl } = data;
+    const { name, description, logoUrl } = data;
     return {
         title: name,
         description: description,
         openGraph: {
             title: name,
             description: description,
-            images: [bannerUrl],
-            url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+            images: [logoUrl],
+            url: `https://console.eventgeni.com/detailpage/${eventId}`,
             type: "website"
         },
     };

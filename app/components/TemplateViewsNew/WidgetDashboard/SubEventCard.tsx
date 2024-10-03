@@ -14,9 +14,11 @@ interface Props {
     handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
     handlePrefillEvent?: (value: AllEventsType) => void
     width: string;
+    handlePrefillSubEvent? : (value : EventsType) => void
+    setSelectedEventType?: (value : string)=>void
 }
 
-const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, handlePrefillEvent, width }: Props) => {
+const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, handlePrefillEvent,handlePrefillSubEvent, width,setSelectedEventType }: Props) => {
 
     function formatEventDates(startDate: string, endDate: string) {
         const start = new Date(startDate);
@@ -79,13 +81,22 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
     const handleCardClick = () => {
         if (width === "small" && handlePrefillEvent && normalEvent) {
             handlePrefillEvent(normalEvent)
+        }else if(width === "small" && handlePrefillSubEvent && subEvent){
+            handlePrefillSubEvent(subEvent)
         }
     }
 
     const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation()
         if (normalEvent)
-            handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, false)
+            handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, normalEvent.mainEvent.widgetTags.length > 0)
+        else if(subEvent){
+            handleDeleteModal(subEvent.eventId, subEvent.name, false)
+        }
+        if(setSelectedEventType){
+            setSelectedEventType("side")
+        }
+        
     }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>

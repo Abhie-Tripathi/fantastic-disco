@@ -23,6 +23,7 @@ export interface EventsType{
   customizationData : CustomizationData;
   widgetTags : string;
   eventType : string;
+  parentData : string;
 }
 interface CustomizationData {
   pageBgColor: string;

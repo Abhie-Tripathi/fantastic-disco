@@ -12,7 +12,7 @@ interface Props {
     pageBgColor?: string;
     setCardBgColor?: (value: string) => void
     clickable: boolean;
-    prefilledEvent?: AllEventsType;
+    prefilledEvent?: AllEventsType | null
 }
 
 const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable, prefilledEvent }: Props) => {

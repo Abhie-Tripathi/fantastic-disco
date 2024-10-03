@@ -8,14 +8,15 @@ import Image from "next/image";
 import logo from "/public/10timeslogo.png";
 import { GolbalEventType } from "@/types/globaleventtype";
 import useOutsideClick from "@/hooks/useOutsideClick";
+import { FormState } from "@/types/Formstate";
 
 interface Props {
   widgetId: string;
   handlePrefillGlobalEvent?: (event: GolbalEventType) => void;
-  setMainEventName?: (value: string) => void
+  handleChange?: (field: keyof FormState, value: any) => void;
 }
 
-const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, setMainEventName }: Props) => {
+const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [dataDropdown, setDatadropdown] = useState<boolean>(false);
   const [searchData, setSearchData] = useState<any[]>([]);
@@ -33,8 +34,8 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, setMainEventName }: 
   const handleClickEvent = (event: any) => {
     console.log("clicked event is :", event)
     setSearchValue(event.name)
-    if (setMainEventName) {
-      setMainEventName(event.name)
+    if (handleChange) {
+      handleChange("parentData", event.name)
     } else {
       const newEvent: GolbalEventType = {
         name: event.name,
@@ -114,7 +115,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, setMainEventName }: 
         >
           {searchData.length > 0 ? (
             searchData.map((event) => (
-              <div className={styles.dropdownEvent} key={event.id}>
+              <div className={styles.dropdownEvent} key={event.id} onClick={() => handleClickEvent(event)}>
                 <div className={styles.eventNameContaier}>
                   <span className={styles.dropeventName}>
                     {truncateName(event.name)},
@@ -126,13 +127,13 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, setMainEventName }: 
 
                 {event.data.isMicroServiceData && (
                   <div className={styles.buttons}>
-                    <div
+                    {/* <div
                       className={styles.button}
                       data-name="Add Event"
-                      onClick={() => handleClickEvent(event)}
+                      
                     >
                       <Addevent />
-                    </div>
+                    </div> */}
                     {/* <div
                       className={styles.button}
                       data-name="Add Event to widget"
