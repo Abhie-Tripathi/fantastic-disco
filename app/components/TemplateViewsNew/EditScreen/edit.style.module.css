@@ -46,6 +46,6 @@
 }
 
 .disabledBtn {
-    cursor:text;
+    cursor:not-allowed;
     background-color: #cccccc; 
   }
