@@ -63,6 +63,16 @@
   border-radius: 50px;
   filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
 }
+.navButton:hover{
+  background-color: rgb(241, 241, 241);
+}
+.disabledBtn{
+  background-color: var(--disabled-btn-color);
+  filter: none;
+}
+.disabledBtn:hover{
+  background-color: var(--disabled-btn-color);
+}
 .navButton:first-of-type {
   left: 1px;
 }

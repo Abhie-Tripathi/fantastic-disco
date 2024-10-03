@@ -3,6 +3,7 @@ import styles from './sideeventcarousel.style.module.css'
 import { EventsType } from '@/types/alleventtype'
 import SideEventCard from './SideEventCard'
 import { useRouter } from 'next/navigation'
+import { baseUrl } from '@/constants'
 
 interface Props {
     childrenData: EventsType[]
@@ -14,20 +15,21 @@ const SideEventCarousel = ({ childrenData }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleCardClick = (id: string) => {
-        router.push(`https://console.dev.eventgeni.com/detailpage/${id}`)
+        const Url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN;
+        router.push(`${Url}/detailpage/${id}`)
     }
 
-    // const banners = childrenData.map((event, index) => (
-    //     <div onClick={() => handleCardClick(event.eventId)} key={index} className={styles.sideEventCard}>
-    //         <SideEventCard event={event} />
-    //     </div >
-    // ))
-    const banners = [
-        <div className={styles.sideEventCard} key={1}><SideEventCard event={childrenData[0]} /></div>,
-        <div className={styles.sideEventCard} key={2}><SideEventCard event={childrenData[0]} /></div>,
-        <div className={styles.sideEventCard} key={3}><SideEventCard event={childrenData[0]} /></div>,
+    const banners = childrenData.map((event, index) => (
+        <div onClick={() => handleCardClick(event.eventId)} key={index} className={styles.sideEventCard}>
+            <SideEventCard event={event} />
+        </div >
+    ))
+    // const banners = [
+    //     <div className={styles.sideEventCard} key={1}><SideEventCard event={childrenData[0]} /></div>,
+    //     <div className={styles.sideEventCard} key={2}><SideEventCard event={childrenData[0]} /></div>,
+    //     <div className={styles.sideEventCard} key={3}><SideEventCard event={childrenData[0]} /></div>,
 
-    ]
+    // ]
     const handleNext = () => {
         if (currentIndex < banners.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
@@ -42,7 +44,7 @@ const SideEventCarousel = ({ childrenData }: Props) => {
 
     return (
         <div className={styles.sliderContainer}>
-            <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
+            <button className={`${styles.navButton} ${currentIndex === 0 ?styles.disabledBtn : ""}`} onClick={handlePrev} disabled={currentIndex === 0}>
                 <LeftArrowIcon />
             </button>
             <div className={styles.cards}>
@@ -60,7 +62,7 @@ const SideEventCarousel = ({ childrenData }: Props) => {
                     );
                 })}
             </div>
-            <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
+            <button className={`${styles.navButton} ${currentIndex === banners.length - 1 ?styles.disabledBtn : ""}`} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
         </div>
