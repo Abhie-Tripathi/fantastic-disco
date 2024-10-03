@@ -2,6 +2,7 @@ import React from 'react'
 import { baseUrl } from '@/constants'
 import { notFound } from 'next/navigation';
 import DetailPageComponent from '../../components/DetailPage/DetailPageComponent'
+import { EventsType } from '@/types/alleventtype';
 // export const revalidate = 0;
 interface EventProps {
     venue: string;
@@ -28,12 +29,14 @@ interface EventProps {
     eventId: string;
     hashtags: string;
     participationType: string;
+    childrenData: EventsType[]
 }
 
 const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData }: EventProps) => {
     return (
         <DetailPageComponent
+            childrenData={childrenData}
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
@@ -82,8 +85,8 @@ const fetchData = async (eventId: string) => {
             console.log("Invalid widgetId or error encountered");
             notFound();
         }
-
-        console.log("data is: ", data);
+        console.log("data is : ", data)
+        console.log("children data is: ", data.data.event.data.children);
         const event = {
             eventId: data.data.event.id,
             name: data.data.event.name,
@@ -109,6 +112,37 @@ const fetchData = async (eventId: string) => {
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
+            childrenData: data.data.event.data.children.map((child: any) => ({
+                eventId: child.id,
+                name: child.name,
+                format: child.data.format,
+                logoUrl: child.data.logoUrl,
+                endDate: child.data.end_date,
+                endTime: child.data.end_time,
+                gmtZone: child.data.gmt_time,
+                latitude: child.data.latitude,
+                longitude: child.data.longitude,
+                startDate: child.data.start_date,
+                startTime: child.data.start_time,
+                description: child.data.description,
+                cityName: child.data.location_city,
+                countryName: child.data.location_country,
+                participationType: child.data.participationType,
+                customizationData: {
+                    pageBgColor: child.data.customizationData.pageBgColor,
+                    eventFont: child.data.customizationData.eventFont,
+                    registerBtnColor: child.data.customizationData.registerBtnColor,
+                    registerBtnText: child.data.customizationData.registerBtnText,
+                    registerMessage: child.data.customizationData.registerMessage,
+                    speakerProfilesData: child.data.customizationData.speakerProfilesData,
+                    participationMessage: child.data.customizationData.participationMessage,
+                    venue: child.data.customizationData.venue,
+                    hashtags: child.data.customizationData.hashtags,
+                    boothNumber: child.data.customizationData.boothNumber,
+                    eventFormat: child.data.customizationData.eventFormat
+                }
+            }))
+
         };
 
         return event;
@@ -118,21 +152,11 @@ const fetchData = async (eventId: string) => {
     }
 };
 
-// const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
-//     const { widgetId, eventId } = searchParams;
-//     const data = await fetchData(widgetId, eventId);
-//     console.log("data is ,", data)
-//     return <Page {...data} widgetId={widgetId} eventId={eventId} />;
-// };
-// export default DetailPage;
-
 const DetailPage = async (context: any) => {
     const eventId = context.params.id;
     // const { widgetId, eventId } = decodeHash(hash as string);
     // console.log("widgetId : ", widgetId)
-    console.log("eventId : ", eventId)
     const data = await fetchData(eventId);
-    console.log("data is ,", data)
     return <Page {...data} eventId={eventId} />;
 };
 export default DetailPage;

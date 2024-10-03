@@ -11,6 +11,8 @@ import LocationContainer from '@/app/components/DetailPage/LocationContainer'
 import DescriptionContainer from '@/app/components/DetailPage/DescriptionContainer'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { EventsType } from '@/types/alleventtype'
+import SideEventCarousel from './SideEventCarousel'
 
 interface EventProps {
     venue: string;
@@ -39,11 +41,12 @@ interface EventProps {
     // widgetId: string;
     eventId: string;
     hashtags: string;
+    childrenData :  EventsType[]
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
 
@@ -74,6 +77,9 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
         >
             <ToastContainer />
             <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>
+
+            {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData}/></div>}
+
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
