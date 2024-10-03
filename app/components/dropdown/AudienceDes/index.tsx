@@ -78,7 +78,7 @@ const AudienceDes = ({
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <div>
-          Audience Spread
+          Audience Profile
           {/* <InformationFillSmall color="var(--primary-text-color)" /> */}
         </div>
       </div>
