@@ -14,37 +14,37 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   width: 100%;
   position: relative;
   height: 100%;
 }
-
-.card {
-  transition: transform 0.5s ease, opacity 0.2s ease;
-  width: 85%;
-  display: none;
-}
-
-.sideEventCard {
+.sideEventCard{
   cursor: pointer;
   width: 100%;
 }
-
+.card {
+  transition: transform 0.5s ease, opacity 0.2s ease;
+  position: absolute;
+  opacity: 0;
+  width: 88%;
+}
 .card.active {
-  display: block; /* Show the active card */
-  filter: drop-shadow(1px 1px 2px rgb(194, 194, 194));
+  filter: drop-shadow(1px 1px 2px rgb(211, 211, 211));
+  z-index: 2;
   opacity: 1;
 }
+
 .card.left {
-  transform: translateX(-100%) scale(0.8);
-  opacity: .8;
-  width: 85%;
+  transform: translateX(-70%) scale(0.8) ;
+  z-index: 1;
+  opacity: .5;
 }
 
 .card.right {
-  transform: translateX(100%) scale(0.8);
-  opacity: .8;
-  width: 85%;
+  transform: translateX(70%) scale(0.8);
+  z-index: 1;
+  opacity: .5;
 }
 
 .navButton {
@@ -54,8 +54,8 @@
   transform: translateY(-50%);
   border: none;
   z-index: 999;
-  height: 50px;
-  width: 50px;
+  height: 27px;
+  width: 27px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +63,6 @@
   border-radius: 50px;
   filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
 }
-
 .navButton:first-of-type {
   left: 1px;
 }
