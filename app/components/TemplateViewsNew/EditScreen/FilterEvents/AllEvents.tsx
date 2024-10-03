@@ -122,15 +122,27 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         if (!check) {
             const customizedFormData = new FormData()
             const existingEvents = fetchedAddedEvents || [];
-            const newEvent = {
+            const newEvents = [{
                 id: event.mainEvent.eventId,
                 promoted: "false"
-            };
-            const mergedEvents = [...existingEvents, newEvent];
+            }];
+            // If subEvents exist, add them with promoted: "false"
+            if (event.subEvents && event.subEvents.length > 0) {
+                const subEventObjects = event.subEvents.map((subEvent) => ({
+                    id: subEvent.eventId,  // Assuming subEvent has an eventId property
+                    promoted: "false"
+                }));
+                newEvents.push(...subEventObjects);
+            }
+            const mergedEvents = [...existingEvents, ...newEvents];
             const otherData = {
                 event: mergedEvents,
             };
-            const eventIds = [...addedEventIds, event.mainEvent.eventId].join(',');
+            const eventIds = [
+                ...addedEventIds, 
+                event.mainEvent.eventId, 
+                ...(event.subEvents || []).map((subEvent) => subEvent.eventId)
+            ].join(',');
             customizedFormData.append('widgetId', widgetId);
             customizedFormData.append('eventId', eventIds)
             customizedFormData.append('otherdata', JSON.stringify(otherData))
@@ -147,7 +159,6 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         } else {
             showToast("success", "Event Already added to the widget");
         }
-
     }
     return (
         <div className={styles.body} ref={scrollableDivRef}>
@@ -192,9 +203,10 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={styles.delete_editBtn}>
+                            <div className={styles.delete_spanBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
                                 {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
+                                <div>Side events linked : <span>{event.subEvents.length}</span></div>
                                 <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button>
                             </div>
                         </div>
