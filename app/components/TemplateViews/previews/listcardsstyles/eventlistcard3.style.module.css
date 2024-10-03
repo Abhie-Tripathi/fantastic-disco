@@ -25,6 +25,7 @@
     height: 100%;
     width: 271px;
     border-radius: 8px;
+    object-fit: cover;
 }
 .eventDetails{
     min-height: 100%;
