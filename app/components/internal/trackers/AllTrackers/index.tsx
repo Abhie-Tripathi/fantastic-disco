@@ -99,8 +99,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
      
         <div className="flex justify-between">
           <div className="flex gap-2 flex-col justify-between">
-            <div className="font-semibold">{item.name}</div>
-            <div className="flex items-center gap-1 ">
+            <div className="font-semibold">
+              {item?.name?.length>16? `${item.name.substring(0,16)}...`:item.name}
+              </div>
+            <div className="flex items-center gap-1 mt-[-30px]">
         {locations?.length>0 && 
         <>
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>

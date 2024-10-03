@@ -4,7 +4,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Loading from "@/app/components/UI/Loading";
 import Image from "next/image";
-import Location from "/public/location_on.svg";
+import { Location } from "geist-icons";
 import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
@@ -15,6 +15,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import { GAEvent } from "@/utils/GAEvent";
+import ShareWidget from "../ShareWidget";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
   // const { theme } = useTheme();
@@ -176,17 +177,17 @@ console.log(share);
     }
       {item?.tracker ? (
         <div className={styles.commonCardOuter} style={{gap:"10px"}}>
-        <div className='card' style={{ width: "100%", height: "fit-content" }}>
+        <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>
 
           <div className={styles.cardOne}>
-            <div className={styles.heading}>{item?.tracker?.name}</div>
+            <div className="font-semibold">{item?.tracker?.name}</div>
             {/* <div className={styles.heading}>one</div> */}
             {/* <Image src={GoTo} alt="goTo" /> */}
           </div>
-          <div className={styles.cardTwo}>
+          <div className="flex gap-1 items-center">
           {locations?.length>0 && 
             <>
-            <Image src={Location} alt="location" />
+            <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
             <div className={styles.location}>
               {locations?.length > 0 && locations[0]}
               {locations?.length > 1 && (
@@ -204,11 +205,11 @@ console.log(share);
                 <Image src={Vectore6} alt="newVector" />
                 New
               </div> */}
-                  <div className={`${styles.number} ${styles.numberCol}`} >
+                  <div>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px" }}>
-                    <Image src={Vectore6} alt="newVector" width={12} height={12}/>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
+                    <Image src={Vectore6} alt="newVector" width={10} height={10}/>
                     <div >New</div>
                   </div>
                 </div>
@@ -217,28 +218,28 @@ console.log(share);
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
               </div> */}
-                  <div className={`${styles.number} ${styles.numberCol}`}>
+                  <div>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                     Active</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: "20px" }}>
                 <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
-                  <div className={`${styles.number} ${styles.numberCol}`}>
+                  <div>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
                     Expired</div>
                 </div>
                 <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
-                  <div className={`${styles.number} ${styles.numberCol}`}>
+                  <div>
                     0
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />
                     Saved</div>
                 </div>
@@ -250,10 +251,12 @@ console.log(share);
           </div>
           
         </div>
+        {/* <ShareWidget/> */}
         <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
         {share && 
         <div className={styles.shareModal} onClick={closeModal}>
           <ShareModal id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+          {/* <ShareWidget/> */}
         </div>
         }
         </div>

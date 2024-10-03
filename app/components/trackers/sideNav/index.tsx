@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Back from '/public/back.svg';
-
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import Settings from '/public/trackerSetting.svg';
@@ -26,8 +25,14 @@ const Index = () => {
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
     if (last === "trackedEvents") setTrackerSection("Tracked Events")
-    if (last === "trackedConfiguration" || last === "editTracker") setTrackerSection("Tracker Configurations")
-    if (last === "notesDiscussion") setTrackerSection("Notes & Discussions")
+    if (last === "trackedConfiguration" || last === "editTracker") {
+      setTrackerSection("Tracker Configurations")
+      setView('');
+    }
+    if (last === "notesDiscussion") {
+      setTrackerSection("Notes & Discussions")
+      setView("");
+    }
     if (last === "savedEvents") setTrackerSection("Saved Events")
     if (last === "manageAccess") setTrackerSection("Manage Access")
   }, [last])
@@ -55,7 +60,7 @@ const Index = () => {
   }, [secondLast]);
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-10 text-h6">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
             last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
@@ -76,7 +81,9 @@ const Index = () => {
         <>
           <div className="flex justify-center items-center" >
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
+            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""}`} onClick={()=>setView("list")}>List</div>
+              </Link>
               <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div>
               <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div>
             </div>

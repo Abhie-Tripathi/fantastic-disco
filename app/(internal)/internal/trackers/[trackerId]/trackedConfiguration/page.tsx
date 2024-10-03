@@ -222,9 +222,9 @@ const userRating=
 
       </div>
     </div>
-    <div className={styles.outerContainer}>
-      {/* <div className='dummyDiv'></div> */}
-    <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
+    <div className="flex flex-col mt-[140px] gap-6">
+      <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div>
+    <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
     {data.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>
         <div className={styles.innerContainer}>

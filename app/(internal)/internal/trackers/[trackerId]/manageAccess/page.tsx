@@ -147,8 +147,7 @@ const Page = () => {
     
     return (
         <div className={styles.container}>
-            <div className='dummyDiv'></div>
-            <div className={`fixedNav ${styles.containerTop}`}>
+            <div className={`${styles.containerTop}`}>
                 <div className={styles.containerTopLeft}>
                     <div></div>
                     <div className={styles.trackerType}>
@@ -165,6 +164,7 @@ const Page = () => {
                 </div>
             </div>
             <div className={styles.containerBottom}>
+            <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div>
                 <div className={styles.containerBottomLeft}>
                     <TrackerOwner adminData={userAccessData?.access?.admin}/>
                 </div>

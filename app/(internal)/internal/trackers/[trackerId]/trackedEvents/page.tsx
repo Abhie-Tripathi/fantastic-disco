@@ -2,7 +2,8 @@
 "use client";
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import Expand from "/public/expand_more.svg";
-import { Notes } from "@/app/components/eventDetail/Notes";
+import Notes from "@/public/notes.svg"
+import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
@@ -355,10 +356,10 @@ const Page = ({ params }: { params: any }) => {
  },[trackerDetail])
  
   return (
-    <div className="flex w-[90%]">
+    <div className="flex w-[calc(100vw-134px)]">
       <Suspense fallback={<p>Loading feed...</p>}>
         <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
-          <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between p-[5px]">
+          <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
           {/* <div className={styles.new}></div> */}
             <div className="flex gap-2">
               <button
@@ -479,7 +480,8 @@ const Page = ({ params }: { params: any }) => {
                 )
               }}
             >
-            <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer">
+            <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer gap-1">
+            <Image src={Notes} alt="Notes"/>
             Notes and Discussion
               {/* <ListUnordered
                 height="16px"

@@ -1,12 +1,15 @@
 .container{
     display: flex;
-    width: 90%;
+    width: calc(100vw - 134px);
     flex-direction: column;
     gap: var(--spacing-lg);
     font-size: var(--font-size-default);
 }
 .containerTop{
     display: flex;
+    position: fixed;
+    z-index: 5;
+    width: calc(100vw - 134px);
     margin-top: 54px;
     align-items: center;
     justify-content: space-between;
@@ -41,15 +44,6 @@
     width: 100px;
     border: 1px solid var(--primary-color);
     border-radius:var(--border-radius-lg);
-}
-.containerTopTwo{
-    padding: 4px 27px;
-    border: 0.5px solid var(--border-color);
-    border-radius:var(--border-radius-lg);
-    height: 55px;
-    display: flex;
-    align-items: center;
-    font-weight: var(--font-weight-medium);
 }
 .innerContainer{
     display: grid;
@@ -261,12 +255,6 @@
 .allCat{
     display: flex;
     gap: var(--spacing-sm);
-}
-.outerContainer{
-    display: flex;
-    flex-direction: column;
-    /* margin-top: 140px; */
-    gap:24px;
 }
 .keywordsIncluded, .keywordsExcluded{
     flex-wrap: wrap;

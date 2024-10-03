@@ -1,11 +1,16 @@
 .container{
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: var(--spacing-lg);
     width: 100%;
 }
 .containerTop{
     display: flex;
+    position: fixed;
+    z-index: 5;
+    width: calc(100vw - 134px);
+    margin-top: 54px;
     align-items: center;
     justify-content: space-between;
     background: var(--heading-background-color);

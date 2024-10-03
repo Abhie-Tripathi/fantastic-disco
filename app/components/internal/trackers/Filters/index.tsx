@@ -1373,8 +1373,8 @@ useEffect(()=>{
     <div>{isLoading?<Loading/>:
     <>
     <div
-      className={`fixedNav ${styles.topContainer}`}
-      style={{ top: pathName[pathName.length - 1] === "create" ? "auto" : "" }}
+      className={`${styles.topContainer}`}
+      style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "54px" }}
     >
       <div className={styles.topInnerContainerLeft}>
         <div>
@@ -1406,7 +1406,7 @@ useEffect(()=>{
       </div>
     </div>
     <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
-      <div className="dummyDiv" style={{ height: pathName[pathName.length - 1] === "create" ? "120px" : "250px" }}></div>
+      <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div>
       <div
         className={styles.searchContainer}
         style={{

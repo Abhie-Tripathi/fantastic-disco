@@ -522,7 +522,7 @@ input[type="number"] {
 .dummyDiv {
   position: fixed;
   top: 0;
-  z-index: 10;
+  z-index: -1;
   width: calc(100vw - 134px);
   background: var(--primary-foreground);
   height: 250px;

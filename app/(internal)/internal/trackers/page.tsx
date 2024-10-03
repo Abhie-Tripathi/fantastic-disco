@@ -485,14 +485,7 @@ const Trackers = ({ searchParams }: Search) => {
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3">
           <span className="flex items-center gap-2 text-[#696B83]">
-            {locations?.length>0 && 
-            <>
-            <Location width="18px" height="18px" style={{color:"var(--primary-color)"}} />
-            <span className="font-medium">
-            {locations[0]}
-            </span>
-            </>
-}
+           {singleTrackerData?.name}
           </span>
           <Link
         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}
@@ -535,7 +528,7 @@ const Trackers = ({ searchParams }: Search) => {
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
   </div>
   <div className="flex w-1/2 items-stretch">
-  <NotesDiscussionWidget note={note}/>
+  <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
   </div>
         </div>
         <div className="flex flex-row gap-3">

@@ -357,11 +357,15 @@ input:checked + .slider:before {
 
 .topContainer{
   /* background: #F7F7F9; */
-  background: var(--heading-background-color);
   display: flex;
+  position: fixed;
+  z-index: 5;
+  width: calc(100vw - 134px);
+  margin-top: 54px;
+  align-items: center;
   justify-content: space-between;
-  /* border: 1px solid #F9F9FF; */
-  padding:18px;
+  background: var(--heading-background-color);
+  padding:12px;
 }
 .topInnerContainerLeft{
   display: flex;
@@ -383,7 +387,7 @@ input:checked + .slider:before {
   font-size: var(--font-size-small);
 }
 .cancel, .save{
-  padding:0 20px;
+  padding: 8px 24px;
   color:var(--primary-color);
 }
 .save{
@@ -557,6 +561,7 @@ width: calc(100vw - 134px);
 }
 .hiddenFiltersInnerDiv{
   display: flex;
+  align-items: center;
   gap: var(--spacing-xxs);
 }
 .hiddenFilterHeading{
