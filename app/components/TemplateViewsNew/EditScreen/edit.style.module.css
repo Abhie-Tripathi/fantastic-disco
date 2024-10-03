@@ -44,3 +44,8 @@
     overflow-y: auto;
     padding-right: 3px;
 }
+
+.disabledBtn {
+    cursor:text;
+    background-color: #cccccc; 
+  }

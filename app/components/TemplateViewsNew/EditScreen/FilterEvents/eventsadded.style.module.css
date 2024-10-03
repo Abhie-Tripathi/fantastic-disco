@@ -168,3 +168,16 @@
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
 }
+
+.info_container {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 20px;
+    background-color: #FAFAFA;
+}
+
+.info_heading{
+    color:#52A8FF;
+    font-size: 12px;
+}

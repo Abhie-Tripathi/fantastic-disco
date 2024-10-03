@@ -44,7 +44,8 @@ const Page = () => {
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [allEventsCount, setAllEventsCount] = useState<number>(0)
-
+  const [isCustomisationWindowDisable, setIsCustomisationWindowDisable] = useState(false)
+  const [isCodeWindowDisable, setIsCodeWindowDisable] = useState(false)
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
   const widgetId = trackerParams[3]
@@ -252,6 +253,12 @@ const Page = () => {
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
           selectedTemplate={selectedTemplate}
+
+          isCustomisationWindowDisable={isCustomisationWindowDisable}
+          setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
+          isCodeWindowDisable={isCodeWindowDisable} 
+          setIsCodeWindowDisable={setIsCodeWindowDisable}
+         
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}

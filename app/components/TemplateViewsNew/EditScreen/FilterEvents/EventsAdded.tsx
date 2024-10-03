@@ -15,21 +15,31 @@ interface Props {
     fetchAddedEvents: () => Promise<void>;
     fetchEvents: (page: number, type?: string) => Promise<void>;
     selectedTemplate: string;
+
+    isCustomisationWindowDisable:boolean
+    setIsCustomisationWindowDisable:(value: boolean) => void;
+    isCodeWindowDisable:boolean
+    setIsCodeWindowDisable:(value: boolean) => void;
+
+    promotedEvents:any
+    setPromotedEvents:any
+    normalEvents:string[]
+    setNormalEvents:any
 }
 
-const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate }: Props) => {
+const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate,isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable,promotedEvents,setPromotedEvents,normalEvents,setNormalEvents }: Props) => {
 
     const [check, setCheck] = useState<boolean>(true)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
-
+    const [showMSG, setShowMsg] = useState(false)
+    const [minNumberOfEvents,setMinNumberOfEvents] = useState("")
     const showPromote = (selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG")
-
-
+   
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
     };
-
+   
     useEffect(() => {
         const handleOtherDataFetch = async () => {
             try {
@@ -43,7 +53,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                         const eventData = data?.data;
                         // if (!eventData) return null;
 
-                        return {
+                        const eventObject = {
                             id: event.id,
                             name: data?.name,
                             pageBgColor: eventData.customizationData.pageBgColor,
@@ -71,8 +81,13 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                             hashtags: eventData.customizationData.hashtags,
                             promoted : event.promoted
                         } as PrefilledAddedEventsType;
+                        if (event.promoted === "true") {
+                            setPromotedEvents((prev:any) => [...prev, eventObject]);
+                        }
+                        return eventObject;
                     })
                 );
+                console.log('Promoted events:', promotedEvents);
                 setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
             } catch (err) {
                 console.error("Error in handleOtherDataFetch:", err);
@@ -80,6 +95,63 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
         };
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
+
+    
+    useEffect(() => {
+        let promotedCount = promotedEvents.length;
+        let normalEventCount = fetchedAddedOtherData.length; 
+        console.log(fetchedAddedOtherData,promotedCount,normalEventCount)
+        // Check which template is selected
+        if (selectedTemplate === "CVG") {
+            if (normalEventCount >= 2 && promotedCount >= 3) {
+                setIsCodeWindowDisable(false);
+                setIsCustomisationWindowDisable(false);
+            } else {
+                setIsCodeWindowDisable(true);
+                setIsCustomisationWindowDisable(true);
+            }
+            setShowMsg(true);
+            setMinNumberOfEvents("Minimum 3 events to be selected for Carousel and 2 for Grid");
+        } 
+    
+        if (selectedTemplate === "CVL") {
+            if (normalEventCount >= 1 && promotedCount >= 3) {
+                setIsCodeWindowDisable(false);
+                setIsCustomisationWindowDisable(false);
+            } else {
+                setIsCodeWindowDisable(true);
+                setIsCustomisationWindowDisable(true);
+            }
+            setShowMsg(true);
+            setMinNumberOfEvents("Minimum 3 events to be selected for Carousel and 1 for List");
+        } 
+    
+        if (selectedTemplate === "CV") {
+            // Check if there are 3 normal events
+            if (normalEventCount >= 3) {
+                setIsCodeWindowDisable(false);
+                setIsCustomisationWindowDisable(false);
+            } else {
+                setIsCodeWindowDisable(true);
+                setIsCustomisationWindowDisable(true);
+            }
+            setShowMsg(true);
+            setMinNumberOfEvents("Minimum 3 events to be selected for this widget style");
+        }
+        if (selectedTemplate === "HS") {
+            if (normalEventCount >= 3) {
+                setIsCodeWindowDisable(false);
+                setIsCustomisationWindowDisable(false);
+            } else {
+                setIsCodeWindowDisable(true);
+                setIsCustomisationWindowDisable(true);
+            }
+            setShowMsg(true);
+            setMinNumberOfEvents("Minimum 3 events to be selected for this widget style");
+        }
+    }, [selectedTemplate, fetchedAddedOtherData]); 
+    
+
 
     const handlePromoteEvent = async (newEvent: AddedEventsType) => {
         const customizedFormData = new FormData();
@@ -204,6 +276,20 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                 {/* <button onClick={() => handleAddEventModal()}>Add Event to widget</button> */}
             </div>
             <div className={styles.line}></div>
+
+             
+            {
+                showMSG && (
+                <>
+                    <div className={styles.info_container}>
+                        <div><InfoSvg/></div>
+                        <div className={styles.info_heading}>{minNumberOfEvents} </div>
+                    </div>
+                    <div className={styles.line}></div>
+                </>
+                )
+            }
+          
             {fetchedAddedOtherData.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAddedOtherData?.map((event, key) => (
                     <div className={styles.event} key={key}>
@@ -266,6 +352,15 @@ function EditIcon() {
     return (
         <svg width="12" height="12" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10.4997 3.00007L12.9997 5.50007M8.83301 14.6667H15.4997M2.16634 11.3334L1.33301 14.6667L4.66634 13.8334L14.3213 4.17841C14.6338 3.86586 14.8093 3.44201 14.8093 3.00007C14.8093 2.55813 14.6338 2.13429 14.3213 1.82174L14.178 1.67841C13.8655 1.36596 13.4416 1.19043 12.9997 1.19043C12.5577 1.19043 12.1339 1.36596 11.8213 1.67841L2.16634 11.3334Z" stroke="#6750A4" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    )
+}
+
+
+function InfoSvg() {
+    return (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.25 8.75H6.41667V5.25H5.25V8.75ZM5.83333 4.08333C5.99861 4.08333 6.13725 4.02733 6.24925 3.91533C6.36125 3.80333 6.41706 3.66489 6.41667 3.5C6.41628 3.33511 6.36028 3.19667 6.24867 3.08467C6.13706 2.97267 5.99861 2.91667 5.83333 2.91667C5.66806 2.91667 5.52961 2.97267 5.418 3.08467C5.30639 3.19667 5.25039 3.33511 5.25 3.5C5.24961 3.66489 5.30561 3.80353 5.418 3.91592C5.53039 4.02831 5.66883 4.08411 5.83333 4.08333ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5134 3.55833 11.207C2.84861 10.9006 2.23125 10.485 1.70625 9.96042C1.18125 9.43581 0.765723 8.81844 0.459667 8.10833C0.153612 7.39822 0.000389627 6.63989 7.38396e-07 5.83333C-0.00038815 5.02678 0.152834 4.26844 0.459667 3.55833C0.766501 2.84822 1.18203 2.23086 1.70625 1.70625C2.23047 1.18164 2.84783 0.766111 3.55833 0.459667C4.26883 0.153222 5.02717 0 5.83333 0C6.6395 0 7.39783 0.153222 8.10833 0.459667C8.81883 0.766111 9.4362 1.18164 9.96042 1.70625C10.4846 2.23086 10.9004 2.84822 11.2076 3.55833C11.5148 4.26844 11.6678 5.02678 11.6667 5.83333C11.6655 6.63989 11.5123 7.39822 11.207 8.10833C10.9017 8.81844 10.4862 9.43581 9.96042 9.96042C9.43464 10.485 8.81728 10.9007 8.10833 11.2076C7.39939 11.5144 6.64106 11.6674 5.83333 11.6667Z" fill="#52A8FF"/>
         </svg>
     )
 }
