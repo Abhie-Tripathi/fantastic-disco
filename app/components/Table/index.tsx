@@ -141,7 +141,7 @@ function getLeastRank(response: RankingResponse) {
     }
 
     if (minRank.type === '') {
-      return <></>;
+      return '-';
     }
     return getEventRank(minRank);
 }
@@ -167,6 +167,25 @@ function getEventRank(prop: rankTag) {
       <span title={prop.name} className={`${styles.truncateText_1} badge_warning`} style={{textTransform: 'capitalize', padding: '1px 10px'}}>{prop.type}</span>
     </>
   );
+}
+
+function getForecastedStatus(data: any) {
+
+  if(!data && data === '') return '-';
+
+  const forecastDate = new Date(data);
+  const today = new Date();
+
+  if(forecastDate >= today) {
+    return (
+      forecastDate.toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      })
+    )
+  }
+  else return '-'
+
 }
 
 function getEventSize(item: eventSizeItemType) {
@@ -814,6 +833,7 @@ const Table = ({
               {showInsights.eventKeywords && <th>Keywords</th>}
               <th>Category</th>
               {showInsights.eventSize && <th>Event Size</th>}
+              {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {/* {showInsights.eventSeries ||
                 (eventPerPage[0]?.series && <th>Event Series</th>)} */}
               {showInsights.eventRank && <th style={{textAlign: 'center'}}>Rank</th>}
@@ -823,7 +843,6 @@ const Table = ({
               {showInsights.repeatSent && <th style={{textAlign: 'center'}} >Trust</th>}
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
-              {showInsights.estExhibit && <th>Est. Exhibitor</th>}
               {showInsights.global && <th>International</th>}
               {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& <th>Matched</th>}
               {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5 )&& <th>Score</th>}
@@ -861,10 +880,10 @@ const Table = ({
                 <td className={`${styles.table_actionColumn}`} style={{left:"0", textAlign:"left", boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)"}}>
                   <div className={styles.event_badge_container}>
                     {(showInsights.brandedEvent && event?.eventBrand && event?.eventBrand !== '') &&
-                      <span className="badge_success" data-toggle="tooltip" title={event.eventBrand} >Brand</span>
+                      <span className={`${styles.branded_tag} badge_success`} data-toggle="tooltip" title={event.eventBrand} >Brand</span>
                     }
                     {(showInsights.eventSeries && event?.isEventSeries) &&
-                      <span className="badge_info" >Series</span>
+                      <span className={`${styles.branded_tag} badge_info`} >Series</span>
                     }
                   </div>
                   <div
@@ -1029,6 +1048,16 @@ const Table = ({
                     {event.eventSize ? event.eventSize : "-"}
                   </td>
                 )}
+
+                {showInsights.estExhibit && (
+                  <td>
+                    {/* {getEstimatedExhibitors(event)} */}
+                    {(event.stats?.estimatedExhibitor && event.stats?.estimatedExhibitor !== '' && event.stats?.estimatedExhibitor !== 'null') ?
+                      event.stats?.estimatedExhibitor : '-'
+                    }
+                  </td>
+                )}
+
                 {/* {showInsights.eventSeries ||
                   (event?.series && (
                     <td>{event.series ? event.series : "-"}</td>
@@ -1151,7 +1180,7 @@ const Table = ({
                           </>
                         }
                         &nbsp;
-                        {event.repeatSentiment}
+                        {event.repeatSentiment}%
                       </>
                     ) : (
                       '-'
@@ -1179,23 +1208,10 @@ const Table = ({
 
                 {showInsights.forecasted && 
                   <td>
-                    {event?.futureExpectedStartDate ?
-                      new Date(event?.futureExpectedStartDate).toLocaleDateString("en-GB", {
-                        month: "short",
-                        year: "numeric",
-                      }) : '-'
-                    }
+                    {getForecastedStatus(event.futureExpectedStartDate)}
                   </td>
                 }
 
-                {showInsights.estExhibit && (
-                  <td>
-                    {/* {getEstimatedExhibitors(event)} */}
-                    {(event.stats?.estimatedExhibitor && event.stats?.estimatedExhibitor !== '' && event.stats?.estimatedExhibitor !== 'null') ?
-                      event.stats?.estimatedExhibitor : '-'
-                    }
-                  </td>
-                )}
                 {showInsights.global && (
                   <td>
                     {event["internationalAudience%"] !== undefined ? (
@@ -1348,12 +1364,12 @@ const Table = ({
                 {showInsights.audienceSpread &&
                   <td>
                     <div style={{display: 'flex', gap: '8px'}}>
-                      {event?.audienceSpread && Object.entries(event?.audienceSpread).map(([key, { iso, name, count, percentage }]) => (
+                      {event?.audienceSpread ? Object.entries(event?.audienceSpread).map(([key, { iso, name, count, percentage }]) => (
                         <span key={key} className={styles.country_badge} title={name}>
                           <Image src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`} alt="flag" width={25} height={18} />
-                          &nbsp;{Math.round(percentage * 10) / 10}%
+                          {/* &nbsp;{Math.round(percentage * 10) / 10}% */}
                         </span>
-                      ))}
+                      )) : '-'}
                     </div>
                   </td>
                 }

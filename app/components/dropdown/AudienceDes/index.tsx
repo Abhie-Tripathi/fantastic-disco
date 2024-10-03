@@ -30,6 +30,8 @@ const AudienceDes = ({
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
+  const [noResults, setNoResults] = useState<boolean>(false);
+
   const handleCountrySelect = (countryId: string) => {
     console.log('selectedCountries1', selectedCountries);
     setSelectedCountries((prevSelectedCountries: any[]) => {
@@ -69,6 +71,8 @@ const AudienceDes = ({
     if (searchUser.trim() !== '') {
         const matches = allCountries.filter(filterUser);
         setCountries(matches);
+        if(matches.length == 0) setNoResults(true);
+        else setNoResults(false);
     } else {
         setCountries(allCountries);
     }
@@ -78,7 +82,7 @@ const AudienceDes = ({
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <div>
-          Audience Spread
+          Audience Profile
           {/* <InformationFillSmall color="var(--primary-text-color)" /> */}
         </div>
       </div>
@@ -110,6 +114,9 @@ const AudienceDes = ({
               <label htmlFor={country.id}>{country.name}</label>
             </div>
           ))}
+          {noResults &&
+            <div>No results</div>
+          }
         </div>
       </div>
     </div>

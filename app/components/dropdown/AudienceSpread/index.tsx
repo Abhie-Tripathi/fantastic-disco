@@ -30,6 +30,8 @@ const AudienceSpread = ({
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon'
 
+  const [noResults, setNoResults] = useState<boolean>(false);
+
   const handleCountrySelect = (countryId: string) => {
     setSelectedCountries((prevSelectedCountries: any[]) => {
         if (prevSelectedCountries?.includes(countryId)) {
@@ -68,6 +70,8 @@ const AudienceSpread = ({
     if (searchUser.trim() !== '') {
         const matches = allCountries.filter(filterUser);
         setCountries(matches);
+        if(matches.length == 0) setNoResults(true);
+        else setNoResults(false);
     } else {
         setCountries(allCountries);
     }
@@ -109,6 +113,9 @@ const AudienceSpread = ({
               <label htmlFor={country.id}>{country.name}</label>
             </div>
           ))}
+          {noResults &&
+            <div>No results</div>
+          }
         </div>
       </div>
     </div>
