@@ -2262,8 +2262,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Ranking
-                          {selectedTrustScore[0] > 0 &&
-                            <span className={styles.selected_no_filters}>1</span>
+                          {(selectedTrustScore[0] > 0 && (selectedRank !== '' && selectedRank !== 'none')) ?
+                            <span className={styles.selected_no_filters}>2</span> :
+                            (selectedTrustScore[0] > 0 || (selectedRank !== '' && selectedRank !== 'none')) ?
+                              <span className={styles.selected_no_filters}>1</span> :
+                              <></>
                           }
                         </div>
                         <Image
