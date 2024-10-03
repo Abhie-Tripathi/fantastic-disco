@@ -126,7 +126,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         </div>
                     </div>
                 </div>
-                {event.subEvents.length > 0 && (
+                {(event.subEvents.length > 0 && width==="small") && (
                     <div className={styles.subEventsContainer}>
                         {event.subEvents.map((subEvent, index) => {
                             const showDate = subEvent.startDate !== prevDate;

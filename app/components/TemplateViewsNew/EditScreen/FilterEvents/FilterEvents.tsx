@@ -28,7 +28,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
     widgetId,addedEventIds, allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
-    const [promotedEvents, setPromotedEvents] = useState([])
+    const [promotedEvents, setPromotedEvents] = useState<string[]>([]);
     const [normalEvents, setNormalEvents] = useState([])
 
     return (
