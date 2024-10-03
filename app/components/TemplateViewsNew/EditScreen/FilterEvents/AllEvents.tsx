@@ -24,7 +24,7 @@ interface Props {
 const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAddedEvents,
     //  handlePrefillEvent,
     widgetId, allEventsCount, addedEventIds }: Props) => {
-
+    console.log("All events :", fetchedAllEvents)
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true); // To heck if there are more events
