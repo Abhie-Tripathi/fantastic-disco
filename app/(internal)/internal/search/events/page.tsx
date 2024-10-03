@@ -95,6 +95,7 @@ import GlobalTouring from "@/app/components/dropdown/GlobalTouring";
 import AnalyticsDropdown from "@/app/components/dropdown/AnalyticsDropdown";
 import AudienceQuality from "@/app/components/dropdown/AudienceQuality";
 import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
+import AudienceDes from "@/app/components/dropdown/AudienceDes";
 
 const data =[
   {
@@ -257,6 +258,7 @@ const Search = () => {
   const [audienceZone, setAudienceZone] = useState<boolean>(false);
   const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
+  const [selectedAudProfile, setSelectedAudProfile] = useState<any>([]);
 
   const [categoryData, setCatgeoryData] = useState([]);
 
@@ -369,14 +371,14 @@ const Search = () => {
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
           ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-          ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+          // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+          // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -430,10 +432,10 @@ const Search = () => {
           eventImpactSocre: selectedImpactScore.join("-")
          }),
          ...(analyticsToggles.inboundScore && {
-          inboundScore: selectedImpactScore.join("-")
+          inboundScore: selectedInboundScore.join("-")
          }),
          ...(analyticsToggles.internationalScore && {
-          internationalScore: selectedImpactScore.join("-")
+          internationalScore: selectedInternationalScore.join("-")
          }),
          ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
@@ -444,6 +446,9 @@ const Search = () => {
          ...((selectedRank !== '' && selectedRank !== 'none') && {
           // globalRanking: selectedRank,
           eventRanking: selectedRank,
+         }),
+         ...(selectedAudProfile.length > 0 && {
+          designation: selectedAudProfile.join(",")
          })
         },
       };
@@ -644,9 +649,9 @@ const Search = () => {
     // }
 
     // Branded Event
-    if (selectedBrandedEvent) {
-      queryString.eventBrand = selectedBrandedEvent;
-    }
+    // if (selectedBrandedEvent) {
+    //   queryString.eventBrand = selectedBrandedEvent;
+    // }
 
     // Trust Score
     if (selectedTrustScore[0] > 0) {
@@ -654,9 +659,9 @@ const Search = () => {
     }
 
     // Event Series
-    if (selectedEventSeries) {
-      queryString.eventSeries = selectedEventSeries;
-    }
+    // if (selectedEventSeries) {
+    //   queryString.eventSeries = selectedEventSeries;
+    // }
 
     // Reputation Score
     if (selectedReputationScore[0] > 0) {
@@ -718,6 +723,11 @@ const Search = () => {
     // Audience Spread
     if(selectedCountries.length > 0) {
       queryString.audienceSpread = selectedCountries;
+    }
+
+    // Audience Profile
+    if(selectedAudProfile.length > 0) {
+      queryString.designation = selectedAudProfile;
     }
 
     // Show
@@ -2455,24 +2465,38 @@ const Search = () => {
                 </MenuTrigger>
               
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
+                  <Button className={`${styles.dropdown_button}`} >
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           {/* Audience Des &amp; Dept */}
                           Audience Profile
+                          {selectedAudProfile.length > 0 ? (
+                            <span className={styles.selected_no_filters}>
+                              {selectedAudProfile.length}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
                           width={20}
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        />
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
-                  {/* </Button> */}
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <AudienceDes
+                      selectedCountries={selectedAudProfile}
+                      setSelectedCountries={setSelectedAudProfile}
+                      onClose={close}
+                    />
+                  </Popover>
                 </MenuTrigger>
 
                 <div>

@@ -553,10 +553,10 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
-          isBranded={data?.tracker?.filterValue?.eventBrand}
+          isBranded={toggleOpend?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
-          eventSeries={data?.tracker?.filterValue?.eventSeries}
+          eventSeries={toggleOpend?.eventSeries}
           forecastedStatus={data?.tracker?.filterValue?.isforecasted}
           maturity={data?.tracker?.filterValue?.maturity}
         />
@@ -632,6 +632,7 @@ const userRating=
           }
           audienceZone={toggleOpend?.audienceZone}
           audienceSpread={toggleOpend?.audienceSpread}
+          audienceProfile={data?.tracker?.filterValue?.designation}
         />
       </div>
     </div>

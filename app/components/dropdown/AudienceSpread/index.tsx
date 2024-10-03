@@ -87,7 +87,7 @@ const AudienceSpread = ({
             value={searchUser}
             onChange={(e) => setSearchUser(e.target.value)}
             className={styles.searchInput}
-            placeholder="Search @ country name"
+            placeholder="Search by country name"
             type="text"
           ></input>
           <Image src={searchIcon} alt="search" className={iconClass} />
