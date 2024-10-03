@@ -39,6 +39,9 @@
     height: fit-content;
     width: 930px;
 }
+.carousel{
+    width: 930px;
+}
 .hashtagsContainer{
     width: 100%;
     margin-top: 16px;

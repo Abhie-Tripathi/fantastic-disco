@@ -85,7 +85,7 @@ const fetchData = async (widgetId : string,eventId: string) => {
             notFound();
         }
 
-        console.log("data is: ", data);
+        console.log("chidlren data is: ", data.data.event.children);
         const event = {
             eventId: data.data.event.id,
             name: data.data.event.name,
@@ -122,7 +122,6 @@ const fetchData = async (widgetId : string,eventId: string) => {
 const DetailPage = async ({ searchParams }: { searchParams: {widgetId : string, eventId: string } }) => {
     const {widgetId, eventId } = searchParams;
     const data = await fetchData(widgetId,eventId);
-    console.log("data is ,", data)
     return <Page {...data} eventId={eventId} widgetId={widgetId}/>;
 };
 export default DetailPage;
