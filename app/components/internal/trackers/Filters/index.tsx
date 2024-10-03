@@ -69,6 +69,7 @@ import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
+import AudienceDes from "@/app/components/dropdown/AudienceDes";
 interface FilterValue {
   labels: string;
   name: string;
@@ -115,6 +116,7 @@ interface FilterValue {
   eventImpactSocre: any;
   globalRanking: any;
   audienceSpread: any;
+  designation: any;
 }
 interface InputArea {
   type: string;
@@ -426,6 +428,7 @@ const Pages = () => {
   const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
   const [selectedRank, setSelectedRank] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
+  const [selectedAudProfile, setSelectedAudProfile] = useState<any>([]);
 
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
@@ -652,7 +655,7 @@ const Pages = () => {
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
           }),
-          brandedEvent: selectedBrandedEvent?.toString(),
+          // brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(Object.entries(selectedCountry).length > 0 && {
@@ -667,7 +670,7 @@ const Pages = () => {
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
-          ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+          // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -728,7 +731,7 @@ const Pages = () => {
           ...(forecastedStatus && {
             isforecasted: forecastedStatus.toString()
           }),
-          ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+          // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           ...((selectedRank !== '' && selectedRank !== 'none') && {
             // globalRanking: selectedRank,
             // categoryRanking: selectedRank,
@@ -738,6 +741,9 @@ const Pages = () => {
           ...(selectedCountries?.length > 0 && {
             audienceSpread: selectedCountries.join(",")
            }),
+          ...(selectedAudProfile.length > 0 && {
+            designation: selectedAudProfile.join(",")
+          })
           // info: {
           //   name: trackerName,
           //   location:selectedLocations,
@@ -866,7 +872,7 @@ const Pages = () => {
            }),
            ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
            ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
-          brandedEvent: selectedBrandedEvent.toString(),
+          // brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
@@ -875,7 +881,7 @@ const Pages = () => {
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
           }),
-          eventSeries: selectedEventSeries.toString(),
+          // eventSeries: selectedEventSeries.toString(),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -933,14 +939,17 @@ const Pages = () => {
            ...(analyticsToggles.internationalScore && {
             internationalScore: selectedInternationalScore.join("-")
           }),
-          ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
-          ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+          // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+          // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           ...(forecastedStatus && {
             isforecasted: forecastedStatus.toString()
           }),
           ...(selectedCountries?.length > 0 && {
             audienceSpread: selectedCountries.join(",")
           }),
+          ...(selectedAudProfile.length > 0 && {
+            designation: selectedAudProfile.join(",")
+          })
 
           // info: {
           //   name: trackerName,
@@ -1129,6 +1138,8 @@ const Pages = () => {
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
 
       setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
+
+      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.split(",") : []);
 
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
@@ -2997,24 +3008,38 @@ useEffect(()=>{
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
+                  <Button className={`${styles.dropdown_button}`} >
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           {/* Audience Des &amp; Dept */}
                           Audience Profile
+                          {selectedAudProfile.length > 0 ? (
+                            <span className={styles.selected_no_filters}>
+                              {selectedAudProfile.length}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
-                          width={20}
-                          height={20}
+                          width={12}
+                          height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        />
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
-                  {/* </Button> */}
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <AudienceDes
+                      selectedCountries={selectedAudProfile}
+                      setSelectedCountries={setSelectedAudProfile}
+                      onClose={close}
+                    />
+                  </Popover>
                 </MenuTrigger>
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
