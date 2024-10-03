@@ -205,7 +205,7 @@ console.log(share);
                 New
               </div> */}
                   <div className={`${styles.number} ${styles.numberCol}`} >
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new.toLocaleString('en-US')}
+                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new.toLocaleString('en-US')}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
                     <Image src={Vectore6} alt="newVector" width={12} height={12}/>
@@ -218,7 +218,7 @@ console.log(share);
                 Active
               </div> */}
                   <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active.toLocaleString('en-US')}
+                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
@@ -228,7 +228,7 @@ console.log(share);
               <div style={{ display: "flex", gap: "20px" }}>
                 <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
                   <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired.toLocaleString('en-US')}
+                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
                   </div>
                   <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
