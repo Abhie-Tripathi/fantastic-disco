@@ -10,6 +10,7 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { showToast } from '@/utils/showToast';
 import { AddedEventsType } from '@/types/addedeventtype';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     fetchedAllEvents: AllEventsType[]
@@ -44,7 +45,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
     const [minNumberOfEvents,setMinNumberOfEvents] = useState("")
     const [showMSG, setShowMsg] = useState(false)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
-
+    const router = useRouter()
 
     useEffect(() => {
         console.log("SELECTED_TEMPLATE",selectedTemplate)
@@ -345,6 +346,8 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                 <div>Search or Add your Events</div>
                 <span>Start by searching for existing events to add to your widgets</span>
                 <span>or feel free to create your own event from scratch</span>
+                {/* <span>Add your events from scratch to add your widget</span> */}
+                <div className={styles.add_event_button} onClick={() =>{router.push('/widget/events')}}><span style={{color:"white"}}>Add Event</span></div>
             </div>}
         </div>
     )

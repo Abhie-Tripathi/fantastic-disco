@@ -8,6 +8,7 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
+import { useRouter } from 'next/navigation';
 
 interface Props {
     fetchedAddedEvents: AddedEventsType[]
@@ -34,7 +35,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
     const [showMSG, setShowMsg] = useState(false)
     const [minNumberOfEvents,setMinNumberOfEvents] = useState("")
     const showPromote = (selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG")
-   
+    const router = useRouter()
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
@@ -331,6 +332,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                 <div>Search or Add your Events</div>
                 <span>Start by searching for existing events to add to your widgets</span>
                 <span>or feel free to create your own event from scratch</span>
+                <div className={styles.add_event_button} onClick={() =>{router.push('/widget/events')}}><span style={{color:"white"}}>Add Event</span></div>
             </div>}
         </div>
     )
