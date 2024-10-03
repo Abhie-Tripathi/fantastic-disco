@@ -415,3 +415,9 @@
   padding-right: 6px;
   padding-left: 2px;
 }
+
+.branded_tag {
+  font-size: 12px;
+  padding: 4px 8px;
+  font-weight: var(--font-weight-semibold);
+}

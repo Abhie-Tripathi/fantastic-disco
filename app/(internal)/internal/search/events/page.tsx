@@ -96,6 +96,7 @@ import AnalyticsDropdown from "@/app/components/dropdown/AnalyticsDropdown";
 import AudienceQuality from "@/app/components/dropdown/AudienceQuality";
 import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
 import AudienceDes from "@/app/components/dropdown/AudienceDes";
+import { showToast } from "@/utils/showToast";
 
 const data =[
   {
@@ -730,6 +731,10 @@ const Search = () => {
       queryString.designation = selectedAudProfile;
     }
 
+    if(Object.keys(queryString).length === 0) {
+      showToast('error', "No filter applied");
+    }
+
     // Show
     if(Object.keys(queryString).length > 0)
       queryString.shows = ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating'];
@@ -903,6 +908,11 @@ const Search = () => {
     //   estExhibit: (selectedExhibitScore.length > 0),
     //   repeatSent: (selectedTrustScore > 0),
     // });
+    setSelectedInsights((prevInsights) => ({ 
+      ...prevInsights,
+      eventRank: (selectedRank !== '' && selectedRank !== 'none'),
+      maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+    }));
     if(urlQueryString && urlQueryString !== '') handleButtonLoading(true);
   }, [urlQueryString]);
 
@@ -972,8 +982,8 @@ const Search = () => {
       eventRating: (selectedUserRatings.length > 0 || selectedInsights?.eventRating),
       estExhibit: (selectedExhibitScore.length > 0 || selectedInsights?.estExhibit),
       repeatSent: (rankToggles.isTrustScore),
-      maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
-      eventRank: (selectedRank !== '' && selectedRank !== 'none'),
+      // maturity: (selectedMaturity !== '' && selectedMaturity !== 'none'),
+      // eventRank: (selectedRank !== '' && selectedRank !== 'none'),
       impactScore: analyticsToggles.impactScore,
       inboundScore: analyticsToggles.inboundScore,
       internationalScore: analyticsToggles.internationalScore,
@@ -988,14 +998,14 @@ const Search = () => {
     selectedExhibitScore,
     selectedTrustScore,
     rankToggles,
-    selectedMaturity,
+    // selectedMaturity,
     analyticsToggles,
     forecastedStatus,
     audienceZone,
     audienceSpread,
     selectedEventSeries,
     selectedBrandedEvent,
-    selectedRank,
+    // selectedRank,
   ]);
 
   useEffect(() => {
@@ -2252,8 +2262,11 @@ const Search = () => {
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Ranking
-                          {selectedTrustScore[0] > 0 &&
-                            <span className={styles.selected_no_filters}>1</span>
+                          {(selectedTrustScore[0] > 0 && (selectedRank !== '' && selectedRank !== 'none')) ?
+                            <span className={styles.selected_no_filters}>2</span> :
+                            (selectedTrustScore[0] > 0 || (selectedRank !== '' && selectedRank !== 'none')) ?
+                              <span className={styles.selected_no_filters}>1</span> :
+                              <></>
                           }
                         </div>
                         <Image

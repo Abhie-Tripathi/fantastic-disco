@@ -176,7 +176,7 @@ const RegularityEdition = ({
                 checked={selectedMaturity === 'none'}
                 // disabled={true}
               />
-              <label htmlFor="none" className="badge_primary" style={{color: 'var(--primary-text-color)', backgroundColor: 'var(--heading-background-color)'}}>
+              <label htmlFor="none">
                 None
               </label>
             </div>
@@ -190,7 +190,7 @@ const RegularityEdition = ({
                 checked={selectedMaturity === 'new'}
                 // disabled={true}
               />
-              <label htmlFor="low" className="badge_danger">
+              <label htmlFor="low">
                 New
               </label>
             </div>
@@ -204,7 +204,7 @@ const RegularityEdition = ({
                 checked={selectedMaturity === 'growing'}
                 // disabled={true}
               />
-              <label htmlFor="growing" className="badge_primary">
+              <label htmlFor="growing">
                 Growing
               </label>
             </div>
@@ -218,7 +218,7 @@ const RegularityEdition = ({
                 checked={selectedMaturity === 'established'}
                 // disabled={true}
               />
-              <label htmlFor="established" className="badge_info">
+              <label htmlFor="established">
                 Established
               </label>
             </div>
@@ -232,7 +232,7 @@ const RegularityEdition = ({
                 checked={selectedMaturity === 'flagship'}
                 // disabled={true}
               />
-              <label htmlFor="flagship" className="badge_warning">
+              <label htmlFor="flagship">
                 Flagship
               </label>
             </div>
