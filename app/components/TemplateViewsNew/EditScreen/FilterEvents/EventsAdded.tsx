@@ -22,10 +22,10 @@ interface Props {
     isCodeWindowDisable:boolean
     setIsCodeWindowDisable:(value: boolean) => void;
 
-    promotedEvents:any
-    setPromotedEvents:any
-    normalEvents:string[]
-    setNormalEvents:any
+    promotedEvents: string[];
+    setPromotedEvents: React.Dispatch<React.SetStateAction<string[]>>;
+    normalEvents: string[];
+    setNormalEvents: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvents, selectedTemplate,isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable,promotedEvents,setPromotedEvents,normalEvents,setNormalEvents }: Props) => {
@@ -44,6 +44,8 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
     useEffect(() => {
         const handleOtherDataFetch = async () => {
             try {
+                const newPromotedEvents: string[] = [];
+                const newNormalEvents: string[] = [];
                 const newFetchedAddedOtherData = await Promise.all(
                     fetchedAddedEvents.map(async (event) => {
                         const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
@@ -83,12 +85,15 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                             promoted : event.promoted
                         } as PrefilledAddedEventsType;
                         if (event.promoted === "true") {
-                            setPromotedEvents((prev:any) => [...prev, eventObject]);
+                            newPromotedEvents.push(event.promoted);
+                        } else if (event.promoted === "false") {
+                            newNormalEvents.push(event.promoted);
                         }
                         return eventObject;
                     })
                 );
-                console.log('Promoted events:', promotedEvents);
+                setPromotedEvents(newPromotedEvents); 
+                setNormalEvents(newNormalEvents);  
                 setFetchedAddedOtherData(newFetchedAddedOtherData.filter((event): event is PrefilledAddedEventsType => event !== null));
             } catch (err) {
                 console.error("Error in handleOtherDataFetch:", err);
@@ -100,11 +105,11 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
     
     useEffect(() => {
         let promotedCount = promotedEvents.length;
-        let normalEventCount = fetchedAddedOtherData.length; 
+        let normalEventCount = normalEvents.length; 
         console.log(fetchedAddedOtherData,promotedCount,normalEventCount)
         // Check which template is selected
         if (selectedTemplate === "CVG") {
-            if (normalEventCount >= 2 && promotedCount >= 3) {
+            if ( promotedCount >= 3 && normalEventCount >= 2 ) {
                 setIsCodeWindowDisable(false);
                 setIsCustomisationWindowDisable(false);
             } else {
@@ -116,7 +121,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
         } 
     
         if (selectedTemplate === "CVL") {
-            if (normalEventCount >= 1 && promotedCount >= 3) {
+            if ( promotedCount >= 3 && normalEventCount >= 1) {
                 setIsCodeWindowDisable(false);
                 setIsCustomisationWindowDisable(false);
             } else {

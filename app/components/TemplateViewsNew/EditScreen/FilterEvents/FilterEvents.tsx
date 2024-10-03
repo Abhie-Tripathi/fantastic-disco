@@ -29,7 +29,7 @@ const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAdde
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
     const [promotedEvents, setPromotedEvents] = useState<string[]>([]);
-    const [normalEvents, setNormalEvents] = useState([])
+    const [normalEvents, setNormalEvents] = useState<string[]>([])
 
     return (
         <div className={styles.body}>
