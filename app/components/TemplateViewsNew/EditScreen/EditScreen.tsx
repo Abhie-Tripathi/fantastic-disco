@@ -9,6 +9,7 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 import { AllEventsType } from '@/types/alleventtype';
 import { GolbalEventType } from '@/types/globaleventtype';
+import { showToast } from "@/utils/showToast";
 
 interface FontSettings {
     fontFamily: string;
@@ -47,11 +48,16 @@ interface EditScreenProps {
     addedEventIds: string[]
     allEventsCount : number;
     selectedTemplate : string;
+
+    isCustomisationWindowDisable:boolean
+    setIsCustomisationWindowDisable:(value: boolean) => void;
+    isCodeWindowDisable:boolean
+    setIsCodeWindowDisable:(value: boolean) => void;
 }
 
 const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization, fetchedAllEvents, fetchEvents, widgetId, widgetType, fetchedAddedEvents, fetchAddedEvents, addedEventIds,
     // handlePrefillEvent,
-    allEventsCount, selectedTemplate }: EditScreenProps) => {
+    allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const { theme } = useTheme()
@@ -63,6 +69,64 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
             return theme === "light" ? "#424242" : "#ffffff";
         }
     };
+    const handleCustomizationWindowClick=() => {
+        if (isCustomisationWindowDisable) {
+            if(selectedTemplate ==="CVL"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                );
+            }else if(selectedTemplate ==="CVG"){
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                );
+            }else if(selectedTemplate ==="CV"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for this widget style"
+                );
+            } else if(selectedTemplate ==="HS"){
+               
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for this widget style"
+                );
+            }
+          } else {
+            setSelectedNavItem("customize");
+          }
+    }
+
+    const handleCodeWindowClick=() => {
+        if (isCustomisationWindowDisable) {
+            if(selectedTemplate ==="CVL"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                );
+            }else if(selectedTemplate ==="CVG"){
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                );
+            }else if(selectedTemplate ==="CV"){
+                showToast( 
+                    "error",
+                    "Minimum 3 events to be selected for this widget style"
+                );
+            } else if(selectedTemplate ==="HS"){
+               
+                showToast( 
+                    "error",
+                    " Minimum 3 events to be selected for this widget style"
+                );
+            }
+           
+          } else {
+            setSelectedNavItem("code")
+          }
+    }
     return (
         <div className={styles.body} >
             <div className={styles.navbar} style={{ backgroundColor: theme === "light" ? "#FBF8FF" : "#1F1F1F" }}>
@@ -70,16 +134,20 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                     className={`${selectedNavItem === "events" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
                     <FilterIcon color={getIconColor("events")} /><span>Select Events</span></button>
 
-                <button onClick={() => setSelectedNavItem("customize")}
-                    className={`${selectedNavItem === "customize" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
+                <button  
+                // onClick={() => setSelectedNavItem("customize")}
+                onClick={() => {
+                    handleCustomizationWindowClick()
+                }}
+                    className={`${selectedNavItem === "customize" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn} ${isCustomisationWindowDisable ? styles.disabledBtn : ""}`}>
                     <CustomizeIcon color={getIconColor("customize")} /><span>Customize</span></button>
 
-                <button onClick={() => setSelectedNavItem("code")}
-                    className={`${selectedNavItem === "code" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn}`}>
+                <button  onClick={() => handleCodeWindowClick()}
+                    className={`${selectedNavItem === "code" ? (theme === "dark" ? styles.darkactiveBtn : styles.lightactiveBtn) : ""} ${theme === "light" ? styles.lightBtn : styles.darkBtn} ${isCodeWindowDisable ? styles.disabledBtn : ""}`}>
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} 
+                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
                 // handlePrefillEvent={handlePrefillEvent}
                  addedEventIds={addedEventIds} widgetId={widgetId} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId} />}
             </div>

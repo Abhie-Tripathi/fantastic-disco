@@ -168,3 +168,25 @@
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
 }
+
+.info_container {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 20px;
+    background-color: #FAFAFA;
+}
+
+.info_heading{
+    color:#52A8FF;
+    font-size: 12px;
+}
+
+.add_event_button{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    color: white;
+    font-size: var(--font-size-small);
+    padding: 9px 20px;
+    cursor: pointer;
+}

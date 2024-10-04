@@ -196,7 +196,7 @@ const Navbar = () => {
         <div className={styles.page_title}>
           {shouldShowBackButton &&
             (currPath.startsWith("/widget/edit") ||
-              currPath.startsWith("/widget/list")) && (
+              currPath.startsWith("/widget/add")) && (
               <button className={styles.backBtn} onClick={() => router.back()}>
                 <BackIcon />
               </button>

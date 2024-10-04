@@ -63,6 +63,48 @@ const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, s
         const cleanDomainResult = cleanDomain.split('/')[0]; 
         postBrandkit(cleanDomainResult)
     }
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    
+    //     if (disableBtn) {
+    //         return;
+    //     }
+    
+    //     // Clean up the domain
+    //     const cleanDomain = domain.startsWith('https://')
+    //         ? domain.replace('https://', '')
+    //         : domain;
+    
+    //     const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+    
+    //     if (!urlPattern.test(cleanDomain)) {
+    //         alert("Please enter a valid domain.");
+    //         return;
+    //     }
+    
+    //     const cleanDomainResult = cleanDomain.split('/')[0];
+    
+    //     try {
+    //         const response = await fetch(`https://isitdown.site/api/v3/${cleanDomainResult}`);
+    
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             if (data.status === "up") {
+    //                 // Domain exists and is up, proceed with your logic
+    //                 postBrandkit(cleanDomainResult);
+    //             } else {
+    //                 alert("This domain does not exist or is unreachable.");
+    //             }
+    //         } else {
+    //             alert("There was an issue checking the domain status.");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //         alert("An error occurred while trying to verify the domain.");
+    //     }
+    // };
+    
     const postBrandkit = async (cleanDomain : string) => {
         const postDomain = {
             url: `https://${cleanDomain}`
