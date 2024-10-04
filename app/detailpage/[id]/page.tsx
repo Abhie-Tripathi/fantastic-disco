@@ -161,6 +161,10 @@ const DetailPage = async (context: any) => {
 };
 export default DetailPage;
 
+function stripHtmlTags(inputString: string) {
+    return inputString.replace(/<[^>]*>?/gm, '');
+}
+
 export async function generateMetadata(context: any) {
     const eventId = context.params.id;
     // const { widgetId, eventId } = decodeHash(hash as string);
@@ -183,10 +187,10 @@ export async function generateMetadata(context: any) {
     const { name, description, logoUrl } = data;
     return {
         title: name,
-        description: description,
+        description: stripHtmlTags(description),
         openGraph: {
             title: name,
-            description: description,
+            description: stripHtmlTags(description),
             images: [logoUrl],
             url: `https://console.eventgeni.com/detailpage/${eventId}`,
             type: "website"

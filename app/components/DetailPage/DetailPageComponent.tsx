@@ -38,7 +38,7 @@ interface EventProps {
     description: string;
     location_city: string;
     location_country: string;
-    // widgetId: string;
+    widgetId?: string;
     eventId: string;
     hashtags: string;
     childrenData :  EventsType[]
@@ -46,7 +46,7 @@ interface EventProps {
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData,widgetId }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
 

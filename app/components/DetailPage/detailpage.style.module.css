@@ -119,6 +119,9 @@
     .participationContainer {
         width: 780px;
     }
+    .carousel{
+        width: 780px;
+    }
 }
 @media screen and (max-width: 875px) {
     .rightSection {
