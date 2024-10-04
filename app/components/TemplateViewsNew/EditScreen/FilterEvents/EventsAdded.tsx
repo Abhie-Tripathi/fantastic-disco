@@ -248,7 +248,6 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
         })
         if (data) {
             handleEventIdDelete(eventId)
-            fetchAddedEvents()
             fetchEvents(0, "update")
         }
         if (error) {
@@ -266,6 +265,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
             body: customizedFormData
         })
         if (data) {
+            fetchAddedEvents()  
             console.log(data)
         } if (error) {
             console.log(error)

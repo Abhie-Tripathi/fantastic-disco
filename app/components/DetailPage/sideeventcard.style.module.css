@@ -128,10 +128,9 @@
     background-color: #EBF5FF;
 }
 
-.tags .tag2 {
-    color: #12A594;
-    border: 1px solid #BEF4EB;
-    background-color: #E5FAF6;
+.tags .tag {
+    color: #7D7D7D;
+    background-color: #F2F2F2;
 }
 
 .deleteBtn {

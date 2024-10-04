@@ -538,7 +538,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         <DescIcon />
                         <span>Main Event</span>
                     </div>
-                    <div className={styles.collapseBtn} onClick={() => setCollapseMainEventForm(false)}><DownArrow /></div>
+                    <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
                 </div>) : (eventFlow === 'main' &&
                     <Details
                         handleCollapseForm={handleCollapseForm}

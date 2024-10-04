@@ -83,7 +83,7 @@ const SideEventCard = ({ event }: Props) => {
                 <div className={styles.bigName}>{event.name}</div>
                 <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                     <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
-                    <div>{`${event.cityName, event.countryName}`}</div>
+                    <div>{`${event.cityName, event.countryName} `}</div>
                 </div>
                 <div className={styles.eventDateTimeContainer}>
                     <div className={styles.eventDataField}>
@@ -105,8 +105,10 @@ const SideEventCard = ({ event }: Props) => {
                 <div className={styles.tags_deleteContainer}>
                     <div className={styles.tags}>
                         <Image src={ConfettiIcon} alt='icon' />
-                        <div className={styles.tag1}>Tradeshow</div>
-                        <div className={styles.tag2}>In-Person</div>
+                        <div className={styles.tag1}>{event.participationType}</div>
+                        {event.customizationData.hashtags.split(",").slice(0, 3).map((tag,key)=>(
+                            <div className={styles.tag}>{tag}</div>
+                        ))}
                     </div>
                 </div>
             </div>
