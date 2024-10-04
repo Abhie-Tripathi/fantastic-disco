@@ -1666,7 +1666,7 @@ useEffect(()=>{
       ))}
     ))} */}
     {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
               {customData && customData.length >0 &&
                 <div className={styles.allCompetitors}>
