@@ -16,7 +16,7 @@ const SideEventCarousel = ({ childrenData }: Props) => {
 
     const handleCardClick = (id: string) => {
         const Url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN;
-        router.push(`${Url}/detailpage/${id}`)
+        router.push(`/detailpage/${id}`)
     }
 
     const banners = childrenData.map((event, index) => (

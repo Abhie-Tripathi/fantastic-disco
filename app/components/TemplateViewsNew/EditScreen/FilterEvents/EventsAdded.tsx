@@ -80,7 +80,8 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                             longitude: eventData.longitude,
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
-                            promoted : event.promoted
+                            promoted : event.promoted,
+                            eventType : data.type
                         } as PrefilledAddedEventsType;
                         if (event.promoted === "true") {
                             setPromotedEvents((prev:any) => [...prev, eventObject]);
