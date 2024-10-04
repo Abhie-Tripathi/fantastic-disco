@@ -844,8 +844,21 @@ const Table = ({
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {showInsights.global && <th>International</th>}
-              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& <th>Matched</th>}
-              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5 )&& <th>Score</th>}
+              {(type === null && appliedKeywords?.length > 0 )&& <th>Matched</th>}
+              {(type === null && appliedKeywords?.length >= 5 )&& <th>Score</th>}
+
+              {((type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") && path[path.length-1]!=="savedEvents") &&
+                <>
+                  <th
+                    className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                      }`} style={{ right:"184px", minWidth:"60px"  }}
+                  >
+                    Matched
+                  </th>
+                  { true && <th className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{right:"84px", minWidth:"100px" }}>Score</th>}
+                </>
+              }
+
               {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
               <>
               <th
@@ -1229,7 +1242,7 @@ const Table = ({
                     )}
                   </td>
                 )}
-                {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& (
+                {(type === null && appliedKeywords?.length > 0 )&& (
                   <>
                     <td>
                       {event.matchedKeywords.length == 0 ? (
@@ -1256,7 +1269,7 @@ const Table = ({
                         </>
                       )}
                     </td>
-                    {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5)&& (
+                    {(type === null && appliedKeywords?.length >= 5)&& (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
@@ -1273,6 +1286,55 @@ const Table = ({
                     )}
                   </>
                 )}
+
+                {(type==="T_COMPETITOR" && path[path.length-1]!=="savedEvents" )&& (
+                  <>
+                    <td style={{ textAlign: "center", right:"184px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn} ${styles.truncateText_2}`}>
+                      {event?.competitorDomainOrName?.[0]}
+                    </td>
+                    {(true) && (
+                      <td style={{ textAlign: "center", right:"84px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                        {event?.["competitor%"]}
+                        {/* {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )} */}
+                      </td>
+                    )}
+                  </>
+                )}
+
+                {(type==="T_SPEAKING_OPPORTUNITY" && path[path.length-1]!=="savedEvents" )&& (
+                  <>
+                    <td style={{ textAlign: "center", right:"184px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {event?.speakerPersonAssociation?.[0]}
+                    </td>
+                    {(true) && (
+                      <td style={{ textAlign: "center", right:"84px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                        {event?.["speakerPersonAssociation%"]}
+                        {/* {event.keywordsMatchedScore > 20 ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event.keywordsMatchedScore >= 10 &&
+                          event.keywordsMatchedScore <= 20 ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event.keywordsMatchedScore > 0 &&
+                          event.keywordsMatchedScore < 10 ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )} */}
+                      </td>
+                    )}
+                  </>
+                )}
+
                 {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
                 <>
                 <td style={{ textAlign: "center",  right:appliedKeywords?.length >= 5?"184px":"84px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
