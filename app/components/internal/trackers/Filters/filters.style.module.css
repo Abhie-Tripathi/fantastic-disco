@@ -432,7 +432,7 @@ input:checked + .slider:before {
   box-shadow: none;
   border-radius: var(--border-radius-sm);
   /* border: 1px solid var(--border-color); */
-  gap:var(--spacing-lg);
+  /* gap:var(--spacing-lg); */
 }
 .singleInputArea{
   position: relative;
@@ -493,6 +493,7 @@ input:checked + .slider:before {
   display: flex;
   width: 100%;
   gap:10px;
+  margin: 16px 0;
 }
 .manualDiv{
   width: 50%;
