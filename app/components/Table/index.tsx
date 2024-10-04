@@ -1289,12 +1289,12 @@ const Table = ({
 
                 {(type==="T_COMPETITOR" && path[path.length-1]!=="savedEvents" )&& (
                   <>
-                    <td style={{ textAlign: "center", right:"184px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn} ${styles.truncateText_2}`}>
-                      {event?.competitorDomainOrName?.[0]}
+                    <td style={{ textAlign: "center", right:"184px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {event?.competitorDomainOrName?.[0].split('_')[1]}
                     </td>
                     {(true) && (
                       <td style={{ textAlign: "center", right:"84px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
-                        {event?.["competitor%"]}
+                        <span className={styles.badge_success}>{event?.competitorPercentage}</span>
                         {/* {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
                         ) : event.keywordsMatchedScore >= 10 &&
