@@ -30,15 +30,19 @@ interface EventProps {
     eventId: string;
     hashtags: string;
     participationType: string;
+    parentName: string;
+    parentId: string;
     childrenData: EventsType[];
     widgetId: string;
 }
 
 const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId }: EventProps) => {
     return (
         // <div></div>
         <DetailPageComponent
+            parentName={parentName}
+            parentId={parentId}
             childrenData={childrenData}
             widgetId={widgetId}
             hashtags={hashtags}
@@ -116,6 +120,8 @@ const fetchData = async (eventId: string) => {
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
+            parentName: data.data.event.data.parentData ? data.data.event.data.parentData : data.data.event.parentInfo.name,
+            parentId: data.data.event.parentInfo.id,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,
