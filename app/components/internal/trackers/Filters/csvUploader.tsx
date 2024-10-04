@@ -291,7 +291,8 @@ const CsvUploader = ({
         translations={{
           uploadStep: {
             // manifestTitle: "",
-            // manifestDescription: <ul style={{fontSize: '12px'}}>
+            manifestDescription: "(You can rename or remove columns in the next steps. The first row will be used as the header)",
+            // <ul style={{fontSize: '12px'}}>
             //   <li>Text line 1</li>
             //   <li>Text line 2</li>
             // </ul>,
