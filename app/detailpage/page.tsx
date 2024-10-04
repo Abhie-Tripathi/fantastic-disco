@@ -48,7 +48,6 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
-            bannerUrl={logoUrl}
             eventFont={eventFont}
             longitude={longitude}
             pageBgColor={pageBgColor}

@@ -6,6 +6,7 @@ import PlaceIcon from "/public/location.svg";
 import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
 import PopperImage from "/public/widgetimages/Popper.png";
+import ConfettiIcon from '/public/confetti.svg'
 
 interface Props {
     event: EventsType;
@@ -98,11 +99,12 @@ const SideEventCard = ({ event }: Props) => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.description} dangerouslySetInnerHTML={{
+                {/* <div className={styles.description} dangerouslySetInnerHTML={{
                     __html: (event.description.substring(0, 100) + (event.description?.length > 100 ? "..." : ""))
-                }}></div>
+                }}></div> */}
                 <div className={styles.tags_deleteContainer}>
                     <div className={styles.tags}>
+                        <Image src={ConfettiIcon} alt='icon' />
                         <div className={styles.tag1}>Tradeshow</div>
                         <div className={styles.tag2}>In-Person</div>
                     </div>
