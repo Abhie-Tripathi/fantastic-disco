@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './intel.style.module.css'
-const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceProfile}:any) => {
+const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceSpreadCount, audienceProfile}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -90,6 +90,9 @@ const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, aud
         <div className={styles.branded}>
           <div className={styles.formatHead}>
           Audience Spread
+            {audienceSpreadCount > 0 &&
+              <span className={styles.selected_no_filters}>{audienceSpreadCount}</span>
+            }
           </div>
           <div className={styles.toggle_container}>
             <span>
