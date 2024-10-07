@@ -7,7 +7,7 @@ import { useTheme } from '@/context';
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import Loading from '@/app/components/UI/Loading';
-import { AllEventsType } from '@/types/alleventtype';
+import { AllEventsType, EventsType } from '@/types/alleventtype';
 
 interface Props {
     extractedColors: string[];
@@ -19,7 +19,7 @@ interface Props {
     eventFont?: string;
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
 }
 interface FontSettings {
     fontFamily: string;

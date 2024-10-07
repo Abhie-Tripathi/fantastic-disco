@@ -7,7 +7,7 @@ import FontContainer from './FontContainer'
 import BrandKit from '../../EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import { useTheme } from '@/context'
 import ProgressBar from './ProgressBar'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 
 interface Props {
     pageBgColor: string;
@@ -24,7 +24,7 @@ interface Props {
     cityNameSub: string;
     participationTypeSub: string;
     descriptionSub: string;
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
 }
 
 const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub}: Props) => {

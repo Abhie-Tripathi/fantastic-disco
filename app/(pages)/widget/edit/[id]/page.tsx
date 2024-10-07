@@ -9,12 +9,12 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+// import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
-import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
-import { GolbalEventType } from '@/types/globaleventtype'
+// import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
+// import { GolbalEventType } from '@/types/globaleventtype'
 import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
 
 const Page = () => {

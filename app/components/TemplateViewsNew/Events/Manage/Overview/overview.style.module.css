@@ -1,0 +1,46 @@
+.eventDetailView{
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 15px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    gap: 20px;
+}
+.eventDetailContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.eventDetailContainer .heading{
+    font-size: var(--font-size-h6);
+    font-weight: var(--font-weight-semibold);
+}
+.eventDetailContainer .locationDateContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btnContainer button{
+    padding: 5px;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    color: white;
+    flex: 1;
+}
+.btnContainer .editBtn{
+    background-color: var(--primary-color);
+}
+.editBtn:hover{
+    background-color: var(--primary-color-hover);
+}
+.btnContainer .cancelBtn{
+    background-color: var(--danger-text-color);
+}
+.cancelBtn:hover{
+    background-color:rgb(196, 26, 26);
+}

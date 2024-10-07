@@ -10,11 +10,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 75%;
+  width: 100%;
 }
 
 .startEndStyle {
-  color: #7D7D7D;
+  color: var(--secondary-text-color);
   font-size: 12px;
   line-height: 18px;
   display: flex;
@@ -112,7 +112,7 @@
 }
 
 .timeZonesContainer .timeZone {
-  color: black;
+  color: var(--primary-text-color);
   font-size: 10px;
   margin-top: 11px;
 }
@@ -122,11 +122,12 @@
   gap: 9px;
 }
 .mobile_dateIconContainer{
+  color: black;
   display: flex;
   gap: 5px;
 }
 .mobile_dateContainer{
-  font-size: var(--font-size-default);
+  font-size: var(--font-size-xs);
   font-weight: 500;
 }
 .mobile_timeGmtContainer{
@@ -136,7 +137,7 @@
   color: #7D7D7D;
   font-weight: 600;
 }
-@media screen and (max-width: 821px) {
+/* @media screen and (max-width: 821px) {
   .startEndStyle {
     display: none;
   }
@@ -152,4 +153,4 @@
   .dateTimeBoxes{
     display: none;
   }
-}
+} */
