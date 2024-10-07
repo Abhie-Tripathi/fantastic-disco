@@ -30,10 +30,11 @@ interface Props {
     setPrefilledEvent: (value: AllEventsType | null) => void;
     prefilledSubEvent?: EventsType | null;
     setPrefilledSubEvent: (value: EventsType | null) => void
+    setChoiceFormModal:(value:boolean) => void
 }
 
 const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
-    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges,prefilledSubEvent, setPrefilledSubEvent }: Props) => {
+    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges,prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -194,6 +195,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     setIsAddEventModalOpen(false)
                     showToast("success", "Main Event Added Successfully")
                     fetchEvents(0, "update")
+                    setChoiceFormModal(false)
                 }
             }
             if (error) {
@@ -312,6 +314,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             setIsAddEventModalOpen(false)
             showToast("success", "Subevent Added Successfully")
             fetchEvents(0, "update")
+            setChoiceFormModal(false)
         }
         if (error) {
             console.log(error)
