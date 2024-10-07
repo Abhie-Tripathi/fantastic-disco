@@ -100,7 +100,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
     }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>
-            <div className={(width === "small" && normalEvent) ? styles.smallMainCard : (width === "small" && subEvent) ? styles.smallSubCard : styles.bigCard} onClick={handleCardClick}>
+            <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
                 <Image src={PopperImage} alt='Popper' className={styles.popperImg} />
                 {width === "small" && <div className={styles.imageContainer}>
                     <Image src={normalEvent?.mainEvent.logoUrl || subEvent?.logoUrl || PlaceIcon} alt='Banner' height={130} width={130} />

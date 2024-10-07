@@ -79,13 +79,13 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
   };
 
   const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
-    handleChange('speakerProfilesData', (prevData: any) =>
-      prevData.map((p: any) => (p.id === updatedProfile.id ? updatedProfile : p))
+    const currentSpeakers = formState.speakerProfilesData || [];
+    // Update the relevant speaker by mapping through the array
+    const updatedSpeakers = currentSpeakers.map((p: any) =>
+      p.id === updatedProfile.id ? updatedProfile : p
     );
-    // setSpeakerProfilesData((prevData) =>
-    //   prevData.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
-    // );
-    handleChange('speakerModal', true)
+    handleChange('speakerProfilesData', updatedSpeakers);
+    handleChange('speakerModal', false)
     // setSpeakerModal(false);
     handleChange('prefilledProfile', undefined)
     // setPrefilledProfile(undefined);
@@ -179,6 +179,10 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
   const handleFormCollapse = () => {
     handleCollapseForm("side")
   }
+  // useEffect(() => {
+  //   console.log("speaker are : ", formState.speakerProfilesData)
+  // }, [formState.speakerProfilesData])
+
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
@@ -289,6 +293,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       {
         formState.speakerModal && <div className={styles.speakerModal}>
           <SpeakerModal
+            speakerProfilesData={formState.speakerProfilesData}
             handleChange={handleChange}
             // setSpeakerProfilesData={setSpeakerProfilesData} 
             // setSpeakerModal={setSpeakerModal} 

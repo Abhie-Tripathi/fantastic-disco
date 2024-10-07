@@ -222,7 +222,6 @@ const Page = () => {
                 return (
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
-
                         {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} normalEvent={event} />}
                     </div>
                 );
