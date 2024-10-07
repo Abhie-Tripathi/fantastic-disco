@@ -46,7 +46,7 @@ interface Props {
     prefilledSubEvent?: EventsType | null;
     // setMainEventName: (value: string) => void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow,prefilledSubEvent }: Props) => {
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent }: Props) => {
 
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -81,12 +81,12 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     };
 
     const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
-        handleChange('speakerProfilesData', (prevData: any) =>
-            prevData.map((p: any) => (p.id === updatedProfile.id ? updatedProfile : p))
+        const currentSpeakers = formState.speakerProfilesData || [];
+        // Update the relevant speaker by mapping through the array
+        const updatedSpeakers = currentSpeakers.map((p: any) =>
+            p.id === updatedProfile.id ? updatedProfile : p
         );
-        // setSpeakerProfilesData((prevData) =>
-        //   prevData.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
-        // );
+        handleChange('speakerProfilesData', updatedSpeakers);
         handleChange('speakerModal', false)
         // setSpeakerModal(false);
         handleChange('prefilledProfile', undefined)
@@ -102,8 +102,6 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
             });
         }
     };
-
-
     const handleGeneratePoster = () => {
         if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
             if (formState.eventName && formState.participationMessage) {
@@ -179,7 +177,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
     return (
         <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' handleChange = {handleChange} />
+                <GlobalSearch widgetId='123' handleChange={handleChange} />
             </div>}
 
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
@@ -280,6 +278,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
             {
                 formState.speakerModal && <div className={styles.speakerModal}>
                     <SpeakerModal
+                        speakerProfilesData={formState.speakerProfilesData}
                         handleChange={handleChange}
                         // setSpeakerProfilesData={setSpeakerProfilesData} 
                         // setSpeakerModal={setSpeakerModal}

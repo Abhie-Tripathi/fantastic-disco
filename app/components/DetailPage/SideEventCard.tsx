@@ -107,7 +107,7 @@ const SideEventCard = ({ event }: Props) => {
                         <Image src={ConfettiIcon} alt='icon' />
                         <div className={styles.tag1}>{event.participationType}</div>
                         {event.customizationData.hashtags.split(",").slice(0, 3).map((tag,key)=>(
-                            <div className={styles.tag}>{tag}</div>
+                            <div className={styles.tag} key={key}>{tag}</div>
                         ))}
                     </div>
                 </div>
