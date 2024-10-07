@@ -1,11 +1,15 @@
 .speaker{
-    border: 1px solid #c5c5c5;
+    border: 1px solid #EBEBEB;
+    background-color: #fafafa;
     border-radius: 3px;
     padding: 13px;
     display: flex;
     min-width: 250px;
     gap: 13px;
     cursor: pointer;
+}
+.speaker img{
+    /* border : 1px solid red; */
 }
 .speaker .detailsContainer{
     display: flex;

@@ -109,9 +109,7 @@
     background-color: #fff;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     height: 150px; 
-    /* max-width: 600px; */
     width: 100%;
-    /* margin: 15px auto; */
     overflow: hidden;
     border-radius: none;
   }
@@ -120,12 +118,13 @@
     flex-shrink: 0;
     width: 100px;
     height: 100%; 
+    border-radius: 10px;
   }
   
   .details {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content:space-around;
     margin-left: 15px;
     overflow: hidden;
     flex-grow: 1;
@@ -148,7 +147,7 @@
   
   .registerButton {
     position: absolute;
-    bottom: 10px;  
+    bottom: 25px;  
     right: 10px;   
   }
   
@@ -166,3 +165,17 @@
     background-color: #6750A4;
   }
   
+
+  .btnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.smallBtn{
+    padding: 5px 10px;
+}
+.btn{
+    padding: 10px 20px;
+    border: 1px solid;
+}

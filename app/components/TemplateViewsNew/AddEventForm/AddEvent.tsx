@@ -21,8 +21,9 @@ interface Props {
   setEventFlow: (value: string) => void
   setPrefilledGlobalEvent: (value: GolbalEventType | null) => void;
   setPrefilledEvent: (value: AllEventsType | null) => void;
+  setChoiceFormModal:(value:boolean) =>void
 }
-const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent }: Props) => {
+const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal  }: Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledEvent?.mainEvent.customizationData.pageBgColor || "")
   const [eventFont, setEventFont] = useState<string>("Arial")
@@ -87,7 +88,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
       <div className={styles.details}>
         <AddEventFormTab setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow}
           // setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName}
-          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} />
+          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal}/>
         {/* <Details setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} /> */}
       </div>
     </div>

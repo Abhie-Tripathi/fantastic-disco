@@ -23,6 +23,7 @@ interface Props {
         body: FontSettings;
     };
     buttonSettings?: ButtonSettingsState
+    closeButtonSetting?:ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     fetchedAddedEvents?: PrefilledAddedEventsType[];
     smallCard: boolean;
@@ -35,7 +36,7 @@ interface Props {
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     cardBorderRadius,
     fontSettings,
-    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard,demoEventName, demoBanner, demoDescription, demoLocation }: Props) => {
+    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard,demoEventName, demoBanner, demoDescription, demoLocation,closeButtonSetting }: Props) => {
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
@@ -56,6 +57,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     };
     const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 150) : demoDescription;
     const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
+    const truncatedDescription = description.substring(0, 150) + (description.length > 150 ? "..." : "");
     return (
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
@@ -87,7 +89,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                     fontFamily: fontSettings?.body.fontFamily,
                     fontWeight: fontSettings?.body.fontWeight,
                 }}
-                dangerouslySetInnerHTML={{ __html: description }}
+                dangerouslySetInnerHTML={{ __html: truncatedDescription }}
             />
             <div className={styles.btnContainer}>
                 <button
@@ -101,6 +103,19 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                     }}
                 >
                     {selectedBtn === "primary" ? buttonSettings?.primary.buttonText : buttonSettings?.secondary.buttonText}
+                </button>
+
+                <button
+                    className={smallCard ? styles.smallBtn : styles.btn}
+                    style={{
+                        fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+                        color: selectedBtn === "primary" ? closeButtonSetting?.primary.fontColor : closeButtonSetting?.secondary.fontColor,
+                        backgroundColor: selectedBtn === "primary" ? closeButtonSetting?.primary.buttonColor : "transparent",
+                        borderRadius: selectedBtn === "primary" ? closeButtonSetting?.primary.borderRadius : closeButtonSetting?.secondary.borderRadius,
+                        border: "none"
+                    }}
+                >
+                    {selectedBtn === "primary" ? closeButtonSetting?.primary.buttonText : closeButtonSetting?.secondary.buttonText}
                 </button>
             </div>
         </div>

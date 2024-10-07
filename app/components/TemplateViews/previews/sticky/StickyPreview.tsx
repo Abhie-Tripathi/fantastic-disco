@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./stickypreview.style.module.css";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
+import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
+import { useRouter } from "next/navigation"
 import StickyCard from "./sticky_card";
 interface FontSettings {
   fontFamily: string;
@@ -14,6 +16,10 @@ interface StickyProps {
   widgetId?: string;
   isFullScreen: boolean;
   cardBorderRadius?: number;
+  buttonSettings?: ButtonSettingsState;
+ 
+  selectedBtn?: "primary" | "secondary";
+  smallCard: boolean;
   cardBgColor?: string;
   selectedCard?: string;
   fontSettings?: {
@@ -21,7 +27,7 @@ interface StickyProps {
     subheading: FontSettings;
     body: FontSettings;
   };
-    fetchedAddedOtherData?: PrefilledAddedEventsType[];
+  fetchedAddedOtherData?: PrefilledAddedEventsType[];
   demoBanner: string;
   demoEventName: string;
   demoDescription: string;
@@ -41,6 +47,10 @@ const StickyPreview = ({
   demoEventName,
   demoDescription,
   demoLocation,
+  selectedBtn,
+  smallCard,
+  buttonSettings
+
 }: StickyProps) => {
   const [promotedEvents, setPromotedEvents] = useState<
     PrefilledAddedEventsType[]
@@ -64,6 +74,13 @@ const StickyPreview = ({
     }
   }, [fetchedAddedOtherData]);
 
+  console.log("events in sticky view :", fetchedAddedOtherData);
+  const router = useRouter();
+  // const handleCardClick = (eventId: string, widgetId: string) => {
+  //     // const hash = createHash(widgetId, eventId);
+  //     // router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+  //     router.push(`/detailpage/${eventId}`);
+  // }
   return (
     // <div className={styles.preview}>
     //     <div className={type === "top" ? styles.stickyTop : styles.stickyFooter}>Your Event Name</div>
@@ -73,33 +90,45 @@ const StickyPreview = ({
 
     <div className={styles.preview}>
       {fetchedAddedOtherData && fetchedAddedOtherData.length > 0 ? (
-        <>
-          {/* <StickyCard
-            fetchedAddedOtherData={normalEvents}
-            selectedCard={selectedCard}
-            cardBgColor={cardBgColor}
-            cardBorderRadius={cardBorderRadius}
-            fontSettings={fontSettings}
-            demoBanner={demoBanner}
-            demoEventName={demoEventName}
-            demoDescription={demoDescription}
-            demoLocation={demoLocation}
-          /> */}
-        </>
+        fetchedAddedOtherData.map((event, key) => (
+          <div
+            className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+            key={key}
+            // onClick={() => handleCardClick(event.id, widgetId)} key={key} 
+          >
+            <StickyCard
+              fetchedEvent={event}
+              cardBgColor={cardBgColor}
+              cardBorderRadius={cardBorderRadius}
+              fontSettings={fontSettings}
+              selectedBtn={selectedBtn}
+              smallCard={smallCard}
+              buttonSettings={buttonSettings}
+              demoBanner={""}
+              demoEventName={""}
+              demoDescription={""}
+              demoLocation={""}
+             
+            />
+          </div>
+        ))
       ) : (
-        <>
-          {/* <StickyCard
-            fetchedAddedOtherData={normalEvents}
-            selectedCard={selectedCard}
+        <div
+          className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+        >
+          <StickyCard
             cardBgColor={cardBgColor}
             cardBorderRadius={cardBorderRadius}
             fontSettings={fontSettings}
+            selectedBtn={selectedBtn}
+            smallCard={smallCard}
+            buttonSettings={buttonSettings}
             demoBanner={demoBanner}
             demoEventName={demoEventName}
             demoDescription={demoDescription}
             demoLocation={demoLocation}
-          /> */}
-        </>
+          />
+        </div>
       )}
     </div>
   );

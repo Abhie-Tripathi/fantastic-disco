@@ -7,7 +7,7 @@ import locationIcon from "/public/location_on.svg";
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
-
+import { ButtonSettingsState } from "@/types/buttoncustomizetypes";
 interface FontSettings {
   fontFamily: string;
   fontSize: number;
@@ -22,6 +22,9 @@ interface CardProps {
     subheading: FontSettings;
     body: FontSettings;
   };
+  smallCard: boolean;
+  selectedBtn?: "primary" | "secondary";
+  buttonSettings?: ButtonSettingsState;
   fetchedEvent?: PrefilledAddedEventsType;
   demoBanner: string;
   demoEventName: string;
@@ -56,6 +59,9 @@ const StickyCard = ({
   demoEventName,
   demoDescription,
   demoLocation,
+  smallCard,
+  buttonSettings,
+  selectedBtn,
 }: CardProps) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -84,10 +90,7 @@ const StickyCard = ({
     ? truncateText(fetchedEvent.description, 150)
     : demoDescription;
   return (
-    <div
-      className={styles.card}
-      style={{ backgroundColor: cardBgColor }}
-    >
+    <div className={styles.card} style={{ backgroundColor: cardBgColor }}>
       <Image
         width={100}
         height={150}
@@ -150,11 +153,64 @@ const StickyCard = ({
       </div>
 
       {/* Registration Button */}
-      <div className={styles.registerButton}>
+      {/* <div className={styles.registerButton}>
         <button
-        //   style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
         >
           REGISTER NOW
+        </button>
+      </div> */}
+
+      <div className={styles.registerButton}>
+        {/* <button
+          className={smallCard ? styles.smallBtn : styles.btn}
+          style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+            color:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.fontColor
+                : buttonSettings?.secondary.fontColor,
+            backgroundColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.buttonColor
+                : "transparent",
+            borderRadius:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderRadius
+                : buttonSettings?.secondary.borderRadius,
+            borderColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderColor
+                : buttonSettings?.secondary.borderColor,
+          }}
+        >
+          {selectedBtn === "primary"
+            ? buttonSettings?.primary.buttonText
+            : buttonSettings?.secondary.buttonText}
+        </button> */}
+
+        <button
+          className={smallCard ? styles.smallBtn : styles.btn}
+          style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+            color:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.fontColor
+                : buttonSettings?.secondary.fontColor,
+            backgroundColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.buttonColor
+                : "transparent",
+            borderRadius:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderRadius
+                : buttonSettings?.secondary.borderRadius,
+            borderColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderColor
+                : buttonSettings?.secondary.borderColor,
+          }}
+        >
+          {"REGISTER NOW"}
         </button>
       </div>
     </div>

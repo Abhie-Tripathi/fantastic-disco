@@ -132,6 +132,7 @@
 .addButtonContainer .heading{
     color: #0062D1;
     font-size: 12px;
+    white-space: nowrap;
 }
 .delete_spanBtn{
     display: flex;
@@ -215,3 +216,39 @@
     padding: 9px 20px;
     cursor: pointer;
 }
+
+
+.rectangularBorder {
+    border: 0.65px solid #EBEBEB; 
+    padding: 6px 10px 6px 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .addEventOptionsContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3px;
+  }
+  
+  .addOption {
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  
+  .addOption:hover {
+    background-color: #e0e0e0; 
+  }
+
+  .selectedOption {
+    background-color: #f0f0f0; /* Highlight the selected option */
+    border: 1px solid #ccc;
+  }
+  

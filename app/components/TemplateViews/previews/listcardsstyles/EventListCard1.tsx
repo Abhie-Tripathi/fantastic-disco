@@ -55,6 +55,7 @@ const EventListCard1 = ({
   };
 
   const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : demoDescription;
+  const truncatedDescription = description.substring(0, 130) + (description.length > 130 ? "..." : "");
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
@@ -74,7 +75,7 @@ const EventListCard1 = ({
             <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : demoEventName}</div>
           </div>
         </div>
-        <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
+        <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         <div className={styles.dateRange_typeContainer}>
           <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "29 Jan - 5 Feb"}</div>
           <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>

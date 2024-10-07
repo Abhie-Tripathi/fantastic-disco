@@ -44,6 +44,7 @@ interface PreviewProps {
         body: FontSettings;
     };
     buttonSettings?: ButtonSettingsState
+    closeButtonSetting?:ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
     draftWidgets?: DraftWidgetsType[]
@@ -78,6 +79,11 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         primary: { buttonColor: "#6750a4", fontColor: "#ffffff", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
     },
+    closeButtonSetting = {
+        primary: { buttonColor: "#8F8F8F1F", fontColor: "#171717", borderRadius: 4, borderColor: "#6750a4", buttonText: "Close" },
+        secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Close" }
+    },
+   
     selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard, setIsDraftSaved }: PreviewProps) => {
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
@@ -155,7 +161,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     }, [fetchedAddedEvents]);
 
     const handleDraftWidgets = async (navigate: boolean) => {
-        if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard) {
+        if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard || !closeButtonSetting ) {
             console.error('Missing required data');
             return;
         }
@@ -181,6 +187,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             cardBorderRadius,
             selectedBtn,
             selectedCard,
+            closeButtonSetting,
         };
         customizeData.append('customizationData', JSON.stringify(customizationData));
         const { data, error } = await myFetch(
@@ -239,8 +246,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             </div>
             <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen) ? styles.bigpreview_btnContainer : ""}`}>
                 <div className={`${styles.preview} ${(!draftWidget || isFullScreen) ? styles.bigPreview : ""}`} >
-                    {selectedTemplate === "ST" ? <StickyPreview type="top" fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                        selectedTemplate === "SB" ? <StickyPreview type="down" fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                    {selectedTemplate === "ST" ? <StickyPreview type="top" fetchedAddedOtherData={fetchedAddedOtherData} smallCard={smallCard} selectedBtn={selectedBtn} buttonSettings={buttonSettings} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                        selectedTemplate === "SB" ? <StickyPreview type="down" fetchedAddedOtherData={fetchedAddedOtherData} smallCard={smallCard} selectedBtn={selectedBtn} buttonSettings={buttonSettings} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                             selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                 selectedTemplate === "GS" ? <GridView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} /> :
                                     selectedTemplate === "LS" ? <ListView widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
@@ -255,8 +262,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                                                                     selectedTemplate === "RSR" ? <ScrollView fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup
                                                                             smallCard={smallCard}
-                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : selectedTemplate === "PUVL" ? <LandscapePopup
-                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : <></>}
+                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : selectedTemplate === "PUVL" ? <LandscapePopup
+                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> : <></>}
                 </div>
                 {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to Draft widgets</button>

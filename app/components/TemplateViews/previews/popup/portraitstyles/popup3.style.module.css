@@ -60,11 +60,14 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 .btn{
     padding: 10px 20px;
     border: 1px solid;
+    min-width: 60px;
 }
 .smallBtn{
     padding: 5px 10px;
+    min-width: 60px;
 }

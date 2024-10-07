@@ -222,7 +222,6 @@ const Page = () => {
                 return (
                     <div key={index} className={styles.container}>
                         <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
-
                         {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} normalEvent={event} />}
                     </div>
                 );
@@ -235,7 +234,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
+                <AddEvent prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal}  />
             </div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

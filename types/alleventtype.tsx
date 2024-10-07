@@ -1,6 +1,8 @@
 export interface AllEventsType {
   mainEvent : EventsType;
   subEvents : EventsType[]
+  promoted : string;
+  selectedOption: string
 }
 export interface EventsType{
   eventId: string;

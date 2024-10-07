@@ -19,7 +19,6 @@ import SideEventCarousel from './SideEventCarousel'
 interface EventProps {
     venue: string;
     latitude: number;
-    bannerUrl: string;
     eventFont: string;
     longitude: number;
     pageBgColor: string;
@@ -49,7 +48,7 @@ interface EventProps {
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
@@ -76,8 +75,8 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
     const urlVal = window.location.href
 
     const router = useRouter()
-    const handleMainEventClick = ()=>{
-        if(parentId){
+    const handleMainEventClick = () => {
+        if (parentId) {
             router.push(`/detailpage/${parentId}`)
         }
     }
@@ -89,19 +88,19 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
             <ToastContainer />
             {parentName &&
                 <div className={styles.mainEventLinkContainer}>
-                    <div className={styles.linkIcon}><LinkIcon/></div>
+                    <div className={styles.linkIcon}><LinkIcon /></div>
                     <span>Linked to</span>
                     <div className={styles.linkline}></div>
-                    <div className={styles.maineventName} onClick={handleMainEventClick} style={{cursor : parentId ? "pointer":"default"}}>{parentName.toUpperCase()}</div>
+                    <div className={styles.maineventName} onClick={handleMainEventClick} style={{ cursor: parentId ? "pointer" : "default" }}>{parentName.toUpperCase()}</div>
                 </div>}
-            <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>
+            {(participationType !== "HappyHours" && participationType !== "CocktailHours" && participationType !== "FoundersParty") && <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
 
             {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData} /></div>}
 
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
-                        <Image className={styles.poster} src={bannerUrl} alt='Poster'
+                        <Image className={styles.poster} src={logoUrl} alt='Poster'
                             width={296} height={290}
                             style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>
@@ -118,15 +117,14 @@ const DetailPageComponent = ({ venue, latitude, bannerUrl, eventFont, longitude,
                 <div className={styles.rightSection}>
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
-                            <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>
-
+                            {(participationType !== "HappyHours" && participationType !== "CocktailHours" && participationType !== "FoundersParty") && <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
                         </div>
                     }
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} /></div>
+                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} /></div>
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>
