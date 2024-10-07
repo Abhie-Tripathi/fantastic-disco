@@ -146,7 +146,8 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                 participationMessage: mainEventState.participationMessage,
                 venue: mainEventState.venue,
                 hashtags: mainEventState.hashtags.join(","),
-                boothNumber: mainEventState.boothNumber
+                boothNumber: mainEventState.boothNumber,
+                speaker : []
             }
             const eventData = {
                 format: mainEventState.eventFormat,
@@ -262,7 +263,8 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             participationMessage: subEventState.participationMessage,
             venue: subEventState.venue,
             hashtags: subEventState.hashtags.join(","),
-            boothNumber: subEventState.boothNumber
+            boothNumber: subEventState.boothNumber,
+            speaker : []
         }
         const eventData = {
             format: subEventState.eventFormat,
@@ -379,6 +381,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
+            speaker : []
         };
 
         // Prepare the event data

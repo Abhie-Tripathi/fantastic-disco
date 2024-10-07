@@ -409,7 +409,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                             <div className={styles.delete_spanBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
                                 {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
-                                <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button>
+                                {/* <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button> */}
                             </div>
                         </div>
                     </div>
