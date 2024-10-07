@@ -191,6 +191,7 @@ const templates = [
         type: "text",
         placeholder: "Competitor Name or Website",
         required:true,
+        example: "facebook.com",
       }
     ]
   },
@@ -278,12 +279,14 @@ const templates = [
         type: "text",
         placeholder: "Speaker's Name",
         required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
         required:true,
+        example: "Facebook",
       }
     ]
   },
@@ -1718,7 +1721,7 @@ useEffect(()=>{
           }
           </div>
           {template?.inputAreas &&
-                  <div>
+                  <div className={`${styles.competitor}`}>
                     <div className={styles.allInputArea}>
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
@@ -1778,7 +1781,7 @@ useEffect(()=>{
       ))}
     ))} */}
     {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
               {customData && customData.length >0 &&
                 <div className={styles.allCompetitors}>
