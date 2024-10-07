@@ -844,18 +844,31 @@ const Table = ({
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {showInsights.global && <th>International</th>}
-              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& <th>Matched</th>}
-              {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5 )&& <th>Score</th>}
+              {(type === null && appliedKeywords?.length > 0 )&& <th>Matched</th>}
+              {(type === null && appliedKeywords?.length >= 5 )&& <th>Score</th>}
+
+              {((type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") && path[path.length-1]!=="savedEvents") &&
+                <>
+                  <th
+                    className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                      }`} style={{ right:"150px", minWidth:"60px"  }}
+                  >
+                    Matched
+                  </th>
+                  <th className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{right:"50px", minWidth:"100px", textAlign: 'center'}}>Score</th>
+                </>
+              }
+
               {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
               <>
               <th
                 className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
-                  }`} style={{ right:appliedKeywords?.length >= 5?"184px":"84px", minWidth:"60px"  }}
+                  }`} style={{ right:appliedKeywords?.length >= 5?"150px":"50px", minWidth:"60px"  }}
               >
                 Matched
               </th>
               {appliedKeywords?.length >= 5 && <th className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
-                  }`} style={{right:"84px", minWidth:"100px" }}>Score</th>}
+                  }`} style={{right:"50px", minWidth:"100px", textAlign: 'center'}}>Score</th>}
               </>
               }
               {showInsights.maturity && <th>Maturity</th>}
@@ -865,11 +878,11 @@ const Table = ({
               {showInsights.audienceZone && <th>Audience Zone</th>}
               {showInsights.audienceSpread && <th>Audience Spread</th>}
               <th
-                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
+                className={`${styles.table_actionColumn} ${styles.bookmarkColumn
                   }`}
-                  style={{display:"flex",width:'84px'}}
+                  style={{display:"flex"}}
               >
-                Actions
+                {/* Actions */}
               </th>
             </tr>
           </thead>
@@ -1229,7 +1242,7 @@ const Table = ({
                     )}
                   </td>
                 )}
-                {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length > 0 )&& (
+                {(type === null && appliedKeywords?.length > 0 )&& (
                   <>
                     <td>
                       {event.matchedKeywords.length == 0 ? (
@@ -1256,7 +1269,7 @@ const Table = ({
                         </>
                       )}
                     </td>
-                    {(type!=="T_PRODUCT_KEYWORDS" && appliedKeywords?.length >= 5)&& (
+                    {(type === null && appliedKeywords?.length >= 5)&& (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
@@ -1273,9 +1286,81 @@ const Table = ({
                     )}
                   </>
                 )}
+
+                {(type==="T_COMPETITOR" && path[path.length-1]!=="savedEvents" )&& (
+                  <>
+                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {(event?.competitorDomainOrName && event?.competitorDomainOrName.length > 0) ? (
+                        <>
+                          <span title={event?.competitorDomainOrName?.[0].split('_')[1]} className={styles.capitalizeText} >{event?.competitorDomainOrName?.[0].split('_')[0]}</span>&nbsp;
+                          {event?.competitorDomainOrName.length > 1 &&
+                            <TooltipTrigger>
+                              <Button className={styles["products-list"]} >+{event.competitorDomainOrName.length - 1}</Button>
+                              <Tooltip className={styles['react-aria-Tooltip']}>
+                                {event?.competitorDomainOrName.map((item)=>(
+                                  <div key={item}>
+                                    {item.split('_')[1]}
+                                    <span className={styles.capitalizeText} > ({item.split('_')[0]})</span>
+                                  </div>
+                                ))}
+                              </Tooltip>
+                            </TooltipTrigger>
+                          }
+                        </>
+                      ) : '-'}
+                    </td>
+
+                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                      {event?.competitorPercentage == 'High' ? (
+                        <span className={styles.badge_success}>High</span>
+                      ) : event?.competitorPercentage == 'Medium' ? (
+                        <span className={styles.badge_primary}>Medium</span>
+                      ) :event?.competitorPercentage == 'Low' ? (
+                        <span className={styles.badge_danger}>Low</span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </>
+                )}
+
+                {(type==="T_SPEAKING_OPPORTUNITY" && path[path.length-1]!=="savedEvents" )&& (
+                  <>
+                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {event?.speakerPersonAssociation ? 
+                        (event?.speakerPersonAssociation.length == 1) ?
+                          (event.speakerPersonAssociation[0]) : (
+                            <>
+                              {event.speakerPersonAssociation[0]}&nbsp;
+                              <TooltipTrigger>
+                                <Button className={styles["products-list"]} >+{event.speakerPersonAssociation.length - 1}</Button>
+                                <Tooltip className={styles['react-aria-Tooltip']}>
+                                  {listProducts(event.speakerPersonAssociation)}
+                                </Tooltip>
+                              </TooltipTrigger>
+                            </>
+                          )
+                      : '-'
+                      }
+                    </td>
+
+                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                      {event?.speakerPersonAssociationPercentage == 'High' ? (
+                        <span className={styles.badge_success}>High</span>
+                      ) : event?.speakerPersonAssociationPercentage == 'Medium' ? (
+                        <span className={styles.badge_primary}>Medium</span>
+                      ) :event?.speakerPersonAssociationPercentage == 'Low' ? (
+                        <span className={styles.badge_danger}>Low</span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </>
+                )}
+
                 {(type==="T_PRODUCT_KEYWORDS" && path[path.length-1]!=="savedEvents") &&
                 <>
-                <td style={{ textAlign: "center",  right:appliedKeywords?.length >= 5?"184px":"84px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                <td style={{ textAlign: "center",  right:appliedKeywords?.length >= 5?"150px":"50px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
                       {event.matchedKeywords.length == 0 ? (
                         <>-</>
                       ) : event.matchedKeywords.length == 1 ? (
@@ -1301,7 +1386,7 @@ const Table = ({
                       )}
                     </td>
                     {appliedKeywords?.length >= 5 && (
-                      <td style={{ textAlign: "center", right:"84px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                      <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
                         ) : event.keywordsMatchedScore >= 10 &&
@@ -1374,7 +1459,7 @@ const Table = ({
                   </td>
                 }
 
-                <td className={`${styles.table_actionColumn}`} style={{width:"84px"}}>
+                <td className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`} >
                   {/* {path[path.length - 1] === "trackedEvents" ||
                     path[path.length - 1] === "savedEvents" ||
                     path[path.length - 1] === "trackers" ? (

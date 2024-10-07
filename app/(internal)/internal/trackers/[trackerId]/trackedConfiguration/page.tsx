@@ -632,6 +632,7 @@ const userRating=
           }
           audienceZone={toggleOpend?.audienceZone}
           audienceSpread={toggleOpend?.audienceSpread}
+          audienceSpreadCount={data?.tracker?.filterValue?.audienceSpread.split(',').length}
           audienceProfile={data?.tracker?.filterValue?.designation}
         />
       </div>

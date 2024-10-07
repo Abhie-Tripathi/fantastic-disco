@@ -83,5 +83,9 @@ export interface EventTableType {
             count: number;
             percentage: number;
         };
-      }
+    },
+    speakerPersonAssociationPercentage?: string,
+    speakerPersonAssociation?: string[],
+    competitorPercentage?: string,
+    competitorDomainOrName?: string[],
 }
