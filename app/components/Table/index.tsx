@@ -1297,8 +1297,8 @@ const Table = ({
                             <TooltipTrigger>
                               <Button className={styles["products-list"]} >+{event.competitorDomainOrName.length - 1}</Button>
                               <Tooltip className={styles['react-aria-Tooltip']}>
-                                {event?.competitorDomainOrName.map((item: any)=>(
-                                  <div>
+                                {event?.competitorDomainOrName.map((item)=>(
+                                  <div key={item}>
                                     {item.split('_')[1]}
                                     <span className={styles.capitalizeText} > ({item.split('_')[0]})</span>
                                   </div>
