@@ -74,23 +74,23 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
             if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
-                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                    "Select at least 1 event for the list and promote 3 for the carousel view!"
                 );
             }else if(selectedTemplate ==="CVG"){
                 showToast( 
                     "error",
-                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                    "Select at least 2 events for the grid and promote 3 for the carousel view!"
                 );
             }else if(selectedTemplate ==="CV"){
                 showToast( 
                     "error",
-                    "Minimum 3 events to be selected for this widget style"
+                    "Select at least 3 events for the carousel view!"
                 );
             } else if(selectedTemplate ==="HS"){
                
                 showToast( 
                     "error",
-                    " Minimum 3 events to be selected for this widget style"
+                    "Select at least 3 events for this view!"
                 );
             }
           } else {
@@ -103,23 +103,23 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
             if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
-                    "Minimum 3 events to be selected for Carousel and 1 for List"
+                    "Select at least 1 event for the list and promote 3 for the carousel view!"
                 );
             }else if(selectedTemplate ==="CVG"){
                 showToast( 
                     "error",
-                    " Minimum 3 events to be selected for Carousel and 2 for Grid"
+                    "Select at least 2 events for the grid and promote 3 for the carousel view!"
                 );
             }else if(selectedTemplate ==="CV"){
                 showToast( 
                     "error",
-                    "Minimum 3 events to be selected for this widget style"
+                    "Select at least 3 events for the carousel view!"
                 );
             } else if(selectedTemplate ==="HS"){
                
                 showToast( 
                     "error",
-                    " Minimum 3 events to be selected for this widget style"
+                    "Select at least 3 events for this view!"
                 );
             }
            
@@ -147,7 +147,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
+                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} selectedTemplate={selectedTemplate} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
                 // handlePrefillEvent={handlePrefillEvent}
                  addedEventIds={addedEventIds} widgetId={widgetId} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId} />}
             </div>

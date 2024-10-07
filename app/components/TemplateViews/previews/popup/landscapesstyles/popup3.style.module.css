@@ -93,3 +93,10 @@
     padding: 10px 20px;
     border: 1px solid;          
 }
+
+.btnContainer{
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}

@@ -28,6 +28,7 @@ interface Props {
   demoEventName:string,
   demoDescription:string
   demoLocation:string
+  closeButtonSetting?:ButtonSettingsState
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -40,7 +41,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation  }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation, closeButtonSetting  }: Props) => {
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -61,6 +62,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     return { day, month };
   };
   const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 250) : demoDescription;
+  const truncatedDescription = description.substring(0, 90) + (description.length > 150 ? "..." : "");
   const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
 
   return (
@@ -85,8 +87,10 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
             <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
             <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
           </div>
-          <div className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
+          <div className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         </div>
+
+        <div className={styles.btnContainer}>
         <button
           className={styles.btn}
           style={{
@@ -99,6 +103,24 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
         >
           {selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText}
         </button>
+
+        <button
+          className={styles.btn}
+          style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+            color: selectedBtn === "primary" ? closeButtonSetting?.primary.fontColor : closeButtonSetting?.secondary.fontColor,
+            backgroundColor: selectedBtn === "primary" ? closeButtonSetting?.primary.buttonColor : "transparent",
+            borderRadius: selectedBtn === "primary" ? closeButtonSetting?.primary.borderRadius : closeButtonSetting?.secondary.borderRadius,
+            borderColor: selectedBtn === "primary" ? closeButtonSetting?.primary.borderColor : closeButtonSetting?.secondary.borderColor,
+            border:"none"
+          }}
+        >
+          {selectedBtn === "primary" ? closeButtonSetting?.primary.buttonText : closeButtonSetting?.secondary.buttonText}
+        </button>
+
+        </div>
+       
+        
       </div>
     </div>
   )
