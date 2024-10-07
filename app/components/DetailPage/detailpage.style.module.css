@@ -30,9 +30,39 @@
     flex-direction: column;
     gap: 16px;
 }
-
 .posterContainer {
     position: relative;
+}
+.mainEventLinkContainer {
+    height: fit-content;
+    width: 930px;
+    padding: 15px 20px;
+    background-color: #ffffff55;    
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.mainEventLinkContainer .linkIcon{
+    transform: rotate(-40deg);
+}
+.mainEventLinkContainer span{
+    width: fit-content;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.mainEventLinkContainer .linkline {
+    height: 29px;
+    border-left: 2px solid #0072F5;
+}
+.mainEventLinkContainer .maineventName{
+    color: #0062D1;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+}
+.mainEventLinkContainer .maineventName:hover{
+    transition-duration: .1s;
+    scale: 0.95;
 }
 .participationContainer {
     margin-top: 16px;
@@ -117,6 +147,9 @@
         width: 60%;
     }
     .participationContainer {
+        width: 780px;
+    }
+    .carousel{
         width: 780px;
     }
 }

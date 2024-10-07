@@ -80,7 +80,7 @@ const EventListCard2 = ({
             <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
             <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
           </div>
-          <div className={styles.circles}>
+          {/* <div className={styles.circles}>
             <div className={styles.circle} data-name="John Doe">
               <Image className={styles.image} src={person1} alt="person1" />
             </div>
@@ -101,7 +101,7 @@ const EventListCard2 = ({
             >
               <Image className={styles.image} src={person2} alt="person2" />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

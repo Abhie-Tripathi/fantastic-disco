@@ -252,14 +252,33 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         if (!check) {
             const customizedFormData = new FormData()
             const existingEvents = fetchedAddedEvents || [];
-            const newEvent = {
+            const newEvents = {
                 id: event.mainEvent.eventId,
                 promoted: "false"
             };
-            const mergedEvents = [...existingEvents, newEvent];
+            // const newEvents = [{
+            //     id: event.mainEvent.eventId,
+            //     promoted: "false"
+            // }];
+            // If subEvents exist, add them with promoted: "false"
+            // if (event.subEvents && event.subEvents.length > 0) {
+            //     const subEventObjects = event.subEvents.map((subEvent) => ({
+            //         id: subEvent.eventId,  // Assuming subEvent has an eventId property
+            //         promoted: "false",
+            //         show: "false"
+            //     }));
+            //     newEvents.push(...subEventObjects);
+            // }
+            // const mergedEvents = [...existingEvents, ...newEvents];
+            const mergedEvents = [...existingEvents, newEvents];
             const otherData = {
                 event: mergedEvents,
             };
+            // const eventIds = [
+            //     ...addedEventIds,
+            //     event.mainEvent.eventId,
+            //     ...(event.subEvents || []).map((subEvent) => subEvent.eventId)
+            // ].join(',');
             const eventIds = [...addedEventIds, event.mainEvent.eventId].join(',');
             customizedFormData.append('widgetId', widgetId);
             customizedFormData.append('eventId', eventIds)
@@ -277,7 +296,6 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         } else {
             showToast("success", "Event Already added to the widget");
         }
-
     }
     return (
         <div className={styles.body} ref={scrollableDivRef}>
@@ -320,6 +338,11 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                                 <DateIcon />
                                 <div>{formatDate(event.mainEvent.startDate)} - {formatDate(event.mainEvent.endDate)}</div>
                             </div>
+                            <div className={styles.tags}>
+                                {event.mainEvent.eventType === "MAIN" ? <span className={styles.mainEventTag}>Main Event</span> :
+                                    <span className={styles.subEventTag}>Side Event</span>}
+                                {event.subEvents.length > 0 && <span className={styles.subEventTag}>{event.subEvents.length} Side Events</span>}
+                            </div>
                         </div>
                         <div className={styles.btnContainer}>
                             <div className={styles.addButtonContainer}>
@@ -335,7 +358,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={styles.delete_editBtn}>
+                            <div className={styles.delete_spanBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
                                 {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
                                 <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button>

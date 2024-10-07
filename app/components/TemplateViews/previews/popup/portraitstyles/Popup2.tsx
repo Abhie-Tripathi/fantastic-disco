@@ -86,7 +86,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
           <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}>Tradeshow</div>
           <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}>Attending</div>
         </div>
-        <div className={styles.circles}>
+        {/* <div className={styles.circles}>
           <div className={styles.circle} data-name="John Doe">
             <Image className={styles.image} src={person1} alt="person1" />
           </div>
@@ -107,7 +107,7 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
           >
             <Image className={styles.image} src={person2} alt="person2" />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className={smallCard ? styles.smallDesc : styles.desc} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>
       <div className={styles.btnContainer}>
