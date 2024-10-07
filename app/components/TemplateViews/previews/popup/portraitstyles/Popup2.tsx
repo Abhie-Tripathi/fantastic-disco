@@ -197,7 +197,7 @@ const Popup2: React.FC<Props> = ({
             Attending
           </div>
         </div>
-        <div className={styles.circles}>
+        {/* <div className={styles.circles}>
           <div className={styles.circle} data-name="John Doe">
             <Image className={styles.image} src={person1} alt="person1" />
           </div>
@@ -223,7 +223,7 @@ const Popup2: React.FC<Props> = ({
           >
             <Image className={styles.image} src={person2} alt="person2" />
           </div>
-        </div>
+        </div> */}
       </div>
       <div
         className={smallCard ? styles.smallDesc : styles.desc}

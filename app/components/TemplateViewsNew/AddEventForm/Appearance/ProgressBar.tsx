@@ -71,7 +71,7 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
                 <li className={cityNameMain ? styles.activeItem : ""}>{cityNameMain && <TickIcon />}<span>Location</span></li>
                 <li className={descriptionMain ? styles.activeItem : ""}>{descriptionMain && <TickIcon />}<span>Description</span></li>
                 <li className={(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) ? styles.activeItem : ""}>
-                    {(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) && <TickIcon />}<span>Sub-Event</span>
+                    {(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
                 </li>
             </div>
         </div>

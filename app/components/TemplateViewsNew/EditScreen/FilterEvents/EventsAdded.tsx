@@ -82,7 +82,8 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
                             longitude: eventData.longitude,
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
-                            promoted : event.promoted
+                            promoted : event.promoted,
+                            eventType : data.type
                         } as PrefilledAddedEventsType;
                         if (event.promoted === "true") {
                             newPromotedEvents.push(event.promoted);
@@ -252,7 +253,6 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
         })
         if (data) {
             handleEventIdDelete(eventId)
-            fetchAddedEvents()
             fetchEvents(0, "update")
         }
         if (error) {
@@ -270,6 +270,7 @@ const EventsAdded = ({fetchedAddedEvents, fetchAddedEvents, widgetId, fetchEvent
             body: customizedFormData
         })
         if (data) {
+            fetchAddedEvents()  
             console.log(data)
         } if (error) {
             console.log(error)

@@ -21,11 +21,11 @@ interface Props {
     widgetId: string;
     allEventsCount: number;
     addedEventIds: string[]
-    selectedTemplate : string;
-    isCustomisationWindowDisable:boolean
-    setIsCustomisationWindowDisable:(value: boolean) => void;
-    isCodeWindowDisable:boolean
-    setIsCodeWindowDisable:(value: boolean) => void;
+    selectedTemplate: string;
+    isCustomisationWindowDisable: boolean
+    setIsCustomisationWindowDisable: (value: boolean) => void;
+    isCodeWindowDisable: boolean
+    setIsCodeWindowDisable: (value: boolean) => void;
 
     promotedEvents: string[];
     setPromotedEvents: React.Dispatch<React.SetStateAction<string[]>>;
@@ -35,20 +35,17 @@ interface Props {
 
 const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAddedEvents,
     //  handlePrefillEvent,
-    widgetId, allEventsCount, addedEventIds, selectedTemplate,isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable,promotedEvents,setPromotedEvents,normalEvents,setNormalEvents  }: Props) => {
+    widgetId, allEventsCount, addedEventIds, selectedTemplate, isCustomisationWindowDisable, setIsCustomisationWindowDisable, isCodeWindowDisable, setIsCodeWindowDisable, promotedEvents, setPromotedEvents, normalEvents, setNormalEvents }: Props) => {
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true); // To heck if there are more events
     const scrollableDivRef = useRef(null);
     const [dropdown, setDropdown] = useState<boolean>(false)
     const buttonDropdownRef = useOutsideClick(() => setDropdown(false));
-    const [minNumberOfEvents,setMinNumberOfEvents] = useState("")
+    const [minNumberOfEvents, setMinNumberOfEvents] = useState("")
     const [showMSG, setShowMsg] = useState(false)
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
     const router = useRouter()
-
-    
-
 
     useEffect(() => {
         const handleOtherDataFetch = async () => {
@@ -91,7 +88,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                             longitude: eventData.longitude,
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
-                            promoted : event.promoted
+                            promoted: event.promoted
                         } as PrefilledAddedEventsType;
                         if (event.promoted === "true") {
                             newPromotedEvents.push(event.promoted);
@@ -112,7 +109,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         handleOtherDataFetch();
     }, [fetchedAddedEvents]);
 
-    
+
     useEffect(() => {
         let promotedCount = promotedEvents.length;
         let normalEventCount = normalEvents.length; 
@@ -128,8 +125,8 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             }
             setShowMsg(true);
             setMinNumberOfEvents("Minimum 3 events to be selected for Carousel and 2 for Grid");
-        } 
-    
+        }
+
         if (selectedTemplate === "CVL") {
             if ( promotedCount >= 3 && normalEventCount >= 1 ) {
                 setIsCodeWindowDisable(false);
@@ -140,8 +137,8 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             }
             setShowMsg(true);
             setMinNumberOfEvents("Minimum 3 events to be selected for Carousel and 1 for List");
-        } 
-    
+        }
+
         if (selectedTemplate === "CV") {
             if (normalEventCount >= 3) {
                 setIsCodeWindowDisable(false);
@@ -153,7 +150,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             setShowMsg(true);
             setMinNumberOfEvents("Minimum 3 events to be selected for this widget style");
         }
-        
+
         if (selectedTemplate === "HS") {
             if (normalEventCount >= 3) {
                 setIsCodeWindowDisable(false);
@@ -165,8 +162,8 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             setShowMsg(true);
             setMinNumberOfEvents("Minimum 3 events to be selected for this widget style");
         }
-    }, [selectedTemplate, fetchedAddedOtherData]); 
-    
+    }, [selectedTemplate, fetchedAddedOtherData]);
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -258,14 +255,33 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
         if (!check) {
             const customizedFormData = new FormData()
             const existingEvents = fetchedAddedEvents || [];
-            const newEvent = {
+            const newEvents = {
                 id: event.mainEvent.eventId,
                 promoted: "false"
             };
-            const mergedEvents = [...existingEvents, newEvent];
+            // const newEvents = [{
+            //     id: event.mainEvent.eventId,
+            //     promoted: "false"
+            // }];
+            // If subEvents exist, add them with promoted: "false"
+            // if (event.subEvents && event.subEvents.length > 0) {
+            //     const subEventObjects = event.subEvents.map((subEvent) => ({
+            //         id: subEvent.eventId,  // Assuming subEvent has an eventId property
+            //         promoted: "false",
+            //         show: "false"
+            //     }));
+            //     newEvents.push(...subEventObjects);
+            // }
+            // const mergedEvents = [...existingEvents, ...newEvents];
+            const mergedEvents = [...existingEvents, newEvents];
             const otherData = {
                 event: mergedEvents,
             };
+            // const eventIds = [
+            //     ...addedEventIds,
+            //     event.mainEvent.eventId,
+            //     ...(event.subEvents || []).map((subEvent) => subEvent.eventId)
+            // ].join(',');
             const eventIds = [...addedEventIds, event.mainEvent.eventId].join(',');
             customizedFormData.append('widgetId', widgetId);
             customizedFormData.append('eventId', eventIds)
@@ -281,9 +297,59 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                 fetchAddedEvents()
             }
         } else {
+            // const eventId = event.mainEvent.eventId;
+            // const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
+            // if (!updatedEvents) {
+            //     return;
+            // }
+            // if (updatedEvents.length === 0) {
+            //     handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
+            // }
+            // try {
+            //     await updateWidget(widgetId, updatedEvents, eventId);
+            // } catch (error) {
+            //     console.error('Failed to update events:', error);
+            // }
             showToast("success", "Event Already added to the widget");
         }
+    }
+    const updateWidget = async (widgetId: string, updatedEvents: AddedEventsType[], eventId: string) => {
+        const customizedFormData = new FormData();
 
+        const otherData = {
+            event: updatedEvents,
+        };
+        // const updatedIds = eventIds.join(',')
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("otherdata", JSON.stringify(otherData));
+
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData
+        })
+        if (data) {
+            handleEventIdDelete(eventId)
+        }
+        if (error) {
+            console.log(error)
+        }
+    };
+    const handleEventIdDelete = async (eventId: string) => {
+        const customizedFormData = new FormData();
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("eventId", eventId)
+        customizedFormData.append("published", "false")
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+            method: 'POST',
+            body: customizedFormData
+        })
+        if (data) {
+            console.log(data)
+            fetchAddedEvents()
+            fetchEvents(0, "update")
+        } if (error) {
+            console.log(error)
+        }
     }
     return (
         <div className={styles.body} ref={scrollableDivRef}>
@@ -300,19 +366,19 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
             </div>
             {/* <GlobalSearch widgetId={widgetId} handlePrefillGlobalEvent={handlePrefillGlobalEvent} /> */}
             <div className={styles.line}></div>
-            
+
             {
                 showMSG && (
-                <>
-                    <div className={styles.info_container}>
-                        <div><InfoSvg/></div>
-                        <div className={styles.info_heading}>{minNumberOfEvents} </div>
-                    </div>
-                    <div className={styles.line}></div>
-                </>
+                    <>
+                        <div className={styles.info_container}>
+                            <div><InfoSvg /></div>
+                            <div className={styles.info_heading}>{minNumberOfEvents} </div>
+                        </div>
+                        <div className={styles.line}></div>
+                    </>
                 )
             }
-          
+
             {fetchedAllEvents.length > 0 ? <div className={styles.allEventsContainer}>
                 {fetchedAllEvents.map((event, key) => (
                     <div className={styles.event} key={key}>
@@ -325,6 +391,11 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                             <div className={styles.eventDateContainer}>
                                 <DateIcon />
                                 <div>{formatDate(event.mainEvent.startDate)} - {formatDate(event.mainEvent.endDate)}</div>
+                            </div>
+                            <div className={styles.tags}>
+                                {event.mainEvent.eventType === "MAIN" ? <span className={styles.mainEventTag}>Main Event</span> :
+                                    <span className={styles.subEventTag}>Side Event</span>}
+                                {event.subEvents.length > 0 && <span className={styles.subEventTag}>{event.subEvents.length} Side Events</span>}
                             </div>
                         </div>
                         <div className={styles.btnContainer}>
@@ -341,10 +412,10 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                                 />
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div>
-                            <div className={styles.delete_editBtn}>
+                            <div className={styles.delete_spanBtn}>
                                 {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
                                 {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
-                                <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button>
+                                {/* <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button> */}
                             </div>
                         </div>
                     </div>
@@ -355,7 +426,7 @@ const AllEvents = ({ fetchedAllEvents, fetchEvents, fetchAddedEvents, fetchedAdd
                 <span>Start by searching for existing events to add to your widgets</span>
                 <span>or feel free to create your own event from scratch</span>
                 {/* <span>Add your events from scratch to add your widget</span> */}
-                <div className={styles.add_event_button} onClick={() =>{router.push('/widget/events')}}><span style={{color:"white"}}>Add Event</span></div>
+                <div className={styles.add_event_button} onClick={() => { router.push('/widget/events') }}><span style={{ color: "white" }}>Add Event</span></div>
             </div>}
         </div>
     )
@@ -426,7 +497,7 @@ function DownArrow() {
 function InfoSvg() {
     return (
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5.25 8.75H6.41667V5.25H5.25V8.75ZM5.83333 4.08333C5.99861 4.08333 6.13725 4.02733 6.24925 3.91533C6.36125 3.80333 6.41706 3.66489 6.41667 3.5C6.41628 3.33511 6.36028 3.19667 6.24867 3.08467C6.13706 2.97267 5.99861 2.91667 5.83333 2.91667C5.66806 2.91667 5.52961 2.97267 5.418 3.08467C5.30639 3.19667 5.25039 3.33511 5.25 3.5C5.24961 3.66489 5.30561 3.80353 5.418 3.91592C5.53039 4.02831 5.66883 4.08411 5.83333 4.08333ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5134 3.55833 11.207C2.84861 10.9006 2.23125 10.485 1.70625 9.96042C1.18125 9.43581 0.765723 8.81844 0.459667 8.10833C0.153612 7.39822 0.000389627 6.63989 7.38396e-07 5.83333C-0.00038815 5.02678 0.152834 4.26844 0.459667 3.55833C0.766501 2.84822 1.18203 2.23086 1.70625 1.70625C2.23047 1.18164 2.84783 0.766111 3.55833 0.459667C4.26883 0.153222 5.02717 0 5.83333 0C6.6395 0 7.39783 0.153222 8.10833 0.459667C8.81883 0.766111 9.4362 1.18164 9.96042 1.70625C10.4846 2.23086 10.9004 2.84822 11.2076 3.55833C11.5148 4.26844 11.6678 5.02678 11.6667 5.83333C11.6655 6.63989 11.5123 7.39822 11.207 8.10833C10.9017 8.81844 10.4862 9.43581 9.96042 9.96042C9.43464 10.485 8.81728 10.9007 8.10833 11.2076C7.39939 11.5144 6.64106 11.6674 5.83333 11.6667Z" fill="#52A8FF"/>
+            <path d="M5.25 8.75H6.41667V5.25H5.25V8.75ZM5.83333 4.08333C5.99861 4.08333 6.13725 4.02733 6.24925 3.91533C6.36125 3.80333 6.41706 3.66489 6.41667 3.5C6.41628 3.33511 6.36028 3.19667 6.24867 3.08467C6.13706 2.97267 5.99861 2.91667 5.83333 2.91667C5.66806 2.91667 5.52961 2.97267 5.418 3.08467C5.30639 3.19667 5.25039 3.33511 5.25 3.5C5.24961 3.66489 5.30561 3.80353 5.418 3.91592C5.53039 4.02831 5.66883 4.08411 5.83333 4.08333ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5134 3.55833 11.207C2.84861 10.9006 2.23125 10.485 1.70625 9.96042C1.18125 9.43581 0.765723 8.81844 0.459667 8.10833C0.153612 7.39822 0.000389627 6.63989 7.38396e-07 5.83333C-0.00038815 5.02678 0.152834 4.26844 0.459667 3.55833C0.766501 2.84822 1.18203 2.23086 1.70625 1.70625C2.23047 1.18164 2.84783 0.766111 3.55833 0.459667C4.26883 0.153222 5.02717 0 5.83333 0C6.6395 0 7.39783 0.153222 8.10833 0.459667C8.81883 0.766111 9.4362 1.18164 9.96042 1.70625C10.4846 2.23086 10.9004 2.84822 11.2076 3.55833C11.5148 4.26844 11.6678 5.02678 11.6667 5.83333C11.6655 6.63989 11.5123 7.39822 11.207 8.10833C10.9017 8.81844 10.4862 9.43581 9.96042 9.96042C9.43464 10.485 8.81728 10.9007 8.10833 11.2076C7.39939 11.5144 6.64106 11.6674 5.83333 11.6667Z" fill="#52A8FF" />
         </svg>
     )
 }

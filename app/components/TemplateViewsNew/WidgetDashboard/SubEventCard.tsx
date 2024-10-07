@@ -100,7 +100,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
     }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>
-            <div className={(width === "small" && normalEvent) ? styles.smallMainCard : (width === "small" && subEvent) ? styles.smallSubCard : styles.bigCard} onClick={handleCardClick}>
+            <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
                 <Image src={PopperImage} alt='Popper' className={styles.popperImg} />
                 {width === "small" && <div className={styles.imageContainer}>
                     <Image src={normalEvent?.mainEvent.logoUrl || subEvent?.logoUrl || PlaceIcon} alt='Banner' height={130} width={130} />
@@ -129,7 +129,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                             </div>
                         </div>
                     </div>
-                    <div className={styles.description} dangerouslySetInnerHTML={{
+                    {/* <div className={styles.description} dangerouslySetInnerHTML={{
                             __html:
                                 normalEvent
                                     ? (normalEvent?.mainEvent.description?.substring(0, 100) +
@@ -138,7 +138,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                                         (subEvent?.description?.length > 100 ? "..." : "")) : ""
                         }}
                     >
-                    </div>
+                    </div> */}
                     <div className={styles.tags_deleteContainer}>
                         <div className={styles.tags}>
                             <div className={styles.tag1}>Tradeshow</div>

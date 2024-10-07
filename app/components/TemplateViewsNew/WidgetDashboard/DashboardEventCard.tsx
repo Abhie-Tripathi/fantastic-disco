@@ -115,8 +115,8 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                                 <div>{event.mainEvent.startTime}{" - "}{event.mainEvent.endTime}{", "}{event.mainEvent.gmtZone}</div>
                             </div>
                         </div>
-                        <div className={styles.description} dangerouslySetInnerHTML={{ __html: event.mainEvent.description.substring(0, 100) + (event.mainEvent.description.length > 100 ? "..." : "") }}>
-                        </div>
+                        {/* <div className={styles.description} dangerouslySetInnerHTML={{ __html: event.mainEvent.description.substring(0, 100) + (event.mainEvent.description.length > 100 ? "..." : "") }}>
+                        </div> */}
                         <div className={styles.tags_deleteContainer}>
                             <div className={styles.tags}>
                                 <div className={styles.tag1}>Tradeshow</div>

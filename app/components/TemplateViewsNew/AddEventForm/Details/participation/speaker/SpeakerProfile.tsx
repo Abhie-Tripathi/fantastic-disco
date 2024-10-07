@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './speakerprofile.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
@@ -18,9 +18,12 @@ interface Props {
     handleChange: (field: keyof FormState, value: any) => void;
     // setSpeakerModal: (value: boolean) => void
     speakerProfilesData: SpeakerProfileType[]
-    handlePrefill : (value : SpeakerProfileType)=>void
+    handlePrefill: (value: SpeakerProfileType) => void
 }
-const SpeakerProfile = ({ speakerProfilesData,handlePrefill,handleChange }: Props) => {
+const SpeakerProfile = ({ speakerProfilesData, handlePrefill, handleChange }: Props) => {
+    useEffect(() => {
+        console.log("speaker are : ", speakerProfilesData)
+    }, [ speakerProfilesData])
     return (
         <div className={styles.body}>
             <div className={styles.container}>

@@ -109,18 +109,19 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             try {
                 const newFetchedAddedOtherData = await Promise.all(
                     fetchedAddedEvents.map(async (event) => {
-                        const { data, error } = await myFetch(`${baseUrl}/event?id=${event.id}`);
+                        const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
                         if (error) {
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
                         }
 
-                        const eventData = data?.data?.[0]?.data;
+                        const eventData = data?.data;
+                        console.log("fetcched event data : ", eventData)
                         if (!eventData) return null;
 
                         return {
                             id: event.id,
-                            name: data?.data?.[0]?.name,
+                            name: data.name,
                             pageBgColor: eventData.customizationData.pageBgColor,
                             description: eventData.description,
                             eventFont: eventData.customizationData.eventFont,
@@ -144,7 +145,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             longitude: event.longitude,
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
-                            promoted: event.promoted
+                            promoted: event.promoted,
+                            eventType : data.type
                         } as PrefilledAddedEventsType;
                     })
                 );

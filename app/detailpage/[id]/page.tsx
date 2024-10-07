@@ -29,18 +29,22 @@ interface EventProps {
     eventId: string;
     hashtags: string;
     participationType: string;
+    parentName : string;
+    parentId : string;
     childrenData: EventsType[]
 }
 
 const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData,parentName,parentId }: EventProps) => {
     return (
         <DetailPageComponent
+            parentName = {parentName}
+            parentId = {parentId}
             childrenData={childrenData}
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
-            bannerUrl={logoUrl}
+            // bannerUrl={logoUrl}
             eventFont={eventFont}
             longitude={longitude}
             pageBgColor={pageBgColor}
@@ -112,6 +116,8 @@ const fetchData = async (eventId: string) => {
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
+            parentName : data.data.event.data.parentData ? data.data.event.data.parentData: data.data.event.parentInfo.name,
+            parentId : data.data.event.parentInfo.id,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,
@@ -142,7 +148,6 @@ const fetchData = async (eventId: string) => {
                     eventFormat: child.data.customizationData.eventFormat
                 }
             }))
-
         };
 
         return event;
@@ -160,6 +165,10 @@ const DetailPage = async (context: any) => {
     return <Page {...data} eventId={eventId} />;
 };
 export default DetailPage;
+
+function stripHtmlTags(inputString: string) {
+    return inputString.replace(/<[^>]*>?/gm, '');
+}
 
 export async function generateMetadata(context: any) {
     const eventId = context.params.id;
@@ -183,10 +192,10 @@ export async function generateMetadata(context: any) {
     const { name, description, logoUrl } = data;
     return {
         title: name,
-        description: description,
+        description: stripHtmlTags(description),
         openGraph: {
             title: name,
-            description: description,
+            description: stripHtmlTags(description),
             images: [logoUrl],
             url: `https://console.eventgeni.com/detailpage/${eventId}`,
             type: "website"

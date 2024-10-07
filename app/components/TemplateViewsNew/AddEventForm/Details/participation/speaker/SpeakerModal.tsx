@@ -21,9 +21,10 @@ interface Props {
     prefilledProfile?: SpeakerProfileType | null;
     deleteSpeaker: (id: string) => void;
     updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
+    speakerProfilesData: SpeakerProfileType[]
 }
 
-const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpeaker }: Props) => {
+const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpeaker, speakerProfilesData }: Props) => {
     // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
     const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
     const [name, setName] = useState<string>(prefilledProfile?.name || "");
@@ -76,7 +77,11 @@ const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpe
         if (prefilledProfile) {
             updateSpeaker(updatedProfile);
         } else {
-            handleChange('speakerProfilesData', (prevData : any) => [...prevData, updatedProfile])
+            const currentSpeakers = speakerProfilesData || []; // Use an empty array if undefined
+            // Add the new profile
+            const updatedSpeakers = [...currentSpeakers, updatedProfile];
+            // Update the state with the new array
+            handleChange('speakerProfilesData', updatedSpeakers);
             // setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
             handleChange('speakerModal', false)
             // setSpeakerModal(false);

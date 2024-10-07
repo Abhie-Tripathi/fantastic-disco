@@ -13,6 +13,7 @@
     max-height: 220px;
     width: 100%;
     border-radius: 8px;
+    object-fit: cover;
 }
 .smallName{
     margin-top: 10px;

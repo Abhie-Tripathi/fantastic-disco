@@ -96,6 +96,27 @@
     color: #6E6F89;
     font-size: 10px;
 }
+.tags{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.tags span{
+    border-radius: 40px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--font-size-default);
+    padding: 1px 4px;
+}
+.tags .subEventTag{
+    color: #0062D1;
+    background-color: #EBF5FF;
+}
+.tags .mainEventTag{
+    color: #A35200;
+    background-color: #FFF4D6;
+}
 .btnContainer{
     display: flex;
     flex-direction: column;
@@ -113,18 +134,20 @@
     font-size: 12px;
     white-space: nowrap;
 }
-.delete_editBtn{
+.delete_spanBtn{
     display: flex;
     align-items: center;
     gap: 20px;
 }
-.delete_editBtn div{
-    display: flex;
-    align-items: center;
-    gap: 5px;
+.delete_spanBtn div{
+    background-color: #F7E5EE;
     font-size: var(--font-size-xs);
-    color: #6750a4;
-    cursor: pointer;
+    color: #8C1D47;
+    padding: 4px;
+    border-radius: 4px;
+}
+.delete_spanBtn span{
+    font-weight: var(--font-weight-semibold);
 }
 .checkboxInput {
     display: none;
