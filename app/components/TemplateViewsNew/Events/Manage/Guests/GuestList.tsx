@@ -3,6 +3,7 @@ import styles from './guestlist.style.module.css'
 import FilterIcon from '/public/filter.svg'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import DownloadIcon from '/public/downloadIcon.svg'
 
 const GuestList = () => {
 
@@ -17,7 +18,11 @@ const GuestList = () => {
 
   return (
     <div className={styles.body}>
-      <div className={styles.heading}>Guest List</div>
+      <div className={styles.header}>
+        <div className={styles.heading}>Guest List</div>
+        <div className={styles.downloadBtn}><Image src={DownloadIcon} alt='download'/></div>
+      </div>
+
       <div className={styles.inputContainer}>
         <SearchIcon />
         <input type="text" className={styles.inputSearch} placeholder='Search Guests' />
@@ -49,7 +54,7 @@ const GuestList = () => {
               <div className={styles.guestName}>{guest.name}</div>
               <div className={styles.guestEmail}>{guest.email}</div>
             </div>
-            <div className={`${styles.guestStatus} ${guest.status === "Waitlist" ?styles.wait : guest.status === "Going" ? styles.going : styles.notgoing }`}>{guest.status}</div>
+            <div className={`${styles.guestStatus} ${guest.status === "Waitlist" ? styles.wait : guest.status === "Going" ? styles.going : styles.notgoing}`}>{guest.status}</div>
           </div>
         ))}
       </div>

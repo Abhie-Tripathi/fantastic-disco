@@ -1,0 +1,23 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.btnContainer button{
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-text-color);
+}
+.btnContainer button:hover{
+    color: white;
+    transition-duration: .2s;
+    background-color: var(--primary-color-hover);
+}

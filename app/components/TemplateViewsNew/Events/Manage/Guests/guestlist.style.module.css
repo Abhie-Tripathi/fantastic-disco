@@ -3,12 +3,26 @@
     flex-direction: column;
     gap: 10px;
 }
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .heading {
     color: var(--primary-text-color);
     font-size: var(--font-size-h4);
     font-weight: var(--font-weight-semibold);
 }
-
+.downloadBtn{
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+    background-color: var(--background-secondary-color-hover);
+}
+.downloadBtn:hover{
+    background-color: var(--primary-color-hover);
+}
 .inputContainer{
     /* margin-top: 10px; */
     display: flex;
