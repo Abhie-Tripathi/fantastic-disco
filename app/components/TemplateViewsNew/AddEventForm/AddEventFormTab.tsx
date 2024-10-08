@@ -11,6 +11,15 @@ import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 
+interface SpeakerProfileType {
+    id: string;
+    name: string;
+    linkedin: string;
+    designation: string;
+    // profileImage: string | ArrayBuffer | null;
+    profileImage: File | null
+}
+
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
@@ -143,7 +152,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
                 registerMessage: mainEventState.registerMessage,
-                speakerProfilesData: mainEventState.speakerProfilesData,
+                // speakerProfilesData: mainEventState.speakerProfilesData,
                 participationMessage: mainEventState.participationMessage,
                 venue: mainEventState.venue,
                 hashtags: mainEventState.hashtags.join(","),
@@ -197,6 +206,11 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     if (fetchEvents) {
                         fetchEvents(0, "update")
                     }
+                    if (mainEventState.speakerProfilesData.length > 0) {
+                        mainEventState.speakerProfilesData.map((speaker: SpeakerProfileType) => {
+                            addSpeakers(data.data.id, speaker)
+                        })
+                    }
                 }
             }
             if (error) {
@@ -206,6 +220,25 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             addSubEvent()
         }
 
+    }
+
+    const addSpeakers = async (eventId: string, speaker: SpeakerProfileType) => {
+        const formData = new FormData()
+        const speakerObject = {
+            name : speaker.name,
+            linkedIn : speaker.linkedin,
+            designation : speaker.designation
+        }
+        formData.append("eventId", eventId)
+        formData.append("data", JSON.stringify(speakerObject))
+        formData.append("file", speaker.profileImage || "")
+        const { data, error } = await myFetch(`${baseUrl}/event/speaker`,{
+            method: 'POST',
+            body: formData
+        })
+        if(error){
+            console.log("error : ", error)
+        }
     }
 
     const addSubEvent = async (eventId?: string) => {
@@ -262,12 +295,11 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
             registerMessage: subEventState.registerMessage,
-            speakerProfilesData: subEventState.speakerProfilesData,
+            // speakerProfilesData: subEventState.speakerProfilesData,
             participationMessage: subEventState.participationMessage,
             venue: subEventState.venue,
             hashtags: subEventState.hashtags.join(","),
             boothNumber: subEventState.boothNumber,
-            speaker: []
         }
         const eventData = {
             format: subEventState.eventFormat,
@@ -382,7 +414,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
             registerMessage: eventState.registerMessage,
-            speakerProfilesData: eventState.speakerProfilesData,
+            // speakerProfilesData: eventState.speakerProfilesData,
             participationMessage: eventState.participationMessage,
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
@@ -441,7 +473,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             if (fetchEvents) {
                 fetchEvents(0, "update")
             }
-            if(fetchEventData){
+            if (fetchEventData) {
                 fetchEventData()
             }
         }
