@@ -64,8 +64,7 @@ const AllEvents = ({
     PrefilledAddedEventsType[]
   >([]);
   const router = useRouter();
-  const [events, setEvents] = useState([]);
-  console.log("Allllllllllllllllllllllllllllllllllllll", fetchedAllEvents);
+  const [selectedOptions, setSelectedOptions] = useState<any>({});
   useEffect(() => {
     const handleOtherDataFetch = async () => {
       try {
@@ -286,121 +285,173 @@ const AllEvents = ({
       console.log("widget moved to draft widgets");
     }
   };
-  const handleAddToWidget = async (event: AllEventsType, check: boolean) => {
-    if (!check) {
-      const customizedFormData = new FormData();
-      const existingEvents = fetchedAddedEvents || [];
+
+  const handleAddToWidget = async (event: AllEventsType, isLinked: any) => {
+    const existingEvents = fetchedAddedEvents || [];
+    event.mainEvent.isLinkedToWidget = !isLinked;
+    if (!isLinked) {
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        [event.mainEvent.eventId]: "carousel", // Set "carousel" as default when turning on
+      }));
+    }
+    // Check if the event is already in the widget
+    const eventIndex = existingEvents.findIndex(
+      (existingEvent) => existingEvent.id === event.mainEvent.eventId
+    );
+
+    if (eventIndex !== -1) {
+      // Event already exists in the widget (e.g., list), so we need to remove it from there
+      const updatedEvents = existingEvents.filter(
+        (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+      );
+
+      // Now add the event to the carousel
       const newEvents = {
         id: event.mainEvent.eventId,
-        // promoted: "false",
-        promoted: event.promoted === "true" ? "false" : "true",
+        promoted: event.promoted === "true" ? "false" : "true", // Update promotion status as needed
       };
-      // const newEvents = [{
-      //     id: event.mainEvent.eventId,
-      //     promoted: "false"
-      // }];
-      // If subEvents exist, add them with promoted: "false"
-      // if (event.subEvents && event.subEvents.length > 0) {
-      //     const subEventObjects = event.subEvents.map((subEvent) => ({
-      //         id: subEvent.eventId,  // Assuming subEvent has an eventId property
-      //         promoted: "false",
-      //         show: "false"
-      //     }));
-      //     newEvents.push(...subEventObjects);
-      // }
-      // const mergedEvents = [...existingEvents, ...newEvents];
-      const mergedEvents = [...existingEvents, newEvents];
+
+      const mergedEvents = [...updatedEvents, newEvents]; // Remove from list and add to carousel
       const otherData = {
         event: mergedEvents,
       };
-      // const eventIds = [
-      //     ...addedEventIds,
-      //     event.mainEvent.eventId,
-      //     ...(event.subEvents || []).map((subEvent) => subEvent.eventId)
-      // ].join(',');
-      const eventIds = [...addedEventIds, event.mainEvent.eventId].join(",");
+
+      const eventIds = mergedEvents.map((event) => event.id).join(",");
+      const customizedFormData = new FormData();
       customizedFormData.append("widgetId", widgetId);
       customizedFormData.append("eventId", eventIds);
       customizedFormData.append("otherdata", JSON.stringify(otherData));
       customizedFormData.append("status", "active");
+
       const { data, error } = await myFetch(`${baseUrl}/widget`, {
         method: "POST",
         body: customizedFormData,
       });
+
       if (data) {
-        showToast("success", "Event Successfully added to the widget");
+        showToast("success", "Event Successfully moved to the carousel");
         fetchEvents(0, "update");
         fetchAddedEvents();
       }
     } else {
-      // const eventId = event.mainEvent.eventId;
-      // const updatedEvents = fetchedAddedEvents?.filter(event => event.id !== eventId);
-      // if (!updatedEvents) {
-      //     return;
-      // }
-      // if (updatedEvents.length === 0) {
-      //     handleDraftWidget() // Will call this function to move the widget to draft if no event is left in widget
-      // }
-      // try {
-      //     await updateWidget(widgetId, updatedEvents, eventId);
-      // } catch (error) {
-      //     console.error('Failed to update events:', error);
-      // }
-      showToast("success", "Event Already added to the widget");
+      // If the event is not in any widget, just add it to the carousel
+      const newEvents = {
+        id: event.mainEvent.eventId,
+        promoted: event.promoted === "true" ? "false" : "true",
+      };
+
+      const mergedEvents = [...existingEvents, newEvents];
+      const otherData = {
+        event: mergedEvents,
+      };
+
+      const eventIds = mergedEvents.map((event) => event.id).join(",");
+      const customizedFormData = new FormData();
+      customizedFormData.append("widgetId", widgetId);
+      customizedFormData.append("eventId", eventIds);
+      customizedFormData.append("otherdata", JSON.stringify(otherData));
+      customizedFormData.append("status", "active");
+
+      const { data, error } = await myFetch(`${baseUrl}/widget`, {
+        method: "POST",
+        body: customizedFormData,
+      });
+
+      if (data) {
+        showToast("success", "Event Successfully added to the carousel");
+        fetchEvents(0, "update");
+        fetchAddedEvents();
+      }
     }
   };
 
   const handleAddToWidgetList = async (
     event: AllEventsType,
     check: boolean,
-    options: string
+    option: string
   ) => {
     if (check) {
-      const customizedFormData = new FormData();
-      const existingEvents = fetchedAddedEvents || [];
-      const newEvents = {
-        id: event.mainEvent.eventId,
-        promoted: "false",
-      };
+      // Set the selected option (either 'list' or 'carousel')
+      // setSelectedOption(option);
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        [event.mainEvent.eventId]: option, // Ensure each event has its own option
+      }));
 
-      const mergedEvents = [...existingEvents, newEvents];
-      const otherData = {
-        event: mergedEvents,
-      };
-      const eventIds = [...addedEventIds, event.mainEvent.eventId].join(",");
-      customizedFormData.append("widgetId", widgetId);
-      customizedFormData.append("eventId", eventIds);
-      customizedFormData.append("otherdata", JSON.stringify(otherData));
-      customizedFormData.append("status", "active");
-      const { data, error } = await myFetch(`${baseUrl}/widget`, {
-        method: "POST",
-        body: customizedFormData,
-      });
-      if (data) {
-        showToast("success", "Event Successfully added to the widget");
-        fetchEvents(0, "update");
-        fetchAddedEvents();
+      const existingEvents = fetchedAddedEvents || [];
+
+      // Check if the event is already in the widget
+      const eventIndex = existingEvents.findIndex(
+        (existingEvent) => existingEvent.id === event.mainEvent.eventId
+      );
+
+      if (eventIndex !== -1) {
+        // If event exists, remove it from the current widget
+        const updatedEvents = existingEvents.filter(
+          (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+        );
+
+        // Add the event to the new widget
+        const newEvents = {
+          id: event.mainEvent.eventId,
+          promoted: "false",
+        };
+
+        const mergedEvents = [...updatedEvents, newEvents];
+        const otherData = {
+          event: mergedEvents,
+        };
+
+        const eventIds = mergedEvents.map((event) => event.id).join(",");
+        const customizedFormData = new FormData();
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("eventId", eventIds);
+        customizedFormData.append("otherdata", JSON.stringify(otherData));
+        customizedFormData.append("status", "active");
+
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+          method: "POST",
+          body: customizedFormData,
+        });
+
+        if (data) {
+          showToast("success", "Event successfully switched to the new widget");
+          fetchEvents(0, "update");
+          fetchAddedEvents();
+        }
+      } else {
+        // Add the event if not already present in any widget
+        const newEvents = {
+          id: event.mainEvent.eventId,
+          promoted: "false",
+        };
+
+        const mergedEvents = [...existingEvents, newEvents];
+        const otherData = {
+          event: mergedEvents,
+        };
+
+        const eventIds = mergedEvents.map((event) => event.id).join(",");
+        const customizedFormData = new FormData();
+        customizedFormData.append("widgetId", widgetId);
+        customizedFormData.append("eventId", eventIds);
+        customizedFormData.append("otherdata", JSON.stringify(otherData));
+        customizedFormData.append("status", "active");
+
+        const { data, error } = await myFetch(`${baseUrl}/widget`, {
+          method: "POST",
+          body: customizedFormData,
+        });
+
+        if (data) {
+          showToast("success", "Event successfully added to the widget");
+          fetchEvents(0, "update");
+          fetchAddedEvents();
+        }
       }
-    } else {
-      showToast("success", "Event Already added to the widget");
     }
   };
-
-  //   const handleAddToWidgetList = (selectedEvent, option) => {
-  //     const updatedEvents = fetchedAllEvents.map((event) => {
-  //       if (event.mainEvent.eventId === selectedEvent.mainEvent.eventId) {
-  //         return {
-  //           ...event,
-  //           promoted: "false",
-  //         };
-  //       }
-  //       return event;
-  //     });
-  //     console.log(
-  //       "555",
-  //       updatedEvents
-  //     );
-  //   };
 
   const updateWidget = async (
     widgetId: string,
@@ -446,10 +497,10 @@ const AllEvents = ({
     }
   };
 
-  const [selectedOption, setSelectedOption] = useState("carousel"); 
+  const [selectedOption, setSelectedOption] = useState("carousel");
 
   const handleSelectOption = (option: string) => {
-    setSelectedOption(option); 
+    setSelectedOption(option);
   };
 
   return (
@@ -529,7 +580,7 @@ const AllEvents = ({
                                 <label htmlFor={key.toString()} className={styles.checkBox}></label>
                             </div> */}
 
-                <div
+                {/* <div
                   className={`${
                     event.mainEvent.isLinkedToWidget &&
                     (selectedTemplate === "CVG" || selectedTemplate === "CVL")
@@ -600,6 +651,96 @@ const AllEvents = ({
                           }
                         >
                           {selectedOption === "carousel" && <TickIcon />}
+                          <AddeventToWidgetIcon />
+                          <span>Add Event to Carousel</span>
+                        </span>
+                      </div>
+                    )}
+                </div> */}
+
+                <div
+                  className={`${
+                    event.mainEvent.isLinkedToWidget &&
+                    (selectedTemplate === "CVG" || selectedTemplate === "CVL")
+                      ? styles.rectangularBorder
+                      : ""
+                  }`}
+                >
+                  <div className={styles.addButtonContainer}>
+                    <div className={styles.heading}>
+                      {event.mainEvent.isLinkedToWidget
+                        ? "Added to Widget"
+                        : "Add to widget"}
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      id={event.mainEvent.eventId.toString()} // Use event.id for uniqueness
+                      className={styles.checkboxInput}
+                      checked={event.mainEvent.isLinkedToWidget}
+                      onChange={() =>
+                        handleAddToWidget(
+                          event,
+                          event.mainEvent.isLinkedToWidget
+                        )
+                      }
+                    />
+                    <label
+                      htmlFor={event.mainEvent.eventId.toString()}
+                      className={styles.checkBox}
+                    ></label>
+                  </div>
+
+                  {(selectedTemplate === "CVG" || selectedTemplate === "CVL") &&
+                    event.mainEvent.isLinkedToWidget && (
+                      <div className={styles.addEventOptionsContainer}>
+                        {/* Option for List */}
+                        <span
+                          className={`${styles.addOption} ${
+                            selectedOptions[event.mainEvent.eventId] === "list"
+                              ? styles.selectedOption
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleAddToWidgetList(
+                              event,
+                              event.mainEvent.isLinkedToWidget,
+                              "list"
+                            )
+                          }
+                        >
+                          {selectedOptions[event.mainEvent.eventId] ===
+                            "list" && <TickIcon />}
+                          <AddeventIcon />
+                          {selectedTemplate === "CVL"
+                            ? "Add Event to List"
+                            : "Add Event to Grid"}
+                        </span>
+
+                        {/* Option for Carousel (default when toggled on) */}
+                        <span
+                          className={`${styles.addOption} ${
+                            selectedOptions[event.mainEvent.eventId] ===
+                              "carousel" ||
+                            (!selectedOptions[event.mainEvent.eventId] &&
+                              event.mainEvent.isLinkedToWidget)
+                              ? styles.selectedOption
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleAddToWidgetList(
+                              event,
+                              event.mainEvent.isLinkedToWidget,
+                              "carousel"
+                            )
+                          }
+                        >
+                          {(selectedOptions[event.mainEvent.eventId] ===
+                            "carousel" ||
+                            (!selectedOptions[event.mainEvent.eventId] &&
+                              event.mainEvent.isLinkedToWidget)) && (
+                            <TickIcon />
+                          )}
                           <AddeventToWidgetIcon />
                           <span>Add Event to Carousel</span>
                         </span>
