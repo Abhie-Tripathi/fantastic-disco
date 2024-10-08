@@ -233,7 +233,7 @@ const Page = () => {
             {isEventFormModal && <div className={styles.addEventModal}>
                 <AddEvent prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} />
             </div>}
-            {deleteModal && <div className={styles.deleteModal}>
+            {/* {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
                 <span>{selectedEventName}</span>
                 <div className={styles.btns}>
@@ -247,7 +247,7 @@ const Page = () => {
                 <div className={styles.btns}>
                     <button className={styles.cancelBtn} onClick={() => setDeleteModalTwo(false)}>Cancel</button>
                 </div>
-            </div>}
+            </div>} */}
             {choiceFormModal &&
                 <div className={styles.choiceModal}>
                     <ChoiceModal setChoiceFormModal={setChoiceFormModal} setEventFlow={setEventFlow} />

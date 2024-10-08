@@ -1,0 +1,13 @@
+.body{
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 6px 9px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.type{
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    color: black;
+}

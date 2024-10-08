@@ -16,6 +16,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
     const [fetchedEvent, setFetchedEvent] = useState<EventsType>()
     const [addEventModal, setAddEventModal] = useState<boolean>(false)
+    const [deleteModal, setDeleteModal] = useState<boolean>(false)
+    const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false)
 
     const fetchEventData = async () => {
         const { data, error } = await myFetch(`${baseUrl}/event/${eventId}?source=eventgtm`);
@@ -44,7 +46,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             gmtZone: eventData.gmt_time || "", // Assuming this is `gmt_time` from the API
             interest: "", // Assuming this is missing from API, set default or handle later
             logoUrl: eventData.logoUrl || "",
-            widgetTags: "",
+            widgetTags: data?.widgetData,
             eventType: data?.type, // Assuming this is missing from API, set default or handle later
             parentData: "",
             customizationData: {
@@ -63,17 +65,37 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         };
         setFetchedEvent(eventObject)
     }
+    const router = useRouter()
+    const handleDelete = async () => {
+        const customizeData = new FormData();
+        customizeData.append("id", eventId)
+        customizeData.append('published', "false");
+        const { data, error } = await myFetch(
+            `${baseUrl}/event`,
+            {
+                method: 'PATCH',
+
+                body: customizeData,
+            }
+        );
+        if (data) {
+            router.push("/widget/events")
+        }
+        if (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         fetchEventData()
     }, [])
-    const router = useRouter()
+
     const handleDetailPage = () => {
         router.push(`/detailpage/${eventId}`)
     }
 
     return (
-        <EventContext.Provider value={{ eventId, fetchedEvent, setAddEventModal }}>
+        <EventContext.Provider value={{ eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
@@ -99,6 +121,21 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 </div>
                 {addEventModal && <div className={styles.addEventModal}>
                     <AddEvent fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "MAIN" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
+                </div>}
+                {deleteModal && <div className={styles.deleteModal}>
+                    <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
+                    <span>{fetchedEvent?.name}</span>
+                    <div className={styles.btns}>
+                        <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
+                        <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
+                    </div>
+                </div>}
+                {deleteModalTwo && <div className={styles.deleteModal}>
+                    <div className={styles.deleteHeading}>This event is Present in one of your widgets.</div>
+                    <span>Remove the event from widget to delete this event</span>
+                    <div className={styles.btns}>
+                        <button className={styles.cancelBtn} onClick={() => setDeleteModalTwo(false)}>Cancel</button>
+                    </div>
                 </div>}
             </div>
         </EventContext.Provider>

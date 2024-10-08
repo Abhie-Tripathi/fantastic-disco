@@ -127,7 +127,7 @@
   gap: 5px;
 }
 .mobile_dateContainer{
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-small);
   font-weight: 500;
 }
 .mobile_timeGmtContainer{

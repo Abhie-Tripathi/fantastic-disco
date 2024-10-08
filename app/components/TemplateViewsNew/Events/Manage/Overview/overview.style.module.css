@@ -6,6 +6,20 @@
     display: flex;
     gap: 20px;
 }
+.viewShareContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.shareContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.shareContainer .shareHeading{
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
 .eventDetailContainer{
     display: flex;
     flex-direction: column;

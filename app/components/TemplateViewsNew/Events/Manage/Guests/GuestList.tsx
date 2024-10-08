@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from './guestlist.style.module.css'
-import FilterIcon from '/public/filter.svg'
+import SortIcon from '/public/filter.svg'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import DownloadIcon from '/public/downloadIcon.svg'
@@ -20,7 +20,7 @@ const GuestList = () => {
     <div className={styles.body}>
       <div className={styles.header}>
         <div className={styles.heading}>Guest List</div>
-        <div className={styles.downloadBtn}><Image src={DownloadIcon} alt='download'/></div>
+        <div className={styles.downloadBtn}><Image src={DownloadIcon} alt='download' /></div>
       </div>
 
       <div className={styles.inputContainer}>
@@ -29,7 +29,9 @@ const GuestList = () => {
       </div>
       <div className={styles.filterSortingContainer}>
         <div className={styles.filterBtnContainer}>
-          <button className={styles.dropBtn} onClick={() => setFilterdropdown(!filterDropdown)}><Image src={FilterIcon} alt='filter' />{activeFilterBtn}</button>
+          <button className={styles.dropBtn} onClick={() => setFilterdropdown(!filterDropdown)}>
+          <FilterIcon/>
+          {activeFilterBtn}</button>
           {filterDropdown && <div className={styles.dropdown} ref={filterDropdownRef}>
             <li onClick={() => setActiveFilterBtn("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
             <li onClick={() => setActiveFilterBtn("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
@@ -39,7 +41,7 @@ const GuestList = () => {
           </div>}
         </div>
         <div className={styles.sortBtnContainer}>
-          <button className={styles.dropBtn} onClick={() => setSortDropdown(!sortDropdown)}><Image src={FilterIcon} alt='filter' />{activeSortBtn}</button>
+          <button className={styles.dropBtn} onClick={() => setSortDropdown(!sortDropdown)}><Image src={SortIcon} alt='filter' />{activeSortBtn}</button>
           {sortDropdown && <div className={styles.dropdown} ref={sortDropdownRef}>
             <li onClick={() => setActiveSortBtn("Name")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
             <li onClick={() => setActiveSortBtn("Email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
@@ -72,5 +74,13 @@ function SearchIcon() {
 function TickIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" fill="#0072F5" /></svg>
+  )
+}
+function FilterIcon() {
+  return (
+    <svg width="16" height="14" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7.99967 14.1663L5.49967 14.9997V7.91634L1.76634 3.80967C1.48755 3.50295 1.33305 3.10334 1.33301 2.68884V0.833008H14.6663V2.64301C14.6662 3.085 14.4906 3.50885 14.178 3.82134L10.4997 7.49967V9.16634M13.833 15.833V10.833M13.833 10.833L16.333 13.333M13.833 10.833L11.333 13.333" stroke="#ffffff" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+
   )
 }

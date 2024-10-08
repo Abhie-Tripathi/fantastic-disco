@@ -7,6 +7,8 @@ interface EventContextType {
   eventId: string;
   fetchedEvent: EventsType | undefined;
   setAddEventModal: (value: boolean) => void;
+  setDeleteModal : (value: boolean) => void;
+  setDeleteModalTwo : (value: boolean) => void;
 }
 
 export const EventContext = createContext<EventContextType | null>(null);
