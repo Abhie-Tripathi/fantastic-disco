@@ -44,16 +44,19 @@ const EventsAdded = ({
   setNormalEvents,
 }: Props) => {
   const [check, setCheck] = useState<boolean>(true);
-  const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<
-    PrefilledAddedEventsType[]
-  >([]);
+  const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<any[]>([]);
   const [showMSG, setShowMsg] = useState(false);
   const [minNumberOfEvents, setMinNumberOfEvents] = useState("");
+  const [nearestEvent, setNearestEvent] = useState<any[]>([]);
+  const [locationEnabled, setLocationEnabled] = useState(false);
   const showPromote =
     selectedTemplate === "HBL" ||
     selectedTemplate === "HBG" ||
     selectedTemplate === "CVL" ||
-    selectedTemplate === "CVG";
+    selectedTemplate === "CVG" ||
+    selectedTemplate === "ST" ||
+    selectedTemplate === "PUVP" ||
+    selectedTemplate === "PUVL";
   const router = useRouter();
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -278,7 +281,6 @@ const EventsAdded = ({
     eventId: string
   ) => {
     const customizedFormData = new FormData();
-
     const otherData = {
       event: updatedEvents,
     };
@@ -317,6 +319,144 @@ const EventsAdded = ({
       console.log(error);
     }
   };
+
+  // const handlelocation = () => {
+  //   setLocationEnabled((prevState) => {
+  //     const newState = !prevState;
+  //     if (newState) {
+  //       getUserLocation();
+  //     }
+  //     return newState;
+  //   });
+  // };
+
+  useEffect(() => {
+    // Retrieve the saved locationEnabled state from localStorage on mount
+    const savedLocationEnabled = localStorage.getItem("locationEnabled");
+    if (savedLocationEnabled !== null) {
+      const isLocationEnabled = JSON.parse(savedLocationEnabled);
+      setLocationEnabled(isLocationEnabled);
+
+      // If location is enabled, fetch the user's location
+      if (isLocationEnabled) {
+        getUserLocation();
+      }
+    }
+  }, []);
+
+  const handleLocation = () => {
+    setLocationEnabled((prevState) => {
+      const newState = !prevState;
+      // Store the state in localStorage
+      localStorage.setItem("locationEnabled", JSON.stringify(newState));
+
+      if (newState) {
+        getUserLocation();
+      }
+
+      return newState;
+    });
+  };
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLat = position.coords.latitude;
+          const userLong = position.coords.longitude;
+          const closestEvent = findClosestEvent(userLat, userLong);
+          const updatedNearestEvent = closestEvent.map((event) => ({
+            ...event,
+            promoted: true,
+          }));
+
+          const updatedFetchedData = fetchedAddedOtherData.map((event) => {
+            const isPromoted = updatedNearestEvent.some(
+              (nearest) => nearest.id === event.id
+            );
+            return { ...event, promoted: isPromoted }; // Ensure promoted is a boolean
+          });
+
+          setFetchedAddedOtherData(updatedFetchedData);
+          console.log(
+            "Updated data with promoted events: ",
+            updatedFetchedData
+          );
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          getLocationByIP();
+        }
+      );
+    } else {
+      console.warn("Geolocation is not supported by this browser.");
+      getLocationByIP();
+    }
+  };
+
+  const getLocationByIP = async () => {
+    try {
+      const response = await fetch(
+        "https://ipinfo.io/json?token=74ad0ca9b6d5ad"
+      );
+      const data = await response.json();
+      const [lat, long] = data.loc.split(",").map(Number);
+      const closestEvent = findClosestEvent(lat, long);
+      setNearestEvent(closestEvent);
+    } catch (error) {
+      console.error("Error fetching location by IP:", error);
+    }
+  };
+
+  const findClosestEvent = (userLat: number, userLong: number) => {
+    const maxDistance = 500; // Set max distance to 500 km
+
+    const nearbyEvents = fetchedAddedOtherData
+      .map((event) => {
+        const distance = haversineDistance(
+          userLat,
+          userLong,
+          event.latitude,
+          event.longitude
+        );
+        return { ...event, distance };
+      })
+      .filter((event) => event.distance <= maxDistance) // Filter events within 500 km
+      .sort((a, b) => a.distance - b.distance); // Sort by distance (nearest first)
+
+    return nearbyEvents;
+  };
+
+  const haversineDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
+    const toRad = (x: number) => (x * Math.PI) / 180;
+    const R = 6371; // Radius of Earth in kilometers
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  };
+
+  console.log(
+    "nearestEvent32323232323232",
+    nearestEvent,
+    fetchedAddedOtherData
+  );
+  const promotedEventsList = fetchedAddedOtherData.filter(
+    (event) => event.promoted === true || event.promoted === "true"
+  );
+  console.log("33333333333333333333333333", promotedEventsList);
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -350,17 +490,13 @@ const EventsAdded = ({
             </div>
             <input
               type="checkbox"
-              // id={key.toString()}
+              id="locationToggle"
               className={styles.checkboxInput}
-              // checked={event.mainEvent.isLinkedToWidget}
-              // onChange={() =>
-              //   handleAddToWidget(event, event.mainEvent.isLinkedToWidget)
-              // }
+              checked={locationEnabled}
+              onChange={handleLocation}
             />
-            <label
-              // htmlFor={key.toString()}
-              className={styles.checkBox}
-            ></label>
+            <label htmlFor="locationToggle" className={styles.checkBox}></label>
+          
           </div>
           <div className={styles.line}></div>
         </>
@@ -403,7 +539,7 @@ const EventsAdded = ({
                   ></label>
                 </div>
                 <div className={styles.editBtnContainer}>
-                  {showPromote && (
+                  {/* {showPromote && (
                     <div onClick={() => handlePromoteEvent(event)}>
                       <Image
                         src={
@@ -415,7 +551,15 @@ const EventsAdded = ({
                         {event.promoted === "true" ? "Promoted" : "Promote"}
                       </span>
                     </div>
+                  )} */}
+
+                  {(event.promoted === true || event.promoted === "true") && (
+                    <div style={{ cursor: "text" }}>
+                      <Image src={StarIconFilled} alt="Promoted" />
+                      <span>Promoted</span>
+                    </div>
                   )}
+
                   {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
                                 </div> */}
                 </div>
