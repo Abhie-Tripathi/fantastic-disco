@@ -4,9 +4,12 @@ import styles from './page.style.module.css'
 import GuestList from '@/app/components/TemplateViewsNew/Events/Manage/Guests/GuestList'
 import RegisterModal from '@/app/components/TemplateViewsNew/Events/Manage/Guests/RegisterModal'
 import useOutsideClick from '@/hooks/useOutsideClick'
+import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/InviteGuest'
 
 const Page = () => {
   const [registerModal, setRegisterModal] = useState<boolean>(false);
+  const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(true);
+
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   return (
     <div className={styles.body}>
@@ -31,8 +34,12 @@ const Page = () => {
         </button>
       </div>
       <GuestList />
-      {registerModal && <div className={styles.registerModal} ref={registerModalRef}>
+      {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>}
+      {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal/>
+      </div>}
+      {inviteGuestModal && <div className={styles.modal} ref={registerModalRef}>
+        <InviteGuest/>
       </div>}
     </div>
   )
