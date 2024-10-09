@@ -366,11 +366,11 @@ const Page = ({ params }: { params: any }) => {
         maturity: (toggleOpend?.maturity ? true : false),
         brandedEvent: (toggleOpend?.brandedEvent ? true : false),
         eventSeries: (toggleOpend?.eventSeries ? true : false),
-        forecastedStatus: (toggleOpend?.forecastedStatus ? true : false),
+        forecasted: (toggleOpend?.forecastedStatus ? true : false),
         impactScore: (toggleOpend?.impactScore ? true : false),
         inboundScore: (toggleOpend?.inboundScore ? true : false),
         internationalScore: (toggleOpend?.internationalScore ? true : false),
-        eventRank: (toggleOpend?.eventRank ? true : false),
+        eventRank: (trackerDetail?.filterValue?.eventRanking ? true : false),
         audienceZone: (toggleOpend?.audienceZone ? true : false),
         audienceSpread: (toggleOpend?.audienceSpread ? true : false),
       };

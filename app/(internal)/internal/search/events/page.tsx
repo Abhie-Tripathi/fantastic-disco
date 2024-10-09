@@ -450,7 +450,8 @@ const Search = () => {
          }),
          ...(selectedAudProfile.length > 0 && {
           designation: selectedAudProfile.join(",")
-         })
+         }),
+         ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
         },
       };
 
@@ -737,7 +738,7 @@ const Search = () => {
 
     // Show
     if(Object.keys(queryString).length > 0)
-      queryString.shows = ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating'];
+      queryString.shows = ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'];
 
     let query = new URLSearchParams(queryString);
     const finalQueryString = query.toString();

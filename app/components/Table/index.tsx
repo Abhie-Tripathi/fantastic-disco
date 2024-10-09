@@ -843,7 +843,7 @@ const Table = ({
               {showInsights.repeatSent && <th style={{textAlign: 'center'}} >Trust</th>}
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
-              {showInsights.global && <th>International</th>}
+              {/* {showInsights.global && <th>International</th>} */}
               {(type === null && appliedKeywords?.length > 0 )&& <th>Matched</th>}
               {(type === null && appliedKeywords?.length >= 5 )&& <th>Score</th>}
 
@@ -1225,7 +1225,7 @@ const Table = ({
                   </td>
                 }
 
-                {showInsights.global && (
+                {/* {showInsights.global && (
                   <td>
                     {event["internationalAudience%"] !== undefined ? (
                       event["internationalAudience%"] == "high" ? (
@@ -1241,7 +1241,7 @@ const Table = ({
                       <></>
                     )}
                   </td>
-                )}
+                )} */}
                 {(type === null && appliedKeywords?.length > 0 )&& (
                   <>
                     <td>
@@ -1449,7 +1449,7 @@ const Table = ({
                 {showInsights.audienceSpread &&
                   <td>
                     <div style={{display: 'flex', gap: '8px'}}>
-                      {event?.audienceSpread ? Object.entries(event?.audienceSpread).map(([key, { iso, name, count, percentage }]) => (
+                      {(event?.audienceSpread && Object.entries(event?.audienceSpread).length > 0) ? Object.entries(event?.audienceSpread).map(([key, { iso, name, count, percentage }]) => (
                         <span key={key} className={styles.country_badge} title={name}>
                           <Image src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`} alt="flag" width={25} height={18} />
                           {/* &nbsp;{Math.round(percentage * 10) / 10}% */}
