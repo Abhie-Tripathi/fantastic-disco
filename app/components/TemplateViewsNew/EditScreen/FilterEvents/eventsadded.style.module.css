@@ -132,6 +132,8 @@
     width: 25px;
     border-radius: 12px;
     border: 1px solid #79747E;
+    display: inline-block;
+    position: relative;
 }
 .checkBox::before {
     position: absolute;
