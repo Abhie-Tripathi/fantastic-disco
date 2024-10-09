@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import styles from './page.style.module.css'
 import { usePathname, useRouter } from 'next/navigation'
 
-const page = () => {
+const Page = () => {
     const pathName = usePathname();
     const trackerParams = pathName.split("/");
     const eventId = trackerParams[4]
@@ -18,4 +18,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
