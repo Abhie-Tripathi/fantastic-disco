@@ -4,7 +4,7 @@
     background-color: var(--primary-foreground);
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 800px;
 }
 .line{
     border-bottom: 1px solid var(--border-color);

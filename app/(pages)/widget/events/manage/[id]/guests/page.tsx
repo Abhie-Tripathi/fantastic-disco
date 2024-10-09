@@ -34,7 +34,7 @@ const Page = () => {
         </button>
       </div>
       <GuestList />
-      {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>}
+      {/* {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>} */}
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal/>
       </div>}
