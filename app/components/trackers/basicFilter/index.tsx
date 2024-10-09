@@ -13,22 +13,28 @@ const BasicFilter = ({category}:any) => {
   const data2=["Performing Arts","Academics","Daylight Savings","Observances","Public holidays","School Holidays"]
   const data3=[" Politics","Airport Delays"];
   const [categoryData,setCatgeoryData]=useState<CategoryData>();
-  // useEffect(() => {
-  //   console.log('data is', category);
-  //   const fetchData = async () => {
-  //     const { data, error } = await myFetch(`${baseUrl}/category/all`);
-  //     if (error) {
-  //       console.log(error);
-  //       return;
-  //     }
 
-  //     if (data) {
-  //       console.log(data);
-  //       setCatgeoryData(data);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+  const [selectedCategories, setSelectedCategories] = useState(category);
+  useEffect(() => {
+    console.log('data is', category);
+    const fetchData = async () => {
+      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      if (data) {
+        console.log(data);
+        setSelectedCategories(data?.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+        })));
+      }
+    };
+    
+    if(category.length == 1 && category?.[0].id === 'all') fetchData();
+  }, []);
   // const newArr:string[] = [
   //   ...(categoryData?.attendedCategories ?? []),
   //   ...(categoryData?.nonAttendedCategories ?? []),
@@ -46,7 +52,7 @@ const BasicFilter = ({category}:any) => {
      <div className={styles.heading}>Category</div>
      <div className={styles.allCat1}>
       <div className={styles.allCat}>
-      {category?.map((item:any,id:any)=>(
+      {selectedCategories?.map((item:any,id:any)=>(
       <div key={id}>
       <label >
        <input

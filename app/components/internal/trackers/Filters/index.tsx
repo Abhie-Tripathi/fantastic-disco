@@ -340,7 +340,7 @@ const Pages = () => {
   const last = pathName[pathName.length - 1];
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [categoryData, setCatgeoryData] = useState([]);
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
@@ -650,7 +650,7 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
@@ -871,7 +871,7 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
@@ -1045,11 +1045,6 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
-      const newArr: string[] = [
-        ...(categoryData?.attendedCategories ?? []),
-        ...(categoryData?.nonAttendedCategories ?? []),
-        ...(categoryData?.unscheduledCategories ?? []),
-      ];
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1161,9 +1156,10 @@ const Pages = () => {
       );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
-            (cat: Cat) => cat.id
-          )
+          ? (
+              (editData?.tracker?.filterValue?.eventCategory?.[0].id === 'all') ? categoryData?.map((cat: any) => cat.id) :
+              (editData?.tracker?.filterValue?.eventCategory?.map((cat: Cat) => cat.id))
+            )
           : []
       );
       setSelectedEventFormat(
@@ -1192,9 +1188,10 @@ const Pages = () => {
       );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
-            (cat: Cat) => cat.name
-          )
+          ? (
+              (editData?.tracker?.filterValue?.eventCategory?.[0].id === 'all') ? categoryData?.map((cat: any) => cat.name) :
+              (editData?.tracker?.filterValue?.eventCategory?.map((cat: Cat) => cat.name))
+            )
           : []
       );
       const eventCountry =
