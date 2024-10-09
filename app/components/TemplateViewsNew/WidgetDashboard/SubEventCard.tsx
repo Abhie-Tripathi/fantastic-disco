@@ -6,13 +6,14 @@ import PlaceIcon from "/public/location.svg";
 import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
 import PopperImage from "/public/widgetimages/Popper.png";
+import { useRouter } from 'next/navigation';
 
 interface Props {
     normalEvent?: AllEventsType;
     subEvent?: EventsType;
     fetchEvents?: (value: void) => void
     handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
-    handlePrefillEvent?: (value: AllEventsType) => void
+    handlePrefillEvent?: (value: EventsType) => void
     width: string;
     handlePrefillSubEvent? : (value : EventsType) => void
     setSelectedEventType?: (value : string)=>void
@@ -77,27 +78,28 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
             );
         }
     }
-
+    const router = useRouter()
     const handleCardClick = () => {
         if (width === "small" && handlePrefillEvent && normalEvent) {
-            handlePrefillEvent(normalEvent)
+            // handlePrefillEvent(normalEvent)
+            router.push(`/widget/events/manage/${normalEvent.mainEvent.eventId}/overview`)
         }else if(width === "small" && handlePrefillSubEvent && subEvent){
-            handlePrefillSubEvent(subEvent)
+            // handlePrefillSubEvent(subEvent)
+            router.push(`/widget/events/manage/${subEvent.eventId}/overview`)
         }
     }
 
-    const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation()
-        if (normalEvent)
-            handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, normalEvent.mainEvent.widgetTags.length > 0)
-        else if(subEvent){
-            handleDeleteModal(subEvent.eventId, subEvent.name, false)
-        }
-        if(setSelectedEventType){
-            setSelectedEventType("side")
-        }
-        
-    }
+    // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    //     e.stopPropagation()
+    //     if (normalEvent)
+    //         handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, normalEvent.mainEvent.widgetTags.length > 0)
+    //     else if(subEvent){
+    //         handleDeleteModal(subEvent.eventId, subEvent.name, false)
+    //     }
+    //     if(setSelectedEventType){
+    //         setSelectedEventType("side")
+    //     } 
+    // }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>
             <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
@@ -144,7 +146,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                             <div className={styles.tag1}>Tradeshow</div>
                             <div className={styles.tag2}>In-Person</div>
                         </div>
-                        <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button>
+                        {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}
                     </div>
                 </div>
             </div>

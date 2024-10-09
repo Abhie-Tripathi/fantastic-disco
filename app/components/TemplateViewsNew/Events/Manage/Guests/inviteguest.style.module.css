@@ -1,0 +1,82 @@
+.body {
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    background-color: var(--primary-foreground);
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+}
+.line{
+    border-bottom: 1px solid var(--border-color);
+}
+.header {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.header .heading{
+    font-size: var(--font-size-large);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.counterContainer {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 2px solid var(--border-color);
+    padding: 5px;
+    border-radius: 40px;
+}
+
+.counter {
+    width: 20px;
+    /* Set the size of the circle */
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    /* Default background color */
+    position: relative;
+}
+
+.counter::after {
+    content: '';
+    width: 14px;
+    /* Inner circle size to create the hollow effect */
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.sections{
+    display: flex;
+}
+.verticalLine{
+    border-right: 1px solid var(--border-color);
+}
+.leftSection{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.leftSection .heading{
+    font-size: var(--font-size-default);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+    padding: 5px 9px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.leftSection .heading:hover{
+    background-color: var(--accent-color);
+}
+.leftSection .subheading{
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}

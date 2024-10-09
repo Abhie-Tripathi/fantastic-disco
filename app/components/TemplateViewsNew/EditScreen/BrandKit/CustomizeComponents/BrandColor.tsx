@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './brandcolor.style.module.css'
 import ColorPicker from './ColorPicker';
-import { AllEventsType } from '@/types/alleventtype';
+import { AllEventsType, EventsType } from '@/types/alleventtype';
 
 interface Props {
     extractedColors: string[]
@@ -12,7 +12,7 @@ interface Props {
     pageBgColor?: string;
     setCardBgColor?: (value: string) => void
     clickable: boolean;
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
 }
 
 const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable, prefilledEvent }: Props) => {

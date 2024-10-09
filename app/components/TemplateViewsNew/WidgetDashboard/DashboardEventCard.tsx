@@ -7,12 +7,13 @@ import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import SubEventCard from './SubEventCard';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     event: AllEventsType;
     fetchEvents?: (value: void) => void
     handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
-    handlePrefillEvent?: (value: AllEventsType) => void
+    handlePrefillEvent?: (value: EventsType) => void
     handlePrefillSubEvent?: (value: EventsType) => void
     width: string;
     setSelectedEventType?: (value: string) => void
@@ -77,18 +78,19 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
             );
         }
     }
-
+    const router = useRouter()
     const handleCardClick = () => {
         if (width === "small" && handlePrefillEvent) {
-            handlePrefillEvent(event)
+            // handlePrefillEvent(event)
+            router.push(`/widget/events/manage/${event.mainEvent.eventId}/overview`)
         }
     }
 
-    const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation()
-        // setSelectedEventType("main")
-        handleDeleteModal(event.mainEvent.eventId, event.mainEvent.name, event.mainEvent.widgetTags.length > 0)
-    }
+    // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    //     e.stopPropagation()
+    //     // setSelectedEventType("main")
+    //     handleDeleteModal(event.mainEvent.eventId, event.mainEvent.name, event.mainEvent.widgetTags.length > 0)
+    // }
     let prevDate: any = null;
     return (
         <div className={width === "small" ? styles.smallouterDiv : styles.bigouterDiv}>
@@ -122,7 +124,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                                 <div className={styles.tag1}>Tradeshow</div>
                                 <div className={styles.tag2}>In-Person</div>
                             </div>
-                            <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button>
+                            {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}
                         </div>
                     </div>
                 </div>

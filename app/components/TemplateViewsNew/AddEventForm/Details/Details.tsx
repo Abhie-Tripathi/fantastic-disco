@@ -14,7 +14,7 @@ import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
 import usePosterGenerator from '@/app/service/posterGenerator'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
@@ -34,7 +34,7 @@ interface SpeakerProfileType {
 interface Props {
   formState: FormState;
   handleChange: (field: keyof FormState, value: any) => void;
-  prefilledEvent?: AllEventsType | null
+  prefilledEvent?: EventsType | null
   eventFont: string;
   setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
   fileInputRef: React.RefObject<HTMLInputElement>;
@@ -226,7 +226,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                 className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                 maxLength={80}
                 placeholder='Event Name'
-                style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
+                style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
                 onChange={(e) => handleInputChange(e.target.value)}
                 value={formState.eventName}
               />
