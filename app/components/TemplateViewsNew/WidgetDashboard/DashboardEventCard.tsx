@@ -82,7 +82,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
     const handleCardClick = () => {
         if (width === "small" && handlePrefillEvent) {
             // handlePrefillEvent(event)
-            router.push(`/widget/events/manage/${event.mainEvent.eventId}`)
+            router.push(`/widget/events/manage/${event.mainEvent.eventId}/overview`)
         }
     }
 
