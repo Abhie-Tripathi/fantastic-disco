@@ -450,7 +450,8 @@ const Search = () => {
          }),
          ...(selectedAudProfile.length > 0 && {
           designation: selectedAudProfile.join(",")
-         })
+         }),
+         ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
         },
       };
 
