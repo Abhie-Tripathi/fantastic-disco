@@ -400,6 +400,112 @@ const AllEvents = ({
   //   }
   // };
 
+  // const handleAddToWidget = async (event: AllEventsType, isLinked: any) => {
+  //   const existingEvents = fetchedAddedEvents || [];
+  //   event.mainEvent.isLinkedToWidget = !isLinked;
+
+  //   if (!isLinked) {
+  //     setSelectedOptions((prev: any) => ({
+  //       ...prev,
+  //       [event.mainEvent.eventId]: "carousel",
+  //     }));
+  //   }
+
+  //   const eventIndex = existingEvents.findIndex(
+  //     (existingEvent) => existingEvent.id === event.mainEvent.eventId
+  //   );
+
+  //   // Check if there are any promoted events
+  //   const isPromotedEventPresent = existingEvents.some(
+  //     (existingEvent) => existingEvent.promoted === "true"
+  //   );
+
+  //   if (eventIndex !== -1) {
+  //     // If the event already exists, update the promotion status based on the template
+  //     const updatedEvents = existingEvents.filter(
+  //       (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+  //     );
+
+  //     let newEvents = {
+  //       id: event.mainEvent.eventId,
+  //       promoted: "false", // Default to false unless updated below
+  //     };
+
+  //     if (
+  //       selectedTemplate === "HBL" ||
+  //       selectedTemplate === "HBG" ||
+  //       selectedTemplate === "ST" ||
+  //       selectedTemplate === "PUVP" ||
+  //       selectedTemplate === "PUVL"
+  //     ) {
+  //       newEvents.promoted = "false";
+  //     } else {
+  //       newEvents.promoted = event.promoted === "true" ? "false" : "true";
+  //     }
+
+  //     const mergedEvents = [...updatedEvents, newEvents];
+  //     const otherData = { event: mergedEvents };
+
+  //     const eventIds = mergedEvents.map((event) => event.id).join(",");
+  //     const customizedFormData = new FormData();
+  //     customizedFormData.append("widgetId", widgetId);
+  //     customizedFormData.append("eventId", eventIds);
+  //     customizedFormData.append("otherdata", JSON.stringify(otherData));
+  //     customizedFormData.append("status", "active");
+
+  //     const { data, error } = await myFetch(`${baseUrl}/widget`, {
+  //       method: "POST",
+  //       body: customizedFormData,
+  //     });
+
+  //     if (data) {
+  //       showToast("success", "Event Successfully updated in the widget0000000");
+  //       fetchEvents(0, "update");
+  //       fetchAddedEvents();
+  //     }
+  //   } else {
+  //     let newEvents = {
+  //       id: event.mainEvent.eventId,
+  //       promoted: "true",
+  //     };
+
+  //     if (isPromotedEventPresent) {
+  //       if (
+  //         selectedTemplate === "HBL" ||
+  //         selectedTemplate === "HBG" ||
+  //         selectedTemplate === "ST" ||
+  //         selectedTemplate === "PUVP" ||
+  //         selectedTemplate === "PUVL"
+  //       ) {
+  //         newEvents.promoted = "false";
+  //       } else {
+  //         newEvents.promoted = event.promoted === "true" ? "false" : "true";
+  //       }
+  //     }
+
+  //     const mergedEvents = [...existingEvents, newEvents];
+  //     const otherData = { event: mergedEvents };
+
+  //     const eventIds = mergedEvents.map((event) => event.id).join(",");
+  //     const customizedFormData = new FormData();
+  //     customizedFormData.append("widgetId", widgetId);
+  //     customizedFormData.append("eventId", eventIds);
+  //     customizedFormData.append("otherdata", JSON.stringify(otherData));
+  //     customizedFormData.append("status", "active");
+
+  //     const { data, error } = await myFetch(`${baseUrl}/widget`, {
+  //       method: "POST",
+  //       body: customizedFormData,
+  //     });
+
+  //     if (data) {
+  //       showToast("success", "Event Successfully updated in the widget9999");
+  //       fetchEvents(0, "update");
+  //       fetchAddedEvents();
+  //     }
+  //   }
+  // };
+
   const handleAddToWidget = async (event: AllEventsType, isLinked: any) => {
     const existingEvents = fetchedAddedEvents || [];
     event.mainEvent.isLinkedToWidget = !isLinked;
@@ -420,28 +526,27 @@ const AllEvents = ({
       (existingEvent) => existingEvent.promoted === "true"
     );
 
+    let shouldPromote = false;
+
+    if (selectedTemplate === "CVG" || selectedTemplate === "CVL") {
+      shouldPromote = true; 
+    } else if (selectedTemplate === "PUVP" || selectedTemplate === "PUVL" || selectedTemplate === "ST" || selectedTemplate === "SB") {
+      if (!isPromotedEventPresent) {
+        shouldPromote = true; 
+      } else {
+        shouldPromote = false; 
+      }
+    }
+
     if (eventIndex !== -1) {
-      // If the event already exists, update the promotion status based on the template
       const updatedEvents = existingEvents.filter(
         (existingEvent) => existingEvent.id !== event.mainEvent.eventId
       );
 
       let newEvents = {
         id: event.mainEvent.eventId,
-        promoted: "false", // Default to false unless updated below
+        promoted: shouldPromote ? "true" : "false", 
       };
-
-      if (
-        selectedTemplate === "HBL" ||
-        selectedTemplate === "HBG" ||
-        selectedTemplate === "ST" ||
-        selectedTemplate === "PUVP" ||
-        selectedTemplate === "PUVL"
-      ) {
-        newEvents.promoted = "false";
-      } else {
-        newEvents.promoted = event.promoted === "true" ? "false" : "true";
-      }
 
       const mergedEvents = [...updatedEvents, newEvents];
       const otherData = { event: mergedEvents };
@@ -459,28 +564,18 @@ const AllEvents = ({
       });
 
       if (data) {
-        showToast("success", "Event Successfully updated in the widget");
+        showToast("success", "Event successfully added to the widget");
         fetchEvents(0, "update");
         fetchAddedEvents();
       }
     } else {
       let newEvents = {
         id: event.mainEvent.eventId,
-        promoted: "true",
+        promoted: shouldPromote ? "true" : "false", 
       };
 
       if (isPromotedEventPresent) {
-        if (
-          selectedTemplate === "HBL" ||
-          selectedTemplate === "HBG" ||
-          selectedTemplate === "ST" ||
-          selectedTemplate === "PUVP" ||
-          selectedTemplate === "PUVL"
-        ) {
-          newEvents.promoted = "false";
-        } else {
-          newEvents.promoted = event.promoted === "true" ? "false" : "true";
-        }
+        newEvents.promoted = shouldPromote ? "true" : "false"; 
       }
 
       const mergedEvents = [...existingEvents, newEvents];
@@ -499,7 +594,7 @@ const AllEvents = ({
       });
 
       if (data) {
-        showToast("success", "Event Successfully updated in the widget");
+        showToast("success", "Event successfully added to the widget");
         fetchEvents(0, "update");
         fetchAddedEvents();
       }

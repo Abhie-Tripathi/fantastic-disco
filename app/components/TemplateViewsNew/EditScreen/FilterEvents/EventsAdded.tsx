@@ -216,7 +216,7 @@ const EventsAdded = ({
       longitude: newEvent.longitude,
       venue: newEvent.venue,
       hashtags: newEvent.hashtags,
-      promoted: newEvent.promoted === "true" ? "false" : "true",
+      promoted: true,
     };
     // Find and update the existing event
     const updatedEvents = existingEvents.map((event) =>
@@ -320,24 +320,13 @@ const EventsAdded = ({
     }
   };
 
-  // const handlelocation = () => {
-  //   setLocationEnabled((prevState) => {
-  //     const newState = !prevState;
-  //     if (newState) {
-  //       getUserLocation();
-  //     }
-  //     return newState;
-  //   });
-  // };
-
+ 
   useEffect(() => {
-    // Retrieve the saved locationEnabled state from localStorage on mount
     const savedLocationEnabled = localStorage.getItem("locationEnabled");
     if (savedLocationEnabled !== null) {
       const isLocationEnabled = JSON.parse(savedLocationEnabled);
       setLocationEnabled(isLocationEnabled);
 
-      // If location is enabled, fetch the user's location
       if (isLocationEnabled) {
         getUserLocation();
       }
@@ -374,7 +363,7 @@ const EventsAdded = ({
             const isPromoted = updatedNearestEvent.some(
               (nearest) => nearest.id === event.id
             );
-            return { ...event, promoted: isPromoted }; // Ensure promoted is a boolean
+            return { ...event, promoted: isPromoted }; 
           });
 
           setFetchedAddedOtherData(updatedFetchedData);
@@ -422,7 +411,7 @@ const EventsAdded = ({
         return { ...event, distance };
       })
       .filter((event) => event.distance <= maxDistance) // Filter events within 500 km
-      .sort((a, b) => a.distance - b.distance); // Sort by distance (nearest first)
+      .sort((a, b) => a.distance - b.distance); 
 
     return nearbyEvents;
   };
@@ -448,15 +437,10 @@ const EventsAdded = ({
     return distance;
   };
 
-  console.log(
-    "nearestEvent32323232323232",
-    nearestEvent,
-    fetchedAddedOtherData
-  );
+  
   const promotedEventsList = fetchedAddedOtherData.filter(
     (event) => event.promoted === true || event.promoted === "true"
   );
-  console.log("33333333333333333333333333", promotedEventsList);
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -496,7 +480,6 @@ const EventsAdded = ({
               onChange={handleLocation}
             />
             <label htmlFor="locationToggle" className={styles.checkBox}></label>
-          
           </div>
           <div className={styles.line}></div>
         </>
