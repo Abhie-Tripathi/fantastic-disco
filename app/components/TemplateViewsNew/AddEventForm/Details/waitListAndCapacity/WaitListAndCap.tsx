@@ -6,6 +6,7 @@ import CapacityModal from "./capacitymodal/Capacity";
 const WaitListAndCap = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("option1");
   const handleToggle = () => {
     setIsApproved(!isApproved);
   };
@@ -17,6 +18,10 @@ const WaitListAndCap = () => {
     setIsCapacityModalOpen(false);
   };
 
+  const handleRadioChange = (e: any) => {
+    setSelectedOption(e.target.value);
+  };
+
   return (
     <div className={`${styles.cardContainer}`}>
       <div className={styles.cardItem}>
@@ -24,12 +29,29 @@ const WaitListAndCap = () => {
           <Ticket />
         </div>
         <div className={styles.itemText}>Tickets</div>
-        <Image
-          className={styles.editBtn}
-          src={EditIcon}
-          alt="edit"
-          //   onClick={() => handleClick()}
-        />
+
+        <div className={styles.radioContainer}>
+          <label style={{display:"flex", alignItems:"center", gap:"5px"}}>
+            <input
+              type="radio"
+              name="ticketOption"
+              value="option1"
+              checked={selectedOption === "option1"}
+              onChange={handleRadioChange}
+            />
+            <span className={styles.freeAndPaid_text}>Free</span>
+          </label>
+          <label style={{display:"flex", alignItems:"center", gap:"5px"}}>
+            <input
+              type="radio"
+              name="ticketOption"
+              value="option2"
+              checked={selectedOption === "option2"}
+              onChange={handleRadioChange}
+            />
+            <span className={styles.freeAndPaid_text}>Paid</span>
+          </label>
+        </div>
       </div>
 
       <div className={styles.cardItem}>
@@ -62,7 +84,10 @@ const WaitListAndCap = () => {
         />
       </div>
       {/* Capacity Modal */}
-      <CapacityModal isOpen={isCapacityModalOpen} onClose={closeCapacityModal} />
+      <CapacityModal
+        isOpen={isCapacityModalOpen}
+        onClose={closeCapacityModal}
+      />
     </div>
   );
 };
