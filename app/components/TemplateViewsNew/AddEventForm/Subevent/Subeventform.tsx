@@ -26,6 +26,7 @@ import SideEventIcon from '/public/sideevent.svg'
 import GlobalSearch from '../../EditScreen/FilterEvents/GlobalSearch'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { FormState } from '@/types/Formstate'
+import WaitListAndCap from '../Details/waitListAndCapacity/WaitListAndCap'
 
 interface SpeakerProfileType {
     id: string;
@@ -240,6 +241,9 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                         // setRegisterModal={setRegisterModal}
                         handleChange={handleChange}
                     /></div>
+
+                    <div className={styles.resgitrationContainer}><WaitListAndCap/></div>
+
                     <div>
                         <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
                             // setDescriptionModal={setDescriptionModal}
