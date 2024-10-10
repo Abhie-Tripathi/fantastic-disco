@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import styles from "./capacity.style.module.css";
 
 const CapacityModal = ({ isOpen, onClose }: any) => {
-  if (!isOpen) return null;
+  
 
   const [capacity, setCapacity] = useState<number | "">(0);
   const [isApproved, setIsApproved] = useState(false);
+
+  if (!isOpen) return null;
 
   const handleToggle = () => {
     setIsApproved(!isApproved);
