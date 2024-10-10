@@ -23,6 +23,7 @@ interface SpeakerProfileType {
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
+    pageGradient: string;
     eventFont: string;
     widgetId: string;
     fetchEvents?: (page: number, type?: string) => Promise<void>;
@@ -42,15 +43,14 @@ interface Props {
     fetchEventData?: () => Promise<undefined | null>;
 }
 
-const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
-    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, fetchEventData }: Props) => {
+const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, fetchEventData,pageGradient }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    // const [mainEventName, setMainEventName] = useState<string>("");
 
+    // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
 
     const handleAddEvent = async () => {
@@ -225,18 +225,18 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
     const addSpeakers = async (eventId: string, speaker: SpeakerProfileType) => {
         const formData = new FormData()
         const speakerObject = {
-            name : speaker.name,
-            linkedIn : speaker.linkedin,
-            designation : speaker.designation
+            name: speaker.name,
+            linkedIn: speaker.linkedin,
+            designation: speaker.designation
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
         formData.append("file", speaker.profileImage || "")
-        const { data, error } = await myFetch(`${baseUrl}/event/speaker`,{
+        const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
         })
-        if(error){
+        if (error) {
             console.log("error : ", error)
         }
     }
@@ -582,7 +582,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         Save and Add event</button>
                 </div>
             </div>
-            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
+            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`}
+                style={{ backgroundColor: pageBgColor }}
+                ref={formContainerRef}>
                 {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
                     <div>
                         <DescIcon />

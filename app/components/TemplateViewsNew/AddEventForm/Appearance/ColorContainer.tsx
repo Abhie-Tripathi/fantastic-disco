@@ -10,37 +10,45 @@ import Image from 'next/image';
 interface Props {
     pageBgColor: string;
     setPageBgColor: (value: string) => void
+    setPageGradient : (value : string) => void
 }
 
-const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
-    const {theme} = useTheme()
+const ColorContainer = ({ setPageBgColor, pageBgColor,setPageGradient }: Props) => {
+    const { theme } = useTheme()
 
+    const [selectedTheme, setSelectedTheme] = useState<string>("")
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
     const [color, setColor] = useState('#2c68f6');
-    const clickable=true
+    const clickable = true
     const handleChange = (color: any) => {
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color: any,index:any) => {
-        setSelectedColorIndex(index)
-        const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
-        setPageBgColor(colorWithOpacity);
+    const handleColorClick = (color: any, index: any, theme : string) => {
+        if(theme === "minimal"){
+            setSelectedColorIndex(index)
+            const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
+            setPageBgColor(colorWithOpacity);
+            setPageGradient("")
+        }else if(theme === "gradient"){
+            setPageBgColor("")
+            setPageGradient(color)
+        }
     }
     const addOpacityToHex = (hexColor: string, opacity: number) => {
         // Remove the '#' if it's there
         const cleanHex = hexColor.replace("#", "");
-      
+
         // Convert the opacity percentage (0 to 1) to a 2-digit hex value
         const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, "0");
-      
+
         // Append the opacity to the hex color
         return `#${cleanHex}${alphaHex}`;
     }
-    
+
 
     // const hexToRgba = (hex: string, opacity: number) => {
     //     let r = 0, g = 0, b = 0;
@@ -66,7 +74,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
             const hex = c.toString(16);
             return hex.length === 1 ? `0${hex}` : hex;
         };
-    
+
         return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
     };
 
@@ -77,23 +85,23 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
                 return rgbToHex(parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2]));
             }
         }
-        return color; 
+        return color;
     };
 
     const fetchBrandkit = async () => {
         const { data, error } = await myFetch(`${baseUrl}/kit`)
         if (error) {
-          console.error('Error fetching brand kit:', error);
-          return;
+            console.error('Error fetching brand kit:', error);
+            return;
         }
-    
+
         const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
         setExtractedColors(data.color)
-      }
-    
-      useEffect(() => {
+    }
+
+    useEffect(() => {
         fetchBrandkit()
-      }, [])
+    }, [])
 
     useEffect(() => {
         if (clickable) {
@@ -105,59 +113,53 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.header}>
-                <ColorIcon color={theme === "light" ? "black" : "white"}/>
+                <ColorIcon color={theme === "light" ? "black" : "white"} />
                 <span>COLOURS</span>
             </div>
             <div className={styles.editContainer} >
-                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`}><PaintIcon /> <span>Background Fill</span></div>
-                <div className={styles.colorPickerContainer} style={{backgroundColor : theme === "light" ? "#f2f2f2" : "#1a1a1a"}}>
-                    {/* <span>{pageBgColor}</span> */}
-                    <span>{formattedPageBgColor}</span> 
-                    {/* <div className={styles.colorPickerOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
-                        <div className={styles.colorPickerInner} style={{ backgroundColor: pageBgColor }}>
-                        </div>
-                        <Image src={colorPicker} alt='' width={20} height={20}/>
-                    </div> */}
-
-                    {displayColorPicker && <div ref={colorPickerRef} className={styles.sketchPicker}>
-                        <SketchPicker
-                            color={pageBgColor}
-                            onChange={handleChange}
-                            presetColors={extractedColors}
-                        /></div>}
-                </div>
-                {/* <div className={styles.extractedColors}>
-                    {extractedColors.map((color, key) => (
-                        <div className={styles.extractedColor} onClick={()=>handleColorClick(color)} style={{ backgroundColor: color }} key={key}></div>
-                    ))}
-                <div className={styles.plusIconOuter}  style={{ borderColor: pageBgColor }}  onClick={() => setDisplayColorPicker(!displayColorPicker)}>
-                    <PlusIcon/>
-                </div>
-                </div> */}
-
-            <div className={styles.extractedColors}>
-            <div className={styles.colorList}>
-                {extractedColors.map((color, key) => (
-                    <div 
-                        key={key} 
-                        className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ''}`} 
-                        style={{
-                            backgroundColor: key === selectedColorIndex ? 'transparent' : color, 
-                            borderColor: key === selectedColorIndex ? color : 'transparent',
-                        }} 
-                        onClick={()=>handleColorClick(color, key)}
-                    >
-                        {key === selectedColorIndex && (
-                            <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>
-                        )}
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("minimal")}><PaintIcon /> <span>Minimal</span></div>
+                {selectedTheme === "minimal" && <div className={styles.minimalThemeContainer}>
+                    <div className={styles.colorPickerContainer} style={{ backgroundColor: theme === "light" ? "#f2f2f2" : "#1a1a1a" }}>
+                        <span>{formattedPageBgColor}</span>
+                        {displayColorPicker && <div ref={colorPickerRef} className={styles.sketchPicker}>
+                            <SketchPicker
+                                color={pageBgColor}
+                                onChange={handleChange}
+                                presetColors={extractedColors}
+                            /></div>}
                     </div>
-                ))}
-            </div>
+                    <div className={styles.extractedColors}>
+                        <div className={styles.colorList}>
+                            {extractedColors.map((color, key) => (
+                                <div
+                                    key={key}
+                                    className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ''}`}
+                                    style={{
+                                        backgroundColor: key === selectedColorIndex ? 'transparent' : color,
+                                        borderColor: key === selectedColorIndex ? color : 'transparent',
+                                    }}
+                                    onClick={() => handleColorClick(color, key, "minimal")}
+                                >
+                                    {key === selectedColorIndex && (
+                                        <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
 
-            <div className={styles.plusIconOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
-                <PlusIcon />
-            </div>
-        </div>
+                        <div className={styles.plusIconOuter} style={{ borderColor: pageBgColor }} onClick={() => setDisplayColorPicker(!displayColorPicker)}>
+                            <PlusIcon />
+                        </div>
+                    </div>
+                </div>}
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("gradient")}><PaintIcon /> <span>Gradient</span></div>
+                {selectedTheme === "gradient" && <div className={styles.gradientThemeContainer}>
+                    <div onClick={() => handleColorClick("greenmint", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(114,125,194,1) 0%, rgba(206,242,177,1) 100%)' }}></div>
+                    <div onClick={() => handleColorClick("candy", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,177,217,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("orange", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,222,177,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("purblue", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%)' }}></div>
+                    <div onClick={() => handleColorClick("watermelon", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(177,242,235,1) 93%)' }}></div>
+                </div>}
             </div>
         </div>
     )
@@ -165,11 +167,11 @@ const ColorContainer = ({ setPageBgColor, pageBgColor }: Props) => {
 
 export default ColorContainer
 
-interface IconProps{
-    color : string;
+interface IconProps {
+    color: string;
 }
 
-function ColorIcon({color}: IconProps) {
+function ColorIcon({ color }: IconProps) {
     return (
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5.85627 0.333984C8.90568 0.333984 11.3786 2.53075 11.3786 5.24275C11.3778 6.0562 11.0543 6.83613 10.4791 7.41128C9.90382 7.98643 9.12384 8.30979 8.31038 8.31038H7.2247C6.71554 8.31038 6.30413 8.72179 6.30413 9.23094C6.30413 9.46398 6.39635 9.6788 6.53717 9.83839C6.68462 10.0041 6.77684 10.2189 6.77684 10.458C6.77684 10.9677 6.35328 11.3786 5.85627 11.3786C2.80686 11.3786 0.333984 8.90568 0.333984 5.85627C0.333984 2.80686 2.80686 0.333984 5.85627 0.333984ZM5.19967 9.23094C5.19945 8.96495 5.25168 8.70153 5.35337 8.45574C5.45506 8.20996 5.60422 7.98663 5.7923 7.79855C5.98039 7.61047 6.20371 7.46131 6.44949 7.35962C6.69528 7.25793 6.9587 7.2057 7.2247 7.20592H8.31038C8.83082 7.20534 9.32979 6.99841 9.69791 6.6305C10.066 6.2626 10.2732 5.76374 10.2741 5.2433C10.2741 3.17189 8.32363 1.43844 5.85627 1.43844C4.71624 1.4374 3.61994 1.87711 2.79658 2.66563C1.97323 3.45416 1.48657 4.53044 1.43836 5.66946C1.39016 6.80847 1.78413 7.92203 2.53791 8.7773C3.29169 9.63258 4.34692 10.1633 5.48297 10.2586C5.29811 9.94787 5.20026 9.59254 5.19967 9.23094ZM3.37124 5.85627C3.15155 5.85627 2.94086 5.769 2.78552 5.61366C2.63017 5.45831 2.5429 5.24762 2.5429 5.02793C2.5429 4.80824 2.63017 4.59755 2.78552 4.4422C2.94086 4.28686 3.15155 4.19959 3.37124 4.19959C3.59093 4.19959 3.80163 4.28686 3.95697 4.4422C4.11231 4.59755 4.19959 4.80824 4.19959 5.02793C4.19959 5.24762 4.11231 5.45831 3.95697 5.61366C3.80163 5.769 3.59093 5.85627 3.37124 5.85627ZM8.3413 5.85627C8.12161 5.85627 7.91092 5.769 7.75557 5.61366C7.60023 5.45831 7.51296 5.24762 7.51296 5.02793C7.51296 4.80824 7.60023 4.59755 7.75557 4.4422C7.91092 4.28686 8.12161 4.19959 8.3413 4.19959C8.56099 4.19959 8.77168 4.28686 8.92703 4.4422C9.08237 4.59755 9.16965 4.80824 9.16965 5.02793C9.16965 5.24762 9.08237 5.45831 8.92703 5.61366C8.77168 5.769 8.56099 5.85627 8.3413 5.85627ZM5.85627 4.19959C5.63658 4.19959 5.42589 4.11231 5.27055 3.95697C5.1152 3.80163 5.02793 3.59093 5.02793 3.37124C5.02793 3.15155 5.1152 2.94086 5.27055 2.78552C5.42589 2.63017 5.63658 2.5429 5.85627 2.5429C6.07596 2.5429 6.28665 2.63017 6.442 2.78552C6.59734 2.94086 6.68462 3.15155 6.68462 3.37124C6.68462 3.59093 6.59734 3.80163 6.442 3.95697C6.28665 4.11231 6.07596 4.19959 5.85627 4.19959Z" fill={color} />
@@ -187,8 +189,8 @@ function PaintIcon() {
 function PlusIcon() {
     return (
         <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8.221 5.16439H5.25814V8.12725C5.25814 8.45316 4.99149 8.71982 4.66557 8.71982C4.33966 8.71982 4.073 8.45316 4.073 8.12725V5.16439H1.11015C0.784235 5.16439 0.517578 4.89774 0.517578 4.57182C0.517578 4.24591 0.784235 3.97925 1.11015 3.97925H4.073V1.0164C4.073 0.690485 4.33966 0.423828 4.66557 0.423828C4.99149 0.423828 5.25814 0.690485 5.25814 1.0164V3.97925H8.221C8.54691 3.97925 8.81357 4.24591 8.81357 4.57182C8.81357 4.89774 8.54691 5.16439 8.221 5.16439Z" fill="black"/>
+            <path d="M8.221 5.16439H5.25814V8.12725C5.25814 8.45316 4.99149 8.71982 4.66557 8.71982C4.33966 8.71982 4.073 8.45316 4.073 8.12725V5.16439H1.11015C0.784235 5.16439 0.517578 4.89774 0.517578 4.57182C0.517578 4.24591 0.784235 3.97925 1.11015 3.97925H4.073V1.0164C4.073 0.690485 4.33966 0.423828 4.66557 0.423828C4.99149 0.423828 5.25814 0.690485 5.25814 1.0164V3.97925H8.221C8.54691 3.97925 8.81357 4.24591 8.81357 4.57182C8.81357 4.89774 8.54691 5.16439 8.221 5.16439Z" fill="black" />
         </svg>
-        
+
     )
 }
