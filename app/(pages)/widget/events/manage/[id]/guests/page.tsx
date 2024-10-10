@@ -8,17 +8,19 @@ import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/
 
 const Page = () => {
   const [registerModal, setRegisterModal] = useState<boolean>(false);
-  const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(true);
+  const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
 
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
+  const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
+
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
-        <button>
+        <button onClick={() => setInviteGuestModal(true)}>
           <span className={styles.icon1}>I</span>
           Invite Guests
         </button>
-        <button onClick={() => setRegisterModal(!registerModal)}>
+        <button onClick={() => setRegisterModal(true)}>
           <span className={styles.icon2}>R</span>
           <div className={styles.sub_headingContainer}>
             Registration
@@ -38,7 +40,7 @@ const Page = () => {
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal/>
       </div>}
-      {inviteGuestModal && <div className={styles.modal} ref={registerModalRef}>
+      {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
         <InviteGuest/>
       </div>}
     </div>

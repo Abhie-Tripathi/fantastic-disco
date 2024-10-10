@@ -21,6 +21,9 @@
     gap: 9px;
 }
 .invitedUser .initial{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 30px;
     height: 40px;
     color: var(--success-text-color);
