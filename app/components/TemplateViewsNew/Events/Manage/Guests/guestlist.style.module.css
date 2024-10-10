@@ -18,7 +18,7 @@
     border-radius: 4px;
     padding: 4px;
     cursor: pointer;
-    background-color: var(--background-secondary-color-hover);
+    background-color: var(--primary-color);
 }
 .downloadBtn:hover{
     background-color: var(--primary-color-hover);

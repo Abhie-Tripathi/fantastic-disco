@@ -4,7 +4,7 @@
     background-color: var(--primary-foreground);
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 800px;
 }
 .line{
     border-bottom: 1px solid var(--border-color);
@@ -45,38 +45,22 @@
     width: 14px;
     /* Inner circle size to create the hollow effect */
     height: 14px;
-    background-color: white;
+    background-color: var(--primary-foreground);
     border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.sections{
+.selectedBtnContainer{
+    padding: 15px;  
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.verticalLine{
-    border-right: 1px solid var(--border-color);
-}
-.leftSection{
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.leftSection .heading{
-    font-size: var(--font-size-default);
-    color: var(--primary-text-color);
-    font-weight: var(--font-weight-semibold);
+.selectedBtnContainer .nextBtn{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    color: white;
     padding: 5px 9px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.leftSection .heading:hover{
-    background-color: var(--accent-color);
-}
-.leftSection .subheading{
-    font-size: var(--font-size-default);
-    color: var(--secondary-text-color);
-    font-weight: var(--font-weight-semibold);
 }
