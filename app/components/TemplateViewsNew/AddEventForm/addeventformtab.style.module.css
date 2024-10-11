@@ -75,6 +75,7 @@
     height: 89%;
     overflow: auto;
     padding: 50px 120px 50px 70px;
+    position: relative;
 }
 .watermelon {
     background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(194, 114, 114, 1) 0%, rgba(177, 242, 235, 1) 93%);
@@ -146,4 +147,10 @@
 
 .collapsedContainer .collapseBtn {
     cursor: pointer;
+}
+.confettiCanvas{
+    position: absolute;
+    left: 0;
+    bottom: -80px;
+    width: 100%;
 }

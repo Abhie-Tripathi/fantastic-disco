@@ -27,6 +27,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledEvent?.customizationData.pageBgColor || "")
   const [pageGradient, setPageGradient] = useState<string>("")
+  const [confettiType, setConfettiType] = useState<string>("")
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
   const initialFormState: FormState = {
@@ -82,12 +83,11 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     setSubeventState((prev) => ({ ...prev, [field]: value }));
   };
 
-
   return (
     <div className={styles.body}>
-      <div className={styles.appearance}><Appearance setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} descriptionMain={mainEventState.description} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
+      <div className={styles.appearance}><Appearance setConfettiType={setConfettiType} setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} descriptionMain={mainEventState.description} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
       <div className={styles.details}>
-        <AddEventFormTab pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
+        <AddEventFormTab confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
           // setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName}
           prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} />
         {/* <Details setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} /> */}

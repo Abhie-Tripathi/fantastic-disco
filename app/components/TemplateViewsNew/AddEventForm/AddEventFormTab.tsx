@@ -10,6 +10,7 @@ import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
+import confetti from "canvas-confetti";
 
 interface SpeakerProfileType {
     id: string;
@@ -24,6 +25,7 @@ interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
     pageGradient: string;
+    confettiType: string;
     eventFont: string;
     widgetId: string;
     fetchEvents?: (page: number, type?: string) => Promise<void>;
@@ -43,15 +45,38 @@ interface Props {
     fetchEventData?: () => Promise<undefined | null>;
 }
 
-const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, fetchEventData,pageGradient }: Props) => {
+const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, fetchEventData, pageGradient, confettiType }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
+
+    const fireConfetti = () => {
+        if (confettiCanvasRef.current) {
+            const myConfetti = confetti.create(confettiCanvasRef.current, { resize: true });
+            myConfetti({
+                particleCount: 300,
+                spread: 100,
+                origin: { y: 0.6 },
+                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star']
+            });
+        }
+    };
+    useEffect(() => {
+        if (confettiType.length > 0) {
+            // Fire confetti immediately
+            fireConfetti();
+            // Set up the interval for firing every 4 seconds
+            const interval = setInterval(fireConfetti, 4000);
+            // Cleanup interval when confettiType changes or component unmounts
+            return () => clearInterval(interval);
+        }
+    }, [confettiType]);
 
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
@@ -582,27 +607,27 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         Save and Add event</button>
                 </div>
             </div>
-            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`}
-                style={{ backgroundColor: pageBgColor }}
-                ref={formContainerRef}>
-                {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
-                    <div>
-                        <DescIcon />
-                        <span>Main Event</span>
-                    </div>
-                    <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
-                </div>) : (eventFlow === 'main' &&
-                    <Details
-                        handleCollapseForm={handleCollapseForm}
-                        formState={mainEventState}
-                        handleChange={handleMaineventChanges}
-                        eventFont={eventFont}
-                        setLoadingState={setLoadingState}
-                        fileInputRef={fileInputRef}
-                        prefilledEvent={prefilledEvent}
-                        setCollapseMainEventForm={setCollapseMainEventForm}
-                        collapseMainEventForm={collapseMainEventForm}
-                    />)}
+            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
+                <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+                {collapseMainEventForm && eventFlow === 'main' ?
+                    (<div className={styles.collapsedContainer}>
+                        <div>
+                            <DescIcon />
+                            <span>Main Event</span>
+                        </div>
+                        <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
+                    </div>) : (eventFlow === 'main' &&
+                        <Details
+                            handleCollapseForm={handleCollapseForm}
+                            formState={mainEventState}
+                            handleChange={handleMaineventChanges}
+                            eventFont={eventFont}
+                            setLoadingState={setLoadingState}
+                            fileInputRef={fileInputRef}
+                            prefilledEvent={prefilledEvent}
+                            setCollapseMainEventForm={setCollapseMainEventForm}
+                            collapseMainEventForm={collapseMainEventForm}
+                        />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
                     formState={subEventState}

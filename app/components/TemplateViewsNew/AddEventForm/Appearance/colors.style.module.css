@@ -78,6 +78,7 @@
     position: absolute;
     top: 30px;
     left: 0;
+    z-index: 1;
 }
 
 .extractedColors {
@@ -135,6 +136,7 @@
     align-items: center;
     gap: 5px;
 }
+
 .gradientCircle {
     width: 20px;
     height: 20px;
@@ -142,4 +144,17 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+}
+.confettiThemeContainer{
+    display: flex;
+    flex-direction: column;
+}
+.confettiThemeContainer div{
+    font-size: var(--font-size-small);
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 3px 5px;
+}
+.confettiThemeContainer div:hover{
+    background-color: var(--accent-color);
+}

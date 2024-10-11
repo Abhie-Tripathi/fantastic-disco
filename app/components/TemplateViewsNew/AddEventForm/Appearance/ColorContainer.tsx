@@ -10,10 +10,11 @@ import Image from 'next/image';
 interface Props {
     pageBgColor: string;
     setPageBgColor: (value: string) => void
-    setPageGradient : (value : string) => void
+    setPageGradient: (value: string) => void
+    setConfettiType : (value : string) => void
 }
 
-const ColorContainer = ({ setPageBgColor, pageBgColor,setPageGradient }: Props) => {
+const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfettiType }: Props) => {
     const { theme } = useTheme()
 
     const [selectedTheme, setSelectedTheme] = useState<string>("")
@@ -27,13 +28,13 @@ const ColorContainer = ({ setPageBgColor, pageBgColor,setPageGradient }: Props) 
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color: any, index: any, theme : string) => {
-        if(theme === "minimal"){
+    const handleColorClick = (color: any, index: any, theme: string) => {
+        if (theme === "minimal") {
             setSelectedColorIndex(index)
             const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
             setPageBgColor(colorWithOpacity);
             setPageGradient("")
-        }else if(theme === "gradient"){
+        } else if (theme === "gradient") {
             setPageBgColor("")
             setPageGradient(color)
         }
@@ -114,7 +115,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor,setPageGradient }: Props) 
         <div className={styles.body}>
             <div className={styles.header}>
                 <ColorIcon color={theme === "light" ? "black" : "white"} />
-                <span>COLOURS</span>
+                <span>THEMES</span>
             </div>
             <div className={styles.editContainer} >
                 <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("minimal")}><PaintIcon /> <span>Minimal</span></div>
@@ -160,8 +161,16 @@ const ColorContainer = ({ setPageBgColor, pageBgColor,setPageGradient }: Props) 
                     <div onClick={() => handleColorClick("purblue", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%)' }}></div>
                     <div onClick={() => handleColorClick("watermelon", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(177,242,235,1) 93%)' }}></div>
                 </div>}
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("confetti")}><PaintIcon /><span>Confetti</span></div>
+                {selectedTheme === "confetti" &&
+                    <div className={styles.confettiThemeContainer}>
+                        <div onClick={()=>setConfettiType("")}>None</div>
+                        <div onClick={()=>setConfettiType("party")}>Party</div>
+                        <div onClick={()=>setConfettiType("circle")}>Circle</div>
+                        <div onClick={()=>setConfettiType("star")}>Star</div>
+                    </div>}
             </div>
-        </div>
+        </div >
     )
 }
 
