@@ -62,8 +62,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             myConfetti({
                 particleCount: 300,
                 spread: 100,
-                origin: { y: 0.6 },
-                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star']
+                origin: { y: 0.9 }, 
+                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star'],
+                
             });
         }
     };

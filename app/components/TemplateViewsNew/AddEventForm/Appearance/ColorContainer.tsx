@@ -11,7 +11,7 @@ interface Props {
     pageBgColor: string;
     setPageBgColor: (value: string) => void
     setPageGradient: (value: string) => void
-    setConfettiType : (value : string) => void
+    setConfettiType: (value: string) => void
 }
 
 const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfettiType }: Props) => {
@@ -23,6 +23,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfe
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
     const [color, setColor] = useState('#2c68f6');
+    const [confettiDropdown, setConfettiDropdown] = useState<boolean>(false)
     const clickable = true
     const handleChange = (color: any) => {
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
@@ -161,14 +162,21 @@ const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfe
                     <div onClick={() => handleColorClick("purblue", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%)' }}></div>
                     <div onClick={() => handleColorClick("watermelon", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(177,242,235,1) 93%)' }}></div>
                 </div>}
-                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("confetti")}><PaintIcon /><span>Confetti</span></div>
-                {selectedTheme === "confetti" &&
-                    <div className={styles.confettiThemeContainer}>
-                        <div onClick={()=>setConfettiType("")}>None</div>
-                        <div onClick={()=>setConfettiType("party")}>Party</div>
-                        <div onClick={()=>setConfettiType("circle")}>Circle</div>
-                        <div onClick={()=>setConfettiType("star")}>Star</div>
-                    </div>}
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("effects")}><PaintIcon /><span>Effects</span></div>
+                {selectedTheme === "effects" &&
+                    <div className={styles.effectsContainer}>
+                        <div className={styles.confettiThemeContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
+                            Confetti
+                            <DownArrow />
+                            {confettiDropdown && <div className={styles.confettiDropdown}>
+                                <div onClick={() => setConfettiType("")}>None</div>
+                                <div onClick={() => setConfettiType("party")}>Party</div>
+                                <div onClick={() => setConfettiType("circle")}>Circle</div>
+                                <div onClick={() => setConfettiType("star")}>Star</div>
+                            </div>}
+                        </div>
+                    </div>
+                }
             </div>
         </div >
     )
@@ -199,6 +207,14 @@ function PlusIcon() {
     return (
         <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.221 5.16439H5.25814V8.12725C5.25814 8.45316 4.99149 8.71982 4.66557 8.71982C4.33966 8.71982 4.073 8.45316 4.073 8.12725V5.16439H1.11015C0.784235 5.16439 0.517578 4.89774 0.517578 4.57182C0.517578 4.24591 0.784235 3.97925 1.11015 3.97925H4.073V1.0164C4.073 0.690485 4.33966 0.423828 4.66557 0.423828C4.99149 0.423828 5.25814 0.690485 5.25814 1.0164V3.97925H8.221C8.54691 3.97925 8.81357 4.24591 8.81357 4.57182C8.81357 4.89774 8.54691 5.16439 8.221 5.16439Z" fill="black" />
+        </svg>
+
+    )
+}
+function DownArrow() {
+    return (
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.47124 5.47026C5.34622 5.59524 5.17668 5.66545 4.9999 5.66545C4.82313 5.66545 4.65359 5.59524 4.52857 5.47026L0.757237 1.69893C0.693563 1.63743 0.642775 1.56387 0.607836 1.48253C0.572896 1.40119 0.554505 1.31371 0.553736 1.22519C0.552967 1.13667 0.569835 1.04889 0.603355 0.966957C0.636876 0.885027 0.686378 0.810592 0.748973 0.747996C0.811568 0.685401 0.886003 0.635899 0.967934 0.602379C1.04986 0.568858 1.13765 0.55199 1.22617 0.55276C1.31469 0.553529 1.40217 0.57192 1.48351 0.606859C1.56484 0.641798 1.63841 0.692586 1.6999 0.75626L4.9999 4.05626L8.2999 0.75626C8.42564 0.634821 8.59404 0.567625 8.76884 0.569144C8.94363 0.570663 9.11084 0.640775 9.23445 0.76438C9.35805 0.887986 9.42817 1.05519 9.42969 1.22999C9.43121 1.40479 9.36401 1.57319 9.24257 1.69893L5.47124 5.47026Z" fill="currentColor" />
         </svg>
 
     )

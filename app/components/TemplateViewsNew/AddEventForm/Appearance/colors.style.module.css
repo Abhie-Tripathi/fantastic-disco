@@ -145,16 +145,38 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.confettiThemeContainer{
+.effectsContainer{
     display: flex;
     flex-direction: column;
 }
-.confettiThemeContainer div{
-    font-size: var(--font-size-small);
-    cursor: pointer;
+.confettiThemeContainer{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    width: 100px;
     border-radius: 4px;
-    padding: 3px 5px;
+    background-color: var(--accent-color);
+    padding:4px 8px;
 }
-.confettiThemeContainer div:hover{
+.confettiDropdown{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    color: var(--primary-text-color);
+    background-color: var(--primary-foreground);
+    font-size: var(--font-size-xs);
+    padding: 10px;
+    top: 20px;
+    width: 100%;
+    left: 0;
+}
+.confettiDropdown div{
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.confettiDropdown div:hover{
     background-color: var(--accent-color);
 }
