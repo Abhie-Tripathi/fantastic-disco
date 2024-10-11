@@ -11,11 +11,13 @@ interface Props {
     registerMessage: string
     registerBtnText: string
     registerBtnColor: string
+    isApproved?:any;
+    setIsApproved?:any
 }
 
 const RegistrationForm = ({ 
     // setRegisterModal,
-    registerMessage, registerBtnText, registerBtnColor,handleChange }: Props) => {
+    registerMessage, registerBtnText, registerBtnColor,handleChange,setIsApproved,isApproved }: Props) => {
     // Function to convert hex to RGB
     const [accordian, setAccordian] = useState<boolean>(false)
     const hexToRgb = (hex: string) => {
@@ -62,7 +64,8 @@ const RegistrationForm = ({
                 <button
                     style={{ backgroundColor: registerBtnColor, color: fontColor }}
                     className={styles.submitBtn}>
-                    {registerBtnText}
+                        {isApproved ? "Request to Join" : `${registerBtnText}`}
+                   
                 </button>
             </div>}
         </div>

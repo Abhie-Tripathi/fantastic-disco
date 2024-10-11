@@ -3,8 +3,8 @@ import styles from "./waitlistandcap.style.module.css";
 import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
 import CapacityModal from "./capacitymodal/Capacity";
-const WaitListAndCap = () => {
-  const [isApproved, setIsApproved] = useState(false);
+const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
+  // const [isApproved, setIsApproved] = useState(false);
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");
   const handleToggle = () => {

@@ -33,7 +33,7 @@ const CapacityModal = ({ isOpen, onClose }: any) => {
         <input type="number" />
       </div>
       <div className={styles.waitlistContainer}>
-        <div className={styles.heading}>Accept Registration</div>
+        <div className={styles.heading}>Over-Capacity Waitlist</div>
         <input type="checkbox" id="register" className={styles.checkboxInput} />
         <label htmlFor="register" className={styles.checkBox}></label>
       </div>

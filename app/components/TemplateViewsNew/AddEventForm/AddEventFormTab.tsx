@@ -40,11 +40,13 @@ interface Props {
     prefilledSubEvent?: EventsType | null;
     setPrefilledSubEvent?: (value: EventsType | null) => void
     fetchEventData?: () => Promise<undefined | null>;
-    setChoiceFormModal?:(value:boolean) => void
+    setChoiceFormModal?:(value:boolean) => void,
+    isApproved?:boolean;
+    setIsApproved?:(value:boolean) =>void
 }
 
 const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
-    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData }: Props) => {
+    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -607,6 +609,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         prefilledEvent={prefilledEvent}
                         setCollapseMainEventForm={setCollapseMainEventForm}
                         collapseMainEventForm={collapseMainEventForm}
+                        isApproved={isApproved} setIsApproved={setIsApproved}
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
@@ -618,6 +621,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     prefilledSubEvent={prefilledSubEvent}
                     prefilledEvent={prefilledEvent}
                     eventFlow={eventFlow}
+                    isApproved={isApproved} setIsApproved={setIsApproved}
                 />}
             </div>
         </div >

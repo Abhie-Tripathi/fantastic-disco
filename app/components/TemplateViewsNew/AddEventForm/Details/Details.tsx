@@ -42,9 +42,11 @@ interface Props {
   collapseMainEventForm: boolean;
   handleCollapseForm: (value: string) => void
   // setActiveBtn: (value: string) => void;
+  isApproved?:boolean;
+  setIsApproved?:(value:boolean) =>void
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
-  handleCollapseForm }: Props) => {
+  handleCollapseForm, isApproved, setIsApproved }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -239,6 +241,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
             <div className={styles.resgitrationContainer}><RegistrationForm
+            isApproved={isApproved} setIsApproved={setIsApproved}
               registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
               // setRegisterModal={setRegisterModal}
               handleChange={handleChange}
