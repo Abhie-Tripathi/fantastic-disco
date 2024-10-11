@@ -9,7 +9,7 @@ const RegisterModal = () => {
             <div className={styles.subheading}> Please note that capacity and availability settings apply when registration is open.</div>
             <div className={styles.regisBtnContainer}>
                 <div className={styles.heading}>
-                    Over-Capacity Waitlist
+                    Accept Registration
                 </div>
                 <input
                     type="checkbox"

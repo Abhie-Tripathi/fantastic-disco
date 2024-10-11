@@ -14,7 +14,7 @@ const CapacityModal = () => {
             </div>
             <div className={styles.waitlistContainer}>
                 <div className={styles.heading}>
-                    Accept Registration
+                    Over-Capacity Waitlist
                 </div>
                 <input
                     type="checkbox"
