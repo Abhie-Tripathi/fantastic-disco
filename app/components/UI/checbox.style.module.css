@@ -65,6 +65,7 @@
   /* Show the checkmark when checked */
   .container input:checked ~ .checkmark:after {
     display: block;
+    box-sizing: content-box
   }
   
   /* Style the checkmark/indicator */

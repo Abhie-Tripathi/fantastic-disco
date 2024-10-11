@@ -10,9 +10,9 @@ import Manage from '/public/manageTracker.svg';
 import Image from "next/image";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
-import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import { GAEvent } from '@/utils/GAEvent';
 import { SettingsGear, User } from 'geist-icons';
+import { useTrackerServices } from '@/services/trackerServices';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -22,6 +22,7 @@ const Index = () => {
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()
+  const {getTrackerDetail, error}=useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
     if (last === "trackedEvents") setTrackerSection("Tracked Events")
@@ -34,36 +35,48 @@ const Index = () => {
       setView("");
     }
     if (last === "savedEvents") setTrackerSection("Saved Events")
-    if (last === "manageAccess") setTrackerSection("Manage Access")
+    if (last === "manageAccess") {
+      setTrackerSection("Manage Access")
+      setView("");
+    }
   }, [last])
   console.log(trackerSection);
   const [data, setData] = useState<any>([]);
   useEffect(() => {
-    const fetchData = async () => {
-      const url = `${baseUrl}/tracker/${secondLast}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: 'GET'
-        });
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          console.log('Data fetched:', data);
-          setData(data);
-        }
-      } catch (err) {
-        console.error('Fetch failed:', err);
-      }
-    };
+    // const fetchData = async () => {
+    //   const url = `${baseUrl}/tracker/${secondLast}`;
+    //   try {
+    //     const { data, error } = await myFetch(url, {
+    //       method: 'GET'
+    //     });
+    //     if (error) {
+    //       console.error('Error fetching data:', error);
+    //     } else {
+    //       console.log('Data fetched:', data);
+    //       setData(data);
+    //     }
+    //   } catch (err) {
+    //     console.error('Fetch failed:', err);
+    //   }
+    // };
 
     fetchData();
   }, [secondLast]);
+  const fetchData=async()=>{
+      const result = await getTrackerDetail(secondLast)
+      if(result){
+        setData(result);
+      }
+      if(error){
+        console.error('Error fetching data:', error);
+      }
+  }
   return (
     <>
       <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
-            last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
+             last === "editTracker"
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
                 : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)

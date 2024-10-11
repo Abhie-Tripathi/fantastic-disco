@@ -164,35 +164,6 @@
         justify-content: center;
     }
 
-    .topView {
-        /* background-color: #F9F9FF; */
-        width: 100%;
-        align-items: center;
-        display: flex;
-        height: 45%;
-        border-radius: var(--border-radius-md);
-    }
-
-    .bottomView {
-        width: 100%;
-        height: 60%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .bottomViewOne {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .bottomInnerView {
-        display: flex;
-        height: 100%;
-        align-items: center;
-        gap: 5px;
-    }
 
     .domain {
         padding: 4px 8px;
@@ -200,17 +171,6 @@
         border-radius: var(--border-radius-sm);
         color: var(--primary-color);
         font-size: var(--font-size-small);
-    }
-
-    .bottomViewTwo {
-        font-size: var(--font-size-large);
-        font-weight: var(--font-weight-bold);
-        color: var(--primary-color);
-    }
-
-    .text {
-        font-weight: var(--font-weight-medium);
-        color: var(--tertiary-text-color);;
     }
 
     .modalContainer {

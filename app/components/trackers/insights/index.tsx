@@ -1,18 +1,23 @@
 import React from 'react'
 import styles from './insights.style.module.css'
+import ToggleBtn from '../../UI/ToggleBtn'
 const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
   // const rank=["Country Rank","Category Rank"];
   const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
-  
+  const commonClasses={
+    filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
+    filterHeading:`text-[var(--primary-color)] font-medium`,
+    toggleContainer:`p-[12px] border border-[var(--border-color)] flex justify-between items-center gap-[var(--spacing-sm)] rounded-[var(--border-radius-sm)]`,
+  }
   return (
     <div className={styles.container}>
       <div className={styles.formatFreq}>
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Visitors</div>
-                    <div className={styles.allCat} style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Visitors</div>
+                    <div className="flex flex-wrap gap-3" style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
                         {eventSize?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -30,25 +35,14 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                         ))}
                     </div>
                 </div>
-      <div className={styles.format}>
-                    <div className={styles.formatHead} style={{display:"flex", justifyContent:"space-between"}}>
+      <div className={commonClasses.filter}>
+                    <div className="items-center text-[var(--primary-color)] font-medium" style={{display:"flex", justifyContent:"space-between"}}>
                     Estimated Exhibitor
                     <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${isExhibitOpen ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
+            <ToggleBtn isTrue={isExhibitOpen}/>
           </div>
                     </div>
-                    <div className={styles.allCat} style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
+                    <div className="flex flex-wrap gap-3" style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
                         {exhibitScore?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -66,38 +60,16 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                         ))}
                     </div>
                         </div>
-                        <div className={styles.branded}>
-                    <div className={styles.formatHead}>Event Analytics</div>
+                        <div className={commonClasses.toggleContainer}>
+                    <div className="flex items-center text-[var(--primary-color)] font-medium">Event Analytics</div>
                     <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                // onChange={() => {}}
-                                // checked={}
-                                defaultChecked
-                                disabled
-                              />
-                              <span className={`${styles.slider}`}></span>
-                            </label>
-                          </span>
+                     <ToggleBtn isTrue={false}/>
                         </div>
             </div>
-            <div className={styles.branded}>
-                    <div className={styles.formatHead}>Economic Impact</div>
+            <div className={commonClasses.toggleContainer}>
+                    <div className="flex items-center text-[var(--primary-color)] font-medium">Economic Impact</div>
                     <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                // onChange={() => {}}
-                                // checked={}
-                                defaultChecked
-                                disabled
-                              />
-                               <span className={`${styles.slider}`}></span>
-                            </label>
-                          </span>
+                         <ToggleBtn isTrue={false}/>
                         </div>
             </div>
                 {/* <div className={styles.branded}>
@@ -137,24 +109,13 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
             </span>
           </div>
         </div> */}
-      <div className={styles.branded}>
-          <div className={styles.formatHead}>
+      <div className={commonClasses.toggleContainer}>
+          <div className="flex items-center text-[var(--primary-color)] font-medium">
             Trust Score
             {/* {parseInt(trustScore) > 0 && <span className={styles.circle}> {trustScore}</span>} */}
           </div>
           <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${isTrustOpen ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
+            <ToggleBtn isTrue={isTrustOpen}/>
           </div>
         </div>
       

@@ -649,35 +649,26 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   };
   console.log(notes);
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col items-start w-full h-full border rounded-[12px]" style={{border:"1px solid var(--border-color)"}}>
       {notes ? (
         <div
-          className={styles.commentDiv}
+          className="h-[85%] w-full overflow-y-scroll relative"
           ref={containerRef}
-          style={{ position: "relative" }}
+          // style={{ position: "relative" }}
         >
           <div
-            className={styles.cont}
-            style={{
-              position: "absolute",
-              width: "100%",
-              top: 0,
-              left: 0,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: `${height}px`,
-              background: theme === "dark" ? "white" : "#1a1a1a",
-              zIndex: drop ? 1 : 0,
-              overflowY: "scroll",
-              opacity: drop ? 0.5 : 0,
-            }}
+           className="min-h-full absolute w-full top-0 left-0 flex justify-center items-center overflow-y-scroll bg-[var(--primary-foreground)]"
+           style={{
+             height: `${height}px`,
+             zIndex: drop ? 1 : 0,
+             opacity: drop ? 0.5 : 0,
+           }}
             onDragEnter={onDragEnter}
             onDragOver={handleDragOver}
             onDragLeave={onDragLeave}
             onDrop={handleDrop}
           ></div>
-          <ul className={styles.comments} ref={commentRef}>
+          <ul className="flex flex-col items-start justify-center gap-6 w-full list-none" ref={commentRef}>
             {notes.map((comment: IComment) => (
               <li
                 className={
@@ -716,12 +707,13 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       ) : null}
       {replyId && (
         <div
-          className={theme === "light" ? styles.replyDivLight : styles.replyDiv}
+          // className={theme === "light" ? styles.replyDivLight : styles.replyDiv}
+          className="p-[10px] text-left flex cursor-pointer gap-2 w-full justify-between flex-col bg-[var(--background-secondary-color)]"
         >
-          <div className={styles.outerReplyDiv}>
-            <div className={styles.replyText}>
-              <div className={styles.bar}></div>
-              <div className={styles.name}>{replyName}</div>
+          <div className="py-5 px-2.5 bg-black bg-opacity-20 w-full rounded-2xl flex justify-between">
+            <div className="overflow-hidden relative m-0">
+              <div className="absolute bg-[var(--primary-color)] w-1 h-full"></div>
+              <div className="pl-4 pb-2 text-[var(--primary-color)]">{replyName}</div>
               <div className={styles.replyText1}>{replyText}</div>
             </div>
 
@@ -732,8 +724,8 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         </div>
       )}
       <div
-        className={`${styles.notesAdd}
-          `}
+        className="p-2 w-full bg-[var(--heading-background-color)] rounded-bl-[12px] rounded-br-[12px]"
+        style={{borderTop:"1px solid var(--border-color)"}}
       >
         <AddComment
         allUsers={users}
@@ -870,7 +862,7 @@ const Comment = ({
         comment.type === "MESSAGE" ? (
         <>
           <div className={styles.comment__user}>
-            <header>
+            <header className="flex flex-row justify-start gap-2 h-fit">
               <span className={styles.imgContainer}>
                 {/* <Image
                   width={50}
@@ -882,12 +874,13 @@ const Comment = ({
                 <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={50} width={50} />
               </span>
               <div
-                className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
-                  }`}
+                // className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
+                //   }`}
+                className="flex flex-col"
               >
-                <span>
+                <span className="font-medium">
                   {comment.user?.firstname} {comment.user?.lastname}
-                  <span>
+                  <span className="text-[var(--tertiary-text-color)]">
                     {" "}
                     @
                     {`${comment.user.firstname}${comment.user.lastname
@@ -896,7 +889,7 @@ const Comment = ({
                   </span>
                 </span>
 
-                <p className={styles.designationText}>
+                <p className="text-[var(--tertiary-text-color)] text-sm">
                 {comment?.user?.UserDetail?.designation}
                 </p>
               </div>
@@ -910,31 +903,31 @@ const Comment = ({
             commentText={comment.text}
           />
           <div
-            className={styles.text}
+            className="flex flex-col gap-1 ml-[58px]"
             style={{
               background: comment?.parentCommentId
-                ? theme === "light"
-                  ? "var(--secondary-bg-light)"
-                  : "#1a1a1a"
+                ? "var(--background-secondary-color)"
+                  
                 : "none",
             }}
           >
-            <div className={styles.commentText}>
+            <div className="block">
               <span>{userName}</span>{" "}
               {comment?.parentCommentId && (
                 <div
-                  className={
-                    theme === "light" ? styles.replyDivLight : styles.replyDiv
-                  }
+                  // className={
+                  //   theme === "light" ? styles.replyDivLight : styles.replyDiv
+                  // }
+                  className="p-[10px] text-left flex gap-2 w-full justify-between flex-col cursor-pointer"
                   onClick={(e) => getCommentPos(e, comment.parentCommentId)}
                 >
-                  <div className={styles.outerReplyDiv}>
-                    <div className={styles.replyText}>
-                      <div className={styles.bar}></div>
+                  <div className="py-5 px-2.5 bg-black bg-opacity-20 w-full rounded-2xl flex justify-between">
+                    <div className="overflow-hidden relative m-0">
+                      <div className="absolute bg-[var(--primary-color)] w-1 h-full"></div>
                       {comment.parentCommentId !== null ?
-                        <div className={styles.name}>{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
+                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
                         :
-                        <div className={styles.name}>{comment?.replyName}</div>
+                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment?.replyName}</div>
                       }
 
                       <div className={styles.replyText1} id={comment.parent?.id}>
@@ -1032,7 +1025,7 @@ const Comment = ({
                    </div> */}
                               <p
                                 key={index}
-                                style={{ margin: 0, padding: "0px 20px" }}
+                                style={{ margin: 0, padding: "0px 20px", paddingBottom:"10px" }}
                               >
                                 {item}
                               </p>
@@ -1091,6 +1084,7 @@ const Comment = ({
             {/* {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
               <div key={index}>{item.Attachment.fileName}</div>
             ))} */}
+            {comment.CommentFiles.length>0 &&
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}
@@ -1099,9 +1093,9 @@ const Comment = ({
               {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
 
                 (item.Attachment && item?.Attachment?.fileType === "IMAGE" ? (
-                  <div key={index}>
+                  <div key={index} className="w-[200px] h-[150px]">
                     <Image
-                      style={{ borderRadius: "5px" }}
+                      style={{ borderRadius: "5px", width:"200px", height:"150px" }}
                       src={item?.Attachment?.filePath}
                       alt={item.name}
                       width={200}
@@ -1113,7 +1107,7 @@ const Comment = ({
                     className={`${styles.pdf} ${theme === "light" && styles.pdf_light
                       }`}
                   >
-                    <Image src={Pdf} width={50} height={50} alt="pdf" />
+                    <Image src={Pdf} width={50} height={50} alt="pdf" style={{width:"50px", height:"50px", maxWidth:"unset"}}/>
                     <p key={index} style={{ display: "flex" }}>
                       {item.Attachment && item?.Attachment[0]?.fileName}
                     </p>
@@ -1122,6 +1116,7 @@ const Comment = ({
               ))}
 
             </div>
+            }
             {/* <div style={{ display: "flex", gap: "10px"}}>
 
       {comment?.pdfs?.map((item: any, ind: number) => (
@@ -1152,10 +1147,10 @@ const Comment = ({
               ))}
             </div> */}
           </div>
-          <div className={styles.options}>
+          <div className="relative mx-[3.6rem] mt-1 gap-[var(--spacing-sm)] flex flex-row items-center text-[var(--tertiary-text-color)] text-sm font-mediu">
             {/* <ButtonView view={"upvoteBtn"} /> */}
             <div
-              className={styles.likeSection}
+              className={`${styles.likeSection} flex cursor-pointer gap-1 py-1 px-2 border-[0px] rounded-[20px] ml-[-10px]`}
               onClick={() => handleLiked(comment.id, comment?.userLiked)}
             >
               <div className={styles.like}>
@@ -1165,17 +1160,17 @@ const Comment = ({
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div className={styles.likeCount} >{comment._count && comment?._count.Commentlikes}</div>
+              <div>{comment._count && comment?._count.Commentlikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
-              className={styles.replyBtn}
+              className="cursor-pointer font-medium"
             >
               Reply
             </button>
             {/* <ButtonView view={"replyBtn"} /> */}
             {comment?.created ? (
-              <p>
+              <p className="font-medium">
                 {new Date(comment.created).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",

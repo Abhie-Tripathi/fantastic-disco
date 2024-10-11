@@ -1,0 +1,1 @@
+export const BaseURL = process.env.NEXT_PUBLIC_EVENTGENI_URL;

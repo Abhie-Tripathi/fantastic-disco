@@ -21,6 +21,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { showToast } from '@/utils/showToast';
 import EventType from "@/app/components/Search/Dropdowns/EventType";
 import Loading from "@/app/components/UI/Loading";
+import ToggleBtn from "@/app/components/UI/ToggleBtn";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -180,23 +181,31 @@ const userRating=
    let toggleOpend: Toggle={};
   if(data?.tracker?.filterValue?.userType)
   toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
+  const commonClasses={
+    filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
+    filterHeading:`text-[var(--primary-color)] font-medium`,
+    data:`text-xs text-[var(--secondary-text-color)] p-1`,
+    allValues: `flex gap-3`
+  }
+  console.log(toggleOpend);
+  
   return (
     <>
     {loading ? <Loading/> :
-    <div className={styles.container}>
-    <div className={`${styles.containerTop}`}>
-      <div className={styles.containerTopLeft}>
+    <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
+    <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3">
+      <div className="flex items-center gap-2">
         <div>
           <CustomeTracker fillColor="#6750a4" />
         </div>
-        <div className={styles.trackerType}>
-          <div className={styles.heading}>{type} Tracker</div>
-          <div className={styles.content}>
+        <div className="flex flex-col">
+          <div className="text-[var(--primary-color)] font-bold text-lg">{type} Tracker</div>
+          <div className="text-sm text-[var(--secondary-text-color)]">
             Select from the available data filters to create a tracker
           </div>
         </div>
       </div>
-      <div className={styles.outerRight}>
+      <div className="flex gap-2">
         <div className={styles.containerTopRightTwo} >
           <button onClick={() => setDel(true)}>Delete</button>
         </div>
@@ -229,7 +238,7 @@ const userRating=
       <>
         <div className={styles.innerContainer}>
           <div
-            className={styles.innerContainerLeft}
+            className="border rounded-[var(--border-radius-sm)]" 
             style={{ paddingLeft: "20px" }}
           >
             <div className={styles.advanceHead}>Product and Topics</div>
@@ -345,7 +354,7 @@ const userRating=
     
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
+        className="border rounded-[var(--border-radius-sm)]" 
         style={{ border: "1px solid var(--border-color)" }}
       >
         {data && (
@@ -360,19 +369,19 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
       <div className={styles.formatFreq}>
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Location</div>
-                    <div className={styles.location}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Location</div>
+                    <div className="flex flex-col">
                         {locations?.map((item: string, id: number) => (
                             <>
-                                <span className={styles.item}>{item}</span>
+                                <span className="text-xs text-[var(--secondary-text-color)]">{item}</span>
                             </>
                         ))}
                     </div>
                 </div>
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Type</div>
-                    <div className={styles.allCat}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Type</div>
+                    <div className={commonClasses.allValues}>
                         {eventType?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -384,16 +393,16 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item}</span>
+                                    <span className={commonClasses.data}>{item}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
 
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Format</div>
-                    <div className={styles.allCat}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Format</div>
+                    <div className={commonClasses.allValues}>
                         {format?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -405,7 +414,7 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
                                 </label>
                             </>
                         ))}
@@ -421,17 +430,17 @@ const userRating=
                         ))}
                     </div>
                 </div> */}
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Date</div>
-                    <div className={styles.allCat}>
-                    <div className={styles.item}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Date</div>
+                    <div className={commonClasses.allValues}>
+                    <div className={commonClasses.data}>
                     {startDate?.length>0&&formatDate(startDate)}{"-"}{endDate?.length>0&&formatDate(endDate)}
                     </div>
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Status</div>
-                    <div className={styles.allCat}>
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Status</div>
+                    <div className={commonClasses.allValues}>
                         {eventStatus?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -443,15 +452,15 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Entry</div>
-                    <div className={styles.allCat}>
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Entry</div>
+                    <div className={commonClasses.allValues}>
                         {eventEntry?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -463,16 +472,16 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
                     <div className={keyStyles.toggle_container}>
-            <span>
+            {/* <span>
               <label className={keyStyles.switch}>
                 <input
                   type="checkbox"
@@ -483,10 +492,11 @@ const userRating=
                 />
                 <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
               </label>
-            </span>
+            </span> */}
+            <ToggleBtn isTrue={toggleOpend?.rating === true}/>
           </div>
                     </div>
-                    <div className={styles.allCat}>
+                    <div className={commonClasses.allValues}>
                         {userRating?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -532,7 +542,6 @@ const userRating=
     <div className={styles.line}></div>
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Advance Intel</div>
@@ -552,7 +561,6 @@ const userRating=
     <div className={styles.line}></div>
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Insights &#x26; Score</div>
@@ -589,9 +597,8 @@ const userRating=
       </div>
     </div>
     <div className={styles.line}></div>
-    <div className={styles.innerContainer}>
+    <div className={styles.innerContainer} style={{paddingBottom:"24px"}}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Audience Intel</div>

@@ -4,6 +4,7 @@ import Trackers from ".././AllTrackers";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { useTrackerServices } from "@/services/trackerServices";
 import Loading from "@/app/components/UI/Loading";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
@@ -58,6 +59,7 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
 
 const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:{setDataPresent:any, dataPresent:any, isData:boolean, setSingleTrackerData:any, singletTrackerData:any}) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
+  const [isInetialRender,setIsInetialRender]=useState(true);
   const [allTracker, setAllTracker] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
@@ -67,67 +69,87 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const [totalCount,setTotalCount]=useState(0);
   const [loadOne,setLoadOne]=useState(false);
   const [loadTwo,setLoadTwo]=useState(false);
+  const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
   useEffect(() => {
-    const fetchData = async () => {
-     if(isData){
-      setLoading(true);
-      setError(null);
-      setLoadOne(true);
+    // const fetchData = async () => {
+    //  if(isData){
+    //   setLoading(true);
+    //   setError(null);
+    //   setLoadOne(true);
       
-      try {
-        const firstFetchResult = await myFetch(
-          `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
-        );
+    //   try {
+    //     const firstFetchResult = await myFetch(
+    //       `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
+    //     );
 
-        if (firstFetchResult.error) {
-          setError('Create your first tracker!');
-          setLoading(false);
-          setLoadOne(false);
-          console.log(firstFetchResult.error);
-          return;
-        } else if (firstFetchResult.data) {
-          if (firstFetchResult.data.trackerData.length === 0) {
-            setLoading(false);
-            setLoadOne(false);
-            return;
-          } else {
-            setAllTracker((prevAllTracker:any[])=> [
-              ...prevAllTracker,...firstFetchResult.data.trackerData
+    //     if (firstFetchResult.error) {
+    //       setError('Create your first tracker!');
+    //       setLoading(false);
+    //       setLoadOne(false);
+    //       console.log(firstFetchResult.error);
+    //       return;
+    //     } else if (firstFetchResult.data) {
+    //       if (firstFetchResult.data.trackerData.length === 0) {
+    //         setLoading(false);
+    //         setLoadOne(false);
+    //         return;
+    //       } else {
+    //         setAllTracker((prevAllTracker:any[])=> [
+    //           ...prevAllTracker,...firstFetchResult.data.trackerData
               
-            ]);
-            if(allTracker.length===0)
-            setSingleTrackerData(firstFetchResult.data.trackerData[0]);
-            setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
-            setTotalCount(firstFetchResult.data.totalCount)
-          setLoadOne(false);
-          setLoadTwo(true);
-            // const secondFetchResult = await myFetch(
-            //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
-            // );
+    //         ]);
+    //         if(allTracker.length===0)
+    //         setSingleTrackerData(firstFetchResult.data.trackerData[0]);
+    //         setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
+    //         setTotalCount(firstFetchResult.data.totalCount)
+    //       setLoadOne(false);
+    //       setLoadTwo(true);
+    //         // const secondFetchResult = await myFetch(
+    //         //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
+    //         // );
 
-            // if (secondFetchResult.data) {
-            //   setAllTracker((prevAllTracker:any[]) => [
-            //     ...prevAllTracker, ...secondFetchResult.data.trackerData
+    //         // if (secondFetchResult.data) {
+    //         //   setAllTracker((prevAllTracker:any[]) => [
+    //         //     ...prevAllTracker, ...secondFetchResult.data.trackerData
                 
-            //   ]);
-            //   setLoadTwo(false);
-            // }
-          }
-        }
+    //         //   ]);
+    //         //   setLoadTwo(false);
+    //         // }
+    //       }
+    //     }
 
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Error fetching data.');
-      } finally {
-        setLoading(false);
-      }}
+    //   } catch (err) {
+    //     console.error('Error fetching data:', err);
+    //     setError('Error fetching data.');
+    //   } finally {
+    //     setLoading(false);
+    //   }}
      
-    };
-
+    // };
     fetchData();
   }, [page, trackerPerPage]);
-
+  const fetchData=async()=>{
+    setLoadOne(true);
+    const result= await getTrackers(`offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
+    // setAllTracker(result.trackerData);
+    if(result){
+    setAllTracker((prevAllTracker:any[])=> [
+                ...prevAllTracker,...result?.trackerData
+                
+              ]);
+              if(allTracker.length===0)
+                console.log(Math.ceil(result.totalCount / trackerPerPage));
+       if(isInetialRender){         
+      setSingleTrackerData(result.trackerData[0]);
+      setIsInetialRender(false);
+       }
+    setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
+    setTotalCount(result.totalCount)
+    setLoading(false);
+    setLoadOne(false);
+            }
+  }
   const handleNextPage = () => {
     if (page < totalPage - 1) {
       setPage(page + 1);

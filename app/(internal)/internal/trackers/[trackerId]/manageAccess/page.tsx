@@ -146,15 +146,15 @@ const Page = () => {
     // }, [id]);
     
     return (
-        <div className={styles.container}>
-            <div className={`${styles.containerTop}`}>
-                <div className={styles.containerTopLeft}>
+        <div className="flex flex-col items-center gap-6">
+            <div className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3" style={{zIndex:"5"}}>
+                <div className='flex items-center'>
                     <div></div>
-                    <div className={styles.trackerType}>
-                        <div className={styles.heading} onClick={shareFunction}>
+                    <div className="flex flex-col">
+                        <div className="text-[var(--primary-color)] font-bold text-lg" onClick={shareFunction}>
                             Share Tracker
                         </div>
-                        <div className={styles.content}>
+                        <div className="text-sm text-[var(--secondary-text-color)]">
                             Select people within your team and share your tracker details
                         </div>
                     </div>
@@ -163,13 +163,14 @@ const Page = () => {
                     <button onClick={shareFunction}>Share Tracker</button>
                 </div>
             </div>
-            <div className={styles.containerBottom}>
+            <div className='flex gap-2 w-[calc(100vw-134px)] mt-[140px]'>
             <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div>
-                <div className={styles.containerBottomLeft}>
-                    <TrackerOwner adminData={userAccessData?.access?.admin}/>
+                <div className="flex w-[40%] h-fit">
+                    {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
+                    <TrackerUser userData={userAccessData?.access?.admin} type="admins" heading="Tracker Owners"/>
                 </div>
-                <div className={styles.containerBottomRight}>
-                    <TrackerUser userData={userAccessData?.access?.other} fetchAccess={fetchAccess} setSendInvite={setSendInvite}/>
+                <div className="flex w-[60%]">
+                    <TrackerUser userData={userAccessData?.access?.other} fetchAccess={fetchAccess} setSendInvite={setSendInvite} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

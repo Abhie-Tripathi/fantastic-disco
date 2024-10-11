@@ -197,25 +197,26 @@ const ShareModal: React.FC<ShareModalProps> = ({
             }
         }, [id, isClicked]);
   return (
-    <div className={styles.innerModal}>
-                        <div className={styles.shareHead}>Share Tracker</div>
+    <div className="flex flex-col w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+                        <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
                         {/* <div className={styles.bar}></div> */}
                         {/* <div className={styles.linkCopy}>
                             <div className={styles.link}>{currentUrl}</div>
                             <div className={styles.copy} onClick={copyURL}>Copy link</div>
                         </div> */}
-                        <div className={styles.inviteAccess}>
+                        <div className="flex gap-1 border border-[var(--border-color)] rounded-[4px] items-stretch">
                         <div className={styles.accountImg}>
                             <Image src={Account} alt="account" />
                         </div>
                             <div className={styles.inputArea}>
                                 <input type="text" 
+                                className='w-full border-0 text-[var(--primary-text-color)] outline-none bg-inherit p-2'
                                 value={filter}
                                 placeholder='Invite others by email or name' onChange={handleFilterChange} />
                             </div>
                         </div>
                         {filter?.length > 0 && filteredData?.length > 0 && drop &&
-                      <div className={styles.dropdown}>
+                      <div className="relative w-full inline-block">
                           <div className={styles.dropdownContent}>
                               {filteredData.map((item: any) => (
                                   <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName, item?.email)}>
@@ -225,7 +226,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                           </div>
                       </div>}
                             
-                        <div className={styles.buttons} >
+                        <div className="flex gap-3 flex-row-reverse" >
                             <button className={styles.send} onClick={shareInvites}>Send Invite</button>
                             <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
                         </div>

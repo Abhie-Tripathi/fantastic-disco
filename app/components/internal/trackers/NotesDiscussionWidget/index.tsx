@@ -1,5 +1,6 @@
 import UserProfile from '@/app/components/userProfile/UserProfile';
 import Reply from '@/public/reply.svg'
+import { File } from 'geist-icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import React,{useState,useEffect} from 'react';
@@ -25,7 +26,7 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note, red
     console.log(note);
     
     return (
-      <Link href={`${redirectUrl}`} className="flex w-full flex-col gap-6 border rounded-[12px] p-4 border-[var(--border-color)]">
+      <Link href={`${redirectUrl}`} className="flex w-full flex-col gap-6 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
           <div className="flex items-center gap-2 text-[var(--primary-color)]">
             <div className="font-semibold">Notes & Discussions</div>
           </div>
@@ -38,18 +39,29 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note, red
                 <div className="flex gap-2">
                   {note && (
                     <>
-                      <div className="flex items-center justify-center">
-                        <UserProfile name={`${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`} />
-                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        {note[0]?.user?.UserDetail?.attachment?.filePath?<Image src={note[0]?.user?.UserDetail?.attachment?.filePath} alt="userProfile" height={40} width={40} style={{borderRadius:"50%", height:"40px", width:"40px"}}/>:(
+                          <div style={{display:"flex"}}>
+                              <UserProfile name={`${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`} />
+                              </div>
+                        )}
                       <div className="flex flex-col">
                         <div className="font-semibold">{`${note[0]?.user?.firstname} ${note[0]?.user?.lastname}`}</div>
-                        <div className="text-xs text-[var(--secondary-text-color)]">
-                          {note[0]?.content.length > 50 
-                            ? `${note[0]?.content.substring(0, 50)}...`
+                        {note[0]?.content.length!==0?
+                        (<div className="text-xs text-[var(--secondary-text-color)]">
+                          {note[0]?.content.length > 40 
+                            ? `${note[0]?.content.substring(0, 40)}...`
                             : note[0]?.content
                           }
-                        </div>
+                        </div>):(
+                          <div className='flex items-center gap-1'>
+                            <File width='12px' height='12px' style={{color:"var(--secondary-text-color)"}}/>
+                            <span className='text-xs text-[var(--secondary-text-color)]'>Attachment</span></div>
+                        )
+                        }
                       </div>
+                      </div>
+                      
                     </>
                   )}
                 </div>

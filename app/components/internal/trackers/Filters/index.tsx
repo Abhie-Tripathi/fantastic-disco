@@ -2,6 +2,22 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import EventTypeSelector from "@/components/eventType";
+import CategorySelector from "@/components/categorySelector";
+import EventFormatSelector from '@/app/components/basicFilters/eventFormat';
+import EventStatusSelector from "@/app/components/basicFilters/eventStatus";
+import EventEntrySelector from "@/app/components/basicFilters/eventEntry";
+import UserRatingSelector from "@/app/components/basicFilters/userRatingSelector";
+import MaturitySelector from "@/app/components/advanceFilters/maturity"
+import LocationSelector from "@/app/components/basicFilters/location";
+import EstimatedVisitorsSelector from "@/app/components/advanceFilters/visitors";
+import GlobalAndTouringSelector from "@/components/advancedFilters/globalAndTouring";
+import EstimatedExhibitorsSelector from "@/components/advancedFilters/estimatedExhibitors";
+import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
+import AudienceProfileSelector from "@/components/advancedFilters/audienceDes&Dep";
+import ProductSelector from "@/components/product&Topics"
+import AudienceSpreadSelector from "@/components/advancedFilters/audienceSpread"
+import {useTrackerServices} from '@/services/trackerServices'
 import Image from "next/image";
 import Url from '/public/url.svg'
 import CloseIcon from "/public/internal/cross.svg";
@@ -70,6 +86,10 @@ import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
 import { Button as Button10x } from "10xui";
+import FrequencySelector from "@/app/components/advanceFilters/frequency";
+import ForecastedStatusSelector from "@/app/components/advanceFilters/forecastedStatus";
+import EventAnalyticsSelector from "@/app/components/advanceFilters/eventAnalytics";
+import EventRankingSelector from "@/app/components/advanceFilters/eventRanking";
 interface FilterValue {
   labels: string;
   name: string;
@@ -297,8 +317,10 @@ const templates = [
 ]
 const Pages = () => {
   const searchParams = useSearchParams();
+  const {createTracker}=useTrackerServices();
   interface SelectedLocation {
-    [id: string]: string;
+    id: string;
+    description: string | undefined;
   }
   const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
@@ -313,7 +335,7 @@ const Pages = () => {
   const last = pathName[pathName.length - 1];
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [categoryData, setCategoryData] = useState<>();
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
@@ -893,25 +915,29 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(data);
-
-      if (error) {
-        console.log(error);
-        setIsCreating(false);
-        return;
-      }
-      if (data) {
-        console.log(data);
-
+      // const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+      //   method: "POST",
+      //   body: JSON.stringify(formData),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+      // console.log(data);
+      const result= await createTracker(formData);
+      // console.log(result);
+      if(result){
         router.replace("/internal/trackers");
       }
+      // if (error) {
+      //   console.log(error);
+      //   setIsCreating(false);
+      //   return;
+      // }
+      // if (data) {
+      //   console.log(data);
+
+      //   router.replace("/internal/trackers");
+      // }
     }
   };
 
@@ -925,7 +951,7 @@ const Pages = () => {
 
       if (data) {
         console.log(data);
-        setCatgeoryData(data);
+        setCategoryData(data);
       }
     };
     fetchData();
@@ -1367,28 +1393,32 @@ useEffect(()=>{
   const handleUploadEnable = () => {
     setUploadEnabled(!uploadEnabled)
   }
+const commonCss={
+  input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
+  input:'flex justify-between items-center'
+}
 
   return (
     <>
     <div>{isLoading?<Loading/>:
     <>
     <div
-      className={`${styles.topContainer}`}
-      style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "54px" }}
+      className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3"
+      style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "54px", zIndex:'5' }}
     >
-      <div className={styles.topInnerContainerLeft}>
+      <div className="flex items-center gap-2">
         <div>
           <Image src={userOne} alt="userOne" />
         </div>
         <div>
-          <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
-          <div className={styles.createContent}>
+          <div className="text-[var(--primary-color)] font-bold text-lg">Create {template && <span>{template.templateName}</span>} Tracker</div>
+          <div className="text-sm text-[var(--secondary-text-color)]">
             Select from the available data filters to create a tracker
           </div>
         </div>
       </div>
 
-      <div className={styles.topInnerContainerRight}>
+      <div className="flex gap-3">
         <Link
           href={
             last === "create"
@@ -1405,17 +1435,17 @@ useEffect(()=>{
         </button>
       </div>
     </div>
-    <div className={styles.allFilters} style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
+    <div className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
       <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div>
       <div
-        className={styles.searchContainer}
+        className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
         style={{
           border:
             isMandatory && trackerName.length === 0 ? "1px solid var(--danger-text-color)" : "",
         }}
       >
         <input
-          className={styles.textArea}
+          className="bg-inherit text-inherit outline-none p-[10px] px-0 border-none w-full"
           type="text"
           placeholder="Enter Tracker Name"
           value={trackerName}
@@ -1423,16 +1453,17 @@ useEffect(()=>{
         />
       </div>
       {type==="T_PRODUCT_KEYWORDS" &&
-      <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
-        <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}
+      <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
+        <div>
+        <div className="mb-4">{template?.description}
           <Button10x
+            className={styles.uploadBtn}
             style={{ color: "white", float: "right" }}
             variant="primary"
             size="sm"
             onClick={handleUploadEnable}
           >
-            <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+            <Share style={{marginBottom: "3px", color: "white", display:"flex", gap:"4px"}} height="15px" width="15px" />
             {" "}Upload
           </Button10x>
         </div>
@@ -1501,16 +1532,17 @@ useEffect(()=>{
       }
       
       {template && template.inputAreas &&
-        <div className={`card ${styles.competitor}`}>
+        <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
           {/* <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
             {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px", lineHeight: "32px"}}>{template.description}
+          <div className="mb-4">{template.description}
             {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
               <Button10x
+                className={styles.uploadBtn}
                 style={{ color: "white", float: "right" }}
                 variant="primary"
                 size="sm"
@@ -1578,13 +1610,13 @@ useEffect(()=>{
           </div>
           {template?.inputAreas &&
                   <div>
-                    <div className={styles.allInputArea}>
+                    <div className="flex w-[50%] items-stretch gap-2">
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
-                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                          <div key={index} className="flex w-full items-center gap-[10px] relative px-[10px] py-0 border border-[var(--border-color)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
                             {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                             <input
-                              className={styles.textArea}
+                              className="bg-inherit text-inherit outline-none py-2 px-0 border-none w-full"
                               type="text"
                               placeholder={inputArea.placeholder}
                               value={inputValues[index] || ''}
@@ -1618,10 +1650,10 @@ useEffect(()=>{
 
                         </>
                       ))}
-                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                      <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px]"
                         style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                       >
-                        <Image src={Add} alt="add_Icon" />
+                        <Image src={Add} alt="add_Icon" style={{width:"12px", height:"12px", maxWidth:"none"}} />
                       </div>
 
                     </div>
@@ -1640,17 +1672,17 @@ useEffect(()=>{
                 <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
               )}
               {customData && customData.length >0 &&
-                <div className={styles.allCompetitors}>
-                  <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
+                <div className="flex flex-col gap-2 mt-4">
+                  <div className="cursor-pointer text-[var(--danger-text-color)] text-sm font-medium w-fit" onClick={() => setCustomData([])}>
                     Remove All
                   </div>
-                  <div className={styles.table_container}>
-                  <table className={styles.allCustomData}>
+                  <div className="max-h-[300px] overflow-y-auto">
+                  <table className={`border border-[var(--border-color)] border-collapse w-[calc(50%-45px)] ${styles.allCustomData}`}>
                     <tbody>
                       {expandTable ? customData.map((item: any, index: number) => (
                           <tr key={index}>
                             <td>
-                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                              <div className="w-[15px] h-[15px] flex items-center justify-center text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item, index)}>-</div>
                             </td>
                             {Object.entries(item)
                               .map(([entryKey, value]) => 
@@ -1662,7 +1694,7 @@ useEffect(()=>{
                         customData.slice(0, 5).map((item: any, index: number) => (
                           <tr key={index}>
                             <td>
-                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                              <div className="w-[15px] h-[15px] flex items-center justify-center text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item, index)}>-</div>
                             </td>
                             {Object.entries(item)
                               .map(([entryKey, value]) => 
@@ -1687,10 +1719,10 @@ useEffect(()=>{
      {
      <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
       {type !== "CUSTOM" &&
-      <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
-      <div className={styles.hiddenFiltersInnerDiv}>
+      <div className="flex justify-between cursor-pointer" onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
+      <div className="flex items-center gap-1">
       <Plus style={{width:"16px", height:"16px"}} className="icons"/>
-      <div className={styles.hiddenFilterHeading}>Additional filters</div>
+      <div className="text-large font-bold text-[var(--primary-color)]">Additional filters</div>
       </div>
       <div><ChevronDown className="icons"/></div>
       </div>
@@ -1699,12 +1731,12 @@ useEffect(()=>{
       <Suspense fallback={<Loading />}>
       <div className={styles.container}>
         <div className={styles.sub_container}>
-          <div className={styles.inputdropdowns_container}>
+          <div className="grid grid-cols-5 gap-[var(--spacing-lg)]">
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
+                <div className={commonCss.input_container}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Event Type
                       {
@@ -1739,12 +1771,13 @@ useEffect(()=>{
                   setSelectedEventTypeName={setSelectedEventTypeName}
                 />
               </Popover>
-            </MenuTrigger>
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            </MenuTrigger> */}
+            <EventTypeSelector setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}/>
+            <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
+                <div className={commonCss.input_container}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Category
                       {categorySlug?.length > 1 ? (
@@ -1778,12 +1811,13 @@ useEffect(()=>{
                   />
                 </Dialog>
               </Popover>
-            </MenuTrigger>
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            </MenuTrigger> */}
+            <EventFormatSelector selectedStatuses={selectedEventFormat}
+                    setSelectedStatuses={setSelectedEventFormat}/>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
+                <div className={commonCss.input_container}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Event Format
                       {selectedEventFormat?.length > 1 ? (
@@ -1815,17 +1849,17 @@ useEffect(()=>{
                   />
                 </Dialog>
               </Popover>
-            </MenuTrigger>
+            </MenuTrigger> */}
 
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}
+                <div className={commonCss.input_container}
                   style={{
                     border:
                       isMandatory && type === "CUSTOM" && selectedLocations.length === 0 ? "1px solid var(--danger-text-color)" : "",
                   }}
                 >
-                  <div className={styles.input}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Location
                       {selectedLocations?.length > 1 ? (
@@ -1866,12 +1900,12 @@ useEffect(()=>{
                 </Dialog>
               </Popover>
             </MenuTrigger>
-
+            {/* <LocationSelector/> */}
 
             <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
+                <div className={commonCss.input_container}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Dates
                       {selectedDateRange.length > 0 &&
@@ -1972,11 +2006,11 @@ useEffect(()=>{
           </Popover>
         </MenuTrigger> */}
 
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
+      <EventStatusSelector setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
-                <div className={styles.input_container}>
-                  <div className={styles.input}>
+                <div className={commonCss.input_container}>
+                  <div className={commonCss.input}>
                     <div className={styles.input_title}>
                       Event Status
                       {selectedEventStatus?.length > 1 ? (
@@ -2007,12 +2041,12 @@ useEffect(()=>{
                   />
                 </Dialog>
               </Popover>
-            </MenuTrigger>
-
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            </MenuTrigger> */}
+            <EventEntrySelector selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}/>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Event Entry
                           {selectedEntry?.length > 1 ? (
@@ -2042,7 +2076,7 @@ useEffect(()=>{
                       data={eventEntryData}
                     />
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
             {/* Disabled */}
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
@@ -2081,11 +2115,10 @@ useEffect(()=>{
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={styles.dropdown_button}> */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+<UserRatingSelector/>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <Button className={styles.dropdown_button} >
                         <div className={styles.input_title} onClick={()=>{setIsPop(prev => ({ ...prev, rating: !prev.rating }))}}>
                           User Ratings
@@ -2119,14 +2152,13 @@ useEffect(()=>{
                         </div>
                       </div>
                     </div>
-                  {/* </Button> */}
                   <Popover className={styles.filterPopover} isOpen={isPop.rating} onOpenChange={() => setIsPop(prev => ({ ...prev, rating: !prev.rating }))}>
                     <UserRatings
                       state={selectedUserRatings}
                       setState={setSelectedUserRatings}
                     />
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
           </div>
 
           {/* <div className={styles.buttons_container}>
@@ -2154,10 +2186,10 @@ useEffect(()=>{
 
         <div>
           <div
-            className={`${styles.viewContainer}`}
+            className="bg-[var(--tabs-background-color)] py-2.5 mx-0 my-6 rounded-[var(--border-radius-lg)] flex items-center justify-center relative"
           >
-            <div className={styles.viewTypeButtons_container}>
-              <div className={styles.advanceFilterBtns}>
+            <div className="flex items-center">
+              <div className={`flex items-center gap-2 ${styles.advanceFilterBtns}`}>
                 <button
                   onClick={() => setSelectedAdvFilter("AP")}
                   className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
@@ -2187,10 +2219,10 @@ useEffect(()=>{
           {showAdvanceFilter && selectedAdvFilter === "AP" && (
             <div className={styles.inputdropdowns_container}>
 
-<MenuTrigger onOpenChange={setMenuOpen}>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Regularity & Edition
                           {selectedRegularity[0] !== 0 && (
@@ -2209,13 +2241,6 @@ useEffect(()=>{
                       </div>
                     </div>
                   </Button>
-                  {/* <Popover className={styles.filterPopover}>
-                    <RangeSlider
-                      state={selectedEventEdition}
-                      setState={setSelectedEventEdition}
-                      sliderType="reverse"
-                    />
-                  </Popover> */}
                   <Popover className={styles.filterPopover}>
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
@@ -2227,23 +2252,17 @@ useEffect(()=>{
                       )}
                     </Dialog>
                   </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                </MenuTrigger> */}
+                <MaturitySelector/>
+                <GlobalAndTouringSelector source="tracker"/>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Global & Touring
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
                       </div>
                     </div>
                   </Button>
@@ -2256,7 +2275,7 @@ useEffect(()=>{
                       setSelectedBrandedEvent={setSelectedBrandedEvent}
                     />
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <div className={styles.disabledBtn}>
@@ -2283,41 +2302,25 @@ useEffect(()=>{
                 </div>
               </div>
             </MenuTrigger> */}
-
-<MenuTrigger onOpenChange={setMenuOpen}>
+<ForecastedStatusSelector/>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Forecasted Status
                         </div>
 
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-
-                        {/* <div className={styles.toggle_container}>
-                          <span>
-                            <label className={styles.switch}>
-                              <input
-                                type="checkbox"
-                                onChange={() => {
-                                  setSelectedBrandedEvent((prev) => !prev);
-                                }}
-                                checked={selectedBrandedEvent}
-                                disabled={true}
-                              />
-                              <span className={styles.slider}></span>
-                            </label>
-                          </span>
-                        </div> */}
                       </div>
                     </div>
                   </div>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                </MenuTrigger> */}
+                <FrequencySelector selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Event Frequency
                           {selectedEventFrequency?.length > 1 ? (
@@ -2341,55 +2344,54 @@ useEffect(()=>{
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover}>
-                    {/* <Dialog> */}
                     <EventAdvFilter
                       state={selectedEventFrequency}
                       setState={setSelectedEventFrequency}
                       data={eventFrequencyData}
                     />
-                    {/* </Dialog> */}
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
               {type!=="T_PRODUCT_KEYWORDS" &&
-              <MenuTrigger onOpenChange={setMenuOpen}>
-                <Button>
-                  <div className={styles.input_container}>
-                    <div className={styles.input}>
-                      <div className={styles.input_title}>
-                        Product / Topics
-                        {selectedEventKeywords?.length > 1 ? (
-                          <span className={styles.input_selected_no}>
-                            {selectedEventKeywords.length}
-                          </span>
-                        ) : (
-                          <span className={styles.input_selected_title}>
-                            {selectedEventKeywords[0]?.charAt(0)==="-"?selectedEventKeywords[0]?.replaceAll("_", " ").substring(1):selectedEventKeywords[0]?.replaceAll("_", " ")}
-                          </span>
-                        )}
-                      </div>
-                      <Image
-                        src={DropIcon}
-                        alt="dropicon"
-                        width={12}
-                        height={12}
-                        className={iconClass}
-                      />
-                    </div>
-                  </div>
-                </Button>
-                <Popover className={styles.filterPopover}>
-                  <Dialog className={`${styles.dialogBorder} ${styles.noBorder}`}>
-                    {({ close }) => (
-                      <EventKeyword
-                        state={selectedEventKeywords}
-                        setState={setSelectedEventKeywords}
-                        onClose={close}
-                      />
-                    )}
-                  </Dialog>
-                </Popover>
-              </MenuTrigger>
+              // <MenuTrigger onOpenChange={setMenuOpen}>
+              //   <Button>
+              //     <div className={commonCss.input_container}>
+              //       <div className={commonCss.input}>
+              //         <div className={styles.input_title}>
+              //           Product / Topics
+              //           {selectedEventKeywords?.length > 1 ? (
+              //             <span className={styles.input_selected_no}>
+              //               {selectedEventKeywords.length}
+              //             </span>
+              //           ) : (
+              //             <span className={styles.input_selected_title}>
+              //               {selectedEventKeywords[0]?.charAt(0)==="-"?selectedEventKeywords[0]?.replaceAll("_", " ").substring(1):selectedEventKeywords[0]?.replaceAll("_", " ")}
+              //             </span>
+              //           )}
+              //         </div>
+              //         <Image
+              //           src={DropIcon}
+              //           alt="dropicon"
+              //           width={12}
+              //           height={12}
+              //           className={iconClass}
+              //         />
+              //       </div>
+              //     </div>
+              //   </Button>
+              //   <Popover className={styles.filterPopover}>
+              //     <Dialog className={`${styles.dialogBorder} ${styles.noBorder}`}>
+              //       {({ close }) => (
+              //         <EventKeyword
+              //           state={selectedEventKeywords}
+              //           setState={setSelectedEventKeywords}
+              //           onClose={close}
+              //         />
+              //       )}
+              //     </Dialog>
+              //   </Popover>
+              // </MenuTrigger>
+              <ProductSelector/>
                 }
 
 
@@ -2507,11 +2509,11 @@ useEffect(()=>{
                   </Dialog>
                 </Popover>
               </MenuTrigger> */}
-
-<MenuTrigger onOpenChange={setMenuOpen}>
+<EstimatedVisitorsSelector selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
-                      <div className={styles.input_container}>
-                      <div className={styles.input}>
+                      <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Event Visitors
                           {selectedVisitors?.length > 1 ? (
@@ -2543,12 +2545,12 @@ useEffect(()=>{
                       />
                     </Dialog>
                   </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={styles.dropdown_button}> */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                </MenuTrigger> */}
+        <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
+                        setSelectedRanges={setSelectedExhibitScore}source="tracker"/>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <Button className={styles.dropdown_button} style={{margin: '-16px'}}>
                         <div className={styles.input_title}
                         onClick={()=>{setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}} 
@@ -2585,7 +2587,6 @@ useEffect(()=>{
                         </div>
                       </div>
                     </div>
-                  {/* </Button> */}
                   <Popover isOpen={isPop.exhibit} onOpenChange={() => setIsPop(prev => ({ ...prev, exhibit: !prev.exhibit }))}>
                       <EventAdvFilter
                         state={selectedExhibitScore}
@@ -2593,7 +2594,7 @@ useEffect(()=>{
                         data={eventExhibitScoreData}
                       />
                 </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.disabledBtn}>
@@ -2669,37 +2670,15 @@ useEffect(()=>{
                   />
                 </Popover>
               </MenuTrigger> */}
-
-<MenuTrigger onOpenChange={setMenuOpen}>
+<EventAnalyticsSelector/>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Event Analytics
-                          {/* {rankToggles.isEventRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedEventRank[0]} , {selectedEventRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isLocalRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedLocalRank[0]} , {selectedLocalRank[1]}]
-                            </span>
-                          )}
-                          {rankToggles.isAviationRank && (
-                            <span className={styles.input_selected_title}>
-                              [{selectedAviationRank[0]} ,{selectedAviationRank[1]}]
-                            </span>
-                          )} */}
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
                       </div>
                     </div>
                   </Button>
@@ -2720,46 +2699,29 @@ useEffect(()=>{
                       )}
                     </Dialog>
                   </Popover>
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                </MenuTrigger> */}
+            <EstimatedEconomicImpactSelector source="tracker" />
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Economic Impact
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
                       </div>
                     </div>
-                  {/* </Button> */}
-                </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
+                </MenuTrigger> */}
+                <EventRankingSelector/>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Event Ranking
                           {selectedTrustScore[0] > 0 &&
                             <span className={styles.selected_no_filters}>1</span>
                           }
                         </div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
                   </Button>
@@ -2784,7 +2746,7 @@ useEffect(()=>{
                       )}
                     </Dialog>
                   </Popover>
-                </MenuTrigger>
+                </MenuTrigger> */}
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button>
@@ -2870,8 +2832,8 @@ useEffect(()=>{
 
 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                         Audience Quality Score
                           {/* {selectedEventAttendanceRange[0] !== undefined ? (
@@ -2910,8 +2872,8 @@ useEffect(()=>{
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Exhibitor Quality Score
                         </div>
@@ -2939,26 +2901,18 @@ useEffect(()=>{
                     </Dialog>
                   </Popover>
                 </MenuTrigger>
-
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+                
+                <AudienceProfileSelector/>
+                {/* <MenuTrigger onOpenChange={setMenuOpen}>
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                           Audience Des &amp; Dept
                         </div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                       </div>
                     </div>
-                  {/* </Button> */}
-                </MenuTrigger>
+                </MenuTrigger> */}
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.disabledBtn}>
@@ -2997,45 +2951,22 @@ useEffect(()=>{
                 </Dialog>
               </Popover>
               </MenuTrigger> */}
-
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
-                    <div className={styles.input_container}>
-                      <div className={styles.input}>
+<AudienceSpreadSelector/>
+{/* <MenuTrigger onOpenChange={setMenuOpen}>
+                  
+                    <div className={commonCss.input_container}>
+                      <div className={commonCss.input}>
                         <div className={styles.input_title}>
                         Audience Spread
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
-                            </span>
-                          ) : (
-                            ""
-                          )} */}
+                         
                         </div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                       
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                       </div>
                     </div>
-                  {/* </Button> */}
-                  {/* <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <EventAttendance
-                          state={selectedEventAttendanceRange}
-                          setState={setSelectedEventAttendanceRange}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover> */}
-                </MenuTrigger>
+                 
+                 
+                </MenuTrigger> */}
            
             </div>
           )}

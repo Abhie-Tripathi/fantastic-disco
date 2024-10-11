@@ -94,7 +94,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   return (
     <div className="card cursor-pointer" onClick={()=>setSingleTrackerData(item)}
-    style={{border: singleTrackerData.id===item.id?"1px solid var(--primary-color)":"" }}
+    style={{border: singleTrackerData?.id===item.id?"1px solid var(--primary-color)":"" }}
     >
      
         <div className="flex justify-between">
@@ -109,7 +109,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]">
           {locations?.length > 0 && locations[0]}
           {locations?.length > 1 && (
-            <span className={styles.moreBtn}>+{locations.length - 1}</span>
+            <span className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</span>
           )}
         </div>
         </>
@@ -119,7 +119,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
           </div>
           <div className="flex gap-2">
           <div className="flex w-full h-[100px]">
-          <div className="flex gap-2 w-[100%]">
+          <div className="flex gap-2 w-[100%] text-xs">
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
                 <Image src={Vectore6} alt="newVector" width={12} height={12}/>

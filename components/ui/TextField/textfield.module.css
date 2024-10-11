@@ -1,0 +1,34 @@
+.textfield {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.textlabel {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #7d7d7d;
+}
+
+.textinput,
+.textarea {
+  padding: 0.286rem 0.571rem;
+  height: 36px;
+  margin: 0;
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  background: white;
+  font-size: 16px;
+  color: #171717;
+}
+
+.textinput[data-focused] {
+  outline: 2px solid #0072f5;
+  outline-offset: -1px;
+}
+
+.textarea[data-focused] {
+  outline: 2px solid #0072f5;
+  outline-offset: -1px;
+}

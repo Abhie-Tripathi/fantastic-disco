@@ -168,7 +168,7 @@ const shareFunction = () => {
 console.log(share);
 
   return (
-    <div className={styles.commonCardOuter}>
+    <div className="flex flex-col w-full gap-6">
     {
       loading && 
       <div style={{display:"flex", justifyContent:"center", width:"100%"}}>
@@ -176,7 +176,7 @@ console.log(share);
       </div>
     }
       {item?.tracker ? (
-        <div className={styles.commonCardOuter} style={{gap:"10px"}}>
+        <div className="flex flex-col w-full gap-2">
         <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>
 
           <div className={styles.cardOne}>
@@ -188,7 +188,7 @@ console.log(share);
           {locations?.length>0 && 
             <>
             <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
-            <div className={styles.location}>
+            <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]">
               {locations?.length > 0 && locations[0]}
               {locations?.length > 1 && (
                 <span className={styles.moreBtn}>+{locations.length - 1}</span>
@@ -197,10 +197,10 @@ console.log(share);
             </>
           }
           </div>
-          <div className={styles.cardThree} style={{ height: "auto" }}>
-            <div className={styles.cardThreeLeft} style={{ flexDirection: "column" }}>
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
+          <div className="flex w-full pt-1" style={{ height: "auto" }}>
+            <div className="flex gap-4 w-full flex-col">
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore6} alt="newVector" />
                 New
@@ -213,7 +213,7 @@ console.log(share);
                     <div >New</div>
                   </div>
                 </div>
-                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
@@ -226,8 +226,8 @@ console.log(share);
                     Active</div>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
                     {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired.toLocaleString('en-US')}
                   </div>
@@ -235,7 +235,7 @@ console.log(share);
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
                     Expired</div>
                 </div>
-                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
                     0
                   </div>

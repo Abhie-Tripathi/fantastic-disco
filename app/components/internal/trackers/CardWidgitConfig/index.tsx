@@ -18,7 +18,7 @@ const CardWidgitConfig: React.FC<CardWidgitConfigProps> = ({
   redirectUrl
 }) => {
   return (
-    <Link href={`${redirectUrl}`} className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)]">
+    <Link href={`${redirectUrl}`} className="flex flex-col gap-2 border rounded-[12px] p-4 w-[100%] border-[var(--border-color)] bg-[var(--primary-foreground)]">
     
       <div className='flex justify-between gap-4' style={{color:"var(--primary-color)"}}>
         <div className='font-semibold'>{heading}</div>

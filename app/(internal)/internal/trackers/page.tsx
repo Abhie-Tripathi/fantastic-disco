@@ -17,7 +17,7 @@ import {
 } from "geist-icons";
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
-import NotiicationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
 import CardWidgitNote from "@/app/components/internal/trackers/CardWidgitNote";
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
@@ -119,6 +119,7 @@ import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
 import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
 import ShareModal from "@/app/components/internal/trackers/shareModal";
 import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
+import { useTrackerServices } from "@/services/trackerServices";
 
 interface Search {
   searchParams: {
@@ -277,6 +278,7 @@ const Trackers = ({ searchParams }: Search) => {
   const [singleTrackerData,setSingleTrackerData]=useState();
   const [isLoading, setIsLoading] = useState(true);
   const [currentUrl, setCurrentUrl] = useState('');
+  const {getSavedEvents, getNotes}=useTrackerServices();
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
@@ -388,8 +390,8 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [updateSteps]);
   console.log(currentUrl);
   
-  const [note,setNote]=useState();
-  const [savedEvents,setSavedEvents]=useState();
+  const [note,setNote]=useState(null);
+  const [savedEvents,setSavedEvents]=useState(null);
   console.log(singleTrackerData);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
@@ -405,33 +407,45 @@ const Trackers = ({ searchParams }: Search) => {
   }, [singleTrackerData]);
   console.log(hideTemplate);
   const fetchNote=async(id:string)=>{
-    const url =
-    `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
-    const { data, error } = await myFetch(url);
-    if (data) {
-      // setNotes([]);
-      console.log(data);
-      // setNotes(data.comments.reverse());
-      if (data.comments?.length > 0){
-        console.log(data);
+    // const url =
+    // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
+    // const { data, error } = await myFetch(url);
+    // if (data) {
+    //   // setNotes([]);
+    //   console.log(data);
+    //   // setNotes(data.comments.reverse());
+    //   if (data.comments?.length > 0){
+    //     console.log(data);
         
-        setNote(data.comments);
-      }else setNote("");
-    }
+    //     setNote(data.comments);
+    //   }else setNote("");
+    // }
+    const result= await getNotes(id,`limit=1&offset=0`)
+    console.log(result);
+    
+    if(result.comments?.length > 0){
+      setNote(result?.comments);
+    }else 
+    setNote(null);
+    
   }
   const fetchSavedEvent=async(id:string)=>{
-    const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
-    const { data, error } = await myFetch(url);
-    if (data) {
-      // setNotes([]);
-      console.log(data);
-      // setNotes(data.comments.reverse());
-      if (data?.count > 0){
-        console.log(data);
+    // const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
+    // const { data, error } = await myFetch(url);
+    // if (data) {
+    //   // setNotes([]);
+    //   console.log(data);
+    //   // setNotes(data.comments.reverse());
+    //   if (data?.count > 0){
+    //     console.log(data);
         
-        setSavedEvents(data);
-      }else setSavedEvents("");
-    }
+    //     setSavedEvents(data);
+    //   }else setSavedEvents("");
+    // }
+    const result= await getSavedEvents(id, `limit=2&offset=0`);
+    if(result?.count>0){
+      setSavedEvents(result);
+    }else setSavedEvents(null);
   }
   console.log(savedEvents);
   
@@ -525,7 +539,7 @@ const Trackers = ({ searchParams }: Search) => {
         </div>
         <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch">
-    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
+    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}/>
   </div>
   <div className="flex w-1/2 items-stretch">
   <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
@@ -533,7 +547,7 @@ const Trackers = ({ searchParams }: Search) => {
         </div>
         <div className="flex flex-row gap-3">
           <div className="flex w-1/2 items-stretch">
-            <NotiicationWidget/>
+            <NotificationWidget/>
           </div>
           <div className="flex w-1/2 items-stretch">
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
@@ -561,7 +575,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>
 {!hideTemplate && (
-          <div style={{position:"absolute", left:"70px", top:"70px", background:"white", display:"flex", right:"0", height:"calc(100vh - 70px)"}}>
+          <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]">
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
             <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
         style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
@@ -571,10 +585,9 @@ const Trackers = ({ searchParams }: Search) => {
           <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
-                  <div className={styles.innerContainerTwo}>
+                  <div className="w-full p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]">
                     <div
-                      className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
-                        }`}
+                      className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
                     >
                       <div className={styles.account}>
                         <Image src={item.img} alt="people" />
@@ -583,9 +596,9 @@ const Trackers = ({ searchParams }: Search) => {
                         <Image src={Template} alt="template" />
                       </div>
                     </div>
-                    <div className={styles.bottomView}>
-                      <div className={styles.bottomViewOne}>
-                        <div className={styles.bottomInnerView}>
+                    <div className="w-full h-[60%] flex flex-col gap-2">
+                      <div className="flex justify-between items-center">
+                        <div className="flex h-full items-center gap-1">
                           <Image
                             src={Vector1}
                             alt="vector1"
@@ -605,10 +618,10 @@ const Trackers = ({ searchParams }: Search) => {
                       Human Resources
                     </div> */}
                       </div>
-                      <div className={styles.bottomViewTwo}>
+                      <div className="text-[16px] font-bold text-[var(--primary-color)]">
                         {item?.trackerName}
                       </div>
-                      <div className={styles.text}>{item?.content}</div>
+                      <div className="font-medium text-[var(--tertiary-text-color)]">{item?.content}</div>
                     </div>
                   </div>
                 </Link>
