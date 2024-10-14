@@ -370,7 +370,10 @@ const Search = () => {
           ...(Object.entries(selectedCity).length > 0 && {eventCity : Object.keys(selectedCity).join(',')}),
           ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
           ...(selectedEventKeywords.length>0 &&{eventKeywords:selectedEventKeywords.join('+')}),
-          ...(selectedCategories?.length>0 && {eventCategory : selectedCategories.join(',')}),
+          ...(selectedCategories?.length>0 && {
+              eventCategory : (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(',')
+            }
+          ),
           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
           // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
           // labels:selectedLabels.join(','),
@@ -547,7 +550,10 @@ const Search = () => {
 
     // Category
     if (selectedCategories.length > 0) {
-      queryString.eventCategory = selectedCategories;
+      if(selectedCategories.length === categoryData.length)
+        queryString.eventCategory = ['all'];
+      else
+        queryString.eventCategory = selectedCategories;
     }
 
     // Location - Event Country
