@@ -174,7 +174,7 @@ const LocationDropdown = ({ theme, formState, handleChange
             {(formState.eventFormat === "Virtual" || formState.eventFormat === "Hybrid" || formState.eventFormat === "ONLINE") &&
                 <div className={styles.inputLinkContainer}>
                     <input type="text" placeholder='Enter Virtual Link' />
-                    <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above.</span></div>
+                    <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above</span></div>
                 </div>}
         </div>
     )
