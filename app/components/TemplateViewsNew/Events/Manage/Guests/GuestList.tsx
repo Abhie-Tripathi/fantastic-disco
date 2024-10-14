@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './guestlist.style.module.css'
 import SortIcon from '/public/filter.svg'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import DownloadIcon from '/public/downloadIcon.svg'
+import { useEventContext } from '@/context/eventcontext'
+import { baseUrl } from '@/constants'
+import { myFetch } from '@/utils/myFetch'
 
 const GuestList = () => {
 
@@ -13,8 +16,27 @@ const GuestList = () => {
   const [sortDropdown, setSortDropdown] = useState<boolean>(false)
   const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false))
   const sortDropdownRef = useOutsideClick(() => setSortDropdown(false))
+  const { eventId } = useEventContext();
+  
+  const [guests, setGuests] = useState<any[]>([{ name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }])
 
-  const guests = [{ name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }]
+  const fetchGuests = async()=>{
+    const {data, error} = await myFetch(`${baseUrl}/intend/users?source=eventgeni&eventId=${eventId}`)
+    if(error){
+      console.log("error is : ", error)
+    }else{
+      const fetchedGuests = data.users.map((user: any) => ({
+        name: `${user.firstname} ${user.lastname}`,
+        email: user.email,
+        status: "Pending", // Set a default status, can be changed based on your logic
+      }));
+      setGuests(fetchedGuests);
+    }
+  }
+
+  useEffect(()=>{
+    fetchGuests()
+  },[])
 
   return (
     <div className={styles.body}>
