@@ -46,10 +46,10 @@ interface Props {
     eventFlow: string;
     prefilledSubEvent?: EventsType | null;
     // setMainEventName: (value: string) => void
-    isApproved?:boolean;
-  setIsApproved?:(value:boolean) =>void
+    isApproved?: boolean;
+    setIsApproved?: (value: boolean) => void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent,isApproved, setIsApproved }: Props) => {
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
     // const [isApproved, setIsApproved] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
@@ -239,14 +239,11 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                         {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                     </div>
                     <div className={styles.resgitrationContainer}><RegistrationForm
-                        isApproved={isApproved}setIsApproved={setIsApproved}
+                        isApproved={isApproved} setIsApproved={setIsApproved}
                         registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
                         // setRegisterModal={setRegisterModal}
                         handleChange={handleChange}
                     /></div>
-
-
-
                     <div>
                         <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
                             // setDescriptionModal={setDescriptionModal}
@@ -255,7 +252,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             handleChange={handleChange} /></div>
                         {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                     </div>
-                    <div className={styles.resgitrationContainer}><WaitListAndCap isApproved={isApproved}setIsApproved={setIsApproved}/></div>
+                    <div className={styles.resgitrationContainer}><WaitListAndCap isApproved={isApproved} setIsApproved={setIsApproved} /></div>
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>

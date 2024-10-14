@@ -103,8 +103,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         <button onClick={handleDetailPage} className={styles.detailPageBtn}>Detail Page<Arrow /> </button>
                     </div>
                     <div className={styles.navbar}>
-                        <Link href={`/widget/events/manage/${eventId}/overview`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/overview` ? styles.activeItem : ""
-                            }`} >Overview</Link>
+                        <Link href={`/widget/events/manage/${eventId}/edit`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/edit` ? styles.activeItem : ""
+                            }`} >Edit</Link>
 
                         <Link href={`/widget/events/manage/${eventId}/guests`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/guests` ? styles.activeItem : ""
                             }`}>Guests</Link>

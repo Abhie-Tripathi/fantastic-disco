@@ -9,8 +9,7 @@ const Page = () => {
     const eventId = trackerParams[4]
     const router = useRouter()
     useEffect(()=>{
-        router.push(`/widget/events/manage/${eventId}/overview`)
-        console.log("this code ran")
+        router.push(`/widget/events/manage/${eventId}/edit`)
     },[])
     return (
         <div className={styles.body}>

@@ -263,7 +263,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
-        formData.append("file", speaker.profileImage || "")
+        formData.append(evebteImage || "")
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
