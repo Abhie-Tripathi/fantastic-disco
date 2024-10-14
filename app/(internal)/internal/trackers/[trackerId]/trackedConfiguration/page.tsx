@@ -52,6 +52,16 @@ interface Toggle{
   rating?:boolean;
   exhibit?:boolean;
   trust?:boolean;
+  maturity?: boolean;
+  brandedEvent?: boolean;
+  eventSeries?: boolean;
+  forecastedStatus?: boolean;
+  impactScore?: boolean;
+  inboundScore?: boolean;
+  internationalScore?: boolean;
+  eventRank?: boolean;
+  audienceZone?: boolean;
+  audienceSpread?: boolean;
 }
 interface EditData {
   tracker: Tracker;
@@ -543,9 +553,12 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
-          isBranded={data?.tracker?.filterValue?.brandedEvent}
+          isBranded={toggleOpend?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
+          eventSeries={toggleOpend?.eventSeries}
+          forecastedStatus={data?.tracker?.filterValue?.isforecasted}
+          maturity={data?.tracker?.filterValue?.maturity}
         />
       </div>
     </div>
@@ -585,6 +598,8 @@ const userRating=
             data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
           }
           eventSize={eventSize}
+          eventImpactScore={data?.tracker?.filterValue?.eventImpactSocre}
+          eventRankToggle={data?.tracker?.filterValue?.eventRanking}
         />
       </div>
     </div>
@@ -602,19 +617,23 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Intel
-         trustScore={data?.tracker?.filterValue?.trustScore}
-         reputation={data?.tracker?.filterValue?.reputationScore}
+        //  trustScore={data?.tracker?.filterValue?.trustScore}
+        //  reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
-          userRating={
-            data?.tracker?.filterValue?.eventRating
-              ? data?.tracker?.filterValue?.eventRating.split(",")
-              : []
-          }
+          // userRating={
+          //   data?.tracker?.filterValue?.eventRating
+          //     ? data?.tracker?.filterValue?.eventRating.split(",")
+          //     : []
+          // }
           exhibitScore={
             data?.tracker?.filterValue?.eventSize
               ? data?.tracker?.filterValue?.eventSize?.split(",")
               : []
           }
+          audienceZone={toggleOpend?.audienceZone}
+          audienceSpread={toggleOpend?.audienceSpread}
+          audienceSpreadCount={data?.tracker?.filterValue?.audienceSpread?.split(',').length}
+          audienceProfile={data?.tracker?.filterValue?.designation}
         />
       </div>
     </div>

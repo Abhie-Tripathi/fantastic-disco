@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--primary-color);
   /* cursor: pointer; */
   -webkit-transition: 0.4s;
   transition: 0.4s;
@@ -173,3 +173,14 @@
     display: flex;
     justify-content: space-between;
   }
+
+.selected_no_filters {
+  height: 20px;
+  width: 20px;
+  background-color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-rounded);
+  color: #fff;
+}
