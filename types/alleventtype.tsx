@@ -33,7 +33,7 @@ interface CustomizationData {
   registerBtnColor: string;
   registerBtnText: string;
   registerMessage: string;
-  speakerProfilesData: any[];
+  speaker: any[];
   participationMessage: string;
   venue: string;
   hashtags: string;

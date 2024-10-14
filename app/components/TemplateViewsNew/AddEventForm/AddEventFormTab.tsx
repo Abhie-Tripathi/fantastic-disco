@@ -235,8 +235,8 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     if (fetchEvents) {
                         fetchEvents(0, "update")
                     }
-                    if (mainEventState.speakerProfilesData.length > 0) {
-                        mainEventState.speakerProfilesData.map((speaker: SpeakerProfileType) => {
+                    if (mainEventState.speaker.length > 0) {
+                        mainEventState.speaker.map((speaker: any) => {
                             addSpeakers(data.data.id, speaker)
                         })
                     }
@@ -254,16 +254,16 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
 
     }
 
-    const addSpeakers = async (eventId: string, speaker: SpeakerProfileType) => {
+    const addSpeakers = async (eventId: string, speaker: any) => {
         const formData = new FormData()
         const speakerObject = {
-            name: speaker.name,
-            linkedIn: speaker.linkedin,
-            designation: speaker.designation
+            name: speaker.data.name,
+            linkedIn: speaker.data.linkedIn,
+            designation: speaker.data.designation
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
-        formData.append(evebteImage || "")
+        formData.append("file", speaker.imageUrl     || "")
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
@@ -454,7 +454,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
-            speaker: []
+            speaker: eventState.speaker
         };
 
         // Prepare the event data
@@ -476,7 +476,6 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
-
         };
 
         // Prepare formData for the request

@@ -43,7 +43,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     description: prefilledEvent?.description || prefilledSubEvent?.description || prefilledGlobalEvent?.description || "",
     textValue: prefilledEvent?.description || prefilledSubEvent?.description || prefilledGlobalEvent?.description || "",
     cityName: prefilledEvent?.cityName || prefilledSubEvent?.cityName || prefilledGlobalEvent?.cityName || "",
-    speakerProfilesData: [],
+    speaker: prefilledEvent?.customizationData.speaker || [],
     prefilledProfile: undefined,
     registerMessage: prefilledEvent?.customizationData.registerMessage || prefilledSubEvent?.customizationData.registerMessage || 'Welcome! To join the event, please register below.',
     registerBtnText: prefilledEvent?.customizationData.registerBtnText || prefilledSubEvent?.customizationData.registerBtnText || 'Register',

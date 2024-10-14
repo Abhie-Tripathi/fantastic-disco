@@ -55,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 registerBtnColor: eventData.customizationData?.registerBtnColor || "",
                 registerBtnText: eventData.customizationData?.registerBtnText || "",
                 registerMessage: eventData.customizationData?.registerMessage || "",
-                speakerProfilesData: eventData.customizationData?.speakerProfilesData || [],
+                speaker: eventData.customizationData?.speaker || [],
                 participationMessage: eventData.customizationData?.participationMessage || "",
                 venue: eventData.customizationData?.venue || "",
                 hashtags: eventData.customizationData?.hashtags || "",

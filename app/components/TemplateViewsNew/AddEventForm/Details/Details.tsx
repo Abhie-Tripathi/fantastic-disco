@@ -42,8 +42,8 @@ interface Props {
   collapseMainEventForm: boolean;
   handleCollapseForm: (value: string) => void
   // setActiveBtn: (value: string) => void;
-  isApproved?:boolean;
-  setIsApproved?:(value:boolean) =>void
+  isApproved?: boolean;
+  setIsApproved?: (value: boolean) => void
 }
 const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   handleCollapseForm, isApproved, setIsApproved }: Props) => {
@@ -51,9 +51,10 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
+  const [speakerIndex, setSpeakerIndex] = useState<number>(0)
 
-
-  const handlePrefill = (profile: SpeakerProfileType) => {
+  const handlePrefill = (profile: any, key: number) => {
+    setSpeakerIndex(key)
     handleChange('prefilledProfile', profile)
     // setPrefilledProfile(profile)
     handleChange('speakerModal', true)
@@ -70,23 +71,20 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
     handleChange('descriptionModal', false)
     // setDescriptionModal(false); // Close the modal
   }
-  const deleteSpeaker = (id: string) => {
-    handleChange('speakerProfilesData', (prevData: any) =>
-      prevData.filter((p: any) => p.id !== id)
-    );
-    handleChange('speakerModal', false)
-    // setSpeakerModal(false);
-    handleChange('prefilledProfile', undefined)
-    // setPrefilledProfile(undefined);
+  const deleteSpeaker = () => {
+    const updatedSpeakers = formState.speaker.filter((_: any, index: number) => index !== speakerIndex)
+    handleChange('speaker', updatedSpeakers)
+    handleChange('speakerModal', false);
+    handleChange('prefilledProfile', undefined);
   };
 
   const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
-    const currentSpeakers = formState.speakerProfilesData || [];
+    const currentSpeakers = formState.speaker || [];
     // Update the relevant speaker by mapping through the array
     const updatedSpeakers = currentSpeakers.map((p: any) =>
       p.id === updatedProfile.id ? updatedProfile : p
     );
-    handleChange('speakerProfilesData', updatedSpeakers);
+    handleChange('speaker', updatedSpeakers);
     handleChange('speakerModal', false)
     // setSpeakerModal(false);
     handleChange('prefilledProfile', undefined)
@@ -241,7 +239,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
             <div className={styles.resgitrationContainer}><RegistrationForm
-            isApproved={isApproved} setIsApproved={setIsApproved}
+              isApproved={isApproved} setIsApproved={setIsApproved}
               registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
               // setRegisterModal={setRegisterModal}
               handleChange={handleChange}
@@ -254,7 +252,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
                 handleChange={handleChange} /></div>
               {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
-            {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
+            {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
               // setSpeakerModal={setSpeakerModal} 
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                 <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
@@ -296,7 +294,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       {
         formState.speakerModal && <div className={styles.speakerModal}>
           <SpeakerModal
-            speakerProfilesData={formState.speakerProfilesData}
+            speakerProfilesData={formState.speaker}
             handleChange={handleChange}
             // setSpeakerProfilesData={setSpeakerProfilesData} 
             // setSpeakerModal={setSpeakerModal} 
