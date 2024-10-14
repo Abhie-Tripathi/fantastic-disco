@@ -1156,10 +1156,9 @@ const Pages = () => {
       );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? (
-              (editData?.tracker?.filterValue?.eventCategory?.[0].id === 'all') ? categoryData?.map((cat: any) => cat.id) :
-              (editData?.tracker?.filterValue?.eventCategory?.map((cat: Cat) => cat.id))
-            )
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
+            (cat: Cat) => cat.id
+          )
           : []
       );
       setSelectedEventFormat(
@@ -1188,10 +1187,9 @@ const Pages = () => {
       );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? (
-              (editData?.tracker?.filterValue?.eventCategory?.[0].id === 'all') ? categoryData?.map((cat: any) => cat.name) :
-              (editData?.tracker?.filterValue?.eventCategory?.map((cat: Cat) => cat.name))
-            )
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
+            (cat: Cat) => cat.name
+          )
           : []
       );
       const eventCountry =
