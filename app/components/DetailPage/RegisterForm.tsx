@@ -124,7 +124,7 @@ const RegisterForm = ({
               <div className={styles.text_container}>
                 <div className={styles.event_full_text}>Event Full</div>
                 <div className={styles.waitlist_text}>
-                  If you`&apos;`d like, you can join the waitlist.
+                  If you&apos;d like, you can join the waitlist.
                 </div>
               </div>
             </div>
