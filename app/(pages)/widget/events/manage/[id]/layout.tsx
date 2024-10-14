@@ -51,6 +51,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             parentData: "",
             customizationData: {
                 pageBgColor: eventData.customizationData?.pageBgColor || "",
+                pageGradient : eventData.customizationData?.pageGradient || "",
+                confettiType : eventData.customizationData?.confettiType || "",
                 eventFont: eventData.customizationData?.eventFont || "",
                 registerBtnColor: eventData.customizationData?.registerBtnColor || "",
                 registerBtnText: eventData.customizationData?.registerBtnText || "",

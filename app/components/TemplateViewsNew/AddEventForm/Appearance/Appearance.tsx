@@ -10,6 +10,7 @@ import ProgressBar from './ProgressBar'
 import { AllEventsType, EventsType } from '@/types/alleventtype'
 
 interface Props {
+    setFormTheme : (value : string) => void
     pageBgColor: string;
     setPageBgColor: (value: string) => void
     setPageGradient : (value : string) => void
@@ -29,7 +30,7 @@ interface Props {
     prefilledEvent?: EventsType | null
 }
 
-const Appearance = ({ setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
+const Appearance = ({setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -45,7 +46,7 @@ const Appearance = ({ setPageBgColor, pageBgColor,setConfettiType, eventFont, se
                 <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
                 <div className={styles.line}></div>
                 <div className={styles.colorContainer}>
-                    <ColorContainer setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
+                    <ColorContainer setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.fontContainer}>

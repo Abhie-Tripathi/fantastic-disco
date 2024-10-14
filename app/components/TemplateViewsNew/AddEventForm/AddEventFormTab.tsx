@@ -23,6 +23,7 @@ interface SpeakerProfileType {
 
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
+    formTheme : string;
     pageBgColor: string;
     pageGradient: string;
     confettiType: string;
@@ -48,7 +49,7 @@ interface Props {
     setIsApproved?:(value:boolean) =>void
 }
 
-const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -177,6 +178,8 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             }
             const eventCustomizationData = {
                 pageBgColor,
+                pageGradient,
+                confettiType,
                 eventFont,
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
@@ -323,6 +326,8 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         }
         const eventCustomizationData = {
             pageBgColor,
+            pageGradient,
+            confettiType,
             eventFont,
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
@@ -627,6 +632,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
                     </div>) : (eventFlow === 'main' &&
                         <Details
+                            formTheme = {formTheme}
                             handleCollapseForm={handleCollapseForm}
                             formState={mainEventState}
                             handleChange={handleMaineventChanges}
@@ -640,6 +646,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
+                    formTheme = {formTheme}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}

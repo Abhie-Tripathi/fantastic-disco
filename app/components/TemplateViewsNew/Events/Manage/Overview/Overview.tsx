@@ -16,6 +16,8 @@ interface Props {
   hashtags?: string;
   timeZone?: string;
   pageBgColor?: string;
+  pageGradient? : string;
+  confettiType? : string;
   eventFont?: string;
   locationCity?: string;
   locationCountry?: string;
@@ -26,7 +28,7 @@ interface Props {
   setDeleteModalTwo : (value: boolean) => void;
 }
 
-const Overview = ({ eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo,isPresentinWidget }: Props) => {
+const Overview = ({ eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor,pageGradient,confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo,isPresentinWidget }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const handleDeleteModal = () => {
@@ -41,7 +43,7 @@ const Overview = ({ eventId, imageUrl, eventName, startDate, endDate, startTime,
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewShareContainer}>
-          <EventSmallDetailView participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
+          <EventSmallDetailView participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
           <div className={styles.shareContainer}>
             <div className={styles.shareHeading}>Share</div>
             <ShareButtons disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`}/>

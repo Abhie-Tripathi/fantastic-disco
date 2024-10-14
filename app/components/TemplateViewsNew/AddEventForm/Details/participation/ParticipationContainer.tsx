@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './participation.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
@@ -18,6 +18,7 @@ import { FormState } from '@/types/Formstate'
 interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
   formState: FormState
+  formTheme : string;
   // setParticipationType: (value: string) => void
   heading: string;
   // participationType: string;
@@ -35,7 +36,7 @@ interface Props {
 
 const ParticipationContainer = ({
   // setParticipationType, participationType,
-  size, theme, type, handleChange, formState,
+  size, theme, type, handleChange, formState, formTheme,
   // setParticipationMessage, participationMessage,  isEventParticipationEmpty, setIsEventParticipationEmpty, isParticipationMessageEmpty, setIsParticipationMessageEmpty, 
   heading }: Props) => {
   const mainOptions = [
@@ -103,7 +104,7 @@ const ParticipationContainer = ({
         {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please add your message!</p>}
       </div>
     );
-  }, [formState.participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);
+  }, [formState.participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);      
 
   return (
     <div className={`${styles.body} ${theme === "dark" ? styles.darkBody : ""}`}>
@@ -111,7 +112,7 @@ const ParticipationContainer = ({
         <>
           <div className={styles.header}>
             <Image src={type === "main" ? ParticipationIcon : ConfettiIcon} alt='svg' />
-            <span>{heading}</span>
+            <span className={formTheme === "dark" ? styles.darkHeading : styles.lightHeading}>{heading}</span>
           </div>
           <div className={`${styles.options} ${formState.isEventParticipationEmpty ? styles.errorHighlight : ""}`}>
             {options.map((option) => (
@@ -121,7 +122,7 @@ const ParticipationContainer = ({
                 onClick={() => handleSelection(option.value)}
               >
                 <Image src={option.icon} alt={`${option.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54} />
-                <span>{option.label}</span>
+                <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{option.label}</span>
               </div>
             ))}
           </div>

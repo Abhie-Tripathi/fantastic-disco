@@ -4,17 +4,16 @@ import { SketchPicker } from 'react-color';
 import { baseUrl, useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { myFetch } from '@/utils/myFetch';
-import colorPicker from '/public/colorPick.png';
-import Image from 'next/image';
 
 interface Props {
+    setFormTheme: (value: string) => void
     pageBgColor: string;
     setPageBgColor: (value: string) => void
     setPageGradient: (value: string) => void
     setConfettiType: (value: string) => void
 }
 
-const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfettiType }: Props) => {
+const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
     const { theme } = useTheme()
 
     const [selectedTheme, setSelectedTheme] = useState<string>("")
@@ -29,7 +28,8 @@ const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfe
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
     }
-    const handleColorClick = (color: any, index: any, theme: string) => {
+    const handleColorClick = (color: any, index: any, theme: string, formTheme: string) => {
+        setFormTheme(formTheme)
         if (theme === "minimal") {
             setSelectedColorIndex(index)
             const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
@@ -140,7 +140,7 @@ const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfe
                                         backgroundColor: key === selectedColorIndex ? 'transparent' : color,
                                         borderColor: key === selectedColorIndex ? color : 'transparent',
                                     }}
-                                    onClick={() => handleColorClick(color, key, "minimal")}
+                                    onClick={() => handleColorClick(color, key, "minimal", "light")}
                                 >
                                     {key === selectedColorIndex && (
                                         <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>
@@ -154,13 +154,21 @@ const ColorContainer = ({ setPageBgColor, pageBgColor, setPageGradient, setConfe
                         </div>
                     </div>
                 </div>}
-                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("gradient")}><PaintIcon /> <span>Gradient</span></div>
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("gradient")}><PaintIcon /> <span>Light Gradient</span></div>
                 {selectedTheme === "gradient" && <div className={styles.gradientThemeContainer}>
-                    <div onClick={() => handleColorClick("greenmint", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(114,125,194,1) 0%, rgba(206,242,177,1) 100%)' }}></div>
-                    <div onClick={() => handleColorClick("candy", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,177,217,1) 93%)' }}></div>
-                    <div onClick={() => handleColorClick("orange", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,222,177,1) 93%)' }}></div>
-                    <div onClick={() => handleColorClick("purblue", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%)' }}></div>
-                    <div onClick={() => handleColorClick("watermelon", 0, "gradient")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(177,242,235,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("greenmint", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(220,255,180,1) 0%, rgba(197,231,207,1) 52%, rgba(169,231,224,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("candy", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(240,194,206,1) 0%, rgba(252,206,210,1) 46%, rgba(246,186,239,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("orange", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(255,196,147,1) 0%, rgba(255,168,122,1) 46%, rgba(235,205,171,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("purblue", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(149,166,251,1) 0%, rgba(152,169,214,1) 25%, rgba(129,159,201,1) 52%, rgba(173,155,197,1) 78%, rgba(254,152,173,1) 100%)' }}></div>
+                    <div onClick={() => handleColorClick("watermelon", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%)' }}></div>
+                </div>}
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("gradient")}><PaintIcon /> <span>Dark Gradient</span></div>
+                {selectedTheme === "gradient" && <div className={styles.gradientThemeContainer}>
+                    <div onClick={() => handleColorClick("darkgreenmint", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(143,186,93,1) 0%, rgba(131,193,148,1) 52%, rgba(121,182,176,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("darkcandy", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(240,143,168,1) 0%, rgba(201,133,138,1) 46%, rgba(191,142,186,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("darkorange", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(189,132,85,1) 0%, rgba(190,101,53,1) 46%, rgba(221,169,111,1) 93%)' }}></div>
+                    <div onClick={() => handleColorClick("darkpurblue", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(89,114,241,1) 0%, rgba(92,131,235,1) 25%, rgba(111,137,173,1) 52%, rgba(173,155,197,1) 78%, rgba(186,114,129,1) 100%)' }}></div>
+                    <div onClick={() => handleColorClick("darkwatermelon", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'linear-gradient(90deg, rgba(228,202,246,1) 0%, rgba(194,150,212,1) 0%, rgba(200,117,117,1) 49%, rgba(130,199,172,1) 100%)' }}></div>
                 </div>}
                 <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("effects")}><PaintIcon /><span>Effects</span></div>
                 {selectedTheme === "effects" &&

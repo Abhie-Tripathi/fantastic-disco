@@ -29,6 +29,8 @@ export interface EventsType{
 }
 interface CustomizationData {
   pageBgColor: string;
+  pageGradient : string;
+  confettiType : string;
   eventFont: string;
   registerBtnColor: string;
   registerBtnText: string;

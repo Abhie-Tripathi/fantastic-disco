@@ -32,6 +32,7 @@ interface SpeakerProfileType {
   profileImage: File | null
 }
 interface Props {
+  formTheme : string;
   formState: FormState;
   handleChange: (field: keyof FormState, value: any) => void;
   prefilledEvent?: EventsType | null
@@ -45,7 +46,7 @@ interface Props {
   isApproved?: boolean;
   setIsApproved?: (value: boolean) => void
 }
-const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
+const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   handleCollapseForm, isApproved, setIsApproved }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,6 +72,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
     handleChange('descriptionModal', false)
     // setDescriptionModal(false); // Close the modal
   }
+
   const deleteSpeaker = () => {
     const updatedSpeakers = formState.speaker.filter((_: any, index: number) => index !== speakerIndex)
     handleChange('speaker', updatedSpeakers)
@@ -101,6 +103,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
       });
     }
   };
+
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (formState.eventName && formState.participationMessage) {
@@ -179,17 +182,12 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
   const handleFormCollapse = () => {
     handleCollapseForm("side")
   }
-  // useEffect(() => {
-  //   console.log("speaker are : ", formState.speakerProfilesData)
-  // }, [formState.speakerProfilesData])
 
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer
-            handleChange={handleChange} formState={formState}
-            heading='Choose Your Mode of Participation' type='main' size="large" />
+          <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme = {formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
           </div>
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
@@ -223,7 +221,7 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
             <div>
               <textarea
                 ref={textAreaRef}
-                className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
+                className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""} ${formTheme === "dark" ? styles.darkeventName : styles.lighteventName}`}
                 maxLength={80}
                 placeholder='Event Name'
                 style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
@@ -232,9 +230,9 @@ const Details = ({ formState, handleChange, prefilledEvent, eventFont, setLoadin
               />
               {formState.isEventNameEmpty && <p className={styles.errorMessage}>{formState.errorMessage}</p>}
             </div>
-            <div className={styles.dateTimeContainer}><DateTimeContainer handleChange={handleChange} formState={formState} /></div>
+            <div className={styles.dateTimeContainer}><DateTimeContainer formTheme={formTheme} handleChange={handleChange} formState={formState} /></div>
             <div>
-              <div className={`${styles.locationContainer}`} ><LocationContainer handleChange={handleChange}
+              <div className={`${styles.locationContainer}`} ><LocationContainer formTheme={formTheme} handleChange={handleChange}
                 formState={formState} /></div>
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>

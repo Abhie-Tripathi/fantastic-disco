@@ -37,6 +37,7 @@ interface SpeakerProfileType {
     profileImage: File | null
 }
 interface Props {
+    formTheme : string;
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
     prefilledEvent?: EventsType | null
@@ -49,11 +50,12 @@ interface Props {
     isApproved?: boolean;
     setIsApproved?: (value: boolean) => void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
+const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
     // const [isApproved, setIsApproved] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
     const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
+    const [speakerIndex, setSpeakerIndex] = useState<number>(0)
 
     const handlePrefill = (profile: SpeakerProfileType) => {
         handleChange('prefilledProfile', profile)
@@ -73,23 +75,20 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
         handleChange('descriptionModal', false)
         // setDescriptionModal(false); // Close the modal
     }
-    const deleteSpeaker = (id: string) => {
-        handleChange('speakerProfilesData', (prevData: any) =>
-            prevData.filter((p: any) => p.id !== id)
-        );
-        handleChange('speakerModal', false)
-        // setSpeakerModal(false);
-        handleChange('prefilledProfile', undefined)
-        // setPrefilledProfile(undefined);
-    };
+    const deleteSpeaker = () => {
+        const updatedSpeakers = formState.speaker.filter((_: any, index: number) => index !== speakerIndex)
+        handleChange('speaker', updatedSpeakers)
+        handleChange('speakerModal', false);
+        handleChange('prefilledProfile', undefined);
+      };
 
     const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
-        const currentSpeakers = formState.speakerProfilesData || [];
+        const currentSpeakers = formState.speaker || [];
         // Update the relevant speaker by mapping through the array
         const updatedSpeakers = currentSpeakers.map((p: any) =>
             p.id === updatedProfile.id ? updatedProfile : p
         );
-        handleChange('speakerProfilesData', updatedSpeakers);
+        handleChange('speaker', updatedSpeakers);
         handleChange('speakerModal', false)
         // setSpeakerModal(false);
         handleChange('prefilledProfile', undefined)
@@ -186,7 +185,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
                 <div>
                     <div className={`${styles.participationContainer}`}>
-                        <ParticipationContainer
+                        <ParticipationContainer formTheme={formTheme}
                             handleChange={handleChange} formState={formState}
                             heading='Choose Your sub event type' type='side' size="large" />
                     </div>
@@ -223,7 +222,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                     <div>
                         <textarea
                             ref={textAreaRef}
-                            className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
+                            className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""} ${formTheme === "dark" ? styles.darkeventName : styles.lighteventName}`}
                             maxLength={80}
                             placeholder='Event Name'
                             style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
@@ -232,9 +231,9 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                         />
                         {formState.isEventNameEmpty && <p className={styles.errorMessage}>{formState.errorMessage}</p>}
                     </div>
-                    <div className={styles.dateTimeContainer}><DateTimeContainer handleChange={handleChange} formState={formState} /></div>
+                    <div className={styles.dateTimeContainer}><DateTimeContainer formTheme={formTheme} handleChange={handleChange} formState={formState} /></div>
                     <div>
-                        <div className={`${styles.locationContainer}`} ><LocationContainer handleChange={handleChange}
+                        <div className={`${styles.locationContainer}`} ><LocationContainer formTheme={formTheme} handleChange={handleChange}
                             formState={formState} /></div>
                         {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                     </div>
@@ -253,7 +252,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                         {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                     </div>
                     <div className={styles.resgitrationContainer}><WaitListAndCap isApproved={isApproved} setIsApproved={setIsApproved} /></div>
-                    {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
+                    {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                             <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
@@ -283,7 +282,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
             {
                 formState.speakerModal && <div className={styles.speakerModal}>
                     <SpeakerModal
-                        speakerProfilesData={formState.speakerProfilesData}
+                        speakerProfilesData={formState.speaker}
                         handleChange={handleChange}
                         // setSpeakerProfilesData={setSpeakerProfilesData} 
                         // setSpeakerModal={setSpeakerModal}
