@@ -28,7 +28,6 @@ const RegularityEdition = ({
         // setEditionRange([0, 100]);
         // setRegularity(Number(e.target.value));
         // setSelectedRegularity([Number(e.target.value), 100]);
-        console.log('e.target.value', e.target.value);
         setSelectedMaturity(e.target.value);
     }
   return (
