@@ -26,6 +26,7 @@ import SideEventIcon from '/public/sideevent.svg'
 import GlobalSearch from '../../EditScreen/FilterEvents/GlobalSearch'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { FormState } from '@/types/Formstate'
+import WaitListAndCap from '../Details/waitListAndCapacity/WaitListAndCap'
 
 interface SpeakerProfileType {
     id: string;
@@ -38,16 +39,18 @@ interface SpeakerProfileType {
 interface Props {
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
     eventFont: string;
     setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement>;
     eventFlow: string;
     prefilledSubEvent?: EventsType | null;
     // setMainEventName: (value: string) => void
+    isApproved?:boolean;
+  setIsApproved?:(value:boolean) =>void
 }
-const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent }: Props) => {
-
+const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent,isApproved, setIsApproved }: Props) => {
+    // const [isApproved, setIsApproved] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
     const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
@@ -223,7 +226,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             className={`${styles.eventName} ${formState.isEventNameEmpty ? styles.errorBackground : ""}`}
                             maxLength={80}
                             placeholder='Event Name'
-                            style={{ fontFamily: prefilledEvent?.mainEvent.customizationData.eventFont || eventFont }}
+                            style={{ fontFamily: prefilledEvent?.customizationData.eventFont || eventFont }}
                             onChange={(e) => handleInputChange(e.target.value)}
                             value={formState.eventName}
                         />
@@ -236,10 +239,14 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                         {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                     </div>
                     <div className={styles.resgitrationContainer}><RegistrationForm
+                        isApproved={isApproved}setIsApproved={setIsApproved}
                         registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
                         // setRegisterModal={setRegisterModal}
                         handleChange={handleChange}
                     /></div>
+
+
+
                     <div>
                         <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
                             // setDescriptionModal={setDescriptionModal}
@@ -248,6 +255,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             handleChange={handleChange} /></div>
                         {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                     </div>
+                    <div className={styles.resgitrationContainer}><WaitListAndCap isApproved={isApproved}setIsApproved={setIsApproved}/></div>
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>

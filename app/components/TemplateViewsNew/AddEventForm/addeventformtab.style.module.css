@@ -5,6 +5,7 @@
     position: relative;
     background-color: white;
 }
+
 .btnContainer {
     border-top-right-radius: 10px;
     display: flex;
@@ -13,10 +14,12 @@
     padding: 17px 14px;
     justify-content: space-between;
 }
-.endBtnContainer{
+
+.endBtnContainer {
     justify-content: flex-end;
 }
-.eventBtns{
+
+.eventBtns {
     display: flex;
     align-items: center;
     gap: 9px;
@@ -26,7 +29,8 @@
     border: 1px solid var(--border-color);
     margin-left: 20px;
 }
-.eventBtns button{
+
+.eventBtns button {
     font-size: 12px;
     line-height: 18px;
     font-weight: 600;
@@ -34,10 +38,12 @@
     border-radius: 4px;
     padding: 6px 24px;
 }
-.eventBtns .activebtn{
+
+.eventBtns .activebtn {
     color: var(--primary-text-color);
     background-color: var(--primary-foreground);
 }
+
 .saveCancelBtns button {
     font-size: 12px;
     line-height: 18px;
@@ -64,14 +70,61 @@
     cursor: not-allowed;
     background-color: var(--disabled-btn-color);
 }
-.formContainer{
+
+.formContainer {
     height: 89%;
     overflow: auto;
     padding: 50px 120px 50px 70px;
+    position: relative;
 }
-.modalOpen{
+.watermelon {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(194, 114, 114, 1) 0%, rgba(177, 242, 235, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.greenmint{
+    background: radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(114,125,194,1) 0%, rgba(206,242,177,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.candy{
+    background: linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,177,217,1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.orange{
+    background: linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,222,177,1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.purblue{
+    background: linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.modalOpen {
     overflow: hidden;
 }
+
 .collapsedContainer {
     background-color: #ffffff53;
     border-radius: 10px;
@@ -86,11 +139,18 @@
     margin-bottom: 32px;
 }
 
-.collapsedContainer div{
+.collapsedContainer div {
     display: flex;
     align-items: center;
     gap: 9px;
 }
-.collapsedContainer .collapseBtn{
+
+.collapsedContainer .collapseBtn {
     cursor: pointer;
+}
+.confettiCanvas{
+    position: absolute;
+    left: 0;
+    bottom: -80px;
+    width: 100%;
 }

@@ -10,39 +10,77 @@ import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
+import confetti from "canvas-confetti";
+
+interface SpeakerProfileType {
+    id: string;
+    name: string;
+    linkedin: string;
+    designation: string;
+    // profileImage: string | ArrayBuffer | null;
+    profileImage: File | null
+}
 
 interface Props {
     setIsAddEventModalOpen: (value: boolean) => void
     pageBgColor: string;
+    pageGradient: string;
+    confettiType: string;
     eventFont: string;
     widgetId: string;
-    fetchEvents: (page: number, type?: string) => Promise<void>;
+    fetchEvents?: (page: number, type?: string) => Promise<void>;
     addedEventIds: string[]
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
     prefilledGlobalEvent?: GolbalEventType | null
     eventFlow: string;
-    setEventFlow: (value: string) => void;
+    setEventFlow?: (value: string) => void;
     mainEventState: FormState;
     subEventState: FormState;
     handleSubeventChange: (field: keyof FormState, value: any) => void;
     handleMaineventChanges: (field: keyof FormState, value: any) => void;
-    setPrefilledGlobalEvent: (value: GolbalEventType | null) => void;
-    setPrefilledEvent: (value: AllEventsType | null) => void;
+    setPrefilledGlobalEvent?: (value: GolbalEventType | null) => void;
+    setPrefilledEvent?: (value: EventsType | null) => void;
     prefilledSubEvent?: EventsType | null;
-    setPrefilledSubEvent: (value: EventsType | null) => void
-    setChoiceFormModal:(value:boolean) => void
+    setPrefilledSubEvent?: (value: EventsType | null) => void
+    fetchEventData?: () => Promise<undefined | null>;
+    setChoiceFormModal?:(value:boolean) => void,
+    isApproved?:boolean;
+    setIsApproved?:(value:boolean) =>void
 }
 
-const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent,
-    fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges,prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal }: Props) => {
+const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    // const [mainEventName, setMainEventName] = useState<string>("");
+    const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
+    // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
+
+    const fireConfetti = () => {
+        if (confettiCanvasRef.current) {
+            const myConfetti = confetti.create(confettiCanvasRef.current, { resize: true });
+            myConfetti({
+                particleCount: 300,
+                spread: 100,
+                origin: { y: 0.9 }, 
+                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star'],
+                
+            });
+        }
+    };
+    useEffect(() => {
+        if (confettiType.length > 0) {
+            // Fire confetti immediately
+            fireConfetti();
+            // Set up the interval for firing every 4 seconds
+            const interval = setInterval(fireConfetti, 4000);
+            // Cleanup interval when confettiType changes or component unmounts
+            return () => clearInterval(interval);
+        }
+    }, [confettiType]);
 
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
@@ -143,12 +181,12 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
                 registerMessage: mainEventState.registerMessage,
-                speakerProfilesData: mainEventState.speakerProfilesData,
+                // speakerProfilesData: mainEventState.speakerProfilesData,
                 participationMessage: mainEventState.participationMessage,
                 venue: mainEventState.venue,
                 hashtags: mainEventState.hashtags.join(","),
                 boothNumber: mainEventState.boothNumber,
-                speaker : []
+                speaker: []
             }
             const eventData = {
                 format: mainEventState.eventFormat,
@@ -194,8 +232,17 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                 } else {
                     setIsAddEventModalOpen(false)
                     showToast("success", "Main Event Added Successfully")
-                    fetchEvents(0, "update")
-                    setChoiceFormModal(false)
+                    if (fetchEvents) {
+                        fetchEvents(0, "update")
+                    }
+                    if (mainEventState.speakerProfilesData.length > 0) {
+                        mainEventState.speakerProfilesData.map((speaker: SpeakerProfileType) => {
+                            addSpeakers(data.data.id, speaker)
+                        })
+                    }
+                    if(setChoiceFormModal){
+                        setChoiceFormModal(false)
+                    }
                 }
             }
             if (error) {
@@ -205,6 +252,25 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             addSubEvent()
         }
 
+    }
+
+    const addSpeakers = async (eventId: string, speaker: SpeakerProfileType) => {
+        const formData = new FormData()
+        const speakerObject = {
+            name: speaker.name,
+            linkedIn: speaker.linkedin,
+            designation: speaker.designation
+        }
+        formData.append("eventId", eventId)
+        formData.append("data", JSON.stringify(speakerObject))
+        formData.append("file", speaker.profileImage || "")
+        const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
+            method: 'POST',
+            body: formData
+        })
+        if (error) {
+            console.log("error : ", error)
+        }
     }
 
     const addSubEvent = async (eventId?: string) => {
@@ -261,12 +327,11 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
             registerMessage: subEventState.registerMessage,
-            speakerProfilesData: subEventState.speakerProfilesData,
+            // speakerProfilesData: subEventState.speakerProfilesData,
             participationMessage: subEventState.participationMessage,
             venue: subEventState.venue,
             hashtags: subEventState.hashtags.join(","),
             boothNumber: subEventState.boothNumber,
-            speaker : []
         }
         const eventData = {
             format: subEventState.eventFormat,
@@ -313,8 +378,13 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             console.log("subevent added :", data)
             setIsAddEventModalOpen(false)
             showToast("success", "Subevent Added Successfully")
-            fetchEvents(0, "update")
-            setChoiceFormModal(false)
+            if (fetchEvents) {
+                fetchEvents(0, "update")
+                if( setChoiceFormModal){
+                    setChoiceFormModal(false)
+                }
+            }
+
         }
         if (error) {
             console.log(error)
@@ -365,7 +435,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         }
 
         // Check if banner exists, if not, show error for missing poster
-        if (!prefilledEvent?.mainEvent.logoUrl) {
+        if (!prefilledEvent?.logoUrl) {
             if (!eventState.banner.placeHolder && !eventState.banner.file) {
                 showToast("error", "Please upload or generate a Poster");
                 return; // Exit the function if banner is missing
@@ -379,12 +449,12 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
             registerMessage: eventState.registerMessage,
-            speakerProfilesData: eventState.speakerProfilesData,
+            // speakerProfilesData: eventState.speakerProfilesData,
             participationMessage: eventState.participationMessage,
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
-            speaker : []
+            speaker: []
         };
 
         // Prepare the event data
@@ -435,7 +505,12 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         if (data) {
             setIsAddEventModalOpen(false);
             showToast("success", "Event Updated Successfully");
-            fetchEvents(0, "update");
+            if (fetchEvents) {
+                fetchEvents(0, "update")
+            }
+            if (fetchEventData) {
+                fetchEventData()
+            }
         }
 
         if (error) {
@@ -444,11 +519,15 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
     };
 
     const handleModalClose = () => {
-        setPrefilledEvent(null)
-        setPrefilledSubEvent(null)
-        setPrefilledGlobalEvent(null)
+        if (setPrefilledEvent && setPrefilledSubEvent && setPrefilledGlobalEvent) {
+            setPrefilledEvent(null)
+            setPrefilledSubEvent(null)
+            setPrefilledGlobalEvent(null)
+        }
         setIsAddEventModalOpen(false)
-        setEventFlow("")
+        if (setEventFlow) {
+            setEventFlow("")
+        }
     }
     useEffect(() => {
         if (mainEventState.speakerModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
@@ -532,30 +611,33 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         disabled={loadingState || loadingState}
                         onClick={
                             prefilledEvent
-                                ? () => handleSaveEvent(prefilledEvent.mainEvent.eventId)
+                                ? () => handleSaveEvent(prefilledEvent.eventId)
                                 : handleAddEvent
                         }>
                         Save and Add event</button>
                 </div>
             </div>
-            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
-                {collapseMainEventForm && eventFlow === 'main' ? (<div className={styles.collapsedContainer}>
-                    <div>
-                        <DescIcon />
-                        <span>Main Event</span>
-                    </div>
-                    <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
-                </div>) : (eventFlow === 'main' &&
-                    <Details
-                        handleCollapseForm={handleCollapseForm}
-                        formState={mainEventState}
-                        handleChange={handleMaineventChanges}
-                        eventFont={eventFont}
-                        setLoadingState={setLoadingState}
-                        fileInputRef={fileInputRef}
-                        prefilledEvent={prefilledEvent}
-                        setCollapseMainEventForm={setCollapseMainEventForm}
-                        collapseMainEventForm={collapseMainEventForm}
+            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
+                <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+                {collapseMainEventForm && eventFlow === 'main' ?
+                    (<div className={styles.collapsedContainer}>
+                        <div>
+                            <DescIcon />
+                            <span>Main Event</span>
+                        </div>
+                        <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
+                    </div>) : (eventFlow === 'main' &&
+                        <Details
+                            handleCollapseForm={handleCollapseForm}
+                            formState={mainEventState}
+                            handleChange={handleMaineventChanges}
+                            eventFont={eventFont}
+                            setLoadingState={setLoadingState}
+                            fileInputRef={fileInputRef}
+                            prefilledEvent={prefilledEvent}
+                            setCollapseMainEventForm={setCollapseMainEventForm}
+                            collapseMainEventForm={collapseMainEventForm}
+                            isApproved={isApproved} setIsApproved={setIsApproved}
                     />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
@@ -564,9 +646,10 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     eventFont={eventFont}
                     setLoadingState={setLoadingState}
                     fileInputRef={fileInputRef}
-                    prefilledSubEvent={prefilledSubEvent} 
+                    prefilledSubEvent={prefilledSubEvent}
                     prefilledEvent={prefilledEvent}
                     eventFlow={eventFlow}
+                    isApproved={isApproved} setIsApproved={setIsApproved}
                 />}
             </div>
         </div >

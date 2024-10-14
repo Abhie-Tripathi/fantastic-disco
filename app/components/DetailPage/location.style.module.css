@@ -25,10 +25,10 @@
     font-size: var(--font-size-medium);
 }
 .eventLocation .activeLocation{
-    color: black;
+    color: var(--primary-text-color)
 }
 .eventLocation .eventLocationTwo{
-    color: #7D7D7D;
+    color: var(--secondary-text-color);
     font-size: 10px;
     line-height: 20px;
 }

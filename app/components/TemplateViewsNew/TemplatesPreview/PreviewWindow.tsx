@@ -187,7 +187,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             cardBorderRadius,
             selectedBtn,
             selectedCard,
-            closeButtonSetting,
+            // closeButtonSetting,
         };
         customizeData.append('customizationData', JSON.stringify(customizationData));
         const { data, error } = await myFetch(

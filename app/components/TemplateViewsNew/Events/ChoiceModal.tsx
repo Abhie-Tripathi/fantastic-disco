@@ -54,12 +54,13 @@ const ChoiceModal = ({ setChoiceFormModal, setEventFlow }: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const handleEventClick = (event: string) => {
     if (selectedEvent === event) {
-      setSelectedEvent(null);
-      setEventFlow("");
+      setSelectedEvent(null); 
+      setEventFlow("");      
     } else {
-      setSelectedEvent(event);
-      setEventFlow(event);
+      setSelectedEvent(event);  
+      setEventFlow(event);      
     }
+    setChoiceFormModal(false); 
   };
   return (
     <div className={styles.body}>

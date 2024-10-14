@@ -1,7 +1,7 @@
 .searchContainer {
     padding: 13px 17px;
     position: relative;
-    z-index: 1;
+    /* z-index: 1; */
 }
 
 .searchContainer input {

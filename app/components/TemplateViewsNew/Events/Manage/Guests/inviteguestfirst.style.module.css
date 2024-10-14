@@ -1,0 +1,74 @@
+.sections{
+    display: flex;
+}
+.line{
+    border-bottom: 1px solid var(--border-color);
+}
+.verticalLine{
+    border-right: 1px solid var(--border-color);
+}
+.leftSection{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 30%;
+}
+.leftSection .heading{
+    font-size: var(--font-size-default);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+    padding: 5px 9px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.leftSection .heading:hover{
+    background-color: var(--accent-color);
+}
+.leftSection .subheading{
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.rightSection{
+    padding: 15px;
+    width: 70%;
+}
+.usersList{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.invitedUser{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.invitedUser .initial{
+    width: 30px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success-text-color);
+    font-size: var(--font-size-large);
+    background-color: #45a5573f;
+    border-radius: 5px;
+    padding: 10px;
+}
+.invitedUser .nameMailContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.nameMailContainer .name{
+    font-size: var(--font-size-default);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.nameMailContainer .email{
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}

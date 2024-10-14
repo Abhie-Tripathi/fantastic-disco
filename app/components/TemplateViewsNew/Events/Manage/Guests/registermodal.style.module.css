@@ -1,0 +1,58 @@
+.body{
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    background-color: var(--primary-foreground);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.heading{
+    font-size: var(--font-size-large);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.subheading{
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.regisBtnContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.checkboxInput {
+    display: none;
+}
+.checkBox {
+    cursor: pointer;
+    background-color: #bebdc9;
+    height: 14px;
+    width: 30px;
+    border-radius: 12px;
+    border: 1px solid #79747E;
+}
+.checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 8px;
+    width:8px;
+    border-radius: 50%;
+    margin: 2.1px;
+    transition: transform 0.2s ease;
+}
+.checkboxInput:checked+.checkBox::before {
+    transform: translateX(16px);
+}
+
+.checkboxInput:checked+.checkBox {
+    background-color: var(--primary-color);
+}
+.confirmBtn{
+    background-color: var(--primary-color);
+    padding: 7px;
+    border-radius: 5px;
+    color: white;    
+}

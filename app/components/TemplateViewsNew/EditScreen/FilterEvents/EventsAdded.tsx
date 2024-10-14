@@ -47,8 +47,9 @@ const EventsAdded = ({
   const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<any[]>([]);
   const [showMSG, setShowMsg] = useState(false);
   const [minNumberOfEvents, setMinNumberOfEvents] = useState("");
-  const [nearestEvent, setNearestEvent] = useState<any[]>([]);
+  // const [nearestEvent, setNearestEvent] = useState<any[]>([]);
   const [locationEnabled, setLocationEnabled] = useState(false);
+  let closestEvent:any = null
   const showPromote =
     selectedTemplate === "HBL" ||
     selectedTemplate === "HBG" ||
@@ -216,7 +217,7 @@ const EventsAdded = ({
       longitude: newEvent.longitude,
       venue: newEvent.venue,
       hashtags: newEvent.hashtags,
-      promoted: newEvent.promoted === "true" ? "false" : "true",
+      promoted: true,
     };
     // Find and update the existing event
     const updatedEvents = existingEvents.map((event) =>
@@ -320,79 +321,141 @@ const EventsAdded = ({
     }
   };
 
-  // const handlelocation = () => {
-  //   setLocationEnabled((prevState) => {
-  //     const newState = !prevState;
-  //     if (newState) {
-  //       getUserLocation();
-  //     }
-  //     return newState;
-  //   });
-  // };
 
-  useEffect(() => {
-    // Retrieve the saved locationEnabled state from localStorage on mount
-    const savedLocationEnabled = localStorage.getItem("locationEnabled");
-    if (savedLocationEnabled !== null) {
-      const isLocationEnabled = JSON.parse(savedLocationEnabled);
-      setLocationEnabled(isLocationEnabled);
-
-      // If location is enabled, fetch the user's location
-      if (isLocationEnabled) {
-        getUserLocation();
+    useEffect(() => {
+      const savedLocationEnabled = localStorage.getItem("locationEnabled");
+      if (savedLocationEnabled !== null) {
+        const isLocationEnabled = JSON.parse(savedLocationEnabled);
+        setLocationEnabled(isLocationEnabled);
+  
+        if (isLocationEnabled) {
+          getUserLocation(); 
+        } else {
+          showFirstEvent(); 
+        }
       }
-    }
-  }, []);
+    }, []);
+
+
+  
+
+    useEffect(() => {
+      if (locationEnabled && fetchedAddedOtherData.length > 0) {
+        getUserLocation(); 
+      } else if (!locationEnabled && fetchedAddedOtherData.length > 0) {
+        showFirstEvent(); 
+      }
+    }, [locationEnabled, fetchedAddedOtherData]);
+    
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userLat = position.coords.latitude;
+            const userLong = position.coords.longitude;
+    
+            console.log(`User coordinates: ${userLat}, ${userLong}`);
+    
+             closestEvent = findClosestEvent(userLat, userLong);
+            if (closestEvent) {
+              
+              if (closestEvent.promoted === "false" || closestEvent.promoted === false) {
+                promoteEvent(closestEvent.id); 
+              }
+            } else {
+              console.warn("No closest event found.");
+            }
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+            getLocationByIP(); // Fallback to IP-based location
+          }
+        );
+      } else {
+        console.warn("Geolocation is not supported by this browser.");
+        getLocationByIP(); 
+      }
+    };
+    
+    const showFirstEvent = () => {
+      if (fetchedAddedOtherData.length > 0) {
+        const firstEventId = fetchedAddedOtherData[0].id;
+        
+        if (!fetchedAddedOtherData[0].promoted) {
+          promoteEvent(firstEventId); 
+        }
+      }
+    };
+    
+    const promoteEvent = (eventId:any) => {
+      const updatedEvents = fetchedAddedOtherData.map((event) => ({
+        ...event,
+        promoted: event.id === eventId ? true : false, 
+      }));
+      setFetchedAddedOtherData(updatedEvents);
+    };
+  
+
 
   const handleLocation = () => {
     setLocationEnabled((prevState) => {
       const newState = !prevState;
-      // Store the state in localStorage
       localStorage.setItem("locationEnabled", JSON.stringify(newState));
 
       if (newState) {
-        getUserLocation();
+        getUserLocation(); // Nearest event promoted
+      } else {
+        showFirstEvent(); // First event promoted
       }
 
       return newState;
     });
   };
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userLat = position.coords.latitude;
-          const userLong = position.coords.longitude;
-          const closestEvent = findClosestEvent(userLat, userLong);
-          const updatedNearestEvent = closestEvent.map((event) => ({
-            ...event,
-            promoted: true,
-          }));
+  // const getUserLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const userLat = position.coords.latitude;
+  //         const userLong = position.coords.longitude;
+  
+  //         // Find the closest event based on user location
+  //         const closestEvent:any = findClosestEvent(userLat, userLong);
+  //         console.log("callll_1111111111111111", closestEvent)
+  //         if (closestEvent) {
+  //           // Mark the closest event as promoted
+  //           const updatedNearestEvent = {
+  //             ...closestEvent,
+  //             promoted: true,
+  //           };
+  
+  //           // Update fetchedAddedOtherData with the promoted event
+  //           const updatedFetchedData = fetchedAddedOtherData.map((event) => {
+  //             return event.id === updatedNearestEvent.id
+  //               ? { ...event, promoted: true }
+  //               : { ...event, promoted: false }; // Reset other events to false
+  //           });
+  
+  //           // Update state with modified data
+  //           setFetchedAddedOtherData(updatedFetchedData);
+  
+  //           console.log("Updated data with promoted event:", updatedFetchedData);
+  //         } else {
+  //           console.log("No closest event found.");
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error("Error getting location:", error);
+  //         getLocationByIP(); // Fallback to IP-based location
+  //       }
+  //     );
+  //   } else {
+  //     console.warn("Geolocation is not supported by this browser.");
+  //     getLocationByIP(); // Fallback if geolocation is unavailable
+  //   }
+  // };
+  
 
-          const updatedFetchedData = fetchedAddedOtherData.map((event) => {
-            const isPromoted = updatedNearestEvent.some(
-              (nearest) => nearest.id === event.id
-            );
-            return { ...event, promoted: isPromoted }; // Ensure promoted is a boolean
-          });
-
-          setFetchedAddedOtherData(updatedFetchedData);
-          console.log(
-            "Updated data with promoted events: ",
-            updatedFetchedData
-          );
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          getLocationByIP();
-        }
-      );
-    } else {
-      console.warn("Geolocation is not supported by this browser.");
-      getLocationByIP();
-    }
-  };
 
   const getLocationByIP = async () => {
     try {
@@ -401,32 +464,52 @@ const EventsAdded = ({
       );
       const data = await response.json();
       const [lat, long] = data.loc.split(",").map(Number);
-      const closestEvent = findClosestEvent(lat, long);
-      setNearestEvent(closestEvent);
+      const closestEvent:any = findClosestEvent(lat, long);
+      if (closestEvent) {
+        const updatedNearestEvent = {
+          ...closestEvent,
+          promoted: true,
+        };
+
+        const updatedFetchedData = fetchedAddedOtherData.map((event) => {
+          return event.id === updatedNearestEvent.id
+            ? { ...event, promoted: true }
+            : { ...event, promoted: false }; 
+        });
+
+        setFetchedAddedOtherData(updatedFetchedData);
+        console.log("Updated data with promoted event:", updatedFetchedData);
+      } else {
+        console.log("No closest event found.");
+      }
+      
     } catch (error) {
       console.error("Error fetching location by IP:", error);
     }
   };
 
-  const findClosestEvent = (userLat: number, userLong: number) => {
-    const maxDistance = 500; // Set max distance to 500 km
 
-    const nearbyEvents = fetchedAddedOtherData
-      .map((event) => {
-        const distance = haversineDistance(
-          userLat,
-          userLong,
-          event.latitude,
-          event.longitude
-        );
-        return { ...event, distance };
-      })
-      .filter((event) => event.distance <= maxDistance) // Filter events within 500 km
-      .sort((a, b) => a.distance - b.distance); // Sort by distance (nearest first)
+const findClosestEvent = (userLat:number, userLong:number) => {
+  if (!fetchedAddedOtherData || fetchedAddedOtherData.length === 0) {
+    console.warn("No events available to find the closest.");
+    return null;
+  }
 
-    return nearbyEvents;
-  };
+  let closestEvent = null;
+  let shortestDistance = Infinity;
 
+  fetchedAddedOtherData.forEach((event) => {
+    if (event.latitude && event.longitude) {
+      const distance = haversineDistance(userLat, userLong, event.latitude, event.longitude);
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        closestEvent = event;
+      }
+    }
+  });
+
+  return closestEvent;
+};
   const haversineDistance = (
     lat1: number,
     lon1: number,
@@ -448,15 +531,7 @@ const EventsAdded = ({
     return distance;
   };
 
-  console.log(
-    "nearestEvent32323232323232",
-    nearestEvent,
-    fetchedAddedOtherData
-  );
-  const promotedEventsList = fetchedAddedOtherData.filter(
-    (event) => event.promoted === true || event.promoted === "true"
-  );
-  console.log("33333333333333333333333333", promotedEventsList);
+  
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -496,7 +571,6 @@ const EventsAdded = ({
               onChange={handleLocation}
             />
             <label htmlFor="locationToggle" className={styles.checkBox}></label>
-          
           </div>
           <div className={styles.line}></div>
         </>
@@ -539,7 +613,7 @@ const EventsAdded = ({
                   ></label>
                 </div>
                 <div className={styles.editBtnContainer}>
-                  {/* {showPromote && (
+                  {/* {!locationEnabled && (
                     <div onClick={() => handlePromoteEvent(event)}>
                       <Image
                         src={

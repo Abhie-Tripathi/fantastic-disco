@@ -7,11 +7,13 @@ import FontContainer from './FontContainer'
 import BrandKit from '../../EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import { useTheme } from '@/context'
 import ProgressBar from './ProgressBar'
-import { AllEventsType } from '@/types/alleventtype'
+import { AllEventsType, EventsType } from '@/types/alleventtype'
 
 interface Props {
     pageBgColor: string;
     setPageBgColor: (value: string) => void
+    setPageGradient : (value : string) => void
+    setConfettiType : (value : string) => void
     eventFont: string;
     setEventFont: (value: string) => void
     extractedColors: string[]
@@ -24,10 +26,10 @@ interface Props {
     cityNameSub: string;
     participationTypeSub: string;
     descriptionSub: string;
-    prefilledEvent?: AllEventsType | null
+    prefilledEvent?: EventsType | null
 }
 
-const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub}: Props) => {
+const Appearance = ({ setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -43,7 +45,7 @@ const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extr
                 <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
                 <div className={styles.line}></div>
                 <div className={styles.colorContainer}>
-                    <ColorContainer setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
+                    <ColorContainer setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.fontContainer}>
