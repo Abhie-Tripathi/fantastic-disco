@@ -6,11 +6,58 @@
     display: flex;
     gap: 20px;
 }
-/* .viewShareContainer{
+.viewContainer{
+    cursor: pointer;
+}
+.eventDetailContainer{
     display: flex;
     flex-direction: column;
     gap: 10px;
-} */
+    width: 60%;
+}
+.share_leadsContainer{
+    display: flex;
+    gap: 5px;
+    width: 100%;
+}
+.valuesContainer{
+    background-color: var(--primary-foreground);
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    /* width: 60%;  */
+}
+.valueContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.valueContainer div{
+    font-size: var(--font-size-default);
+    color: var(--primary-text-color);
+}
+.valueContainer span{
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.leadsContainer{
+    background-color: var(--primary-foreground);
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px; 
+    width: 60%; 
+}
+.leadsContainer span{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+}
 .shareContainer{
     background-color: var(--primary-foreground);
     border-radius: 10px;
@@ -51,41 +98,8 @@
 .shareContainer .inputContainer button:hover{
     background-color: var(--primary-color-hover);
 }
-.eventDetailContainer{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.eventDetailContainer .heading{
-    font-size: var(--font-size-h6);
-    font-weight: var(--font-weight-semibold);
-}
-.eventDetailContainer .locationDateContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.btnContainer{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.btnContainer button{
-    padding: 5px;
-    border-radius: 4px;
-    font-size: var(--font-size-small);
-    color: white;
-    flex: 1;
-}
-.btnContainer .editBtn{
-    background-color: var(--primary-color);
-}
-.editBtn:hover{
-    background-color: var(--primary-color-hover);
-}
-.btnContainer .cancelBtn{
-    background-color: var(--danger-text-color);
-}
-.cancelBtn:hover{
-    background-color:rgb(196, 26, 26);
+.progressContainer{
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
 }

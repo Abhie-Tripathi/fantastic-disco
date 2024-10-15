@@ -58,7 +58,7 @@ const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, start
             <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.leafContainer}>
-                    {Array.from({ length: 40 }).map((_, index) => (
+                    {Array.from({ length: 80 }).map((_, index) => (
                         <Image
                             key={index}
                             // src={index % 2 === 0 ? LeafOne : LeafTwo}
