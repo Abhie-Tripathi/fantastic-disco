@@ -82,10 +82,10 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
     const handleCardClick = () => {
         if (width === "small" && handlePrefillEvent && normalEvent) {
             // handlePrefillEvent(normalEvent)
-            router.push(`/widget/events/manage/${normalEvent.mainEvent.eventId}/edit`)
+            router.push(`/widget/events/manage/${normalEvent.mainEvent.eventId}/overview`)
         }else if(width === "small" && handlePrefillSubEvent && subEvent){
             // handlePrefillSubEvent(subEvent)
-            router.push(`/widget/events/manage/${subEvent.eventId}/edit`)
+            router.push(`/widget/events/manage/${subEvent.eventId}/overview`)
         }
     }
 

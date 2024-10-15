@@ -11,6 +11,9 @@ import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
+import LeafOne from '/public/widgetimages/leaf1.png'
+import LeafTwo from '/public/widgetimages/leaf2.png'
+import Image from 'next/image'
 
 interface SpeakerProfileType {
     id: string;
@@ -22,8 +25,9 @@ interface SpeakerProfileType {
 }
 
 interface Props {
+    leavesTheme : boolean;
     setIsAddEventModalOpen: (value: boolean) => void
-    formTheme : string;
+    formTheme: string;
     pageBgColor: string;
     pageGradient: string;
     confettiType: string;
@@ -44,12 +48,12 @@ interface Props {
     prefilledSubEvent?: EventsType | null;
     setPrefilledSubEvent?: (value: EventsType | null) => void
     fetchEventData?: () => Promise<undefined | null>;
-    setChoiceFormModal?:(value:boolean) => void,
-    isApproved?:boolean;
-    setIsApproved?:(value:boolean) =>void
+    setChoiceFormModal?: (value: boolean) => void,
+    isApproved?: boolean;
+    setIsApproved?: (value: boolean) => void
 }
 
-const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -66,9 +70,9 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
             myConfetti({
                 particleCount: 300,
                 spread: 100,
-                origin: { y: 0.9 }, 
-                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star'],
-                
+                origin: { y: 0.9 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+
             });
         }
     };
@@ -243,7 +247,7 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
                             addSpeakers(data.data.id, speaker)
                         })
                     }
-                    if(setChoiceFormModal){
+                    if (setChoiceFormModal) {
                         setChoiceFormModal(false)
                     }
                 }
@@ -266,7 +270,7 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
-        formData.append("file", speaker.imageUrl     || "")
+        formData.append("file", speaker.imageUrl || "")
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
@@ -385,7 +389,7 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
             showToast("success", "Subevent Added Successfully")
             if (fetchEvents) {
                 fetchEvents(0, "update")
-                if( setChoiceFormModal){
+                if (setChoiceFormModal) {
                     setChoiceFormModal(false)
                 }
             }
@@ -623,6 +627,25 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+                {leavesTheme && <div className={styles.leafContainer}>
+                    {Array.from({ length: 100 }).map((_, index) => (
+                        <Image
+                            key={index}
+                            // src={index % 2 === 0 ? LeafOne : LeafTwo}s
+                            src={LeafTwo}
+                            className={styles.leaf}
+                            alt={`Leaf ${index + 1}`}
+                            style={{
+                                left: `${Math.random() * 100}%`, // Random horizontal position
+                                top: `${Math.random() * 100}%`,  // Random vertical position
+                                animationDelay: `${Math.random() * 5}s`, // Random animation delay
+                                animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
+                                width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
+                                height: `${25 + Math.random() * 5}px`,
+                            }}
+                        />
+                    ))}
+                </div>}
                 {collapseMainEventForm && eventFlow === 'main' ?
                     (<div className={styles.collapsedContainer}>
                         <div>
@@ -632,7 +655,7 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
                         <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
                     </div>) : (eventFlow === 'main' &&
                         <Details
-                            formTheme = {formTheme}
+                            formTheme={formTheme}
                             handleCollapseForm={handleCollapseForm}
                             formState={mainEventState}
                             handleChange={handleMaineventChanges}
@@ -643,10 +666,10 @@ const AddEventFormTab = ({formTheme, setPrefilledEvent, setPrefilledGlobalEvent,
                             setCollapseMainEventForm={setCollapseMainEventForm}
                             collapseMainEventForm={collapseMainEventForm}
                             isApproved={isApproved} setIsApproved={setIsApproved}
-                    />)}
+                        />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
-                    formTheme = {formTheme}
+                    formTheme={formTheme}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}

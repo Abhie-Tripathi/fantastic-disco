@@ -21,7 +21,7 @@ const GuestList = () => {
   const [guests, setGuests] = useState<any[]>([{ name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }])
 
   const fetchGuests = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/intend/users?source=eventgeni&eventId=${eventId}`)
+    const {data, error} = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
     if(error){
       console.log("error is : ", error)
     }else{
