@@ -636,7 +636,7 @@ const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefille
                     {Array.from({ length: 100 }).map((_, index) => (
                         <Image
                             key={index}
-                            // src={index % 2 === 0 ? LeafOne : LeafTwo}s
+                            // src={index % 2 === 0 ? LeafOne : LeafTwo}
                             src={LeafTwo}
                             className={styles.leaf}
                             alt={`Leaf ${index + 1}`}

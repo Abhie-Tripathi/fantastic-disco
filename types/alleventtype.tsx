@@ -31,6 +31,7 @@ interface CustomizationData {
   pageBgColor: string;
   pageGradient : string;
   confettiType : string;
+  leavesTheme : boolean;
   eventFont: string;
   registerBtnColor: string;
   registerBtnText: string;
