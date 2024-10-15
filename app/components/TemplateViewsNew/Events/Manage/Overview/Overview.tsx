@@ -17,7 +17,7 @@ interface Props {
   timeZone?: string;
   pageBgColor?: string;
   pageGradient?: string;
-  leavesTheme? : boolean;
+  leavesTheme?: boolean;
   confettiType?: string;
   eventFont?: string;
   locationCity?: string;
@@ -29,37 +29,37 @@ interface Props {
   setDeleteModalTwo: (value: boolean) => void;
 }
 
-const Overview = ({leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget }: Props) => {
+const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
-  const handleDeleteModal = () => {
-    if (isPresentinWidget) {
-      setDeleteModalTwo(true)
-    } else {
-      setDeleteModal(true)
-    }
-  }
+  const handleCopy = () => {
+    const textToCopy = `https://console.eventgeni.com/detailpage/${eventId}`;
+    navigator.clipboard.writeText(textToCopy);
+};
 
   return (
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
-        <div className={styles.viewShareContainer}>
+        <div className={styles.viewContainer}>
           <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
-          <div className={styles.shareContainer}>
-            <div className={styles.shareHeading}>Share</div>
-            <ShareButtons disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
-          </div>
         </div>
-
         <div className={styles.eventDetailContainer}>
-          <div className={styles.locationDateContainer}>
+          <div className={styles.shareContainer}>
+            <div className={styles.shareHeading}>Share Event</div>
+            <ShareButtons copyIcon = {false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
+            <div className={styles.inputContainer}>
+              <input type="text" disabled value={`https://console.eventgeni.com/detailpage/${eventId}`}/>
+              <button onClick={handleCopy}>Copy</button>
+            </div>
+          </div>
+          {/* <div className={styles.locationDateContainer}>
             <div className={styles.heading}>When & Where</div>
             <div className={styles.dateTimeContainer}><DateTimeContainer endDate={endDate || ""} startDate={startDate || ""} endTime={endTime || ""} startTime={startTime || ""} timeZone={timeZone || ""} /></div>
             <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={locationCity || ""} countryName={locationCountry || ""} /></div>
-          </div>
+          </div> */}
           <div className={styles.btnContainer}>
             <button className={styles.editBtn} onClick={() => setAddEventModal(true)}>Edit Event</button>
-            <button className={styles.cancelBtn} onClick={handleDeleteModal}>Cancel Event</button>
+            {/* <button className={styles.cancelBtn} onClick={handleDeleteModal}>Cancel Event</button> */}
           </div>
         </div>
       </div>

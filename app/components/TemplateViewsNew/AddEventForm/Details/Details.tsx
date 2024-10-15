@@ -214,7 +214,7 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
             </div>
             <div className={styles.shareContainer}>
               <div className={styles.heading}>Share</div>
-              <ShareButtons disabled={true} shareUrl='www.10times.com' />
+              <ShareButtons copyIcon disabled={true} shareUrl='www.10times.com' />
             </div>
           </div>
           <div className={styles.rightSection}>

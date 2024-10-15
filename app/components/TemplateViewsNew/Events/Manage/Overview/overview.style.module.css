@@ -6,19 +6,50 @@
     display: flex;
     gap: 20px;
 }
-.viewShareContainer{
+/* .viewShareContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+} */
+.shareContainer{
+    background-color: var(--primary-foreground);
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.shareContainer{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 .shareContainer .shareHeading{
     font-size: var(--font-size-default);
+    color: var(--primary-color);
     font-weight: var(--font-weight-semibold);
+}
+.shareContainer .inputContainer{
+    border-radius: 7px;
+    padding: 5px;
+    background-color: var(--primary-light-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.shareContainer .inputContainer input{
+    background: none;
+    border: none;
+}
+.shareContainer .inputContainer input:focus{
+    outline: none;
+}
+.shareContainer .inputContainer button{
+    font-size: var(--font-size-small);
+    background-color: var(--primary-color);
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+}
+.shareContainer .inputContainer button:hover{
+    background-color: var(--primary-color-hover);
 }
 .eventDetailContainer{
     display: flex;

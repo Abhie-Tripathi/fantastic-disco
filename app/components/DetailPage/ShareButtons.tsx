@@ -4,6 +4,7 @@ import styles from './sharebtns.style.module.css'
 import { FacebookShareButton, LinkedinShareButton, TwitterShareButton, EmailShareButton } from 'react-share';
 
 interface Props {
+  copyIcon: boolean;
   shareUrl: string;
   title?: string;
   hashtags?: string[];
@@ -12,7 +13,7 @@ interface Props {
   disabled: boolean;
 }
 
-const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disabled }: Props) => {
+const ShareButtons = ({ copyIcon, shareUrl, title, hashtags, emailSubject, emailBody, disabled }: Props) => {
   console.log("share url is : ", shareUrl)
   const [copyClick, setCopyClick] = useState(false)
   const handleCopy = () => {
@@ -22,7 +23,7 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disa
       navigator.clipboard.writeText(textToCopy);
     }
   };
-  const description  = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
+  const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
   const twitterArr = [];
   twitterArr.push(description)
 
@@ -71,23 +72,16 @@ const ShareButtons = ({ shareUrl, title, hashtags, emailSubject, emailBody, disa
           <EmailIcon />
         </EmailShareButton>
       </div>
-      {!copyClick && (
+      {copyIcon && (
         <div
-          className={`${styles.iconWrapper} ${styles.copyContainer} `}
-          data-name="Copy URL"
-          onClick={handleCopy}
+          className={`${styles.iconWrapper} ${styles.copyContainer}`}
+          data-name={copyClick ? "Copied" : "Copy URL"}
+          onClick={!copyClick ? handleCopy : undefined} // Prevents clicking when already copied
         >
-          <CopyIcon />
+          {copyClick ? <TickIcon /> : <CopyIcon />}
         </div>
       )}
-      {copyClick && (
-        <div
-          className={`${styles.iconWrapper} ${styles.copyContainer} `}
-          data-name="Copied"
-        >
-          <TickIcon />
-        </div>
-      )}
+
     </div>
   )
 }

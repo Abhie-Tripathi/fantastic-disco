@@ -215,7 +215,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                     </div>
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons disabled={true} shareUrl='www.10times.com' />
+                        <ShareButtons copyIcon disabled={true} shareUrl='www.10times.com' />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
