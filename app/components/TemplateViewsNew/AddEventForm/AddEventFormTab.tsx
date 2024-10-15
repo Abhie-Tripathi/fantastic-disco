@@ -184,6 +184,7 @@ const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefille
                 pageBgColor,
                 pageGradient,
                 confettiType,
+                leavesTheme,
                 eventFont,
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
@@ -332,6 +333,7 @@ const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefille
             pageBgColor,
             pageGradient,
             confettiType,
+            leavesTheme,
             eventFont,
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
@@ -454,6 +456,9 @@ const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefille
         // Prepare the event customization data
         const eventCustomizationData = {
             pageBgColor,
+            pageGradient,
+            confettiType,
+            leavesTheme,
             eventFont,
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
