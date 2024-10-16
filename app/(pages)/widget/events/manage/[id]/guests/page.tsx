@@ -5,6 +5,7 @@ import GuestList from '@/app/components/TemplateViewsNew/Events/Manage/Guests/Gu
 import RegisterModal from '@/app/components/TemplateViewsNew/Events/Manage/Guests/RegisterModal'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/InviteGuest'
+import { useEventContext } from '@/context/eventcontext'
 
 const Page = () => {
   const [registerModal, setRegisterModal] = useState<boolean>(false);
@@ -12,7 +13,8 @@ const Page = () => {
 
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
-
+  
+  const { eventId} = useEventContext();
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -38,7 +40,7 @@ const Page = () => {
       <GuestList />
       {/* {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>} */}
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
-        <RegisterModal/>
+        <RegisterModal eventId={eventId}/>
       </div>}
       {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
         <InviteGuest/>

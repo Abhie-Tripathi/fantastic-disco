@@ -85,12 +85,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
             router.push(`/widget/events/manage/${event.mainEvent.eventId}/overview`)
         }
     }
-
-    // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    //     e.stopPropagation()
-    //     // setSelectedEventType("main")
-    //     handleDeleteModal(event.mainEvent.eventId, event.mainEvent.name, event.mainEvent.widgetTags.length > 0)
-    // }
+    
     let prevDate: any = null;
     return (
         <div className={width === "small" ? styles.smallouterDiv : styles.bigouterDiv}>

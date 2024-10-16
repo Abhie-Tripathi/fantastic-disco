@@ -1,7 +1,23 @@
 import React from 'react'
 import styles from './registermodal.style.module.css'
+import { baseUrl } from '@/constants';
+import { myFetch } from '@/utils/myFetch';
 
-const RegisterModal = () => {
+interface Props {
+    eventId: string;
+}
+
+const RegisterModal = ({ eventId }: Props) => {
+
+    const handleChange = async () => {
+        const formData = new FormData()
+        formData.append("id", eventId);
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'POST',
+            body: formData
+        })
+    }
+
     return (
         <div className={styles.body}>
             <div className={styles.heading}>Registration</div>
@@ -15,6 +31,8 @@ const RegisterModal = () => {
                     type="checkbox"
                     id="register"
                     className={styles.checkboxInput}
+                    checked
+                    onChange={handleChange}
                 />
                 <label htmlFor="register" className={styles.checkBox}></label>
             </div>

@@ -47,7 +47,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             interest: "", // Assuming this is missing from API, set default or handle later
             logoUrl: eventData.logoUrl || "",
             widgetTags: data?.widgetData,
-            eventType: data?.type, // Assuming this is missing from API, set default or handle later
+            eventType: data?.type, 
             parentData: "",
             customizationData: {
                 pageBgColor: eventData.customizationData?.pageBgColor || "",
