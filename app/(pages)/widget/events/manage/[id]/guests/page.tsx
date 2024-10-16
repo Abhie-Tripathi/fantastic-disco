@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import GuestList from '@/app/components/TemplateViewsNew/Events/Manage/Guests/GuestList'
 import RegisterModal from '@/app/components/TemplateViewsNew/Events/Manage/Guests/RegisterModal'
@@ -8,13 +8,21 @@ import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/
 import { useEventContext } from '@/context/eventcontext'
 
 const Page = () => {
+  const { eventId, fetchedEvent } = useEventContext();
+
   const [registerModal, setRegisterModal] = useState<boolean>(false);
   const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
+  const [registerValue, setRegisterValue] = useState<boolean>(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
 
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
-  
-  const { eventId} = useEventContext();
+
+  useEffect(()=>{
+    // console.log("registered value : " ,fetchedEvent?.registration )
+    setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
+  },[fetchedEvent])
+
+
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -26,7 +34,7 @@ const Page = () => {
           <span className={styles.icon2}>R</span>
           <div className={styles.sub_headingContainer}>
             Registration
-            <span>Open</span>
+            <span>{registerValue ? "Open" : "Closed"}</span>
           </div>
         </button>
         <button>
@@ -40,10 +48,10 @@ const Page = () => {
       <GuestList />
       {/* {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>} */}
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
-        <RegisterModal eventId={eventId}/>
+        <RegisterModal setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />
       </div>}
       {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
-        <InviteGuest/>
+        <InviteGuest />
       </div>}
     </div>
   )

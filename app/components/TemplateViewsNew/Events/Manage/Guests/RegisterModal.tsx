@@ -1,21 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './registermodal.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
+import { showToast } from '@/utils/showToast';
 
 interface Props {
     eventId: string;
+    setRegisterModal : (value : boolean) => void
+    setRegisterValue : (value : boolean) => void
+    registerValue : boolean;
 }
 
-const RegisterModal = ({ eventId }: Props) => {
+const RegisterModal = ({setRegisterModal, eventId,setRegisterValue,registerValue }: Props) => {
 
     const handleChange = async () => {
         const formData = new FormData()
         formData.append("id", eventId);
+        formData.append("registration", registerValue + "")
         const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'POST',
+            method: 'PATCH',
             body: formData
         })
+        if(data){
+            showToast("success", "Registration changes updated")
+            setRegisterModal(false)
+        }else{
+            console.log("error",error)
+        }
     }
 
     return (
@@ -31,12 +42,12 @@ const RegisterModal = ({ eventId }: Props) => {
                     type="checkbox"
                     id="register"
                     className={styles.checkboxInput}
-                    checked
-                    onChange={handleChange}
+                    checked = {registerValue}
+                    onChange={()=>setRegisterValue(!registerValue)}
                 />
                 <label htmlFor="register" className={styles.checkBox}></label>
             </div>
-            <button className={styles.confirmBtn}>Confirm</button>
+            <button className={styles.confirmBtn} onClick={handleChange}>Confirm</button>
         </div>
     )
 }

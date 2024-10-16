@@ -1,7 +1,37 @@
 import React from 'react'
 import styles from './capacitymodal.style.module.css'
+import { showToast } from '@/utils/showToast';
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
-const CapacityModal = () => {
+interface Props {
+    eventId: string;
+    setCapacityModal: (value: boolean) => void
+    capacityValue: number;
+    setCapacityValue: (value: number) => void
+    setWaitlistValue : (value: boolean) => void
+    waitlistValue : boolean;
+}
+
+const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityValue, setWaitlistValue, waitlistValue} : Props) => {
+
+    const handleChange = async () => {
+        const formData = new FormData()
+        formData.append("id", eventId);
+        formData.append("capacity", capacityValue + "")
+        formData.append("waitlisting", waitlistValue + "")
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'PATCH',
+            body: formData
+        })
+        if(data){
+            showToast("success", "Capacity and Waitlist updated")
+            setCapacityModal(false)
+        }else{
+            console.log("error",error)
+        }
+    }
+
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -10,7 +40,7 @@ const CapacityModal = () => {
             </div>
             <div className={styles.inputContainer}>
                 <div className={styles.heading}>Capacity</div>
-                <input type="number" />
+                <input type="number" onChange={(e)=>setCapacityValue(Number(e.target.value))} value={capacityValue}/>
             </div>
             <div className={styles.waitlistContainer}>
                 <div className={styles.heading}>
@@ -18,13 +48,15 @@ const CapacityModal = () => {
                 </div>
                 <input
                     type="checkbox"
-                    id="register"
+                    id="capacity"
                     className={styles.checkboxInput}
+                    checked={waitlistValue}
+                    onChange={()=>setWaitlistValue(!waitlistValue)}
                 />
-                <label htmlFor="register" className={styles.checkBox}></label>
+                <label htmlFor="capacity" className={styles.checkBox}></label>
             </div>
             <div className={styles.btnContainer}>
-                <button className={styles.setBtn}>Set Limit</button>
+                <button className={styles.setBtn} onClick={handleChange}>Set Limit</button>
                 <button className={styles.removeBtn}>Remove Limit</button>
             </div>
         </div>

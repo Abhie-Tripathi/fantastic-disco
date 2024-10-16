@@ -74,7 +74,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
     capacity:0,
-    registration:false,
+    registration:true,
     approval:false,
     waitlisting:false,
   };

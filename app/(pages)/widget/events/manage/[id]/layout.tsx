@@ -49,6 +49,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             widgetTags: data?.widgetData,
             eventType: data?.type, 
             parentData: "",
+            capacity: data?.capacity || 0,
+            registration: data?.registration === true ? true : false,
+            approval:data?.approval === true ? true : false,
+            waitlisting:data?.waitlisting === true ? true : false,
             customizationData: {
                 pageBgColor: eventData.customizationData?.pageBgColor || "",
                 pageGradient : eventData.customizationData?.pageGradient || "",

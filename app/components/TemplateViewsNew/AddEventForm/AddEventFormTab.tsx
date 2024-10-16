@@ -25,7 +25,7 @@ interface SpeakerProfileType {
 }
 
 interface Props {
-    leavesTheme : boolean;
+    leavesTheme: boolean;
     setIsAddEventModalOpen: (value: boolean) => void
     formTheme: string;
     pageBgColor: string;
@@ -53,7 +53,7 @@ interface Props {
     setIsApproved?: (value: boolean) => void
 }
 
-const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -371,11 +371,10 @@ const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefille
         if (eventId) {
             formData.append('eventId', eventId)
         }
-        formData.append("capacity", subEventState?.capacity+"" )
-        formData.append("registration", subEventState?.registration+"" )
-        formData.append("approval", subEventState?.approval+"" )
-        formData.append("waitlisting", subEventState?.waitlisting+"" )
-        
+        formData.append("capacity", subEventState?.capacity + "")
+        formData.append("registration", subEventState?.registration + "")
+        formData.append("approval", subEventState?.approval + "")
+        formData.append("waitlisting", subEventState?.waitlisting + "")
 
         if (subEventState.banner.file || subEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
             if (subEventState.banner.file) {

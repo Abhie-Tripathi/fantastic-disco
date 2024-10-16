@@ -26,6 +26,10 @@ export interface EventsType{
   widgetTags : string;
   eventType : string;
   parentData : string;
+  capacity : number,
+  registration : boolean,
+  approval : boolean,
+  waitlisting : boolean
 }
 interface CustomizationData {
   pageBgColor: string;
