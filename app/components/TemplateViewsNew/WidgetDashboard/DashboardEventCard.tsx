@@ -121,7 +121,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         </div> */}
                         <div className={styles.tags_deleteContainer}>
                             <div className={styles.tags}>
-                                <div className={styles.tag1}>Tradeshow</div>
+                                <div className={styles.tag1}>{event.mainEvent.participationType}</div>
                                 <div className={styles.tag2}>In-Person</div>
                             </div>
                             {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}

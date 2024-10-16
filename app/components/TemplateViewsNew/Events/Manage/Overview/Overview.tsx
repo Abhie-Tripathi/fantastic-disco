@@ -62,12 +62,12 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
           </div>
           <div className={styles.valuesContainer}>
             <div className={styles.valueContainer}>
-              <div>Registration : <span>ON</span></div>
-              <div>Approval : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>ON</span></div>
             </div>
             <div className={styles.valueContainer}>
-              <div>Waitlist : <span>ON</span></div>
-              <div>Capacity : <span>250</span></div>
+              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>250</span></div>
             </div>
           </div>
           
