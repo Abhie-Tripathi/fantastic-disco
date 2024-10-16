@@ -1,6 +1,7 @@
 .speaker{
     border: 1px solid #EBEBEB;
-    background-color: #fafafa;
+    /* background-color: #fafafa; */
+    background-color: #ffffff7c;
     border-radius: 3px;
     padding: 13px;
     display: flex;

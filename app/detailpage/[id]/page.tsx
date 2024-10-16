@@ -16,7 +16,7 @@ interface EventProps {
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
-    speakerProfilesData: any[];
+    speaker: any[];
     participationMessage: string;
     name: string;
     format: string;
@@ -41,7 +41,7 @@ interface EventProps {
     waitlisting: boolean;
 }
 
-const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
     return (
         <DetailPageComponent
@@ -61,7 +61,7 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             registerBtnText={registerBtnText}
             registerMessage={registerMessage}
             registerBtnColor={registerBtnColor}
-            speakerProfilesData={speakerProfilesData}
+            speaker={speaker}
             participationMessage={participationMessage}
             name={name}
             format={format}
@@ -129,7 +129,7 @@ const fetchData = async (eventId: string) => {
             registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
             registerBtnText: data.data.event.data.customizationData.registerBtnText,
             registerMessage: data.data.event.data.customizationData.registerMessage,
-            speakerProfilesData: data.data.event.data.customizationData.speakerProfilesData,
+            speaker: data.data.event.data.customizationData.speaker,
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
@@ -164,7 +164,7 @@ const fetchData = async (eventId: string) => {
                     registerBtnColor: child.data.customizationData.registerBtnColor,
                     registerBtnText: child.data.customizationData.registerBtnText,
                     registerMessage: child.data.customizationData.registerMessage,
-                    speakerProfilesData: child.data.customizationData.speakerProfilesData,
+                    speaker: child.data.customizationData.speakerProfilesData,
                     participationMessage: child.data.customizationData.participationMessage,
                     venue: child.data.customizationData.venue,
                     hashtags: child.data.customizationData.hashtags,

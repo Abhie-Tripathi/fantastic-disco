@@ -17,6 +17,7 @@ import SideEventCarousel from './SideEventCarousel'
 import RegistrationClosed from './RegistrationClosed'
 import confetti from 'canvas-confetti'
 import LeafTwo from '/public/widgetimages/leaf2.png'
+import SpeakerContainer from './SpeakerContainer'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -31,7 +32,7 @@ interface EventProps {
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
-    speakerProfilesData: any[];
+    speaker: any[];
     participationMessage: string;
     participationType?: string;
     name: string;
@@ -58,7 +59,7 @@ interface EventProps {
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
@@ -203,7 +204,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                         </div>
                     }
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
-
+                    {speaker.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker}/></div>}
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
