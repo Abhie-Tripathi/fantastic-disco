@@ -241,7 +241,8 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                     setIsAddEventModalOpen(false)
                     showToast("success", "Main Event Added Successfully")
                     if (fetchEvents) {
-                        fetchEvents(0, "update")
+                        // fetchEvents(0, "update")
+                        window.location.reload();
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -397,7 +398,8 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             setIsAddEventModalOpen(false)
             showToast("success", "Subevent Added Successfully")
             if (fetchEvents) {
-                fetchEvents(0, "update")
+                // fetchEvents(0, "update")
+                window.location.reload();
                 if (setChoiceFormModal) {
                     setChoiceFormModal(false)
                 }
@@ -530,7 +532,8 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             setIsAddEventModalOpen(false);
             showToast("success", "Event Updated Successfully");
             if (fetchEvents) {
-                fetchEvents(0, "update")
+                // fetchEvents(0, "update")
+                window.location.reload();
             }
             if (fetchEventData) {
                 fetchEventData()
