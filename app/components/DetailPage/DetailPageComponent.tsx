@@ -1,5 +1,5 @@
 'use client'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styles from './detailpage.style.module.css'
 import Image from 'next/image'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
@@ -15,6 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { EventsType } from '@/types/alleventtype'
 import SideEventCarousel from './SideEventCarousel'
 import RegistrationClosed from './RegistrationClosed'
+import confetti from 'canvas-confetti'
+import LeafTwo from '/public/widgetimages/leaf2.png'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -23,6 +25,9 @@ interface EventProps {
     eventFont: string;
     longitude: number;
     pageBgColor: string;
+    pageGradient: string;
+    confettiType: string;
+    leavesTheme: boolean;
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
@@ -46,7 +51,7 @@ interface EventProps {
     childrenData: EventsType[]
     parentName: string;
     parentId: string;
-    capacity:number;
+    capacity: number;
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
@@ -54,10 +59,44 @@ interface EventProps {
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity,registration,approval,waitlisting }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
     const [isRegistratonClosed, setRegistrationClosed] = useState(false)
+    const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const confettiCanvasRefTwo = useRef<HTMLCanvasElement | null>(null);
+
+    const fireConfetti = () => {
+        if (confettiCanvasRef.current) {
+            const myConfetti = confetti.create(confettiCanvasRef.current, { resize: true });
+            myConfetti({
+                particleCount: 2000,
+                spread: 400,
+                origin: { y: 1 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+
+            });
+        }
+        if (confettiCanvasRefTwo.current) {
+            const myConfetti = confetti.create(confettiCanvasRefTwo.current, { resize: true });
+            myConfetti({
+                particleCount: 1000,
+                spread: 200,
+                origin: { y: 1 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+            });
+        }
+    };
+    useEffect(() => {
+        if (confettiType.length > 0) {
+            // Fire confetti immediately
+            fireConfetti();
+            // Set up the interval for firing every 4 seconds
+            const interval = setInterval(fireConfetti, 4000);
+            // Cleanup interval when confettiType changes or component unmounts
+            return () => clearInterval(interval);
+        }
+    }, [confettiType]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -88,9 +127,30 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
     }
 
     return (
-        <div className={styles.body}
+        <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
             style={{ backgroundColor: pageBgColor }}
         >
+            <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+            <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
+            {leavesTheme && <div className={styles.leafContainer}>
+                {Array.from({ length: 100 }).map((_, index) => (
+                    <Image
+                        key={index}
+                        // src={index % 2 === 0 ? LeafOne : LeafTwo}
+                        src={LeafTwo}
+                        className={styles.leaf}
+                        alt={`Leaf ${index + 1}`}
+                        style={{
+                            left: `${Math.random() * 100}%`, // Random horizontal position
+                            top: `${Math.random() * 100}%`,  // Random vertical position
+                            animationDelay: `${Math.random() * 5}s`, // Random animation delay
+                            animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
+                            width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
+                            height: `${25 + Math.random() * 5}px`,
+                        }}
+                    />
+                ))}
+            </div>}
             <ToastContainer />
             {parentName &&
                 <div className={styles.mainEventLinkContainer}>
@@ -130,10 +190,10 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    {registration ? <><RegistrationClosed/></>:<>
-                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId}  capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting}/></div>
+                    {registration ? <><RegistrationClosed /></> : <>
+                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
                     </>}
-                    
+
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>

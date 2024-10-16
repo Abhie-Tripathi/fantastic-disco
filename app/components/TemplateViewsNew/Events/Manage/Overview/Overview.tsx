@@ -3,8 +3,6 @@ import styles from './overview.style.module.css'
 import EventSmallDetailView from './EventSmallDetailView'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { showToast } from "@/utils/showToast";
-import ProgressBar from '../../../AddEventForm/Appearance/ProgressBar'
-import Image from 'next/image'
 
 interface Props {
   eventId: string;
@@ -51,7 +49,7 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
               <div className={styles.shareHeading}>Share Event</div>
               <ShareButtons copyIcon={false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
               <div className={styles.inputContainer}>
-                <input type="text" disabled value={`https://console.eventgeni.com/detailpage/${eventId}`} />
+                <input type="text" disabled value={`${console_url}/detailpage/${eventId}`} />
                 <button onClick={handleCopy}>Copy</button>
               </div>
             </div>
