@@ -89,7 +89,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
         }
     };
     useEffect(() => {
-        if (confettiType.length > 0) {
+        if (confettiType?.length > 0) {
             // Fire confetti immediately
             fireConfetti();
             // Set up the interval for firing every 4 seconds

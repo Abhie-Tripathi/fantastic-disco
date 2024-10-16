@@ -39,6 +39,7 @@ const Page = () => {
     useEffect(() => {
         fetchEvents(page * 8);
     }, [page])
+    
     useEffect(() => {
         const handleScroll = () => {
             const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
@@ -232,7 +233,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent isApproved={isApproved} setIsApproved={setIsApproved} prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal}  />
+                <AddEvent isApproved={isApproved} setIsApproved={setIsApproved} prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal} />
             </div>}
             {/* {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

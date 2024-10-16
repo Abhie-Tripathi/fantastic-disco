@@ -164,7 +164,7 @@ const fetchData = async (eventId: string) => {
                     registerBtnColor: child.data.customizationData.registerBtnColor,
                     registerBtnText: child.data.customizationData.registerBtnText,
                     registerMessage: child.data.customizationData.registerMessage,
-                    speaker: child.data.customizationData.speakerProfilesData,
+                    speaker: child.data.customizationData.speaker,
                     participationMessage: child.data.customizationData.participationMessage,
                     venue: child.data.customizationData.venue,
                     hashtags: child.data.customizationData.hashtags,

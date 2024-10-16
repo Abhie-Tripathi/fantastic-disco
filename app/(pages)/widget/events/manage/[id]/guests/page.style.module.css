@@ -53,9 +53,9 @@
     color: var(--notice-color);
 }
 .btnContainer button:hover{
-    color: white;
+    /* color: white; */
     transition-duration: .2s;
-    background-color: var(--background-secondary-color-hover);
+    background-color: var(--accent-color);
 }
 .blackScreen{
     width: 100vw;

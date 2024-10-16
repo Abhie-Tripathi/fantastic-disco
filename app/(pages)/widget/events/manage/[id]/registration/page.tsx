@@ -40,7 +40,11 @@ const Page = () => {
           <span className={styles.icon2}>EC</span>
           <div className={styles.sub_headingContainer}>
             Event Capacity
-            <span>{capacityValue}</span>
+            <span className={styles.capacity}>
+              <span>{capacityValue}</span>
+              <span className={styles.dot}>{"."}</span>
+              <span>{waitlistValue ? "Waitlist On" : "Waitlist Off"}</span>
+            </span>
           </div>
         </button>
       </div>
