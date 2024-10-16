@@ -149,3 +149,10 @@
     background-color: #e5484d3f;
     color: var(--danger-text-color);
 }
+.emptyList{
+    text-align: center;
+    padding: 10px;
+    font-size: var(--font-size-default);
+    color: var(--secondary-text-color);
+    font-weight: 500;
+}

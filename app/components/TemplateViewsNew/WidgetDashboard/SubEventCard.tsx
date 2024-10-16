@@ -143,7 +143,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                     </div> */}
                     <div className={styles.tags_deleteContainer}>
                         <div className={styles.tags}>
-                            <div className={styles.tag1}>Tradeshow</div>
+                            <div className={styles.tag1}>{normalEvent?.mainEvent.participationType || subEvent?.participationType}</div>
                             <div className={styles.tag2}>In-Person</div>
                         </div>
                         {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}

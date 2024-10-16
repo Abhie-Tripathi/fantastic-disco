@@ -1,9 +1,10 @@
 import React from 'react'
 import styles from './overview.style.module.css'
 import EventSmallDetailView from './EventSmallDetailView'
-import DateTimeContainer from '@/app/components/DetailPage/DateTimeContainer'
-import LocationContainer from '@/app/components/DetailPage/LocationContainer'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
+import { showToast } from "@/utils/showToast";
+import ProgressBar from '../../../AddEventForm/Appearance/ProgressBar'
+import Image from 'next/image'
 
 interface Props {
   eventId: string;
@@ -16,48 +17,60 @@ interface Props {
   hashtags?: string;
   timeZone?: string;
   pageBgColor?: string;
+  pageGradient?: string;
+  leavesTheme?: boolean;
+  confettiType?: string;
   eventFont?: string;
   locationCity?: string;
   locationCountry?: string;
   participationType?: string;
-  isPresentinWidget? : boolean;
+  isPresentinWidget?: boolean;
   setAddEventModal: (value: boolean) => void
-  setDeleteModal : (value: boolean) => void;
-  setDeleteModalTwo : (value: boolean) => void;
+  setDeleteModal: (value: boolean) => void;
+  setDeleteModalTwo: (value: boolean) => void;
 }
 
-const Overview = ({ eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo,isPresentinWidget }: Props) => {
+const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
-  const handleDeleteModal = () => {
-    if (isPresentinWidget) {
-        setDeleteModalTwo(true)
-    } else {
-        setDeleteModal(true)
-    }
-}
+  const handleCopy = () => {
+    const textToCopy = `https://console.eventgeni.com/detailpage/${eventId}`;
+    navigator.clipboard.writeText(textToCopy);
+    showToast("success", "Link copied")
+  };
 
   return (
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
-        <div className={styles.viewShareContainer}>
-          <EventSmallDetailView participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
-          <div className={styles.shareContainer}>
-            <div className={styles.shareHeading}>Share</div>
-            <ShareButtons disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`}/>
-          </div>
+        <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
+          <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
         </div>
-
         <div className={styles.eventDetailContainer}>
-          <div className={styles.locationDateContainer}>
-            <div className={styles.heading}>When & Where</div>
-            <div className={styles.dateTimeContainer}><DateTimeContainer endDate={endDate || ""} startDate={startDate || ""} endTime={endTime || ""} startTime={startTime || ""} timeZone={timeZone || ""} /></div>
-            <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={locationCity || ""} countryName={locationCountry || ""} /></div>
+          <div className={styles.share_leadsContainer}>
+            <div className={styles.shareContainer}>
+              <div className={styles.shareHeading}>Share Event</div>
+              <ShareButtons copyIcon={false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
+              <div className={styles.inputContainer}>
+                <input type="text" disabled value={`https://console.eventgeni.com/detailpage/${eventId}`} />
+                <button onClick={handleCopy}>Copy</button>
+              </div>
+            </div>
+            <div className={styles.leadsContainer}>
+              <UserIcon />
+              <span>130 Interests</span>
+            </div>
           </div>
-          <div className={styles.btnContainer}>
-            <button className={styles.editBtn} onClick={() => setAddEventModal(true)}>Edit Event</button>
-            <button className={styles.cancelBtn} onClick={handleDeleteModal}>Cancel Event</button>
+          <div className={styles.valuesContainer}>
+            <div className={styles.valueContainer}>
+              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>ON</span></div>
+            </div>
+            <div className={styles.valueContainer}>
+              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>250</span></div>
+            </div>
           </div>
+          
         </div>
       </div>
     </div>
@@ -65,3 +78,9 @@ const Overview = ({ eventId, imageUrl, eventName, startDate, endDate, startTime,
 }
 
 export default Overview
+
+function UserIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z" fill="#6750a4" /></svg>
+  )
+}

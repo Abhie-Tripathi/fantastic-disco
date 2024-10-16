@@ -20,8 +20,8 @@ export interface FormState {
     participationType : string;
     description : string;
     textValue: string;
-    speakerProfilesData: SpeakerProfileType[];
-    prefilledProfile?: SpeakerProfileType;
+    speaker: any[];
+    prefilledProfile?: any;
     registerMessage: string;
     registerBtnText: string;
     registerBtnColor: string;

@@ -11,6 +11,9 @@ import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
+import LeafOne from '/public/widgetimages/leaf1.png'
+import LeafTwo from '/public/widgetimages/leaf2.png'
+import Image from 'next/image'
 
 interface SpeakerProfileType {
     id: string;
@@ -22,7 +25,9 @@ interface SpeakerProfileType {
 }
 
 interface Props {
+    leavesTheme : boolean;
     setIsAddEventModalOpen: (value: boolean) => void
+    formTheme: string;
     pageBgColor: string;
     pageGradient: string;
     confettiType: string;
@@ -43,12 +48,12 @@ interface Props {
     prefilledSubEvent?: EventsType | null;
     setPrefilledSubEvent?: (value: EventsType | null) => void
     fetchEventData?: () => Promise<undefined | null>;
-    setChoiceFormModal?:(value:boolean) => void,
-    isApproved?:boolean;
-    setIsApproved?:(value:boolean) =>void
+    setChoiceFormModal?: (value: boolean) => void,
+    isApproved?: boolean;
+    setIsApproved?: (value: boolean) => void
 }
 
-const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent,setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -65,9 +70,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             myConfetti({
                 particleCount: 300,
                 spread: 100,
-                origin: { y: 0.9 }, 
-                shapes : confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle','square','star'] : ['star'],
-                
+                origin: { y: 0.9 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+
             });
         }
     };
@@ -177,6 +182,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             }
             const eventCustomizationData = {
                 pageBgColor,
+                pageGradient,
+                confettiType,
+                leavesTheme,
                 eventFont,
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
@@ -235,12 +243,12 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     if (fetchEvents) {
                         fetchEvents(0, "update")
                     }
-                    if (mainEventState.speakerProfilesData.length > 0) {
-                        mainEventState.speakerProfilesData.map((speaker: SpeakerProfileType) => {
+                    if (mainEventState.speaker.length > 0) {
+                        mainEventState.speaker.map((speaker: any) => {
                             addSpeakers(data.data.id, speaker)
                         })
                     }
-                    if(setChoiceFormModal){
+                    if (setChoiceFormModal) {
                         setChoiceFormModal(false)
                     }
                     if (setEventFlow) {
@@ -257,16 +265,16 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
 
     }
 
-    const addSpeakers = async (eventId: string, speaker: SpeakerProfileType) => {
+    const addSpeakers = async (eventId: string, speaker: any) => {
         const formData = new FormData()
         const speakerObject = {
-            name: speaker.name,
-            linkedIn: speaker.linkedin,
-            designation: speaker.designation
+            name: speaker.data.name,
+            linkedIn: speaker.data.linkedIn,
+            designation: speaker.data.designation
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
-        formData.append("file", speaker.profileImage || "")
+        formData.append("file", speaker.imageUrl || "")
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
@@ -326,6 +334,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         }
         const eventCustomizationData = {
             pageBgColor,
+            pageGradient,
+            confettiType,
+            leavesTheme,
             eventFont,
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
@@ -388,7 +399,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             showToast("success", "Subevent Added Successfully")
             if (fetchEvents) {
                 fetchEvents(0, "update")
-                if( setChoiceFormModal){
+                if (setChoiceFormModal) {
                     setChoiceFormModal(false)
                 }
             }
@@ -457,6 +468,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         // Prepare the event customization data
         const eventCustomizationData = {
             pageBgColor,
+            pageGradient,
+            confettiType,
+            leavesTheme,
             eventFont,
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
@@ -466,7 +480,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
-            speaker: []
+            speaker: eventState.speaker
         };
 
         // Prepare the event data
@@ -488,7 +502,6 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
-
         };
 
         // Prepare formData for the request
@@ -631,6 +644,25 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+                {leavesTheme && <div className={styles.leafContainer}>
+                    {Array.from({ length: 100 }).map((_, index) => (
+                        <Image
+                            key={index}
+                            // src={index % 2 === 0 ? LeafOne : LeafTwo}
+                            src={LeafTwo}
+                            className={styles.leaf}
+                            alt={`Leaf ${index + 1}`}
+                            style={{
+                                left: `${Math.random() * 100}%`, // Random horizontal position
+                                top: `${Math.random() * 100}%`,  // Random vertical position
+                                animationDelay: `${Math.random() * 5}s`, // Random animation delay
+                                animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
+                                width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
+                                height: `${25 + Math.random() * 5}px`,
+                            }}
+                        />
+                    ))}
+                </div>}
                 {collapseMainEventForm && eventFlow === 'main' ?
                     (<div className={styles.collapsedContainer}>
                         <div>
@@ -640,6 +672,7 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                         <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
                     </div>) : (eventFlow === 'main' &&
                         <Details
+                            formTheme={formTheme}
                             handleCollapseForm={handleCollapseForm}
                             formState={mainEventState}
                             handleChange={handleMaineventChanges}
@@ -650,9 +683,10 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                             setCollapseMainEventForm={setCollapseMainEventForm}
                             collapseMainEventForm={collapseMainEventForm}
                             isApproved={isApproved} setIsApproved={setIsApproved}
-                    />)}
+                        />)}
                 {(collapseMainEventForm || eventFlow === "side") && <Subeventform
                     // setMainEventName={setMainEventName}
+                    formTheme={formTheme}
                     formState={subEventState}
                     handleChange={handleSubeventChange}
                     eventFont={eventFont}

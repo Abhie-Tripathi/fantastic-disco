@@ -10,7 +10,6 @@ const Page = () => {
     const router = useRouter()
     useEffect(()=>{
         router.push(`/widget/events/manage/${eventId}/overview`)
-        console.log("this code ran")
     },[])
     return (
         <div className={styles.body}>

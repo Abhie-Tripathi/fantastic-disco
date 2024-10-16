@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './guestlist.style.module.css'
 import SortIcon from '/public/filter.svg'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import DownloadIcon from '/public/downloadIcon.svg'
+import { useEventContext } from '@/context/eventcontext'
+import { baseUrl } from '@/constants'
+import { myFetch } from '@/utils/myFetch'
 
 const GuestList = () => {
 
@@ -13,8 +16,31 @@ const GuestList = () => {
   const [sortDropdown, setSortDropdown] = useState<boolean>(false)
   const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false))
   const sortDropdownRef = useOutsideClick(() => setSortDropdown(false))
+  const { eventId } = useEventContext();
 
-  const guests = [{ name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }]
+  const [guests, setGuests] = useState<any[]>(
+    [
+      // { name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }
+    ]
+  )
+
+  const fetchGuests = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    if (error) {
+      console.log("error is : ", error)
+    } else {
+      const fetchedGuests = data.users.map((user: any) => ({
+        name: `${user.firstname} ${user.lastname}`,
+        email: user.email,
+        status: "Pending", // Set a default status, can be changed based on your logic
+      }));
+      setGuests(fetchedGuests);
+    }
+  }
+
+  useEffect(() => {
+    fetchGuests()
+  }, [])
 
   return (
     <div className={styles.body}>
@@ -30,8 +56,8 @@ const GuestList = () => {
       <div className={styles.filterSortingContainer}>
         <div className={styles.filterBtnContainer}>
           <button className={styles.dropBtn} onClick={() => setFilterdropdown(!filterDropdown)}>
-          <FilterIcon/>
-          {activeFilterBtn}</button>
+            <FilterIcon />
+            {activeFilterBtn}</button>
           {filterDropdown && <div className={styles.dropdown} ref={filterDropdownRef}>
             <li onClick={() => setActiveFilterBtn("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
             <li onClick={() => setActiveFilterBtn("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
@@ -50,7 +76,7 @@ const GuestList = () => {
         </div>
       </div>
       <div className={styles.guestListContainer}>
-        {guests.map((guest, key) => (
+        {guests.length > 0 ? (guests.map((guest, key) => (
           <div className={styles.guest} key={key}>
             <div className={styles.nameMailContainer}>
               <div className={styles.guestName}>{guest.name}</div>
@@ -58,7 +84,9 @@ const GuestList = () => {
             </div>
             <div className={`${styles.guestStatus} ${guest.status === "Waitlist" ? styles.wait : guest.status === "Going" ? styles.going : styles.notgoing}`}>{guest.status}</div>
           </div>
-        ))}
+        ))) : (
+        <div className={styles.emptyList}>No guest registred yet. Start by inviting</div>
+        )}
       </div>
     </div>
   )

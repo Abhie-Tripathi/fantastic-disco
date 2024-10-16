@@ -68,11 +68,22 @@ const RegisterForm = ({
   const fontColor = brightness > 155 ? "#000000" : "#FFFFFF";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    if (name === "name") {
+      const [first, ...rest] = value.split(" ");
+      setFormData({
+        ...formData,
+        firstname: first,
+        lastname: rest.join(" "), // Join the remaining parts as the last name
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -84,7 +95,7 @@ const RegisterForm = ({
       interest: "ATTENDEE",
       note: "intend",
       source: "eventgeni",
-      // sorceId: widgetId,
+      // sourceId: widgetId,
     };
 
     try {
@@ -183,12 +194,12 @@ const RegisterForm = ({
           className={styles.inputField}
           type="text"
           name="firstname"
-          placeholder="First Name"
+          placeholder="Name"
           value={formData.firstname}
           onChange={handleChange}
           required
         />
-        <input
+        {/* <input
           className={styles.inputField}
           type="text"
           name="lastname"
@@ -196,7 +207,7 @@ const RegisterForm = ({
           value={formData.lastname}
           onChange={handleChange}
           required
-        />
+        /> */}
         <input
           className={styles.inputField}
           type="email"

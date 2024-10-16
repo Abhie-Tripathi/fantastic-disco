@@ -10,6 +10,7 @@ interface Props{
   capacity:number;
   handleChange: (field: keyof FormState, any: any) => void;
   
+  
 }
 const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
   // const [isApproved, setIsApproved] = useState(false);
