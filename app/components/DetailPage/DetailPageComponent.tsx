@@ -46,7 +46,7 @@ interface EventProps {
     childrenData: EventsType[]
     parentName: string;
     parentId: string;
-    capacity:boolean;
+    capacity:number;
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;

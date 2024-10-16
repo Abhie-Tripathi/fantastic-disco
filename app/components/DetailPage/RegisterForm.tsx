@@ -12,7 +12,7 @@ interface Props {
   widgetId?: string;
   eventId: string;
   setRegisterSuccess: (value: boolean) => void;
-  capacity:boolean;
+  capacity:number;
   registration: boolean;
   approval: boolean;
   waitlisting: boolean;

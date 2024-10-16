@@ -32,7 +32,7 @@ interface EventProps {
     parentName : string;
     parentId : string;
     childrenData: EventsType[]
-    capacity:boolean;
+    capacity:number;
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
