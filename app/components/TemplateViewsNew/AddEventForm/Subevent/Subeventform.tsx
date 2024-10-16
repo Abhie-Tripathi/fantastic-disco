@@ -255,7 +255,7 @@ const Subeventform = ({ handleChange, formState, prefilledEvent, eventFont, setL
                             handleChange={handleChange} /></div>
                         {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                     </div>
-                    <div className={styles.resgitrationContainer}><WaitListAndCap isApproved={isApproved}setIsApproved={setIsApproved}/></div>
+                    <div className={styles.resgitrationContainer}><WaitListAndCap handleChange={handleChange} waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} /></div>
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speakerProfilesData}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>

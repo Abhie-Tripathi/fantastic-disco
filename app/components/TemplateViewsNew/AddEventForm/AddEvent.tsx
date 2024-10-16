@@ -71,6 +71,10 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isParticipationMessageEmpty: false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
+    capacity:0,
+    registration:false,
+    approval:false,
+    waitlisting:false,
   };
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
   const [subeventState, setSubeventState] = useState<FormState>(initialFormState);

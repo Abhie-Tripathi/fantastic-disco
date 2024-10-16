@@ -243,6 +243,9 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     if(setChoiceFormModal){
                         setChoiceFormModal(false)
                     }
+                    if (setEventFlow) {
+                        setEventFlow("")
+                    }
                 }
             }
             if (error) {
@@ -357,6 +360,11 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
         if (eventId) {
             formData.append('eventId', eventId)
         }
+        formData.append("capacity", subEventState?.capacity+"" )
+        formData.append("registration", subEventState?.registration+"" )
+        formData.append("approval", subEventState?.approval+"" )
+        formData.append("waitlisting", subEventState?.waitlisting+"" )
+        
 
         if (subEventState.banner.file || subEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
             if (subEventState.banner.file) {
@@ -384,12 +392,16 @@ const AddEventFormTab = ({ setPrefilledEvent, setPrefilledGlobalEvent, setIsAddE
                     setChoiceFormModal(false)
                 }
             }
+            if (setEventFlow) {
+                setEventFlow("")
+            }
 
         }
         if (error) {
             console.log(error)
         }
     }
+
     // This function can be called from 2 perspectives. Updating a Main or Updating a main event whose type is sub. So in that case the formState will change to SubEventState
     const handleSaveEvent = async (eventId: string) => {
         // Use the eventFlow variable to decide which state to use

@@ -49,5 +49,9 @@ export interface FormState {
     isTextValueMessageEmpty: boolean;
     errorMessage: string;
     parentData : string;
+    capacity:number;
+    registration:boolean;
+    approval:boolean;
+    waitlisting:boolean;
   }
   
