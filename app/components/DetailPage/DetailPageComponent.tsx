@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { EventsType } from '@/types/alleventtype'
 import SideEventCarousel from './SideEventCarousel'
+import RegistrationClosed from './RegistrationClosed'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -45,13 +46,18 @@ interface EventProps {
     childrenData: EventsType[]
     parentName: string;
     parentId: string;
+    capacity:number;
+    registration: boolean;
+    approval: boolean;
+    waitlisting: boolean;
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity,registration,approval,waitlisting }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
+    const [isRegistratonClosed, setRegistrationClosed] = useState(false)
 
     useEffect(() => {
         const handleResize = () => {
@@ -124,7 +130,10 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} /></div>
+                    {registration ? <><RegistrationClosed/></>:<>
+                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId}  capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting}/></div>
+                    </>}
+                    
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>

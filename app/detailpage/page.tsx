@@ -34,10 +34,14 @@ interface EventProps {
     parentId: string;
     childrenData: EventsType[];
     widgetId: string;
+    capacity:number;
+    registration:boolean;
+    approval:boolean;
+    waitlisting:boolean;
 }
 
 const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity,registration,approval,waitlisting }: EventProps) => {
     return (
         // <div></div>
         <DetailPageComponent
@@ -69,6 +73,10 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             location_country={location_country}
             eventId={eventId}
             participationType={participationType}
+            capacity={capacity}
+            registration={registration}
+            approval={approval}
+            waitlisting={waitlisting}
         />
     )
 }
@@ -120,6 +128,10 @@ const fetchData = async (eventId: string) => {
             hashtags: data.data.event.data.customizationData.hashtags,
             parentName: data.data.event.data.parentData ? data.data.event.data.parentData : data.data.event.parentInfo.name,
             parentId: data.data.event.parentInfo.id,
+            capacity:data?.data?.event?.capacity,
+            registration: data?.data?.event?.registration,
+            approval: data?.data?.event?.approval,
+            waitlisting: data?.data?.event?.waitlisting,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,

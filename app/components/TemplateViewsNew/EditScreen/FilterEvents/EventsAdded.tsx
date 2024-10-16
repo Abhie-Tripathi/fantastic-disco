@@ -340,10 +340,12 @@ const EventsAdded = ({
   
 
     useEffect(() => {
-      if (locationEnabled && fetchedAddedOtherData.length > 0) {
-        getUserLocation(); 
-      } else if (!locationEnabled && fetchedAddedOtherData.length > 0) {
-        showFirstEvent(); 
+      if( selectedTemplate === "PUVP" || selectedTemplate ==="PUVL" || selectedTemplate === "ST"){
+        if (locationEnabled && fetchedAddedOtherData.length > 0) {
+          getUserLocation(); 
+        } else if (!locationEnabled && fetchedAddedOtherData.length > 0) {
+          showFirstEvent(); 
+        }
       }
     }, [locationEnabled, fetchedAddedOtherData]);
     
@@ -412,49 +414,7 @@ const EventsAdded = ({
     });
   };
 
-  // const getUserLocation = () => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const userLat = position.coords.latitude;
-  //         const userLong = position.coords.longitude;
-  
-  //         // Find the closest event based on user location
-  //         const closestEvent:any = findClosestEvent(userLat, userLong);
-  //         console.log("callll_1111111111111111", closestEvent)
-  //         if (closestEvent) {
-  //           // Mark the closest event as promoted
-  //           const updatedNearestEvent = {
-  //             ...closestEvent,
-  //             promoted: true,
-  //           };
-  
-  //           // Update fetchedAddedOtherData with the promoted event
-  //           const updatedFetchedData = fetchedAddedOtherData.map((event) => {
-  //             return event.id === updatedNearestEvent.id
-  //               ? { ...event, promoted: true }
-  //               : { ...event, promoted: false }; // Reset other events to false
-  //           });
-  
-  //           // Update state with modified data
-  //           setFetchedAddedOtherData(updatedFetchedData);
-  
-  //           console.log("Updated data with promoted event:", updatedFetchedData);
-  //         } else {
-  //           console.log("No closest event found.");
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error("Error getting location:", error);
-  //         getLocationByIP(); // Fallback to IP-based location
-  //       }
-  //     );
-  //   } else {
-  //     console.warn("Geolocation is not supported by this browser.");
-  //     getLocationByIP(); // Fallback if geolocation is unavailable
-  //   }
-  // };
-  
+ 
 
 
   const getLocationByIP = async () => {

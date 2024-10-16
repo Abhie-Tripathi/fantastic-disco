@@ -3,14 +3,20 @@ import styles from "./waitlistandcap.style.module.css";
 import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
 import CapacityModal from "./capacitymodal/Capacity";
-const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
+import { FormState } from "@/types/Formstate";
+interface Props{
+  waitlisting:boolean;
+  approval:boolean;
+  capacity:number;
+  handleChange: (field: keyof FormState, any: any) => void;
+  
+  
+}
+const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
   // const [isApproved, setIsApproved] = useState(false);
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");
-  const handleToggle = () => {
-    setIsApproved(!isApproved);
-  };
-
+ 
   const openCapacityModal = () => {
     setIsCapacityModalOpen(true);
   };
@@ -21,6 +27,9 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
   const handleRadioChange = (e: any) => {
     setSelectedOption(e.target.value);
   };
+  const handleToggle = () => {
+    handleChange("approval",true)
+  }
 
   return (
     <div className={`${styles.cardContainer}`}>
@@ -63,7 +72,7 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              checked={isApproved}
+              checked={approval}
               onChange={handleToggle}
             />
             <span className={styles.slider}></span>
@@ -87,6 +96,9 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
       <CapacityModal
         isOpen={isCapacityModalOpen}
         onClose={closeCapacityModal}
+        capacity={ capacity}
+        handleChange={handleChange}
+        waitlisting={waitlisting}
       />
     </div>
   );

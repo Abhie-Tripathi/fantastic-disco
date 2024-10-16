@@ -73,6 +73,10 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isParticipationMessageEmpty: false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
+    capacity:0,
+    registration:false,
+    approval:false,
+    waitlisting:false,
   };
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
   const [subeventState, setSubeventState] = useState<FormState>(initialFormState);
@@ -94,7 +98,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
       <div className={styles.details}>
         <AddEventFormTab leavesTheme={leavesTheme} formTheme={formTheme} confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
           // setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName}
-          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal} isApproved={isApproved} setIsApproved={setIsApproved}/>
+          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal}/>
         {/* <Details setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} /> */}
       </div>
     </div>

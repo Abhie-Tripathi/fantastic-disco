@@ -12,6 +12,10 @@ interface Props {
   widgetId?: string;
   eventId: string;
   setRegisterSuccess: (value: boolean) => void;
+  capacity:number;
+  registration: boolean;
+  approval: boolean;
+  waitlisting: boolean;
 }
 
 const RegisterForm = ({
@@ -21,6 +25,10 @@ const RegisterForm = ({
   registerBtnColor,
   eventId,
   setRegisterSuccess,
+  capacity,
+  registration,
+  approval,
+  waitlisting,
 }: Props) => {
   const [formData, setFormData] = useState({
     firstname: "",
@@ -28,7 +36,9 @@ const RegisterForm = ({
     email: "",
   });
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [isApproved, setIsApproved] = useState(true);
+  const [isCapacityFull, setIsCapacityFull] = useState(true);
+  const [isApproved, setIsApproved] = useState(false)
+  const [isEventEnded, setIsEventEnded]= useState(true)
   // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
     const cleanHex = hex.replace("#", "");
@@ -117,7 +127,7 @@ const RegisterForm = ({
   return (
     <div className={styles.registerContainer}>
       {/* <ToastContainer /> */}
-      {isApproved ? (
+      {capacity || approval || isEventEnded ? (
         <>Register</>
       ) : (
         <div className={styles.header}>
@@ -126,7 +136,7 @@ const RegisterForm = ({
       )}
 
       <form onSubmit={handleSubmit}>
-        {isApproved ? (
+        {capacity ? (
           <>
             <div className={styles.event_container}>
               <div className={styles.icon_container}>
@@ -135,7 +145,7 @@ const RegisterForm = ({
               <div className={styles.text_container}>
                 <div className={styles.event_full_text}>Event Full</div>
                 <div className={styles.waitlist_text}>
-                  If you`&apos;`d like, you can join the waitlist.
+                  If you&apos;d like, you can join the waitlist.
                 </div>
               </div>
             </div>
@@ -144,9 +154,41 @@ const RegisterForm = ({
               notified if additional spots become available.
             </div>
           </>
-        ) : (
-          <div className={styles.formSubHeading}>{registerMessage}</div>
-        )}
+        ) : approval ? 
+        <>
+          <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <ApprovalSVG />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Approval Required</div>
+                <div className={styles.waitlist_text}>
+                  Your registration is subject to approval by the host.  
+                </div>
+              </div>
+            </div>
+            <div className={styles.detail_text}>
+             Welcome! To join the event, please register below.
+            </div>
+
+        </>:
+        isEventEnded ? <>
+         <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <EventClosedIcon />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Past Event</div>
+                <div className={styles.waitlist_text}>
+                  <span>This event endede 9 hours age.</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.detail_text}>
+             Welcome! To join the event, please register below.
+            </div>
+        </>:<div className={styles.formSubHeading}>{registerMessage}</div>
+        }
 
         <input
           className={styles.inputField}
@@ -180,11 +222,10 @@ const RegisterForm = ({
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
         >
-          {isApproved ? (
+          {capacity ? (
             <span onClick={handleClick}>Join waitlist</span>
-          ) : (
-            `${registerBtnText}`
-          )}
+          )  : approval ? <span>Request to join</span>: isEventEnded? <span>Follow</span>:<span>{registerBtnText}</span> }
+          
         </button>
       </form>
     </div>
@@ -210,6 +251,20 @@ function EventClosedIcon() {
       <line x1="16" y1="2" x2="16" y2="6"></line>
       <line x1="8" y1="2" x2="8" y2="6"></line>
       <line x1="3" y1="10" x2="21" y2="10"></line>
+    </svg>
+  );
+}
+
+function ApprovalSVG() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="20px"
+      viewBox="0 96 960 960"
+      width="20px"
+      fill="#7D7D7D"
+    >
+      <path d="M669 1026 504 861l43-43 122 122 243-243 43 43-286 286ZM479.825 696Q415 696 371.5 652.65 328 609.3 328 544.5q0-64.8 43.5-108.15 43.5-43.35 108.325-43.35Q544 393 587.175 436.35q43.175 43.35 43.175 108.15 0 64.8-43.175 108.15Q544 696 479.825 696ZM188 866v-60q0-30 15.5-54.5T258 711q51-22 103-33.5t118-11.5q30 0 59.5 3t57.5 10l-49 50q-19-3-40-5t-40-2q-59 0-112.5 9.5T257 777q-16 7-25.5 22t-9.5 32v29h259L610 866H188Zm291-366q-45 0-74-29.5T376 397q0-45 29-73.5T479 295q45 0 74.5 28.5T583 397q0 45-29.5 74.5T479 500ZM479 437Zm.5 283Z" />
     </svg>
   );
 }

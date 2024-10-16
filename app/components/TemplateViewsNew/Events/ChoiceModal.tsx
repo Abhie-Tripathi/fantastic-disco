@@ -39,6 +39,7 @@
 
 // export default ChoiceModal
 
+
 import React, { useState } from "react";
 import styles from "./choicemodal.style.module.css";
 import MainEventIcon from "/public/widgetimages/Mainevent.svg";
@@ -52,14 +53,21 @@ interface Props {
 
 const ChoiceModal = ({ setChoiceFormModal, setEventFlow }: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+  // const handleEventClick = (event: string) => {
+  //   if (selectedEvent === event) {
+  //     setSelectedEvent(null); 
+  //     setEventFlow("");      
+  //   } else {
+  //     setSelectedEvent(event);  
+  //     setEventFlow(event);      
+  //   }
+  // };
+
   const handleEventClick = (event: string) => {
-    if (selectedEvent === event) {
-      setSelectedEvent(null);
-      setEventFlow("");
-    } else {
-      setSelectedEvent(event);
-      setEventFlow(event);
-    }
+    // Always set the selected event, even if it's already selected
+    setSelectedEvent(event);
+    setEventFlow(event);
+
   };
   return (
     <div className={styles.body}>
