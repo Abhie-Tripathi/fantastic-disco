@@ -20,8 +20,8 @@ export interface FormState {
     participationType : string;
     description : string;
     textValue: string;
-    speakerProfilesData: SpeakerProfileType[];
-    prefilledProfile?: SpeakerProfileType;
+    speaker: any[];
+    prefilledProfile?: any;
     registerMessage: string;
     registerBtnText: string;
     registerBtnColor: string;
@@ -49,5 +49,12 @@ export interface FormState {
     isTextValueMessageEmpty: boolean;
     errorMessage: string;
     parentData : string;
+    capacity:number;
+    registration:boolean;
+    approval:boolean;
+    waitlisting:boolean;
+    // capacityModalOpen:boolean;
+    // capacityModalClose:boolean;
+    capacityModal:boolean
   }
   

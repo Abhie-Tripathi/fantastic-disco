@@ -28,12 +28,18 @@
     align-items: flex-start;
     gap: 5px;
 }
-.btnContainer button .sub_headingContainer span{
+.btnContainer button .sub_headingContainer .capacity{
+    display: flex;
+    align-items: center;
+    gap: 5px;
     color: var(--secondary-text-color);
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
 }
 
+.btnContainer button .sub_headingContainer .capacity .dot{
+    padding-bottom: 7px;
+}
 .btnContainer button .icon1{
     padding: 10px;
     border-radius: 4px;
@@ -47,9 +53,9 @@
     color: var(--success-text-color);
 }
 .btnContainer button:hover{
-    color: white;
+    /* color: white; */
     transition-duration: .2s;
-    background-color: var(--background-secondary-color-hover);
+    background-color: var(--accent-color);
 }
 .line{
     border-bottom: 1px solid var(--border-color);

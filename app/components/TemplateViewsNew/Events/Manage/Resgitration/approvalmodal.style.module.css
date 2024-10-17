@@ -57,3 +57,10 @@
 .checkboxInput:checked+.checkBox {
     background-color: var(--primary-color);
 }
+
+.confirmBtn{
+    background-color: var(--primary-color);
+    padding: 7px;
+    border-radius: 5px;
+    color: white;    
+}

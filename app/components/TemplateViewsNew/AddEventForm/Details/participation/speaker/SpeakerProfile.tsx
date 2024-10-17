@@ -17,13 +17,14 @@ interface SpeakerProfileType {
 interface Props {
     handleChange: (field: keyof FormState, value: any) => void;
     // setSpeakerModal: (value: boolean) => void
-    speakerProfilesData: SpeakerProfileType[]
-    handlePrefill: (value: SpeakerProfileType) => void
+    speakerProfilesData: any[]
+    handlePrefill: (value: any, key : number) => void
 }
-const SpeakerProfile = ({ speakerProfilesData, handlePrefill, handleChange }: Props) => {
-    useEffect(() => {
-        console.log("speaker are : ", speakerProfilesData)
-    }, [ speakerProfilesData])
+const SpeakerProfile = ({speakerProfilesData, handlePrefill, handleChange }: Props) => {
+
+    useEffect(()=>{
+        console.log("speakers are : ", speakerProfilesData)
+    },[speakerProfilesData])
     return (
         <div className={styles.body}>
             <div className={styles.container}>
@@ -36,8 +37,8 @@ const SpeakerProfile = ({ speakerProfilesData, handlePrefill, handleChange }: Pr
             {speakerProfilesData.length > 0 && (
                 <div className={styles.speakerProfiles}>
                     {speakerProfilesData.map((profile, key) => (
-                        <div onClick={()=>handlePrefill(profile)} key={key}>
-                            <SpeakerCard linkedin={profile.linkedin} profileImage={profile.profileImage} designation={profile.designation} name={profile.name} key={key}/>
+                        <div onClick={()=>handlePrefill(profile, key)} key={key}>
+                            <SpeakerCard linkedin={profile.data.linkedIn} profileImage={profile.imageUrl} designation={profile.data.designation} name={profile.data.name} key={key}/>
                         </div>
                     ))}
                 </div>

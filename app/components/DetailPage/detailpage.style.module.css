@@ -2,7 +2,8 @@
     width: 100%;
     border-top: 1px solid #d4d4d4;
 }
-.body{
+
+.body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,13 +13,154 @@
     position: relative;
 }
 
+.watermelon {
+    background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.greenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(220, 255, 180, 1) 0%, rgba(197, 231, 207, 1) 52%, rgba(169, 231, 224, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.candy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 194, 206, 1) 0%, rgba(252, 206, 210, 1) 46%, rgba(246, 186, 239, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.orange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(255, 196, 147, 1) 0%, rgba(255, 168, 122, 1) 46%, rgba(235, 205, 171, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.purblue {
+    background: radial-gradient(circle, rgba(149, 166, 251, 1) 0%, rgba(152, 169, 214, 1) 25%, rgba(129, 159, 201, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(254, 152, 173, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkgreenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(143, 186, 93, 1) 0%, rgba(131, 193, 148, 1) 52%, rgba(121, 182, 176, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkcandy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 143, 168, 1) 0%, rgba(201, 133, 138, 1) 46%, rgba(191, 142, 186, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkorange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(189, 132, 85, 1) 0%, rgba(190, 101, 53, 1) 46%, rgba(221, 169, 111, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkpurblue {
+    background: radial-gradient(circle, rgba(89, 114, 241, 1) 0%, rgba(92, 131, 235, 1) 25%, rgba(111, 137, 173, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(186, 114, 129, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkwatermelon {
+    background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(194, 150, 212, 1) 0%, rgba(200, 117, 117, 1) 49%, rgba(130, 199, 172, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkmix {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(62, 54, 65, 1) 0%, rgba(56, 45, 54, 1) 27%, rgba(73, 69, 69, 1) 67%, rgba(24, 45, 37, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.leafContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.leafContainer .leaf {
+    position: absolute;
+    animation: floatAndSpin 10s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes floatAndSpin {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate3d(50px, -100px, 0) rotate(90deg);
+    }
+
+    50% {
+        transform: translate3d(-100px, -200px, 0) rotate(180deg);
+    }
+
+    75% {
+        transform: translate3d(75px, -100px, 0) rotate(270deg);
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+}
+.confettiCanvas {
+    position: absolute;
+    left: 0;
+    bottom: 30px;
+    width: 100%;
+}
+.confettiCanvasTwo{
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: rotate(180deg);
+    width: 100%;
+}
 .detailsContainer {
     display: flex;
     gap: 30px;
     overflow-y: auto;
     justify-content: center;
-    
 }
+
 .leftSection {
     width: 300px;
 }
@@ -30,51 +172,61 @@
     flex-direction: column;
     gap: 16px;
 }
+
 .posterContainer {
     position: relative;
 }
+
 .mainEventLinkContainer {
     height: fit-content;
     width: 80%;
     max-width: 930px;
     padding: 15px 20px;
-    background-color: #ffffff55;    
+    background-color: #ffffff55;
     border-radius: 4px;
     display: flex;
     align-items: center;
     gap: 9px;
 }
-.mainEventLinkContainer .linkIcon{
+
+.mainEventLinkContainer .linkIcon {
     transform: rotate(-40deg);
 }
-.mainEventLinkContainer span{
+
+.mainEventLinkContainer span {
     width: fit-content;
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-semibold);
 }
+
 .mainEventLinkContainer .linkline {
     height: 29px;
     border-left: 2px solid #0072F5;
 }
-.mainEventLinkContainer .maineventName{
+
+.mainEventLinkContainer .maineventName {
     color: #0062D1;
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-semibold);
 }
-.mainEventLinkContainer .maineventName:hover{
+
+.mainEventLinkContainer .maineventName:hover {
     transition-duration: .1s;
     scale: 0.95;
 }
+
 .participationContainer {
     margin-top: 16px;
     height: fit-content;
     width: 930px;
 }
-.carousel{
+
+.carousel {
     width: 930px;
     height: 250px;
 }
-.hashtagsContainer{
+
+.hashtagsContainer {
     width: 100%;
     margin-top: 16px;
     background-color: #ffffff55;
@@ -84,16 +236,18 @@
     flex-wrap: wrap;
     gap: 9px;
 }
-.hashtag{
+
+.hashtag {
     border: 1px solid #b6b6b6;
     background-color: #EBEBEB;
     color: #666666;
     font-size: var(--font-size-xs);
-    font-weight: 500;    
+    font-weight: 500;
     line-height: 18px;
     padding: 3px 12px;
     border-radius: 40px;
 }
+
 .shareContainer {
     width: 100%;
     margin-top: 16px;
@@ -101,23 +255,27 @@
     border-radius: 10px;
     padding: 4px 11px 18px 19px;
 }
-.mobile_participationContainer{
+
+.mobile_participationContainer {
     height: fit-content;
     width: 100%;
 }
-.mobile_shareContainer{
+
+.mobile_shareContainer {
     width: 100%;
     margin-top: 16px;
     background-color: #ffffff55;
     border-radius: 10px;
     padding: 4px 11px 18px 19px;
 }
-.mobile_shareContainer .heading{
+
+.mobile_shareContainer .heading {
     margin-bottom: 11px;
     color: #A1A1A1;
     font-size: var(--font-size-default);
     font-weight: 500;
 }
+
 .shareContainer .heading {
     margin-bottom: 11px;
     color: #A1A1A1;
@@ -139,21 +297,26 @@
 .speakerProfileContainer {
     width: 100%;
 }
-.footer{
+
+.footer {
     font-size: var(--font-size-small);
     color: #7e7e7e;
 }
+
 @media screen and (max-width: 1110px) {
     .rightSection {
         width: 60%;
     }
+
     .participationContainer {
         width: 780px;
     }
-    .carousel{
+
+    .carousel {
         width: 780px;
     }
 }
+
 @media screen and (max-width: 875px) {
     .rightSection {
         width: 50%;
@@ -161,23 +324,32 @@
 }
 
 @media screen and (max-width: 821px) {
-    .detailsContainer{
+    .detailsContainer {
         flex-direction: column;
         align-items: center;
     }
-    .leftSection{
+
+    .leftSection {
         width: 80%;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
+
     .rightSection {
         width: 80%;
     }
-    .participationContainer{
+
+    .participationContainer {
         display: none;
     }
-    .shareContainer{
+
+    .shareContainer {
         display: none;
     }
 }
+
+.backBtn{
+    cursor: pointer;
+    font-size: 15px;
+  }

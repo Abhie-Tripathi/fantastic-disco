@@ -1,0 +1,19 @@
+.registerContainer {
+    border-radius: 10px;
+    background-color: #ffffff55;
+    padding: 15px 19px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.icon_text_container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 500;
+}
+.dec_text{
+    font-size: 12px;
+    font-weight: 500;
+}

@@ -240,7 +240,17 @@
     color: #1a1a1a;
     font-weight: bolder;
 }
+.darkeventName {
+    color: white;
+}
 
+.lighteventName {
+    color: #1a1a1a;
+}
+
+.darkeventName::placeholder {
+    color: rgba(239, 239, 239, 0.679);
+}
 .eventName:focus {
     outline: none;
 }

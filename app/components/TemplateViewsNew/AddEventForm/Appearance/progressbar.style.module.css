@@ -5,10 +5,10 @@
     gap: 14px;
 }
 .header{
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-default);
 }
 .statusHeading{
-    font-size: 9px;
+    font-size: var(--font-size-small);
     color: rgba(0, 0, 0, 0.479);
 }
 .progressBars{
@@ -42,7 +42,7 @@
     list-style: none;
     display: flex;
     align-items: center;
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-small);
     gap: 6px;
     padding: 3px 5px;
 }

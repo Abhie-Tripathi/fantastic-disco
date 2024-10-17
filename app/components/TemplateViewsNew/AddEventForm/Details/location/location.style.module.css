@@ -24,14 +24,19 @@
 }
 .eventLocation .eventLocationOne{
     font-weight: 500;
-    color: #7D7D7D;
     font-size: var(--font-size-medium);
 }
-.eventLocation .activeLocation{
-    color: black;
+.darkEventLocation{
+    color: white;
 }
-.eventLocation .eventLocationTwo{
+.lightEventLocation{
     color: #7D7D7D;
+}
+/* .eventLocation .activeLocation{
+    color: black;
+} */
+.eventLocation .eventLocationTwo{
+    /* color: #7D7D7D; */
     font-size: 10px;
     line-height: 20px;
 }

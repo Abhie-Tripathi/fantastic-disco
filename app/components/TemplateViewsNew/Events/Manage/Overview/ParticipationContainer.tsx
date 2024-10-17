@@ -25,7 +25,7 @@ const ParticipationContainer = ({ participationType }: Props) => {
 
     return (
         <div className={styles.body}>
-            <Image src={participationImage} alt='icon'/>
+            <Image src={participationImage} alt='icon' height={30} width={30}/>
             <div className={styles.type}>{participationType}</div>
         </div>
     )

@@ -10,10 +10,13 @@ interface EventProps {
     eventFont: string;
     longitude: number;
     pageBgColor: string;
+    pageGradient: string;
+    confettiType: string;
+    leavesTheme: boolean;
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
-    speakerProfilesData: any[];
+    speaker: any[];
     participationMessage: string;
     name: string;
     format: string;
@@ -29,17 +32,24 @@ interface EventProps {
     eventId: string;
     hashtags: string;
     participationType: string;
-    parentName : string;
-    parentId : string;
+    parentName: string;
+    parentId: string;
     childrenData: EventsType[]
+    capacity: number;
+    registration: boolean;
+    approval: boolean;
+    waitlisting: boolean;
 }
 
-const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData,parentName,parentId }: EventProps) => {
+const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
     return (
         <DetailPageComponent
-            parentName = {parentName}
-            parentId = {parentId}
+            pageGradient={pageGradient}
+            confettiType={confettiType}
+            leavesTheme={leavesTheme}
+            parentName={parentName}
+            parentId={parentId}
             childrenData={childrenData}
             hashtags={hashtags}
             venue={venue}
@@ -51,7 +61,7 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             registerBtnText={registerBtnText}
             registerMessage={registerMessage}
             registerBtnColor={registerBtnColor}
-            speakerProfilesData={speakerProfilesData}
+            speaker={speaker}
             participationMessage={participationMessage}
             name={name}
             format={format}
@@ -67,6 +77,10 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             // widgetId={widgetId}
             eventId={eventId}
             participationType={participationType}
+            capacity={capacity}
+            registration={registration}
+            approval={approval}
+            waitlisting={waitlisting}
         />
     )
 }
@@ -89,7 +103,7 @@ const fetchData = async (eventId: string) => {
             console.log("Invalid widgetId or error encountered");
             notFound();
         }
-        console.log("data is : ", data)
+        console.log("data is : ", data?.data?.event)
         console.log("children data is: ", data.data.event.data.children);
         const event = {
             eventId: data.data.event.id,
@@ -108,16 +122,23 @@ const fetchData = async (eventId: string) => {
             location_country: data.data.event.data.location_country,
             participationType: data.data.event.data.participationType,
             pageBgColor: data.data.event.data.customizationData.pageBgColor,
+            pageGradient: data.data.event.data.customizationData.pageGradient,
+            confettiType: data.data.event.data.customizationData.confettiType,
+            leavesTheme: data.data.event.data.customizationData.leavesTheme,
             eventFont: data.data.event.data.customizationData.eventFont,
             registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
             registerBtnText: data.data.event.data.customizationData.registerBtnText,
             registerMessage: data.data.event.data.customizationData.registerMessage,
-            speakerProfilesData: data.data.event.data.customizationData.speakerProfilesData,
+            speaker: data.data.event.data.customizationData.speaker,
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
-            parentName : data.data.event.data.parentData ? data.data.event.data.parentData: data.data.event.parentInfo.name,
-            parentId : data.data.event.parentInfo.id,
+            parentName: data.data.event.data.parentData ? data.data.event.data.parentData : data.data.event.parentInfo.name,
+            parentId: data.data.event.parentInfo.id,
+            capacity: data?.data?.event?.capacity,
+            registration: data?.data?.event?.registration,
+            approval: data?.data?.event?.approval,
+            waitlisting: data?.data?.event?.waitlisting,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,
@@ -136,11 +157,14 @@ const fetchData = async (eventId: string) => {
                 participationType: child.data.participationType,
                 customizationData: {
                     pageBgColor: child.data.customizationData.pageBgColor,
+                    pageGradient: child.data.customizationData.pageGradient,
+                    confettiType: child.data.customizationData.confettiType,
+                    leavesTheme: child.data.customizationData.leavesTheme,
                     eventFont: child.data.customizationData.eventFont,
                     registerBtnColor: child.data.customizationData.registerBtnColor,
                     registerBtnText: child.data.customizationData.registerBtnText,
                     registerMessage: child.data.customizationData.registerMessage,
-                    speakerProfilesData: child.data.customizationData.speakerProfilesData,
+                    speaker: child.data.customizationData.speaker,
                     participationMessage: child.data.customizationData.participationMessage,
                     venue: child.data.customizationData.venue,
                     hashtags: child.data.customizationData.hashtags,
@@ -162,6 +186,7 @@ const DetailPage = async (context: any) => {
     // const { widgetId, eventId } = decodeHash(hash as string);
     // console.log("widgetId : ", widgetId)
     const data = await fetchData(eventId);
+    console.log("data_new", data)
     return <Page {...data} eventId={eventId} />;
 };
 export default DetailPage;

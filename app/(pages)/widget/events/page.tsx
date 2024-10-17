@@ -23,6 +23,7 @@ const Page = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const [page, setPage] = useState<number>(0);
+    const [isFetching, setIsFetching] = useState(false);
     const [prefilledEvent, setPrefilledEvent] = useState<EventsType | null>(null);
     const [prefilledSubEvent, setPrefilledSubEvent] = useState<EventsType | null>(null)
     const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType | null>(null);
@@ -38,11 +39,14 @@ const Page = () => {
 
     useEffect(() => {
         fetchEvents(page * 8);
+        console.log("page is :", page)
     }, [page])
+
     useEffect(() => {
+        console.log("this scroll function called")
+        console.log("fetched events :", fetchedEvents)
         const handleScroll = () => {
             const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
-
             if (isAtBottom && fetchedEvents.length > 0) {
                 setPage((prevPage) => prevPage + 1); // Increment page to load more events
             }
@@ -64,27 +68,6 @@ const Page = () => {
             setSelectedEventName(eventName)
             setSelectedEventId(eventId)
             setDeleteModal(true)
-        }
-    }
-
-    const handleDelete = async () => {
-        const customizeData = new FormData();
-        customizeData.append("id", selectedEventId)
-        customizeData.append('published', "false");
-        const { data, error } = await myFetch(
-            `${baseUrl}/event`,
-            {
-                method: 'PATCH',
-
-                body: customizeData,
-            }
-        );
-        if (data) {
-            fetchEvents(0, "update")
-            setDeleteModal(false)
-        }
-        if (error) {
-            console.log(error);
         }
     }
 
@@ -174,13 +157,6 @@ const Page = () => {
         }
     }, [eventFlow])
 
-    // const handleFormModal = () => {
-    //     setPrefilledEvent(undefined)
-    //     setPrefilledGlobalEvent(undefined)
-    //     if (eventFlow) {
-    //         setIsEventFormModal(true)
-    //     }
-    // }
     const handlePrefillEvent = (event: EventsType) => {
         // setPrefilledGlobalEvent(undefined)
         setPrefilledEvent(event)
@@ -232,7 +208,7 @@ const Page = () => {
                 </div>}
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
-                <AddEvent isApproved={isApproved} setIsApproved={setIsApproved} prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal}  />
+                <AddEvent isApproved={isApproved} setIsApproved={setIsApproved} prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal} />
             </div>}
             {/* {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

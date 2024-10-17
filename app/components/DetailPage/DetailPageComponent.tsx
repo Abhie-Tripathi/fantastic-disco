@@ -1,5 +1,5 @@
 'use client'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import styles from './detailpage.style.module.css'
 import Image from 'next/image'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
@@ -14,6 +14,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { EventsType } from '@/types/alleventtype'
 import SideEventCarousel from './SideEventCarousel'
+import RegistrationClosed from './RegistrationClosed'
+import confetti from 'canvas-confetti'
+import LeafTwo from '/public/widgetimages/leaf2.png'
+import SpeakerContainer from './SpeakerContainer'
+import { usePathname } from 'next/navigation';
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -22,10 +27,13 @@ interface EventProps {
     eventFont: string;
     longitude: number;
     pageBgColor: string;
+    pageGradient: string;
+    confettiType: string;
+    leavesTheme: boolean;
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
-    speakerProfilesData: any[];
+    speaker: any[];
     participationMessage: string;
     participationType?: string;
     name: string;
@@ -45,13 +53,55 @@ interface EventProps {
     childrenData: EventsType[]
     parentName: string;
     parentId: string;
+    capacity: number;
+    registration: boolean;
+    approval: boolean;
+    waitlisting: boolean;
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId }: EventProps) => {
+const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
+    const [isRegistratonClosed, setRegistrationClosed] = useState(false)
+    const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const confettiCanvasRefTwo = useRef<HTMLCanvasElement | null>(null);
+    const pathname = usePathname();
+    const pathName = pathname.split("/")[1]; 
+    console.log("pathnamee00",pathName)
+
+    const fireConfetti = () => {
+        if (confettiCanvasRef.current) {
+            const myConfetti = confetti.create(confettiCanvasRef.current, { resize: true });
+            myConfetti({
+                particleCount: 2000,
+                spread: 400,
+                origin: { y: 1 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+
+            });
+        }
+        if (confettiCanvasRefTwo.current) {
+            const myConfetti = confetti.create(confettiCanvasRefTwo.current, { resize: true });
+            myConfetti({
+                particleCount: 1000,
+                spread: 200,
+                origin: { y: 1 },
+                shapes: confettiType === "circle" ? ['circle'] : confettiType === "party" ? ['circle', 'square', 'star'] : ['star'],
+            });
+        }
+    };
+    useEffect(() => {
+        if (confettiType?.length > 0) {
+            // Fire confetti immediately
+            fireConfetti();
+            // Set up the interval for firing every 4 seconds
+            const interval = setInterval(fireConfetti, 4000);
+            // Cleanup interval when confettiType changes or component unmounts
+            return () => clearInterval(interval);
+        }
+    }, [confettiType]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -82,9 +132,40 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
     }
 
     return (
-        <div className={styles.body}
-            style={{ backgroundColor: pageBgColor }}
+        <div style={{ backgroundColor: pageBgColor, position:"relative" }}>
+          <div style={{position:"absolute", top:"30px", left:"30px", cursor:"pointer", zIndex: 10}}>
+          {
+                pathName === "detailpage" &&
+                <button className={styles.backBtn} onClick={() => router.back()}>
+                    <BackIcon />
+                </button>
+            }
+          </div>
+            
+           <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
+           
         >
+            <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
+            <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
+            {leavesTheme && <div className={styles.leafContainer}>
+                {Array.from({ length: 100 }).map((_, index) => (
+                    <Image
+                        key={index}
+                        // src={index % 2 === 0 ? LeafOne : LeafTwo}
+                        src={LeafTwo}
+                        className={styles.leaf}
+                        alt={`Leaf ${index + 1}`}
+                        style={{
+                            left: `${Math.random() * 100}%`, // Random horizontal position
+                            top: `${Math.random() * 100}%`,  // Random vertical position
+                            animationDelay: `${Math.random() * 5}s`, // Random animation delay
+                            animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
+                            width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
+                            height: `${25 + Math.random() * 5}px`,
+                        }}
+                    />
+                ))}
+            </div>}
             <ToastContainer />
             {parentName &&
                 <div className={styles.mainEventLinkContainer}>
@@ -111,7 +192,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons disabled={false} shareUrl={`${urlVal}`} />
+                        <ShareButtons copyIcon disabled={false} shareUrl={`${urlVal}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -124,17 +205,26 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} /></div>
+                    {/* {!registration ? <><RegistrationClosed /></> : <>
+                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
+                    </>} */}
+                    {
+                        !registration && <RegistrationClosed/>
+                    }
+                    {
+                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
+                    }
+
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>
                                 <div className={styles.heading}>Share</div>
-                                <ShareButtons hashtags={hashtags.split("")} disabled={true} shareUrl={`${urlVal}`} />
+                                <ShareButtons copyIcon hashtags={hashtags.split("")} disabled={true} shareUrl={`${urlVal}`} />
                             </div>
                         </div>
                     }
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
-
+                    {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker}/></div>}
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
@@ -149,6 +239,8 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
             <div className={styles.line}></div>
             <footer className={styles.footer}>Powered by Eventgeni &copy; 2024</footer>
         </div>
+        </div>
+     
     )
 }
 
@@ -161,3 +253,21 @@ function LinkIcon() {
         </svg>
     )
 }
+
+function BackIcon() {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        style={{ marginRight: "8px" }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M11.354 1.354a.5.5 0 0 1 0 .707L5.707 7.707H14.5a.5.5 0 0 1 0 1H5.707l5.647 5.646a.5.5 0 0 1-.708.708l-6.5-6.5a.5.5 0 0 1 0-.708l6.5-6.5a.5.5 0 0 1 .708 0z"
+        />
+      </svg>
+    );
+  }

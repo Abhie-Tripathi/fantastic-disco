@@ -77,36 +77,82 @@
     padding: 50px 120px 50px 70px;
     position: relative;
 }
+
 .watermelon {
-    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(194, 114, 114, 1) 0%, rgba(177, 242, 235, 1) 93%);
+    background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
-.greenmint{
-    background: radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(114,125,194,1) 0%, rgba(206,242,177,1) 100%);
+
+.greenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(220, 255, 180, 1) 0%, rgba(197, 231, 207, 1) 52%, rgba(169, 231, 224, 1) 93%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
-.candy{
-    background: linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,177,217,1) 93%);
+
+.candy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 194, 206, 1) 0%, rgba(252, 206, 210, 1) 46%, rgba(246, 186, 239, 1) 93%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
-.orange{
-    background: linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(194,114,114,1) 0%, rgba(242,222,177,1) 93%);
+
+.orange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(255, 196, 147, 1) 0%, rgba(255, 168, 122, 1) 46%, rgba(235, 205, 171, 1) 93%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
-.purblue{
-    background: linear-gradient(135deg, rgba(255,0,255,1) 0%, rgba(0,255,255,1) 100%);
+
+.purblue {
+    background: radial-gradient(circle, rgba(149, 166, 251, 1) 0%, rgba(152, 169, 214, 1) 25%, rgba(129, 159, 201, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(254, 152, 173, 1) 100%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
+
+.darkgreenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(143, 186, 93, 1) 0%, rgba(131, 193, 148, 1) 52%, rgba(121, 182, 176, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkcandy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 143, 168, 1) 0%, rgba(201, 133, 138, 1) 46%, rgba(191, 142, 186, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkorange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(189, 132, 85, 1) 0%, rgba(190, 101, 53, 1) 46%, rgba(221, 169, 111, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkpurblue {
+    background: radial-gradient(circle, rgba(89, 114, 241, 1) 0%, rgba(92, 131, 235, 1) 25%, rgba(111, 137, 173, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(186, 114, 129, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.darkwatermelon {
+    background:  linear-gradient(90deg, rgba(228,202,246,1) 0%, rgba(194,150,212,1) 0%, rgba(200,117,117,1) 49%, rgba(130,199,172,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.darkmix {
+    background:  radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(62,54,65,1) 0%, rgba(56,45,54,1) 27%, rgba(73,69,69,1) 67%, rgba(24,45,37,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
 @keyframes gradientMove {
     0% {
         background-position: 0% 50%;
@@ -120,7 +166,38 @@
         background-position: 0% 50%;
     }
 }
+.leafContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 115%;
+    overflow: hidden;
+    pointer-events: none; /* Prevents interaction with the leaves */
+}
+.leafContainer .leaf {
+    position: absolute;
+    animation: floatAndSpin 10s linear infinite;
+    opacity: 0.8;
+}
 
+@keyframes floatAndSpin {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate3d(50px, -100px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate3d(-100px, -200px, 0) rotate(180deg);
+    }
+    75% {
+        transform: translate3d(75px, -100px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+}
 .modalOpen {
     overflow: hidden;
 }
@@ -148,7 +225,8 @@
 .collapsedContainer .collapseBtn {
     cursor: pointer;
 }
-.confettiCanvas{
+
+.confettiCanvas {
     position: absolute;
     left: 0;
     bottom: -80px;

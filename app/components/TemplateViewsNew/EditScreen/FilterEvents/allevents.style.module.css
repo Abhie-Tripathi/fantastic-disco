@@ -117,23 +117,7 @@
     color: #A35200;
     background-color: #FFF4D6;
 }
-.btnContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-}
-.addButtonContainer{
-    display: flex;
-    position: relative;
-    gap: 8px;
-    align-items: center;
-}
-.addButtonContainer .heading{
-    color: #0062D1;
-    font-size: 12px;
-    white-space: nowrap;
-}
+
 .delete_spanBtn{
     display: flex;
     align-items: center;
@@ -149,34 +133,8 @@
 .delete_spanBtn span{
     font-weight: var(--font-weight-semibold);
 }
-.checkboxInput {
-    display: none;
-}
-.checkBox {
-    cursor: pointer;
-    background-color: #bebdc9;
-    height: 14px;
-    width: 25px;
-    border-radius: 12px;
-    border: 1px solid #79747E;
-}
-.checkBox::before {
-    position: absolute;
-    content: "";
-    background-color: white;
-    height: 8px;
-    width:8px;
-    border-radius: 50%;
-    margin: 2.1px;
-    transition: transform 0.2s ease;
-}
-.checkboxInput:checked+.checkBox::before {
-    transform: translateX(11px);
-}
 
-.checkboxInput:checked+.checkBox {
-    background-color: #6750a4;
-}
+
 .emptyScreen{
     display: flex;
     align-items: center;
@@ -218,6 +176,54 @@
 }
 
 
+/* .checkboxInput {
+    display: none;
+}
+.checkBox {
+    cursor: pointer;
+    background-color: #bebdc9;
+    height: 14px;
+    width: 25px;
+    border-radius: 12px;
+    border: 1px solid #79747E;
+}
+.checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 8px;
+    width:8px;
+    border-radius: 50%;
+    margin: 2.1px;
+    transition: transform 0.2s ease;
+}
+.checkboxInput:checked+.checkBox::before {
+    transform: translateX(11px);
+}
+
+.checkboxInput:checked+.checkBox {
+    background-color: #6750a4;
+} */
+
+/* 
+.btnContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+.addButtonContainer{
+    display: flex;
+    position: relative;
+    gap: 8px;
+    align-items: center;
+}
+.addButtonContainer .heading{
+    color: #0062D1;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
 .rectangularBorder {
     border: 0.65px solid #EBEBEB; 
     padding: 6px 10px 6px 10px;
@@ -248,7 +254,108 @@
   }
 
   .selectedOption {
-    background-color: #f0f0f0; /* Highlight the selected option */
+    background-color: #f0f0f0; 
     border: 1px solid #ccc;
   }
+   */
+
   
+
+   .btnContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; 
+    justify-content: flex-start; 
+   
+}
+
+.rectangularBorder {
+    border: 0.65px solid transparent; 
+    border-radius: 2px; 
+    outline: 0.65px solid #EBEBEB; 
+    outline-offset: 6px; 
+    position: relative;
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start; 
+    min-height: 40px; 
+    box-sizing: border-box;  
+}
+
+
+
+
+.addButtonContainer {
+    display: flex;
+    align-items: center; 
+    gap: 8px; 
+    width: 100%; 
+    position: relative; 
+}
+
+.addButtonContainer .heading {
+    color: #0062D1;
+    font-size: 12px;
+    white-space: nowrap;
+    flex: 1; 
+    min-width: 100px;
+}
+
+.checkboxInput {
+    display: none; 
+}
+
+.checkBox {
+    cursor: pointer;
+    background-color: #bebdc9;
+    height: 14px;
+    width: 25px;
+    border-radius: 12px;
+    border: 1px solid #79747E;
+    position: relative; 
+}
+
+.checkBox::before {
+    position: absolute;
+    content: "";
+    background-color: white;
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    margin: 2.1px;
+    transition: transform 0.2s ease;
+}
+
+.checkboxInput:checked + .checkBox::before {
+    transform: translateX(11px); 
+}
+
+.checkboxInput:checked + .checkBox {
+    background-color: #6750a4; 
+}
+
+.addEventOptionsContainer {
+    display: flex;
+    flex-direction: column; 
+    margin-top: 3px; 
+}
+
+.addOption {
+    padding: 6px 10px; 
+    cursor: pointer;
+    border-radius: 4px; 
+    font-size: 10px;
+    white-space: nowrap; 
+    display: flex;
+    align-items: center; 
+    gap: 3px; 
+}
+
+.addOption:hover {
+    background-color: #e0e0e0; 
+}
+
+.selectedOption {
+    background-color: #f0f0f0; 
+    border: 1px solid #ccc;
+}

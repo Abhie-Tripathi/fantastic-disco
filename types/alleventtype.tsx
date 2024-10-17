@@ -26,14 +26,21 @@ export interface EventsType{
   widgetTags : string;
   eventType : string;
   parentData : string;
+  capacity : number,
+  registration : boolean,
+  approval : boolean,
+  waitlisting : boolean
 }
 interface CustomizationData {
   pageBgColor: string;
+  pageGradient : string;
+  confettiType : string;
+  leavesTheme : boolean;
   eventFont: string;
   registerBtnColor: string;
   registerBtnText: string;
   registerMessage: string;
-  speakerProfilesData: any[];
+  speaker: any[];
   participationMessage: string;
   venue: string;
   hashtags: string;

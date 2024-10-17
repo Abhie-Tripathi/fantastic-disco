@@ -3,15 +3,22 @@ import styles from "./waitlistandcap.style.module.css";
 import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
 import CapacityModal from "./capacitymodal/Capacity";
-const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
-  // const [isApproved, setIsApproved] = useState(false);
+import { FormState } from "@/types/Formstate";
+interface Props{
+  waitlisting:boolean;
+  approval:boolean;
+  capacity:number;
+  handleChange: (field: keyof FormState, any: any) => void;
+  
+  
+}
+const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
+  // const [inputValue, setInputValue] = useState("");
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");
-  const handleToggle = () => {
-    setIsApproved(!isApproved);
-  };
-
+ 
   const openCapacityModal = () => {
+    handleChange("capacityModal",true)
     setIsCapacityModalOpen(true);
   };
   const closeCapacityModal = () => {
@@ -21,6 +28,9 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
   const handleRadioChange = (e: any) => {
     setSelectedOption(e.target.value);
   };
+  const handleToggle = () => {
+    handleChange("approval",true)
+  }
 
   return (
     <div className={`${styles.cardContainer}`}>
@@ -63,7 +73,7 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
           <label className={styles.switch}>
             <input
               type="checkbox"
-              checked={isApproved}
+              checked={approval}
               onChange={handleToggle}
             />
             <span className={styles.slider}></span>
@@ -75,7 +85,10 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
         <div className={styles.icon}>
           <Capacity />
         </div>
-        <div className={styles.itemText}>Capacity</div>
+        <div className={styles.itemText}>Capacity
+        <div className={styles.waitListText}>{waitlisting? 'Waitlist Enabled':""}</div>
+        </div>
+        <div className={styles.waitlistNumber}>{capacity?capacity:""}</div>
         <Image
           className={styles.editBtn}
           src={EditIcon}
@@ -84,10 +97,13 @@ const WaitListAndCap = ({isApproved, setIsApproved}:any) => {
         />
       </div>
       {/* Capacity Modal */}
-      <CapacityModal
+      {/* <CapacityModal
         isOpen={isCapacityModalOpen}
         onClose={closeCapacityModal}
-      />
+        capacity={ capacity}
+        handleChange={handleChange}
+        waitlisting={waitlisting}
+      /> */}
     </div>
   );
 };

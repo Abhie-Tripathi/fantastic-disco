@@ -18,18 +18,18 @@ interface Props {
     handleChange: (field: keyof FormState, value: any) => void;
     // setSpeakerModal: (value: boolean) => void
     // setSpeakerProfilesData: React.Dispatch<React.SetStateAction<SpeakerProfileType[]>>
-    prefilledProfile?: SpeakerProfileType | null;
-    deleteSpeaker: (id: string) => void;
+    prefilledProfile?: any | null;
+    deleteSpeaker: () => void;
     updateSpeaker: (updatedProfile: SpeakerProfileType) => void;
     speakerProfilesData: SpeakerProfileType[]
 }
 
 const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpeaker, speakerProfilesData }: Props) => {
     // const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(prefilledProfile?.profileImage || null);
-    const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.profileImage || null);
-    const [name, setName] = useState<string>(prefilledProfile?.name || "");
-    const [linkedinurl, setLinkedinurl] = useState<string>(prefilledProfile?.linkedin || "");
-    const [designation, setDesignation] = useState<string>(prefilledProfile?.designation || "");
+    const [imageFile, setImageFile] = useState<File | null>(prefilledProfile?.imageUrl || null);
+    const [name, setName] = useState<string>(prefilledProfile?.data.name || "");
+    const [linkedinurl, setLinkedinurl] = useState<string>(prefilledProfile?.data.linkedIn || "");
+    const [designation, setDesignation] = useState<string>(prefilledProfile?.data.designation || "");
 
     // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     const file = event.target.files?.[0];
@@ -66,12 +66,14 @@ const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpe
     };
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const updatedProfile: SpeakerProfileType = {
-            id: prefilledProfile?.id || Date.now().toString(), // Use existing id or create a new one
-            name,
-            linkedin: linkedinurl,
-            designation,
-            profileImage: imageFile, // Store the file
+        const updatedProfile: any = {
+            // id: prefilledProfile?.id || Date.now().toString(), 
+            data : {
+                name,
+                linkedIn: linkedinurl,
+                designation,
+            },
+            imageUrl: imageFile, // Store the file
         };
 
         if (prefilledProfile) {
@@ -81,7 +83,7 @@ const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpe
             // Add the new profile
             const updatedSpeakers = [...currentSpeakers, updatedProfile];
             // Update the state with the new array
-            handleChange('speakerProfilesData', updatedSpeakers);
+            handleChange('speaker', updatedSpeakers);
             // setSpeakerProfilesData((prevData) => [...prevData, updatedProfile]);
             handleChange('speakerModal', false)
             // setSpeakerModal(false);
@@ -99,7 +101,7 @@ const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpe
                             <Image src={ProfileIcon} alt="profile" height={63} width={63} />
                         )} */}
                         {imageFile ? (
-                            <Image src={URL.createObjectURL(imageFile)} alt="profile" height={63} width={63} />
+                            <Image src={prefilledProfile?.imageUrl || URL.createObjectURL(imageFile)} alt="profile" height={63} width={63} />
                         ) : (
                             <Image src={ProfileIcon} alt="profile" height={63} width={63} />
                         )}
@@ -122,7 +124,8 @@ const SpeakerModal = ({ handleChange, prefilledProfile, deleteSpeaker, updateSpe
             </div>
             {prefilledProfile ? <div className={styles.deletSaveContainer}>
                 <button type='button' className={styles.deleteBtn} onClick={() => {
-                    if (prefilledProfile?.id) deleteSpeaker(prefilledProfile.id);
+                    // if (prefilledProfile?.id) deleteSpeaker(prefilledProfile.id);
+                    deleteSpeaker();
                 }}><DeleteIcon />Delete</button>
                 <button type='submit' className={styles.saveBtn}>Save</button>
             </div> :
