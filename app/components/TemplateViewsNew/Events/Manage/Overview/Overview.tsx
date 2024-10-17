@@ -47,7 +47,7 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
           <div className={styles.share_leadsContainer}>
             <div className={styles.shareContainer}>
               <div className={styles.shareHeading}>Share Event</div>
-              <ShareButtons copyIcon={false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
+              <ShareButtons formTheme='light' copyIcon={false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
               <div className={styles.inputContainer}>
                 <input type="text" disabled value={`${console_url}/detailpage/${eventId}`} />
                 <button onClick={handleCopy}>Copy</button>
