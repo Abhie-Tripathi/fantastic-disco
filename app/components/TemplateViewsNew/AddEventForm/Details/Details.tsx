@@ -14,14 +14,14 @@ import SpeakerModal from './participation/speaker/SpeakerModal'
 import ExhibitorContainer from './participation/exhibitor/ExhibitorContainer'
 import RegistrationModal from './resgistration/RegistrationModal'
 import usePosterGenerator from '@/app/service/posterGenerator'
-import { AllEventsType, EventsType } from '@/types/alleventtype'
+import { EventsType } from '@/types/alleventtype'
 import DescriptionModal from './description/DescriptionModal'
 import useHashtagsGenerator from '@/hooks/useHashtagsGenerator'
 import HashtagContainer from './Hashtags/HashtagContainer'
 import MapView from '@/app/components/DetailPage/Mapview'
 import { showToast } from "@/utils/showToast";
-import SideEventIcon from '/public/sideevent.svg'
 import { FormState } from '@/types/Formstate'
+import SideeventIcon from '../SideeventIcon'
 
 interface SpeakerProfileType {
   id: string;
@@ -32,7 +32,7 @@ interface SpeakerProfileType {
   profileImage: File | null
 }
 interface Props {
-  formTheme : string;
+  formTheme: string;
   formState: FormState;
   handleChange: (field: keyof FormState, value: any) => void;
   prefilledEvent?: EventsType | null
@@ -46,7 +46,7 @@ interface Props {
   isApproved?: boolean;
   setIsApproved?: (value: boolean) => void
 }
-const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
+const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   handleCollapseForm, isApproved, setIsApproved }: Props) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -187,7 +187,7 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme = {formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
+          <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
           </div>
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
@@ -209,12 +209,12 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
               </div>
             </div>
             <div className={styles.hashtagsContainer}>
-              <HashtagContainer loadingState={loadingState} hashtags={formState.hashtags}
+              <HashtagContainer formTheme={formTheme} loadingState={loadingState} hashtags={formState.hashtags}
                 handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
             </div>
             <div className={styles.shareContainer}>
               <div className={styles.heading}>Share</div>
-              <ShareButtons copyIcon disabled={true} shareUrl='www.10times.com' />
+              <ShareButtons formTheme={formTheme} copyIcon disabled={true} shareUrl='www.10times.com' />
             </div>
           </div>
           <div className={styles.rightSection}>
@@ -237,6 +237,7 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
               {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
             </div>
             <div className={styles.resgitrationContainer}><RegistrationForm
+              formTheme={formTheme}
               isApproved={isApproved} setIsApproved={setIsApproved}
               registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
               // setRegisterModal={setRegisterModal}
@@ -244,6 +245,7 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
             /></div>
             <div>
               <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
+                formTheme={formTheme}
                 // setDescriptionModal={setDescriptionModal}
                 description={formState.description} isEventDescriptionEmpty={formState.isEventDescriptionEmpty}
                 // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} 
@@ -267,14 +269,14 @@ const Details = ({formTheme, formState, handleChange, prefilledEvent, eventFont,
             }
             <div className={styles.sideEventContainer}>
               <div className={styles.sideEventSubContainer}>
-                <Image src={SideEventIcon} alt='sideevent' />
+                <SideeventIcon color={formTheme === "dark" ? "white" : "#7d7d7d"} />
                 <div
-                  className={styles.sideEventHeading}
+                  className={`${styles.sideEventHeading} ${formTheme === "dark" ? styles.darkSideEventHeading : ""}`}
                 >
                   Do you wish to add a side event ?
                 </div>
               </div>
-              <button onClick={() => handleFormCollapse()}>Yes</button>
+              <button className={formTheme === "dark" ? styles.darkBtn : ""} onClick={() => handleFormCollapse()}>Yes</button>
             </div>
           </div>
         </div>

@@ -12,6 +12,9 @@
     flex-wrap: wrap;
     gap: 5px;
 }
+.hashtagsContainer .darkheading{
+    color: white;
+}
 .hashtagButton{
     border: 2px solid white;
     background-color: #BCBCBCD9;

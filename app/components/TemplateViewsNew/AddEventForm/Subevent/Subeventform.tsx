@@ -210,12 +210,12 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                         </div>
                     </div>
                     <div className={styles.hashtagsContainer}>
-                        <HashtagContainer loadingState={loadingState} hashtags={formState.hashtags}
+                        <HashtagContainer formTheme={formTheme} loadingState={loadingState} hashtags={formState.hashtags}
                             handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
                     </div>
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons copyIcon disabled={true} shareUrl='www.10times.com' />
+                        <ShareButtons formTheme={formTheme} copyIcon disabled={true} shareUrl='www.10times.com' />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -238,6 +238,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                         {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                     </div>
                     <div className={styles.resgitrationContainer}><RegistrationForm
+                    formTheme={formTheme}
                         isApproved={isApproved} setIsApproved={setIsApproved}
                         registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
                         // setRegisterModal={setRegisterModal}
@@ -245,6 +246,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                     /></div>
                     <div>
                         <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
+                        formTheme={formTheme}
                             // setDescriptionModal={setDescriptionModal}
                             description={formState.description} isEventDescriptionEmpty={formState.isEventDescriptionEmpty}
                             // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} 
