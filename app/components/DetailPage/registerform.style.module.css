@@ -94,3 +94,15 @@
     color: #7d7d7d;
 }
 
+
+.icon_text_container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 500;
+}
+.dec_text{
+    font-size: 12px;
+    font-weight: 500;
+}
