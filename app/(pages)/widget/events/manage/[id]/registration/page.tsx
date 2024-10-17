@@ -57,7 +57,7 @@ const Page = () => {
       }
       {approvalModal &&
         <div className={styles.modal} ref={approvalModalRef}>
-          <ApprovalModal eventId={eventId} approvalValue={approvalModal} setApprovalValue={setApprovalValue} setApprovalModal={setApprovalModal} />
+          <ApprovalModal eventId={eventId} approvalValue={approvalValue} setApprovalValue={setApprovalValue} setApprovalModal={setApprovalModal} />
         </div>
       }
     </div>

@@ -68,7 +68,7 @@
 .modal{
     position: absolute;
     filter: drop-shadow(1px 1px 3px rgb(95, 95, 95));
-    top: 30%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%,-50%);
 }

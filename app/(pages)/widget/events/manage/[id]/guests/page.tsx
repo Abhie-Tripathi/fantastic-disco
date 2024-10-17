@@ -14,17 +14,22 @@ const Page = () => {
   const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
   const [registerValue, setRegisterValue] = useState<boolean>(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
 
+  const [statusModal, setStatusModal] = useState<boolean>(false)
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
 
   useEffect(()=>{
-    // console.log("registered value : " ,fetchedEvent?.registration )
     setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
   },[fetchedEvent])
 
+  useEffect(()=>{
+    if(registerModal || statusModal || inviteGuestModal){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  },[registerModal,statusModal, inviteGuestModal])
 
   return (
-    <div className={styles.body}>
+    <div className={`${styles.body} ${registerModal || inviteGuestModal || statusModal ? styles.modalOpen : ""}`}>
       <div className={styles.btnContainer}>
         <button onClick={() => setInviteGuestModal(true)}>
           <span className={styles.icon1}>I</span>
@@ -45,7 +50,7 @@ const Page = () => {
           </div>
         </button>
       </div>
-      <GuestList />
+      <GuestList eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal}/>
       {/* {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>} */}
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />

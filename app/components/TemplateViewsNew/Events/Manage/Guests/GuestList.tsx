@@ -7,8 +7,15 @@ import DownloadIcon from '/public/downloadIcon.svg'
 import { useEventContext } from '@/context/eventcontext'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
+import StatusModal from './StatusModal'
 
-const GuestList = () => {
+interface Props{
+  eventId: string;
+  statusModal : boolean;
+  setStatusModal : (value : boolean) => void
+}
+
+const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
 
   const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
   const [activeSortBtn, setActiveSortBtn] = useState<string>("Name")
@@ -16,7 +23,13 @@ const GuestList = () => {
   const [sortDropdown, setSortDropdown] = useState<boolean>(false)
   const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false))
   const sortDropdownRef = useOutsideClick(() => setSortDropdown(false))
-  const { eventId } = useEventContext();
+
+  const [statusValue, setStatusValue] = useState<string>("")
+  const [interestId, setInterestId] = useState<string>("")
+  const [name, setName] = useState<string>("")
+  const [mail, setMail] = useState<string>("")
+
+  const statusModalRef = useOutsideClick(() => setStatusModal(false))
 
   const [guests, setGuests] = useState<any[]>(
     [
@@ -32,7 +45,8 @@ const GuestList = () => {
       const fetchedGuests = data.users.map((user: any) => ({
         name: `${user.firstname} ${user.lastname}`,
         email: user.email,
-        status: "Pending", // Set a default status, can be changed based on your logic
+        status: user.status,
+        interestId: user.interestId
       }));
       setGuests(fetchedGuests);
     }
@@ -41,6 +55,14 @@ const GuestList = () => {
   useEffect(() => {
     fetchGuests()
   }, [])
+
+  const handleStatusClick = (interestId: string, status: string, name: string, mail: string) => {
+    setStatusModal(true)
+    setName(name)
+    setMail(mail)
+    setInterestId(interestId)
+    setStatusValue(status)
+  }
 
   return (
     <div className={styles.body}>
@@ -77,17 +99,25 @@ const GuestList = () => {
       </div>
       <div className={styles.guestListContainer}>
         {guests.length > 0 ? (guests.map((guest, key) => (
-          <div className={styles.guest} key={key}>
+          <div className={styles.guest} key={key} onClick={() => handleStatusClick(guest.interestId, guest.status, guest.name, guest.email)} >
             <div className={styles.nameMailContainer}>
               <div className={styles.guestName}>{guest.name}</div>
               <div className={styles.guestEmail}>{guest.email}</div>
             </div>
-            <div className={`${styles.guestStatus} ${guest.status === "Waitlist" ? styles.wait : guest.status === "Going" ? styles.going : styles.notgoing}`}>{guest.status}</div>
+            <div className={`${styles.guestStatus} 
+            ${guest.status === "PENDING" ? styles.pending :
+                guest.status === "CONFIRMED" ? styles.going :
+                  guest.status === "WAITLISTING" ? styles.waitlist :
+                    guest.status === "FOLLOWING" ? styles.following : styles.notgoing
+              }
+            `}>
+              {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Declined"}</div>
           </div>
         ))) : (
-        <div className={styles.emptyList}>No guest registred yet. Start by inviting</div>
+          <div className={styles.emptyList}>No guest registred yet. Start by inviting</div>
         )}
       </div>
+      {statusModal && <div className={styles.modal} ref={statusModalRef}><StatusModal eventId={eventId} interestId={interestId} mail={mail} name={name} statusValue={statusValue} setStatusValue={setStatusValue} /></div>}
     </div>
   )
 }
