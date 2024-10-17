@@ -43,7 +43,6 @@ const AudienceSpread = ({
   }
 
   useEffect(() => {
-    console.log('selectedCountries', selectedCountries);
     const fetchData = async () => {
       const { data, error } = await myFetch(
         `${baseUrl}/location/country?offset=0&limit=300`
