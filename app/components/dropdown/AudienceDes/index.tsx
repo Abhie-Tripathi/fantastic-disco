@@ -33,7 +33,6 @@ const AudienceDes = ({
   const [noResults, setNoResults] = useState<boolean>(false);
 
   const handleCountrySelect = (countryId: string) => {
-    console.log('selectedCountries1', selectedCountries);
     setSelectedCountries((prevSelectedCountries: any[]) => {
         if (prevSelectedCountries?.includes(countryId)) {
             return prevSelectedCountries.filter((id: string) => id !== countryId);
@@ -44,7 +43,6 @@ const AudienceDes = ({
   }
 
   useEffect(() => {
-    console.log('selectedCountries', selectedCountries);
     const fetchData = async () => {
       const { data, error } = await myFetch(
         `${baseUrl}/designation?take=100`
