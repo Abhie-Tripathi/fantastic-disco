@@ -18,6 +18,7 @@ import RegistrationClosed from './RegistrationClosed'
 import confetti from 'canvas-confetti'
 import LeafTwo from '/public/widgetimages/leaf2.png'
 import SpeakerContainer from './SpeakerContainer'
+import { usePathname } from 'next/navigation';
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -66,6 +67,9 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
     const [isRegistratonClosed, setRegistrationClosed] = useState(false)
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const confettiCanvasRefTwo = useRef<HTMLCanvasElement | null>(null);
+    const pathname = usePathname();
+    const pathName = pathname.split("/")[1]; 
+    console.log("pathnamee00",pathName)
 
     const fireConfetti = () => {
         if (confettiCanvasRef.current) {
@@ -128,8 +132,18 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
     }
 
     return (
-        <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
-            style={{ backgroundColor: pageBgColor }}
+        <div style={{ backgroundColor: pageBgColor, position:"relative" }}>
+          <div style={{position:"absolute", top:"30px", left:"30px", cursor:"pointer", zIndex: 10}}>
+          {
+                pathName === "detailpage" &&
+                <button className={styles.backBtn} onClick={() => router.back()}>
+                    <BackIcon />
+                </button>
+            }
+          </div>
+            
+           <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
+           
         >
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
@@ -191,9 +205,15 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
-                    {registration ? <><RegistrationClosed /></> : <>
+                    {/* {!registration ? <><RegistrationClosed /></> : <>
                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
-                    </>}
+                    </>} */}
+                    {
+                        !registration && <RegistrationClosed/>
+                    }
+                    {
+                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
+                    }
 
                     {isMobile &&
                         <div className={styles.detailPageMobileView}>
@@ -204,7 +224,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                         </div>
                     }
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
-                    {speaker.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker}/></div>}
+                    {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker}/></div>}
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
@@ -219,6 +239,8 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
             <div className={styles.line}></div>
             <footer className={styles.footer}>Powered by Eventgeni &copy; 2024</footer>
         </div>
+        </div>
+     
     )
 }
 
@@ -231,3 +253,21 @@ function LinkIcon() {
         </svg>
     )
 }
+
+function BackIcon() {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        style={{ marginRight: "8px" }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M11.354 1.354a.5.5 0 0 1 0 .707L5.707 7.707H14.5a.5.5 0 0 1 0 1H5.707l5.647 5.646a.5.5 0 0 1-.708.708l-6.5-6.5a.5.5 0 0 1 0-.708l6.5-6.5a.5.5 0 0 1 .708 0z"
+        />
+      </svg>
+    );
+  }

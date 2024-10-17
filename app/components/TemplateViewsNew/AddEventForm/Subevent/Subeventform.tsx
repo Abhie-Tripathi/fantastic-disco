@@ -27,6 +27,7 @@ import GlobalSearch from '../../EditScreen/FilterEvents/GlobalSearch'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { FormState } from '@/types/Formstate'
 import WaitListAndCap from '../Details/waitListAndCapacity/WaitListAndCap'
+import CapacityModal from '../Details/waitListAndCapacity/capacitymodal/Capacity'
 
 interface SpeakerProfileType {
     id: string;
@@ -56,6 +57,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
     const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
     const [speakerIndex, setSpeakerIndex] = useState<number>(0)
+    
 
     const handlePrefill = (profile: SpeakerProfileType) => {
         handleChange('prefilledProfile', profile)
@@ -296,6 +298,15 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                         formState={formState}
                     />
                 </div>
+            }
+            {
+                formState.capacityModal &&  
+                 <CapacityModal
+                 capacityModal={formState.capacityModal}
+                  capacity={ formState.capacity}
+                  handleChange={handleChange}
+                  waitlisting={formState.waitlisting}
+                /> 
             }
         </div >
     )

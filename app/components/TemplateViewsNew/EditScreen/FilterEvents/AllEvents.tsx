@@ -863,7 +863,9 @@ const AllEvents = ({
                       : ""
                   }`}
                 >
-                  <div className={styles.addButtonContainer}>
+                 <div
+                >
+                 <div className={styles.addButtonContainer}>
                     <div className={styles.heading}>
                       {event.mainEvent.isLinkedToWidget
                         ? "Added to Widget"
@@ -943,6 +945,7 @@ const AllEvents = ({
                         </span>
                       </div>
                     )}
+                 </div>
                 </div>
 
                 <div className={styles.delete_spanBtn}>
