@@ -24,6 +24,9 @@
     color: #7D7D7D;
     font-weight: 500;
 }
+.descContainer .darkDescriptionHeading{
+    color: white;
+}
 .editBtn{
     cursor: pointer;
 }

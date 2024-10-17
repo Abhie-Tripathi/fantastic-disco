@@ -192,7 +192,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons copyIcon disabled={false} shareUrl={`${urlVal}`} />
+                        <ShareButtons formTheme='light' copyIcon disabled={false} shareUrl={`${urlVal}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -214,7 +214,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>
                                 <div className={styles.heading}>Share</div>
-                                <ShareButtons copyIcon hashtags={hashtags.split("")} disabled={true} shareUrl={`${urlVal}`} />
+                                <ShareButtons formTheme='light' copyIcon hashtags={hashtags.split("")} disabled={true} shareUrl={`${urlVal}`} />
                             </div>
                         </div>
                     }

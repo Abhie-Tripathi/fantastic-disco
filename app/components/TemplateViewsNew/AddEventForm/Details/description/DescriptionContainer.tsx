@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FormState } from "@/types/Formstate";
 
 interface Props {
+  formTheme: string;
   handleChange: (field: keyof FormState, value: any) => void;
   // setDescriptionModal: (value: boolean) => void;
   description: string;
@@ -15,6 +16,7 @@ interface Props {
 
 const DescriptionContainer = ({
   // setDescriptionModal,
+  formTheme,
   description,
   theme,
   isEventDescriptionEmpty,
@@ -40,11 +42,8 @@ const DescriptionContainer = ({
     >
       <div className={styles.descHeader}>
         <div className={styles.descContainer}>
-          <DescIcon />
-          <div
-            className={styles.descriptionHeading}
-            onClick={() => handleClick()}
-          >
+          <DescIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
+          <div className={`${styles.descriptionHeading} ${formTheme === "dark" ? styles.darkDescriptionHeading:""}`} onClick={() => handleClick()}>
             Add Event Description
           </div>
         </div>
@@ -94,22 +93,14 @@ const DescriptionContainer = ({
 
 export default DescriptionContainer;
 
-function DescIcon() {
+interface IconProps{
+  color : string;
+}
+
+function DescIcon({color} : IconProps) {
   return (
-    <svg
-      width="14"
-      height="10"
-      viewBox="0 0 14 10"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M1.1665 1.66699H12.8332M1.1665 5.00033H12.8332M1.1665 8.33366H6.1665"
-        stroke="#A8A8A8"
-        stroke-width="1.66667"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1.1665 1.66699H12.8332M1.1665 5.00033H12.8332M1.1665 8.33366H6.1665" stroke={color} stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   );
 }

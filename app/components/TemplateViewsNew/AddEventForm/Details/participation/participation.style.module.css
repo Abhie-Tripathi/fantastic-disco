@@ -41,10 +41,10 @@
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-semibold);
 }
-.options .option .darkLabel{
+.option .darkLabel{
     color: white;
 }
-.options .option .lightLabel{
+.option .lightLabel{
     color: #1a1a1a;
 }
 .selectedOption{
@@ -59,11 +59,11 @@
     gap: 9px;
     cursor: pointer;
 }
-.selectedOption .option span{
+/* .selectedOption .option span{
     font-size: var(--font-size-small);
     color: #171717;
     font-weight: var(--font-weight-semibold);
-}
+} */
 .selectedOption .inputContainer{
     display: flex;
     align-items: center;
@@ -78,10 +78,15 @@
     border: none;
     width: 90%;
     font-size: var(--font-size-small);
-
 }
 .selectedOption .inputContainer input:focus{
     outline: none;
+}
+.selectedOption .inputContainer .darkInput{
+    color: white;
+}
+.selectedOption .inputContainer .darkInput::placeholder{
+    color: rgba(255, 255, 255, 0.653);
 }
 .selectedOption .inputContainer span{
     height: 18px;

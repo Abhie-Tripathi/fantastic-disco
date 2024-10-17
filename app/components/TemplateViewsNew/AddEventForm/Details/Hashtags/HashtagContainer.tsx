@@ -6,6 +6,7 @@ import EditIcon from '/public/EditIcon.svg'
 import { FormState } from '@/types/Formstate';
 
 interface Props {
+    formTheme: string;
     hashtags: string[];
     // setHashtags: (value: string[]) => void
     handleChange: (field: keyof FormState, value: any) => void;
@@ -13,9 +14,9 @@ interface Props {
     handleTagsGenerate: (value: void) => void
 }
 
-const HashtagContainer = ({ hashtags, handleChange, loadingState, handleTagsGenerate }: Props) => {
+const HashtagContainer = ({ formTheme, hashtags, handleChange, loadingState, handleTagsGenerate }: Props) => {
 
-    console.log("hashtags are :",  hashtags)
+    console.log("hashtags are :", hashtags)
     const [showInput, setShowInput] = useState<boolean>(false)
     const [newTag, setNewTag] = useState<string>("");
 
@@ -51,8 +52,9 @@ const HashtagContainer = ({ hashtags, handleChange, loadingState, handleTagsGene
     return (
         <div className={styles.body}>
             <div className={styles.hashtagsContainer}>
-                {loadingState ? <div className={styles.tagsLoader}><div className={styles.tagSpinner}></div></div> :
-                    hashtags.length === 0 ? "Enter Event name and description to auto generate the hashtags" :
+                {loadingState ?
+                    <div className={styles.tagsLoader}><div className={styles.tagSpinner}></div></div> :
+                    hashtags.length === 0 ? <span className={formTheme === "dark" ? styles.darkheading : ""}>Enter Event name and description to auto generate the hashtags</span> :
                         hashtags.map((tag, key) => (
                             <div key={key} className={styles.hashtag}>
                                 <span onClick={() => handleTagDelete(key)} className={styles.deleteIcon}>x</span><span>{tag}</span>
@@ -65,7 +67,7 @@ const HashtagContainer = ({ hashtags, handleChange, loadingState, handleTagsGene
                         <span className={styles.hash}>#</span>
                         <input maxLength={30} type="text" value={newTag} onChange={handleInputChange} className={styles.tagInput}
                         />
-                        <span className={styles.deleteIcon} onClick={()=>setShowInput(false)}>x</span>
+                        <span className={styles.deleteIcon} onClick={() => setShowInput(false)}>x</span>
                     </form>
                 )}
             </div>

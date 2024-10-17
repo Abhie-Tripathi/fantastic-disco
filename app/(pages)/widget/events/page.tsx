@@ -34,8 +34,21 @@ const Page = () => {
     // const [sideEventFlow, setSideEventFlow] = useState<boolean>(false)
     const [eventFlow, setEventFlow] = useState<string>("")
     const [selectedEventType, setSelectedEventType] = useState<string>("") // This will be used to Delete an event
+    const [todaysDate, setTodaysDate] = useState("");
 
     let prevDate: any = null;
+
+    useEffect(() => {
+        const getCurrentDate = (): string => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        setTodaysDate(getCurrentDate());
+    }, []);
 
     useEffect(() => {
         fetchEvents(page * 8);
@@ -72,7 +85,7 @@ const Page = () => {
     }
 
     const fetchEvents = async (page: number, type?: string) => {
-        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
+        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&upcoming=${todaysDate}&offset=${page}&limit=8`)
         if (data) {
             const transformedEvents = data.data.map((event: any) => ({
                 mainEvent: {

@@ -90,10 +90,11 @@ const ParticipationContainer = ({
       <div className={styles.selectedOption}>
         <div className={styles.option}>
           <Image src={selectedOption.icon} alt={`${selectedOption.label} icon`} height={type === "main" ? 30 : 54} width={type === "main" ? 30 : 54} />
-          <span>{selectedOption.label}</span>
+          <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{selectedOption.label}</span>
         </div>
         <div className={styles.inputContainer}>
           <input
+            className={formTheme === "dark" ? styles.darkInput : "" }
             type="text"
             placeholder='Add your message here!'
             onChange={handleInputChange}
