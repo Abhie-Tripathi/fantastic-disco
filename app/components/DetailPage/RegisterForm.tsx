@@ -127,16 +127,16 @@ const RegisterForm = ({
   return (
     <div className={styles.registerContainer}>
       {/* <ToastContainer /> */}
-      {capacity || approval || isEventEnded ? (
+      {registration ? <div className={styles.header}>
+          <div>Join us at the event</div>
+        </div> :waitlisting || approval || isEventEnded ? (
         <>Register</>
       ) : (
-        <div className={styles.header}>
-          <div>Join us at the event</div>
-        </div>
+        <></>
       )}
 
       <form onSubmit={handleSubmit}>
-        {capacity ? (
+        {registration ? <div className={styles.formSubHeading}>{registerMessage}</div>:waitlisting ? (
           <>
             <div className={styles.event_container}>
               <div className={styles.icon_container}>
@@ -187,7 +187,7 @@ const RegisterForm = ({
             <div className={styles.detail_text}>
              Welcome! To join the event, please register below.
             </div>
-        </>:<div className={styles.formSubHeading}>{registerMessage}</div>
+            </>:<></>
         }
 
         <input
@@ -222,9 +222,9 @@ const RegisterForm = ({
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
         >
-          {capacity ? (
+          {registration ?<span>{registerBtnText}</span>: waitlisting ? (
             <span onClick={handleClick}>Join waitlist</span>
-          )  : approval ? <span>Request to join</span>: isEventEnded? <span>Follow</span>:<span>{registerBtnText}</span> }
+          )  : approval ? <span>Request to join</span>: isEventEnded? <span>Follow</span>:<></> }
           
         </button>
       </form>

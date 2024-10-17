@@ -340,7 +340,7 @@ const Pages = () => {
   const last = pathName[pathName.length - 1];
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [categoryData, setCatgeoryData] = useState([]);
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
@@ -650,7 +650,7 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
@@ -748,7 +748,8 @@ const Pages = () => {
            }),
           ...(selectedAudProfile.length > 0 && {
             designation: selectedAudProfile.join(",")
-          })
+          }),
+          ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
           // info: {
           //   name: trackerName,
           //   location:selectedLocations,
@@ -870,7 +871,7 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
@@ -954,7 +955,8 @@ const Pages = () => {
           }),
           ...(selectedAudProfile.length > 0 && {
             designation: selectedAudProfile.join(",")
-          })
+          }),
+          ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
 
           // info: {
           //   name: trackerName,
@@ -1043,11 +1045,6 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
-      const newArr: string[] = [
-        ...(categoryData?.attendedCategories ?? []),
-        ...(categoryData?.nonAttendedCategories ?? []),
-        ...(categoryData?.unscheduledCategories ?? []),
-      ];
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1159,7 +1156,7 @@ const Pages = () => {
       );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
             (cat: Cat) => cat.id
           )
           : []
@@ -1190,7 +1187,7 @@ const Pages = () => {
       );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
             (cat: Cat) => cat.name
           )
           : []
@@ -1721,7 +1718,7 @@ useEffect(()=>{
           }
           </div>
           {template?.inputAreas &&
-                  <div>
+                  <div className={`${styles.competitor}`}>
                     <div className={styles.allInputArea}>
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
@@ -1781,7 +1778,7 @@ useEffect(()=>{
       ))}
     ))} */}
     {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
               {customData && customData.length >0 &&
                 <div className={styles.allCompetitors}>

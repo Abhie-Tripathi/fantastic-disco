@@ -348,3 +348,8 @@
         display: none;
     }
 }
+
+.backBtn{
+    cursor: pointer;
+    font-size: 15px;
+  }

@@ -224,8 +224,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
           <div className={styles.cardDetails}>
             <div className={styles.eventNameComp}>
               <div>
-                {/* <div className={styles.eventName}>{geniEvent?.name || eventName}</div>
-                <div className={styles.company}>{geniEvent?.cityName || eventCompany}</div> */}
+                <div className={styles.eventName}>{eventName}</div>
+                <div className={styles.company}>{eventCompany}</div>
               </div>
               {!geniEvent && <div className="desktop_view">
                 <StatusChangeDropdown

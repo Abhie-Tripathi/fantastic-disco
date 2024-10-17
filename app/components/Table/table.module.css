@@ -114,6 +114,10 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 } */
 
+.bookmarkColumn {
+  width: 50px!important;
+}
+
 .pagination_container {
   margin-top: 20px;
   /* background-color: #f7f7f9; */
@@ -420,4 +424,8 @@
   font-size: 12px;
   padding: 4px 8px;
   font-weight: var(--font-weight-semibold);
+}
+
+.capitalizeText {
+  text-transform: capitalize;
 }

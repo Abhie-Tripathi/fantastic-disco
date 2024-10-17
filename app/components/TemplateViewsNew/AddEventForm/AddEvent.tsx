@@ -77,6 +77,10 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     registration:true,
     approval:false,
     waitlisting:false,
+    // capacityModalClose:false,
+    // capacityModalOpen:false
+    capacityModal:false
+
   };
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
   const [subeventState, setSubeventState] = useState<FormState>(initialFormState);

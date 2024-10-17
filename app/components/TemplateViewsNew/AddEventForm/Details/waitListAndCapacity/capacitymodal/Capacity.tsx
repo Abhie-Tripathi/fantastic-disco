@@ -1,39 +1,48 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./capacity.style.module.css";
 import { FormState } from "@/types/Formstate";
-
+import useOutsideClick from '@/hooks/useOutsideClick'
 interface Props{
   handleChange: (field: keyof FormState, value: any) => void;
-  isOpen:boolean 
-  onClose:()=>void;
+  // isOpen:boolean 
+  // onClose:()=>void;
   capacity:number;
   waitlisting:boolean;
-  
-
+  capacityModal:boolean;
 }
-const CapacityModal = ({isOpen, onClose,capacity,handleChange,waitlisting}: Props) => {
-  const modalRef = useRef<HTMLDivElement>(null);
+const CapacityModal = ({capacity,handleChange,waitlisting,capacityModal}: Props) => {
+  const [inputValue, setInputValue] = useState("");
+  // const modalRef = useRef<HTMLDivElement>(null);
+  const capacityModalRef = useOutsideClick(() => handleChange("capacityModal",false))
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      onClose();
-    }
-  };
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+  //     onClose();
+      
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-  if (!isOpen) return null;
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [isOpen]);
+
+  // if (!isOpen) return null;
   const handleClose = () =>{
-    onClose();
+    // onClose();
+    handleChange("capacityModal",false)
+    if(inputValue !== ""){
+      handleChange("capacity", inputValue)
+    }
+    
+
   }
   return (
-    <div className={styles.body} ref={modalRef}>
+    <div className={styles.body} ref={capacityModalRef}>
       <div className={styles.header}>
         <div className={styles.heading}>Max Capacity</div>
         <div className={styles.subheading}>
@@ -43,11 +52,13 @@ const CapacityModal = ({isOpen, onClose,capacity,handleChange,waitlisting}: Prop
       </div>
       <div className={styles.inputContainer}>
         <div className={styles.heading}>Capacity</div>
-        <input type="number" value={ capacity} onChange={(e) => handleChange('capacity', e.target.value)}/>
+        <input type="number" value={ inputValue} onChange={(e) => setInputValue(e.target.value)}/>
       </div>
       <div className={styles.waitlistContainer}>
         <div className={styles.heading}>Over-Capacity Waitlist</div>
-        <input type="checkbox" id="register" className={styles.checkboxInput} checked={waitlisting} onChange={() => handleChange("waitlisting",true)} />
+        <input type="checkbox" id="register" className={styles.checkboxInput} checked={waitlisting} 
+        onChange={(e) => handleChange("waitlisting", e.target.checked)} 
+        />
         <label htmlFor="register" className={styles.checkBox}></label>
       </div>
       <div className={styles.btnContainer}>

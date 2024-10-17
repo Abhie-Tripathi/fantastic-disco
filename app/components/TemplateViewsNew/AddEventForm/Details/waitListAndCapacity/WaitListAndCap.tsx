@@ -13,11 +13,12 @@ interface Props{
   
 }
 const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
-  // const [isApproved, setIsApproved] = useState(false);
+  // const [inputValue, setInputValue] = useState("");
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");
  
   const openCapacityModal = () => {
+    handleChange("capacityModal",true)
     setIsCapacityModalOpen(true);
   };
   const closeCapacityModal = () => {
@@ -84,7 +85,10 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         <div className={styles.icon}>
           <Capacity />
         </div>
-        <div className={styles.itemText}>Capacity</div>
+        <div className={styles.itemText}>Capacity
+        <div className={styles.waitListText}>{waitlisting? 'Waitlist Enabled':""}</div>
+        </div>
+        <div className={styles.waitlistNumber}>{capacity?capacity:""}</div>
         <Image
           className={styles.editBtn}
           src={EditIcon}
@@ -93,13 +97,13 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         />
       </div>
       {/* Capacity Modal */}
-      <CapacityModal
+      {/* <CapacityModal
         isOpen={isCapacityModalOpen}
         onClose={closeCapacityModal}
         capacity={ capacity}
         handleChange={handleChange}
         waitlisting={waitlisting}
-      />
+      /> */}
     </div>
   );
 };
