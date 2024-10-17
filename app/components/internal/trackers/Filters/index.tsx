@@ -3413,7 +3413,7 @@ useEffect(()=>{
             <div className={styles.presetTitle} >Get Started with Pre-sets</div>
             <div className={styles.presetContainer} >
               {presetTemplateData.map((item, ind) => (
-                <div className={styles.innerContainerTwo} onClick={()=>handlePresetClick(item.id, item.url)}>
+                <div key={ind} className={styles.innerContainerTwo} onClick={()=>handlePresetClick(item.id, item.url)}>
                   <div
                     className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
                       }`}
