@@ -116,8 +116,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         <Link href={`/widget/events/manage/${eventId}/guests`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/guests` ? styles.activeItem : ""
                             }`}>Guests</Link>
 
-                        <Link href={`/widget/events/manage/${eventId}/registration`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/registration` ? styles.activeItem : ""
-                            }`} >Registration</Link>
+                        <Link href={`/widget/events/manage/${eventId}/settings`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/settings` ? styles.activeItem : ""
+                            }`} >Settings</Link>
 
                         <Link href={`/widget/events/manage/${eventId}/blasts`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/blasts` ? styles.activeItem : ""
                             }`} >Blasts</Link>

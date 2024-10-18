@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './overview.style.module.css'
 import EventSmallDetailView from './EventSmallDetailView'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { showToast } from "@/utils/showToast";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface Props {
   registration? : boolean;
@@ -35,12 +37,25 @@ interface Props {
 const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
+  const [guestCount, setGuestCount] = useState<number>(0)
+
   const handleCopy = () => {
     const textToCopy = `https://console.eventgeni.com/detailpage/${eventId}`;
     navigator.clipboard.writeText(textToCopy);
     showToast("success", "Link copied")
   };
 
+  const fetchGuests = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    if (error) {
+      console.log("error is : ", error)
+    } else {
+      setGuestCount(data?.totalUser)
+    }
+  }
+  useEffect(()=>{
+    fetchGuests()
+  },[])
   return (
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
@@ -59,7 +74,7 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
             </div>
             <div className={styles.leadsContainer}>
               <UserIcon />
-              <span>130 Interests</span>
+              <span>{guestCount} Interests</span>
             </div>
           </div>
           <div className={styles.valuesContainer}>
