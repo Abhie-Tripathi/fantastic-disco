@@ -28,6 +28,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   const [name, setName] = useState<string>("")
   const [mail, setMail] = useState<string>("")
   const [sortBy, setSortBy] = useState<string>("")
+  const [filterStatus, setFilterStatus] = useState<string>("")
 
 
   const statusModalRef = useOutsideClick(() => setStatusModal(false))
@@ -55,12 +56,15 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   };
 
   const fetchGuests = async () => {
-    let fetchUrl = ''
-    if(sortBy.length > 0){
-      fetchUrl =`${baseUrl}/intend/users?eventId=${eventId}&sortType=asc&sortBy=${sortBy}`
-    }else{
-      fetchUrl =`${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`
+    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
+    if (sortBy.length > 0) {
+      fetchUrl += `&sortBy=${sortBy}`;
     }
+    
+    if (filterStatus.length > 0) {
+      fetchUrl += `&status=${filterStatus}`;
+    }
+    
     const { data, error } = await myFetch(`${fetchUrl}`)
 
     if (error) {
@@ -79,9 +83,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   useEffect(() => {
     fetchGuests()
-  }, [sortBy])
-
-  const handleFetch = (sort: string) => {
+  }, [sortBy, filterStatus])
+  
+  const handleSortBy = (sort: string) => {
     if(sort === "firstname"){
       setActiveSortBtn("Name")
     }else if(sort === "email"){
@@ -90,6 +94,20 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
       setActiveSortBtn("Register Time")
     }
     setSortBy(sort)
+  }
+  const handleFilterBy = (filter : string)=>{
+    setActiveFilterBtn(filter)
+    if(filter === "All Guests"){
+      setFilterStatus("")
+    }else if(filter === "Going"){
+      setFilterStatus("CONFIRMED")
+    }else if(filter === "Not going"){
+      setFilterStatus("REJECTED")
+    }else if(filter === "Waitlist"){
+      setFilterStatus("WAITLISTING")
+    }else if(filter === "Pending"){
+      setFilterStatus("PENDING")
+    }
   }
 
   const handleStatusClick = (interestId: string, status: string, name: string, mail: string) => {
@@ -117,19 +135,20 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
             <FilterIcon />
             {activeFilterBtn}</button>
           {filterDropdown && <div className={styles.dropdown} ref={filterDropdownRef}>
-            <li onClick={() => setActiveFilterBtn("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
-            <li onClick={() => setActiveFilterBtn("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
-            <li onClick={() => setActiveFilterBtn("Invited")}>{activeFilterBtn === "Invited" && <TickIcon />}Invited <span>0</span></li>
-            <li onClick={() => setActiveFilterBtn("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist <span>1</span></li>
-            <li onClick={() => setActiveFilterBtn("Not going")}>{activeFilterBtn === "Not going" && <TickIcon />}Not going <span>0</span></li>
+            <li onClick={() => handleFilterBy("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
+            <li onClick={() => handleFilterBy("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
+            <li onClick={() => handleFilterBy("Invited")}>{activeFilterBtn === "Invited" && <TickIcon />}Invited <span>0</span></li>
+            <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending <span>0</span></li>
+            <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist <span>1</span></li>
+            <li onClick={() => handleFilterBy("Not going")}>{activeFilterBtn === "Not going" && <TickIcon />}Not going <span>0</span></li>
           </div>}
         </div>
         <div className={styles.sortBtnContainer}>
           <button className={styles.dropBtn} onClick={() => setSortDropdown(!sortDropdown)}><Image src={SortIcon} alt='filter' />{activeSortBtn}</button>
           {sortDropdown && <div className={styles.dropdown} ref={sortDropdownRef}>
-            <li onClick={() => handleFetch("firstname")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
-            <li onClick={() => handleFetch("email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
-            <li onClick={() => handleFetch("")}>{activeSortBtn === "Register Time" && <TickIcon />}Register Time</li>
+            <li onClick={() => handleSortBy("firstname")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
+            <li onClick={() => handleSortBy("email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
+            <li onClick={() => handleSortBy("")}>{activeSortBtn === "Register Time" && <TickIcon />}Register Time</li>
           </div>}
         </div>
       </div>
