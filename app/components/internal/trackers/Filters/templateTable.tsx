@@ -1,5 +1,5 @@
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
-import styles from "./filters.style.module.css";
+import styles from "./templatetable.style.module.css";
 import { useState } from "react";
 
 interface Props {
@@ -36,11 +36,20 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
 
   return (
     <div className={styles.allCompetitors}>
-      {selectedIdArray.length > 0 && (
+      
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div className={styles.totalRecords} >Total {customData.length} records</div>
+        {selectedIdArray.length > 0 && (
+          <div className={styles.remove_all_custom} onClick={removeCustomData}>
+            Remove Selected
+          </div>
+        )}
+      </div>
+      {/* {selectedIdArray.length > 0 && (
         <div className={styles.remove_all_custom} onClick={removeCustomData}>
           Remove Selected
         </div>
-      )}
+      )} */}
       <div className={styles.table_container}>
         <table className={styles.allCustomData}>
           <thead>
