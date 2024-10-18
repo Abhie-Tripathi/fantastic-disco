@@ -99,6 +99,7 @@ const RegisterForm = ({
       source: "eventgeni",
       redirectUrl: `${console_url}/detailpage/${eventId}`
       // sourceId: widgetId,
+     
     };
 
     try {
@@ -291,6 +292,24 @@ const RegisterForm = ({
               notified if additional spots become available.
             </div>
           </>
+        ) : registration && approval && capacity && !waitlisting ? (
+          // When approval is true and cap is true (remaining)
+          <>
+            <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <ApprovalSVG />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Approval Required</div>
+                <div className={styles.waitlist_text}>
+                  Your registration is subject to approval by the host.
+                </div>
+              </div>
+            </div>
+            <div className={styles.detail_text}>
+              Welcome! To join the event, please register below.
+            </div>
+          </>
         ) : registration && approval && capacity && waitlisting ? (
           // When approval is true and cap is true (remaining)
           <>
@@ -371,13 +390,16 @@ const RegisterForm = ({
           type="submit"
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
+          // onClick={handleClick}
         >
           {registration && !approval && !capacity && !waitlisting ? (
             <span>{registerBtnText}</span>
           ) : !registration ? (
             <span>Follow</span>
           ) : registration && approval && waitlisting && !capacity ? (
-            <span onClick={handleClick}>Join waitlist</span>
+            <span>Join waitlist</span>
+          ) : registration && approval && capacity && !waitlisting ? (
+            <span>Request to join</span>
           ) : registration && !approval && !capacity && !waitlisting ? (
             <span>Request to join</span>
           ) : registration && approval && !capacity && !waitlisting ? (
