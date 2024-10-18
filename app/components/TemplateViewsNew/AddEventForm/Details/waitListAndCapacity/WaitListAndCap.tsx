@@ -4,13 +4,12 @@ import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
 import CapacityModal from "./capacitymodal/Capacity";
 import { FormState } from "@/types/Formstate";
+
 interface Props{
   waitlisting:boolean;
   approval:boolean;
   capacity:number;
   handleChange: (field: keyof FormState, any: any) => void;
-  
-  
 }
 const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
   // const [inputValue, setInputValue] = useState("");
@@ -88,7 +87,7 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         <div className={styles.itemText}>Capacity
         <div className={styles.waitListText}>{waitlisting? 'Waitlist Enabled':""}</div>
         </div>
-        <div className={styles.waitlistNumber}>{capacity?capacity:""}</div>
+        <div className={styles.waitlistNumber}>{capacity === -1 ? "Unlimited" : capacity}</div>
         <Image
           className={styles.editBtn}
           src={EditIcon}
