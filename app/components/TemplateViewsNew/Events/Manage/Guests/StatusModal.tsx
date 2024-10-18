@@ -63,7 +63,7 @@ const StatusModal = ({ statusValue, setStatusValue, mail, name, interestId, even
                     <div onClick={() => setStatusValue("CONFIRMED")} className={`${styles.status} ${styles.going}`}>Going</div>
                     <div onClick={() => setStatusValue("PENDING")} className={`${styles.status} ${styles.pending}`}>Pending</div>
                     <div onClick={() => setStatusValue("REJECTED")} className={`${styles.status} ${styles.notgoing}`}>Declined</div>
-                    <div onClick={() => setStatusValue("WAITLISTING")} className={`${styles.status} ${styles.waitlist}`}>Wailist</div>
+                    {/* <div onClick={() => setStatusValue("WAITLISTING")} className={`${styles.status} ${styles.waitlist}`}>Wailist</div> */}
                 </div>}
             </div>
             <div className={styles.notify}>We will notify the user of the updated status through mail.</div>

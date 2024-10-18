@@ -84,6 +84,7 @@ const RegisterForm = ({
       });
     }
   };
+  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,6 +97,7 @@ const RegisterForm = ({
       interest: "ATTENDEE",
       note: "intend",
       source: "eventgeni",
+      redirectUrl: `${console_url}/detailpage/${eventId}`
       // sourceId: widgetId,
     };
 

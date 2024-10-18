@@ -32,6 +32,10 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
         }
     }
 
+    const handleRemoveLimit = async()=>{
+        
+    } 
+
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -57,7 +61,7 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
             </div>
             <div className={styles.btnContainer}>
                 <button className={styles.setBtn} onClick={handleChange}>Set Limit</button>
-                <button className={styles.removeBtn}>Remove Limit</button>
+                <button className={styles.removeBtn} onClick={handleRemoveLimit}>Remove Limit</button>
             </div>
         </div>
     )
