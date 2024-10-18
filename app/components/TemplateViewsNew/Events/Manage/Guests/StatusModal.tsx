@@ -59,7 +59,7 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
                         statusValue === "WAITLISTING" ? styles.waitlist :
                             statusValue === "FOLLOWING" ? styles.following : styles.notgoing
                     }`}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Declined"}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
                 </div>
             </div>
             <div className={styles.mail}>{mail}</div>
@@ -68,13 +68,13 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
                     Change status to:
                 </div>
                 <div className={styles.statusInputContainer} onClick={() => setStatusDropdown(!statusDropdown)}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Declined"}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
                     <DownArrow />
                 </div>
                 {statusDropdown && <div className={styles.statusDropdown} ref={statusModalRef}>
                     <div onClick={() => handleStatusValue("CONFIRMED")} className={`${styles.status} ${styles.going}`}>Going</div>
                     <div onClick={() => handleStatusValue("PENDING")} className={`${styles.status} ${styles.pending}`}>Pending</div>
-                    <div onClick={() => handleStatusValue("REJECTED")} className={`${styles.status} ${styles.notgoing}`}>Declined</div>
+                    <div onClick={() => handleStatusValue("REJECTED")} className={`${styles.status} ${styles.notgoing}`}>Not Going</div>
                     {/* <div onClick={() => setStatusValue("WAITLISTING")} className={`${styles.status} ${styles.waitlist}`}>Wailist</div> */}
                 </div>}
             </div>

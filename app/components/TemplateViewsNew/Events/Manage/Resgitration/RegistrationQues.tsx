@@ -32,13 +32,13 @@ const RegistrationQues = () => {
                         </div>
                         <span className={styles.value}>Required</span>
                     </div>
-                    <div className={`${styles.ques} ${styles.phoneQues}`}>
+                    {/* <div className={`${styles.ques} ${styles.phoneQues}`}>
                         <div className={styles.nameLogoContainer}>
                             <span></span>
                             <span>Phone</span>
                         </div>
                         <span className={styles.value}>Off</span>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className={styles.customQuesContainer}>

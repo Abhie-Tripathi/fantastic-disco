@@ -5,6 +5,10 @@ import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { showToast } from "@/utils/showToast";
 
 interface Props {
+  registration? : boolean;
+  approval?: boolean;
+  waitlist? : boolean;
+  capacity? : number;
   eventId: string;
   imageUrl?: string;
   eventName?: string;
@@ -28,7 +32,7 @@ interface Props {
   setDeleteModalTwo: (value: boolean) => void;
 }
 
-const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget }: Props) => {
+const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const handleCopy = () => {
@@ -60,12 +64,12 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
           </div>
           <div className={styles.valuesContainer}>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>ON</span></div>
-              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
+              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
             </div>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>ON</span></div>
-              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>250</span></div>
+              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
+              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
             </div>
           </div>
           

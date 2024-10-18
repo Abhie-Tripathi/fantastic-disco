@@ -110,7 +110,7 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
                     guest.status === "FOLLOWING" ? styles.following : styles.notgoing
               }
             `}>
-              {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Declined"}</div>
+              {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Not Going"}</div>
           </div>
         ))) : (
           <div className={styles.emptyList}>No guest registered yet. Start by inviting</div>

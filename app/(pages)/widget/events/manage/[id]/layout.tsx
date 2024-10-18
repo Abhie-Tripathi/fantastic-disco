@@ -102,7 +102,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <EventContext.Provider value={{ eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
+        <EventContext.Provider value={{fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
