@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 .header{
     display: flex;
@@ -115,6 +116,10 @@
     justify-content: space-between;
     padding: 20px;
     border-bottom: 1px solid var(--accent-color);
+    cursor: pointer;
+}
+.guestListContainer .guest:hover{
+    background-color: var(--accent-color);
 }
 .guestListContainer .guest .nameMailContainer{
     display: flex;
@@ -136,14 +141,23 @@
     font-weight: var(--font-weight-semibold);
     padding: 3px 5px;
     border-radius: 10px;
+    cursor: pointer;
 }
-.guest .wait{
+.guest .pending{
     background-color: #ffcb5c3f;
     color: var(--notice-color-hover);
 }
 .guest .going{
     background-color: #45a55749;
     color: var(--success-text-color);   
+}
+.guest .waitlist{
+    background-color: #ffcb5c3f;
+    color: var(--notice-color-hover);
+}
+.guest .following{
+    background-color: #0072f54e;
+    color: var(--info-text-color);   
 }
 .guest .notgoing{
     background-color: #e5484d3f;
@@ -155,4 +169,10 @@
     font-size: var(--font-size-default);
     color: var(--secondary-text-color);
     font-weight: 500;
+}
+.modal{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
