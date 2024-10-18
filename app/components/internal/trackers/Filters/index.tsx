@@ -9,7 +9,7 @@ import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
-import { ChevronDown, Plus, Share } from "geist-icons";
+import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
@@ -72,6 +72,13 @@ import CsvUploader from "./csvUploader";
 import { Button as Button10x } from "10xui";
 import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
 import AudienceDes from "@/app/components/dropdown/AudienceDes";
+
+import Template from "/public/template.svg";
+import Vector1 from "/public/vectorTemplate.svg";
+import Competitor from "/public/competitor.svg";
+import Speaking from "/public/speaking.svg";
+import Keywords from "/public/keywords.svg";
+import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg"
 interface FilterValue {
   labels: string;
   name: string;
@@ -163,6 +170,84 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
+
+const top10Data = [['abc.com'], ['10times']];
+const top10Speakers = [
+  ["abc.com", "xyz.com"],
+  ["Mark Zuckerberg", "Facebook"],
+]
+
+const presetTemplateData = [
+  {
+    id: 1,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Top 100 Companies",
+    content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'ALL',
+  },
+  {
+    id: 2,
+    // type: "template",
+    // domain: "Sales",
+    img: Keywords,
+    url:"T_COMPETITOR",
+    trackerName: "Top 25 Trending",
+    content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 3,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "India Top 30",
+    content: "Discover leading companies in India hosting business expos, conferences, and events.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 4,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Education & Training companies in India",
+    content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 5,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Artificial Intelligence Speakers",
+    content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 6,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Biotechnology Innovations Speakers",
+    content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  }
+];
+
 const templates = [
   {
     name: "T_RECRUITMENT",
@@ -272,7 +357,7 @@ const templates = [
     name: "T_SPEAKING_OPPORTUNITY",
     templateName: "Speaking Opportunity",
     type: "enabled",
-    description: "Track your competitor experts, influencers and where they might be participating in events",
+    description: "Input team members and their details to keep track of the events with speaking opportunities",
     inputAreas: [
       {
         img: Name,
@@ -572,6 +657,29 @@ const Pages = () => {
       setDesignations(designation);
     }
   }, [type, customData])
+
+  const handlePresetClick = (id: number, trackerType: string) => {
+
+    const filteredPresetData = presetTemplateData.filter(item => item.id === id);
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
+      const presetData: any = [];
+
+      filteredPresetData?.[0]?.data.map((item: any) => {
+        const temp: any = {};
+        template?.inputAreas?.map((field: InputArea, index: number)=>(
+          temp[field.placeholder] = item[index]
+        ))
+        presetData.push(temp);
+      })      
+      setCustomData(presetData);
+    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -1524,7 +1632,7 @@ useEffect(()=>{
         <div>
           <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
           <div className={styles.createContent}>
-            Select from the available data filters to create a tracker
+            { template ? template.description : "Select from the available data filters to create a tracker" }
           </div>
         </div>
       </div>
@@ -1642,6 +1750,7 @@ useEffect(()=>{
       }
       
       {template && template.inputAreas &&
+      <div style={{display: 'flex', gap: '25px'}}>
         <div className={`card ${styles.competitor}`}>
           {/* <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
@@ -1649,18 +1758,9 @@ useEffect(()=>{
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px", lineHeight: "32px"}}>{template.description}
-            {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
-              <Button10x
-                style={{ color: "white", float: "right" }}
-                variant="primary"
-                size="sm"
-                onClick={handleUploadEnable}
-              >
-                <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
-                {" "}Upload
-              </Button10x>
-            }
+          <div className={styles.templateInputHeading}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} Please upload or manually enter the information
           </div>
           {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
             (uploadEnabled && 
@@ -1671,54 +1771,55 @@ useEffect(()=>{
                 setUploadEnabled={setUploadEnabled}
                 setSelectedEventKeywords={setSelectedEventKeywords}
               />) :
-          <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                  {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
+              <></>
+          // <div className={`${styles.toggleDiv}`}>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Add data manually
+          //         {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+          //     </div>
+          //     <div>
 
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={template.type === "enabled"}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={template.type === "enabled"}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
 
-              </div>
-            </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
+          //     </div>
+          //   </div>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Import CSV Data
+          //         {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+          //     </div>
+          //     <div>
 
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={selectedExhibitScore.length !== 0}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
 
-              </div>
-            </div>
-          </div>
+          //     </div>
+          //   </div>
+          // </div>
           }
           </div>
           {template?.inputAreas &&
-                  <div className={`${styles.competitor}`}>
+                  <div>
                     <div className={styles.allInputArea}>
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
@@ -1780,7 +1881,7 @@ useEffect(()=>{
     {!valid && (
                 <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
-              {customData && customData.length >0 &&
+              {/* {customData && customData.length >0 &&
                 <div className={styles.allCompetitors}>
                   <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
                     Remove All
@@ -1820,17 +1921,107 @@ useEffect(()=>{
                     <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
                   }
                 </div>
+              } */}
+              {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+                <div style={{textAlign: 'center'}}>
+                  <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
+                    <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
+                    <span className={styles.orText}>OR</span>
+                  </div>
+                  <div className={styles.uploadBtnContainer}>
+                    <Button10x
+                      style={{ color: "white" }}
+                      variant="primary"
+                      size="sm"
+                      onClick={handleUploadEnable}
+                    >
+                      <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                      {" "}Upload
+                    </Button10x>
+                  </div>
+                </div>
               }
             </div>
           }
         </div>
+        <div className={`card ${styles.competitor}`} >
+          <div className={styles.templateInputHeading}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} You can edit or remove unwanted entries from here.
+          </div>
+          {(customData && customData.length >0) ?
+            <div className={styles.allCompetitors}>
+              <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
+                Remove All
+              </div>
+              <div className={styles.table_container}>
+              <table className={styles.allCustomData}>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {Object.entries(customData[0])
+                      .map(([entryKey, value]) => 
+                        <th key={entryKey} className={styles.dataColoumn}>{entryKey as string}</th>
+                      )
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  {expandTable ? customData.map((item: any, index: number) => (
+                      <tr key={index}>
+                        <td>
+                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                        </td>
+                        {Object.entries(item)
+                          .map(([entryKey, value]) => 
+                            <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                          )
+                        }
+                      </tr>
+                    )) :
+                    customData.slice(0, 5).map((item: any, index: number) => (
+                      <tr key={index}>
+                        <td>
+                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                        </td>
+                        {Object.entries(item)
+                          .map(([entryKey, value]) => 
+                            <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                          )
+                        }
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+              </div>
+              {customData.length > 5 &&
+                <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
+              }
+            </div> :
+            <div className={styles.emptyTableData}>
+              <Image
+                src={trackerEmptyTable}
+                alt="table"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+              <div className={styles.emptyTableText}>No data added</div>
+              <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+            </div>
+          }
+        </div>
+      </div>
       }
      {
-     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
+     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} style={!opend ? {padding: '12px 24px'} : {}}>
       {type !== "CUSTOM" &&
       <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
       <div className={styles.hiddenFiltersInnerDiv}>
-      <Plus style={{width:"16px", height:"16px"}} className="icons"/>
+      {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
       <div className={styles.hiddenFilterHeading}>Additional filters</div>
       </div>
       <div><ChevronDown className="icons"/></div>
@@ -3250,10 +3441,62 @@ useEffect(()=>{
           )}
         </div>
       </div>
-    </Suspense>
+      </Suspense>
       }
      
     </div>
+      }
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+        <div>
+            <div className={styles.presetTitle} >Get Started with Pre-sets</div>
+            <div className={styles.presetContainer} >
+              {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
+                <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+                  <div
+                    className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                      }`}
+                  >
+                    <div className={styles.account}>
+                      <Image src={item.img} alt="people" />
+                    </div>
+                    <div>
+                      <Image src={Template} alt="template" />
+                    </div>
+                  </div>
+                  <div className={styles.bottomView}>
+                    <div className={styles.bottomViewOne}>
+                      <div className={styles.bottomInnerView}>
+                        <Image
+                          src={Vector1}
+                          alt="vector1"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        />
+                        <div style={{ color: "#585871", fontSize: "12px" }}>
+                          PRE-SET
+                        </div>
+                      </div>
+                      {item.enabled ? 
+                        <div className={`${styles.domain}`} >
+                          {item.presetType}
+                        </div> :
+                        <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
+                          Coming Soon
+                        </div>
+                      }
+                    </div>
+                    <div className={styles.bottomViewTwo}>
+                      {item?.trackerName}
+                    </div>
+                    <div className={styles.text}>{item?.content}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+        </div>
       }
     </div>
     </>
