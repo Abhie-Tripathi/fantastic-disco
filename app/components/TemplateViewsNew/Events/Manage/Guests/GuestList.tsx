@@ -4,7 +4,6 @@ import SortIcon from '/public/filter.svg'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
 import DownloadIcon from '/public/downloadIcon.svg'
-import { useEventContext } from '@/context/eventcontext'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import StatusModal from './StatusModal'
@@ -117,7 +116,7 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
           <div className={styles.emptyList}>No guest registred yet. Start by inviting</div>
         )}
       </div>
-      {statusModal && <div className={styles.modal} ref={statusModalRef}><StatusModal eventId={eventId} interestId={interestId} mail={mail} name={name} statusValue={statusValue} setStatusValue={setStatusValue} /></div>}
+      {statusModal && <div className={styles.modal} ref={statusModalRef}><StatusModal setStatusModal={setStatusModal} fetchGuests={fetchGuests} eventId={eventId} interestId={interestId} mail={mail} name={name} statusValue={statusValue} setStatusValue={setStatusValue} /></div>}
     </div>
   )
 }
