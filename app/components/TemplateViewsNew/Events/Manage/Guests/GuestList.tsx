@@ -17,7 +17,7 @@ interface Props {
 const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
-  const [activeSortBtn, setActiveSortBtn] = useState<string>("Name")
+  const [activeSortBtn, setActiveSortBtn] = useState<string>("Register Time")
   const [filterDropdown, setFilterdropdown] = useState<boolean>(false)
   const [sortDropdown, setSortDropdown] = useState<boolean>(false)
   const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false))
@@ -27,6 +27,8 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   const [interestId, setInterestId] = useState<string>("")
   const [name, setName] = useState<string>("")
   const [mail, setMail] = useState<string>("")
+  const [sortBy, setSortBy] = useState<string>("")
+
 
   const statusModalRef = useOutsideClick(() => setStatusModal(false))
 
@@ -53,7 +55,14 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   };
 
   const fetchGuests = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    let fetchUrl = ''
+    if(sortBy.length > 0){
+      fetchUrl =`${baseUrl}/intend/users?eventId=${eventId}&sortType=asc&sortBy=${sortBy}`
+    }else{
+      fetchUrl =`${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`
+    }
+    const { data, error } = await myFetch(`${fetchUrl}`)
+
     if (error) {
       console.log("error is : ", error)
     } else {
@@ -70,7 +79,18 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   useEffect(() => {
     fetchGuests()
-  }, [])
+  }, [sortBy])
+
+  const handleFetch = (sort: string) => {
+    if(sort === "firstname"){
+      setActiveSortBtn("Name")
+    }else if(sort === "email"){
+      setActiveSortBtn("Email")
+    }else{
+      setActiveSortBtn("Register Time")
+    }
+    setSortBy(sort)
+  }
 
   const handleStatusClick = (interestId: string, status: string, name: string, mail: string) => {
     setStatusModal(true)
@@ -107,9 +127,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
         <div className={styles.sortBtnContainer}>
           <button className={styles.dropBtn} onClick={() => setSortDropdown(!sortDropdown)}><Image src={SortIcon} alt='filter' />{activeSortBtn}</button>
           {sortDropdown && <div className={styles.dropdown} ref={sortDropdownRef}>
-            <li onClick={() => setActiveSortBtn("Name")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
-            <li onClick={() => setActiveSortBtn("Email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
-            <li onClick={() => setActiveSortBtn("Register Time")}>{activeSortBtn === "Register Time" && <TickIcon />}Register Time</li>
+            <li onClick={() => handleFetch("firstname")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
+            <li onClick={() => handleFetch("email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
+            <li onClick={() => handleFetch("")}>{activeSortBtn === "Register Time" && <TickIcon />}Register Time</li>
           </div>}
         </div>
       </div>
