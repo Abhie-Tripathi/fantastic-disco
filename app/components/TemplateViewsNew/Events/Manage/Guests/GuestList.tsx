@@ -113,7 +113,7 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
               {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Declined"}</div>
           </div>
         ))) : (
-          <div className={styles.emptyList}>No guest registred yet. Start by inviting</div>
+          <div className={styles.emptyList}>No guest registered yet. Start by inviting</div>
         )}
       </div>
       {statusModal && <div className={styles.modal} ref={statusModalRef}><StatusModal setStatusModal={setStatusModal} fetchGuests={fetchGuests} eventId={eventId} interestId={interestId} mail={mail} name={name} statusValue={statusValue} setStatusValue={setStatusValue} /></div>}

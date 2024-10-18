@@ -39,7 +39,7 @@
     color: var(--primary-text-color);
     width: 90%;
     font-size: var(--font-size-large);
-    font-weight: 600;
+    /* font-weight: 600; */
 }
 .inputContainer .inputSearch:focus{
     outline: none;
@@ -59,6 +59,7 @@
 .dropBtn{
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: var(--primary-color);
     border-radius: 4px;
     padding: 4px 9px;

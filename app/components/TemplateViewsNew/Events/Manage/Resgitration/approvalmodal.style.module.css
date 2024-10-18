@@ -20,7 +20,7 @@
 }
 .header .subheading{
     color: var(--secondary-text-color);
-    font-weight: var(--font-weight-semibold);
+    /* font-weight: var(--font-weight-semibold); */
     font-size: var(--font-size-default);
 }
 
