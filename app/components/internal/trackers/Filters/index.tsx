@@ -171,18 +171,24 @@ interface EditData {
   tracker: Tracker;
 }
 
-const top100Data = ['abc.com', 'aa.com', '10times'];
+const top10Data = [['abc.com'], ['10times']];
+const top10Speakers = [
+  ["abc.com", "xyz.com"],
+  ["Mark Zuckerberg", "Facebook"],
+]
 
 const presetTemplateData = [
   {
-    id: "top_100",
+    id: "top_10_company",
     // type: "template",
     // domain: "Human Resource",
     img: Competitor,
     url: "T_COMPETITOR",
-    trackerName: "Top 100 Companies",
+    trackerName: "Top 10 Companies",
     content: "Customize it to perfectly fit your need and tailored to your preferences.",
-    data: top100Data,
+    data: top10Data,
+    enabled: false,
+    presetType: 'ALL',
   },
   {
     id: "top_50",
@@ -191,9 +197,10 @@ const presetTemplateData = [
     img: Keywords,
     url:"T_PRODUCT_KEYWORDS",
     trackerName: "TOP 50 Trending",
-    content:
-      "Stay updated on all events at your location with real-time status tracking.",
-    data: top100Data,
+    content: "Stay updated on all events at your location with real-time status tracking.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
   },
   {
     id: "top_30_India",
@@ -202,9 +209,10 @@ const presetTemplateData = [
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "India - TOP 30",
-    content:
-      "Effortlessly track any specific event with comprehensive updates on all critical changes.",
-    data: top100Data,
+    content: "Effortlessly track any specific event with comprehensive updates on all critical changes.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
   },
   {
     id: "top_500_India",
@@ -213,9 +221,10 @@ const presetTemplateData = [
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "India - TOP 500",
-    content:
-      "Effortlessly track any specific event with comprehensive updates on all critical changes.",
-    data: top100Data,
+    content: "Effortlessly track any specific event with comprehensive updates on all critical changes.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
   },
 ];
 
@@ -631,26 +640,25 @@ const Pages = () => {
 
   const handlePresetClick = (id: string, trackerType: string) => {
 
-    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);
-    // if (trackerType === 'T_COMPETITOR') {
-    //   const presetData: any = [];
+    const filteredPresetData = presetTemplateData.filter(item => item.id === id);
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
+      const presetData: any = [];
 
-    //   filteredPresetData?.[0]?.data.map((item: string) => {
-    //     const temp = {};
-    //     template?.inputAreas?.map((field: string, index: number)=>(
-    //       temp[field.placeholder] = item
-    //     ))
-        
-    //     presetData.push(temp);
-    //   })
-    //   console.log(presetData)
-      
-    //   setCustomData(presetData);
-    // } else if (trackerType === 'T_SPEAKING_OPPORTUNITY') {
-    //   template?.inputAreas?.map((item: any)=>(
-    //     console.log(item.placeholder)
-    //   ))
-    // }
+      filteredPresetData?.[0]?.data.map((item: any) => {
+        const temp: any = {};
+        template?.inputAreas?.map((field: InputArea, index: number)=>(
+          temp[field.placeholder] = item[index]
+        ))
+        presetData.push(temp);
+      })      
+      setCustomData(presetData);
+    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }
 
   const saveTrackerHandler = async () => {
@@ -1732,7 +1740,7 @@ useEffect(()=>{
           <div>
           <div className={styles.templateInputHeading}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
-            {" "} Please upload or manually enter the informantion
+            {" "} Please upload or manually enter the information
           </div>
           {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
             (uploadEnabled && 
@@ -1928,6 +1936,16 @@ useEffect(()=>{
               </div>
               <div className={styles.table_container}>
               <table className={styles.allCustomData}>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {Object.entries(customData[0])
+                      .map(([entryKey, value]) => 
+                        <th key={entryKey} className={styles.dataColoumn}>{entryKey as string}</th>
+                      )
+                    }
+                  </tr>
+                </thead>
                 <tbody>
                   {expandTable ? customData.map((item: any, index: number) => (
                       <tr key={index}>
@@ -1972,7 +1990,7 @@ useEffect(()=>{
                 }}
               />
               <div className={styles.emptyTableText}>No data added</div>
-              <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the informantion</div>
+              <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
             </div>
           }
         </div>
@@ -3413,7 +3431,7 @@ useEffect(()=>{
             <div className={styles.presetTitle} >Get Started with Pre-sets</div>
             <div className={styles.presetContainer} >
               {presetTemplateData.map((item, ind) => (
-                <div key={ind} className={styles.innerContainerTwo} onClick={()=>handlePresetClick(item.id, item.url)}>
+                <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                   <div
                     className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
                       }`}
@@ -3441,6 +3459,14 @@ useEffect(()=>{
                           PRE-SET
                         </div>
                       </div>
+                      {item.enabled ? 
+                        <div className={`${styles.domain}`} >
+                          {item.presetType}
+                        </div> :
+                        <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
+                          Coming Soon
+                        </div>
+                      }
                     </div>
                     <div className={styles.bottomViewTwo}>
                       {item?.trackerName}
