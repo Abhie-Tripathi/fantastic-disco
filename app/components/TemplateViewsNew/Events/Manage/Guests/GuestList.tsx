@@ -8,13 +8,13 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import StatusModal from './StatusModal'
 
-interface Props{
+interface Props {
   eventId: string;
-  statusModal : boolean;
-  setStatusModal : (value : boolean) => void
+  statusModal: boolean;
+  setStatusModal: (value: boolean) => void
 }
 
-const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
+const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
   const [activeSortBtn, setActiveSortBtn] = useState<string>("Name")
@@ -35,6 +35,22 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
       // { name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }
     ]
   )
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+
+    // Get the day suffix
+    const daySuffix =
+      day === 1 || day === 21 || day === 31 ? "st" :
+        day === 2 || day === 22 ? "nd" :
+          day === 3 || day === 23 ? "rd" : "th";
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day}${daySuffix} ${month} ${year}`;
+  };
 
   const fetchGuests = async () => {
     const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
@@ -45,7 +61,8 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
         name: `${user.firstname} ${user.lastname}`,
         email: user.email,
         status: user.status,
-        interestId: user.interestId
+        interestId: user.interestId,
+        date: formatDate(user.created)
       }));
       setGuests(fetchedGuests);
     }
@@ -103,14 +120,18 @@ const GuestList = ({eventId, statusModal, setStatusModal} : Props) => {
               <div className={styles.guestName}>{guest.name}</div>
               <div className={styles.guestEmail}>{guest.email}</div>
             </div>
-            <div className={`${styles.guestStatus} 
+            <div className={styles.guestDateContainer}>
+              <div className={`${styles.guestStatus} 
             ${guest.status === "PENDING" ? styles.pending :
-                guest.status === "CONFIRMED" ? styles.going :
-                  guest.status === "WAITLISTING" ? styles.waitlist :
-                    guest.status === "FOLLOWING" ? styles.following : styles.notgoing
-              }
+                  guest.status === "CONFIRMED" ? styles.going :
+                    guest.status === "WAITLISTING" ? styles.waitlist :
+                      guest.status === "FOLLOWING" ? styles.following : styles.notgoing
+                }
             `}>
-              {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Not Going"}</div>
+                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Not Going"}
+              </div>
+              <div className={styles.date}>{guest.date}</div>
+            </div>
           </div>
         ))) : (
           <div className={styles.emptyList}>No guest registered yet. Start by inviting</div>

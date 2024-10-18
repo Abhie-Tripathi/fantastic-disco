@@ -137,7 +137,17 @@
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
 }
-.guest .guestStatus{
+.guestDateContainer{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.guestDateContainer .date{
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--secondary-text-color);
+}
+.guestDateContainer .guestStatus{
     font-size: var(--font-size-small);
     font-weight: var(--font-weight-semibold);
     padding: 3px 5px;

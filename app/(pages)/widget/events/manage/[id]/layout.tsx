@@ -98,7 +98,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     const handleDetailPage = () => {
-        router.push(`/detailpage/${eventId}`)
+        window.open(`/detailpage/${eventId}`)
     }
 
     return (
