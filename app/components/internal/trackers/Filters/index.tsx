@@ -179,53 +179,73 @@ const top10Speakers = [
 
 const presetTemplateData = [
   {
-    id: "top_10_company",
+    id: 1,
     // type: "template",
     // domain: "Human Resource",
     img: Competitor,
     url: "T_COMPETITOR",
-    trackerName: "Top 10 Companies",
-    content: "Customize it to perfectly fit your need and tailored to your preferences.",
+    trackerName: "Top 100 Companies",
+    content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
     data: top10Data,
     enabled: false,
     presetType: 'ALL',
   },
   {
-    id: "top_50",
-    type: "template",
-    domain: "Sales",
+    id: 2,
+    // type: "template",
+    // domain: "Sales",
     img: Keywords,
-    url:"T_PRODUCT_KEYWORDS",
-    trackerName: "TOP 50 Trending",
-    content: "Stay updated on all events at your location with real-time status tracking.",
+    url:"T_COMPETITOR",
+    trackerName: "Top 25 Trending",
+    content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
     data: top10Data,
     enabled: false,
     presetType: 'All',
   },
   {
-    id: "top_30_India",
-    type: "template",
-    domain: "Human Resource",
-    img: Speaking,
-    url: "T_SPEAKING_OPPORTUNITY",
-    trackerName: "India - TOP 30",
-    content: "Effortlessly track any specific event with comprehensive updates on all critical changes.",
+    id: 3,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "India Top 30",
+    content: "Discover leading companies in India hosting business expos, conferences, and events.",
     data: top10Speakers,
     enabled: false,
     presetType: 'All',
   },
   {
-    id: "top_500_India",
+    id: 4,
     // type: "template",
     // domain: "Human Resource",
-    img: Speaking,
-    url: "T_SPEAKING_OPPORTUNITY",
-    trackerName: "India - TOP 500",
-    content: "Effortlessly track any specific event with comprehensive updates on all critical changes.",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Education & Training companies in India",
+    content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
     data: top10Data,
     enabled: false,
     presetType: 'All',
   },
+  {
+    id: 5,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Artificial Intelligence Speakers",
+    content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 6,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Biotechnology Innovations Speakers",
+    content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  }
 ];
 
 const templates = [
@@ -638,7 +658,7 @@ const Pages = () => {
     }
   }, [type, customData])
 
-  const handlePresetClick = (id: string, trackerType: string) => {
+  const handlePresetClick = (id: number, trackerType: string) => {
 
     const filteredPresetData = presetTemplateData.filter(item => item.id === id);
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
@@ -3426,11 +3446,11 @@ useEffect(()=>{
      
     </div>
       }
-      {type !== "CUSTOM" &&
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
         <div>
             <div className={styles.presetTitle} >Get Started with Pre-sets</div>
             <div className={styles.presetContainer} >
-              {presetTemplateData.map((item, ind) => (
+              {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
                 <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                   <div
                     className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"

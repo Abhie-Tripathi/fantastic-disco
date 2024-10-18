@@ -661,8 +661,9 @@ width: calc(100vw - 134px);
   width: 100%;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, 280px);
-  overflow: hidden; /* Ensure content does not overflow during transition */
+  /* grid-template-columns: repeat(auto-fill, 280px); */
+  display: flex;
+  overflow: hidden;
   transition: max-height 0.5s ease, opacity 0.5s ease;
   gap: 12px;
 }
@@ -682,6 +683,7 @@ width: calc(100vw - 134px);
   justify-content: center;
   flex-direction: column;
   height: 300px;
+  width: 280px;
   font-size: var(--font-size-default);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
