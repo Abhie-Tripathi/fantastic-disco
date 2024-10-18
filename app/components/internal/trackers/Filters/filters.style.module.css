@@ -621,6 +621,17 @@ width: calc(100vw - 134px);
   background: var(--primary-foreground);
 }
 
+.allCustomData th {
+  background-color: var(--heading-background-color);
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-collapse: collapse;
+  color: var(--secondary-text-color);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-default);
+  text-align: start;
+}
+
 .allCustomData td:first-child {
   width: 35px;
 }
@@ -674,7 +685,7 @@ width: calc(100vw - 134px);
   font-size: var(--font-size-default);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .account {
@@ -716,10 +727,11 @@ width: calc(100vw - 134px);
 
 .domain {
   padding: 4px 8px;
-  /* background-color: #FFEFEF; */
+  background-color: var(--primary-light-color);
   border-radius: var(--border-radius-sm);
   color: var(--primary-color);
   font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
 }
 
 .bottomViewTwo {
