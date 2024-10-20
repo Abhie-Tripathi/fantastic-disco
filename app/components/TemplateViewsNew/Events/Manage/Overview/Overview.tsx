@@ -41,7 +41,7 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
-          <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
+          <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={''} virtualLink={''} />
         </div>
         <div className={styles.eventDetailContainer}>
           <div className={styles.share_leadsContainer}>

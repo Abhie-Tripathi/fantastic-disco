@@ -42,6 +42,7 @@ const LocationDropdown = ({ theme, formState, handleChange
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
         handleChange('cityName',suggestion.name)
+        // handleChange('cityName',suggestion.name)
         // setCityName(suggestion.name);
         handleChange('countryName',suggestion.countryName)
         handleChange('latitude',Number(suggestion.lat))
@@ -109,6 +110,14 @@ const LocationDropdown = ({ theme, formState, handleChange
     // if (!isLoaded) return <div>Loading...</div>;
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleChange('query',e.target.value)
+        // handleChange("virtualLink",e.target.value)
+        handleChange('isEventFormatEmpty',false)
+        // setQuery(e.target.value);
+        // setIsEventFormatEmpty(false)
+    }
+    const handleVirtualInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("ssdfsdf",e.target.value)
+        handleChange("virtualLink",e.target.value)
         handleChange('isEventFormatEmpty',false)
         // setQuery(e.target.value);
         // setIsEventFormatEmpty(false)
@@ -171,9 +180,10 @@ const LocationDropdown = ({ theme, formState, handleChange
                 )}
 
             </div>}
+            
             {(formState.eventFormat === "Virtual" || formState.eventFormat === "Hybrid" || formState.eventFormat === "ONLINE") &&
                 <div className={styles.inputLinkContainer}>
-                    <input type="text" placeholder='Enter Virtual Link' />
+                    <input type="text" placeholder='Enter Virtual Link' onChange={(e) => handleVirtualInputChange(e)}/>
                     <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above</span></div>
                 </div>}
         </div>

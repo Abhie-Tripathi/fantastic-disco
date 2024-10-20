@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./registerform.style.module.css";
 import { baseUrl } from "@/constants";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,6 +16,8 @@ interface Props {
   registration: boolean;
   approval: boolean;
   waitlisting: boolean;
+  start_date: string;
+  end_date: string;
 }
 
 const RegisterForm = ({
@@ -29,6 +31,8 @@ const RegisterForm = ({
   registration,
   approval,
   waitlisting,
+  start_date,
+  end_date,
 }: Props) => {
   const [formData, setFormData] = useState({
     firstname: "",
@@ -38,7 +42,8 @@ const RegisterForm = ({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isCapacityFull, setIsCapacityFull] = useState(true);
   const [isApproved, setIsApproved] = useState(false);
-  const [isEventEnded, setIsEventEnded] = useState(true);
+  const [isEventEnded, setIsEventEnded] = useState(false);
+  const [timeSinceEnd, setTimeSinceEnd] = useState("");
   console.log("value_s", capacity, registration, approval, waitlisting);
   // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
@@ -97,7 +102,7 @@ const RegisterForm = ({
       note: "intend",
       source: "eventgeni",
       // sourceId: widgetId,
-     
+      redirectUrl: `console.dev.eventgeni.com/detailpage/${eventId}`,
     };
 
     try {
@@ -126,6 +131,31 @@ const RegisterForm = ({
   const handleClick = () => {
     showToast("error", "You have already registered for this event");
   };
+
+  useEffect(() => {
+    const calculateTimeDifference = () => {
+      const currentDate = new Date();
+
+      const eventEndDate = new Date(end_date);
+
+      const hasEventEnded = currentDate > eventEndDate;
+      console.log("event_ended", hasEventEnded);
+      if (hasEventEnded) {
+        setIsEventEnded(true);
+        const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
+        const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
+        console.log("asdasd", daysSinceEnd);
+        if (daysSinceEnd === 1) {
+          setTimeSinceEnd("1 day ago"); // Ended yesterday
+        } else if (daysSinceEnd > 1) {
+          setTimeSinceEnd(`${daysSinceEnd} days ago`); // More than one day ago
+        }
+      }
+    };
+
+    calculateTimeDifference();
+  }, [end_date]);
+  console.log("times", timeSinceEnd);
   return (
     // <div className={styles.registerContainer}>
     //   {/* <ToastContainer /> */}
@@ -225,18 +255,67 @@ const RegisterForm = ({
     // </div>
 
     <div className={styles.registerContainer}>
-      {registration && !approval && !capacity && !waitlisting ? (
+      {/* {(registration && approval && capacity && !waitlisting) ||
+      (registration && !approval && capacity && waitlisting) ? (
         <div className={styles.header}>
           <div>Join us at the event</div>
         </div>
-      ) : waitlisting || approval || isEventEnded ? (
-        <>Register</>
       ) : (
         <></>
-      )}
+      )} */}
+      {!isEventEnded &&
+        capacity &&
+        registration &&
+        !approval &&
+        waitlisting && (
+          <div className={styles.header}>
+            <div>Join us at the event</div>
+          </div>
+        )}
+      {!isEventEnded &&
+        capacity &&
+        registration &&
+        !approval &&
+        !waitlisting && (
+          <div className={styles.header}>
+            <div>Join us at the event</div>
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        {registration && !approval && !capacity && !waitlisting ? (
+      {/* <form onSubmit={handleSubmit}>
+        {isEventEnded && registration && approval && waitlisting && capacity ? (
+          <>
+            <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <EventClosedIcon />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Past Event</div>
+                <div className={styles.waitlist_text}>
+                  <span>This event ended {timeSinceEnd}.</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.detail_text}>
+              Thank you for your interest! Follow to stay updated for future
+              events.
+            </div>
+          </>
+        ) :  registration && !approval && !waitlisting && !capacity ? (
+          <>
+            <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <EventClosedIcon />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Follow Event</div>
+                <div className={styles.waitlist_text}>
+                  This event is full. Please follow for future updates.
+                </div>
+              </div>
+            </div>
+          </>
+        ): registration && !approval && !capacity && !waitlisting ? (
           <div className={styles.formSubHeading}>{registerMessage}</div>
         ) : !registration ||
           (waitlisting && capacity && !registration && approval) ? (
@@ -326,40 +405,6 @@ const RegisterForm = ({
               Welcome! To join the event, please register below.
             </div>
           </>
-        ) : registration && approval && !waitlisting && !capacity ? (
-          // When approval is true, waitlisting false, but cap is false (event full)
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <EventClosedIcon />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Follow Event</div>
-                <div className={styles.waitlist_text}>
-                  This event is full. Please follow for future updates.
-                </div>
-              </div>
-            </div>
-          </>
-        ) : isEventEnded ? (
-          // When the event has ended
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <EventClosedIcon />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Past Event</div>
-                <div className={styles.waitlist_text}>
-                  <span>This event ended 9 hours ago.</span>
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Thank you for your interest! Follow to stay updated for future
-              events.
-            </div>
-          </>
         ) : (
           <></>
         )}
@@ -390,7 +435,13 @@ const RegisterForm = ({
           className={styles.submitBtn}
           // onClick={handleClick}
         >
-          {registration && !approval && !capacity && !waitlisting ? (
+          {isEventEnded &&
+          registration &&
+          approval &&
+          waitlisting &&
+          capacity ? (
+            <span>Follow</span>
+          ) :registration && !approval && !waitlisting && !capacity ? <span>Follow</span>: registration && !approval && !capacity && !waitlisting ||  (registration && !approval && capacity && waitlisting ) ? (
             <span>{registerBtnText}</span>
           ) : !registration ? (
             <span>Follow</span>
@@ -404,13 +455,269 @@ const RegisterForm = ({
             <span>Request to join</span>
           ) : registration && approval && capacity && waitlisting ? (
             <span>Request to join</span>
-          ) : isEventEnded ? (
-            <span>Follow</span>
           ) : (
             <></>
           )}
         </button>
+      </form> */}
+
+      <form onSubmit={handleSubmit}>
+        {/* Past event */}
+        {isEventEnded && (
+          <>
+            <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <EventClosedIcon />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Past Event</div>
+                <div className={styles.waitlist_text}>
+                  <span>This event ended {timeSinceEnd}.</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.detail_text}>
+              Thank you for your interest! Follow to stay updated for future
+              events.
+            </div>
+          </>
+        )}
+        {/* Follow event */}
+        {(!isEventEnded &&
+          registration &&
+          !approval &&
+          !waitlisting &&
+          !capacity) ||
+          (!isEventEnded &&
+            registration &&
+            approval &&
+            !waitlisting &&
+            !capacity && (
+              <div className={styles.event_container}>
+                <div className={styles.icon_container}>
+                  <EventClosedIcon />
+                </div>
+                <div className={styles.text_container}>
+                  <div className={styles.event_full_text}>Follow Event</div>
+                  <div className={styles.waitlist_text}>
+                    This event is full. Please follow for future updates.
+                  </div>
+                </div>
+              </div>
+            ))}
+        {/* Registration closed */}
+        {!isEventEnded && !registration && (
+          <>
+            <div className={styles.icon_text_container}>
+              <div style={{ marginTop: "5px" }}>
+                <RegistrationClosedSVG />
+              </div>
+              <div>Registration Closed</div>
+            </div>
+            <div className={styles.dec_text}>
+              This event is not currently taking registrations. You may contact
+              the host to receive updates.
+            </div>
+          </>
+        )}
+        {/* Approval required */}
+        {!isEventEnded &&
+          approval &&
+          registration &&
+          !waitlisting &&
+          capacity && (
+            <>
+              <div className={styles.event_container}>
+                <div className={styles.icon_container}>
+                  <ApprovalSVG />
+                </div>
+                <div className={styles.text_container}>
+                  <div className={styles.event_full_text}>
+                    Approval Required
+                  </div>
+                  <div className={styles.waitlist_text}>
+                    Your registration is subject to approval by the host.
+                  </div>
+                </div>
+              </div>
+              <div className={styles.detail_text}>
+                Welcome! To join the event, please register below.
+              </div>
+            </>
+          )}
+        {/* join waitlist */}
+        {!isEventEnded &&
+          approval &&
+          registration &&
+          waitlisting &&
+          !capacity && (
+            <>
+              <div className={styles.event_container}>
+                <div className={styles.icon_container}>
+                  <EventClosedIcon />
+                </div>
+                <div className={styles.text_container}>
+                  <div className={styles.event_full_text}>Event Full</div>
+                  <div className={styles.waitlist_text}>
+                    If you&apos;d like, you can join the waitlist.
+                  </div>
+                </div>
+              </div>
+              <div className={styles.detail_text}>
+                Please click on the button below to join the waitlist. You will
+                be notified if additional spots become available.
+              </div>
+            </>
+          )}
+        {/* follow event */}
+        {!isEventEnded &&
+          !capacity &&
+          registration &&
+          !approval &&
+          !waitlisting && (
+            <div className={styles.event_container}>
+              <div className={styles.icon_container}>
+                <EventClosedIcon />
+              </div>
+              <div className={styles.text_container}>
+                <div className={styles.event_full_text}>Follow Event</div>
+                <div className={styles.waitlist_text}>
+                  This event is full. Please follow for future updates.
+                </div>
+              </div>
+            </div>
+          )}
+        {/* join waitlist */}
+        {!isEventEnded &&
+          !capacity &&
+          registration &&
+          !approval &&
+          waitlisting && (
+            <>
+              <div className={styles.event_container}>
+                <div className={styles.icon_container}>
+                  <EventClosedIcon />
+                </div>
+                <div className={styles.text_container}>
+                  <div className={styles.event_full_text}>Event Full</div>
+                  <div className={styles.waitlist_text}>
+                    If you&apos;d like, you can join the waitlist.
+                  </div>
+                </div>
+              </div>
+              <div className={styles.detail_text}>
+                Please click on the button below to join the waitlist. You will
+                be notified if additional spots become available.
+              </div>
+            </>
+          )}
+
+        {!isEventEnded &&
+          capacity &&
+          registration &&
+          approval &&
+          waitlisting && (
+            <>
+              <div className={styles.event_container}>
+                <div className={styles.icon_container}>
+                  <ApprovalSVG />
+                </div>
+                <div className={styles.text_container}>
+                  <div className={styles.event_full_text}>
+                    Approval Required
+                  </div>
+                  <div className={styles.waitlist_text}>
+                    Your registration is subject to approval by the host.
+                  </div>
+                </div>
+              </div>
+              <div className={styles.detail_text}>
+                Welcome! To join the event, please register below.
+              </div>
+            </>
+          )}
+
+        <input
+          className={styles.inputField}
+          type="text"
+          name="firstname"
+          placeholder="Name"
+          value={formData.firstname}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          className={styles.inputField}
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
       </form>
+
+      <button
+        type="submit"
+        style={{ backgroundColor: registerBtnColor, color: fontColor }}
+        className={styles.submitBtn}
+        // onClick={handleClick}
+      >
+        {/* Past event */}
+        {isEventEnded && <span>Follow</span>}
+
+        {/* Follow event */}
+        {(!isEventEnded &&
+          registration &&
+          !approval &&
+          !waitlisting &&
+          !capacity) ||
+          (!isEventEnded &&
+            registration &&
+            approval &&
+            !waitlisting &&
+            !capacity && <span>Follow</span>)}
+        {/* Registration closed */}
+        {!isEventEnded && !registration && <span>Follow</span>}
+        {/* Approval required */}
+        {!isEventEnded &&
+          approval &&
+          registration &&
+          !waitlisting &&
+          capacity && <span>Request to join</span>}
+        {/* join waitlist  */}
+        {!isEventEnded &&
+          approval &&
+          registration &&
+          waitlisting &&
+          !capacity && <span>Join waitlist</span>}
+        {!isEventEnded &&
+          !capacity &&
+          registration &&
+          !approval &&
+          !waitlisting && <span>Follow</span>}
+        {!isEventEnded &&
+          !capacity &&
+          registration &&
+          !approval &&
+          waitlisting && <span>Join waitlist</span>}
+        {!isEventEnded &&
+          capacity &&
+          registration &&
+          !approval &&
+          waitlisting && <span>{registerBtnText}</span>}
+        {!isEventEnded &&
+          capacity &&
+          registration &&
+          !approval &&
+          !waitlisting && <span>{registerBtnText}</span>}
+        {!isEventEnded &&
+          capacity &&
+          registration &&
+          approval &&
+          waitlisting && <span>Request to join</span>}
+      </button>
     </div>
   );
 };

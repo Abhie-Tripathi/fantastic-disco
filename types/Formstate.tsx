@@ -53,8 +53,7 @@ export interface FormState {
     registration:boolean;
     approval:boolean;
     waitlisting:boolean;
-    // capacityModalOpen:boolean;
-    // capacityModalClose:boolean;
     capacityModal:boolean
+    virtualLink:string;
   }
   
