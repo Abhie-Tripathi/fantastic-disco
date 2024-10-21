@@ -33,7 +33,7 @@ const Page = () => {
           <span className={styles.icon1}>A</span>
           <div className={styles.sub_headingContainer}>
             Approval
-            <span>{approvalValue ? "On" : "Off"}</span>
+            <span>{fetchedEvent?.approval === true ? "On" : "Off" }</span>
           </div>
         </button>
         <button disabled={capacityModal} onClick={() => setCapacityModal(true)}>
@@ -41,7 +41,7 @@ const Page = () => {
           <div className={styles.sub_headingContainer}>
             Event Capacity
             <span className={styles.capacity}>
-              <span>{capacityValue === -1 ? "Unlimited" : capacityValue}</span>
+              <span>{fetchedEvent?.capacity === -1 ? "Unlimited" : fetchedEvent?.capacity}</span>
               <span className={styles.dot}>{"."}</span>
               <span>{waitlistValue ? "Waitlist On" : "Waitlist Off"}</span>
             </span>

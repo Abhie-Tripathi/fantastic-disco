@@ -31,7 +31,6 @@ const ApprovalModal = ({ setApprovalValue, approvalValue, setApprovalModal, even
         }
     }
 
-
     return (
         <div className={styles.body}>
             <div className={styles.header}>

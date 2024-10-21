@@ -22,11 +22,11 @@ interface Props {
   setPrefilledGlobalEvent?: (value: GolbalEventType | null) => void;
   setPrefilledEvent?: (value: EventsType | null) => void;
   fetchEventData?: () => Promise<undefined | null>;
-  setChoiceFormModal?:(value:boolean) =>void
-  isApproved?:boolean;
-  setIsApproved?:(value:boolean) =>void
+  setChoiceFormModal?: (value: boolean) => void
+  isApproved?: boolean;
+  setIsApproved?: (value: boolean) => void
 }
-const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent, fetchEventData, setChoiceFormModal,isApproved, setIsApproved  }: Props) => {
+const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent, fetchEventData, setChoiceFormModal, isApproved, setIsApproved }: Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledEvent?.customizationData.pageBgColor || "")
   const [pageGradient, setPageGradient] = useState<string>(prefilledEvent?.customizationData.pageGradient || "")
@@ -36,9 +36,9 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("page graidet", pageGradient)
-  },[pageGradient])
+  }, [pageGradient])
   const initialFormState: FormState = {
     parentData: prefilledEvent?.parentData || "",
     descriptionModal: false,
@@ -77,21 +77,62 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isParticipationMessageEmpty: false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
-    capacity:-1,
-    registration:true,
-    approval:false,
-    waitlisting:false,
-    // capacityModalClose:false,
-    // capacityModalOpen:false
-    capacityModal:false,
-    virtualLink:""
+    capacity: -1,
+    registration: true,
+    approval: false,
+    waitlisting: false,
+    capacityModal: false,
+    virtualLink: ""
+  };
+  const emptyFormState: FormState = {
+    parentData: "",
+    descriptionModal: false,
+    speakerModal: false,
+    registerModal: false,
+    eventName: "",
+    participationType:"",
+    description: "",
+    textValue:"",
+    cityName: "",
+    speaker: [],
+    prefilledProfile: undefined,
+    registerMessage: 'Welcome! To join the event, please register below.',
+    registerBtnText: 'Register',
+    registerBtnColor:'#1a1a1a',
+    countryName: '',
+    timeZone: 'GMT+05:30 Chennai',
+    timeZoneKey: 1,
+    startDate: '',
+    endDate: '',
+    startTime: '12:00 A.M',
+    endTime: '12:00 A.M',
+    eventFormat: "In-person",
+    boothNumber: "",
+    participationMessage: "",
+    banner: { placeHolder: Placeholder, file: null }, // Customize placeholder as needed
+    venue: "",
+    latitude: 37.7749,
+    longitude: -122.4194,
+    hashtags: [],
+    query: '',
+    isEventNameEmpty: false,
+    isEventFormatEmpty: false,
+    isEventDescriptionEmpty: false,
+    isEventParticipationEmpty: false,
+    isParticipationMessageEmpty: false,
+    isTextValueMessageEmpty: false,
+    errorMessage: 'Event name is required.',
+    capacity: -1,
+    registration: true,
+    approval: false,
+    waitlisting: false,
+    capacityModal: false,
+    virtualLink: ""
   };
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
-  const [subeventState, setSubeventState] = useState<FormState>(initialFormState);
-  // const [eventName, setEventName] = useState<string>(prefilledEvent?.name || prefilledGlobalEvent?.name || "");
-  // const [cityName, setCityName] = useState<string>(prefilledEvent?.cityName || prefilledGlobalEvent?.cityName || "")
-  // const [participationType, setParticipationType] = useState<string>(prefilledEvent?.participationType || "")
-  // const [description, setDescription] = useState<string>(prefilledEvent?.description ||  prefilledGlobalEvent?.description || "")
+  const [subeventState, setSubeventState] = useState<FormState>(prefilledEvent?.name ? emptyFormState: initialFormState);
+  // const [subeventState, setSubeventState] = useState<FormState>(initialFormState);
+
   const handleMaineventChanges = (field: keyof FormState, value: any) => {
     setMainEventState((prev) => ({ ...prev, [field]: value }));
   };
@@ -105,9 +146,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
       <div className={styles.appearance}><Appearance setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} descriptionMain={mainEventState.description} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
       <div className={styles.details}>
         <AddEventFormTab leavesTheme={leavesTheme} formTheme={formTheme} confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
-          // setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName}
-          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal}/>
-        {/* <Details setParticipationType={setParticipationType} participationType={participationType} eventName={eventName} setEventName={setEventName} description={description} setDescription={setDescription} cityName={cityName} setCityName={setCityName} prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} /> */}
+          prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal} />
+
       </div>
     </div>
   )
